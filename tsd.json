@@ -1,0 +1,21 @@
+{
+  "version": "v4",
+  "repo": "borisyankov/DefinitelyTyped",
+  "ref": "master",
+  "path": "src/typings",
+  "bundle": "src/typings/tsd.d.ts",
+  "installed": {
+    "react/react.d.ts": {
+      "commit": "af5b8275d1f2b92738b93fddabc461fc20c553a1"
+    },
+    "react/react-global.d.ts": {
+      "commit": "af5b8275d1f2b92738b93fddabc461fc20c553a1"
+    },
+    "react-dom/react-dom.d.ts": {
+      "commit": "af5b8275d1f2b92738b93fddabc461fc20c553a1"
+    },
+    "classnames/classnames.d.ts": {
+      "commit": "af5b8275d1f2b92738b93fddabc461fc20c553a1"
+    }
+  }
+}

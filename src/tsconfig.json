@@ -1,0 +1,32 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "target": "ES5",
+    "module": "commonjs",
+    "jsx": "react",
+    "noImplicitAny": true
+  },
+  "filesGlob": [
+    "typings/**/*.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "files": [
+    "typings/classnames/classnames.d.ts",
+    "typings/react-dom/react-dom.d.ts",
+    "typings/react/react-global.d.ts",
+    "typings/react/react.d.ts",
+    "typings/rx/rx.all.d.ts",
+    "typings/tsd.d.ts",
+    "typings/webrx/web.rx.d.ts",
+    "React/BaseRoutableViewModel.ts",
+    "React/BaseViewModel.ts",
+    "Test/TestViewModel.ts",
+    "App.tsx",
+    "index.tsx",
+    "React/BaseView.tsx",
+    "React/TextBox.tsx",
+    "Test/TestView.tsx"
+  ],
+  "exclude": []
+}

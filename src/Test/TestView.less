@@ -1,0 +1,27 @@
+@bg: gray;
+
+.Test {
+  text-align: center;
+  width: 500px;
+  background-color: @bg;
+
+  input {
+    background-color: lighten(@bg, 10%);
+    font-size: 2em;
+  }
+}
+
+.Name {
+  margin: 10px;
+}
+
+.DisplayName {
+  padding: 10px;
+  border: 1px dashed black;
+  font-size: 1.5em;
+  background-color: lighten(green, 60%);
+}
+
+.DisplayName--Empty {
+  background-color: lighten(red, 30%);
+}
