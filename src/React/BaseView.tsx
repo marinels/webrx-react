@@ -6,14 +6,14 @@ import * as Rx from 'rx';
 
 import { IBaseViewModel } from './BaseViewModel';
 
-export const EnableViewDebugging = false;
-
 export interface IBaseViewProps {
   viewModel: IBaseViewModel;
 }
 
 export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel extends IBaseViewModel> extends React.Component<TViewProps, TViewModel> {
   private updateSubscription: Rx.IDisposable;
+
+  public static EnableViewDebugging = false;
 
   constructor(props?: TViewProps, context?: any) {
     super(props, context);
@@ -35,7 +35,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
       .selectMany(x => x.changed)
       .debounce(100)
       .subscribe(x => {
-        if (EnableViewDebugging) {
+        if (BaseView.EnableViewDebugging) {
           console.log('rendering...');
         }
 

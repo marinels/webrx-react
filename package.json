@@ -4,7 +4,8 @@
   "description": "WebRx with React",
   "scripts": {
     "start": "node server.js",
-    "build": "webpack"
+    "build": "webpack -d",
+    "dist": "webpack -p"
   },
   "repository": {
     "type": "git",
@@ -16,11 +17,11 @@
     "url": "https://github.com/patsissons/WebRx.React/issues"
   },
   "homepage": "https://github.com/patsissons/WebRx.React",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "classnames": "^2.2.0",
     "css-loader": "^0.19.0",
+    "file-loader": "^0.8.4",
     "less": "^2.5.3",
     "less-loader": "^2.2.1",
     "react": "^0.13.3",
