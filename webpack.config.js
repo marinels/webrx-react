@@ -1,29 +1,22 @@
 var path = require('path');
 var webpack = require('webpack');
 
-var isProduction = process.argv.indexOf('-p') >= 0 ? true : false;
-var isDebug = process.argv.indexOf('-d') >= 0 ? true : false;
 var plugins = [];
-var entry = [];
 var output = 'build';
+
+var isProduction = process.argv.indexOf('-p') >= 0 ? true : false;
 
 if (isProduction) {
   output = 'dist';
 
   plugins.push(new webpack.optimize.UglifyJsPlugin({minimize: true}));
-} else if (isDebug) {
-} else {
-  entry.push('webpack-dev-server/client?http://localhost:3000');
-  entry.push('webpack/hot/only-dev-server');
-
-  plugins.push(new webpack.HotModuleReplacementPlugin());
 }
 
-entry.push('./src/index.tsx');
-entry.push('./index.html')
-
 module.exports = {
-  entry: entry,
+  entry: [
+    './src/index.tsx',
+    './index.html'
+  ],
   output: {
     path: path.join(__dirname, output),
     filename: 'app.js'
@@ -34,7 +27,7 @@ module.exports = {
       { test: /\.css$/, loader: 'style!css' },
       { test: /\.less$/, loader: 'style!css!less' },
       { test: /\.tsx?$/, loaders: ['react-hot', 'ts'], include: path.join(__dirname, 'src') },
-      { test: /index\.html$/, loader: 'file?name=[path][name].[ext]&context=' + __dirname }
+      { test: /index\.html$/, loader: 'file?name=[name].[ext]' }
     ]
   },
   resolve: {
