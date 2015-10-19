@@ -29,8 +29,8 @@ export class TestView extends BaseView<ITestViewProps, TestViewModel> {
       });
     return (
       <div className='Test'>
-        <div className='Name'><TextBox binding={this.state.firstName} /></div>
-        <div className='Name'><TextBox binding={this.state.lastName} /></div>
+        <div className='Name'><input type='text' defaultValue={this.state.firstName()} onChange={x => this.state.firstName((x.target as React.HTMLAttributes).value)} /></div>
+        <div className='Name'><input type='text' defaultValue={this.state.lastName()} onChange={x => this.state.lastName((x.target as React.HTMLAttributes).value)} /></div>
         <div className={displayClass}>Display Name: {this.state.displayName()}</div>
       </div>
     );
