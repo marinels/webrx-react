@@ -5,7 +5,9 @@
   "scripts": {
     "start": "node server.js",
     "build": "webpack -d",
-    "dist": "webpack -p"
+    "dist": "webpack -p",
+    "build-test": "webpack -d --config ./test/webpack.config.js",
+    "start-test": "node ./test/server.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +24,7 @@
     "classnames": "^2.2.0",
     "css-loader": "^0.19.0",
     "file-loader": "^0.8.4",
+    "jasmine": "^2.3.2",
     "less": "^2.5.3",
     "less-loader": "^2.2.1",
     "react": "^0.13.3",

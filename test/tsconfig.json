@@ -1,0 +1,28 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "target": "ES5",
+    "module": "commonjs",
+    "noImplicitAny": true
+  },
+  "filesGlob": [
+    "../src/typings/**/*.d.ts",
+    "typings/**/*.d.ts",
+    "**/*.ts"
+  ],
+  "files": [
+    "../src/typings/classnames/classnames.d.ts",
+    "../src/typings/react-dom/react-dom.d.ts",
+    "../src/typings/react/react-global.d.ts",
+    "../src/typings/react/react.d.ts",
+    "../src/typings/rx/rx.all.d.ts",
+    "../src/typings/tsd.d.ts",
+    "../src/typings/webrx/web.rx.d.ts",
+    "typings/jasmine/jasmine.d.ts",
+    "index.ts",
+    "SanitySpec.ts",
+    "TestSpec.ts",
+    "TestUtils.ts"
+  ],
+  "exclude": []
+}
