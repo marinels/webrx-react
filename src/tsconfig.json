@@ -8,6 +8,7 @@
   },
   "filesGlob": [
     "typings/**/*.d.ts",
+    "Extensions/**/*.ts",
     "Components/**/*.ts",
     "Components/**/*.tsx",
     "index.tsx"
@@ -23,10 +24,13 @@
     "typings/rx/rx.all.d.ts",
     "typings/tsd.d.ts",
     "typings/webrx/web.rx.d.ts",
+    "Extensions/Extensions.d.ts",
+    "Extensions/Object.ts",
+    "Extensions/Rx.ts",
+    "Extensions/String.ts",
     "Components/App/AppViewModel.ts",
     "Components/React/BaseRoutableViewModel.ts",
     "Components/React/BaseViewModel.ts",
-    "Components/React/Extensions.ts",
     "Components/App/AppView.tsx",
     "Components/React/BaseView.tsx",
     "index.tsx"

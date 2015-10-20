@@ -3,8 +3,6 @@
 import * as Rx from 'rx';
 import * as wx from 'webrx';
 
-import './Extensions';
-
 export interface IBaseViewModel {
   initialize(): void;
   cleanup(): void;

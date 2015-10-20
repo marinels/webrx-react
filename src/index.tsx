@@ -7,6 +7,10 @@ export { Rx };
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
+import './Extensions/Object';
+import './Extensions/String';
+import './Extensions/Rx';
+
 import AppView from './Components/App/AppView';
 import AppViewModel from './Components/App/AppViewModel';
 
