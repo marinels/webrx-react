@@ -14,6 +14,8 @@
   ],
   "files": [
     "typings/classnames/classnames.d.ts",
+    "typings/moment/moment-node.d.ts",
+    "typings/moment/moment.d.ts",
     "typings/react-bootstrap/react-bootstrap.d.ts",
     "typings/react-dom/react-dom.d.ts",
     "typings/react/react-global.d.ts",
