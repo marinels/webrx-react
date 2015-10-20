@@ -5,6 +5,7 @@ import * as wx from 'webrx';
 import BaseViewModel from '../React/BaseViewModel';
 import { RouteHandlerViewModel, IRoutingMap } from '../RouteHandler/RouteHandlerViewModel';
 import RouteManager from '../../Routing/RouteManager';
+import { PageHeaderViewModel, IMenuItem } from '../PageHeader/PageHeaderViewModel';
 import PageFooterViewModel from '../PageFooter/PageFooterViewModel';
 import AlertViewModel from '../Alert/AlertViewModel';
 import { default as PubSub, ISubscriptionHandle } from '../../Utils/PubSub';
@@ -23,6 +24,10 @@ export class AppViewModel extends BaseViewModel {
   constructor(public routeManager?: RouteManager, config = <IAppConfig>{}) {
     super();
 
+    let menuItems: IMenuItem[] = [
+      { title: 'Home', uri: '#/', glyph: 'home' },
+    ];
+
     this.config = config;
 
     if (routeManager != null) {
@@ -30,6 +35,7 @@ export class AppViewModel extends BaseViewModel {
       RouteManager.EnableRouteDebugging = config.EnableRouteDebugging === true;
     }
 
+    this.header = new PageHeaderViewModel(menuItems);
     this.footer = new PageFooterViewModel()
   }
 
@@ -39,6 +45,7 @@ export class AppViewModel extends BaseViewModel {
 
   public config: IAppConfig;
   public routeHandler: RouteHandlerViewModel;
+  public header: PageHeaderViewModel;
   public footer: PageFooterViewModel;
   public alerts = wx.list<AlertViewModel>();
 
