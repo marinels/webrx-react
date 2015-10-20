@@ -19,11 +19,12 @@
     "typings/rx/rx.all.d.ts",
     "typings/tsd.d.ts",
     "typings/webrx/web.rx.d.ts",
+    "App/AppViewModel.ts",
     "React/BaseRoutableViewModel.ts",
     "React/BaseViewModel.ts",
     "React/Extensions.ts",
     "Test/TestViewModel.ts",
-    "App.tsx",
+    "App/AppView.tsx",
     "index.tsx",
     "React/BaseView.tsx",
     "Test/TestView.tsx"

@@ -6,6 +6,14 @@ export { Rx };
 
 import * as React from 'react';
 
-import App from './App';
+import AppView from './App/AppView';
+import AppViewModel from './App/AppViewModel';
 
-React.render(<App/>, document.getElementById('app'));
+let container = document.getElementById('app');
+
+if (container) {
+  let viewModel = new AppViewModel();
+  viewModel.EnableViewRenderDebugging = true;
+
+  React.render(<AppView viewModel={viewModel}/>, document.getElementById('app'));
+}
