@@ -6,16 +6,19 @@
   "bundle": "src/typings/tsd.d.ts",
   "installed": {
     "react/react.d.ts": {
-      "commit": "af5b8275d1f2b92738b93fddabc461fc20c553a1"
+      "commit": "68548c2daab053869f323d475419c693478bbb73"
     },
     "react/react-global.d.ts": {
-      "commit": "af5b8275d1f2b92738b93fddabc461fc20c553a1"
+      "commit": "68548c2daab053869f323d475419c693478bbb73"
     },
     "react-dom/react-dom.d.ts": {
-      "commit": "af5b8275d1f2b92738b93fddabc461fc20c553a1"
+      "commit": "68548c2daab053869f323d475419c693478bbb73"
     },
     "classnames/classnames.d.ts": {
-      "commit": "af5b8275d1f2b92738b93fddabc461fc20c553a1"
+      "commit": "68548c2daab053869f323d475419c693478bbb73"
+    },
+    "react-bootstrap/react-bootstrap.d.ts": {
+      "commit": "68548c2daab053869f323d475419c693478bbb73"
     }
   }
 }
