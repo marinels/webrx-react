@@ -472,9 +472,9 @@ declare module "react-bootstrap" {
 
     // <NavDropdown />
     // ----------------------------------------
-    interface NavDropdownProps {
+    interface NavDropdownProps extends DropdownButtonProps {
         eventKey?: any;
-        title?: string;
+        title?: any;
         id?: string;
     }
     interface NavDropdown extends React.ReactElement<NavDropdownProps> { }
