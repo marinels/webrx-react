@@ -5,3 +5,5 @@
 /// <reference path="react-bootstrap/react-bootstrap.d.ts" />
 /// <reference path="moment/moment-node.d.ts" />
 /// <reference path="moment/moment.d.ts" />
+/// <reference path="jquery/jquery.d.ts" />
+/// <reference path="rx-jquery/rx.jquery.d.ts" />
