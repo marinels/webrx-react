@@ -13,7 +13,7 @@ export interface IBaseViewProps {
 export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel extends IBaseViewModel> extends React.Component<TViewProps, TViewModel> {
   private updateSubscription: Rx.IDisposable;
 
-  public static EnableViewDebugging = false;
+  public static EnableViewRenderDebugging = false;
 
   constructor(props?: TViewProps, context?: any) {
     super(props, context);
@@ -26,6 +26,16 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   protected initialize() {}
   protected cleanup() {}
 
+  protected bindObservable<TResult>(commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>, observable: Rx.Observable<TResult>) {
+    return this.state.bind(observable, commandSelector(this.state));
+  }
+
+  protected bindEvent<TEvent extends React.SyntheticEvent, TResult>(commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>, eventArgsSelector: (e: TEvent) => TResult): React.EventHandler<TEvent> {
+    return (e: TEvent) => {
+      commandSelector(this.state).execute(eventArgsSelector(e));
+    };
+  }
+
   componentWillMount() {
     this.state.initialize();
     this.initialize();
@@ -35,12 +45,14 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
       .selectMany(x => x.changed)
       .debounce(100)
       .subscribe(x => {
-        if (BaseView.EnableViewDebugging) {
-          console.log('rendering...');
-        }
-
         this.forceUpdate();
       });
+  }
+
+  componentWillUpdate() {
+    if (BaseView.EnableViewRenderDebugging) {
+      console.log('rendering...');
+    }
   }
 
   componentWillUnmount() {

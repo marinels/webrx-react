@@ -1,10 +1,14 @@
 'use strict';
 
 import * as Rx from 'rx';
+import * as wx from 'webrx';
 
-export interface IBaseViewModel extends Rx.IDisposable {
+import './Extensions';
+
+export interface IBaseViewModel {
   initialize(): void;
   cleanup(): void;
+  bind<T>(observable: Rx.Observable<T>, command: wx.ICommand<T>): Rx.IDisposable;
 }
 
 export abstract class BaseViewModel implements IBaseViewModel {
@@ -18,12 +22,13 @@ export abstract class BaseViewModel implements IBaseViewModel {
     this.subscriptions = [];
   }
 
-  public subscribe(subscription: Rx.IDisposable) {
-    this.subscriptions.push(subscription);
-    return subscription;
+  public bind<T>(observable: Rx.Observable<T>, command: wx.ICommand<T>) {
+    return this.subscribe(observable.invokeCommand(command));
   }
 
-  public dispose() {
+  protected subscribe(subscription: Rx.IDisposable) {
+    this.subscriptions.push(subscription);
+    return subscription;
   }
 }
 
