@@ -23,11 +23,9 @@
     "React/BaseRoutableViewModel.ts",
     "React/BaseViewModel.ts",
     "React/Extensions.ts",
-    "Test/TestViewModel.ts",
     "App/AppView.tsx",
     "index.tsx",
-    "React/BaseView.tsx",
-    "Test/TestView.tsx"
+    "React/BaseView.tsx"
   ],
   "exclude": []
 }
