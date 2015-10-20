@@ -43,6 +43,7 @@
     "Components/App/AppViewModel.ts",
     "Components/App/RoutingMap.ts",
     "Components/Dashboard/DashboardViewModel.ts",
+    "Components/PageFooter/PageFooterViewModel.ts",
     "Components/React/BaseRoutableViewModel.ts",
     "Components/React/BaseViewModel.ts",
     "Components/RouteHandler/RouteHandlerViewModel.ts",
@@ -50,6 +51,7 @@
     "Components/App/AppView.tsx",
     "Components/App/ViewMap.tsx",
     "Components/Dashboard/DashboardView.tsx",
+    "Components/PageFooter/PageFooterView.tsx",
     "Components/React/BaseView.tsx",
     "Components/RouteHandler/RouteHandlerView.tsx",
     "index.tsx"

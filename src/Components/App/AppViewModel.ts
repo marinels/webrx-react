@@ -5,6 +5,7 @@ import * as wx from 'webrx';
 import BaseViewModel from '../React/BaseViewModel';
 import { RouteHandlerViewModel, IRoutingMap } from '../RouteHandler/RouteHandlerViewModel';
 import RouteManager from '../../Routing/RouteManager';
+import PageFooterViewModel from '../PageFooter/PageFooterViewModel';
 import AlertViewModel from '../Alert/AlertViewModel';
 import { default as PubSub, ISubscriptionHandle } from '../../Utils/PubSub';
 import Events from '../../Events';
@@ -28,6 +29,8 @@ export class AppViewModel extends BaseViewModel {
       this.routeHandler = new RouteHandlerViewModel(routeManager, config.routingMap);
       RouteManager.EnableRouteDebugging = config.EnableRouteDebugging === true;
     }
+
+    this.footer = new PageFooterViewModel()
   }
 
   private currentAlertKey = 0;
@@ -36,6 +39,7 @@ export class AppViewModel extends BaseViewModel {
 
   public config: IAppConfig;
   public routeHandler: RouteHandlerViewModel;
+  public footer: PageFooterViewModel;
   public alerts = wx.list<AlertViewModel>();
 
   private appendAlert(text: string, header?: string, style = 'info', timeout = 5000) {

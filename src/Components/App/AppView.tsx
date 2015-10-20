@@ -7,6 +7,7 @@ import { Grid, Row, Col } from 'react-bootstrap';
 import { BaseView, IBaseViewProps } from '../React/BaseView';
 import AlertView from '../Alert/AlertView';
 import RouteHandlerView from '../RouteHandler/RouteHandlerView';
+import PageFooterView from '../PageFooter/PageFooterView';
 
 import ViewMap from './ViewMap';
 
@@ -43,6 +44,7 @@ export class AppView extends BaseView<IAppProps, AppViewModel> {
 					</Row>
 				</Grid>
 				<RouteHandlerView viewModel={this.state.routeHandler} viewMap={ViewMap} />
+				<PageFooterView viewModel={this.state.footer} />
 			</div>
 		);
 	}
