@@ -1,4 +1,4 @@
-/// <reference path="../typings/webrx/web.rx.d.ts" />
+/// <reference path="../../typings/webrx/web.rx.d.ts" />
 
 'use strict';
 

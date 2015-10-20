@@ -3,7 +3,6 @@
 import * as React from 'react';
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
-import FooterView from '../Footer/FooterView';
 
 import AppViewModel from './AppViewModel';
 

@@ -8,8 +8,9 @@
   },
   "filesGlob": [
     "typings/**/*.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
+    "Components/**/*.ts",
+    "Components/**/*.tsx",
+    "index.tsx"
   ],
   "files": [
     "typings/classnames/classnames.d.ts",
@@ -20,13 +21,13 @@
     "typings/rx/rx.all.d.ts",
     "typings/tsd.d.ts",
     "typings/webrx/web.rx.d.ts",
-    "App/AppViewModel.ts",
-    "React/BaseRoutableViewModel.ts",
-    "React/BaseViewModel.ts",
-    "React/Extensions.ts",
-    "App/AppView.tsx",
-    "index.tsx",
-    "React/BaseView.tsx"
+    "Components/App/AppViewModel.ts",
+    "Components/React/BaseRoutableViewModel.ts",
+    "Components/React/BaseViewModel.ts",
+    "Components/React/Extensions.ts",
+    "Components/App/AppView.tsx",
+    "Components/React/BaseView.tsx",
+    "index.tsx"
   ],
   "exclude": []
 }

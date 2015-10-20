@@ -2,14 +2,9 @@
 
 import * as wx from 'webrx';
 
-// WebRx calls this when in a unit test context
-(window as {[key: string]: any})['createMockHistory'] = () => {
-  return { onPopState: Rx.Observable.never<PopStateEvent>() };
-};
-
 export function TestObservableProperty<T>(property: wx.IObservableProperty<T>, testValue: T): void {
-  expect(property.changed).toBeDefined();
   expect(property.changing).toBeDefined();
+  expect(property.changed).toBeDefined();
 
   let changing = false;
   let changed = false;
@@ -26,6 +21,8 @@ export function TestObservableProperty<T>(property: wx.IObservableProperty<T>, t
 
   property(testValue);
 
-  expect(property()).toBe(testValue);
   expect(changed).toBe(true);
+  expect(property()).toBe(testValue);
 }
+
+export default TestObservableProperty;

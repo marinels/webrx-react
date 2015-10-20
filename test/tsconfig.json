@@ -12,6 +12,7 @@
   ],
   "files": [
     "../src/typings/classnames/classnames.d.ts",
+    "../src/typings/react-bootstrap/react-bootstrap.d.ts",
     "../src/typings/react-dom/react-dom.d.ts",
     "../src/typings/react/react-global.d.ts",
     "../src/typings/react/react.d.ts",
@@ -19,10 +20,13 @@
     "../src/typings/tsd.d.ts",
     "../src/typings/webrx/web.rx.d.ts",
     "typings/jasmine/jasmine.d.ts",
+    "Components/AllComponents.ts",
+    "Components/AppSpec.ts",
     "index.ts",
     "SanitySpec.ts",
-    "TestSpec.ts",
-    "TestUtils.ts"
+    "TestSetup.ts",
+    "Utils/ObservableListUtils.ts",
+    "Utils/ObservablePropertyUtils.ts"
   ],
   "exclude": []
 }

@@ -1,6 +1,6 @@
 'use strict';
 
-import './TestUtils';
+import './TestSetup';
 
 import './SanitySpec';
-import './TestSpec';
+import './Components/AllComponents';
