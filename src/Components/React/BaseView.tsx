@@ -30,9 +30,9 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
     return this.state.bind(observable, commandSelector(this.state));
   }
 
-  protected bindEvent<TEvent extends React.SyntheticEvent, TResult>(commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>, eventArgsSelector: (e: TEvent) => TResult): React.EventHandler<TEvent> {
-    return (e: TEvent) => {
-      commandSelector(this.state).execute(eventArgsSelector(e));
+  protected bindEvent<TEvent extends React.SyntheticEvent, TResult>(commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>, eventArgsSelector: (e: TEvent, ...args: any[]) => TResult): React.EventHandler<TEvent> {
+    return (e: TEvent, ...args: any[]) => {
+      commandSelector(this.state).execute(eventArgsSelector(e, args));
     };
   }
 
