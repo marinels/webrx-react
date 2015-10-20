@@ -21,11 +21,11 @@
     "typings/webrx/web.rx.d.ts",
     "React/BaseRoutableViewModel.ts",
     "React/BaseViewModel.ts",
+    "React/Extensions.ts",
     "Test/TestViewModel.ts",
     "App.tsx",
     "index.tsx",
     "React/BaseView.tsx",
-    "React/TextBox.tsx",
     "Test/TestView.tsx"
   ],
   "exclude": []
