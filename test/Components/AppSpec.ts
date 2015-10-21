@@ -4,6 +4,7 @@ import TestObservableProperty from '../Utils/ObservablePropertyUtils';
 import TestObservableList from '../Utils/ObservableListUtils';
 
 import AppViewModel from '../../src/Components/App/AppViewModel';
+import AlertViewModel from '../../src/Components/Alert/AlertViewModel';
 
 describe('App', () => {
   it('Has Falsy config properties by default', () => {
@@ -14,13 +15,8 @@ describe('App', () => {
     expect(vm.config.EnableStoreApiDebugging).toBeFalsy(false);
   });
 
-  it('Has an observable status property', () => {
-    let vm = new AppViewModel();
-    TestObservableProperty(vm.status, 'asdf');
-  });
-
   it('Has an observable alerts list', () => {
     let vm = new AppViewModel();
-    TestObservableList(vm.alerts, 'asdf');
+    TestObservableList(vm.alerts, new AlertViewModel(vm.alerts, 1, 'test'));
   });
 });
