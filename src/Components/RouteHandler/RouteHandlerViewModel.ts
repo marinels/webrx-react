@@ -5,9 +5,15 @@ import * as wx from 'webrx';
 import BaseViewModel from '../React/BaseViewModel';
 import { IRoutedViewModel } from '../React/BaseRoutableViewModel';
 import { RouteManager, IRoute } from '../../Routing/RouteManager';
+import { default as PubSub, ISubscriptionHandle } from '../../Utils/PubSub';
+import Events from '../../Events';
+
+export interface IViewModelActivator {
+  (route?: IRoute): IRoutedViewModel;
+}
 
 export interface IRoutingMap {
-  [path: string]: (route?: IRoute) => IRoutedViewModel;
+  [path: string]: IViewModelActivator;
 }
 
 export class RouteHandlerViewModel extends BaseViewModel {
@@ -16,14 +22,18 @@ export class RouteHandlerViewModel extends BaseViewModel {
   }
 
   private currentPath: string;
+
   public currentViewModel = wx.property<IRoutedViewModel>();
+
   public routingStateChanged = wx.command(x => {
     if (this.currentViewModel() != null) {
       let state = this.currentViewModel().getRoutingState();
 
-      this.manager.NavTo(this.currentPath, state);
+      this.manager.navTo(this.currentPath, state);
     }
   })
+
+  private routingStateChangedHandle: ISubscriptionHandle;
 
   private updateRoute(route: IRoute) {
     if (route.path !== this.currentPath) {
@@ -59,10 +69,16 @@ export class RouteHandlerViewModel extends BaseViewModel {
   }
 
   public initialize() {
+    this.routingStateChangedHandle = PubSub.subscribe(Events.RoutingStateChanged, x => this.routingStateChanged.execute(x));
+
     this.subscribe(this.manager.routeChanged.results
       .where(x => x != null)
       .subscribe(this.updateRoute)
     );
+  }
+
+  public cleanup() {
+    this.routingStateChangedHandle = PubSub.unsubscribe(this.routingStateChangedHandle);
   }
 }
 

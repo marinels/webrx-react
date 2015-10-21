@@ -4,6 +4,8 @@ import * as Rx from 'rx';
 import * as wx from 'webrx';
 
 import HashCodec from './HashCodec';
+import { default as PubSub, ISubscriptionHandle } from '../Utils/PubSub';
+import Events from '../Events';
 
 export interface IRoute {
   path: string;
@@ -26,7 +28,7 @@ export class RouteManager implements Rx.IDisposable {
         }
 
         if (hash !== x) {
-          this.NavTo(route.path, route.state);
+          this.navTo(route.path, route.state);
           route = null;
         }
 
@@ -34,12 +36,15 @@ export class RouteManager implements Rx.IDisposable {
       })
       .where(x => x != null)
       .invokeCommand(this.routeChanged);
+
+    this.routeChangedHandle = PubSub.subscribe(Events.RouteChanged, x => this.navTo(x[0] as string, x[1] as Object, x[2] as boolean));
   }
 
   private hashChangedSubscription: Rx.IDisposable;
+  private routeChangedHandle: ISubscriptionHandle;
   public routeChanged = wx.asyncCommand<IRoute>((x: IRoute) => Rx.Observable.return(x));
 
-  public NavTo(path: string, state?: Object, uriEncode = false) {
+  public navTo(path: string, state?: Object, uriEncode = false) {
     if (String.isNullOrEmpty(path) == false) {
       if (path[0] === '#') {
         path = path.substring(1);
@@ -61,6 +66,7 @@ export class RouteManager implements Rx.IDisposable {
 
   public dispose() {
     this.hashChangedSubscription = Object.dispose(this.hashChangedSubscription);
+    this.routeChangedHandle = PubSub.unsubscribe(this.routeChangedHandle);
   }
 }
 

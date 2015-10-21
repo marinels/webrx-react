@@ -45,9 +45,9 @@ export class RouteHandlerView extends BaseView<IRouteHandlerProps, RouteHandlerV
     return view;
   }
 
-  protected getUpdateProperties(): wx.IObservableProperty<any>[] {
+  protected updateFor() {
 		return [
-      this.state.currentViewModel
+      this.state.currentViewModel.changed
 		];
 	}
 

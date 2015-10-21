@@ -1,8 +1,8 @@
 'use strict';
 
 import * as React from 'react';
-import * as wx from 'webrx';
 import * as Rx from 'rx';
+import * as wx from 'webrx';
 
 import { IBaseViewModel } from './BaseViewModel';
 
@@ -21,7 +21,9 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
     this.state = props.viewModel as TViewModel;
   }
 
-  protected abstract getUpdateProperties(): wx.IObservableProperty<any>[];
+  protected abstract updateFor(): Rx.Observable<any>[];
+
+  protected getDisplayName() { return Object.getName(this); }
 
   protected initialize() {}
   protected cleanup() {}
@@ -30,9 +32,9 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
     return this.state.bind(observable, commandSelector(this.state));
   }
 
-  protected bindEvent<TEvent extends React.SyntheticEvent, TResult>(commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>, eventArgsSelector: (e: TEvent, ...args: any[]) => TResult): React.EventHandler<TEvent> {
+  protected bindEvent<TEvent extends React.SyntheticEvent, TResult>(commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>, eventArgsSelector?: (e: TEvent, ...args: any[]) => TResult): React.EventHandler<TEvent> {
     return (e: TEvent, ...args: any[]) => {
-      commandSelector(this.state).execute(eventArgsSelector(e, args));
+      commandSelector(this.state).execute(eventArgsSelector ? eventArgsSelector(e, args) : null);
     };
   }
 
@@ -41,8 +43,8 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
     this.initialize();
 
     this.updateSubscription = Rx.Observable
-      .fromArray(this.getUpdateProperties())
-      .selectMany(x => x.changed)
+      .fromArray(this.updateFor())
+      .selectMany(x => x)
       .debounce(100)
       .subscribe(x => {
         this.forceUpdate();
@@ -51,7 +53,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
 
   componentWillUpdate() {
     if (BaseView.EnableViewRenderDebugging) {
-      console.log('rendering...');
+      console.log(String.format('rendering [{0}]...', this.getDisplayName()));
     }
   }
 
