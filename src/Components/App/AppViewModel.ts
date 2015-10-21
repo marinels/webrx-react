@@ -16,11 +16,13 @@ export interface IAppConfig {
 }
 
 export class AppViewModel extends BaseViewModel {
-  constructor(public routeManager: RouteManager, config = <IAppConfig>{}) {
+  constructor(public routeManager?: RouteManager, config = <IAppConfig>{}) {
     super();
 
     this.config = config;
-    this.routeHandler = new RouteHandlerViewModel(routeManager, config.routingMap);
+    if (routeManager != null) {
+      this.routeHandler = new RouteHandlerViewModel(routeManager, config.routingMap);
+    }
   }
 
   public config: IAppConfig;
