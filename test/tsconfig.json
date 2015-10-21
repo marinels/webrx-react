@@ -32,7 +32,8 @@
     "SanitySpec.ts",
     "TestSetup.ts",
     "Utils/ObservableListUtils.ts",
-    "Utils/ObservablePropertyUtils.ts"
+    "Utils/ObservablePropertyUtils.ts",
+    "Utils/PubSubSpec.ts"
   ],
   "exclude": []
 }
