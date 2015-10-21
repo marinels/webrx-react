@@ -11,13 +11,20 @@ import './Extensions/Object';
 import './Extensions/String';
 import './Extensions/Rx';
 
+import RouteManager from './Routing/RouteManager';
 import AppView from './Components/App/AppView';
 import AppViewModel from './Components/App/AppViewModel';
 
 let container = document.getElementById('app');
 
 if (container) {
-  let viewModel = new AppViewModel();
+  let hashChanged = Rx.Observable
+    .fromEvent<HashChangeEvent>(window, 'hashChange')
+    .select(x => window.location.hash)
+    .startWith(window.location.hash);
+
+  let routeManager = new RouteManager(hashChanged)
+  let viewModel = new AppViewModel(routeManager);
 
   // config the App
   viewModel.config.EnableViewRenderDebugging = true;

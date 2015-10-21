@@ -11,6 +11,13 @@ export interface IRoutableViewModel<TRoutingState> extends IBaseViewModel {
   setRoutingState(state: TRoutingState): void;
 }
 
+export interface IRoutedViewModel extends IBaseViewModel {
+  key: string;
+
+  getRoutingState(): Object;
+  setRoutingState(state: Object): void;
+}
+
 export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel implements IRoutableViewModel<TRoutingState> {
   public routingState: wx.IObservableProperty<TRoutingState>;
 

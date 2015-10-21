@@ -10,6 +10,7 @@
     "typings/**/*.d.ts",
     "Extensions/**/*.ts",
     "Stores/**/*.ts",
+    "Routing/**/*.ts",
     "Components/**/*.ts",
     "Components/**/*.tsx",
     "index.tsx"
@@ -32,11 +33,15 @@
     "Extensions/Rx.ts",
     "Extensions/String.ts",
     "Stores/GetApiObservable.ts",
+    "Routing/HashCodec.ts",
+    "Routing/RouteManager.ts",
     "Components/App/AppViewModel.ts",
     "Components/React/BaseRoutableViewModel.ts",
     "Components/React/BaseViewModel.ts",
+    "Components/RouteHandler/RouteHandlerViewModel.ts",
     "Components/App/AppView.tsx",
     "Components/React/BaseView.tsx",
+    "Components/RouteHandler/RouteHandlerView.tsx",
     "index.tsx"
   ],
   "exclude": []
