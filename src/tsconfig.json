@@ -12,6 +12,7 @@
     "Routing/**/*.ts",
     "Stores/**/*.ts",
     "Utils/**/*.ts",
+    "Events.ts",
     "Components/**/*.ts",
     "Components/**/*.tsx",
     "index.tsx"
@@ -37,6 +38,7 @@
     "Routing/RouteManager.ts",
     "Stores/GetApiObservable.ts",
     "Utils/PubSub.ts",
+    "Events.ts",
     "Components/App/AppViewModel.ts",
     "Components/React/BaseRoutableViewModel.ts",
     "Components/React/BaseViewModel.ts",
