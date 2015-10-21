@@ -59,3 +59,5 @@ export class RouteHandlerView extends BaseView<IRouteHandlerProps, RouteHandlerV
     );
   }
 }
+
+export default RouteHandlerView;

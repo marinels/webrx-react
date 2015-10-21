@@ -5,6 +5,7 @@ import * as moment from 'moment';
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
 import AlertView from '../Alert/AlertView';
+import { RouteHandlerView, IViewMap } from '../RouteHandler/RouteHandlerView';
 
 import AppViewModel from './AppViewModel';
 
@@ -20,6 +21,9 @@ export class AppView extends BaseView<IAppProps, AppViewModel> {
 		BaseView.EnableViewRenderDebugging = this.state.config.EnableViewRenderDebugging;
 	}
 
+	private viewMap: IViewMap = {
+	};
+
 	protected updateFor() {
 		return [
 			this.state.alerts.listChanged
@@ -33,6 +37,7 @@ export class AppView extends BaseView<IAppProps, AppViewModel> {
 			<div className='App'>
 				<div onClick={x => this.state.appendAlert(moment().format(), 'test')}>[Test Area]</div>
 				{alerts}
+				<RouteHandlerView viewModel={this.state.routeHandler} viewMap={this.viewMap} />
 			</div>
 		);
 	}
