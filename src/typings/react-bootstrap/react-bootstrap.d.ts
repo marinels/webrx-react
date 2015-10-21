@@ -901,6 +901,7 @@ declare module "react-bootstrap" {
     // ----------------------------------------
     interface FadeProps { 
         in?: boolean;
+        onDismiss?: Function;
         onEnter?: Function;
         onEntered?: Function;
         onEntering?: Function;
