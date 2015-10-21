@@ -74,8 +74,10 @@ export class PubSub {
     return handle;
   }
 
-  public unsubscribe(handle: ISubscriptionHandle) {
+  public unsubscribe(handle: ISubscriptionHandle): ISubscriptionHandle {
     this.getList(handle.key, x => x.remove(handle));
+
+    return null;
   }
 
   public publish(key: string, ...args: any[]) {
