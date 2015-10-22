@@ -10,10 +10,10 @@ import { default as PubSub, ISubscriptionHandle } from '../../Utils/PubSub';
 import Events from '../../Events';
 
 export interface IAppConfig {
-  EnablePropertyChangedDebugging: boolean;
-  EnableViewRenderDebugging: boolean;
-  EnableRouteDebugging: boolean;
-  EnableStoreApiDebugging: boolean;
+  EnablePropertyChangedDebugging?: boolean;
+  EnableViewRenderDebugging?: boolean;
+  EnableRouteDebugging?: boolean;
+  EnableStoreApiDebugging?: boolean;
 
   routingMap: IRoutingMap;
 }
@@ -23,8 +23,10 @@ export class AppViewModel extends BaseViewModel {
     super();
 
     this.config = config;
+
     if (routeManager != null) {
       this.routeHandler = new RouteHandlerViewModel(routeManager, config.routingMap);
+      RouteManager.EnableRouteDebugging = config.EnableRouteDebugging === true;
     }
   }
 
