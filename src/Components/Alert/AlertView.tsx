@@ -18,11 +18,6 @@ interface IAlertProps extends IBaseViewProps {
 }
 
 export class AlertView extends BaseView<IAlertProps, AlertViewModel> {
-	protected updateFor(): Rx.Observable<any>[] {
-		return [
-		];
-	}
-
 	render() {
 		return (
 			<div className='Alert'>

@@ -21,10 +21,7 @@ export class AppView extends BaseView<IAppProps, AppViewModel> {
 		BaseView.EnableViewRenderDebugging = this.state.config.EnableViewRenderDebugging;
 	}
 
-	private viewMap: IViewMap = {
-	};
-
-	protected updateFor() {
+	protected updateOn() {
 		return [
 			this.state.alerts.listChanged
 		];

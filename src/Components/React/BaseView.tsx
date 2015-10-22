@@ -21,7 +21,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
     this.state = props.viewModel as TViewModel;
   }
 
-  protected abstract updateFor(): Rx.Observable<any>[];
+  protected updateOn(): Rx.Observable<any>[] { return []; }
 
   protected getDisplayName() { return Object.getName(this); }
 
@@ -42,13 +42,17 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
     this.state.initialize();
     this.initialize();
 
-    this.updateSubscription = Rx.Observable
-      .fromArray(this.updateFor())
-      .selectMany(x => x)
-      .debounce(100)
-      .subscribe(x => {
-        this.forceUpdate();
-      });
+    let updateProps = this.updateOn();
+
+    if (updateProps.length > 0) {
+      this.updateSubscription = Rx.Observable
+        .fromArray(updateProps)
+        .selectMany(x => x)
+        .debounce(100)
+        .subscribe(x => {
+          this.forceUpdate();
+        });
+    }
   }
 
   componentWillUpdate() {
