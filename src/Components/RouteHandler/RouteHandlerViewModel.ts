@@ -13,7 +13,7 @@ export interface IViewModelActivator {
 }
 
 export interface IRoutingMap {
-  [path: string]: IViewModelActivator;
+  [path: string]: IViewModelActivator | string;
 }
 
 export class RouteHandlerViewModel extends BaseViewModel {
@@ -55,7 +55,12 @@ export class RouteHandlerViewModel extends BaseViewModel {
       }
 
       if (activator != null) {
-        viewModel = activator(route);
+        if (activator instanceof Function) {
+          viewModel = (activator as IViewModelActivator)(route);
+        } else {
+          this.manager.navTo(activator.toString());
+          return;
+        }
       }
 
       if (viewModel) {
