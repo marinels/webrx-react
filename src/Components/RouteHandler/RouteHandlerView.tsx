@@ -29,7 +29,7 @@ export class RouteHandlerView extends BaseView<IRouteHandlerProps, RouteHandlerV
 
   private getView(): any {
     let viewModel = this.state.currentViewModel();
-    let key = viewModel == null ? '' : viewModel.key;
+    let key = viewModel == null ? '' : viewModel.getRoutingKey();
 
     let activator = this.props.viewMap[key];
     if (activator == null) {
