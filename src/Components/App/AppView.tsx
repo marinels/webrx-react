@@ -4,7 +4,9 @@ import * as React from 'react';
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
 import AlertView from '../Alert/AlertView';
-import { RouteHandlerView, IViewMap } from '../RouteHandler/RouteHandlerView';
+import RouteHandlerView from '../RouteHandler/RouteHandlerView';
+
+import ViewMap from './ViewMap';
 
 import AppViewModel from './AppViewModel';
 
@@ -32,7 +34,7 @@ export class AppView extends BaseView<IAppProps, AppViewModel> {
 		return (
 			<div className='App'>
 				{alerts}
-				<RouteHandlerView viewModel={this.state.routeHandler} viewMap={this.viewMap} />
+				<RouteHandlerView viewModel={this.state.routeHandler} viewMap={ViewMap} />
 			</div>
 		);
 	}
