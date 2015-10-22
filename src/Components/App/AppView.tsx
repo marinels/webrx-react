@@ -1,7 +1,6 @@
 'use strict';
 
 import * as React from 'react';
-import * as moment from 'moment';
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
 import AlertView from '../Alert/AlertView';
@@ -32,7 +31,6 @@ export class AppView extends BaseView<IAppProps, AppViewModel> {
 
 		return (
 			<div className='App'>
-				<div onClick={x => this.state.appendAlert(moment().format(), 'test')}>[Test Area]</div>
 				{alerts}
 				<RouteHandlerView viewModel={this.state.routeHandler} viewMap={this.viewMap} />
 			</div>
