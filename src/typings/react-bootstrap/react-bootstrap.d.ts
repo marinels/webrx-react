@@ -814,6 +814,7 @@ declare module "react-bootstrap" {
         onKeyDown?: Function; // TODO: Add more specific type 
         onKeyUp?: Function; // TODO: Add more specific type 
         onKeyPress?: Function; // TODO: Add more specific type 
+        defaultValue?: any;
         value?: any; // TODO: Add more specific type
         wrapperClassName?: string; 
     }
