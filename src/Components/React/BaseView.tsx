@@ -61,7 +61,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
     this.cleanup();
     this.props.viewModel.cleanup();
 
-    this.updateSubscription.dispose();
+    this.updateSubscription = Object.dispose(this.updateSubscription);
   }
 }
 
