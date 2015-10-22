@@ -24,6 +24,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   protected updateOn(): Rx.Observable<any>[] { return []; }
 
   protected getDisplayName() { return Object.getName(this); }
+  protected getRateLimit() { return 100; }
 
   protected initialize() {}
   protected cleanup() {}
@@ -48,7 +49,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
       this.updateSubscription = Rx.Observable
         .fromArray(updateProps)
         .selectMany(x => x)
-        .debounce(100)
+        .debounce(this.getRateLimit())
         .subscribe(x => {
           this.forceUpdate();
         });
