@@ -78,7 +78,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
     this.subscribe(this.manager.routeChanged.results
       .where(x => x != null)
-      .subscribe(this.updateRoute)
+      .subscribe(x => this.runOrAlert(() => this.updateRoute(x), 'Route Changed Error'))
     );
   }
 
