@@ -2,6 +2,8 @@
 
 import * as React from 'react';
 
+import { Grid, Row, Col } from 'react-bootstrap';
+
 import { BaseView, IBaseViewProps } from '../React/BaseView';
 import AlertView from '../Alert/AlertView';
 import RouteHandlerView from '../RouteHandler/RouteHandlerView';
@@ -33,7 +35,13 @@ export class AppView extends BaseView<IAppProps, AppViewModel> {
 
 		return (
 			<div className='App'>
-				{alerts}
+				<Grid>
+					<Row>
+						<Col md={12}>
+							{alerts}
+						</Col>
+					</Row>
+				</Grid>
 				<RouteHandlerView viewModel={this.state.routeHandler} viewMap={ViewMap} />
 			</div>
 		);
