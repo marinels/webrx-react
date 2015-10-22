@@ -20,7 +20,7 @@ let container = document.getElementById('app');
 
 if (container) {
   let hashChanged = Rx.Observable
-    .fromEvent<HashChangeEvent>(window, 'hashChange')
+    .fromEvent<HashChangeEvent>(window, 'hashchange')
     .select(x => window.location.hash)
     .startWith(window.location.hash);
 
