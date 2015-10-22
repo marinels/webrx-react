@@ -29,6 +29,13 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   protected initialize() {}
   protected cleanup() {}
 
+  protected bindText(propertySelector: (viewModel: TViewModel) => wx.IObservableProperty<string>) {
+    return (x: any) => {
+      let value = (x.target as React.HTMLAttributes).value;
+      propertySelector(this.state)(value);
+    }
+  }
+
   protected bindObservable<TResult>(commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>, observable: Rx.Observable<TResult>) {
     return this.state.bind(observable, commandSelector(this.state));
   }
