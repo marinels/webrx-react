@@ -38,7 +38,7 @@ export class AppViewModel extends BaseViewModel {
   public routeHandler: RouteHandlerViewModel;
   public alerts = wx.list<AlertViewModel>();
 
-  public appendAlert(text: string, header?: string, style = 'info', timeout = 5000) {
+  private appendAlert(text: string, header?: string, style = 'info', timeout = 5000) {
 		let alert = new AlertViewModel(this.alerts, ++this.currentAlertKey, text, header, style, timeout);
 
 		this.alerts.add(alert);
