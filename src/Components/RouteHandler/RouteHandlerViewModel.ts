@@ -39,14 +39,6 @@ export class RouteHandlerViewModel extends BaseViewModel {
     if (route.path !== this.currentPath) {
       this.currentPath = route.path;
 
-      if (RouteManager.EnableRouteDebugging) {
-        console.log(String.format('Routing to Path: {0}', route.path));
-
-        if (route.state != null) {
-          console.log(JSON.stringify(route.state, null, 2));
-        }
-      }
-
       let viewModel: IRoutedViewModel;
       let activator = this.routingMap[this.currentPath];
 
@@ -56,6 +48,14 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
       if (activator != null) {
         if (activator instanceof Function) {
+          if (RouteManager.EnableRouteDebugging) {
+            console.log(String.format('Routing to Path: {0}', route.path));
+
+            if (route.state != null) {
+              console.log(JSON.stringify(route.state, null, 2));
+            }
+          }
+
           viewModel = (activator as IViewModelActivator)(route);
         } else {
           this.manager.navTo(activator.toString());
