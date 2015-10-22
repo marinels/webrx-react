@@ -13,7 +13,8 @@ import './Extensions/Rx';
 
 import RouteManager from './Routing/RouteManager';
 import AppView from './Components/App/AppView';
-import AppViewModel from './Components/App/AppViewModel';
+import { AppViewModel, IAppConfig } from './Components/App/AppViewModel';
+import RoutingMap from './Components/App/RoutingMap';
 
 let container = document.getElementById('app');
 
@@ -23,11 +24,14 @@ if (container) {
     .select(x => window.location.hash)
     .startWith(window.location.hash);
 
-  let routeManager = new RouteManager(hashChanged)
-  let viewModel = new AppViewModel(routeManager);
+  let config: IAppConfig = {
+    EnableViewRenderDebugging: true,
+    EnableRouteDebugging: true,
 
-  // config the App
-  viewModel.config.EnableViewRenderDebugging = true;
+    routingMap: RoutingMap
+  };
+  let routeManager = new RouteManager(hashChanged)
+  let viewModel = new AppViewModel(routeManager, config);
 
   ReactDOM.render(<AppView viewModel={viewModel}/>, document.getElementById('app'));
 }
