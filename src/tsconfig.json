@@ -54,6 +54,7 @@
     "Components/App/ViewMap.tsx",
     "Components/BindableInput/BindableInput.tsx",
     "Components/Dashboard/DashboardView.tsx",
+    "Components/DataGrid/DataGrid.tsx",
     "Components/PageFooter/PageFooterView.tsx",
     "Components/PageHeader/PageHeaderView.tsx",
     "Components/React/BaseView.tsx",
