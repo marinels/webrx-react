@@ -23,23 +23,18 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
   private currentPath: string;
 
-  public currentViewModel = wx.property<IRoutedViewModel>();
-
-  public routingStateChanged = wx.command(x => {
-    if (this.currentViewModel() != null) {
-      let state = this.currentViewModel().getRoutingState();
-
-      this.manager.navTo(this.currentPath, state);
-    }
-  })
+  public currentViewModel = this.manager.currentRoute.changed
+    .select(x => this.getRoutedViewModel(x))
+    .toProperty();
 
   private routingStateChangedHandle: ISubscriptionHandle;
 
-  private updateRoute(route: IRoute) {
+  private getRoutedViewModel(route: IRoute): IRoutedViewModel {
+    let viewModel = this.currentViewModel();
+
     if (route.path !== this.currentPath) {
       this.currentPath = route.path;
 
-      let viewModel: IRoutedViewModel;
       let activator = this.routingMap[this.currentPath];
 
       if (activator == null) {
@@ -56,30 +51,38 @@ export class RouteHandlerViewModel extends BaseViewModel {
             }
           }
 
-          viewModel = (activator as IViewModelActivator)(route);
+          viewModel = (activator as IViewModelActivator).apply(this, [route]);
+
+          if (viewModel) {
+            viewModel.setRoutingState(route.state || {});
+          }
         } else {
           this.manager.navTo(activator.toString());
-          return;
+        }
+      }
+    } else if (viewModel) {
+      if (RouteManager.EnableRouteDebugging) {
+        console.log(String.format('Updating Routing State: {0}', route.path));
+
+        if (route.state != null) {
+          console.log(JSON.stringify(route.state, null, 2));
         }
       }
 
-      if (viewModel) {
-        viewModel.setRoutingState(route.state);
-      }
-
-      this.currentViewModel(viewModel);
-    } else if (this.currentViewModel()) {
-      this.currentViewModel().setRoutingState(route.state);
+      viewModel.setRoutingState(route.state || {});
     }
+
+    return viewModel;
   }
 
   public initialize() {
-    this.routingStateChangedHandle = PubSub.subscribe(Events.RoutingStateChanged, x => this.routingStateChanged.execute(x));
+    this.routingStateChangedHandle = PubSub.subscribe(Events.RoutingStateChanged, x => {
+      if (this.currentViewModel() != null) {
+        let state = this.currentViewModel().getRoutingState();
 
-    this.subscribe(this.manager.routeChanged.results
-      .where(x => x != null)
-      .subscribe(x => this.runOrAlert(() => this.updateRoute(x), 'Route Changed Error'))
-    );
+        this.manager.navTo(this.currentPath, state);
+      }
+    });
   }
 
   public cleanup() {

@@ -17,7 +17,7 @@ export class RouteManager implements Rx.IDisposable {
   public static EnableRouteDebugging = false;
 
   constructor(hashChanged: Rx.Observable<string>, public hashCodec = new HashCodec()) {
-    this.hashChangedSubscription = hashChanged
+    this.currentRoute = hashChanged
       .debounce(100)
       .select(x => {
         let route = hashCodec.Decode(x, (path, params, state) => <IRoute>{path, params, state});
@@ -35,14 +35,13 @@ export class RouteManager implements Rx.IDisposable {
         return route;
       })
       .where(x => x != null)
-      .invokeCommand(this.routeChanged);
+      .toProperty();
 
     this.routeChangedHandle = PubSub.subscribe(Events.RouteChanged, x => this.navTo(x[0] as string, x[1] as Object, x[2] as boolean));
   }
 
-  private hashChangedSubscription: Rx.IDisposable;
   private routeChangedHandle: ISubscriptionHandle;
-  public routeChanged = wx.asyncCommand<IRoute>((x: IRoute) => Rx.Observable.return(x));
+  public currentRoute: wx.IObservableProperty<IRoute>;
 
   public navTo(path: string, state?: Object, uriEncode = false) {
     if (String.isNullOrEmpty(path) == false) {
@@ -65,7 +64,6 @@ export class RouteManager implements Rx.IDisposable {
   }
 
   public dispose() {
-    this.hashChangedSubscription = Object.dispose(this.hashChangedSubscription);
     this.routeChangedHandle = PubSub.unsubscribe(this.routeChangedHandle);
   }
 }
