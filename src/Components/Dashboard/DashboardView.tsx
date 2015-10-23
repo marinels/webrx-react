@@ -26,14 +26,14 @@ export class DashboardView extends BaseView<IDashboardProps, DashboardViewModel>
       <Button disabled={this.state.generateAlert.canExecute(null) === false}
         onClick={this.bindEvent(x => x.generateAlert)}>Click to Generate an Alert</Button>
     );
-
+    
     return (
       <div className='Dashboard'>
         <Grid>
           <Row>
             <Col md={12}>
-              <Input type='text' placeholder='Enter Alert Text...' defaultValue={this.state.alertText()}
-                buttonAfter={generateButton} onChange={this.bindText(x => x.alertText)}
+              <Input groupClassName='AlertText' type='text' placeholder='Enter Alert Text...' bsSize='large'
+                defaultValue={this.state.alertText()} buttonAfter={generateButton} onChange={this.bindText(x => x.alertText)}
                 onKeyDown={this.bindEvent(x => x.generateAlert, (x: React.KeyboardEvent) => x.keyCode, x => x == 13)} />
             </Col>
           </Row>
