@@ -9,7 +9,7 @@ import { default as PubSub, ISubscriptionHandle } from '../../Utils/PubSub';
 import Events from '../../Events';
 
 export interface IViewModelActivator {
-  (route?: IRoute): IRoutedViewModel;
+  (route: IRoute): IRoutedViewModel;
 }
 
 export interface IRoutingMap {

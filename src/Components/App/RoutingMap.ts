@@ -7,7 +7,7 @@ import DashboardViewModel from '../Dashboard/DashboardViewModel';
 
 export let RoutingMap: IRoutingMap = {
   '/': '/dashboard',
-  '/dashboard': (route?: IRoute) => new DashboardViewModel()
+  '/dashboard': (route: IRoute) => new DashboardViewModel()
 };
 
 export default RoutingMap;
