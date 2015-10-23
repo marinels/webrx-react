@@ -14,6 +14,7 @@ import { PageHeaderViewModel } from './PageHeaderViewModel';
 import './PageHeader.less';
 
 interface IPageHeaderProps extends IBaseViewProps {
+  brand?: string;
 }
 
 export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewModel> {
@@ -42,7 +43,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
               	    */}
                     <Navbar fluid>
                         <NavBrand>
-                            <a href='#/'>WebRx.React Rocks!!!</a>
+                            <a href='#/'>{this.props.brand || 'WebRx.React Rocks!!!'}</a>
                         </NavBrand>
                         <Nav right>
                           <NavDropdown id='PageHeaderMenu' onSelect={onSelect} title={<span className='Menu-title'><Glyphicon glyph='cog' />Menu</span>}>
