@@ -61,16 +61,15 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
     this.initialize();
 
     let updateProps = this.updateOn();
+    updateProps.push(this.state.stateChanged.results);
 
-    if (updateProps.length > 0) {
-      this.updateSubscription = Rx.Observable
-        .fromArray(updateProps)
-        .selectMany(x => x)
-        .debounce(this.getRateLimit())
-        .subscribe(x => {
-          this.forceUpdate();
-        });
-    }
+    this.updateSubscription = Rx.Observable
+      .fromArray(updateProps)
+      .selectMany(x => x)
+      .debounce(this.getRateLimit())
+      .subscribe(x => {
+        this.forceUpdate();
+      });
   }
 
   componentWillUpdate() {
