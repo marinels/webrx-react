@@ -33,6 +33,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
     return (x: any) => {
       let value = (x.target as React.HTMLAttributes).value;
       propertySelector(this.state)(value);
+      this.forceUpdate();
     }
   }
 
