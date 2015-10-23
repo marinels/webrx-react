@@ -7,6 +7,8 @@ import PubSub from '../../Utils/PubSub';
 import Events from '../../Events';
 
 export interface IBaseViewModel {
+  stateChanged: wx.ICommand<any>;
+
   initialize(): void;
   cleanup(): void;
   bind<T>(observable: Rx.Observable<T>, command: wx.ICommand<T>): Rx.IDisposable;
@@ -14,6 +16,7 @@ export interface IBaseViewModel {
 
 export abstract class BaseViewModel implements IBaseViewModel {
   private subscriptions: Rx.IDisposable[] = [];
+  public stateChanged = wx.command();
 
   protected getDisplayName() { return Object.getName(this); }
 
@@ -40,6 +43,10 @@ export abstract class BaseViewModel implements IBaseViewModel {
     } catch (e) {
       this.alertForError(e as Error);
     }
+  }
+
+  protected notifyChanged(...args: any[]) {
+    this.stateChanged.execute(args);
   }
 
   public initialize() {
