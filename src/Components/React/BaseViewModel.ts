@@ -17,24 +17,28 @@ export abstract class BaseViewModel implements IBaseViewModel {
 
   protected getDisplayName() { return Object.getName(this); }
 
+  protected alertForError(error: Error, header = 'Unknown Error', style = 'danger', formatter?: (e: Error) => string) {
+    let text: string;
+
+    if (formatter != null) {
+      text = formatter(error);
+    } else {
+      text = error.message;
+    }
+
+    let e = error as any;
+    if (e.stack) {
+      console.log(e.stack);
+    }
+
+    this.createAlert(text, header, style);
+  }
+
   protected runOrAlert(action: () => void, header = 'Unknown Error', style = 'danger', formatter?: (e: Error) => string) {
     try {
       action();
     } catch (e) {
-      let error = e as Error;
-      let text: string;
-
-      if (formatter != null) {
-        text = formatter(error);
-      } else {
-        text = error.message;
-      }
-
-      if (e.stack) {
-        console.log(e.stack);
-      }
-
-      this.createAlert(text, header, style);
+      this.alertForError(e as Error);
     }
   }
 
