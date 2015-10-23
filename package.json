@@ -27,6 +27,7 @@
     "file-loader": "^0.8.4",
     "jasmine": "^2.3.2",
     "jquery": "^2.1.4",
+    "jquery-deparam": "^0.4.2",
     "less": "^2.5.3",
     "less-loader": "^2.2.1",
     "moment": "^2.10.6",
