@@ -52,6 +52,7 @@
     "Components/Alert/AlertView.tsx",
     "Components/App/AppView.tsx",
     "Components/App/ViewMap.tsx",
+    "Components/BindableInput/BindableInput.tsx",
     "Components/Dashboard/DashboardView.tsx",
     "Components/PageFooter/PageFooterView.tsx",
     "Components/PageHeader/PageHeaderView.tsx",
