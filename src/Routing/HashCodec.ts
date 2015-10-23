@@ -1,6 +1,7 @@
 'use strict';
 
 import * as $ from 'jquery';
+import * as deparam from 'jquery-deparam';
 
 export class HashCodec {
   private NormalizePath(path: string) {
@@ -58,11 +59,11 @@ export class HashCodec {
     let state = <Object>{};
 
     if (params != null && params.length > 0) {
-      //let obj = deparam(params[0] === '?' ? params.substring(1) : params, true);
+      let obj = deparam(params[0] === '?' ? params.substring(1) : params, true);
 
-      // if (obj) {
-      //   state = obj;
-      // }
+      if (obj) {
+        state = obj;
+      }
     }
 
     return selector(path, params, state);
