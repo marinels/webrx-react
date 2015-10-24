@@ -51,7 +51,9 @@ function getName(source: any, undefined = 'undefined') {
   let name: string = null;
 
   if (source) {
-    if (source instanceof Function) {
+    if (source.displayName) {
+      name = source.displayName;
+    } else if (source instanceof Function) {
       name = source.name;
     } else if (source.constructor) {
       name = source.constructor.name;
