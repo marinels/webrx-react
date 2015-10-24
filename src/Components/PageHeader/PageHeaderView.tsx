@@ -9,6 +9,7 @@ import { Navbar, NavBrand, Nav, NavItem, NavDropdown, MenuItem } from 'react-boo
 import { Glyphicon } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
+
 import { PageHeaderViewModel } from './PageHeaderViewModel';
 
 import './PageHeader.less';
