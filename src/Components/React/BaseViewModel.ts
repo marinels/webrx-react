@@ -22,6 +22,10 @@ export abstract class BaseViewModel implements IBaseViewModel {
 
   protected getDisplayName() { return Object.getName(this); }
 
+  protected createAlert(text: string, header?: string, style = 'info', timeout = 5000) {
+    PubSub.publish(Events.AlertCreated, text, header, style, timeout);
+  }
+
   protected alertForError(error: Error, header = 'Unknown Error', style = 'danger', formatter?: (e: Error) => string) {
     let text: string;
 
@@ -57,10 +61,6 @@ export abstract class BaseViewModel implements IBaseViewModel {
   public cleanup() {
     this.subscriptions.forEach(x => x.dispose());
     this.subscriptions = [];
-  }
-
-  protected createAlert(text: string, header?: string, style = 'info', timeout = 5000) {
-    PubSub.publish(Events.AlertCreated, text, header, style, timeout);
   }
 
   public navTo(path: string, state?: Object, uriEncode = false) {
