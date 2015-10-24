@@ -30,6 +30,8 @@ export class AppViewModel extends BaseViewModel {
 
     this.config = config;
 
+    BaseViewModel.EnablePropertyChangedDebugging = config.EnablePropertyChangedDebugging === true;
+
     if (routeManager != null) {
       this.routeHandler = new RouteHandlerViewModel(routeManager, config.routingMap);
       RouteManager.EnableRouteDebugging = config.EnableRouteDebugging === true;
