@@ -111,17 +111,21 @@ export class DataGridView extends BaseView<IDataGridProps, IDataGridViewModel> {
     view: new TableView()
   }
 
+  private columns: Column[];
+
+  componentWillMount() {
+    this.columns = React.Children.map(this.props.children, (x: React.ReactElement<IDataGridColumnProps>) => {
+      return Column.create(x);
+    });
+  }
+
   render() {
     let items = this.state.getItems();
 
-    let columnDefinitions = React.Children.map(this.props.children, (x: React.ReactElement<IDataGridColumnProps>) => {
-      return Column.create(x);
-    });
-
-    let columns = columnDefinitions.map((x, i) => this.props.view.renderColumn(this.state, x, i));
+    let columns = this.columns.map((x, i) => this.props.view.renderColumn(this.state, x, i));
 
     let rows = items.map((row, rowIndex) => {
-      let cells = columnDefinitions.map((column, columnIndex) => {
+      let cells = this.columns.map((column, columnIndex) => {
         return this.props.view.renderCell(this.state, column, columnIndex, column.valueSelector(row));
       });
 
