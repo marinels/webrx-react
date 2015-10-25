@@ -10,7 +10,17 @@ import { IDataGridViewModel, SortDirection } from './DataGridViewModel';
 
 import './DataGrid.less';
 
-export class DataGridColumn {
+interface IDataGridColumnProps {
+  fieldName: string;
+  header?: string;
+  valueSelector?: (x: any) => any;
+  sortable?: boolean;
+  className?: string;
+}
+
+export class DataGridColumn extends React.Component<IDataGridColumnProps, any> {}
+
+class Column {
   constructor(public fieldName: string, public header?: string, public valueSelector?: (x: any) => any, public sortable = false, public className?: string) {
     if (this.header == null) {
       this.header = this.fieldName;
@@ -20,11 +30,15 @@ export class DataGridColumn {
       this.valueSelector = (x: any) => x[this.fieldName];
     }
   }
+
+  public static create(element: React.ReactElement<IDataGridColumnProps>) {
+    return new Column(element.props.fieldName, element.props.header, element.props.valueSelector, element.props.sortable, element.props.className);
+  }
 }
 
 export interface IDataGridView {
-  renderColumn: (grid: IDataGridViewModel, column: DataGridColumn, index: number) => any;
-  renderCell: (grid: IDataGridViewModel, column: DataGridColumn, index: number, value: any) => any;
+  renderColumn: (grid: IDataGridViewModel, column: Column, index: number) => any;
+  renderCell: (grid: IDataGridViewModel, column: Column, index: number, value: any) => any;
   renderRow: (grid: IDataGridViewModel, row: any, index: number, cells: any[]) => any;
   renderTable: (grid: IDataGridViewModel, data: any[], columns: any, rows: any) => any;
 }
@@ -43,7 +57,7 @@ export class TableView implements IDataGridView {
 
   private tableProps: TableProps;
 
-  public renderColumn(grid: IDataGridViewModel, column: DataGridColumn, index: number) {
+  public renderColumn(grid: IDataGridViewModel, column: Column, index: number) {
     let sortButtons = column.sortable ? (
       <div className='Column-sortButtons pull-right'>
         <ButtonGroup>
@@ -65,7 +79,7 @@ export class TableView implements IDataGridView {
     );
   }
 
-  public renderCell(grid: IDataGridViewModel, column: DataGridColumn, index: number, value: any) {
+  public renderCell(grid: IDataGridViewModel, column: Column, index: number, value: any) {
     return (
       <td key={index}>{value}</td>
     );
@@ -88,8 +102,8 @@ export class TableView implements IDataGridView {
 }
 
 interface IDataGridProps extends IBaseViewProps {
-  columns: DataGridColumn[];
   view?: IDataGridView;
+  children?: any
 }
 
 export class DataGridView extends BaseView<IDataGridProps, IDataGridViewModel> {
@@ -99,9 +113,15 @@ export class DataGridView extends BaseView<IDataGridProps, IDataGridViewModel> {
 
   render() {
     let items = this.state.getItems();
-    let columns = this.props.columns.map((x, i) => this.props.view.renderColumn(this.state, x, i));
+
+    let columnDefinitions = React.Children.map(this.props.children, (x: React.ReactElement<IDataGridColumnProps>) => {
+      return Column.create(x);
+    });
+
+    let columns = columnDefinitions.map((x, i) => this.props.view.renderColumn(this.state, x, i));
+
     let rows = items.map((row, rowIndex) => {
-      let cells = this.props.columns.map((column, columnIndex) => {
+      let cells = columnDefinitions.map((column, columnIndex) => {
         return this.props.view.renderCell(this.state, column, columnIndex, column.valueSelector(row));
       });
 
