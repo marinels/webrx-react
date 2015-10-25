@@ -11,7 +11,7 @@ export class ListViewModel<T> extends BaseViewModel {
 
   public selectItem = wx.command((x: number) => {
     if (x >= 0 && x < this.items.length()) {
-      this.selectedItem(this.items[x]);
+      this.selectedItem(this.items.get(x));
       this.selectedIndex(x);
     }
   });
