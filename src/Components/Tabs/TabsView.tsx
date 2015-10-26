@@ -22,6 +22,7 @@ interface ITabsProps extends IBaseViewProps {
 export class TabsView extends BaseView<ITabsProps, TabsViewModel> {
   updateOn() {
     return [
+      this.state.items.listChanged,
       this.state.selectedIndex.changed
     ]
   }
