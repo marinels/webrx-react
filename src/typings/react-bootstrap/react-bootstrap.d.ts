@@ -507,6 +507,7 @@ declare module "react-bootstrap" {
         disabled?: boolean;
         eventKey?: any; // TODO: Add more specific type
         title?: any; // TODO: Add more specific type
+        key?: any;
     }
     interface Tab extends React.ReactElement<TabProps> { }
     interface TabClass extends React.ComponentClass<TabProps> { }
