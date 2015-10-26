@@ -5,9 +5,15 @@ import * as wx from 'webrx';
 import BaseViewModel from '../React/BaseViewModel';
 
 export class TabsViewModel extends BaseViewModel {
+  constructor(initialContents?: any[]) {
+    super();
+
+    this.items = wx.list(initialContents);
+  }
+
   public items: wx.IObservableList<any>;
-  public selectedItem: wx.IObservableProperty<any>;
-  public selectedIndex: wx.IObservableProperty<number>;
+  public selectedItem = wx.property<any>();
+  public selectedIndex = wx.property<number>();
 
   public selectTab = wx.command((x: number) => {
     if (x >= 0 && x < this.items.length()) {
