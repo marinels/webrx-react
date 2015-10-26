@@ -12,7 +12,7 @@ declare module "react-bootstrap" {
 
     // <Button />
     // ----------------------------------------
-    interface ButtonProps { 
+    interface ButtonProps extends React.HTMLAttributes {
 
         // Optional
         active?: boolean;
@@ -24,7 +24,6 @@ declare module "react-bootstrap" {
         navDropdown?: boolean;
         componentClass?: string;
         href?: string;
-        onClick?: Function; // Add more specific type 
         target?: string;
         type?: string;
     }
@@ -35,7 +34,7 @@ declare module "react-bootstrap" {
 
     // <ButtonToolbar />
     // ----------------------------------------
-    interface ButtonToolbarProps { 
+    interface ButtonToolbarProps extends React.HTMLAttributes {
 
         // Optional
         block?: boolean;
@@ -50,7 +49,7 @@ declare module "react-bootstrap" {
 
     // <ButtonGroup />
     // ----------------------------------------
-    interface ButtonGroupProps { 
+    interface ButtonGroupProps extends React.HTMLAttributes {
         // Optional
         block?: boolean;
         bsSize?: string;
@@ -65,7 +64,7 @@ declare module "react-bootstrap" {
 
     // <DropdownButton />
     // ----------------------------------------
-    interface DropdownButtonProps { 
+    interface DropdownButtonProps extends React.HTMLAttributes {
         bsStyle?: string;
         bsSize?: string;
         buttonClassName?: string; 
@@ -73,11 +72,9 @@ declare module "react-bootstrap" {
         className?: string;
         dropup?: boolean;
         href?: string;
-        id?: string | number; 
         key?: any; // TODO: Add more specific type
         navItem?: boolean;
         noCaret?: boolean;
-        onClick?: Function;  // TODO: Add more specifc type 
         onSelect?: Function; // TODO: Add more specific type 
         pullRight?: boolean;
         title?: any; // TODO: Add more specific type
@@ -89,7 +86,7 @@ declare module "react-bootstrap" {
 
     // <SplitButton />
     // ----------------------------------------
-    interface SplitButtonProps { 
+    interface SplitButtonProps extends React.HTMLAttributes {
         bsStyle?: string;
         bsSize?: string;
         children?: any; // TODO: Add more specific type 
@@ -99,7 +96,6 @@ declare module "react-bootstrap" {
         dropup?: boolean;
         href?: string;
         id?: string; 
-        onClick?: Function;  // TODO: Add more specific type 
         onSelect?: Function; // TODO: Add more specific type 
         pullRight?: boolean;
         target?: string;
@@ -112,7 +108,7 @@ declare module "react-bootstrap" {
 
     // <MenuItem />
     // ----------------------------------------
-    interface MenuItemProps { 
+    interface MenuItemProps extends React.HTMLAttributes {
         active?: boolean;
         disabled?: boolean;
         divider?: boolean;
@@ -131,7 +127,7 @@ declare module "react-bootstrap" {
 
     // <Panel />
     // ----------------------------------------
-    interface PanelProps { 
+    interface PanelProps extends React.HTMLAttributes {
         bsSize?: string;
         bsStyle?: string;
         collapsible?: boolean;
@@ -142,7 +138,6 @@ declare module "react-bootstrap" {
         header?: any; // TODO: Add more specific type
         id?: string;
         onSelect?: Function; // TODO: Add more specific type 
-        onClick?: Function; // TODO: Add more specific type 
     }
     interface Panel extends React.ReactElement<PanelProps> { }
     interface PanelClass extends React.ComponentClass<PanelProps> { }
@@ -151,7 +146,7 @@ declare module "react-bootstrap" {
 
     // <Accordion />
     // ----------------------------------------
-    interface AccordionProps { 
+    interface AccordionProps extends React.HTMLAttributes {
         bsSize?: string;
         bsStyle?: string;
         collapsible?: boolean;
@@ -170,7 +165,7 @@ declare module "react-bootstrap" {
 
     // <PanelGroup />
     // ----------------------------------------
-    interface PanelGroupProps { 
+    interface PanelGroupProps extends React.HTMLAttributes {
         accordion?: boolean;
         activeKey?: any;
         bsSize?: string;
@@ -187,7 +182,7 @@ declare module "react-bootstrap" {
 
     // <Modal.Dialog />
     // ----------------------------------------
-    interface ModalDialogProps {
+    interface ModalDialogProps extends React.HTMLAttributes {
         // TODO: Add more specific type 
     }
     interface ModalDialog extends React.ReactElement<ModalDialogProps> { }
@@ -196,7 +191,7 @@ declare module "react-bootstrap" {
 
     // <Modal.Header />
     // ----------------------------------------
-    interface ModalHeaderProps {
+    interface ModalHeaderProps extends React.HTMLAttributes {
         closeButton?: boolean;
         modalClassName?: string;
         onHide?: Function;
@@ -208,7 +203,7 @@ declare module "react-bootstrap" {
 
     // <Modal.Title/>
     // ----------------------------------------
-    interface ModalTitleProps {
+    interface ModalTitleProps extends React.HTMLAttributes {
         modalClassName?: string;
     }
     interface ModalTitle extends React.ReactElement<ModalTitleProps> { }
@@ -217,7 +212,7 @@ declare module "react-bootstrap" {
 
     // <Modal.Body />
     // ----------------------------------------
-    interface ModalBodyProps {
+    interface ModalBodyProps extends React.HTMLAttributes {
         modalClassName?: string;
     }
     interface ModalBody extends React.ReactElement<ModalBodyProps> { }
@@ -226,7 +221,7 @@ declare module "react-bootstrap" {
 
     // <Modal.Footer />
     // ----------------------------------------
-    interface ModalFooterProps {
+    interface ModalFooterProps extends React.HTMLAttributes {
         modalClassName?: string;
     }
     interface ModalFooter extends React.ReactElement<ModalFooterProps> { }
@@ -235,7 +230,7 @@ declare module "react-bootstrap" {
 
     // <Modal />
     // ----------------------------------------
-    interface ModalProps { 
+    interface ModalProps extends React.HTMLAttributes {
         // Required
         onHide: Function;
 
@@ -263,7 +258,7 @@ declare module "react-bootstrap" {
 
     // <OverlayTrigger />
     // ----------------------------------------
-    interface OverlayTriggerProps { 
+    interface OverlayTriggerProps extends React.HTMLAttributes {
         // Required
         overlay: any; // TODO: Add more specific type
 
@@ -292,7 +287,7 @@ declare module "react-bootstrap" {
 
     // <Tooltip />
     // ----------------------------------------
-    interface TooltipProps {
+    interface TooltipProps extends React.HTMLAttributes {
         // Optional
         arrowOffsetLeft?: number | string;
         arrowOffsetTop?: number | string;
@@ -312,7 +307,7 @@ declare module "react-bootstrap" {
 
     // <Popover/>
     // ----------------------------------------
-    interface PopoverProps {
+    interface PopoverProps extends React.HTMLAttributes {
         // Optional
         arrowOffsetLeft?: number | string;
         arrowOffsetTop?: number | string;
@@ -331,7 +326,7 @@ declare module "react-bootstrap" {
 
     // <Overlay />
     // ----------------------------------------
-    interface OverlayProps {
+    interface OverlayProps extends React.DOMAttributes {
         // Optional
         animation?: any; // TODO: Add more specific type
         container?: any; // TODO: Add more specific type
@@ -355,7 +350,7 @@ declare module "react-bootstrap" {
 
     // <ProgressBar />
     // ----------------------------------------
-    interface ProgressBarProps {
+    interface ProgressBarProps extends React.HTMLAttributes {
         // Optional
         active?: boolean;
         bsSize?: string;
@@ -379,7 +374,7 @@ declare module "react-bootstrap" {
     // <Nav />
     // ----------------------------------------
     // TODO: This one turned into a union of two different types 
-    interface NavProps {
+    interface NavProps extends React.HTMLAttributes {
         // Optional
         activeHref?: string;
         activeKey?: any;
@@ -406,7 +401,7 @@ declare module "react-bootstrap" {
 
     // <NavItem />
     // ----------------------------------------
-    interface NavItemProps {
+    interface NavItemProps extends React.HTMLAttributes {
         active?: boolean;
         brand?: any; // TODO: Add more specific type
         bsSize?: string;
@@ -438,7 +433,7 @@ declare module "react-bootstrap" {
 
     // <Navbar />
     // ----------------------------------------
-    interface NavbarProps {
+    interface NavbarProps extends React.HTMLAttributes {
         brand?: any; // TODO: Add more specific type
         bsSize?: string;
         bsStyle?: string;
@@ -462,7 +457,7 @@ declare module "react-bootstrap" {
 
     // <NavBrand />
     // ----------------------------------------
-    interface NavBrandProps extends React.DOMAttributes {
+    interface NavBrandProps extends React.HTMLAttributes {
         bsRole?: string;
     }
     interface NavBrand extends React.ReactElement<NavBrandProps> { }
@@ -484,12 +479,11 @@ declare module "react-bootstrap" {
 
     // <Tabs />
     // ----------------------------------------
-    interface TabsProps {
+    interface TabsProps extends React.HTMLAttributes {
         activeKey?: any; 
         animation?: boolean;
         bsStyle?: string;
         defaultActiveKey?: any;
-        id?: string | number;
         onSelect?: Function;
         paneWidth?: any; // TODO: Add more specific type 
         position?: string;
@@ -502,7 +496,7 @@ declare module "react-bootstrap" {
 
     // <Tab />
     // ----------------------------------------
-    interface TabProps {
+    interface TabProps extends React.HTMLAttributes {
         animation?: boolean;
         disabled?: boolean;
         eventKey?: any; // TODO: Add more specific type
@@ -516,7 +510,7 @@ declare module "react-bootstrap" {
 
     // <Pager />
     // ----------------------------------------
-    interface PagerProps {
+    interface PagerProps extends React.HTMLAttributes {
         onSelect?: Function;
     }
     interface Pager extends React.ReactElement<PagerProps> { }
@@ -526,7 +520,7 @@ declare module "react-bootstrap" {
 
     // <PageItem />
     // ----------------------------------------
-    interface PageItemProps {
+    interface PageItemProps extends React.HTMLAttributes {
         disabled?: boolean;
         eventKey?: any; 
         href?: string;
@@ -543,7 +537,7 @@ declare module "react-bootstrap" {
 
     // <Pagination />
     // ----------------------------------------
-    interface PaginationProps {
+    interface PaginationProps extends React.HTMLAttributes {
         activePage?: number;
         bsSize?: string;
         bsStyle?: string;
@@ -564,7 +558,7 @@ declare module "react-bootstrap" {
 
     // <Alert />
     // ----------------------------------------
-    interface AlertProps {
+    interface AlertProps extends React.HTMLAttributes {
         bsSize?: string;
         bsStyle?: string;
         closeLabel?: string;
@@ -578,7 +572,7 @@ declare module "react-bootstrap" {
 
     // <Carousel />
     // ----------------------------------------
-    interface CarouselProps {
+    interface CarouselProps extends React.HTMLAttributes {
         activeIndex?: number;
         bsSize?: string;
         bsStyle?: string;
@@ -602,7 +596,7 @@ declare module "react-bootstrap" {
 
     // <CarouselItem />
     // ----------------------------------------
-    interface CarouselItemProps {
+    interface CarouselItemProps extends React.HTMLAttributes {
         active?: boolean;
         animtateIn?: boolean;
         animateOut?: boolean;
@@ -618,7 +612,7 @@ declare module "react-bootstrap" {
 
     // <Grid />
     // ----------------------------------------
-    interface GridProps {
+    interface GridProps extends React.HTMLAttributes {
         componentClass?: any; // TODO: Add more specific type
         fluid?: boolean; 
     }
@@ -629,7 +623,7 @@ declare module "react-bootstrap" {
 
     // <Row />
     // ----------------------------------------
-    interface RowProps {
+    interface RowProps extends React.HTMLAttributes {
         className?: string;
         componentClass?: any; // TODO: Add more specific type
     }
@@ -640,7 +634,7 @@ declare module "react-bootstrap" {
 
     // <Col />
     // ----------------------------------------
-    interface ColProps {
+    interface ColProps extends React.HTMLAttributes {
         componentClass?: any; // TODO: Add more specific type
         lg?: number;
         lgOffset?: number;
@@ -666,7 +660,7 @@ declare module "react-bootstrap" {
 
     // <Thumbnail />
     // ----------------------------------------
-    interface ThumbnailProps {
+    interface ThumbnailProps extends React.HTMLAttributes {
         alt?: string;
         bsSize?: string;
         bsStyle?: string;
@@ -680,9 +674,8 @@ declare module "react-bootstrap" {
 
     // <ListGroup />
     // ----------------------------------------
-    interface ListGroupProps {
+    interface ListGroupProps extends React.HTMLAttributes {
         className?: string;
-        id?: string | number;
         fill?: boolean; // TODO: Add more specific type
     }
     interface ListGroup extends React.ReactElement<ListGroupProps> { }
@@ -692,7 +685,7 @@ declare module "react-bootstrap" {
 
     // <ListGroupItem />
     // ----------------------------------------
-    interface ListGroupItemProps {
+    interface ListGroupItemProps extends React.HTMLAttributes {
         active?: any;
         bsSize?: string;
         bsStyle?: string;
@@ -703,7 +696,6 @@ declare module "react-bootstrap" {
         href?: string;
         key?: any; // TODO: Add more specific type 
         listItem?: boolean;
-        onClick?: Function; // TODO: Add more specific type 
         target?: string;
     }
     interface ListGroupItem extends React.ReactElement<ListGroupItemProps> { }
@@ -713,7 +705,7 @@ declare module "react-bootstrap" {
 
     // <Label />
     // ----------------------------------------
-    interface LabelProps {
+    interface LabelProps extends React.HTMLAttributes {
         bsSize?: string;
         bsStyle?: string;
     }
@@ -724,7 +716,7 @@ declare module "react-bootstrap" {
 
     // <Badge />
     // ----------------------------------------
-    interface BadgeProps {
+    interface BadgeProps extends React.HTMLAttributes {
         pullRight?: boolean;
     }
     interface Badge extends React.ReactElement<BadgeProps> { }
@@ -734,7 +726,7 @@ declare module "react-bootstrap" {
 
     // <Jumbotron />
     // ----------------------------------------
-    interface JumbotronProps {
+    interface JumbotronProps extends React.HTMLAttributes {
         componentClass?: any; // TODO: Add more specific type
     }
     interface Jumbotron extends React.ReactElement<JumbotronProps> { }
@@ -744,7 +736,7 @@ declare module "react-bootstrap" {
 
     // <PageHeader />
     // ----------------------------------------
-    interface PageHeaderProps {
+    interface PageHeaderProps extends React.HTMLAttributes {
         // No props 
     }
     interface PageHeader extends React.ReactElement<PageHeaderProps> { }
@@ -754,7 +746,7 @@ declare module "react-bootstrap" {
 
     // <Well />
     // ----------------------------------------
-    interface WellProps {
+    interface WellProps extends React.HTMLAttributes {
         bsSize?: string;
         bsStyle?: string;
     }
@@ -765,7 +757,7 @@ declare module "react-bootstrap" {
 
     // <Glyphicon />
     // ----------------------------------------
-    interface GlyphiconProps {
+    interface GlyphiconProps extends React.HTMLAttributes {
         // Required 
         glyph: string;
     }
@@ -776,7 +768,7 @@ declare module "react-bootstrap" {
 
     // <Table />
     // ----------------------------------------
-    interface TableProps {
+    interface TableProps extends React.HTMLAttributes {
         bordered?: boolean;
         condensed?: boolean;
         hover?: boolean;
@@ -790,7 +782,7 @@ declare module "react-bootstrap" {
 
     // <Input />
     // ----------------------------------------
-    interface InputProps {
+    interface InputProps extends React.HTMLAttributes {
         addonAfter?: any; // TODO: Add more specific type
         addonBefore?: any; // TODO: Add more specific type
         bsSize?: string;
@@ -803,7 +795,6 @@ declare module "react-bootstrap" {
         groupClassName?: string;
         hasFeedback?: boolean;
         help?: any; // TODO: Add more specific type
-        id?: string | number;
         label?: any; // TODO: Add more specific type 
         labelClassName?: string;
         multiple?: boolean;
@@ -811,10 +802,6 @@ declare module "react-bootstrap" {
         ref?: string;
         readOnly?: boolean;
         type?: string;
-        onChange?: Function; // TODO: Add more specific type 
-        onKeyDown?: Function; // TODO: Add more specific type 
-        onKeyUp?: Function; // TODO: Add more specific type 
-        onKeyPress?: Function; // TODO: Add more specific type 
         defaultValue?: any;
         value?: any; // TODO: Add more specific type
         wrapperClassName?: string; 
@@ -826,7 +813,7 @@ declare module "react-bootstrap" {
 
     // <ButtonInput />
     // ----------------------------------------
-    interface ButtonInputProps { 
+    interface ButtonInputProps extends React.HTMLAttributes {
         addonAfter?: any; // TODO: Add more specific type
         addonBefore?: any; // TODO: Add more specific type
         bsSize?: string;
@@ -838,11 +825,9 @@ declare module "react-bootstrap" {
         groupClassName?: string;
         hasFeedback?: boolean;
         help?: any; // TODO: Add more specific type
-        id?: string | number;
         label?: any; // TODO: Add more specific type 
         labelClassName?: string;
         multiple?: boolean;
-        onClick?: Function; // TODO: Add more specific type 
         type?: string;
         value?: any; // TODO: Add more specific type
         wrapperClassName?: string; 
@@ -857,7 +842,7 @@ declare module "react-bootstrap" {
   
     // <Portal />
     // ----------------------------------------
-    interface PortalProps { 
+    interface PortalProps extends React.HTMLAttributes {
         dimension?: string | Function;
         getDimensionValue?: Function;
         in?: boolean;
@@ -879,7 +864,7 @@ declare module "react-bootstrap" {
    
     // <Position />
     // ----------------------------------------
-    interface PositionProps { 
+    interface PositionProps extends React.HTMLAttributes {
         dimension?: string | Function;
         getDimensionValue?: Function;
         in?: boolean;
@@ -901,7 +886,7 @@ declare module "react-bootstrap" {
 
     // <Fade />
     // ----------------------------------------
-    interface FadeProps { 
+    interface FadeProps extends React.HTMLAttributes {
         in?: boolean;
         onDismiss?: Function;
         onEnter?: Function;
