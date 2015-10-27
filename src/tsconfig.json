@@ -44,6 +44,7 @@
     "Components/App/AppViewModel.ts",
     "Components/App/RoutingMap.ts",
     "Components/Dashboard/DashboardViewModel.ts",
+    "Components/DataGrid/AsyncDataGridViewModel.ts",
     "Components/DataGrid/DataGridViewModel.ts",
     "Components/List/ListViewModel.ts",
     "Components/PageFooter/PageFooterViewModel.ts",
