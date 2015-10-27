@@ -5,8 +5,10 @@ import * as React from 'react';
 import { Table, TableProps, ButtonGroup, Button, Glyphicon } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
+import SearchView from '../Search/SearchView';
+import PagerView from '../Pager/PagerView';
 
-import { IDataGridViewModel, SortDirection } from './DataGridViewModel';
+import { DataGridViewModel, SortDirection } from './DataGridViewModel';
 
 import './DataGrid.less';
 
@@ -37,10 +39,10 @@ class Column {
 }
 
 export interface IDataGridView {
-  renderColumn: (grid: IDataGridViewModel, column: Column, index: number) => any;
-  renderCell: (grid: IDataGridViewModel, column: Column, index: number, value: any) => any;
-  renderRow: (grid: IDataGridViewModel, row: any, index: number, cells: any[]) => any;
-  renderTable: (grid: IDataGridViewModel, data: any[], columns: any, rows: any) => any;
+  renderColumn: (grid: DataGridViewModel<any>, column: Column, index: number) => any;
+  renderCell: (grid: DataGridViewModel<any>, column: Column, index: number, value: any) => any;
+  renderRow: (grid: DataGridViewModel<any>, row: any, index: number, cells: any[]) => any;
+  renderTable: (grid: DataGridViewModel<any>, data: any[], columns: any, rows: any) => any;
 }
 
 export class TableView implements IDataGridView {
@@ -57,7 +59,7 @@ export class TableView implements IDataGridView {
 
   private tableProps: TableProps;
 
-  public renderColumn(grid: IDataGridViewModel, column: Column, index: number) {
+  public renderColumn(grid: DataGridViewModel<any>, column: Column, index: number) {
     let sortButtons = column.sortable ? (
       <div className='Column-sortButtons pull-right'>
         <ButtonGroup>
@@ -79,19 +81,19 @@ export class TableView implements IDataGridView {
     );
   }
 
-  public renderCell(grid: IDataGridViewModel, column: Column, index: number, value: any) {
+  public renderCell(grid: DataGridViewModel<any>, column: Column, index: number, value: any) {
     return (
       <td key={index}>{value}</td>
     );
   }
 
-  public renderRow(grid: IDataGridViewModel, row: any, index: number, cells: any[]) {
+  public renderRow(grid: DataGridViewModel<any>, row: any, index: number, cells: any[]) {
     return (
       <tr key={this.rowKeySelector(row, index, cells)}>{cells}</tr>
     );
   }
 
-  public renderTable(grid: IDataGridViewModel, data: any[], cols: any, rows: any) {
+  public renderTable(grid: DataGridViewModel<any>, data: any[], cols: any, rows: any) {
     return (
       <Table {...this.tableProps}>
         <thead><tr>{cols}</tr></thead>
@@ -103,24 +105,18 @@ export class TableView implements IDataGridView {
 
 interface IDataGridProps extends IBaseViewProps {
   view?: IDataGridView;
-  children?: any
+  children?: DataGridColumn[]
 }
 
-export class DataGridView extends BaseView<IDataGridProps, IDataGridViewModel> {
+export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any>> {
   static defaultProps = {
     view: new TableView()
   }
 
   private columns: Column[];
 
-  componentWillMount() {
-    this.columns = React.Children.map(this.props.children, (x: React.ReactElement<IDataGridColumnProps>) => {
-      return Column.create(x);
-    });
-  }
-
-  render() {
-    let items = this.state.getItems();
+  private renderTable() {
+    let items = this.state.projectedItems.toArray();
 
     let columns = this.columns.map((x, i) => this.props.view.renderColumn(this.state, x, i));
 
@@ -134,9 +130,32 @@ export class DataGridView extends BaseView<IDataGridProps, IDataGridViewModel> {
 
     let table = this.props.view.renderTable(this.state, items, columns, rows);
 
+    return table;
+  }
+
+  updateOn() {
+    return [
+      this.state.projectedItems.listChanged,
+      this.state.projectedItems.shouldReset
+    ]
+  }
+
+  initialize() {
+    this.columns = React.Children.map(this.props.children, (x: React.ReactElement<IDataGridColumnProps>) => {
+      return Column.create(x);
+    }) || [];
+  }
+
+  render() {
+    let search = this.state.canFilter() ? (<SearchView viewModel={this.state.search}/>) : null;
+    let table = this.renderTable();
+    let pager = this.state.limit() == null ? null : (<PagerView first prev next last viewModel={this.state.pager}/>);
+
     return (
       <div className='DataGrid'>
+        {search}
         {table}
+        {pager}
       </div>
     );
   }
