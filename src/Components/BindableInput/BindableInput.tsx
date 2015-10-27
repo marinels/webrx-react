@@ -5,7 +5,6 @@ import * as wx from 'webrx';
 
 interface IBindableInputProps {
   property: wx.IObservableProperty<string>;
-  //inputComponent: React.ReactElement<any>;
   children?: React.ReactNode;
   valueProperty?: string;
   onChangeProperty?: string;
