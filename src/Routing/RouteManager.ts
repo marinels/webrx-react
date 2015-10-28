@@ -52,7 +52,7 @@ export class RouteManager implements Rx.IDisposable {
       let hash = this.hashCodec.Encode(path, state, uriEncode);
 
       if (RouteManager.EnableRouteDebugging) {
-        console.log(String.format('Routing to Hash: {0}', hash));
+        console.log(String.format('[Route    ] Routing to Hash: {0}', hash));
 
         if (state != null) {
           console.log(JSON.stringify(state, null, 2));
