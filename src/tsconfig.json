@@ -59,6 +59,7 @@
     "Components/App/AppView.tsx",
     "Components/App/ViewMap.tsx",
     "Components/BindableInput/BindableInput.tsx",
+    "Components/ContextMenu/ContextMenu.tsx",
     "Components/Dashboard/DashboardView.tsx",
     "Components/DataGrid/DataGridView.tsx",
     "Components/List/ListView.tsx",
