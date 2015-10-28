@@ -12,15 +12,23 @@ import SearchViewModel from './SearchViewModel';
 // import './Search.less';
 
 interface ISearchProps extends IBaseViewProps {
+  searchButton?: boolean;
 }
 
 export class SearchView extends BaseView<ISearchProps, SearchViewModel> {
   render() {
     let inputProps = {
       placeholder: 'Enter Search Terms...',
-      buttonAfter: (<Button disabled={this.state.search.canExecute(null) === false} onClick={this.bindEvent(x => x.search)}>Search</Button>),
       onKeyDown: this.bindEvent(x => x.search, (x: React.KeyboardEvent) => x.keyCode, x => x === 13)
     } as InputProps;
+
+    if (this.props.searchButton || false) {
+      inputProps.buttonAfter = (
+        <Button disabled={this.state.search.canExecute(null) === false} onClick={this.bindEvent(x => x.search)}>
+          Search
+        </Button>
+      );
+    }
 
     return (
       <div className='Search'>
