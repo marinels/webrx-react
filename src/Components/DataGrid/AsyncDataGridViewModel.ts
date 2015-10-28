@@ -27,6 +27,7 @@ export class AsyncDataGridViewModel<TData> extends DataGridViewModel<TData> {
     this.dataSource.getCount(this.search.filter())
       .subscribe(x => {
         this.pager.itemCount(x);
+        this.project.execute(null);
       })
   }
 

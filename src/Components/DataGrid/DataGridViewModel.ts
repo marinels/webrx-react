@@ -33,7 +33,9 @@ export class DataGridViewModel<TData> extends BaseRoutableViewModel<IDataGridRou
   public projectedItems = wx.list<TData>();
   public sortField = wx.property<string>();
   public sortDirection = wx.property<SortDirection>();
-  public search = new SearchViewModel(this.isRoutingEnabled);
+  public filter = wx.command();
+  public project = wx.command();
+  public search = new SearchViewModel(true, undefined, this.isRoutingEnabled);
   public pager = new PagerViewModel(null, this.isRoutingEnabled);
 
   private filteredItems: TData[];
@@ -48,44 +50,28 @@ export class DataGridViewModel<TData> extends BaseRoutableViewModel<IDataGridRou
       this.sortDirection,
       () => null)
       .skip(1)
-      .debounce(100)
-      .subscribe(x => {
-        this.projectItems();
-      }));
+      .invokeCommand(this.project));
 
     this.subscribe(Rx.Observable.combineLatest(
       this.items.listChanged.startWith(true),
-      this.search.filter.changed.debounce(500).startWith(''),
+      this.search.search.results.startWith(null),
       () => null)
+      .skip(1)
+      .invokeCommand(this.filter));
+
+    this.filter.results
       .debounce(100)
       .subscribe(x => {
         this.filterItems();
-        this.routingStateChanged();
-      }));
-  }
+      });
 
-  getRoutingState() {
-    return this.createRoutingState(state => {
-      state.search = this.search.getRoutingState();
+    this.project.results
+      .debounce(100)
+      .subscribe(x => {
+        this.projectItems();
+      });
 
-      if (this.sortField() != null) {
-        state.sortBy = this.sortField();
-      }
-
-      if (this.sortDirection() != null) {
-        state.sortDir = this.sortDirection();
-      }
-
-      state.pager = this.pager.getRoutingState();
-    });
-  }
-
-  setRoutingState(state = {} as IDataGridRoutingState) {
-    if (this.isRoutingEnabled) {
-      this.search.setRoutingState(state.search);
-
-      this.pager.setRoutingState(state.pager);
-    }
+    this.filter.execute(null);
   }
 
   protected updateItems(items: TData[]) {
@@ -104,11 +90,8 @@ export class DataGridViewModel<TData> extends BaseRoutableViewModel<IDataGridRou
 
     this.filteredItems = items;
 
-    if (this.pager.limit() == null) {
-      this.projectItems();
-    } else {
-      this.pager.itemCount(items.length);
-    }
+    this.pager.itemCount(items.length);
+    this.project.execute(null);
   }
 
   protected projectItems() {
@@ -141,6 +124,30 @@ export class DataGridViewModel<TData> extends BaseRoutableViewModel<IDataGridRou
   public sortBy(fieldName: string, direction: SortDirection) {
     this.sortField(fieldName);
     this.sortDirection(direction);
+  }
+
+  getRoutingState() {
+    return this.createRoutingState(state => {
+      state.search = this.search.getRoutingState();
+
+      if (this.sortField() != null) {
+        state.sortBy = this.sortField();
+      }
+
+      if (this.sortDirection() != null) {
+        state.sortDir = this.sortDirection();
+      }
+
+      state.pager = this.pager.getRoutingState();
+    });
+  }
+
+  setRoutingState(state = {} as IDataGridRoutingState) {
+    if (this.isRoutingEnabled) {
+      this.search.setRoutingState(state.search);
+
+      this.pager.setRoutingState(state.pager);
+    }
   }
 }
 
