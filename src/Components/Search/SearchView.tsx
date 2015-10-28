@@ -15,12 +15,6 @@ interface ISearchProps extends IBaseViewProps {
 }
 
 export class SearchView extends BaseView<ISearchProps, SearchViewModel> {
-  updateOn() {
-    return [
-      this.state.search.canExecuteObservable
-    ]
-  }
-  
   render() {
     let inputProps = {
       placeholder: 'Enter Search Terms...',
