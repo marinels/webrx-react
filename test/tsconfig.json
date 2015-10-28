@@ -12,6 +12,7 @@
   ],
   "files": [
     "../src/typings/classnames/classnames.d.ts",
+    "../src/typings/jquery-deparam/jquery-deparam.d.ts",
     "../src/typings/jquery/jquery.d.ts",
     "../src/typings/moment/moment-node.d.ts",
     "../src/typings/moment/moment.d.ts",
