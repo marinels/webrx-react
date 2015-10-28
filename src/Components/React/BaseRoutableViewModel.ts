@@ -25,11 +25,6 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
     super();
   }
 
-  public abstract getRoutingState(): TRoutingState;
-  public abstract setRoutingState(state: TRoutingState): void;
-
-  public getRoutingKey() { return Object.getName(this); }
-
   protected createRoutingState(initializer: (state: TRoutingState) => void, initialState = {} as TRoutingState) {
     if (this.isRoutingEnabled === true && initializer != null) {
       initializer(initialState);
@@ -43,6 +38,11 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
       PubSub.publish(Events.RoutingStateChanged, args);
     }
   }
+
+  public getRoutingKey() { return Object.getName(this); }
+
+  public abstract getRoutingState(): TRoutingState;
+  public abstract setRoutingState(state: TRoutingState): void;
 }
 
 export default BaseRoutableViewModel;

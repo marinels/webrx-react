@@ -160,13 +160,6 @@ interface IListProps extends IBaseViewProps {
 }
 
 export class ListView extends BaseView<IListProps, ListViewModel<any>> {
-  updateOn() {
-    return [
-      this.state.items.listChanged,
-      this.state.selectedItem.changed
-    ]
-  }
-
   public isSelected(item: any, index?: number) {
     return index == null ? this.state.selectedItem() === item : this.state.selectedIndex() === index;
   }
@@ -177,6 +170,13 @@ export class ListView extends BaseView<IListProps, ListViewModel<any>> {
     } else {
       this.state.selectedIndex(index);
     }
+  }
+
+  updateOn() {
+    return [
+      this.state.items.listChanged,
+      this.state.selectedItem.changed
+    ]
   }
 
   render() {

@@ -20,13 +20,6 @@ interface ITabsProps extends IBaseViewProps {
 }
 
 export class TabsView extends BaseView<ITabsProps, TabsViewModel> {
-  updateOn() {
-    return [
-      this.state.items.listChanged,
-      this.state.selectedIndex.changed
-    ]
-  }
-
   private getTabs() {
     return this.props.dataTemplate == null ?
       this.props.children :
@@ -40,6 +33,13 @@ export class TabsView extends BaseView<ITabsProps, TabsViewModel> {
           </Tab>
         );
       });
+  }
+
+  updateOn() {
+    return [
+      this.state.items.listChanged,
+      this.state.selectedIndex.changed
+    ]
   }
 
   render() {

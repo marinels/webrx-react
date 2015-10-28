@@ -12,18 +12,18 @@ interface IPageFooterProps extends IBaseViewProps {
 }
 
 export class PageFooterView extends BaseView<IPageFooterProps, PageFooterViewModel> {
-  protected updateOn() {
-		return [
-      this.state.viewportDimensions.changed
-		];
-	}
-
   private getDimensions(): IViewportDimension {
     return {
       width: window.innerWidth,
       height: window.innerHeight
     }
   }
+
+  updateOn() {
+		return [
+      this.state.viewportDimensions.changed
+		];
+	}
 
   initialize() {
     super.initialize();

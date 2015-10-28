@@ -55,6 +55,29 @@ export abstract class BaseViewModel implements IBaseViewModel {
     this.stateChanged.execute(args);
   }
 
+  protected logObservable(observable: Rx.Observable<any>, name: string) {
+    this.subscribe(observable.subscribe(x => {
+      let value = x;
+      if (x != null) {
+        value = (typeof x === 'object') ? Object.getName(x, x.toString()) : x.toString();
+      }
+      console.log(String.format('[ViewModel] {0}.{1} Property Changed ({2})', this.getDisplayName(), name, value))
+    }));
+  }
+
+  protected subscribe(subscription: Rx.IDisposable) {
+    this.subscriptions.push(subscription);
+    return subscription;
+  }
+
+  protected navTo(path: string, state?: Object, uriEncode = false) {
+    PubSub.publish(Events.RouteChanged, path, state, uriEncode);
+  }
+
+  public bind<T>(observable: Rx.Observable<T>, command: wx.ICommand<T>) {
+    return this.subscribe(observable.invokeCommand(command));
+  }
+
   public initialize() {
     if (BaseViewModel.EnableViewModelDebugging) {
       let obj: { [key: string]: any } = this;
@@ -68,32 +91,9 @@ export abstract class BaseViewModel implements IBaseViewModel {
     }
   }
 
-  protected logObservable(observable: Rx.Observable<any>, name: string) {
-    this.subscribe(observable.subscribe(x => {
-      let value = x;
-      if (x != null) {
-        value = (typeof x === 'object') ? Object.getName(x, x.toString()) : x.toString();
-      }
-      console.log(String.format('[ViewModel] {0}.{1} Property Changed ({2})', this.getDisplayName(), name, value))
-    }));
-  }
-
   public cleanup() {
     this.subscriptions.forEach(x => x.dispose());
     this.subscriptions = [];
-  }
-
-  public navTo(path: string, state?: Object, uriEncode = false) {
-    PubSub.publish(Events.RouteChanged, path, state, uriEncode);
-  }
-
-  public bind<T>(observable: Rx.Observable<T>, command: wx.ICommand<T>) {
-    return this.subscribe(observable.invokeCommand(command));
-  }
-
-  protected subscribe(subscription: Rx.IDisposable) {
-    this.subscriptions.push(subscription);
-    return subscription;
   }
 }
 
