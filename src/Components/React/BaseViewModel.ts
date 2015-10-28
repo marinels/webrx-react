@@ -56,6 +56,26 @@ export abstract class BaseViewModel implements IBaseViewModel {
   }
 
   public initialize() {
+    if (BaseViewModel.EnableViewModelDebugging) {
+      let obj: { [key: string]: any } = this;
+      let keys = Object.keys(obj);
+      for (let i = 0; i < keys.length; ++i) {
+        let prop: { changed: Rx.Observable<any> } = obj[keys[i]];
+        if (prop != null && prop.changed != null) {
+          this.logObservable(prop.changed, keys[i]);
+        }
+      }
+    }
+  }
+
+  protected logObservable(observable: Rx.Observable<any>, name: string) {
+    this.subscribe(observable.subscribe(x => {
+      let value = x;
+      if (x != null) {
+        value = (typeof x === 'object') ? Object.getName(x, x.toString()) : x.toString();
+      }
+      console.log(String.format('[ViewModel] {0}.{1} Property Changed ({2})', this.getDisplayName(), name, value))
+    }));
   }
 
   public cleanup() {
