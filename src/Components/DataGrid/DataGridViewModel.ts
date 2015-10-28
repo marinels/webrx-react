@@ -2,34 +2,39 @@
 
 import * as wx from 'webrx';
 
-import BaseViewModel from '../React/BaseViewModel';
-import SearchViewModel from '../Search/SearchViewModel';
-import PagerViewModel from '../Pager/PagerViewModel';
+import BaseRoutableViewModel from '../React/BaseRoutableViewModel';
+import { SearchViewModel, ISearchRoutingState } from '../Search/SearchViewModel';
+import { PagerViewModel, IPagerRoutingState } from '../Pager/PagerViewModel';
 
 export enum SortDirection {
   Ascending,
   Descending
 }
 
-export class DataGridViewModel<TData> extends BaseViewModel {
+export interface IDataGridRoutingState {
+  search: ISearchRoutingState;
+  sortBy: string;
+  sortDir: SortDirection;
+  pager: IPagerRoutingState;
+}
+
+export class DataGridViewModel<TData> extends BaseRoutableViewModel<IDataGridRoutingState> {
   constructor(
     protected filterer?: (item: TData, filter: string) => boolean,
     protected comparer?: (sortField: string, sortDirection: SortDirection, a: TData, b: TData) => number,
+    isRoutingEnabled = false,
     ...items: TData[]) {
-    super();
+    super(isRoutingEnabled);
 
     this.items.addRange(items);
   }
 
   public items = wx.list<TData>();
   public projectedItems = wx.list<TData>();
-  public filter = wx.property('');
-  public offset = wx.property<number>();
-  public limit = wx.property<number>();
   public sortField = wx.property<string>();
   public sortDirection = wx.property<SortDirection>();
-  public search = new SearchViewModel();
-  public pager = new PagerViewModel();
+  public search = new SearchViewModel(this.isRoutingEnabled);
+  public pager = new PagerViewModel(null, this.isRoutingEnabled);
 
   private filteredItems: TData[];
 
@@ -37,8 +42,8 @@ export class DataGridViewModel<TData> extends BaseViewModel {
     super.initialize();
 
     this.subscribe(wx.whenAny(
-      this.offset,
-      this.limit,
+      this.pager.offset,
+      this.pager.limit,
       this.sortField,
       this.sortDirection,
       () => null)
@@ -48,25 +53,39 @@ export class DataGridViewModel<TData> extends BaseViewModel {
         this.projectItems();
       }));
 
-    this.subscribe(this.pager.selectedPage.changed
-      .subscribe(x => {
-        this.offset(this.limit() == null ? 0 : (x - 1) * this.limit());
-      }));
-
     this.subscribe(Rx.Observable.combineLatest(
-      this.items.listChanged,
-      this.filter.changed,
+      this.items.listChanged.startWith(true),
+      this.search.filter.changed.debounce(500).startWith(''),
       () => null)
       .debounce(100)
-      .startWith(null) // initial fetch
       .subscribe(x => {
         this.filterItems();
+        this.routingStateChanged();
       }));
   }
 
-  protected updateCount(count: number) {
-    this.pager.pageCount(Math.ceil(count / this.limit()));
-    this.pager.selectedPage(1);
+  getRoutingState() {
+    return this.createRoutingState(state => {
+      state.search = this.search.getRoutingState();
+
+      if (this.sortField() != null) {
+        state.sortBy = this.sortField();
+      }
+
+      if (this.sortDirection() != null) {
+        state.sortDir = this.sortDirection();
+      }
+
+      state.pager = this.pager.getRoutingState();
+    });
+  }
+
+  setRoutingState(state = {} as IDataGridRoutingState) {
+    if (this.isRoutingEnabled) {
+      this.search.setRoutingState(state.search);
+
+      this.pager.setRoutingState(state.pager);
+    }
   }
 
   protected updateItems(items: TData[]) {
@@ -79,16 +98,16 @@ export class DataGridViewModel<TData> extends BaseViewModel {
   protected filterItems() {
     let items = this.items.toArray();
 
-    if (this.filterer != null && String.isNullOrEmpty(this.filter()) === false) {
-      items = items.filter(x => this.filterer(x, this.filter()));
+    if (this.filterer != null && String.isNullOrEmpty(this.search.filter()) === false) {
+      items = items.filter(x => this.filterer(x, this.search.filter()));
     }
 
     this.filteredItems = items;
 
-    if (this.limit() == null) {
+    if (this.pager.limit() == null) {
       this.projectItems();
     } else {
-      this.updateCount(items.length);
+      this.pager.itemCount(items.length);
     }
   }
 
@@ -99,9 +118,9 @@ export class DataGridViewModel<TData> extends BaseViewModel {
       items = items.sort((a, b) => this.comparer(this.sortField(), this.sortDirection(), a, b));
     }
 
-    if (this.offset() > 0 || this.limit() != null) {
-      let end = this.limit() == null ? items.length : this.offset() + this.limit();
-      items = items.slice(this.offset(), end);
+    if (this.pager.offset() > 0 || this.pager.limit() != null) {
+      let end = this.pager.limit() == null ? items.length : this.pager.offset() + this.pager.limit();
+      items = items.slice(this.pager.offset(), end);
     }
 
     this.updateItems(items);

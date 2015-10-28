@@ -10,28 +10,28 @@ export interface IAsyncDataSource<TData> {
   getResults(filter: string, offset: number, limit: number, sortField?: string, sortDirection?: SortDirection): Rx.Observable<TData[]>;
 }
 
-const DefaultLimit = 1;
+export const DefaultLimit = 10;
 
 export class AsyncDataGridViewModel<TData> extends DataGridViewModel<TData> {
-  constructor(private dataSource: IAsyncDataSource<TData>, canFilter = true, limit = DefaultLimit) {
-    super();
+  constructor(
+    private dataSource: IAsyncDataSource<TData>,
+    canFilter = true,
+    limit = DefaultLimit,
+    enableRouting = false) {
+    super(canFilter === true ? () => true : null, null, enableRouting);
 
-    if (canFilter) {
-      this.filterer = () => true;
-    }
-    
-    this.limit(limit || DefaultLimit);
+    this.pager.limit(limit || DefaultLimit);
   }
 
   filterItems() {
-    this.dataSource.getCount(this.filter())
+    this.dataSource.getCount(this.search.filter())
       .subscribe(x => {
-        this.updateCount(x);
+        this.pager.itemCount(x);
       })
   }
 
   projectItems() {
-    this.dataSource.getResults(this.filter(), this.offset() || 0, this.limit() || DefaultLimit, this.sortField(), this.sortDirection())
+    this.dataSource.getResults(this.search.filter(), this.pager.offset() || 0, this.pager.limit() || DefaultLimit, this.sortField(), this.sortDirection())
       .subscribe(x => {
         this.updateItems(x);
       });
