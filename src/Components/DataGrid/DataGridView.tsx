@@ -151,13 +151,12 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
   render() {
     let search = this.state.canFilter() ? (<SearchView viewModel={this.state.search}/>) : null;
     let table = this.renderTable();
-    let pager = this.state.pager.limit() == null ? null : (<PagerView first prev next last info limits={[1, 2, 3, null]} viewModel={this.state.pager}/>);
 
     return (
       <div className='DataGrid'>
         {search}
         {table}
-        {pager}
+        <PagerView first prev next last info limits={[1, 2, 3, null]} viewModel={this.state.pager} />
       </div>
     );
   }
