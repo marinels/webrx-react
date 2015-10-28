@@ -18,6 +18,8 @@ export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> 
   public search = wx.command();
 
   initialize() {
+    super.initialize();
+
     this.subscribe(this.search.results.subscribe(x => {
       this.routingStateChanged();
     }));
