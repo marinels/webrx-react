@@ -30,14 +30,12 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
 
   public getRoutingKey() { return Object.getName(this); }
 
-  protected createRoutingState(initializer: (state: TRoutingState) => void) {
-    let state = {} as TRoutingState;
-
+  protected createRoutingState(initializer: (state: TRoutingState) => void, initialState = {} as TRoutingState) {
     if (this.isRoutingEnabled === true && initializer != null) {
-      initializer(state);
+      initializer(initialState);
     }
 
-    return state;
+    return initialState;
   }
 
   protected routingStateChanged(...args: any[]) {
