@@ -20,10 +20,10 @@ export class PageFooterView extends BaseView<IPageFooterProps, PageFooterViewMod
   }
 
   updateOn() {
-		return [
+    return [
       this.state.viewportDimensions.changed
-		];
-	}
+    ];
+  }
 
   initialize() {
     super.initialize();

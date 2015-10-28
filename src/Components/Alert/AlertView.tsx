@@ -29,20 +29,20 @@ export class AlertView extends BaseView<IAlertProps, AlertViewModel> {
     ]
   }
 
-	render() {
+  render() {
     this.showAlertIfNotVisible();
 
-		return (
-			<div className='Alert'>
+    return (
+      <div className='Alert'>
         <Fade timeout={this.props.timeout || 500} in={this.state.isVisible()} onDismiss={this.bindEvent(x => x.dismiss)}>
           <Alert bsStyle={this.state.style}>
             <h4>{this.state.header}</h4>
             {this.state.text}
           </Alert>
         </Fade>
-			</div>
-		);
-	}
+      </div>
+    );
+  }
 }
 
 export default AlertView;

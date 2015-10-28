@@ -20,36 +20,36 @@ interface IAppProps extends IBaseViewProps {
 }
 
 export class AppView extends BaseView<IAppProps, AppViewModel> {
-	constructor(props?: IAppProps, context?: any) {
-		super(props, context);
+  constructor(props?: IAppProps, context?: any) {
+    super(props, context);
 
-		BaseView.EnableViewDebugging = this.state.config.EnableViewDebugging;
-	}
+    BaseView.EnableViewDebugging = this.state.config.EnableViewDebugging;
+  }
 
-	updateOn() {
-		return [
-			this.state.alerts.listChanged
-		];
-	}
+  updateOn() {
+    return [
+      this.state.alerts.listChanged
+    ];
+  }
 
-	render() {
-		let alerts = this.state.alerts == null ? '' : this.state.alerts.map(x => <AlertView viewModel={x} key={x.key}/>);
+  render() {
+    let alerts = this.state.alerts == null ? '' : this.state.alerts.map(x => <AlertView viewModel={x} key={x.key}/>);
 
-		return (
-			<div className='App'>
-				<Grid>
-					<Row>
-						<Col md={12}>
-							{alerts}
-						</Col>
-					</Row>
-				</Grid>
-				<PageHeaderView viewModel={this.state.header} />
-				<RouteHandlerView viewModel={this.state.routeHandler} viewMap={ViewMap} />
-				<PageFooterView viewModel={this.state.footer} />
-			</div>
-		);
-	}
+    return (
+      <div className='App'>
+        <Grid>
+          <Row>
+            <Col md={12}>
+              {alerts}
+            </Col>
+          </Row>
+        </Grid>
+        <PageHeaderView viewModel={this.state.header} />
+        <RouteHandlerView viewModel={this.state.routeHandler} viewMap={ViewMap} />
+        <PageFooterView viewModel={this.state.footer} />
+      </div>
+    );
+  }
 }
 
 export default AppView;

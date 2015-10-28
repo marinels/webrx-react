@@ -142,7 +142,7 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
 
   initialize() {
     super.initialize();
-    
+
     this.columns = React.Children.map(this.props.children, (x: React.ReactElement<IDataGridColumnProps>) => {
       return Column.create(x);
     }) || [];

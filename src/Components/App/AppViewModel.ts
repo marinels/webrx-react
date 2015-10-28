@@ -52,12 +52,12 @@ export class AppViewModel extends BaseViewModel {
   public alerts = wx.list<AlertViewModel>();
 
   private appendAlert(text: string, header?: string, style?: string, timeout?: number) {
-		let alert = new AlertViewModel(this.alerts, ++this.currentAlertKey, text, header, style, timeout);
+    let alert = new AlertViewModel(this.alerts, ++this.currentAlertKey, text, header, style, timeout);
 
-		this.alerts.add(alert);
+    this.alerts.add(alert);
 
-		return alert;
-	}
+    return alert;
+  }
 
   initialize() {
     super.initialize();

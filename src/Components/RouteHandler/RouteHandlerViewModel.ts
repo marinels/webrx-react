@@ -31,7 +31,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
   private getRoutedViewModel(route: IRoute): IRoutedViewModel {
     let viewModel = this.currentViewModel();
-    
+
     if (route.path !== this.currentPath) {
       let activator = this.routingMap[route.path];
 

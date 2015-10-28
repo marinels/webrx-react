@@ -16,16 +16,16 @@ interface IRouteHandlerProps extends IBaseViewProps {
 
 export class RouteHandlerView extends BaseView<IRouteHandlerProps, RouteHandlerViewModel> {
   constructor(props?: IRouteHandlerProps, context?: any) {
-		super(props, context);
+    super(props, context);
 
-		if (this.props.viewMap['*'] == null) {
+    if (this.props.viewMap['*'] == null) {
       this.props.viewMap['*'] = 'View Not Found';
     }
 
     if (this.props.viewMap[''] == null) {
       this.props.viewMap[''] = 'Route Not Found';
     }
-	}
+  }
 
   private getView(): any {
     let viewModel = this.state.currentViewModel();
@@ -46,10 +46,10 @@ export class RouteHandlerView extends BaseView<IRouteHandlerProps, RouteHandlerV
   }
 
   updateOn() {
-		return [
+    return [
       this.state.currentViewModel.changed
-		];
-	}
+    ];
+  }
 
   render() {
     return (

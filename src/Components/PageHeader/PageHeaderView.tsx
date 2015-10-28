@@ -37,11 +37,11 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
             <Row>
                 <Col md={12}>
                     {/*
-              		    VERY IMPORTANT!!!
-              		    Because this Navbar component sits inside of a Grid, we need to
-              		    decorate it with `fluid` so that the internal `div.container`
-              		    stretches to full `width = 100%` to avoid pushing the gutters out.
-              	    */}
+                      VERY IMPORTANT!!!
+                      Because this Navbar component sits inside of a Grid, we need to
+                      decorate it with `fluid` so that the internal `div.container`
+                      stretches to full `width = 100%` to avoid pushing the gutters out.
+                    */}
                     <Navbar fluid>
                         <NavBrand>
                             <a href='#/'>{this.props.brand || 'WebRx.React Rocks!!!'}</a>
