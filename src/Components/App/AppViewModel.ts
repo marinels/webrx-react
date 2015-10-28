@@ -51,7 +51,7 @@ export class AppViewModel extends BaseViewModel {
   public footer: PageFooterViewModel;
   public alerts = wx.list<AlertViewModel>();
 
-  private appendAlert(text: string, header?: string, style = 'info', timeout = 5000) {
+  private appendAlert(text: string, header?: string, style?: string, timeout?: number) {
 		let alert = new AlertViewModel(this.alerts, ++this.currentAlertKey, text, header, style, timeout);
 
 		this.alerts.add(alert);

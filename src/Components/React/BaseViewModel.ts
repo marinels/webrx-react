@@ -22,7 +22,7 @@ export abstract class BaseViewModel implements IBaseViewModel {
 
   protected getDisplayName() { return Object.getName(this); }
 
-  protected createAlert(text: string, header?: string, style = 'info', timeout = 5000) {
+  protected createAlert(text: string, header?: string, style?: string, timeout?: number) {
     PubSub.publish(Events.AlertCreated, text, header, style, timeout);
   }
 
