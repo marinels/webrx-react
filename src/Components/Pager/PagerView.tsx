@@ -27,14 +27,15 @@ export class PagerView extends BaseView<IPagerProps, PagerViewModel> {
     let info: string;
 
     if (this.props.info && this.state.hasValidLimit()) {
-      info = String.format('Showing Items {0} through {1}', this.state.offset() + 1, Math.min(this.state.itemCount(), this.state.offset() + this.state.limit()));
+      info = this.state.itemCount() === 0 ? 'No Items to Show' :
+        String.format('Showing Items {0} through {1}', this.state.offset() + 1, Math.min(this.state.itemCount(), this.state.offset() + this.state.limit()));
     }
 
-    let pager = this.state.pageCount() == null ? null : (
+    let pager = (this.props.limits == null || this.state.itemCount() === 0) ? null : (
       <Pagination items={this.state.pageCount()} activePage={this.state.selectedPage()} onSelect={this.bindCallback(x => x.selectedPage, x => x[1].eventKey)} {...this.props} />
     );
 
-    let limit = this.props.limits == null ? null : (
+    let limit = (this.props.limits == null || this.state.itemCount() === 0) ? null : (
       <DropdownButton id='pager-limit-selector' title={String.format('Items per Page ({0})', this.state.limit() || 'All')} onSelect={this.bindCallback(x => x.limit, x => x[1])}>
         {this.props.limits.map((x, i) => (
           <MenuItem key={i} eventKey={x}>{x || 'All'}</MenuItem>

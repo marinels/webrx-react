@@ -20,23 +20,53 @@ export class PagerViewModel extends BaseRoutableViewModel<IPagerRoutingState> {
   public itemCount = wx.property<number>();
   public limit = wx.property<number>();
   public pageCount = Rx.Observable
-    .combineLatest(this.itemCount.changed, this.limit.changed, (c, l) => Math.ceil(c / l))
+    .combineLatest(
+      this.itemCount.changed,
+      this.limit.changed,
+      (itemCount, limit) => ({ itemCount, limit })
+    )
+    .where(x => x.itemCount != null && x.limit != null && x.limit > 0)
+    .select(x => Math.ceil(x.itemCount / x.limit))
     .toProperty();
   public selectedPage = wx.property<number>();
-  public offset = this.selectedPage.changed
-    .select(x => (x - 1) * this.limit() || 0)
+  public offset = wx
+    .whenAny(
+      this.selectedPage,
+      this.limit,
+      (selectedPage, limit) => ({ selectedPage, limit })
+    )
+    .skip(1)
+    .where(x => x.selectedPage != null)
+    .select(x => (x.selectedPage - 1) * (x.limit || 0))
     .toProperty();
 
-  initialize() {
-    this.pageCount.changed
-      .subscribe(x => {
-        this.selectedPage(1);
-      });
+  private isValidLimit(limit: number) {
+    return limit != null && limit > 0;
+  }
 
-    this.selectedPage.changed
+  public hasValidLimit() {
+    return this.isValidLimit(this.limit());
+  }
+
+  initialize() {
+    super.initialize();
+
+    this.subscribe(this.pageCount.changed
+      .startWith(this.pageCount())
+      .subscribe(x => {
+        this.selectedPage(this.selectedPage() || 1);
+      }));
+
+    this.subscribe(wx
+      .whenAny(
+        this.selectedPage,
+        this.limit,
+        () => null
+      )
+      .skip(1)
       .subscribe(x => {
         this.routingStateChanged();
-      })
+      }));
   }
 
   getRoutingState() {
@@ -50,17 +80,9 @@ export class PagerViewModel extends BaseRoutableViewModel<IPagerRoutingState> {
 
   setRoutingState(state = {} as IPagerRoutingState) {
     if (this.isRoutingEnabled) {
-      this.limit(state.limit);
-      this.selectedPage(state.page);
+      this.limit(state.limit || null);
+      this.selectedPage(state.page || 1);
     }
-  }
-
-  public hasValidLimit() {
-    return this.isValidLimit(this.limit());
-  }
-
-  private isValidLimit(limit: number) {
-    return limit != null && limit > 0;
   }
 }
 
