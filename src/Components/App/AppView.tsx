@@ -23,7 +23,7 @@ export class AppView extends BaseView<IAppProps, AppViewModel> {
 	constructor(props?: IAppProps, context?: any) {
 		super(props, context);
 
-		BaseView.EnableViewRenderDebugging = this.state.config.EnableViewRenderDebugging;
+		BaseView.EnableViewDebugging = this.state.config.EnableViewDebugging;
 	}
 
 	protected updateOn() {

@@ -15,7 +15,7 @@ export interface IBaseViewModel {
 }
 
 export abstract class BaseViewModel implements IBaseViewModel {
-  public static EnablePropertyChangedDebugging = false;
+  public static EnableViewModelDebugging = false;
 
   private subscriptions: Rx.IDisposable[] = [];
   public stateChanged = wx.command();

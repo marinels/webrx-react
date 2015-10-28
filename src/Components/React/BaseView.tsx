@@ -13,7 +13,7 @@ export interface IBaseViewProps {
 export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel extends IBaseViewModel> extends React.Component<TViewProps, TViewModel> {
   private updateSubscription: Rx.IDisposable;
 
-  public static EnableViewRenderDebugging = false;
+  public static EnableViewDebugging = false;
 
   constructor(props?: TViewProps, context?: any) {
     super(props, context);
