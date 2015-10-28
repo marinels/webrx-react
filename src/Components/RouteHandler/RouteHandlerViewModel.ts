@@ -31,11 +31,9 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
   private getRoutedViewModel(route: IRoute): IRoutedViewModel {
     let viewModel = this.currentViewModel();
-
+    
     if (route.path !== this.currentPath) {
-      this.currentPath = route.path;
-
-      let activator = this.routingMap[this.currentPath];
+      let activator = this.routingMap[route.path];
 
       if (activator == null) {
         activator = this.routingMap['*'];
@@ -52,6 +50,8 @@ export class RouteHandlerViewModel extends BaseViewModel {
           }
 
           viewModel = (activator as IViewModelActivator).apply(this, [route]);
+
+          this.currentPath = route.path;
 
           if (viewModel) {
             viewModel.setRoutingState(route.state);
