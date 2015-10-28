@@ -21,13 +21,19 @@ export interface IRoutedViewModel extends IKeyedRoutableViewModel {
 }
 
 export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel implements IRoutableViewModel<TRoutingState> {
+  constructor(public isRoutingEnabled = false) {
+    super();
+  }
+
   public abstract getRoutingState(): TRoutingState;
   public abstract setRoutingState(state: TRoutingState): void;
 
   public getRoutingKey() { return Object.getName(this); }
 
   protected routingStateChanged(...args: any[]) {
-    PubSub.publish(Events.RoutingStateChanged, args);
+    if (this.isRoutingEnabled) {
+      PubSub.publish(Events.RoutingStateChanged, args);
+    }
   }
 }
 
