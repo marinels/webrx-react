@@ -64,6 +64,12 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
     };
   }
 
+  private logRender(initial: boolean) {
+    if (BaseView.EnableViewDebugging) {
+      console.log(String.format('[View     ] {0}rendering <{1} ... />', initial ? '' : 're-', this.getDisplayName()));
+    }
+  }
+
   componentWillMount() {
     this.state.initialize();
     this.initialize();
@@ -78,12 +84,12 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
       .subscribe(x => {
         this.forceUpdate();
       });
+
+    this.logRender(true);
   }
 
-  componentWillUpdate() {
-    if (BaseView.EnableViewRenderDebugging) {
-      console.log(String.format('rendering [{0}]...', this.getDisplayName()));
-    }
+  componentWillUpdate(nextProps: TViewProps, nextState: TViewModel, nextContext: any) {
+    this.logRender(false);
   }
 
   componentWillUnmount() {
