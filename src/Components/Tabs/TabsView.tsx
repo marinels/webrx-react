@@ -27,7 +27,7 @@ export class TabsView extends BaseView<ITabsProps, TabsViewModel> {
     ]
   }
 
-  getTabs() {
+  private getTabs() {
     return this.props.dataTemplate == null ?
       this.props.children :
       this.state.items.map((x, i) => {

@@ -38,7 +38,7 @@ export class DataGridViewModel<TData> extends BaseRoutableViewModel<IDataGridRou
 
   private filteredItems: TData[];
 
-  public initialize() {
+  initialize() {
     super.initialize();
 
     this.subscribe(wx.whenAny(
@@ -126,19 +126,19 @@ export class DataGridViewModel<TData> extends BaseRoutableViewModel<IDataGridRou
     this.updateItems(items);
   }
 
-  canFilter() {
+  public canFilter() {
     return this.filterer != null;
   }
 
-  canSort() {
+  public canSort() {
     return this.comparer != null;
   }
 
-  isSortedBy(fieldName: string, direction: SortDirection) {
+  public isSortedBy(fieldName: string, direction: SortDirection) {
     return fieldName === this.sortField() && direction === this.sortDirection();
   }
 
-  sortBy(fieldName: string, direction: SortDirection) {
+  public sortBy(fieldName: string, direction: SortDirection) {
     this.sortField(fieldName);
     this.sortDirection(direction);
   }

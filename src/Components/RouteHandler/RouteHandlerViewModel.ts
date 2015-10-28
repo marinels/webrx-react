@@ -75,7 +75,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
     return viewModel;
   }
 
-  public initialize() {
+  initialize() {
     super.initialize();
 
     this.routingStateChangedHandle = PubSub.subscribe(Events.RoutingStateChanged, x => {
@@ -87,7 +87,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
     });
   }
 
-  public cleanup() {
+  cleanup() {
     super.cleanup();
 
     this.routingStateChangedHandle = PubSub.unsubscribe(this.routingStateChangedHandle);

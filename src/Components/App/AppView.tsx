@@ -26,7 +26,7 @@ export class AppView extends BaseView<IAppProps, AppViewModel> {
 		BaseView.EnableViewDebugging = this.state.config.EnableViewDebugging;
 	}
 
-	protected updateOn() {
+	updateOn() {
 		return [
 			this.state.alerts.listChanged
 		];

@@ -167,11 +167,11 @@ export class ListView extends BaseView<IListProps, ListViewModel<any>> {
     ]
   }
 
-  isSelected(item: any, index?: number) {
+  public isSelected(item: any, index?: number) {
     return index == null ? this.state.selectedItem() === item : this.state.selectedIndex() === index;
   }
 
-  selectItem(item: any, index?: number) {
+  public selectItem(item: any, index?: number) {
     if (index == null) {
       this.state.selectedItem(item);
     } else {

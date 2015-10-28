@@ -59,13 +59,13 @@ export class AppViewModel extends BaseViewModel {
 		return alert;
 	}
 
-  public initialize() {
+  initialize() {
     super.initialize();
 
     this.alertCreatedHandle = PubSub.subscribe(Events.AlertCreated, x => this.appendAlert(x[0] as string, x[1] as string, x[2] as string, x[3] as number));
   }
 
-  public cleanup() {
+  cleanup() {
     super.cleanup();
 
     this.alertCreatedHandle = PubSub.unsubscribe(this.alertCreatedHandle);
