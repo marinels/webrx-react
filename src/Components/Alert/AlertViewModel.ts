@@ -13,23 +13,39 @@ export interface IAlert {
   timeout?: number;
 }
 
+export const DefaultStyle = 'info';
+export const DefaultTimeout = 5000;
+
 export class AlertViewModel extends BaseViewModel {
-  constructor(private owner: wx.IObservableList<AlertViewModel>, public key: any, public text: string, public header?: string, public style = 'info', private timeout = 5000) {
+  constructor(private owner: wx.IObservableList<AlertViewModel>, public key: any, public text: string, public header?: string, public style = DefaultStyle, private timeout = DefaultTimeout) {
     super();
   }
 
+  public show = wx.asyncCommand(x => Rx.Observable.return(true));
   public dismiss = wx.asyncCommand(x => Rx.Observable.return(false));
+
   public isVisible = Rx.Observable
     .merge(
-      this.dismiss.results,
-      Rx.Observable.return(false).delay(this.timeout))
-    .startWith(true)
-    .do(x => {
-      if (x === false) {
-        this.owner.remove(this);
-      }
-    })
+      this.show.results,
+      this.dismiss.results.take(1)
+    )
     .toProperty();
+
+  initialize() {
+    super.initialize();
+
+    this.subscribe(Rx.Observable
+      .return(false)
+      .delay(this.timeout)
+      .invokeCommand(this.dismiss));
+
+    this.subscribe(this.dismiss.results
+      .take(1)
+      .delay(100)
+      .subscribe(x => {
+        this.owner.remove(this);
+      }));
+  }
 }
 
 export default AlertViewModel;
