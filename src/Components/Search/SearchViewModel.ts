@@ -10,12 +10,12 @@ export interface ISearchRoutingState {
 }
 
 export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> {
-  constructor(isRoutingEnabled = false) {
+  constructor(public isLiveSearchEnabled = true, private liveSearchTimeout = 250, isRoutingEnabled = false) {
     super(isRoutingEnabled);
   }
 
   public filter = wx.property('');
-  public search = wx.command();
+  public search = wx.command(x => this.notifyChanged());
 
   initialize() {
     super.initialize();
@@ -23,6 +23,13 @@ export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> 
     this.subscribe(this.search.results.subscribe(x => {
       this.routingStateChanged();
     }));
+
+    if (this.isLiveSearchEnabled) {
+      this.subscribe(this.filter.changed
+        .debounce(this.liveSearchTimeout)
+        .invokeCommand(this.search)
+      );
+    }
   }
 
   getRoutingState() {
