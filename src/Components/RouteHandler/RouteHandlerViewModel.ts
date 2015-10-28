@@ -54,7 +54,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
           viewModel = (activator as IViewModelActivator).apply(this, [route]);
 
           if (viewModel) {
-            viewModel.setRoutingState(route.state || {});
+            viewModel.setRoutingState(route.state);
           }
         } else {
           this.manager.navTo(activator.toString());
