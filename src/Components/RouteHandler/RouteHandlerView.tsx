@@ -1,10 +1,13 @@
 'use strict';
 
 import * as React from 'react';
+import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
 
 import RouteHandlerViewModel from './RouteHandlerViewModel';
+
+import './RouteHandler.less';
 
 export interface IViewMap {
   [key: string]: any;
@@ -52,9 +55,14 @@ export class RouteHandlerView extends BaseView<IRouteHandlerProps, RouteHandlerV
   }
 
   render() {
+    let view = this.getView() || 'Catastrophic Failure';
     return (
       <div className='RouteHandler'>
-        {this.getView()}
+        <ReactCSSTransitionGroup transitionName='view' transitionLeave={false} transitionEnterTimeout={250}>
+          <div className='RouteHandler-viewContainer' key={view}>
+            { view }
+          </div>
+        </ReactCSSTransitionGroup>
       </div>
     );
   }
