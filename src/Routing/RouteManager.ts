@@ -5,7 +5,7 @@ import * as wx from 'webrx';
 
 import HashCodec from './HashCodec';
 import { default as PubSub, ISubscriptionHandle } from '../Utils/PubSub';
-import Events from '../Events';
+import { RouteChangedKey, IRouteChanged } from '../Events/RouteChanged';
 
 export interface IRoute {
   path: string;
@@ -37,7 +37,7 @@ export class RouteManager implements Rx.IDisposable {
       .where(x => x != null)
       .toProperty();
 
-    this.routeChangedHandle = PubSub.subscribe(Events.RouteChanged, x => this.navTo(x[0] as string, x[1] as Object, x[2] as boolean));
+    this.routeChangedHandle = PubSub.subscribe<IRouteChanged>(RouteChangedKey, x => this.navTo(x.path, x.state, x.uriEncode));
   }
 
   private routeChangedHandle: ISubscriptionHandle;

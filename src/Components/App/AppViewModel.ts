@@ -9,7 +9,7 @@ import { PageHeaderViewModel, IMenuItem } from '../PageHeader/PageHeaderViewMode
 import PageFooterViewModel from '../PageFooter/PageFooterViewModel';
 import AlertViewModel from '../Alert/AlertViewModel';
 import { default as PubSub, ISubscriptionHandle } from '../../Utils/PubSub';
-import Events from '../../Events';
+import { AlertCreatedKey, IAlertCreated } from '../../Events/AlertCreated';
 
 export interface IAppConfig {
   EnableViewModelDebugging?: boolean;
@@ -62,7 +62,7 @@ export class AppViewModel extends BaseViewModel {
   initialize() {
     super.initialize();
 
-    this.alertCreatedHandle = PubSub.subscribe(Events.AlertCreated, x => this.appendAlert(x[0] as string, x[1] as string, x[2] as string, x[3] as number));
+    this.alertCreatedHandle = PubSub.subscribe<IAlertCreated>(AlertCreatedKey, x => this.appendAlert(x.text, x.header, x.style, x.timeout));
   }
 
   cleanup() {

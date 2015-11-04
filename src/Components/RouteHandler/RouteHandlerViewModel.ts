@@ -6,7 +6,7 @@ import BaseViewModel from '../React/BaseViewModel';
 import { IRoutedViewModel } from '../React/BaseRoutableViewModel';
 import { RouteManager, IRoute } from '../../Routing/RouteManager';
 import { default as PubSub, ISubscriptionHandle } from '../../Utils/PubSub';
-import Events from '../../Events';
+import { RoutingStateChangedKey, IRoutingStateChanged } from '../../Events/RoutingStateChanged';
 
 export interface IViewModelActivator {
   (route: IRoute): IRoutedViewModel;
@@ -80,9 +80,9 @@ export class RouteHandlerViewModel extends BaseViewModel {
   initialize() {
     super.initialize();
 
-    this.routingStateChangedHandle = PubSub.subscribe(Events.RoutingStateChanged, x => {
+    this.routingStateChangedHandle = PubSub.subscribe<IRoutingStateChanged>(RoutingStateChangedKey, x => {
       if (this.currentViewModel() != null) {
-        let state = this.currentViewModel().getRoutingState();
+        let state = this.currentViewModel().getRoutingState(x);
 
         this.manager.navTo(this.currentPath, state);
       }

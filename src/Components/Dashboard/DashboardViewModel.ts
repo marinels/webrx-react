@@ -22,7 +22,7 @@ export class DashboardViewModel extends BaseRoutableViewModel<IDashboardRoutingS
     })
   );
 
-  public getRoutingState() {
+  public getRoutingState(context?: any) {
     return <IDashboardRoutingState>{
       alertText: this.alertText()
     };

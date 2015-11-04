@@ -4,7 +4,8 @@ import * as Rx from 'rx';
 import * as wx from 'webrx';
 
 import PubSub from '../../Utils/PubSub';
-import Events from '../../Events';
+import { AlertCreatedKey, IAlertCreated } from '../../Events/AlertCreated';
+import { RouteChangedKey, IRouteChanged } from '../../Events/RouteChanged';
 
 export interface IBaseViewModel {
   stateChanged: wx.ICommand<any>;
@@ -23,7 +24,7 @@ export abstract class BaseViewModel implements IBaseViewModel {
   protected getDisplayName() { return Object.getName(this); }
 
   protected createAlert(text: string, header?: string, style?: string, timeout?: number) {
-    PubSub.publish(Events.AlertCreated, text, header, style, timeout);
+    PubSub.publish<IAlertCreated>(AlertCreatedKey, { text, header, style, timeout });
   }
 
   protected alertForError(error: Error, header = 'Unknown Error', style = 'danger', formatter?: (e: Error) => string) {
@@ -71,7 +72,7 @@ export abstract class BaseViewModel implements IBaseViewModel {
   }
 
   protected navTo(path: string, state?: Object, uriEncode = false) {
-    PubSub.publish(Events.RouteChanged, path, state, uriEncode);
+    PubSub.publish<IRouteChanged>(RouteChangedKey, { path, state, uriEncode });
   }
 
   public bind<T>(observable: Rx.Observable<T>, command: wx.ICommand<T>) {

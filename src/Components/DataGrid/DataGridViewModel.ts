@@ -126,9 +126,9 @@ export class DataGridViewModel<TData> extends BaseRoutableViewModel<IDataGridRou
     this.sortDirection(direction);
   }
 
-  getRoutingState() {
+  getRoutingState(context?: any) {
     return this.createRoutingState(state => {
-      state.search = this.search.getRoutingState();
+      state.search = this.search.getRoutingState(context);
 
       if (this.sortField() != null) {
         state.sortBy = this.sortField();

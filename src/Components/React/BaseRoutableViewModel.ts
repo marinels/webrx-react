@@ -4,19 +4,19 @@ import * as wx from 'webrx';
 
 import { BaseViewModel, IBaseViewModel } from './BaseViewModel';
 import PubSub from '../../Utils/PubSub';
-import Events from '../../Events';
+import { RoutingStateChangedKey, IRoutingStateChanged } from '../../Events/RoutingStateChanged';
 
 export interface IKeyedRoutableViewModel extends IBaseViewModel {
   getRoutingKey(): string;
 }
 
 export interface IRoutableViewModel<TRoutingState> extends IKeyedRoutableViewModel {
-  getRoutingState(): TRoutingState;
+  getRoutingState(context?: any): TRoutingState;
   setRoutingState(state: TRoutingState): void;
 }
 
 export interface IRoutedViewModel extends IKeyedRoutableViewModel {
-  getRoutingState(): Object;
+  getRoutingState(context?: any): Object;
   setRoutingState(state: Object): void;
 }
 
@@ -33,15 +33,15 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
     return initialState;
   }
 
-  protected routingStateChanged(...args: any[]) {
+  protected routingStateChanged(context?: any) {
     if (this.isRoutingEnabled) {
-      PubSub.publish(Events.RoutingStateChanged, args);
+      PubSub.publish<IRoutingStateChanged>(RoutingStateChangedKey, { context });
     }
   }
 
   public getRoutingKey() { return Object.getName(this); }
 
-  public abstract getRoutingState(): TRoutingState;
+  public abstract getRoutingState(context?: any): TRoutingState;
   public abstract setRoutingState(state: TRoutingState): void;
 }
 

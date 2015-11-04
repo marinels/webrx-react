@@ -32,7 +32,7 @@ export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> 
     }
   }
 
-  getRoutingState() {
+  getRoutingState(context?: any) {
     return this.createRoutingState(state => {
       if (String.isNullOrEmpty(this.filter()) === false) {
         state.filter = this.filter();

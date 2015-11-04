@@ -69,7 +69,7 @@ export class PagerViewModel extends BaseRoutableViewModel<IPagerRoutingState> {
       }));
   }
 
-  getRoutingState() {
+  getRoutingState(context?: any) {
     return this.createRoutingState(state => {
       if (this.hasValidLimit()) {
         state.limit = this.limit();
