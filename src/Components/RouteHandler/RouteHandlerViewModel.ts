@@ -39,7 +39,9 @@ export class RouteHandlerViewModel extends BaseViewModel {
         activator = this.routingMap['*'];
       }
 
-      if (activator != null) {
+      if (activator == null) {
+        viewModel = null;
+      } else {
         if (activator instanceof Function) {
           if (RouteManager.EnableRouteDebugging) {
             console.log(String.format('[Route    ] Routing to Path: {0}', route.path));
