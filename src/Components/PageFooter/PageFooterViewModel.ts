@@ -13,6 +13,8 @@ export interface IViewportDimension {
 export class PageFooterViewModel extends BaseViewModel {
   public static displayName = 'PageFooterViewModel';
 
+  public copyright: string;
+
   constructor(copyright?: string) {
     super();
 
@@ -25,8 +27,6 @@ export class PageFooterViewModel extends BaseViewModel {
     .results
     .select(x => (x && x.width && x.height) ? String.format('{0}x{1}', x.width, x.height) : '')
     .toProperty();
-
-  public copyright: string;
 }
 
 export default PageFooterViewModel;
