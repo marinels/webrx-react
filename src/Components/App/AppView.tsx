@@ -5,7 +5,7 @@ import * as React from 'react';
 import { Grid, Row, Col } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
-import AlertView from '../Alert/AlertView';
+import AlertHostView from '../Alert/AlertHostView';
 import RouteHandlerView from '../RouteHandler/RouteHandlerView';
 import PageHeaderView from '../PageHeader/PageHeaderView';
 import PageFooterView from '../PageFooter/PageFooterView';
@@ -28,21 +28,13 @@ export class AppView extends BaseView<IAppProps, AppViewModel> {
     BaseView.EnableViewDebugging = this.state.config.EnableViewDebugging;
   }
 
-  updateOn() {
-    return [
-      this.state.alerts.listChanged
-    ];
-  }
-
   render() {
-    let alerts = this.state.alerts == null ? '' : this.state.alerts.map(x => <AlertView viewModel={x} key={x.key}/>);
-
     return (
       <div className='App'>
         <Grid>
           <Row>
             <Col md={12}>
-              {alerts}
+              <AlertHostView viewModel={this.state.alerts} />
             </Col>
           </Row>
         </Grid>

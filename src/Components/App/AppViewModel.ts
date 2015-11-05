@@ -3,13 +3,11 @@
 import * as wx from 'webrx';
 
 import BaseViewModel from '../React/BaseViewModel';
+import AlertHostViewModel from '../Alert/AlertHostViewModel';
 import { RouteHandlerViewModel, IRoutingMap } from '../RouteHandler/RouteHandlerViewModel';
 import RouteManager from '../../Routing/RouteManager';
 import { PageHeaderViewModel, IMenuItem } from '../PageHeader/PageHeaderViewModel';
 import PageFooterViewModel from '../PageFooter/PageFooterViewModel';
-import AlertViewModel from '../Alert/AlertViewModel';
-import { default as PubSub, ISubscriptionHandle } from '../../Utils/PubSub';
-import { AlertCreatedKey, IAlertCreated } from '../../Events/AlertCreated';
 
 export interface IAppConfig {
   EnableViewModelDebugging?: boolean;
@@ -34,6 +32,8 @@ export class AppViewModel extends BaseViewModel {
 
     BaseViewModel.EnableViewModelDebugging = config.EnableViewModelDebugging === true;
 
+    this.alerts = new AlertHostViewModel();
+
     if (routeManager != null) {
       this.routeHandler = new RouteHandlerViewModel(routeManager, config.routingMap);
       RouteManager.EnableRouteDebugging = config.EnableRouteDebugging === true;
@@ -43,35 +43,11 @@ export class AppViewModel extends BaseViewModel {
     this.footer = new PageFooterViewModel()
   }
 
-  private currentAlertKey = 0;
-
-  private alertCreatedHandle: ISubscriptionHandle;
-
   public config: IAppConfig;
+  public alerts: AlertHostViewModel;
   public routeHandler: RouteHandlerViewModel;
   public header: PageHeaderViewModel;
   public footer: PageFooterViewModel;
-  public alerts = wx.list<AlertViewModel>();
-
-  private appendAlert(text: string, header?: string, style?: string, timeout?: number) {
-    let alert = new AlertViewModel(this.alerts, ++this.currentAlertKey, text, header, style, timeout);
-
-    this.alerts.add(alert);
-
-    return alert;
-  }
-
-  initialize() {
-    super.initialize();
-
-    this.alertCreatedHandle = PubSub.subscribe<IAlertCreated>(AlertCreatedKey, x => this.appendAlert(x.text, x.header, x.style, x.timeout));
-  }
-
-  cleanup() {
-    super.cleanup();
-
-    this.alertCreatedHandle = PubSub.unsubscribe(this.alertCreatedHandle);
-  }
 }
 
 export default AppViewModel;
