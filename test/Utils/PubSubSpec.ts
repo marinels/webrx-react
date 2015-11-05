@@ -46,7 +46,7 @@ describe('PubSub', () => {
     let testArg1: any;
     let testArg2: any;
     let handle = pubsub.subscribe<ITestArgs>('test', x => { testArg1 = x.arg1; testArg2 = x.arg2; });
-    pubsub.publish('test', <ITestArgs>{ arg1: 'testArgs1' });
+    pubsub.publish('test', <ITestArgs>{ arg1: 'testing' });
     expect(testArg1).toBeDefined();
     expect(testArg2).toBeUndefined();
     expect(testArg1).toBe('testing');

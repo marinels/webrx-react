@@ -9,10 +9,10 @@ import AlertViewModel from '../../src/Components/Alert/AlertViewModel';
 describe('App', () => {
   it('Has Falsy config properties by default', () => {
     let vm = new AppViewModel();
-    expect(vm.config.EnableViewModelDebugging).toBe(false);
-    expect(vm.config.EnableViewDebugging).toBe(false);
-    expect(vm.config.EnableRouteDebugging).toBe(false);
-    expect(vm.config.EnableStoreDebugging).toBe(false);
+    expect(vm.config.EnableViewModelDebugging).toBeFalsy();
+    expect(vm.config.EnableViewDebugging).toBeFalsy();
+    expect(vm.config.EnableRouteDebugging).toBeFalsy();
+    expect(vm.config.EnableStoreDebugging).toBeFalsy();
   });
 
   it('Has an observable alerts list', () => {
