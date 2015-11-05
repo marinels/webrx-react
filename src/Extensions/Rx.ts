@@ -8,9 +8,6 @@ import * as wx from 'webrx';
 import './Object';
 
 function invokeCommand<T, TResult>(command: wx.ICommand<TResult>) {
-  // prime the command's canExecute (otherwise it will always return false when called in the observable stream)
-  // this may be a scheduling problem? hard to tell.
-  command.canExecute(null);
   return (this as Rx.Observable<T>)
     // debounce typings want the (incorrectly named) durationSelector to return a number here
     // either fix the typing file or do a .select(_ => 0) after the where to fix this

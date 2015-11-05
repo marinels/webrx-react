@@ -35,13 +35,7 @@ export class DashboardViewModel extends BaseRoutableViewModel<IDashboardRoutingS
   }
 
   public setRoutingState(state: IDashboardRoutingState) {
-    // we must prime the command here because we need it to start observing
-    // canExecute changes so that they are available to the view once it connects
-    this.generateAlert.canExecute(null);
-
     this.alertText(Object.getValueOrDefault(state.alertText, ''));
-
-    this.notifyChanged();
   }
 }
 
