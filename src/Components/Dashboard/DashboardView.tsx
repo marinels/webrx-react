@@ -16,6 +16,8 @@ interface IDashboardProps extends IBaseViewProps {
 }
 
 export class DashboardView extends BaseView<IDashboardProps, DashboardViewModel> {
+  public static displayName = 'DashboardView';
+
   updateOn() {
     return [
       this.state.generateAlert.canExecuteObservable

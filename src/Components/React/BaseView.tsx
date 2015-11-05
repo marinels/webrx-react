@@ -11,6 +11,8 @@ export interface IBaseViewProps {
 }
 
 export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel extends IBaseViewModel> extends React.Component<TViewProps, TViewModel> {
+  public static displayName = 'BaseView';
+
   private updateSubscription: Rx.IDisposable;
 
   public static EnableViewDebugging = false;

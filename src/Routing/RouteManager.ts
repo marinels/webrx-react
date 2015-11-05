@@ -14,6 +14,7 @@ export interface IRoute {
 }
 
 export class RouteManager implements Rx.IDisposable {
+  public static displayName = 'RouteManager';
   public static EnableRouteDebugging = false;
 
   constructor(hashChanged: Rx.Observable<string>, public hashCodec = new HashCodec()) {

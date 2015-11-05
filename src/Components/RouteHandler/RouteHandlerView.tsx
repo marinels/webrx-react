@@ -18,6 +18,8 @@ interface IRouteHandlerProps extends IBaseViewProps {
 }
 
 export class RouteHandlerView extends BaseView<IRouteHandlerProps, RouteHandlerViewModel> {
+  public static displayName = 'RouteHandlerView';
+
   constructor(props?: IRouteHandlerProps, context?: any) {
     super(props, context);
 

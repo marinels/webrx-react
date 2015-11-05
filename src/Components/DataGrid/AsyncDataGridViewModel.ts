@@ -13,6 +13,8 @@ export interface IAsyncDataSource<TData> {
 export const DefaultLimit = 10;
 
 export class AsyncDataGridViewModel<TData> extends DataGridViewModel<TData> {
+  public static displayName = 'AsyncDataGridViewModel';
+
   constructor(
     private dataSource: IAsyncDataSource<TData>,
     canFilter = true,

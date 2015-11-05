@@ -19,6 +19,8 @@ interface IPageHeaderProps extends IBaseViewProps {
 }
 
 export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewModel> {
+  public static displayName = 'PageHeaderView';
+  
   render() {
     let menuItems = this.state.menuItems.map(x => {
       let icon = x.glyph == null ? null : <Glyphicon glyph={x.glyph} />;

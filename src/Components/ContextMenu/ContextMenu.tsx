@@ -9,6 +9,8 @@ import { Overlay, Popover, ListGroup, ListGroupItem, Glyphicon } from 'react-boo
 import './ContextMenu.less'
 
 export class MenuItem {
+  public static displayName = 'MenuItem';
+
   constructor(public content: any, public onSelect?: () => void, public glyph?: any) {
   }
 
@@ -50,6 +52,8 @@ interface IContextMenuState {
 }
 
 export class ContextMenu extends React.Component<IContextMenuProps, IContextMenuState> {
+  public static displayName = 'ContextMenu';
+
   constructor(props?: IContextMenuProps, context?: any) {
     super(props, context);
 

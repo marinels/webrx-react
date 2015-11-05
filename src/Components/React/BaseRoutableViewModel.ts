@@ -21,6 +21,8 @@ export interface IRoutedViewModel extends IKeyedRoutableViewModel {
 }
 
 export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel implements IRoutableViewModel<TRoutingState> {
+  public static displayName = 'BaseRoutableViewModel';
+
   constructor(public isRoutingEnabled = false) {
     super();
   }

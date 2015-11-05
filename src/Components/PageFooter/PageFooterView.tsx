@@ -12,6 +12,8 @@ interface IPageFooterProps extends IBaseViewProps {
 }
 
 export class PageFooterView extends BaseView<IPageFooterProps, PageFooterViewModel> {
+  public static displayName = 'PageFooterView';
+  
   private getDimensions(): IViewportDimension {
     return {
       width: window.innerWidth,

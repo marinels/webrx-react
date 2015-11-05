@@ -16,6 +16,7 @@ export interface IBaseViewModel {
 }
 
 export abstract class BaseViewModel implements IBaseViewModel {
+  public static displayName = 'BaseViewModel';
   public static EnableViewModelDebugging = false;
 
   private subscriptions: Rx.IDisposable[] = [];

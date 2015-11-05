@@ -20,9 +20,13 @@ interface IDataGridColumnProps {
   className?: string;
 }
 
-export class DataGridColumn extends React.Component<IDataGridColumnProps, any> {}
+export class DataGridColumn extends React.Component<IDataGridColumnProps, any> {
+  public static displayName = 'DataGridColumn';
+}
 
 class Column {
+  public static displayName = 'Column';
+
   constructor(public fieldName: string, public header?: string, public valueSelector?: (x: any) => any, public sortable = false, public className?: string) {
     if (this.header == null) {
       this.header = this.fieldName;
@@ -46,6 +50,8 @@ export interface IDataGridView {
 }
 
 export class TableView implements IDataGridView {
+  public static displayName = 'TableView';
+
   constructor(
     private rowKeySelector: (row: any, index: number, cells: any[]) => any = null,
     striped = true, bordered = true, condensed = true, hover = true, responsive = true
@@ -109,6 +115,8 @@ interface IDataGridProps extends IBaseViewProps {
 }
 
 export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any>> {
+  public static displayName = 'DataGridView';
+
   static defaultProps = {
     view: new TableView()
   }

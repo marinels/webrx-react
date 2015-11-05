@@ -20,6 +20,7 @@ interface ISubscription<T> {
 }
 
 class SubscriptionList<T> {
+  public static displayName = 'SubscriptionList';
   private currentHandle = 0;
   private list: ISubscription<T>[] = [];
 
@@ -51,6 +52,7 @@ interface IPubSubMap {
 }
 
 export class PubSub {
+  public static displayName = 'PubSub';
   private map = <IPubSubMap>{};
 
   private getList<T>(key: string, action: (list: SubscriptionList<T>) => void, createMissing = false) {

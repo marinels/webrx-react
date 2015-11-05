@@ -20,6 +20,8 @@ interface IAppProps extends IBaseViewProps {
 }
 
 export class AppView extends BaseView<IAppProps, AppViewModel> {
+  public static displayName = 'AppView';
+
   constructor(props?: IAppProps, context?: any) {
     super(props, context);
 

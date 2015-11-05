@@ -16,6 +16,8 @@ interface ISearchProps extends IBaseViewProps {
 }
 
 export class SearchView extends BaseView<ISearchProps, SearchViewModel> {
+  public static displayName = 'SearchView';
+
   render() {
     let inputProps = {
       placeholder: 'Enter Search Terms...',

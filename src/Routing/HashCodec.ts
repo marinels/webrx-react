@@ -4,6 +4,8 @@ import * as $ from 'jquery';
 import * as deparam from 'jquery-deparam';
 
 export class HashCodec {
+  public static displayName = 'HashCodec';
+
   private NormalizePath(path: string) {
     let pattern = /^\/*(\/.*?)\/*$/;
     let matches = path ? pattern.exec('/' + path) : null;

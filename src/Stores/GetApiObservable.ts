@@ -5,6 +5,7 @@ import * as $ from 'jquery';
 import 'rx.jquery';
 
 export abstract class ObservableApi {
+  public static displayName = 'ObservableApi';
   public static EnableStoreApiDebugging = false;
 
   constructor(public baseUri: string) {

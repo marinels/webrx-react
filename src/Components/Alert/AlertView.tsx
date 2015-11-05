@@ -17,6 +17,8 @@ interface IAlertProps extends IBaseViewProps {
 }
 
 export class AlertView extends BaseView<IAlertProps, AlertViewModel> {
+  public static displayName = 'AlertView';
+
   private showAlertIfNotVisible() {
     if (this.state.isVisible() == null) {
       Rx.Observable.return(true).delay(10).invokeCommand(this.state.show);

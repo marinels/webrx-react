@@ -11,6 +11,8 @@ interface IBindableInputProps {
 }
 
 export class BindableInput extends React.Component<IBindableInputProps, any> {
+  public static displayName = 'BindableInput';
+
   render() {
     let valueProp = this.props.valueProperty || 'value';
 

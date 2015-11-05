@@ -20,6 +20,8 @@ interface ITabsProps extends IBaseViewProps {
 }
 
 export class TabsView extends BaseView<ITabsProps, TabsViewModel> {
+  public static displayName = 'TabsView';
+
   private getTabs() {
     return this.props.dataTemplate == null ?
       this.props.children :
