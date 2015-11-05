@@ -80,7 +80,7 @@ export class PubSub {
     return null;
   }
 
-  public publish<T>(key: string, arg: T) {
+  public publish<T>(key: string, arg?: T) {
     this.getList<T>(key, x => x.invoke(arg));
   }
 }
