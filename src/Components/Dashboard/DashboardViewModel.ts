@@ -12,6 +12,10 @@ interface IDashboardRoutingState {
 export class DashboardViewModel extends BaseRoutableViewModel<IDashboardRoutingState> {
   public static displayName = 'DashboardViewModel';
 
+  constructor(isRoutingEnabled = false) {
+    super(isRoutingEnabled);
+  }
+
   public alertText = wx.property('');
 
   public generateAlert = wx.command(
