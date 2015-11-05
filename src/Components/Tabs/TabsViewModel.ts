@@ -11,18 +11,19 @@ export class TabsViewModel extends BaseViewModel {
     super();
 
     this.items = wx.list(initialContents);
+
+    if (this.items.length() > 0) {
+      this.selectIndex.execute(0);
+    }
   }
 
   public items: wx.IObservableList<any>;
-  public selectedItem = wx.property<any>();
-  public selectedIndex = wx.property<number>();
-
-  public selectTab = wx.command((x: number) => {
-    if (x >= 0 && x < this.items.length()) {
-      this.selectedItem(this.items.get(x));
-      this.selectedIndex(x);
-    }
-  });
+  public selectIndex = wx.asyncCommand((x: number) => Rx.Observable.return(x));
+  public selectedIndex = this.selectIndex.results.toProperty();
+  public selectedItem = this.selectedIndex.changed
+    .where(x => x >= 0 && x < this.items.length())
+    .select(x => this.items.get(x))
+    .toProperty();
 }
 
 export default TabsViewModel;

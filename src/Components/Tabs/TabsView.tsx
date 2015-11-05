@@ -47,7 +47,7 @@ export class TabsView extends BaseView<ITabsProps, TabsViewModel> {
   render() {
     return (
       <div className='Tabs'>
-        <Tabs activeKey={this.state.selectedIndex()} onSelect={this.bindCallback(x => x.selectedIndex, x => x[0])}>
+        <Tabs activeKey={this.state.selectedIndex()} onSelect={this.bindEvent(x => x.selectIndex, (x: number) => x)}>
           {this.getTabs()}
         </Tabs>
       </div>

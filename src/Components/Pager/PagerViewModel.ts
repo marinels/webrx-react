@@ -19,8 +19,10 @@ export class PagerViewModel extends BaseRoutableViewModel<IPagerRoutingState> {
     this.limit(limit);
   }
 
+  public selectPage = wx.asyncCommand((x: number) => Rx.Observable.return(x));
   public itemCount = wx.property<number>();
   public limit = wx.property<number>();
+  public selectedPage = this.selectPage.results.toProperty();
   public pageCount = Rx.Observable
     .combineLatest(
       this.itemCount.changed,
@@ -30,7 +32,6 @@ export class PagerViewModel extends BaseRoutableViewModel<IPagerRoutingState> {
     .where(x => x.itemCount != null && x.limit != null && x.limit > 0)
     .select(x => Math.ceil(x.itemCount / x.limit))
     .toProperty();
-  public selectedPage = wx.property<number>();
   public offset = wx
     .whenAny(
       this.selectedPage,
@@ -54,10 +55,8 @@ export class PagerViewModel extends BaseRoutableViewModel<IPagerRoutingState> {
     super.initialize();
 
     this.subscribe(this.pageCount.changed
-      .startWith(this.pageCount())
-      .subscribe(x => {
-        this.selectedPage(this.selectedPage() || 1);
-      }));
+      .select(x => this.selectedPage() || 1)
+      .invokeCommand(this.selectPage));
 
     this.subscribe(wx
       .whenAny(
@@ -66,9 +65,9 @@ export class PagerViewModel extends BaseRoutableViewModel<IPagerRoutingState> {
         () => null
       )
       .skip(1)
-      .subscribe(x => {
-        this.routingStateChanged();
-      }));
+      .invokeCommand(this.routingStateChanged));
+
+    this.selectPage.execute(this.selectedPage() || 1);
   }
 
   getRoutingState(context?: any) {

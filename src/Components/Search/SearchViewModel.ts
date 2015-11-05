@@ -22,9 +22,8 @@ export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> 
   initialize() {
     super.initialize();
 
-    this.subscribe(this.search.results.subscribe(x => {
-      this.routingStateChanged();
-    }));
+    this.subscribe(this.search.results
+      .invokeCommand(this.routingStateChanged));
 
     if (this.isLiveSearchEnabled) {
       this.subscribe(this.filter.changed

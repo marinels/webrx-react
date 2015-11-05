@@ -21,12 +21,16 @@ export class DashboardViewModel extends BaseRoutableViewModel<IDashboardRoutingS
   public generateAlert = wx.command(
     x => {
       this.createAlert(this.alertText(), moment().format(), 'info');
-      this.routingStateChanged();
     },
     wx.whenAny(this.alertText, x => {
       return String.isNullOrEmpty(x) === false;
     })
   );
+
+  initialize() {
+    this.subscribe(this.generateAlert.results
+      .invokeCommand(this.routingStateChanged));
+  }
 
   public getRoutingState(context?: any) {
     return <IDashboardRoutingState>{

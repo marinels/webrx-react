@@ -165,16 +165,16 @@ interface IListProps extends IBaseViewProps {
 
 export class ListView extends BaseView<IListProps, ListViewModel<any>> {
   public static displayName = 'ListView';
-  
+
   public isSelected(item: any, index?: number) {
     return index == null ? this.state.selectedItem() === item : this.state.selectedIndex() === index;
   }
 
   public selectItem(item: any, index?: number) {
     if (index == null) {
-      this.state.selectedItem(item);
+      this.state.selectItem.execute(item);
     } else {
-      this.state.selectedIndex(index);
+      this.state.selectIndex.execute(index);
     }
   }
 
