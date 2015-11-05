@@ -46,10 +46,7 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['', '.ts', '.tsx', '.webpack.js', '.web.js', '.js'],
-    alias: {
-      moment: 'moment/moment.js'
-    }
+    extensions: ['', '.ts', '.tsx', '.webpack.js', '.web.js', '.js']
   },
   stats: {
     reasons: true,
