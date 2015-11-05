@@ -9,19 +9,8 @@ function isNullOrEmpty(value: string) {
 }
 
 function format(format: string, ...args: any[]) {
-  if (format) {
-    let rx = /\{(\d+)\}/;
-    let m = rx.exec(format);
-
-    while (m) {
-      let i = parseInt(m[1]);
-      if (args.length > i) {
-        format = format.replace(m[0], args[i]);
-      } else {
-        throw 'Out of Range';
-      }
-      m = rx.exec(format);
-    }
+  if (format != null) {
+    format = format.replace(/\{\d+\}/g, x => args[parseInt(x.match(/\d+/)[0])]);
   }
 
   return format;
