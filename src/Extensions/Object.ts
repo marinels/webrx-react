@@ -47,18 +47,45 @@ function dispose<T>(disposable: T, returnNull = true) {
   return returnNull ? null : disposable;
 }
 
-function getName(source: any, undefined = 'undefined') {
+function getName(source: Object, undefined = 'undefined', isStatic = false) {
+  const typeNameProperty = 'typeName';
+  const displayNameProperty = 'displayName';
+  const nameProperty = 'name';
+
+  interface ITypeName {
+    typeName: string;
+  }
+
+  interface IDisplayName {
+    displayName: string;
+  }
+
+  interface IName {
+    name: string;
+  }
+
   let name: string = null;
 
   if (source) {
-    if (source.displayName) {
-      name = source.displayName;
-    } else if (source.constructor && source.constructor.displayName) {
-      name = source.constructor.displayName;
-    } else if (source instanceof Function) {
-      name = source.name;
-    } else if (source.constructor) {
-      name = source.constructor.name;
+    if (source.hasOwnProperty(typeNameProperty)) {
+      name = (source as ITypeName).typeName;
+    } else if (source.hasOwnProperty(displayNameProperty)) {
+      name = (source as IDisplayName).displayName;
+    } else if (source.hasOwnProperty(nameProperty)) {
+      name = (source as IName).name;
+    } else if (source.constructor != null) {
+      // this allows us to inspect the static properties of the source object
+      // but we don't want to go beyond the the static properties
+      if (isStatic === false) {
+        name = getName(source.constructor, undefined, true);
+      } else {
+        // IE is pretty dumb and doesn't expose any useful naming properties
+        // so we can try and extract it from the toString()
+        let match = /function (.+)\(/.exec(source.toString());
+        if (match != null && match.length >= 2) {
+          name = match[1];
+        }
+      }
     }
   }
 
