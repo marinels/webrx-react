@@ -53,6 +53,8 @@ function getName(source: any, undefined = 'undefined') {
   if (source) {
     if (source.displayName) {
       name = source.displayName;
+    } else if (source.constructor && source.constructor.displayName) {
+      name = source.constructor.displayName;
     } else if (source instanceof Function) {
       name = source.name;
     } else if (source.constructor) {
