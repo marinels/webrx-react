@@ -21,6 +21,8 @@ export class DashboardView extends BaseView<IDashboardProps, DashboardViewModel>
   updateOn() {
     return [
       this.state.generateAlert.canExecuteObservable
+        .debounce(100)
+        .distinctUntilChanged()
     ];
   }
 
