@@ -22,16 +22,35 @@ describe('PubSub', () => {
     expect(called).toBe(false);
   })
 
-  it('can handle publish args', () => {
+  it('can handle anonymous publish args', () => {
     let pubsub = new PubSub();
     let testArg1: any;
     let testArg2: any;
-    let handle = pubsub.subscribe('test', (x: any[]) => { testArg1 = x[0]; testArg2 = x[1]; });
-    pubsub.publish('test', 'testing');
+    let handle = pubsub.subscribe('test', (x: {arg1: string, arg2: string}) => { testArg1 = x.arg1; testArg2 = x.arg2; });
+    pubsub.publish('test', {arg1: 'testing'});
     expect(testArg1).toBeDefined();
     expect(testArg2).toBeUndefined();
     expect(testArg1).toBe('testing');
-    pubsub.publish('test', 'testing1', 'testing2');
+    pubsub.publish('test', {arg1: 'testing1', arg2: 'testing2'});
+    expect(testArg2).toBeDefined();
+    expect(testArg1).toBe('testing1');
+    expect(testArg2).toBe('testing2');
+  });
+
+  it('can handle strongly typed publish args', () => {
+    interface ITestArgs {
+      arg1: string;
+      arg2: string;
+    }
+    let pubsub = new PubSub();
+    let testArg1: any;
+    let testArg2: any;
+    let handle = pubsub.subscribe<ITestArgs>('test', x => { testArg1 = x.arg1; testArg2 = x.arg2; });
+    pubsub.publish('test', <ITestArgs>{ arg1: 'testArgs1' });
+    expect(testArg1).toBeDefined();
+    expect(testArg2).toBeUndefined();
+    expect(testArg1).toBe('testing');
+    pubsub.publish('test', <ITestArgs>{arg1: 'testing1', arg2: 'testing2'});
     expect(testArg2).toBeDefined();
     expect(testArg1).toBe('testing1');
     expect(testArg2).toBe('testing2');
