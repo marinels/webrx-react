@@ -1,6 +1,10 @@
 var path = require('path');
 var webpack = require('webpack');
 
+var defines = {
+  DEBUG: false,
+  PRODUCTION: false
+};
 var plugins = [];
 var output = 'build';
 var fileName = 'app.js';
@@ -8,6 +12,7 @@ var fileName = 'app.js';
 var isProduction = process.argv.indexOf('-p') >= 0 ? true : false;
 
 if (isProduction) {
+  defines.PRODUCTION = true;
   fileName = 'app.min.js';
 
   plugins.push(
@@ -21,7 +26,13 @@ if (isProduction) {
     new webpack.optimize.DedupePlugin(),
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en-ca|en-gb/)
   );
+} else {
+  defines.DEBUG = true;
 }
+
+plugins.push(
+  new webpack.DefinePlugin(defines)
+)
 
 module.exports = {
   entry: [
