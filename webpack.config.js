@@ -4,13 +4,11 @@ var webpack = require('webpack');
 var plugins = [];
 var output = 'build';
 var fileName = 'app.js';
-var devTool = undefined;
 
 var isProduction = process.argv.indexOf('-p') >= 0 ? true : false;
 
 if (isProduction) {
   fileName = 'app.min.js';
-  devTool = 'source-map';
 
   plugins.push(
     new webpack.optimize.UglifyJsPlugin({
@@ -34,7 +32,7 @@ module.exports = {
     path: path.join(__dirname, output),
     filename: fileName
   },
-  devTool: devTool,
+  devtool: '#source-map',
   plugins: plugins,
   module: {
     loaders: [
