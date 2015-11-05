@@ -27,9 +27,15 @@ module.exports = {
     extensions: ['', '.ts', '.tsx', '.webpack.js', '.web.js', '.js']
   },
   stats: {
-    colors: true,
+    reasons: true,
+    chunkModules: true,
+    chunkOrigins: true,
     modules: true,
-    reasons: true
+    cached: true,
+    cachedAssets: true,
+    source: true,
+    errorDetails: true,
+    publicPath: true
   },
   progress: true,
   failOnError: true
