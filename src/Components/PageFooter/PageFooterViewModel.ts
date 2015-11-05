@@ -11,6 +11,8 @@ export interface IViewportDimension {
 }
 
 export class PageFooterViewModel extends BaseViewModel {
+  public static displayName = 'PageFooterViewModel';
+
   constructor(copyright?: string) {
     super();
 

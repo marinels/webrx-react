@@ -17,6 +17,8 @@ export const DefaultStyle = 'info';
 export const DefaultTimeout = 5000;
 
 export class AlertViewModel extends BaseViewModel {
+  public static displayName = 'AlertViewModel';
+
   constructor(private owner: wx.IObservableList<AlertViewModel>, public key: any, public text: string, public header?: string, public style = DefaultStyle, private timeout = DefaultTimeout) {
     super();
   }

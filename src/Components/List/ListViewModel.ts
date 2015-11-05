@@ -5,6 +5,8 @@ import * as wx from 'webrx';
 import BaseViewModel from '../React/BaseViewModel';
 
 export class ListViewModel<T> extends BaseViewModel {
+  public static displayName = 'ListViewModel';
+
   constructor(initialContents?: T[]) {
     super();
 

@@ -5,6 +5,8 @@ import * as wx from 'webrx';
 import BaseViewModel from '../React/BaseViewModel';
 
 export class TabsViewModel extends BaseViewModel {
+  public static displayName = 'TabsViewModel';
+
   constructor(initialContents?: any[]) {
     super();
 

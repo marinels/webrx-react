@@ -19,6 +19,8 @@ export interface IDataGridRoutingState {
 }
 
 export class DataGridViewModel<TData> extends BaseRoutableViewModel<IDataGridRoutingState> {
+  public static displayName = 'DataGridViewModel';
+
   constructor(
     protected filterer?: (item: TData, filter: string) => boolean,
     protected comparer?: (sortField: string, sortDirection: SortDirection, a: TData, b: TData) => number,

@@ -17,6 +17,8 @@ export interface IRoutingMap {
 }
 
 export class RouteHandlerViewModel extends BaseViewModel {
+  public static displayName = 'RouteHandlerViewModel';
+
   constructor(public manager: RouteManager, public routingMap: IRoutingMap) {
     super();
   }
@@ -34,7 +36,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
     if (route.path !== this.currentPath) {
       this.currentPath = route.path;
-      
+
       let activator = this.routingMap[route.path];
 
       if (activator == null) {

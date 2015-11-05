@@ -12,6 +12,8 @@ export interface IMenuItem {
 }
 
 export class PageHeaderViewModel extends BaseViewModel {
+  public static displayName = 'PageHeaderViewModel';
+
   constructor(menuItems?: IMenuItem[]) {
     super();
 

@@ -21,6 +21,8 @@ export interface IAppConfig {
 }
 
 export class AppViewModel extends BaseViewModel {
+  public static displayName = 'AppViewModel';
+
   constructor(public routeManager?: RouteManager, config = <IAppConfig>{}) {
     super();
 

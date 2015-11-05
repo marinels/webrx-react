@@ -11,6 +11,8 @@ export interface IPagerRoutingState {
 }
 
 export class PagerViewModel extends BaseRoutableViewModel<IPagerRoutingState> {
+  public static displayName = 'PagerViewModel';
+
   constructor(limit?: number, isRoutingEnabled = false) {
     super(isRoutingEnabled);
 
