@@ -9,7 +9,17 @@ var isProduction = process.argv.indexOf('-p') >= 0 ? true : false;
 if (isProduction) {
   output = 'dist';
 
-  plugins.push(new webpack.optimize.UglifyJsPlugin({minimize: true}));
+  plugins.push(
+    new webpack.optimize.UglifyJsPlugin({
+      minimize: true,
+      comments: false,
+      compress: {
+        warnings: false
+      }
+    }),
+    new webpack.optimize.DedupePlugin(),
+    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en-ca|en-gb/)
+  );
 }
 
 module.exports = {
@@ -34,12 +44,21 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['', '.ts', '.tsx', '.webpack.js', '.web.js', '.js']
+    extensions: ['', '.ts', '.tsx', '.webpack.js', '.web.js', '.js'],
+    alias: {
+      moment: 'moment/moment.js'
+    }
   },
   stats: {
-    colors: true,
+    reasons: true,
+    chunkModules: true,
+    chunkOrigins: true,
     modules: true,
-    reasons: true
+    cached: true,
+    cachedAssets: true,
+    source: true,
+    errorDetails: true,
+    publicPath: true
   },
   progress: true,
   failOnError: true
