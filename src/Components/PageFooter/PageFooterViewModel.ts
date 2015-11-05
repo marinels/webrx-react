@@ -21,11 +21,11 @@ export class PageFooterViewModel extends BaseViewModel {
     this.copyright = copyright ? copyright : moment().format('YYYY');
   }
 
-  public testCommand = wx.command(x => console.log(x));
-  public viewportDimensionsChanged = wx.asyncCommand<IViewportDimension>(x => Rx.Observable.return(x));
-  public viewportDimensions = this.viewportDimensionsChanged
-    .results
-    .select(x => (x && x.width && x.height) ? String.format('{0}x{1}', x.width, x.height) : '')
+  public viewportDimensionsChanged = wx.asyncCommand((x: IViewportDimension) => Rx.Observable.return(x));
+  public viewportDimensions = this.viewportDimensionsChanged.results
+    .debounce(100)
+    .where(x => x != null && x.width != null && x.height != null)
+    .select(x => String.format('{0}x{1}', x.width, x.height))
     .toProperty();
 }
 
