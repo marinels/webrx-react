@@ -25,12 +25,14 @@ if (container) {
     .startWith(window.location.hash);
 
   let config: IAppConfig = {
-    EnableViewModelDebugging: true,
-    EnableViewDebugging: true,
-    EnableRouteDebugging: true,
+    EnableViewModelDebugging: DEBUG,
+    EnableViewDebugging: DEBUG,
+    EnableRouteDebugging: DEBUG,
+    EnableStoreDebugging: DEBUG,
 
     routingMap: RoutingMap
   };
+  
   let routeManager = new RouteManager(hashChanged)
   let viewModel = new AppViewModel(routeManager, config);
 

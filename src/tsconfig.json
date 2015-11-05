@@ -34,6 +34,7 @@
     "typings/rx-jquery/rx.jquery.d.ts",
     "typings/rx/rx.all.d.ts",
     "typings/tsd.d.ts",
+    "typings/webpack-defines/webpack-defines.d.ts",
     "typings/webrx/web.rx.d.ts",
     "Extensions/Extensions.d.ts",
     "Extensions/Object.ts",
