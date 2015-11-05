@@ -14,15 +14,12 @@ export class ListViewModel<T> extends BaseViewModel {
   }
 
   public items: wx.IObservableList<T>;
-  public selectedItem = wx.property<any>();
-  public selectedIndex = wx.property<number>();
-
-  public selectItem = wx.command((x: number) => {
-    if (x >= 0 && x < this.items.length()) {
-      this.selectedItem(this.items.get(x));
-      this.selectedIndex(x);
-    }
-  });
+  public selectIndex = wx.asyncCommand((x: number) => Rx.Observable.return(x));
+  public selectedIndex = this.selectIndex.results.toProperty();
+  public selectedItem = this.selectedIndex.changed
+    .where(x => x >= 0 && x < this.items.length())
+    .select(x => this.items.get(x))
+    .toProperty();
 }
 
 export default ListViewModel;
