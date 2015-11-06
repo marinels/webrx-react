@@ -32,7 +32,7 @@ declare module wx {
         has(key: T): boolean;
         delete(key: T): boolean;
         clear(): void;
-        forEach(callback: (x: T) => void, thisArg?: any): void;
+        forEach(callback: (item: T) => void, thisArg?: any): void;
         size: number;
         isEmulated: boolean;
     }
@@ -62,6 +62,12 @@ declare module wx {
         changed: Rx.Observable<T>;
         source?: Rx.Observable<T>;
     }
+
+    export interface IRangeInfo {
+        from: number;
+        to?: number;
+    }
+
     /**
     /* Provides information about a changed property value on an object
     /* @interface
@@ -74,10 +80,8 @@ declare module wx {
     /* Encapsulates change notifications published by various IObservableList members
     /* @interface
     **/
-    interface IListChangeInfo<T> {
+    interface IListChangeInfo<T> extends IRangeInfo {
         items: T[];
-        from: number;
-        to?: number;
     }
     /**
     /* INotifyListItemChanged provides notifications for collection item updates, ie when an object in
@@ -185,15 +189,23 @@ declare module wx {
         **/
         suppressChangeNotifications(): Rx.IDisposable;
     }
+
     /**
-    /* Represents a collection of objects that can be individually accessed by index.
+    /* Represents a read-only collection of objects that can be individually accessed by index.
     /* @interface
     **/
-    interface IObservableReadOnlyList<T> extends INotifyListChanged<T>, INotifyListItemChanged {
+    interface IList<T> {
         length: IObservableProperty<number>;
         get(index: number): T;
         isReadOnly: boolean;
         toArray(): Array<T>;
+    }
+
+    /**
+    /* Represents an observable read-only collection of objects that can be individually accessed by index.
+    /* @interface
+    **/
+    interface IObservableReadOnlyList<T> extends IList<T>, INotifyListChanged<T>, INotifyListItemChanged {
         /**
         /* Creates a live-projection of itself that can be filtered, re-ordered and mapped.
         /* @param filter {(item: T) => boolean} A filter to determine whether to exclude items in the derived collection
@@ -201,26 +213,47 @@ declare module wx {
         /* @param selector {(T) => TNew} A function that will be run on each item to project it to a different type
         /* @param refreshTrigger {Rx.Observable<TDontCare>} When this Observable is signalled, the derived collection will be manually reordered/refiltered.
         **/
-        project<TNew, TDontCare>(filter?: (item: T) => boolean, orderer?: (a: TNew, b: TNew) => number, selector?: (item: T) => TNew, refreshTrigger?: Rx.Observable<TDontCare>, scheduler?: Rx.IScheduler): IObservableReadOnlyList<TNew>;
+        project<TNew, TDontCare>(filter?: (item: T) => boolean, orderer?: (a: TNew, b: TNew) => number,
+            selector?: (item: T) => TNew, refreshTrigger?: Rx.Observable<TDontCare>, scheduler?: Rx.IScheduler): IObservableReadOnlyList<TNew>;
         /**
         /* Creates a live-projection of itself that can be filtered, re-ordered and mapped.
         /* @param filter {(item: T) => boolean} A filter to determine whether to exclude items in the derived collection
         /* @param orderer {(a: TNew, b: TNew) => number} A comparator method to determine the ordering of the resulting collection
         /* @param refreshTrigger {Rx.Observable<TDontCare>} When this Observable is signalled, the derived collection will be manually reordered/refiltered.
         **/
-        project<TDontCare>(filter?: (item: T) => boolean, orderer?: (a: T, b: T) => number, refreshTrigger?: Rx.Observable<TDontCare>, scheduler?: Rx.IScheduler): IObservableReadOnlyList<T>;
+        project<TDontCare>(filter?: (item: T) => boolean, orderer?: (a: T, b: T) => number,
+            refreshTrigger?: Rx.Observable<TDontCare>, scheduler?: Rx.IScheduler): IObservableReadOnlyList<T>;
         /**
         /* Creates a live-projection of itself that can be filtered, re-ordered and mapped.
         /* @param filter {(item: T) => boolean} A filter to determine whether to exclude items in the derived collection
         /* @param refreshTrigger {Rx.Observable<TDontCare>} When this Observable is signalled, the derived collection will be manually reordered/refiltered.
         **/
-        project<TDontCare>(filter?: (item: T) => boolean, refreshTrigger?: Rx.Observable<TDontCare>, scheduler?: Rx.IScheduler): IObservableReadOnlyList<T>;
+        project<TDontCare>(filter?: (item: T) => boolean, refreshTrigger?: Rx.Observable<TDontCare>,
+            scheduler?: Rx.IScheduler): IObservableReadOnlyList<T>;
         /**
         /* Creates a live-projection of itself that can be filtered, re-ordered and mapped.
         /* @param refreshTrigger {Rx.Observable<TDontCare>} When this Observable is signalled, the derived collection will be manually reordered/refiltered.
         **/
         project<TDontCare>(refreshTrigger?: Rx.Observable<TDontCare>, scheduler?: Rx.IScheduler): IObservableReadOnlyList<T>;
+
+        /**
+        * Creates a paged live-projection of itself.
+        * @param pageSize {number} Initial page-size of the projection
+        * @param currentPage {number} Current page of the projection
+        **/
+        page(pageSize: number, currentPage?: number, scheduler?: Rx.IScheduler): IObservablePagedReadOnlyList<T>;
     }
+
+    /**
+    * Represents a paged observable read-only collection of objects that can be individually accessed by index.
+    * @interface
+    **/
+    interface IObservablePagedReadOnlyList<T> extends IList<T>, INotifyListChanged<T> {
+        pageSize: IObservableProperty<number>;
+        currentPage: IObservableProperty<number>;
+        pageCount: IObservableProperty<number>;
+    }
+
     /**
     /* IObservableList of T represents a list that can notify when its
     /* contents are changed (either items are added/removed, or the object
@@ -586,6 +619,7 @@ declare module wx {
         history: IHistory;
         title: IObservableProperty<string>;
         version: string;
+        devModeEnable(): void;
     }
     interface IRoute {
         parse(url: any): Object;
@@ -891,6 +925,7 @@ declare module wx {
         itemText?: string;
         itemValue?: string;
         itemClass?: string;
+        cssClass?: string;
         multiple?: boolean;
         required?: boolean;
         autofocus?: boolean;
@@ -958,6 +993,7 @@ declare module wx {
         domManager: string;
         router: string;
         messageBus: string;
+        httpClient: string;
         expressionCompiler: string;
         templateEngine: string;
         hasValueBindingValue: string;
@@ -1042,6 +1078,12 @@ declare module wx {
     **/
     function extend(src: Object, dst: Object, inherited?: boolean): Object;
     /**
+    * Determines if the specified DOM element has the specified CSS-Class
+    * @param {Node} node The target element
+    * @param {string} className The classe to check
+    */
+    function hasCssClass(node: HTMLElement, className: string): boolean;
+    /**
     /* Toggles one ore more css classes on the specified DOM element
     /* @param {Node} node The target element
     /* @param {boolean} shouldHaveClass True if the classes should be added to the element, false if they should be removed
@@ -1106,15 +1148,50 @@ declare module wx {
     /* @param {any} target The object to observe
     /* @return {Rx.Observable<T>} An observable
     **/
-    function observeObject(target: any, defaultExceptionHandler: Rx.Observer<Error>, onChanging?: boolean): Rx.Observable<IPropertyChangedEventArgs>;
-    function whenAny<TRet, T1>(property1: IObservableProperty<T1>, selector: (p1: T1) => TRet): Rx.Observable<TRet>;
-    function whenAny<TRet, T1, T2>(property1: IObservableProperty<T1>, property2: IObservableProperty<T2>, selector: (p1: T1, p2: T2) => TRet): Rx.Observable<TRet>;
-    function whenAny<TRet, T1, T2, T3>(property1: IObservableProperty<T1>, property2: IObservableProperty<T2>, property3: IObservableProperty<T3>, selector: (p1: T1, p2: T2, p3: T3) => TRet): Rx.Observable<TRet>;
-    function whenAny<TRet, T1, T2, T3, T4>(property1: IObservableProperty<T1>, property2: IObservableProperty<T2>, property3: IObservableProperty<T3>, property4: IObservableProperty<T4>, selector: (p1: T1, p2: T2, p3: T3, p4: T4) => TRet): Rx.Observable<TRet>;
-    function whenAny<TRet, T1, T2, T3, T4, T5>(property1: IObservableProperty<T1>, property2: IObservableProperty<T2>, property3: IObservableProperty<T3>, property4: IObservableProperty<T4>, property5: IObservableProperty<T5>, selector: (p1: T1, p2: T2, p3: T3, p4: T4, p5: T5) => TRet): Rx.Observable<TRet>;
-    function whenAny<TRet, T1, T2, T3, T4, T5, T6>(property1: IObservableProperty<T1>, property2: IObservableProperty<T2>, property3: IObservableProperty<T3>, property4: IObservableProperty<T4>, property5: IObservableProperty<T5>, property6: IObservableProperty<T6>, selector: (p1: T1, p2: T2, p3: T3, p4: T4, p5: T5, p6: T6) => TRet): Rx.Observable<TRet>;
-    function whenAny<TRet, T1, T2, T3, T4, T5, T6, T7>(property1: IObservableProperty<T1>, property2: IObservableProperty<T2>, property3: IObservableProperty<T3>, property4: IObservableProperty<T4>, property5: IObservableProperty<T5>, property6: IObservableProperty<T6>, property7: IObservableProperty<T7>, selector: (p1: T1, p2: T2, p3: T3, p4: T4, p5: T5, p6: T6, p7: T7) => TRet): Rx.Observable<TRet>;
-    function whenAny<TRet, T1, T2, T3, T4, T5, T6, T7, T8>(property1: IObservableProperty<T1>, property2: IObservableProperty<T2>, property3: IObservableProperty<T3>, property4: IObservableProperty<T4>, property5: IObservableProperty<T5>, property6: IObservableProperty<T6>, property7: IObservableProperty<T7>, property8: IObservableProperty<T8>, selector: (p1: T1, p2: T2, p3: T3, p4: T4, p5: T5, p6: T6, p7: T7, p8: T8) => TRet): Rx.Observable<TRet>;
+    function whenAny<TRet, T1>(
+        arg1: wx.IObservableProperty<T1> | Rx.Observable<T1>,
+        selector: (arg1: T1) => TRet): Rx.Observable<TRet>;
+
+    function whenAny<TRet, T1, T2>(
+        arg1: wx.IObservableProperty<T1> | Rx.Observable<T1>, arg2: wx.IObservableProperty<T2> | Rx.Observable<T2>,
+        selector: (arg1: T1, arg2: T2) => TRet): Rx.Observable<TRet>;
+
+    function whenAny<TRet, T1, T2, T3>(
+        arg1: wx.IObservableProperty<T1> | Rx.Observable<T1>, arg2: wx.IObservableProperty<T2> | Rx.Observable<T2>,
+        arg3: wx.IObservableProperty<T3> | Rx.Observable<T3>,
+        selector: (arg1: T1, arg2: T2, arg3: T3) => TRet): Rx.Observable<TRet>;
+
+    function whenAny<TRet, T1, T2, T3, T4>(
+        arg1: wx.IObservableProperty<T1> | Rx.Observable<T1>, arg2: wx.IObservableProperty<T2> | Rx.Observable<T2>,
+        arg3: wx.IObservableProperty<T3> | Rx.Observable<T3>, arg4: wx.IObservableProperty<T4> | Rx.Observable<T4>,
+        selector: (arg1: T1, arg2: T2, arg3: T3, arg4: T4) => TRet): Rx.Observable<TRet>;
+
+    function whenAny<TRet, T1, T2, T3, T4, T5>(
+        arg1: wx.IObservableProperty<T1> | Rx.Observable<T1>, arg2: wx.IObservableProperty<T2> | Rx.Observable<T2>,
+        arg3: wx.IObservableProperty<T3> | Rx.Observable<T3>, arg4: wx.IObservableProperty<T4> | Rx.Observable<T4>,
+        arg5: wx.IObservableProperty<T5> | Rx.Observable<T5>,
+        selector: (arg1: T1, arg2: T2, arg3: T3, arg4: T4, arg5: T5) => TRet): Rx.Observable<TRet>;
+
+    function whenAny<TRet, T1, T2, T3, T4, T5, T6>(
+        arg1: wx.IObservableProperty<T1> | Rx.Observable<T1>, arg2: wx.IObservableProperty<T2> | Rx.Observable<T2>,
+        arg3: wx.IObservableProperty<T3> | Rx.Observable<T3>, arg4: wx.IObservableProperty<T4> | Rx.Observable<T4>,
+        arg5: wx.IObservableProperty<T5> | Rx.Observable<T5>, arg6: wx.IObservableProperty<T6> | Rx.Observable<T6>,
+        selector: (arg1: T1, arg2: T2, arg3: T3, arg4: T4, arg5: T5, arg6: T6) => TRet): Rx.Observable<TRet>;
+
+    function whenAny<TRet, T1, T2, T3, T4, T5, T6, T7>(
+        arg1: wx.IObservableProperty<T1> | Rx.Observable<T1>, arg2: wx.IObservableProperty<T2> | Rx.Observable<T2>,
+        arg3: wx.IObservableProperty<T3> | Rx.Observable<T3>, arg4: wx.IObservableProperty<T4> | Rx.Observable<T4>,
+        arg5: wx.IObservableProperty<T5> | Rx.Observable<T5>, arg6: wx.IObservableProperty<T6> | Rx.Observable<T6>,
+        arg7: wx.IObservableProperty<T7> | Rx.Observable<T7>,
+        selector: (arg1: T1, arg2: T2, arg3: T3, arg4: T4, arg5: T5, arg6: T6, arg7: T7) => TRet): Rx.Observable<TRet>;
+
+    function whenAny<TRet, T1, T2, T3, T4, T5, T6, T7, T8>(
+        arg1: wx.IObservableProperty<T1> | Rx.Observable<T1>, arg2: wx.IObservableProperty<T2> | Rx.Observable<T2>,
+        arg3: wx.IObservableProperty<T3> | Rx.Observable<T3>, arg4: wx.IObservableProperty<T4> | Rx.Observable<T4>,
+        arg5: wx.IObservableProperty<T5> | Rx.Observable<T5>, arg6: wx.IObservableProperty<T6> | Rx.Observable<T6>,
+        arg7: wx.IObservableProperty<T7> | Rx.Observable<T7>, arg8: wx.IObservableProperty<T8> | Rx.Observable<T8>,
+        selector: (arg1: T1, arg2: T2, arg3: T3, arg4: T4, arg5: T5, arg6: T6, arg7: T7, arg8: T8) => TRet): Rx.Observable<TRet>;
+
     /**
     /* FOR INTERNAL USE ONLY
     /* Throw an error containing the specified description
@@ -1168,7 +1245,7 @@ declare module wx {
     /* @param {any} thisArg Object to use as this when executing the executeAsync
     /* @return {Command<any>} A Command whose ExecuteAsync just returns the CommandParameter immediately. Which you should ignore!
     **/
-    function command(execute: (x: any) => void, canExecute?: Rx.Observable<boolean>, scheduler?: Rx.IScheduler, thisArg?: any): ICommand<any>;
+    function command(execute: (param: any) => void, canExecute?: Rx.Observable<boolean>, scheduler?: Rx.IScheduler, thisArg?: any): ICommand<any>;
     /**
     /* Creates a default Command that has a synchronous action.
     /* @param {(any) => void} execute The action to executed when the command gets invoked
@@ -1176,14 +1253,14 @@ declare module wx {
     /* @param {any} thisArg Object to use as this when executing the executeAsync
     /* @return {Command<any>} A Command whose ExecuteAsync just returns the CommandParameter immediately. Which you should ignore!
     **/
-    function command(execute: (x: any) => void, canExecute?: Rx.Observable<boolean>, thisArg?: any): ICommand<any>;
+    function command(execute: (param: any) => void, canExecute?: Rx.Observable<boolean>, thisArg?: any): ICommand<any>;
     /**
     /* Creates a default Command that has a synchronous action.
     /* @param {(any) => void} execute The action to executed when the command gets invoked
     /* @param {any} thisArg Object to use as this when executing the executeAsync
     /* @return {Command<any>} A Command whose ExecuteAsync just returns the CommandParameter immediately. Which you should ignore!
     **/
-    function command(execute: (x: any) => void, thisArg?: any): ICommand<any>;
+    function command(execute: (param: any) => void, thisArg?: any): ICommand<any>;
     /**
     /* Creates a default Command that has no background action.
     /* @param {Rx.Observable<boolean>} canExecute An Observable that determines when the Command can Execute. WhenAny is a great way to create this!
@@ -1200,7 +1277,7 @@ declare module wx {
     /* @param {any} thisArg Object to use as this when executing the executeAsync
     /* @return {Command<T>} A Command which returns all items that are created via calling executeAsync as a single stream.
     **/
-    function asyncCommand<T>(canExecute: Rx.Observable<boolean>, executeAsync: (x: any) => Rx.Observable<T>, scheduler?: Rx.IScheduler, thisArg?: any): ICommand<T>;
+    function asyncCommand<T>(canExecute: Rx.Observable<boolean>, executeAsync: (param: any) => Rx.Observable<T>, scheduler?: Rx.IScheduler, thisArg?: any): ICommand<T>;
     /**
     /* Creates a Command typed to the given executeAsync Observable method. Use this method if your background method returns Rx.IObservable
     /* @param {(any) => Rx.Observable<T>} executeAsync Method to call that creates an Observable representing an operation to execute in the background. The Command's canExecute will be false until this Observable completes. If this Observable terminates with OnError, the Exception is marshaled to ThrownExceptions
@@ -1208,7 +1285,7 @@ declare module wx {
     /* @param {any} thisArg Object to use as this when executing the executeAsync
     /* @return {Command<T>} A Command which returns all items that are created via calling executeAsync as a single stream.
     **/
-    function asyncCommand<T>(canExecute: Rx.Observable<boolean>, executeAsync: (x: any) => Rx.Observable<T>, thisArg?: any): ICommand<T>;
+    function asyncCommand<T>(canExecute: Rx.Observable<boolean>, executeAsync: (param: any) => Rx.Observable<T>, thisArg?: any): ICommand<T>;
     /**
     /* Creates a Command typed to the given executeAsync Observable method. Use this method if your background method returns Rx.IObservable
     /* @param {(any) => Rx.Observable<T>} executeAsync Method to call that creates an Observable representing an operation to execute in the background. The Command's canExecute will be false until this Observable completes. If this Observable terminates with OnError, the Exception is marshaled to ThrownExceptions
@@ -1216,14 +1293,14 @@ declare module wx {
     /* @param {any} thisArg Object to use as this when executing the executeAsync
     /* @return {Command<T>} A Command which returns all items that are created via calling executeAsync as a single stream.
     **/
-    function asyncCommand<T>(executeAsync: (x: any) => Rx.Observable<T>, scheduler?: Rx.IScheduler, thisArg?: any): ICommand<T>;
+    function asyncCommand<T>(executeAsync: (param: any) => Rx.Observable<T>, scheduler?: Rx.IScheduler, thisArg?: any): ICommand<T>;
     /**
     /* Creates a Command typed to the given executeAsync Observable method. Use this method if your background method returns Rx.IObservable
     /* @param {(any) => Rx.Observable<T>} executeAsync Method to call that creates an Observable representing an operation to execute in the background. The Command's canExecute will be false until this Observable completes. If this Observable terminates with OnError, the Exception is marshaled to ThrownExceptions
     /* @param {any} thisArg Object to use as this when executing the executeAsync
     /* @return {Command<T>} A Command which returns all items that are created via calling executeAsync as a single stream.
     **/
-    function asyncCommand<T>(executeAsync: (x: any) => Rx.Observable<T>, thisArg?: any): ICommand<T>;
+    function asyncCommand<T>(executeAsync: (param: any) => Rx.Observable<T>, thisArg?: any): ICommand<T>;
     /**
     /* This creates a Command that calls several child Commands when invoked. Its canExecute will match the combined result of the child canExecutes (i.e. if any child commands cannot execute, neither can the parent)
     /* @param {(any) => Rx.Observable<T>} commands The commands to combine
@@ -1357,6 +1434,92 @@ declare module wx {
         private subscribe(el, obs, key, state);
         protected applyValue(el: HTMLElement, key: string, value: any): void;
     }
+
+    export interface IHttpClientOptions {
+        url?: string;
+        method?: string;
+        params?: Object;
+        data?: any;
+        headers?: Object;
+        raw?: boolean;  // do not deserialize response text
+        dump?: (value: any)=> string;
+        load?: (text: string)=> Object;
+        xmlHttpRequest?: ()=> XMLHttpRequest;
+        promise?: (fn: Function)=> Rx.IPromise<any>;
+    }
+
+    export interface IHttpClient {
+        /**
+        * Performs a http-get-request
+        *
+        * @param {string} url The request url
+        * @param {Object} params Query string parameters to be appended to the request url. Values will be uri-encoded
+        * @param {wx.IHttpClientOptions} options Configuration options, overriding the instance's current configuration
+        **/
+        get<T>(url: string, params?: Object, options?: wx.IHttpClientOptions): Rx.IPromise<T>;
+
+        /**
+        * Performs a http-put-request
+        *
+        * @param {string} url The request url
+        * @param {any} data The data to be sent to the server
+        * @param {wx.IHttpClientOptions} options Configuration options, overriding the instance's current configuration
+        **/
+        put<T>(url: string, data: T, options?: wx.IHttpClientOptions): Rx.IPromise<any>;
+
+        /**
+        * Performs a http-post-request
+        *
+        * @param {string} url The request url
+        * @param {any} data The data to be sent to the server
+        * @param {wx.IHttpClientOptions} options Configuration options, overriding the instance's current configuration
+        **/
+        post<T>(url: string, data: T, options?: wx.IHttpClientOptions): Rx.IPromise<any>;
+
+        /**
+        * Performs a http-patch-request
+        *
+        * @param {string} url The request url
+        * @param {any} data The data to be sent to the server
+        * @param {wx.IHttpClientOptions} options Configuration options, overriding the instance's current configuration
+        **/
+        patch<T>(url: string, data: T, options?: wx.IHttpClientOptions): Rx.IPromise<any>;
+
+        /**
+        * Performs a http-delete-request
+        *
+        * @param {string} url The request url
+        * @param {wx.IHttpClientOptions} options Configuration options, overriding the instance's current configuration
+        **/
+        delete(url: string, options?: wx.IHttpClientOptions): Rx.IPromise<any>;
+
+        /**
+        * Performs a http-options-request
+        *
+        * @param {string} url The request url
+        * @param {wx.IHttpClientOptions} options Configuration options, overriding the instance's current configuration
+        **/
+        options(url: string, options?: wx.IHttpClientOptions): Rx.IPromise<any>;
+
+        /**
+        * Performs a http-request according to the specified options
+        *
+        * @param {wx.IHttpClientOptions} options Configuration options, overriding the instance's current configuration
+        **/
+        request<T>(options: wx.IHttpClientOptions): Rx.IPromise<T>;
+
+        /**
+        * Configures this HttpClient instance
+        *
+        * @param {wx.IHttpClientOptions} opts The configuration object
+        **/
+        configure(opts: wx.IHttpClientOptions): void;
+    }
+
+    /**
+    * Provides editable configuration defaults for all newly created HttpClient instances.
+    **/
+    function getHttpClientDefaultConfig(): wx.IHttpClientOptions;
 }
 
 declare module Rx {
