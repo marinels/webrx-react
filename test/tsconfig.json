@@ -41,5 +41,7 @@
     "Utils/ObservablePropertyUtils.ts",
     "Utils/PubSubSpec.ts"
   ],
-  "exclude": []
+  "exclude": [
+    "../src/typings/webpack-defines/webpack-defines.d.ts"
+  ]
 }
