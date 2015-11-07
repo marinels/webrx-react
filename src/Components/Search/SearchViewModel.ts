@@ -41,10 +41,10 @@ export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> 
     })
   }
 
-  setRoutingState(state = {} as ISearchRoutingState) {
-    if (this.isRoutingEnabled) {
+  setRoutingState(state: ISearchRoutingState) {
+    this.handleRoutingState(state, state => {
       this.filter(state.filter || '');
-    }
+    });
   }
 }
 

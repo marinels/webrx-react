@@ -144,12 +144,11 @@ export class DataGridViewModel<TData> extends BaseRoutableViewModel<IDataGridRou
     });
   }
 
-  setRoutingState(state = {} as IDataGridRoutingState) {
-    if (this.isRoutingEnabled) {
+  setRoutingState(state: IDataGridRoutingState) {
+    this.handleRoutingState(state, state => {
       this.search.setRoutingState(state.search);
-
       this.pager.setRoutingState(state.pager);
-    }
+    });
   }
 }
 

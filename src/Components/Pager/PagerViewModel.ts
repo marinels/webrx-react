@@ -79,11 +79,11 @@ export class PagerViewModel extends BaseRoutableViewModel<IPagerRoutingState> {
     });
   }
 
-  setRoutingState(state = {} as IPagerRoutingState) {
-    if (this.isRoutingEnabled) {
+  setRoutingState(state: IPagerRoutingState) {
+    this.handleRoutingState(state, state => {
       this.limit(state.limit || null);
       this.selectedPage(state.page || 1);
-    }
+    });
   }
 }
 

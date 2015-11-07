@@ -41,7 +41,12 @@ export class DashboardViewModel extends BaseRoutableViewModel<IDashboardRoutingS
   }
 
   public setRoutingState(state: IDashboardRoutingState) {
-    this.alertText(Object.getValueOrDefault(state.alertText, ''));
+    // because alertText is a two-way bound property, it doesn't generate notifications
+    // so when setting routing state we must trigger the notification manually
+    // we can do this by including it at the end of this function
+    this.handleRoutingState(state, state => {
+      this.alertText(state.alertText || '');
+    }, this.alertText.changed);
   }
 }
 
