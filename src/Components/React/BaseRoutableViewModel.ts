@@ -41,6 +41,23 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
     return initialState;
   }
 
+  protected handleRoutingState(state = {} as TRoutingState, handler: (state: TRoutingState) => void, ...observables: Rx.Observable<any>[]) {
+    if (this.isRoutingEnabled && handler != null) {
+      let sub: Rx.IDisposable;
+
+      if (observables.length > 0) {
+        sub = Rx.Observable
+          .combineLatest(observables, () => null)
+          .take(1)
+          .invokeCommand(this.stateChanged);
+      }
+
+      handler(state);
+
+      Object.dispose(sub);
+    }
+  }
+
   public getRoutingKey() { return Object.getName(this); }
 
   public abstract getRoutingState(context?: any): TRoutingState;
