@@ -33,9 +33,11 @@ export class DashboardViewModel extends BaseRoutableViewModel<IDashboardRoutingS
   }
 
   public getRoutingState(context?: any) {
-    return <IDashboardRoutingState>{
-      alertText: this.alertText()
-    };
+    return this.createRoutingState(state => {
+      if (String.isNullOrEmpty(this.alertText()) === false) {
+        state.alertText = this.alertText();
+      }
+    })
   }
 
   public setRoutingState(state: IDashboardRoutingState) {
