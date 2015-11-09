@@ -21,6 +21,7 @@
   "files": [
     "typings/classnames/classnames.d.ts",
     "typings/jquery-deparam/jquery-deparam.d.ts",
+    "typings/jquery-param/jquery-param.d.ts",
     "typings/jquery/jquery.d.ts",
     "typings/moment/moment-node.d.ts",
     "typings/moment/moment.d.ts",
