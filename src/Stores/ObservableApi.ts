@@ -27,7 +27,11 @@ export class ObservableApi {
           console.log(x);
         }
 
-        return Rx.Observable.throw<T>(new Error(String.format('[{0}] {1}', x.status, x.response)));
+        let response = x.response.toString();
+        if (String.isNullOrEmpty(response)) {
+          response = 'No Response';
+        }
+        return Rx.Observable.throw<T>(new Error(String.format('[Error {0}] {1}', x.status, response)));
       });
   }
 }
