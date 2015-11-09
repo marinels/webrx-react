@@ -14,7 +14,7 @@ export class MenuItem {
   constructor(public content: any, public onSelect?: () => void, public glyph?: any) {
   }
 
-  private handleClick(hide: () => void) {
+  private handleClick(e: React.MouseEvent, hide: () => void) {
     if (this.onSelect != null) {
       this.onSelect();
     }
@@ -28,7 +28,7 @@ export class MenuItem {
     );
 
     return (
-      <ListGroupItem className='ContextMenu-item' key={index} onClick={() => this.handleClick(hide)}>
+      <ListGroupItem className='ContextMenu-item' key={index} onClick={e => this.handleClick(e, hide)}>
         <div className='ContextMenu-itemGlyph'>
           {glyph}
         </div>
