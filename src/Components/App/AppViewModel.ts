@@ -30,6 +30,7 @@ export class AppViewModel extends BaseViewModel {
 
     this.config = config;
 
+    ObservableApi.EnableStoreApiDebugging = config.EnableViewModelDebugging === true;
     BaseViewModel.EnableViewModelDebugging = config.EnableViewModelDebugging === true;
 
     this.alerts = new AlertHostViewModel();
