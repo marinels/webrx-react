@@ -28,7 +28,7 @@ export class MenuItem {
     );
 
     return (
-      <ListGroupItem className='ContextMenu-item' key={index} onClick={e => this.handleClick(e, hide)}>
+      <ListGroupItem className='ContextMenu-item' key={index} disabled={this.onSelect == null} onClick={e => this.handleClick(e, hide)}>
         <div className='ContextMenu-itemGlyph'>
           {glyph}
         </div>
