@@ -37,9 +37,11 @@ export abstract class BaseViewModel implements IBaseViewModel {
       text = error.message;
     }
 
-    let e = error as any;
-    if (e.stack) {
-      console.log(e.stack);
+    if (DEBUG) {
+      let e = error as any;
+      if (e.stack) {
+        console.log(e.stack);
+      }
     }
 
     this.createAlert(text, header, style);
