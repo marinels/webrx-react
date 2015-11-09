@@ -28,6 +28,7 @@
     "typings/react-bootstrap/react-bootstrap.d.ts",
     "typings/react-css-transition-replace/react-css-transition-replace.d.ts",
     "typings/react-dom/react-dom.d.ts",
+    "typings/react-fa/react-fa.d.ts",
     "typings/react/react-addons-css-transition-group.d.ts",
     "typings/react/react-addons-transition-group.d.ts",
     "typings/react/react-global.d.ts",
