@@ -15,7 +15,10 @@ export class MenuItem {
   }
 
   private handleClick(hide: () => void) {
-    this.onSelect();
+    if (this.onSelect != null) {
+      this.onSelect();
+    }
+
     hide();
   }
 
