@@ -24,8 +24,9 @@ export class AppViewModel extends BaseViewModel {
   constructor(public routeManager?: RouteManager, config = <IAppConfig>{}) {
     super();
 
-    let menuItems: IMenuItem[] = [
-      { title: 'Home', uri: '#/', glyph: 'home' },
+    let appSwitcherMenuItems: IMenuItem[] = [
+      { id: 'home', title: 'Home', uri: '#/', glyph: 'home' },
+      { id: 'root', title: 'Root', uri: '/' },
     ];
 
     this.config = config;
@@ -40,7 +41,7 @@ export class AppViewModel extends BaseViewModel {
       RouteManager.EnableRouteDebugging = config.EnableRouteDebugging === true;
     }
 
-    this.header = new PageHeaderViewModel(menuItems);
+    this.header = new PageHeaderViewModel(appSwitcherMenuItems);
     this.footer = new PageFooterViewModel()
   }
 
