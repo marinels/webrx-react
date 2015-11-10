@@ -15,7 +15,7 @@ import { PageHeaderViewModel } from './PageHeaderViewModel';
 import './PageHeader.less';
 
 interface IPageHeaderProps extends IBaseViewProps {
-  brand?: string;
+  brand?: any;
 }
 
 export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewModel> {
