@@ -855,6 +855,20 @@ declare module "react-bootstrap" {
     // TODO: FormControls.Static
   
   
+    // <FormGroup />
+    // ----------------------------------------
+    interface FormGroupProps extends React.HTMLAttributes {
+      standalone?: boolean;
+      hasFeedback?: boolean;
+      bsSize?: string;
+      bsStyle?: string;
+      groupClassName?: string;
+    }
+    interface FormGroup extends React.ReactElement<FormGroupProps> { }
+    interface FormGroupClass extends React.ComponentClass<FormGroupProps> { }
+    var FormGroup: FormGroupClass;
+
+
     // <Portal />
     // ----------------------------------------
     interface PortalProps extends React.HTMLAttributes {
