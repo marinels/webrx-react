@@ -6,8 +6,9 @@ import BaseViewModel from '../React/BaseViewModel';
 import AlertHostViewModel from '../Alert/AlertHostViewModel';
 import { RouteHandlerViewModel, IRoutingMap } from '../RouteHandler/RouteHandlerViewModel';
 import RouteManager from '../../Routing/RouteManager';
-import { PageHeaderViewModel, IMenuItem } from '../PageHeader/PageHeaderViewModel';
+import { PageHeaderViewModel, IMenuItem, IAction } from '../PageHeader/PageHeaderViewModel';
 import PageFooterViewModel from '../PageFooter/PageFooterViewModel';
+import SearchViewModel from '../Search/SearchViewModel';
 
 export interface IAppConfig {
   EnableViewModelDebugging?: boolean;
