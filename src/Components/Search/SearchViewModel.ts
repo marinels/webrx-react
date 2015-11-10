@@ -12,7 +12,7 @@ export interface ISearchRoutingState {
 export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> {
   public static displayName = 'SearchViewModel';
 
-  constructor(public isLiveSearchEnabled = true, private liveSearchTimeout = 250, isRoutingEnabled = false) {
+  constructor(public isLiveSearchEnabled = false, private liveSearchTimeout = 250, isRoutingEnabled = false) {
     super(isRoutingEnabled);
   }
 
