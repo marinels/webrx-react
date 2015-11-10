@@ -31,6 +31,7 @@ export class AppView extends BaseView<IAppProps, AppViewModel> {
   render() {
     return (
       <div className='App'>
+        <PageHeaderView viewModel={this.state.header} />
         <Grid>
           <Row>
             <Col md={12}>
@@ -38,7 +39,6 @@ export class AppView extends BaseView<IAppProps, AppViewModel> {
             </Col>
           </Row>
         </Grid>
-        <PageHeaderView viewModel={this.state.header} />
         <RouteHandlerView viewModel={this.state.routeHandler} viewMap={ViewMap} />
         <PageFooterView viewModel={this.state.footer} />
       </div>
