@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { Input, InputProps, Button } from 'react-bootstrap';
+import { Input, InputProps, Button, Glyphicon } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
 import BindableInput from '../BindableInput/BindableInput';
@@ -10,7 +10,7 @@ import BindableInput from '../BindableInput/BindableInput';
 import SearchViewModel from './SearchViewModel';
 
 interface ISearchProps extends IBaseViewProps {
-  searchButton?: boolean;
+  searchButton?: any;
 }
 
 export class SearchView extends BaseView<ISearchProps, SearchViewModel> {
@@ -22,10 +22,14 @@ export class SearchView extends BaseView<ISearchProps, SearchViewModel> {
       onKeyDown: this.bindEvent(x => x.search, (x: React.KeyboardEvent) => x.keyCode, x => x === 13)
     } as InputProps;
 
-    if (this.props.searchButton || false) {
+    if (this.props.searchButton != null && this.props.searchButton !== false) {
+      let searchButton = this.props.searchButton === true ? (
+        <Glyphicon glyph='search' />
+      ) : this.props.searchButton;
+
       inputProps.buttonAfter = (
-        <Button disabled={this.state.search.canExecute(null) === false} onClick={this.bindEvent(x => x.search)}>
-          Search
+        <Button disabled={this.state.search == null || this.state.search.canExecute(null) === false} onClick={this.bindEvent(x => x.search)}>
+          {searchButton}
         </Button>
       );
     }
