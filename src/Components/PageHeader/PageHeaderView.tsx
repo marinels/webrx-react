@@ -3,10 +3,11 @@
 import * as Rx from 'rx';
 import * as React from 'react';
 
-import { Navbar, Nav, NavItem, NavDropdown, NavDropdownProps, MenuItem } from 'react-bootstrap';
+import { Navbar, Nav, NavItem, NavDropdown, NavDropdownProps, MenuItem, Button } from 'react-bootstrap';
 import { Glyphicon, Image } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
+import SearchView from '../Search/SearchView';
 
 import { PageHeaderViewModel, IMenuItem } from './PageHeaderViewModel';
 
@@ -23,14 +24,26 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
     brand: 'WebRx.React Rocks!!!'
   }
 
-  private createMenu(items: IMenuItem[], props: NavDropdownProps) {
-    return (items == null || items.length == 0) ? null : (
-      <NavDropdown {...props}>
+  private isMenuItemDisabled(item: IMenuItem) {
+    let isDisabled = true;
+
+    if (item.command == null && String.isNullOrEmpty(item.uri) === false) {
+      isDisabled = false;
+    } else if (item.command != null && item.command.canExecute(null) === true) {
+      isDisabled = false;
+    }
+
+    return isDisabled;
+  }
+
+  private createMenu(items: IMenuItem[], propsCreator: () => NavDropdownProps) {
+    return (items == null || items.length === 0) ? null : (
+      <NavDropdown {...propsCreator()}>
         {
           items.map(x => {
             let icon = x.glyph == null ? null : <Glyphicon glyph={x.glyph} />;
             return (
-              <MenuItem key={x.id} onSelect={this.bindEvent(x => x.menuItemSelected, () => x)}>
+              <MenuItem key={x.id} disabled={this.isMenuItemDisabled(x)} onSelect={this.bindEvent(x => x.menuItemSelected, () => x)}>
                 <span className='MenuItem-text'>{icon}{x.title}</span>
               </MenuItem>
             );
@@ -45,30 +58,71 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
       <Glyphicon glyph='user' /> :
       <Image rounded src={this.state.userImage} />;
 
+    let eventKey = 1;
+
+    let appMenus = (this.state.appMenus == null || this.state.appMenus.length === 0) ? null : (
+      this.state.appMenus.map(x => this.createMenu(x.items, () => ({
+        id: x.id,
+        key: x.id,
+        eventKey: eventKey++,
+        title: x.header
+      })))
+    );
+
+    let appActions = (this.state.appActions == null || this.state.appActions.length === 0) ? null : (
+      this.state.appActions.map(x => (
+        <Button key={x.id} className='PageHeader-actionButton'
+          disabled={x.command == null || x.command.canExecute(null) === false}
+          onClick={() => { if (x.command != null) { x.command.execute(x); } }}>
+          {x.header}
+        </Button>
+      ))
+    );
+
+    let search = (this.state.search == null) ? null : (
+      <form className='PageHeader-navSearch navbar-form navbar-right' role='search'>
+        <SearchView viewModel={this.state.search} />
+      </form>
+    )
+
     return (
       <div className='PageHeader'>
         <Navbar fluid>
-          <Nav>
-            {this.createMenu(this.state.appSwitcherMenuItems, {
+          <Nav className='PageHeader-navBrand'>
+            {this.createMenu(this.state.appSwitcherMenuItems, () => ({
               id: 'app-switcher',
               eventKey: 0,
               noCaret: true,
               title: (<Glyphicon glyph='menu-hamburger' />)
-            })}
-            <NavItem className='PageHeader-brand' href='#/'>{this.props.brand}</NavItem>
+            }))}
+            <NavItem className='PageHeader-brand' href={this.state.homeLink}>{this.props.brand}</NavItem>
           </Nav>
-          <Nav right>
-            {this.createMenu(this.state.adminMenuItems, {
+          <Nav className='PageHeader-navMenus'>
+            {appMenus}
+          </Nav>
+          <form className='PageHeader-navActions navbar-form navbar-left'>
+            {appActions}
+          </form>
+          <Nav className='PageHeader-navUser' right>
+            {this.createMenu(this.state.adminMenuItems, () => ({
               id: 'admin-menu',
-              eventKey: 1,
+              eventKey: eventKey++,
               title: (<Glyphicon glyph='cog' />)
-            })}
-            {this.createMenu(this.state.userMenuItems, {
+            }))}
+            {this.createMenu(this.state.userMenuItems, () => ({
               id: 'user-menu',
-              eventKey: 2,
+              eventKey: eventKey++,
               title: userIcon
-            })}
+            }))}
           </Nav>
+          <Nav className='PageHeader-navSite' right>
+            {this.createMenu(this.state.helpMenuItems, () => ({
+              id: 'help-menu',
+              eventKey: eventKey++,
+              title: (<Glyphicon glyph='question-sign' />)
+            }))}
+          </Nav>
+          {search}
       </Navbar>
     </div>
     );

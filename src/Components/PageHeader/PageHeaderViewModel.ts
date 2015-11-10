@@ -3,6 +3,19 @@
 import * as wx from 'webrx';
 
 import BaseViewModel from '../React/BaseViewModel';
+import SearchViewModel from '../Search/SearchViewModel';
+
+export interface IAction {
+  id: any;
+  header: any;
+  command: wx.ICommand<any>;
+}
+
+export interface IMenu {
+  id: any;
+  header: any;
+  items: IMenuItem[];
+}
 
 export interface IMenuItem {
   id: any;
@@ -15,7 +28,16 @@ export interface IMenuItem {
 export class PageHeaderViewModel extends BaseViewModel {
   public static displayName = 'PageHeaderViewModel';
 
-  constructor(public appSwitcherMenuItems: IMenuItem[] = [], public adminMenuItems: IMenuItem[] = [], public userMenuItems: IMenuItem[] = [], public userImage?: string) {
+  constructor(
+    public appSwitcherMenuItems: IMenuItem[] = [],
+    public appMenus: IMenu[] = [],
+    public appActions: IAction[] = [],
+    public search?: SearchViewModel,
+    public helpMenuItems: IMenuItem[] = [],
+    public adminMenuItems: IMenuItem[] = [],
+    public userMenuItems: IMenuItem[] = [],
+    public userImage?: string,
+    public homeLink = '#/') {
     super();
   }
 
