@@ -9,8 +9,6 @@ import BindableInput from '../BindableInput/BindableInput';
 
 import SearchViewModel from './SearchViewModel';
 
-// import './Search.less';
-
 interface ISearchProps extends IBaseViewProps {
   searchButton?: boolean;
 }
@@ -35,7 +33,7 @@ export class SearchView extends BaseView<ISearchProps, SearchViewModel> {
     return (
       <div className='Search'>
         <BindableInput property={this.state.filter}>
-          <Input groupClassName='Search-group' type='text' {...inputProps} />
+          <Input standalone className='Search-text' type='text' {...inputProps} />
         </BindableInput>
       </div>
     );
