@@ -819,6 +819,7 @@ declare module "react-bootstrap" {
         defaultValue?: any;
         value?: any; // TODO: Add more specific type
         wrapperClassName?: string; 
+        standalone?: boolean;
     }
     interface Input extends React.ReactElement<InputProps> { }
     interface InputClass extends React.ComponentClass<InputProps> { }
