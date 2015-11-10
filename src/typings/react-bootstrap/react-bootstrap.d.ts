@@ -660,6 +660,20 @@ declare module "react-bootstrap" {
 
     // <Thumbnail />
     // ----------------------------------------
+    interface ImageProps extends React.HTMLAttributes {
+      src: string;
+      responsive?: boolean;
+      rounded?: boolean;
+      circle?: boolean;
+      thumbnail?: boolean;
+    }
+    interface Image extends React.ReactElement<ImageProps> { }
+    interface ImageClass extends React.ComponentClass<ImageProps> { }
+    var Image: ImageClass;
+
+
+    // <Thumbnail />
+    // ----------------------------------------
     interface ThumbnailProps extends React.HTMLAttributes {
         alt?: string;
         bsSize?: string;
