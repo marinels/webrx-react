@@ -4,14 +4,16 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as $ from 'jquery';
 
-import { Overlay, Popover, ListGroup, ListGroupItem, Glyphicon } from 'react-bootstrap';
+import { Overlay, Popover, ListGroup, ListGroupItem } from 'react-bootstrap';
+
+import Icon from '../Icon/Icon';
 
 import './ContextMenu.less'
 
 export class MenuItem {
   public static displayName = 'MenuItem';
 
-  constructor(public content: any, public onSelect?: () => void, public glyph?: any) {
+  constructor(public content: any, public onSelect?: () => void, public iconName?: any) {
   }
 
   private handleClick(e: React.MouseEvent, hide: () => void) {
@@ -23,14 +25,10 @@ export class MenuItem {
   }
 
   public render(index: number, hide: () => void) {
-    let glyph = this.glyph == null ? null : (
-      <Glyphicon glyph={this.glyph} />
-    );
-
     return (
       <ListGroupItem className='ContextMenu-item' key={index} disabled={this.onSelect == null} onClick={e => this.handleClick(e, hide)}>
-        <div className='ContextMenu-itemGlyph'>
-          {glyph}
+        <div className='ContextMenu-itemIcon'>
+          <Icon name={this.iconName} fixedWidth />
         </div>
         <div className='ContextMenu-itemContent'>
           {this.content}

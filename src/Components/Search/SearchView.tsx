@@ -2,10 +2,11 @@
 
 import * as React from 'react';
 
-import { Input, InputProps, Button, Glyphicon } from 'react-bootstrap';
+import { Input, InputProps, Button } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
 import BindableInput from '../BindableInput/BindableInput';
+import Icon from '../Icon/Icon';
 
 import SearchViewModel from './SearchViewModel';
 
@@ -24,7 +25,7 @@ export class SearchView extends BaseView<ISearchProps, SearchViewModel> {
 
     if (this.props.searchButton != null && this.props.searchButton !== false) {
       let searchButton = this.props.searchButton === true ? (
-        <Glyphicon glyph='search' />
+        <Icon name='bs-search' />
       ) : this.props.searchButton;
 
       inputProps.buttonAfter = (

@@ -4,10 +4,11 @@ import * as Rx from 'rx';
 import * as React from 'react';
 
 import { Navbar, Nav, NavItem, NavDropdown, NavDropdownProps, MenuItem, Button } from 'react-bootstrap';
-import { Glyphicon, Image } from 'react-bootstrap';
+import { Image } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
 import SearchView from '../Search/SearchView';
+import Icon from '../Icon/Icon';
 
 import { PageHeaderViewModel, IMenuItem } from './PageHeaderViewModel';
 
@@ -41,10 +42,11 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
       <NavDropdown {...propsCreator()}>
         {
           items.map(x => {
-            let icon = x.glyph == null ? null : <Glyphicon glyph={x.glyph} />;
+            let icon = <Icon name={x.iconName} fixedWidth />;
             return (
               <MenuItem key={x.id} disabled={this.isMenuItemDisabled(x)} onSelect={this.bindEvent(x => x.menuItemSelected, () => x)}>
-                <span className='MenuItem-text'>{icon}{x.title}</span>
+                {icon}
+                <span className='MenuItem-text'>{x.title}</span>
               </MenuItem>
             );
           })
@@ -55,7 +57,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
 
   render() {
     let userIcon = this.state.userImage == null ?
-      <Glyphicon glyph='user' /> :
+      <Icon name='bs-user' /> :
       <Image rounded src={this.state.userImage} />;
 
     let eventKey = 1;
@@ -93,7 +95,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
               id: 'app-switcher',
               eventKey: 0,
               noCaret: true,
-              title: (<Glyphicon glyph='menu-hamburger' />)
+              title: (<Icon name='bs-menu-hamburger' />)
             }))}
             <NavItem className='PageHeader-brand' href={this.state.homeLink}>{this.props.brand}</NavItem>
           </Nav>
@@ -107,7 +109,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
             {this.createMenu(this.state.adminMenuItems, () => ({
               id: 'admin-menu',
               eventKey: eventKey++,
-              title: (<Glyphicon glyph='cog' />)
+              title: (<Icon name='bs-cog' />)
             }))}
             {this.createMenu(this.state.userMenuItems, () => ({
               id: 'user-menu',
@@ -119,7 +121,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
             {this.createMenu(this.state.helpMenuItems, () => ({
               id: 'help-menu',
               eventKey: eventKey++,
-              title: (<Glyphicon glyph='question-sign' />)
+              title: (<Icon name='bs-question-sign' />)
             }))}
           </Nav>
           {search}

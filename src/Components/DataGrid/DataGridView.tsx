@@ -2,11 +2,12 @@
 
 import * as React from 'react';
 
-import { Table, TableProps, ButtonGroup, Button, Glyphicon } from 'react-bootstrap';
+import { Table, TableProps, ButtonGroup, Button } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
 import SearchView from '../Search/SearchView';
 import PagerView from '../Pager/PagerView';
+import Icon from '../Icon/Icon';
 
 import { DataGridViewModel, SortDirection } from './DataGridViewModel';
 
@@ -70,10 +71,10 @@ export class TableView implements IDataGridView {
       <div className='Column-sortButtons pull-right'>
         <ButtonGroup>
           <Button bsSize="small" active={grid.isSortedBy(column.fieldName, SortDirection.Ascending)} onClick={() => grid.sortBy(column.fieldName, SortDirection.Ascending)}>
-            <Glyphicon glyph="sort-by-attributes" />
+            <Icon name="bs-sort-by-attributes" fixedWidth />
           </Button>
           <Button bsSize="small" active={grid.isSortedBy(column.fieldName, SortDirection.Descending)} onClick={() => grid.sortBy(column.fieldName, SortDirection.Descending)}>
-            <Glyphicon glyph="sort-by-attributes-alt" />
+            <Icon name="bs-sort-by-attributes-alt" fixedWidth />
           </Button>
         </ButtonGroup>
       </div>

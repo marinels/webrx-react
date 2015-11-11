@@ -20,7 +20,7 @@ export interface IMenu {
 export interface IMenuItem {
   id: any;
   title: string;
-  glyph?: string;
+  iconName?: string;
   uri?: string;
   command?: wx.ICommand<any>
 }

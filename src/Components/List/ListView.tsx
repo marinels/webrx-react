@@ -2,9 +2,10 @@
 
 import * as React from 'react';
 
-import { ListGroup, ListGroupItem, ListGroupItemProps, Button, Glyphicon } from 'react-bootstrap';
+import { ListGroup, ListGroupItem, ListGroupItemProps, Button } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
+import Icon from '../Icon/Icon';
 
 import ListViewModel from './ListViewModel';
 
@@ -94,7 +95,7 @@ export class TreeView<T> extends StandardView<T> {
         expander = (
           <span className='TreeItem-button'>
             <Button bsStyle='link' bsSize='xsmall' componentClass='span' onClick={onExpanderClick}>
-              <Glyphicon glyph={isExpanded === true ? 'triangle-bottom' : 'triangle-right'} />
+              <Icon name={isExpanded === true ? 'bs-triangle-bottom' : 'bs-triangle-right'} fixedWidth />
             </Button>
           </span>
         );
