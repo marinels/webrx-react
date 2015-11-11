@@ -27,11 +27,6 @@ export class AppViewModel extends BaseViewModel {
   constructor(public routeManager?: RouteManager, config = <IAppConfig>{}) {
     super();
 
-    let appSwitcherMenuItems: IMenuItem[] = [
-      { id: 'home', title: 'Home', uri: '#/', glyph: 'home' },
-      { id: 'root', title: 'Root', uri: '/' },
-    ];
-
     this.config = config;
 
     ObservableApi.EnableStoreApiDebugging = config.EnableViewModelDebugging === true;
@@ -44,8 +39,20 @@ export class AppViewModel extends BaseViewModel {
       RouteManager.EnableRouteDebugging = config.EnableRouteDebugging === true;
     }
 
-    this.header = new PageHeaderViewModel(appSwitcherMenuItems);
-    this.footer = new PageFooterViewModel()
+    this.header = new PageHeaderViewModel(
+      [
+        { id: 'home', title: 'Home', uri: '#/', iconName: 'bs-home' },
+        { id: 'root', title: 'Root', uri: '/' },
+      ],
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined
+    );
+    this.footer = new PageFooterViewModel();
   }
 
   public config: IAppConfig;
