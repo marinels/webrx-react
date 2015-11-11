@@ -1,8 +1,6 @@
 ///<reference path="../react/react.d.ts"/>
 
 declare module 'react-fa' {
-  import React = require('react');
-
   interface IconProps {
     name: string;
     className?: string;
