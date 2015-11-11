@@ -73,6 +73,7 @@
     "Components/ContextMenu/ContextMenu.tsx",
     "Components/Dashboard/DashboardView.tsx",
     "Components/DataGrid/DataGridView.tsx",
+    "Components/Icon/Icon.tsx",
     "Components/List/ListView.tsx",
     "Components/PageFooter/PageFooterView.tsx",
     "Components/PageHeader/PageHeaderView.tsx",
