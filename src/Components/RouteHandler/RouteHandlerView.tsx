@@ -32,9 +32,12 @@ export class RouteHandlerView extends BaseView<IRouteHandlerProps, RouteHandlerV
     }
   }
 
-  private getView(): any {
+  private getViewKey() {
+    return this.state.currentViewModel() == null ? '' : this.state.currentViewModel().getRoutingKey();
+  }
+
+  private getView(key: string): any {
     let viewModel = this.state.currentViewModel();
-    let key = viewModel == null ? '' : viewModel.getRoutingKey();
 
     let activator = this.props.viewMap[key];
     if (activator == null) {
@@ -57,11 +60,12 @@ export class RouteHandlerView extends BaseView<IRouteHandlerProps, RouteHandlerV
   }
 
   render() {
-    let view = this.getView() || 'Catastrophic Failure';
+    let key = this.getViewKey();
+    let view = this.getView(key) || 'Catastrophic Failure';
     return (
       <div className='RouteHandler'>
         <ReactCSSTransitionGroup transitionName='view' transitionLeave={false} transitionEnterTimeout={250}>
-          <div className='RouteHandler-viewContainer' key={view}>
+          <div className='RouteHandler-viewContainer' key={key}>
             { view }
           </div>
         </ReactCSSTransitionGroup>
