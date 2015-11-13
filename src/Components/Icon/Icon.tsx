@@ -38,7 +38,9 @@ export class Icon extends React.Component<IIconProps, any> {
       IconComponent = Glyphicon;
       props['glyph'] = this.props.name.substring(3);
     } else {
-      IconComponent = 'span';
+      IconComponent = 'img';
+      props['src'] = 'http://placeholdit.imgix.net/~text?txtsize=12&txt=Icon&w=18&h=18&txttrack=0&txtpad=1'
+      props['alt'] = props['title'] = this.props.name;
     }
 
     return <IconComponent className={classNames(iconClassNames)} {...props} {...this.props.props} />;
