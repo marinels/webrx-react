@@ -28,6 +28,12 @@
     },
     "jquery/jquery.d.ts": {
       "commit": "68548c2daab053869f323d475419c693478bbb73"
+    },
+    "ix.js/ix.d.ts": {
+      "commit": "c2c22c3b953fe9730d4802022d5e0d18d083909e"
+    },
+    "ix.js/l2o.d.ts": {
+      "commit": "c2c22c3b953fe9730d4802022d5e0d18d083909e"
     }
   }
 }
