@@ -36,7 +36,6 @@
     "typings/react/react-global.d.ts",
     "typings/react/react.d.ts",
     "typings/rx/rx.all.d.ts",
-    "typings/tsd.d.ts",
     "typings/webpack/webpack-defines.d.ts",
     "typings/webpack/webpack.d.ts",
     "typings/webrx/web.rx.d.ts",
