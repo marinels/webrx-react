@@ -37,8 +37,8 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
     return isDisabled;
   }
 
-  private createMenu(items: IMenuItem[], propsCreator: () => NavDropdownProps) {
-    return (items == null || items.length === 0) ? null : (
+  private createMenu(items: IMenuItem[], propsCreator: () => NavDropdownProps, defaultValue?: any) {
+    return (items == null || items.length === 0) ? defaultValue : (
       <NavDropdown {...propsCreator()}>
         {
           items.map(x => {
@@ -58,7 +58,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
   render() {
     let userIcon = this.state.userImage == null ?
       <Icon name='bs-user' /> :
-      <Image rounded src={this.state.userImage} />;
+      <Image className='PageHeader-profilePicture' rounded src={this.state.userImage} />;
 
     let eventKey = 1;
 
@@ -115,7 +115,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
               id: 'user-menu',
               eventKey: eventKey++,
               title: userIcon
-            }))}
+            }), <NavItem>{userIcon}</NavItem>)}
           </Nav>
           <Nav className='PageHeader-navSite' right>
             {this.createMenu(this.state.helpMenuItems, () => ({
