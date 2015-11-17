@@ -42,6 +42,8 @@ interface IContextMenuProps {
   id: string;
   header: string;
   items: MenuItem[];
+  offsetX?: number;
+  offsetY?: number;
   children?: any;
 }
 
@@ -54,6 +56,11 @@ interface IContextMenuState {
 
 export class ContextMenu extends React.Component<IContextMenuProps, IContextMenuState> {
   public static displayName = 'ContextMenu';
+
+  static defaultProps = {
+    offsetX: 0,
+    offsetY: 0
+  };
 
   constructor(props?: IContextMenuProps, context?: any) {
     super(props, context);
@@ -70,8 +77,8 @@ export class ContextMenu extends React.Component<IContextMenuProps, IContextMenu
 
     if (this.state.offsetX != null && this.state.offsetY != null) {
       menu = (
-        <Popover id={this.props.id} placement='bottom' title={this.props.header}
-          arrowOffsetLeft={20}
+        <Popover id={this.props.id} placement='right' title={this.props.header}
+          arrowOffsetTop={20}
           positionLeft={this.state.offsetX} positionTop={this.state.offsetY}>
           <ListGroup>
             {this.renderMenuItems()}
@@ -99,8 +106,8 @@ export class ContextMenu extends React.Component<IContextMenuProps, IContextMenu
       this.setState({
         isVisible,
         target: e.currentTarget,
-        offsetX: e.pageX - offset.left,
-        offsetY: e.pageY - offset.top
+        offsetX: e.screenX - offset.left + this.props.offsetX,
+        offsetY: e.screenY - offset.top + this.props.offsetY
       });
     }
   }
