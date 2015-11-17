@@ -1,0 +1,31 @@
+@import '../../../Style/Bootstrap.less';
+
+.ContextMenu {
+  .popover-title {
+    font-size: 1.5em;
+  }
+
+  .popover-content {
+    padding: 0;
+  }
+
+  .list-group {
+    margin: 0;
+
+    .list-group-item {
+      border: none;
+
+      &:focus {
+        margin-bottom: 1px;
+      }
+    }
+  }
+
+  .ContextMenu-itemIcon, .ContextMenu-itemContent {
+    display: inline-block;
+  }
+
+  .ContextMenu-itemContent {
+    margin-left: 5px;
+  }
+}

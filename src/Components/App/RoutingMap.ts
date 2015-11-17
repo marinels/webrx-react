@@ -1,6 +1,6 @@
 'use strict';
 
-import { IRoutingMap } from '../RouteHandler/RouteHandlerViewModel';
+import { IRoutingMap } from '../Common/RouteHandler/RouteHandlerViewModel';
 import { IRoute } from '../../Routing/RouteManager';
 
 import DashboardViewModel from '../Dashboard/DashboardViewModel';

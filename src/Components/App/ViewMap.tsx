@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { IViewMap } from '../RouteHandler/RouteHandlerView';
+import { IViewMap } from '../Common/RouteHandler/RouteHandlerView';
 
 import DashboardViewModel from '../Dashboard/DashboardViewModel';
 import DashboardView from '../Dashboard/DashboardView';

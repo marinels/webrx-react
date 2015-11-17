@@ -6,7 +6,7 @@ import { Grid, Row, Col } from 'react-bootstrap';
 import { Input, Button } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
-import BindableInput from '../BindableInput/BindableInput';
+import BindableInput from '../Common/BindableInput/BindableInput';
 
 import DashboardViewModel from './DashboardViewModel';
 

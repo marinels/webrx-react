@@ -3,12 +3,12 @@
 import * as wx from 'webrx';
 
 import BaseViewModel from '../React/BaseViewModel';
-import AlertHostViewModel from '../Alert/AlertHostViewModel';
-import { PageHeaderViewModel, IMenu, IMenuItem, IAction } from '../PageHeader/PageHeaderViewModel';
-import PageFooterViewModel from '../PageFooter/PageFooterViewModel';
-import SearchViewModel from '../Search/SearchViewModel';
+import AlertHostViewModel from '../Common/Alert/AlertHostViewModel';
+import { PageHeaderViewModel, IMenu, IMenuItem, IAction } from '../Common/PageHeader/PageHeaderViewModel';
+import PageFooterViewModel from '../Common/PageFooter/PageFooterViewModel';
+import SearchViewModel from '../Common/Search/SearchViewModel';
 
-import { RouteHandlerViewModel, IRoutingMap } from '../RouteHandler/RouteHandlerViewModel';
+import { RouteHandlerViewModel, IRoutingMap } from '../Common/RouteHandler/RouteHandlerViewModel';
 import RouteManager from '../../Routing/RouteManager';
 import ObservableApi from '../../Stores/ObservableApi';
 
