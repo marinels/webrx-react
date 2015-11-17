@@ -5,8 +5,8 @@ import * as React from 'react';
 import { Table, TableProps, ButtonGroup, Button } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
-import SearchView from '../Search/SearchView';
-import PagerView from '../Pager/PagerView';
+import { SearchView, ISearchProps } from '../Search/SearchView';
+import { PagerView, IPagerProps } from '../Pager/PagerView';
 import Icon from '../Icon/Icon';
 
 import { DataGridViewModel, SortDirection } from './DataGridViewModel';
@@ -112,6 +112,8 @@ export class TableView implements IDataGridView {
 
 interface IDataGridProps extends IBaseViewProps {
   view?: IDataGridView;
+  searchProps?: ISearchProps;
+  pagerProps?: IPagerProps;
   children?: DataGridColumn[]
 }
 
@@ -119,7 +121,15 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
   public static displayName = 'DataGridView';
 
   static defaultProps = {
-    view: new TableView()
+    view: new TableView(),
+    pagerProps: {
+      info: true,
+      limits: [10, 25, null],
+      first: true,
+      prev: true,
+      next: true,
+      last: true
+    }
   }
 
   private columns: Column[];
@@ -158,14 +168,25 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
   }
 
   render() {
-    let search = this.state.canFilter() ? (<SearchView viewModel={this.state.search}/>) : null;
-    let table = this.renderTable();
+    let search: any;
+    let table: any;
+    let pager: any;
+
+    if (this.columns.length > 0) {
+      search = this.state.canFilter() ? (
+        <div style={({paddingBottom: 10})}>
+          <SearchView {...this.props.searchProps} viewModel={this.state.search}/>
+        </div>
+      ) : null;
+      table = this.renderTable();
+      pager = (<PagerView {...this.props.pagerProps} viewModel={this.state.pager} />);
+    }
 
     return (
       <div className='DataGrid'>
         {search}
         {table}
-        <PagerView first prev next last info limits={[1, 2, 3, null]} viewModel={this.state.pager} />
+        {pager}
       </div>
     );
   }

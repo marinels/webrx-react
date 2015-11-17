@@ -10,7 +10,7 @@ import Icon from '../Icon/Icon';
 
 import SearchViewModel from './SearchViewModel';
 
-interface ISearchProps extends IBaseViewProps {
+export interface ISearchProps extends IBaseViewProps {
   searchButton?: any;
 }
 

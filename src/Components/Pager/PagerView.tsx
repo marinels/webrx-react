@@ -10,7 +10,7 @@ import PagerViewModel from './PagerViewModel';
 
 import './Pager.less';
 
-interface IPagerProps extends IBaseViewProps, PaginationProps {
+export interface IPagerProps extends IBaseViewProps, PaginationProps {
   info?: boolean;
   limits?: number[];
 }
