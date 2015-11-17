@@ -7,13 +7,15 @@ import BaseViewModel from '../React/BaseViewModel';
 export class ListViewModel<T> extends BaseViewModel {
   public static displayName = 'ListViewModel';
 
-  constructor(initialContents?: T[]) {
+  constructor(...items: T[]) {
     super();
 
-    this.items = wx.list(initialContents);
+    if (items.length > 0) {
+      this.items.addRange(items);
+    }
   }
 
-  public items: wx.IObservableList<T>;
+  public items = wx.list<T>();
   public selectIndex = wx.asyncCommand((x: number) => Rx.Observable.return(x));
   public selectItem = wx.asyncCommand((x: T) => Rx.Observable.return(x));
   public selectedIndex = this.selectIndex.results.toProperty();

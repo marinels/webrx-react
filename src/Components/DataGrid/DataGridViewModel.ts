@@ -28,7 +28,9 @@ export class DataGridViewModel<TData> extends BaseRoutableViewModel<IDataGridRou
     ...items: TData[]) {
     super(isRoutingEnabled);
 
-    this.items.addRange(items);
+    if (items.length > 0) {
+      this.items.addRange(items);
+    }
   }
 
   public items = wx.list<TData>();
