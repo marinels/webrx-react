@@ -11,7 +11,7 @@ import { RouteChangedKey, IRouteChanged } from '../Events/RouteChanged';
 export interface IRoute {
   path: string;
   params: string;
-  state: Object;
+  state: any;
 }
 
 export class RouteManager implements Rx.IDisposable {
