@@ -28,6 +28,8 @@ export class DashboardViewModel extends BaseRoutableViewModel<IDashboardRoutingS
   );
 
   initialize() {
+    super.initialize();
+
     this.subscribe(this.generateAlert.results
       .invokeCommand(this.routingStateChanged));
   }
