@@ -32,34 +32,29 @@ export class AppViewModel extends BaseViewModel {
     ObservableApi.EnableStoreApiDebugging = config.EnableViewModelDebugging === true;
     BaseViewModel.EnableViewModelDebugging = config.EnableViewModelDebugging === true;
 
-    this.alerts = new AlertHostViewModel();
-
     if (routeManager != null) {
       this.routeHandler = new RouteHandlerViewModel(routeManager, config.routingMap);
       RouteManager.EnableRouteDebugging = config.EnableRouteDebugging === true;
     }
-
-    this.header = new PageHeaderViewModel(
-      [
-        { id: 'home', title: 'Home', uri: '#/', iconName: 'bs-home' },
-        { id: 'root', title: 'Root', uri: '/' },
-      ],
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined
-    );
-    this.footer = new PageFooterViewModel();
   }
 
   public config: IAppConfig;
-  public alerts: AlertHostViewModel;
+  public alerts = new AlertHostViewModel();
   public routeHandler: RouteHandlerViewModel;
-  public header: PageHeaderViewModel;
-  public footer: PageFooterViewModel;
+  public header = new PageHeaderViewModel(
+    [
+      { id: 'home', title: 'Home', uri: '#/', iconName: 'bs-home' },
+      { id: 'root', title: 'Root', uri: '/' },
+    ],
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined
+  );
+  public footer = new PageFooterViewModel();
 }
 
 export default AppViewModel;
