@@ -6,6 +6,9 @@
     "jsx": "react",
     "noImplicitAny": true
   },
+  "atom": {
+    "rewriteTsconfig": true
+  },
   "filesGlob": [
     "typings/**/*.d.ts",
     "Extensions/**/*.ts",
