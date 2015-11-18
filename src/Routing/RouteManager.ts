@@ -12,6 +12,7 @@ export interface IRoute {
   path: string;
   params: string;
   state: any;
+  match: RegExpMatchArray;
 }
 
 export class RouteManager implements Rx.IDisposable {

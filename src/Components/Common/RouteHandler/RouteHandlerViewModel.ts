@@ -1,5 +1,6 @@
 'use strict';
 
+import * as Ix from 'ix';
 import * as wx from 'webrx';
 
 import BaseViewModel from '../../React/BaseViewModel';
@@ -40,6 +41,22 @@ export class RouteHandlerViewModel extends BaseViewModel {
       let activator = this.routingMap[route.path];
 
       if (activator == null) {
+        let result = Ix.Enumerable
+          .fromArray(Object.keys(this.routingMap))
+          .where(x => x != null && x.length > 0 && x[0] === '^')
+          .select(x => ({ key: x, regex: new RegExp(x, 'i') }))
+          .select(x => ({ key: x.key, match: x.regex.exec(route.path) }))
+          .where(x => x.match != null)
+          .select(x => ({ match: x.match, activator: this.routingMap[x.key] }))
+          .firstOrDefault();
+
+        if (result != null) {
+          route.match = result.match;
+          activator = result.activator;
+        }
+      }
+
+      if (activator == null) {
         activator = this.routingMap['*'];
       }
 
@@ -55,7 +72,11 @@ export class RouteHandlerViewModel extends BaseViewModel {
             }
           }
 
-          viewModel = (activator as IViewModelActivator).apply(this, [route]);
+          route.state.route = route;
+          let result = (activator as IViewModelActivator).apply(this, [route]);
+          if (typeof result !== typeof viewModel) {
+            viewModel = result;
+          }
 
           if (viewModel) {
             viewModel.setRoutingState(route.state);
@@ -73,7 +94,9 @@ export class RouteHandlerViewModel extends BaseViewModel {
         }
       }
 
-      viewModel.setRoutingState(route.state || {});
+      route.state = route.state || {};
+      route.state.route = route;
+      viewModel.setRoutingState(route.state);
     }
 
     return viewModel;
