@@ -59,6 +59,7 @@
     "Utils/Logging/LogManager.ts",
     "Utils/PubSub.ts",
     "Components/App/AppViewModel.ts",
+    "Components/App/Logging.ts",
     "Components/App/RoutingMap.ts",
     "Components/Common/Alert/AlertHostViewModel.ts",
     "Components/Common/Alert/AlertViewModel.ts",

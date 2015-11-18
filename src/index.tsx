@@ -11,15 +11,13 @@ import './Extensions/Object';
 import './Extensions/String';
 import './Extensions/Rx';
 
-import logManager from './Utils/Logging/Adapters/Console';
-export { logManager };
-let logger = logManager.getLogger('index');
-logger.debug('Logging Active');
-
+import logManager from './Components/App/Logging';
 import RouteManager from './Routing/RouteManager';
 import AppView from './Components/App/AppView';
 import { AppViewModel, IAppConfig } from './Components/App/AppViewModel';
 import RoutingMap from './Components/App/RoutingMap';
+
+let logger = logManager.getLogger('index');
 
 let container = document.getElementById('app');
 

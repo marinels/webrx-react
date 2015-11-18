@@ -3,7 +3,7 @@
 import * as Rx from 'rx';
 import * as wx from 'webrx';
 
-import { logManager } from '../index';
+import logManager from '../Components/App/Logging';
 
 export class ObservableApi {
   public static displayName = 'ObservableApi';

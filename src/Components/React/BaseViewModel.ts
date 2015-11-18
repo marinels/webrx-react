@@ -3,7 +3,7 @@
 import * as Rx from 'rx';
 import * as wx from 'webrx';
 
-import { logManager } from '../../index';
+import logManager from '../App/Logging';
 import PubSub from '../../Utils/PubSub';
 import { AlertCreatedKey, IAlertCreated } from '../../Events/AlertCreated';
 import { RouteChangedKey, IRouteChanged } from '../../Events/RouteChanged';
