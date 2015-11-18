@@ -3,7 +3,7 @@
 import * as React from 'react';
 
 import { Grid, Row, Col } from 'react-bootstrap';
-import { Input, Button } from 'react-bootstrap';
+import { Input, Button, Jumbotron, PageHeader } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
 import BindableInput from '../Common/BindableInput/BindableInput';
@@ -20,6 +20,7 @@ export class DashboardView extends BaseView<IDashboardProps, DashboardViewModel>
 
   updateOn() {
     return [
+      this.state.header.changed,
       this.state.generateAlert.canExecuteObservable
         .debounce(100)
         .distinctUntilChanged()
@@ -35,6 +36,13 @@ export class DashboardView extends BaseView<IDashboardProps, DashboardViewModel>
     return (
       <div className='Dashboard'>
         <Grid>
+          <Row>
+            <Col md={12}>
+              <Jumbotron>
+                <PageHeader>{this.state.header()}</PageHeader>
+              </Jumbotron>
+            </Col>
+          </Row>
           <Row>
             <Col md={12}>
               <BindableInput property={this.state.alertText}>
