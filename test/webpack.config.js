@@ -3,16 +3,25 @@ var webpack = require('webpack');
 
 var plugins = [];
 var output = 'build';
+var fileName = 'test.js';
+var entry = [
+  // 'es5-shim',
+  // 'es5-shim/es5-sham',
+  './test/index.ts',
+  './test/index.html'
+];
+var aliases = {
+  Ix: 'ix/l2o', // the ix package uses Ix to refer to l2o for some reason
+  // rx: 'rx/dist/rx.all.compat'
+};
 
 module.exports = {
-  entry: [
-    './test/index.ts',
-    './test/index.html'
-  ],
+  entry: entry,
   output: {
     path: path.join(__dirname, '..', output, 'test'),
-    filename: 'test.js'
+    filename: fileName
   },
+  devtool: '#source-map',
   plugins: plugins,
   module: {
     loaders: [
@@ -24,7 +33,8 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['', '.ts', '.tsx', '.webpack.js', '.web.js', '.js']
+    extensions: ['', '.ts', '.tsx', '.webpack.js', '.web.js', '.js'],
+    alias: aliases
   },
   stats: {
     reasons: true,
