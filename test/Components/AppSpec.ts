@@ -16,10 +16,6 @@ describe('App', () => {
   it('Has Falsy config properties by default', () => {
     let vm = new AppViewModel();
     expect(vm.config).toBeDefined();
-    expect(vm.config.EnableViewModelDebugging).toBeFalsy();
-    expect(vm.config.EnableViewDebugging).toBeFalsy();
-    expect(vm.config.EnableRouteDebugging).toBeFalsy();
-    expect(vm.config.EnableStoreDebugging).toBeFalsy();
   });
 
   it('Has an alert host commponent', () => {

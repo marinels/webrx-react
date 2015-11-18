@@ -64,12 +64,10 @@ export class RouteHandlerViewModel extends BaseViewModel {
         viewModel = null;
       } else {
         if (activator instanceof Function) {
-          if (RouteManager.EnableRouteDebugging) {
-            this.logger.debug('Routing to Path: {0}', route.path);
+          this.logger.debug('Routing to Path: {0}', route.path);
 
-            if (route.state != null) {
-              this.logger.debug(JSON.stringify(route.state, null, 2));
-            }
+          if (route.state != null) {
+            this.logger.debug(JSON.stringify(route.state, null, 2));
           }
 
           route.state.route = route;
@@ -86,12 +84,10 @@ export class RouteHandlerViewModel extends BaseViewModel {
         }
       }
     } else if (viewModel) {
-      if (RouteManager.EnableRouteDebugging) {
-        this.logger.debug('Updating Routing State: {0}', route.path);
+      this.logger.debug('Updating Routing State: {0}', route.path);
 
-        if (route.state != null) {
-          this.logger.debug(JSON.stringify(route.state, null, 2));
-        }
+      if (route.state != null) {
+        this.logger.debug(JSON.stringify(route.state, null, 2));
       }
 
       route.state = route.state || {};

@@ -28,11 +28,6 @@ if (container) {
     .startWith(window.location.hash);
 
   let config: IAppConfig = {
-    EnableViewModelDebugging: DEBUG,
-    EnableViewDebugging: DEBUG,
-    EnableRouteDebugging: DEBUG,
-    EnableStoreDebugging: DEBUG,
-
     routingMap: RoutingMap
   };
 

@@ -10,14 +10,8 @@ import SearchViewModel from '../Common/Search/SearchViewModel';
 
 import { RouteHandlerViewModel, IRoutingMap } from '../Common/RouteHandler/RouteHandlerViewModel';
 import RouteManager from '../../Routing/RouteManager';
-import ObservableApi from '../../Stores/ObservableApi';
 
 export interface IAppConfig {
-  EnableViewModelDebugging?: boolean;
-  EnableViewDebugging?: boolean;
-  EnableRouteDebugging?: boolean;
-  EnableStoreDebugging?: boolean;
-
   routingMap: IRoutingMap;
 }
 
@@ -29,12 +23,8 @@ export class AppViewModel extends BaseViewModel {
 
     this.config = config;
 
-    ObservableApi.EnableStoreApiDebugging = config.EnableViewModelDebugging === true;
-    BaseViewModel.EnableViewModelDebugging = config.EnableViewModelDebugging === true;
-
     if (routeManager != null) {
       this.routeHandler = new RouteHandlerViewModel(routeManager, config.routingMap);
-      RouteManager.EnableRouteDebugging = config.EnableRouteDebugging === true;
     }
   }
 

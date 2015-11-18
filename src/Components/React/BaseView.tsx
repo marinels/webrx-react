@@ -16,8 +16,6 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
 
   private updateSubscription: Rx.IDisposable;
 
-  public static EnableViewDebugging = false;
-
   protected logger = logManager.getLogger(this.getDisplayName());
 
   constructor(props?: TViewProps, context?: any) {
@@ -70,9 +68,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   }
 
   private logRender(initial: boolean) {
-    if (BaseView.EnableViewDebugging) {
-      this.logger.debug('{0}rendering', initial ? '' : 're-');
-    }
+    this.logger.debug('{0}rendering', initial ? '' : 're-');
   }
 
   componentWillMount() {

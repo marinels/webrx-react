@@ -22,12 +22,6 @@ interface IAppProps extends IBaseViewProps {
 export class AppView extends BaseView<IAppProps, AppViewModel> {
   public static displayName = 'AppView';
 
-  constructor(props?: IAppProps, context?: any) {
-    super(props, context);
-
-    BaseView.EnableViewDebugging = this.state.config.EnableViewDebugging;
-  }
-
   render() {
     return (
       <div className='App'>

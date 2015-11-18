@@ -17,7 +17,6 @@ export interface IRoute {
 
 export class RouteManager implements Rx.IDisposable {
   public static displayName = 'RouteManager';
-  public static EnableRouteDebugging = false;
 
   protected logger = logManager.getLogger(Object.getName(this));
 
@@ -56,12 +55,10 @@ export class RouteManager implements Rx.IDisposable {
 
       let hash = this.hashCodec.Encode(path, state, uriEncode);
 
-      if (RouteManager.EnableRouteDebugging) {
-        this.logger.debug('Routing to Hash: {0}', hash);
+      this.logger.debug('Routing to Hash: {0}', hash);
 
-        if (state != null) {
-          this.logger.debug(JSON.stringify(state, null, 2));
-        }
+      if (state != null) {
+        this.logger.debug(JSON.stringify(state, null, 2));
       }
 
       window.location.hash = hash;

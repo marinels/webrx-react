@@ -3,6 +3,7 @@
 import * as Rx from 'rx';
 import * as wx from 'webrx';
 
+import LogLevel from '../../Utils/Logging/LogLevel';
 import logManager from '../App/Logging';
 import PubSub from '../../Utils/PubSub';
 import { AlertCreatedKey, IAlertCreated } from '../../Events/AlertCreated';
@@ -18,7 +19,6 @@ export interface IBaseViewModel {
 
 export abstract class BaseViewModel implements IBaseViewModel {
   public static displayName = 'BaseViewModel';
-  public static EnableViewModelDebugging = false;
 
   private subscriptions: Rx.IDisposable[] = [];
   public stateChanged = wx.command();
@@ -86,7 +86,7 @@ export abstract class BaseViewModel implements IBaseViewModel {
   }
 
   public initialize() {
-    if (BaseViewModel.EnableViewModelDebugging) {
+    if (this.logger.level <= LogLevel.Debug) {
       let obj: { [key: string]: any } = this;
       let keys = Object.keys(obj);
       for (let i = 0; i < keys.length; ++i) {
