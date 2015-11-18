@@ -3,9 +3,13 @@
 import * as Rx from 'rx';
 import * as wx from 'webrx';
 
+import { logManager } from '../index';
+
 export class ObservableApi {
   public static displayName = 'ObservableApi';
   public static EnableStoreApiDebugging = false;
+
+  protected logger = logManager.getLogger(Object.getName(this));
 
   constructor(public baseUri: string) {
   }
@@ -16,15 +20,15 @@ export class ObservableApi {
     let uri = (baseUri || this.baseUri) + action;
 
     if (ObservableApi.EnableStoreApiDebugging) {
-      console.log(String.format('Calling API: {0} ({1})', action, uri));
+      this.logger.debug('Calling API: {0} ({1})', action, uri);
     }
 
     return Rx.Observable
       .fromPromise(this.client.get<T>(uri, params, options))
       .catch(x => {
         if (ObservableApi.EnableStoreApiDebugging) {
-          console.log(String.format('API ERROR: {0} ({1})', action, uri));
-          console.log(x);
+          this.logger.error('API ERROR: {0} ({1})', action, uri);
+          this.logger.error(x.toString());
         }
 
         let response = x.response.toString();

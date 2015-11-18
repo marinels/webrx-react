@@ -48,10 +48,10 @@ export class RouteHandlerViewModel extends BaseViewModel {
       } else {
         if (activator instanceof Function) {
           if (RouteManager.EnableRouteDebugging) {
-            console.log(String.format('[Route    ] Routing to Path: {0}', route.path));
+            this.logger.debug('Routing to Path: {0}', route.path);
 
             if (route.state != null) {
-              console.log(JSON.stringify(route.state, null, 2));
+              this.logger.debug(JSON.stringify(route.state, null, 2));
             }
           }
 
@@ -66,10 +66,10 @@ export class RouteHandlerViewModel extends BaseViewModel {
       }
     } else if (viewModel) {
       if (RouteManager.EnableRouteDebugging) {
-        console.log(String.format('[Route    ] Updating Routing State: {0}', route.path));
+        this.logger.debug('Updating Routing State: {0}', route.path);
 
         if (route.state != null) {
-          console.log(JSON.stringify(route.state, null, 2));
+          this.logger.debug(JSON.stringify(route.state, null, 2));
         }
       }
 

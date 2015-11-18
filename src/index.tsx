@@ -11,6 +11,11 @@ import './Extensions/Object';
 import './Extensions/String';
 import './Extensions/Rx';
 
+import logManager from './Utils/Logging/Adapters/Console';
+export { logManager };
+let logger = logManager.getLogger('index');
+logger.debug('Logging Active');
+
 import RouteManager from './Routing/RouteManager';
 import AppView from './Components/App/AppView';
 import { AppViewModel, IAppConfig } from './Components/App/AppViewModel';
@@ -32,7 +37,7 @@ if (container) {
 
     routingMap: RoutingMap
   };
-  
+
   let routeManager = new RouteManager(hashChanged)
   let viewModel = new AppViewModel(routeManager, config);
 

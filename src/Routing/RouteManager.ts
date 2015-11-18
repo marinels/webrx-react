@@ -3,6 +3,7 @@
 import * as Rx from 'rx';
 import * as wx from 'webrx';
 
+import { logManager } from '../index';
 import HashCodec from './HashCodec';
 import { default as PubSub, ISubscriptionHandle } from '../Utils/PubSub';
 import { RouteChangedKey, IRouteChanged } from '../Events/RouteChanged';
@@ -16,6 +17,8 @@ export interface IRoute {
 export class RouteManager implements Rx.IDisposable {
   public static displayName = 'RouteManager';
   public static EnableRouteDebugging = false;
+
+  protected logger = logManager.getLogger(Object.getName(this));
 
   constructor(hashChanged: Rx.Observable<string>, public hashCodec = new HashCodec()) {
     this.currentRoute = hashChanged
@@ -53,10 +56,10 @@ export class RouteManager implements Rx.IDisposable {
       let hash = this.hashCodec.Encode(path, state, uriEncode);
 
       if (RouteManager.EnableRouteDebugging) {
-        console.log(String.format('[Route    ] Routing to Hash: {0}', hash));
+        this.logger.debug('Routing to Hash: {0}', hash);
 
         if (state != null) {
-          console.log(JSON.stringify(state, null, 2));
+          this.logger.debug(JSON.stringify(state, null, 2));
         }
       }
 

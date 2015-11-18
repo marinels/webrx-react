@@ -3,6 +3,7 @@
 import * as Rx from 'rx';
 import * as wx from 'webrx';
 
+import { logManager } from '../../index';
 import PubSub from '../../Utils/PubSub';
 import { AlertCreatedKey, IAlertCreated } from '../../Events/AlertCreated';
 import { RouteChangedKey, IRouteChanged } from '../../Events/RouteChanged';
@@ -22,6 +23,8 @@ export abstract class BaseViewModel implements IBaseViewModel {
   private subscriptions: Rx.IDisposable[] = [];
   public stateChanged = wx.command();
 
+  protected logger = logManager.getLogger(this.getDisplayName());
+
   protected getDisplayName() { return Object.getName(this); }
 
   protected createAlert(text: string, header?: string, style?: string, timeout?: number) {
@@ -40,7 +43,7 @@ export abstract class BaseViewModel implements IBaseViewModel {
     if (DEBUG) {
       let e = error as any;
       if (e.stack) {
-        console.log(e.stack);
+        this.logger.error(e.stack.toString());
       }
     }
 
@@ -65,7 +68,7 @@ export abstract class BaseViewModel implements IBaseViewModel {
       if (x != null) {
         value = (typeof x === 'object') ? Object.getName(x, x.toString()) : x.toString();
       }
-      console.log(String.format('[ViewModel] {0}.{1} Property Changed ({2})', this.getDisplayName(), name, value))
+      this.logger.debug('{0} = {1}', name, value);
     }));
   }
 

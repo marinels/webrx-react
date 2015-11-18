@@ -4,6 +4,7 @@ import * as React from 'react';
 import * as Rx from 'rx';
 import * as wx from 'webrx';
 
+import { logManager } from '../../index';
 import { IBaseViewModel } from './BaseViewModel';
 
 export interface IBaseViewProps {
@@ -16,6 +17,8 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   private updateSubscription: Rx.IDisposable;
 
   public static EnableViewDebugging = false;
+
+  protected logger = logManager.getLogger(this.getDisplayName());
 
   constructor(props?: TViewProps, context?: any) {
     super(props, context);
@@ -68,7 +71,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
 
   private logRender(initial: boolean) {
     if (BaseView.EnableViewDebugging) {
-      console.log(String.format('[View     ] {0}rendering <{1} ... />', initial ? '' : 're-', this.getDisplayName()));
+      this.logger.debug('{0}rendering', initial ? '' : 're-');
     }
   }
 
