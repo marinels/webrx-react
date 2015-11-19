@@ -13,8 +13,8 @@ interface IDashboardRoutingState {
 
 export class DashboardViewModel extends BaseRoutableViewModel<IDashboardRoutingState> {
   public static displayName = 'DashboardViewModel';
-  
-  public header = wx.property('WebRx.React');
+
+  public header = wx.property('');
 
   public alertText = wx.property('');
 
@@ -47,7 +47,7 @@ export class DashboardViewModel extends BaseRoutableViewModel<IDashboardRoutingS
     // so when setting routing state we must trigger the notification manually
     // we can do this by including it at the end of this function
     this.handleRoutingState(state, state => {
-      this.header(state.route.match[2] || this.header());
+      this.header(state.route.match[2] || 'WebRx.React');
       this.alertText(state.alertText || '');
     }, this.alertText.changed);
   }
