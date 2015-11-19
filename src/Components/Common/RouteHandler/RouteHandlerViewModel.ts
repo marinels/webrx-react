@@ -53,9 +53,11 @@ export class RouteHandlerViewModel extends BaseViewModel {
         this.manager.navTo(activator.path);
       } else {
         // this is a routed view model path
-        if (activator.path === this.currentPath) {
-          // we're on the same virtual path
-          // so we can just update the current routed component's state
+        if ((activator.path || route.path) === this.currentPath) {
+          // we're on the same path (or virtual path)
+          this.logger.debug('Routing to Same Path: ({0} || {1}) == {2}', activator.path, route.path, this.currentPath);
+
+          // we can just update the current routed component's state
           this.updateRoutingState(route);
         } else {
           // a new routing path is requested
