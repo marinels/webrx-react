@@ -10,11 +10,12 @@ import { default as PubSub, ISubscriptionHandle } from '../../../Utils/PubSub';
 import { RoutingStateChangedKey, IRoutingStateChanged } from '../../../Events/RoutingStateChanged';
 
 export interface IViewModelActivator {
-  (route: IRoute): IRoutedViewModel;
+  path?: string;
+  creator?: (route: IRoute) => IRoutedViewModel;
 }
 
 export interface IRoutingMap {
-  [path: string]: IViewModelActivator | string;
+  [path: string]: IViewModelActivator;
 }
 
 export class RouteHandlerViewModel extends BaseViewModel {
@@ -32,70 +33,98 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
   private routingStateChangedHandle: ISubscriptionHandle;
 
-  private getRoutedViewModel(route: IRoute): IRoutedViewModel {
-    let viewModel = this.currentViewModel();
+  private getRoutedViewModel(route: IRoute) {
+    // by default we set the view model to the current routed view model
+    // if our route is for a new view model we will override it there
+    let viewModel:IRoutedViewModel = this.currentViewModel();
 
-    if (route.path !== this.currentPath) {
-      this.currentPath = route.path;
+    // get the activator for the requested route
+    let activator = this.getActivator(route);
 
-      let activator = this.routingMap[route.path];
+    if (activator == null) {
+      // if the activator is null then we just return null for the routed view model
+      viewModel = null;
+    } else {
+      if (activator.path != null && activator.creator == null) {
+        // this is a simple redirect route
+        this.logger.debug('Redirecting from {0} to {1}', route.path, activator.path);
 
-      if (activator == null) {
-        let result = Ix.Enumerable
-          .fromArray(Object.keys(this.routingMap))
-          .where(x => x != null && x.length > 0 && x[0] === '^')
-          .select(x => ({ key: x, regex: new RegExp(x, 'i') }))
-          .select(x => ({ key: x.key, match: x.regex.exec(route.path) }))
-          .where(x => x.match != null)
-          .select(x => ({ match: x.match, activator: this.routingMap[x.key] }))
-          .firstOrDefault();
-
-        if (result != null) {
-          route.match = result.match;
-          activator = result.activator;
-        }
-      }
-
-      if (activator == null) {
-        activator = this.routingMap['*'];
-      }
-
-      if (activator == null) {
-        viewModel = null;
+        // only redirect to a different path
+        this.manager.navTo(activator.path);
       } else {
-        if (activator instanceof Function) {
+        // this is a routed view model path
+        if (activator.path === this.currentPath) {
+          // we're on the same virtual path
+          // so we can just update the current routed component's state
+          this.updateRoutingState(route);
+        } else {
+          // a new routing path is requested
           this.logger.debug('Routing to Path: {0}', route.path);
 
-          if (route.state != null) {
-            this.logger.debug(JSON.stringify(route.state, null, 2));
-          }
+          // update the current path (use the virtual path if specified, otherwise the routing path)
+          this.currentPath = activator.path == null ? route.path : activator.path;
 
-          route.state.route = route;
-          let result = (activator as IViewModelActivator).apply(this, [route]);
-          if (typeof result !== typeof viewModel) {
-            viewModel = result;
-          }
+          // create the routed view model
+          viewModel = activator.creator(route);
 
-          if (viewModel) {
-            viewModel.setRoutingState(route.state);
-          }
-        } else {
-          this.manager.navTo(activator.toString());
+          // now set the routing state on the new routed view model
+          this.updateRoutingState(route, viewModel);
         }
       }
-    } else if (viewModel) {
+    }
+
+    return viewModel;
+  }
+
+  private updateRoutingState(route: IRoute, viewModel?: IRoutedViewModel) {
+    viewModel = viewModel || this.currentViewModel();
+
+    if (viewModel != null) {
       this.logger.debug('Updating Routing State: {0}', route.path);
 
       if (route.state != null) {
         this.logger.debug(JSON.stringify(route.state, null, 2));
       }
 
+      // initialize the routing state to default as an empty object
       route.state = route.state || {};
+      // assing the route in the state (so the routed view model can access route properties)
       route.state.route = route;
+
+      // start the routing state assignment
       viewModel.setRoutingState(route.state);
     }
+  }
 
-    return viewModel;
+  private getActivator(route: IRoute) {
+    // default by just fetching the mapped route directly
+    let activator = this.routingMap[route.path];
+
+    // if there is no directly mapped route, check for a parameterized route
+    if (activator == null) {
+      let result = Ix.Enumerable
+        .fromArray(Object.keys(this.routingMap))
+        .where(x => x != null && x.length > 0 && x[0] === '^')
+        .select(x => ({ key: x, regex: new RegExp(x, 'i') }))
+        .select(x => ({ key: x.key, match: x.regex.exec(route.path) }))
+        .where(x => x.match != null)
+        .select(x => ({ match: x.match, activator: this.routingMap[x.key] }))
+        .firstOrDefault();
+
+      if (result != null) {
+        // if we found a parameterized route then set the match properties on the route
+        route.match = result.match;
+
+        activator = result.activator;
+      }
+    }
+
+    // if we found no matching route, then use the default route
+    if (activator == null) {
+      activator = this.routingMap['*'];
+    }
+
+    return activator;
   }
 
   initialize() {
