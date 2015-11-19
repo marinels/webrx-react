@@ -37,7 +37,7 @@ export class ConsoleLogManager extends DelegateLogManager {
     }
 
     return [
-      String.format('background-color: {0}; color: {1}', bgcolor, color)
+      String.format('background-color: {0}; color: {1}; margin: 0; padding: 3px 0', bgcolor, color)
     ];
   }
 
