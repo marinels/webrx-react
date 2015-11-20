@@ -67,7 +67,7 @@ export class TableView implements IDataGridView {
   private tableProps: TableProps;
 
   public renderColumn(grid: DataGridViewModel<any>, column: Column, index: number) {
-    let sortButtons = column.sortable ? (
+    let sortButtons = grid.canSort() && column.sortable ? (
       <div className='Column-sortButtons pull-right'>
         <ButtonGroup>
           <Button bsSize="small" active={grid.isSortedBy(column.fieldName, SortDirection.Ascending)} onClick={() => grid.sortBy(column.fieldName, SortDirection.Ascending)}>
