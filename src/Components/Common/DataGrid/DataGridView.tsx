@@ -44,10 +44,10 @@ class Column {
 }
 
 export interface IDataGridView {
-  renderColumn: (grid: DataGridViewModel<any>, column: Column, index: number) => any;
-  renderCell: (grid: DataGridViewModel<any>, column: Column, index: number, value: any) => any;
-  renderRow: (grid: DataGridViewModel<any>, row: any, index: number, cells: any[]) => any;
-  renderTable: (grid: DataGridViewModel<any>, data: any[], columns: any, rows: any) => any;
+  renderColumn: (view: DataGridView, grid: DataGridViewModel<any>, column: Column, index: number) => any;
+  renderCell: (view: DataGridView, grid: DataGridViewModel<any>, column: Column, index: number, value: any) => any;
+  renderRow: (view: DataGridView, grid: DataGridViewModel<any>, row: any, index: number, cells: any[]) => any;
+  renderTable: (view: DataGridView, grid: DataGridViewModel<any>, data: any[], columns: any, rows: any) => any;
 }
 
 export class TableView implements IDataGridView {
@@ -66,7 +66,7 @@ export class TableView implements IDataGridView {
 
   private tableProps: TableProps;
 
-  public renderColumn(grid: DataGridViewModel<any>, column: Column, index: number) {
+  public renderColumn(view: DataGridView, grid: DataGridViewModel<any>, column: Column, index: number) {
     let sortButtons = grid.canSort() && column.sortable ? (
       <div className='Column-sortButtons pull-right'>
         <ButtonGroup>
@@ -88,19 +88,19 @@ export class TableView implements IDataGridView {
     );
   }
 
-  public renderCell(grid: DataGridViewModel<any>, column: Column, index: number, value: any) {
+  public renderCell(view: DataGridView, grid: DataGridViewModel<any>, column: Column, index: number, value: any) {
     return (
       <td className={column.className} key={index}>{value}</td>
     );
   }
 
-  public renderRow(grid: DataGridViewModel<any>, row: any, index: number, cells: any[]) {
+  public renderRow(view: DataGridView, grid: DataGridViewModel<any>, row: any, index: number, cells: any[]) {
     return (
-      <tr key={this.rowKeySelector(row, index, cells)}>{cells}</tr>
+      <tr className={grid.selectedItem() === row ? 'Row--selected' : null} key={this.rowKeySelector(row, index, cells)} onClick={() => grid.selectItem.execute(row)}>{cells}</tr>
     );
   }
 
-  public renderTable(grid: DataGridViewModel<any>, data: any[], cols: any, rows: any) {
+  public renderTable(view: DataGridView, grid: DataGridViewModel<any>, data: any[], cols: any, rows: any) {
     return (
       <Table {...this.tableProps}>
         <thead><tr>{cols}</tr></thead>
@@ -139,17 +139,17 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
   private renderTable() {
     let items = this.state.projectedItems.toArray();
 
-    let columns = this.columns.map((x, i) => this.props.view.renderColumn(this.state, x, i));
+    let columns = this.columns.map((x, i) => this.props.view.renderColumn(this, this.state, x, i));
 
     let rows = items.map((row, rowIndex) => {
       let cells = this.columns.map((column, columnIndex) => {
-        return this.props.view.renderCell(this.state, column, columnIndex, column.valueSelector(row));
+        return this.props.view.renderCell(this, this.state, column, columnIndex, column.valueSelector(row));
       });
 
-      return this.props.view.renderRow(this.state, row, rowIndex, cells);
+      return this.props.view.renderRow(this, this.state, row, rowIndex, cells);
     });
 
-    let table = this.props.view.renderTable(this.state, items, columns, rows);
+    let table = this.props.view.renderTable(this, this.state, items, columns, rows);
 
     return table;
   }
@@ -157,7 +157,8 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
   updateOn() {
     return [
       this.state.projectedItems.listChanged,
-      this.state.projectedItems.shouldReset
+      this.state.projectedItems.shouldReset,
+      this.state.selectedItem.changed
     ]
   }
 

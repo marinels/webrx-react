@@ -2,7 +2,7 @@
 
 import * as wx from 'webrx';
 
-import BaseRoutableViewModel from '../../React/BaseRoutableViewModel';
+import { ListViewModel, IListRoutingState } from '../List/ListViewModel';
 import { SearchViewModel, ISearchRoutingState } from '../Search/SearchViewModel';
 import { PagerViewModel, IPagerRoutingState } from '../Pager/PagerViewModel';
 
@@ -11,14 +11,14 @@ export enum SortDirection {
   Descending
 }
 
-export interface IDataGridRoutingState {
+export interface IDataGridRoutingState extends IListRoutingState {
   search: ISearchRoutingState;
   sortBy: string;
   sortDir: SortDirection;
   pager: IPagerRoutingState;
 }
 
-export class DataGridViewModel<TData> extends BaseRoutableViewModel<IDataGridRoutingState> {
+export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRoutingState> {
   public static displayName = 'DataGridViewModel';
 
   constructor(
@@ -26,14 +26,9 @@ export class DataGridViewModel<TData> extends BaseRoutableViewModel<IDataGridRou
     protected comparer?: (sortField: string, sortDirection: SortDirection, a: TData, b: TData) => number,
     isRoutingEnabled = false,
     ...items: TData[]) {
-    super(isRoutingEnabled);
-
-    if (items.length > 0) {
-      this.items.addRange(items);
-    }
+    super(isRoutingEnabled, ...items);
   }
 
-  public items = wx.list<TData>();
   public projectedItems = wx.list<TData>();
   public sortField = wx.property<string>();
   public sortDirection = wx.property<SortDirection>();
