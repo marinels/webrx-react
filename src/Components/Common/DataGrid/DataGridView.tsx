@@ -114,7 +114,7 @@ interface IDataGridProps extends IBaseViewProps {
   view?: IDataGridView;
   searchProps?: ISearchProps;
   pagerProps?: IPagerProps;
-  children?: DataGridColumn[]
+  children?: DataGridColumn[];
 }
 
 export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any>> {
