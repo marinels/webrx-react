@@ -164,7 +164,7 @@ interface IListProps extends IBaseViewProps {
   trackActive?: boolean;
 }
 
-export class ListView extends BaseView<IListProps, ListViewModel<any>> {
+export class ListView extends BaseView<IListProps, ListViewModel<any, any>> {
   public static displayName = 'ListView';
 
   public isSelected(item: any, index?: number) {
