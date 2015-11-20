@@ -122,6 +122,8 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
 
   static defaultProps = {
     view: new TableView(),
+    searchProps: {
+    },
     pagerProps: {
       info: true,
       limits: [10, 25, null],
@@ -173,13 +175,15 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
     let pager: any;
 
     if (this.columns.length > 0) {
-      search = this.state.canFilter() ? (
+      search = (this.props.searchProps == null || this.state.canFilter() === false) ? null : (
         <div style={({paddingBottom: 10})}>
           <SearchView {...this.props.searchProps} viewModel={this.state.search}/>
         </div>
-      ) : null;
+      );
       table = this.renderTable();
-      pager = (<PagerView {...this.props.pagerProps} viewModel={this.state.pager} />);
+      pager = this.props.pagerProps == null ? null : (
+        <PagerView {...this.props.pagerProps} viewModel={this.state.pager} />
+      );
     }
 
     return (
