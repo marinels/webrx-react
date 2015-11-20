@@ -90,7 +90,7 @@ export class TableView implements IDataGridView {
 
   public renderCell(grid: DataGridViewModel<any>, column: Column, index: number, value: any) {
     return (
-      <td key={index}>{value}</td>
+      <td className={column.className} key={index}>{value}</td>
     );
   }
 
