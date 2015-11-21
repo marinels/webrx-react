@@ -10,6 +10,8 @@ import Icon from '../Icon/Icon';
 
 import SearchViewModel from './SearchViewModel';
 
+const EnterKey = 13;
+
 export interface ISearchProps extends IBaseViewProps {
   searchButton?: any;
 }
@@ -20,7 +22,7 @@ export class SearchView extends BaseView<ISearchProps, SearchViewModel> {
   render() {
     let inputProps = {
       placeholder: 'Enter Search Terms...',
-      onKeyDown: this.bindEvent(x => x.search, (e: React.KeyboardEvent) => e.keyCode === 13)
+      onKeyDown: this.bindEvent(x => x.search, (e: React.KeyboardEvent) => e.keyCode === EnterKey)
     } as InputProps;
 
     if (this.props.searchButton != null && this.props.searchButton !== false) {
