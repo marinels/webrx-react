@@ -14,7 +14,8 @@ declare interface StringConstructor {
 
 declare module Rx {
   export interface Observable<T> extends IObservable<T> {
-    invokeCommand(command: wx.ICommand<any>): Rx.IDisposable;
+    invokeCommand<TResult>(command: wx.ICommand<TResult>): Rx.IDisposable;
+    invokeCommand<TResult>(commandSelector: () => wx.ICommand<TResult>): Rx.IDisposable;
   }
 }
 
