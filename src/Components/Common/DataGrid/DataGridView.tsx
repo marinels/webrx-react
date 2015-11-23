@@ -65,25 +65,42 @@ export class TableView implements IDataGridView {
   }
 
   private tableProps: TableProps;
+  
+  private renderSortButtons(view: DataGridView, grid: DataGridViewModel<any>, column: Column, index: number) {
+    let buttons:JSX.Element = null;
+    
+    if (grid.canSort() && column.sortable) {
+      let sortedAsc = grid.isSortedBy(column.fieldName, SortDirection.Ascending);
+      let sortedDesc = grid.isSortedBy(column.fieldName, SortDirection.Descending);
+      
+      return (
+        <div className='Column-sortButtons'>
+          <ButtonGroup>
+            <Button bsSize="small" active={sortedAsc} onClick={view.bindEvent(x => x.sortAscending, null, x => column.fieldName)}>
+              <Icon name="bs-sort-by-attributes" fixedWidth />
+            </Button>
+            <Button bsSize="small" active={sortedDesc} onClick={view.bindEvent(x => x.sortDescending, null, x => column.fieldName)}>
+              <Icon name="bs-sort-by-attributes-alt" fixedWidth />
+            </Button>
+          </ButtonGroup>
+        </div>
+      )
+    }
+    
+    return buttons;
+  }
 
   public renderColumn(view: DataGridView, grid: DataGridViewModel<any>, column: Column, index: number) {
-    let sortButtons = grid.canSort() && column.sortable ? (
-      <div className='Column-sortButtons pull-right'>
-        <ButtonGroup>
-          <Button bsSize="small" active={grid.isSortedBy(column.fieldName, SortDirection.Ascending)} onClick={() => grid.sortBy(column.fieldName, SortDirection.Ascending)}>
-            <Icon name="bs-sort-by-attributes" fixedWidth />
-          </Button>
-          <Button bsSize="small" active={grid.isSortedBy(column.fieldName, SortDirection.Descending)} onClick={() => grid.sortBy(column.fieldName, SortDirection.Descending)}>
-            <Icon name="bs-sort-by-attributes-alt" fixedWidth />
-          </Button>
-        </ButtonGroup>
-      </div>
-    ): null;
-
     return (
       <th key={index} className={column.className}>
-        <span className='Column-header'>{column.header}</span>
-        {sortButtons}
+        <div className='Column'>
+          <div className='Column-header'>
+            <Button bsStyle='link' onClick={view.bindEvent(x => x.toggleSortDirection, null, x => column.fieldName)}>
+              {column.header}
+            </Button>
+          </div>
+          {this.renderSortButtons(view, grid, column, index)}
+        </div>
       </th>
     );
   }

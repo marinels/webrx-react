@@ -29,19 +29,42 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
     super(isRoutingEnabled, ...items);
   }
 
+  protected filter = wx.command();
+  protected project = wx.command();
+
   public projectedItems = wx.list<TData>();
-  public sortField = wx.property<string>();
-  public sortDirection = wx.property<SortDirection>();
-  public filter = wx.command();
-  public project = wx.command();
   public search = new SearchViewModel(true, undefined, this.isRoutingEnabled);
   public pager = new PagerViewModel(null, this.isRoutingEnabled);
+  
+  public sortAscending = wx.command();
+  public sortDescending = wx.command();
+  public toggleSortDirection = wx.command();
+  
+  public sortField = Rx.Observable
+    .merge(
+      this.sortAscending.results,
+      this.sortDescending.results)
+    .select(x => x as string)
+    .toProperty();
+  
+  public sortDirection = Rx.Observable
+    .merge(
+      this.sortAscending.results
+        .select(x => SortDirection.Ascending),
+      this.sortDescending.results
+        .select(x => SortDirection.Descending)
+    )
+    .toProperty();
 
   private filteredItems: TData[];
 
   initialize() {
     super.initialize();
-
+    
+    this.subscribe(this.toggleSortDirection.results
+      .invokeCommand(() => this.sortDirection() === SortDirection.Ascending ? this.sortDescending : this.sortAscending)
+    );
+    
     this.subscribe(wx.whenAny(
       this.pager.offset,
       this.pager.limit,
@@ -118,11 +141,6 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
 
   public isSortedBy(fieldName: string, direction: SortDirection) {
     return fieldName === this.sortField() && direction === this.sortDirection();
-  }
-
-  public sortBy(fieldName: string, direction: SortDirection) {
-    this.sortField(fieldName);
-    this.sortDirection(direction);
   }
 
   getRoutingState(context?: any) {

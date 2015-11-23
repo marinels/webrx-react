@@ -1,11 +1,38 @@
 @import '../../../Style/Bootstrap.less';
 
 .DataGrid {
-  .Column-sortButtons {
+  .btn {
+    outline: 0 !important;
+  }
+  
+  .Column {
+    display: table;
+    width: 100%;
+    
     .btn {
-      padding: 2px;
+      padding: 0;
+    }
+    
+    .Column-header {
+      display: table-cell;
+      vertical-align: middle;
+      
+      .btn-link {
+        text-decoration: none;
+      }
+    }
+    
+    .Column-sortButtons {
+      display: table-cell;
+      text-align: right;
+      vertical-align: middle;
+      
+      .btn.active {
+        cursor: default;
+      }
     }
   }
+  
   
   .table, .table-striped {
     tr.Row--selected {
