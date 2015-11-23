@@ -32,7 +32,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   protected initialize() {}
   protected cleanup() {}
 
-  protected bindText(propertySelector: (viewModel: TViewModel) => wx.IObservableProperty<string>) {
+  public bindText(propertySelector: (viewModel: TViewModel) => wx.IObservableProperty<string>) {
     return (x: any) => {
       let value = (x.target as React.HTMLAttributes).value;
       propertySelector(this.state)(value);
@@ -40,18 +40,18 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
     }
   }
 
-  protected bindObservable<TResult>(commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>, observable: Rx.Observable<TResult>) {
+  public bindObservable<TResult>(commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>, observable: Rx.Observable<TResult>) {
     return this.state.bind(observable, commandSelector(this.state));
   }
 
-  protected bindCallback<TParameter>(
+  public bindCallback<TParameter>(
     targetSelector: (viewModel: TViewModel) => wx.IObservableProperty<TParameter>,
     paramSelector: (...args: any[]) => TParameter
   ) : (args: any[]) => void {
     return (...args: any[]) => targetSelector(this.state)(paramSelector(args));
   }
 
-  protected bindEvent<TEvent, TParameter>(
+  public bindEvent<TEvent, TParameter>(
     commandSelector: (viewModel: TViewModel) => wx.ICommand<any>,
     conditionSelector?: (e: TEvent, x: TParameter) => boolean,
     eventArgsSelector?: (e: TEvent, args: any[]) => TParameter
