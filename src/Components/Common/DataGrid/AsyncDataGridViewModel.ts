@@ -3,7 +3,8 @@
 import * as Rx from 'rx';
 import * as wx from 'webrx';
 
-import { DataGridViewModel, SortDirection } from './DataGridViewModel';
+import { DataGridViewModel } from './DataGridViewModel';
+import { SortDirection } from '../../../Utils/Compare';
 
 export interface IAsyncDataSource<TData> {
   getCount(filter: string): Rx.Observable<number>;

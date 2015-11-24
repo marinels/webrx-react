@@ -2,14 +2,10 @@
 
 import * as wx from 'webrx';
 
+import { ObjectComparer, SortDirection } from '../../../Utils/Compare';
 import { ListViewModel, IListRoutingState } from '../List/ListViewModel';
 import { SearchViewModel, ISearchRoutingState } from '../Search/SearchViewModel';
 import { PagerViewModel, IPagerRoutingState } from '../Pager/PagerViewModel';
-
-export enum SortDirection {
-  Ascending,
-  Descending
-}
 
 export interface IDataGridRoutingState extends IListRoutingState {
   search: ISearchRoutingState;
@@ -23,7 +19,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
 
   constructor(
     protected filterer?: (item: TData, filter: string) => boolean,
-    protected comparer?: (sortField: string, sortDirection: SortDirection, a: TData, b: TData) => number,
+    protected comparer = new ObjectComparer<TData>(),
     isRoutingEnabled = false,
     ...items: TData[]) {
     super(isRoutingEnabled, ...items);
@@ -120,7 +116,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
     let items = this.filteredItems;
 
     if (this.comparer != null && this.sortField() != null && this.sortDirection() != null) {
-      items = items.sort((a, b) => this.comparer(this.sortField(), this.sortDirection(), a, b));
+      items = items.sort((a, b) => this.comparer.compare(a, b, this.sortField(), this.sortDirection()));
     }
 
     if (this.pager.offset() > 0 || this.pager.limit() != null) {

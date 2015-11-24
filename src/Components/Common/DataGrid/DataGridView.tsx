@@ -9,7 +9,8 @@ import { SearchView, ISearchProps } from '../Search/SearchView';
 import { PagerView, IPagerProps } from '../Pager/PagerView';
 import Icon from '../Icon/Icon';
 
-import { DataGridViewModel, SortDirection } from './DataGridViewModel';
+import { DataGridViewModel } from './DataGridViewModel';
+import { SortDirection } from '../../../Utils/Compare';
 
 import './DataGrid.less';
 
