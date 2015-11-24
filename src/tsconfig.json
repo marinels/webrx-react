@@ -52,6 +52,7 @@
     "Routing/HashCodec.ts",
     "Routing/RouteManager.ts",
     "Stores/ObservableApi.ts",
+    "Utils/Compare.ts",
     "Utils/Logging/Adapters/Console.ts",
     "Utils/Logging/Adapters/Delegate.ts",
     "Utils/Logging/Logger.ts",
