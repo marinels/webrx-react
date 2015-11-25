@@ -7,7 +7,7 @@ import * as wx from 'webrx';
 
 import './Object';
 
-function invokeCommand<T, TResult>(command: () => wx.ICommand<TResult> | wx.ICommand<TResult>) {  
+function invokeCommand<T, TResult>(command: () => wx.ICommand<TResult> | wx.ICommand<TResult>) {
   return (this as Rx.Observable<T>)
     .select(x => ({ 
       parameter: x, 
@@ -22,5 +22,6 @@ function invokeCommand<T, TResult>(command: () => wx.ICommand<TResult> | wx.ICom
 }
 
 let rxExtensions = (<any>Rx.Observable);
-//rxExtensions.prototype.invokeCommand = Object.getValueOrDefault(rxExtensions.prototype.invokeCommand, invokeCommand);
+// rxExtensions.prototype.invokeCommand = Object.getValueOrDefault(rxExtensions.prototype.invokeCommand, invokeCommand);
+// we need to override the built-in extension until it is patched
 rxExtensions.prototype.invokeCommand = invokeCommand;
