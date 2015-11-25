@@ -19,10 +19,16 @@ export class PagerViewModel extends BaseRoutableViewModel<IPagerRoutingState> {
     this.limit(limit);
   }
 
-  public selectPage = wx.asyncCommand((x: number) => Rx.Observable.return(x));
-  public itemCount = wx.property<number>();
+  public updateItemCount = wx.command();
+  public selectPage = wx.command();
+  
   public limit = wx.property<number>();
-  public selectedPage = this.selectPage.results.toProperty();
+  public itemCount = this.updateItemCount.results
+    .select(x => x as number)
+    .toProperty();
+  public selectedPage = this.selectPage.results
+    .select(x => x as number)
+    .toProperty();
   public pageCount = Rx.Observable
     .combineLatest(
       this.itemCount.changed,

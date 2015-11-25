@@ -155,8 +155,7 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
   private columns: Column[];
 
   private renderTable() {
-    let items = this.state.projectedItems.toArray();
-
+    let items = this.state.projectedItems() || [];
     let columns = this.columns.map((x, i) => this.props.view.renderColumn(this, this.state, x, i));
 
     let rows = items.map((row, rowIndex) => {
@@ -174,8 +173,7 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
 
   updateOn() {
     return [
-      this.state.projectedItems.listChanged,
-      this.state.projectedItems.shouldReset,
+      this.state.projectedItems.changed,
       this.state.selectedItem.changed
     ]
   }
@@ -195,9 +193,7 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
 
     if (this.columns.length > 0) {
       search = (this.props.searchProps == null || this.state.canFilter() === false) ? null : (
-        <div style={({paddingBottom: 10})}>
-          <SearchView {...this.props.searchProps} viewModel={this.state.search}/>
-        </div>
+        <SearchView {...this.props.searchProps} viewModel={this.state.search}/>
       );
       table = this.renderTable();
       pager = this.props.pagerProps == null ? null : (

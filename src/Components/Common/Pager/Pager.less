@@ -1,11 +1,34 @@
 @import '../../../Style/Bootstrap.less';
 
 .Pager {
-  text-align: center;
-
-  .Pager-info, .pagination, .Pager-limit {
-    display: inline-block;
+  //text-align: center;
+  display: table;
+  width: 100%;
+  
+  .Pager-info, .Pager-controls, .Pager-limit {
+    display: table-cell;
     vertical-align: middle;
-    margin: @line-height-computed 0;
   }
+  
+  .Pager-info {
+    text-align: left;
+  }
+  
+  .Pager-controls {
+    text-align: center;
+    
+    .pagination {
+      margin: 0;
+    }
+  }
+  
+  .Pager-limit {
+    text-align: right;
+  }
+
+  // .Pager-info, .pagination, .Pager-limit {
+  //   display: inline-block;
+  //   vertical-align: middle;
+  //   margin: @line-height-computed 0;
+  // }
 }

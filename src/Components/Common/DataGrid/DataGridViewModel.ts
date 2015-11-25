@@ -25,10 +25,8 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
     super(isRoutingEnabled, ...items);
   }
 
-  protected filter = wx.command();
   protected project = wx.command();
 
-  public projectedItems = wx.list<TData>();
   public search = new SearchViewModel(true, undefined, this.isRoutingEnabled);
   public pager = new PagerViewModel(null, this.isRoutingEnabled);
   
@@ -52,8 +50,11 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
     )
     .toProperty();
 
-  private filteredItems: TData[];
-
+  public projectedItems = this.project.results
+    .debounce(100)
+    .selectMany(x => this.projectItems())
+    .toProperty();
+    
   initialize() {
     super.initialize();
     
@@ -61,70 +62,46 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
       .invokeCommand(() => this.sortDirection() === SortDirection.Ascending ? this.sortDescending : this.sortAscending)
     );
     
-    this.subscribe(wx.whenAny(
-      this.pager.offset,
-      this.pager.limit,
-      this.sortField,
-      this.sortDirection,
-      () => null)
-      .skip(1)
-      .invokeCommand(this.project));
-
-    this.subscribe(Rx.Observable.combineLatest(
-      this.items.listChanged.startWith(true),
-      this.search.search.results.startWith(null),
-      () => null)
-      .skip(1)
-      .invokeCommand(this.filter));
-
-    this.filter.results
-      .debounce(100)
-      .subscribe(x => {
-        this.filterItems();
-      });
-
-    this.project.results
-      .debounce(100)
-      .subscribe(x => {
-        this.projectItems();
-      });
-
-    this.filter.execute(null);
+    this.subscribe(
+      wx.whenAny(
+        this.pager.offset,
+        this.pager.limit,
+        this.sortField,
+        this.sortDirection,
+        this.items.listChanged.startWith(false),
+        this.search.search.results.startWith(null),
+        () => null)
+      .invokeCommand(this.project)
+    );
+    
+    this.subscribe(wx
+      .whenAny(
+        this.items.length,
+        x => x)
+      .invokeCommand(this.pager.updateItemCount)
+    );
   }
-
-  protected updateItems(items: TData[]) {
-    let disp = this.projectedItems.suppressChangeNotifications();
-    this.projectedItems.clear();
-    this.projectedItems.addRange(items);
-    disp.dispose();
-  }
-
-  protected filterItems() {
+  
+  protected projectItems() {
     let items = this.items.toArray();
-
+   
     if (this.filterer != null && String.isNullOrEmpty(this.search.filter()) === false) {
       items = items.filter(x => this.filterer(x, this.search.filter()));
     }
-
-    this.filteredItems = items;
-
-    this.pager.itemCount(items.length);
-    this.project.execute(null);
-  }
-
-  protected projectItems() {
-    let items = this.filteredItems;
-
+    
+    this.pager.updateItemCount.execute(items.length);
+    
     if (this.comparer != null && this.sortField() != null && this.sortDirection() != null) {
       items = items.sort((a, b) => this.comparer.compare(a, b, this.sortField(), this.sortDirection()));
     }
 
     if (this.pager.offset() > 0 || this.pager.limit() != null) {
       let end = this.pager.limit() == null ? items.length : this.pager.offset() + this.pager.limit();
+      
       items = items.slice(this.pager.offset(), end);
     }
-
-    this.updateItems(items);
+    
+    return Rx.Observable.return(items);
   }
 
   public canFilter() {

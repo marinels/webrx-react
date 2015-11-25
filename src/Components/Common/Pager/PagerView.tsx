@@ -29,8 +29,8 @@ export class PagerView extends BaseView<IPagerProps, PagerViewModel> {
     let info: string;
 
     if (this.props.info && this.state.hasValidLimit()) {
-      info = this.state.itemCount() === 0 ? 'No Items to Show' :
-        String.format('Showing Items {0} through {1}', this.state.offset() + 1, Math.min(this.state.itemCount(), this.state.offset() + this.state.limit()));
+      info = (this.state.itemCount() == null || this.state.itemCount() === 0) ? 'No Items to Show' :
+        String.format('Showing Items {0} through {1} of {2}', this.state.offset() + 1, Math.min(this.state.itemCount(), this.state.offset() + this.state.limit()), this.state.itemCount());
     }
 
     let pager = (this.props.limits == null || this.state.itemCount() === 0 || this.state.limit() == null) ? null : (
@@ -47,9 +47,9 @@ export class PagerView extends BaseView<IPagerProps, PagerViewModel> {
 
     return (
       <div className='Pager'>
-        <div className='Pager-info pull-left'>{info}</div>
-        {pager}
-        <div className='Pager-limit pull-right'>{limit}</div>
+        <div className='Pager-info'>{info}</div>
+        <div className='Pager-controls'>{pager}</div>
+        <div className='Pager-limit'>{limit}</div>
       </div>
     );
   }
