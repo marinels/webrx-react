@@ -2,7 +2,8 @@
 
 // this is a bit of a hack to *ensure* that Rx is imported (as it is required by wx)
 import * as Rx from 'rx';
-export { Rx };
+import * as wx from 'webrx';
+export { Rx, wx };
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
