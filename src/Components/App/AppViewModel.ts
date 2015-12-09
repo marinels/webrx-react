@@ -5,7 +5,7 @@ import * as wx from 'webrx';
 import BaseViewModel from '../React/BaseViewModel';
 import AlertHostViewModel from '../Common/Alert/AlertHostViewModel';
 import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
-import { IMenu, IMenuItem, IAction } from '../Common/PageHeader/Actions';
+import { IMenu, IMenuItem, ICommandAction } from '../Common/PageHeader/Actions';
 import PageFooterViewModel from '../Common/PageFooter/PageFooterViewModel';
 import SearchViewModel from '../Common/Search/SearchViewModel';
 
@@ -32,8 +32,8 @@ export class AppViewModel extends BaseViewModel {
       this.routeHandler,
       undefined, // search view model
       [
-        { id: 'home', title: 'Home', uri: '#/', iconName: 'bs-home' },
-        { id: 'root', title: 'Root', uri: '/' },
+        { id: 'home', header: 'Home', uri: '#/', iconName: 'bs-home' },
+        { id: 'root', header: 'Root', uri: '/' },
       ]
     );
   }

@@ -4,7 +4,7 @@ import * as wx from 'webrx';
 
 import BaseViewModel from '../../React/BaseViewModel';
 import { IBaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
-import { IAction, IMenu, IMenuItem } from './Actions';
+import { IBaseAction, ICommandAction, IMenu, IMenuItem } from './Actions';
 import RouteHandlerViewModel from '../RouteHandler/RouteHandlerViewModel';
 import SearchViewModel from '../Search/SearchViewModel';
 
@@ -16,7 +16,7 @@ export class PageHeaderViewModel extends BaseViewModel {
     public search?: SearchViewModel,
     private staticAppSwitcherMenuItems: IMenuItem[] = [],
     private staticAppMenus: IMenu[] = [],
-    private staticAppActions: IAction[] = [],
+    private staticAppActions: ICommandAction[] = [],
     private staticHelpMenuItems: IMenuItem[] = [],
     private staticAdminMenuItems: IMenuItem[] = [],
     private staticUserMenuItems: IMenuItem[] = [],
@@ -27,7 +27,7 @@ export class PageHeaderViewModel extends BaseViewModel {
 
   public appSwitcherMenuItems = wx.list<IMenuItem>();
   public appMenus = wx.list<IMenu>();
-  public appActions = wx.list<IAction>();
+  public appActions = wx.list<ICommandAction>();
   public helpMenuItems = wx.list<IMenuItem>();
   public adminMenuItems = wx.list<IMenuItem>();
   public userMenuItems = wx.list<IMenuItem>();
