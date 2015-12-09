@@ -22,7 +22,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
     protected comparer = new ObjectComparer<TData>(),
     isRoutingEnabled = false,
     ...items: TData[]) {
-    super(isRoutingEnabled, ...items);
+    super(false, isRoutingEnabled, ...items);
   }
 
   protected project = wx.command();

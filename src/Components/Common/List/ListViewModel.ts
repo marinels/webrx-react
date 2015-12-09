@@ -15,7 +15,7 @@ export interface ISelectableItem {
 export class ListViewModel<TData, TRoutingState extends IListRoutingState> extends BaseRoutableViewModel<TRoutingState> {
   public static displayName = 'ListViewModel';
 
-  constructor(isRoutingEnabled = false, ...items: TData[]) {
+  constructor(public isMultiSelectEnabled = false, isRoutingEnabled = false, ...items: TData[]) {
     super(isRoutingEnabled);
 
     if (items.length > 0) {
@@ -36,6 +36,34 @@ export class ListViewModel<TData, TRoutingState extends IListRoutingState> exten
     )
     .toProperty();
   
+  public getSelectedItems() {
+    return this.items.filter(x => (x as any as ISelectableItem).isSelected === true)
+  }
+
+  initialize() {
+    if (this.isMultiSelectEnabled) {
+      this.subscribe(
+        Rx.Observable
+          .merge(
+            this.selectItem.results,
+            this.selectIndex.results
+              .where(x => x >= 0 && x < this.items.length())
+              .select(x => this.items.get(x))
+          )
+          .subscribe(x => {
+            let selectable = x as any as ISelectableItem;
+            if (selectable.isSelected != null) {
+              selectable.isSelected = !selectable.isSelected;
+
+              // because the isSelected is not necessarily a reactive property
+              // we need to force a change notification here
+              this.notifyChanged();
+            }
+          })
+      );
+    }
+  }
+
   getRoutingState(context?: any) {
     return this.createRoutingState(state => {
       if (this.selectedIndex() != null) {

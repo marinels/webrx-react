@@ -7,7 +7,7 @@ import { ListGroup, ListGroupItem, ListGroupItemProps, Button } from 'react-boot
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import Icon from '../Icon/Icon';
 
-import ListViewModel from './ListViewModel';
+import { ListViewModel, ISelectableItem } from './ListViewModel';
 
 import './ListView.less';
 
@@ -35,7 +35,7 @@ export class StandardView<T> implements IView {
         props.key = i;
       }
 
-      if (props.active == null && (view.props.trackActive || false)) {
+      if (props.active == null && (view.props.trackActive || view.props.multiSelect || false)) {
         props.active = view.isSelected(x, i);
       }
 
@@ -56,12 +56,12 @@ export class TreeView<T> extends StandardView<T> {
   public static displayName = 'TreeView';
 
   constructor(
-    renderItem: (view: ListView, x: T, i: number) => any,
     private getIsExpanded: (x: T, i: number) => boolean,
     private setIsExpanded: (x: T, i: number, isExpanded: boolean) => void,
     private getItems: (x: T, i: number) => T[],
     private selectOnExpand = false,
     private expandOnSelect = false,
+    renderItem?: (view: ListView, x: T, i: number) => any,
     getProps?: (view: ListView, x: T, i: number) => ListGroupItemProps) {
     super(renderItem, getProps);
   }
@@ -118,7 +118,7 @@ export class TreeView<T> extends StandardView<T> {
         props.key = String.format('{0}.{1}', key, i);
       }
 
-      if (props.active == null && (view.props.trackActive || false)) {
+      if (props.active == null && (view.props.trackActive || view.props.multiSelect || false)) {
         props.active = view.isSelected(x);
       }
 
@@ -130,10 +130,10 @@ export class TreeView<T> extends StandardView<T> {
             }
 
             if (view.isSelected(x) === true) {
-              view.forceUpdate();
-            } else {
-              view.selectItem(x);
+              view.state.stateChanged.execute(null);
             }
+
+            view.selectItem(x);
           }
         };
       }
@@ -162,17 +162,28 @@ export class TreeView<T> extends StandardView<T> {
 interface IListProps extends IBaseViewProps {
   view?: IView;
   trackActive?: boolean;
+  multiSelect?: boolean;
 }
 
 export class ListView extends BaseView<IListProps, ListViewModel<any, any>> {
   public static displayName = 'ListView';
   
   static defaultProps = {
-    view: new StandardView()
+    view: new StandardView(),
+    trackActive: false,
+    multiSelect: false
   }
 
   public isSelected(item: any, index?: number) {
-    return index == null ? this.state.selectedItem() === item : this.state.selectedIndex() === index;
+    let isSelected = false;
+
+    if (this.props.multiSelect === true) {
+      isSelected = (item as ISelectableItem).isSelected === true;
+    } else {
+      isSelected = index == null ? this.state.selectedItem() === item : this.state.selectedIndex() === index;
+    }
+
+    return isSelected;
   }
 
   public selectItem(item: any, index?: number) {
