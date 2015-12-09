@@ -7,6 +7,9 @@ import DashboardViewModel from '../Dashboard/DashboardViewModel';
 
 export let RoutingMap: IRoutingMap = {
   '/': { path: '/dashboard' },
+  // The dashboard routing regex contains a group to allow extracting path elements when routed to
+  // we also override the serialized routing path (to remove the additional path elements)
+  // this ensures that a Dashboard route always uses the same serialized routing path
   '^/dashboard(/(.*))?': { path: '/dashboard', creator: (route: IRoute) => new DashboardViewModel(true) }
 };
 
