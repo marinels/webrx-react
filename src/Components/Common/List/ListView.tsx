@@ -19,7 +19,7 @@ export class StandardView<T> implements IView {
   public static displayName = 'StandardView';
 
   constructor(
-    protected renderItem: (view: ListView, x: T, i: number) => any,
+    protected renderItem: (view: ListView, x: T, i: number) => any = (v, x) => x.toString(),
     protected getProps?: (view: ListView, x: T, i: number) => ListGroupItemProps) {
   }
 
@@ -160,12 +160,16 @@ export class TreeView<T> extends StandardView<T> {
 }
 
 interface IListProps extends IBaseViewProps {
-  view: IView;
+  view?: IView;
   trackActive?: boolean;
 }
 
 export class ListView extends BaseView<IListProps, ListViewModel<any, any>> {
   public static displayName = 'ListView';
+  
+  static defaultProps = {
+    view: new StandardView()
+  }
 
   public isSelected(item: any, index?: number) {
     return index == null ? this.state.selectedItem() === item : this.state.selectedIndex() === index;
