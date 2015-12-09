@@ -59,7 +59,15 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
     super.initialize();
     
     this.subscribe(this.toggleSortDirection.results
-      .invokeCommand(() => this.sortDirection() === SortDirection.Ascending ? this.sortDescending : this.sortAscending)
+      .invokeCommand(x => {
+        let sortDirection = this.sortDirection();
+
+        if (x !== this.sortField()) {
+          sortDirection = null;
+        }
+
+        return sortDirection === SortDirection.Descending ? this.sortAscending : this.sortDescending
+      })
     );
     
     this.subscribe(
