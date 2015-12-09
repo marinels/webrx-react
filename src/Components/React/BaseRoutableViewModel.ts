@@ -5,9 +5,18 @@ import * as wx from 'webrx';
 import { BaseViewModel, IBaseViewModel } from './BaseViewModel';
 import PubSub from '../../Utils/PubSub';
 import { RoutingStateChangedKey, IRoutingStateChanged } from '../../Events/RoutingStateChanged';
+import { IAction, IMenu, IMenuItem } from '../Common/PageHeader/Actions';
 
 export interface IBaseRoutableViewModel extends IBaseViewModel {
   getRoutingKey(): string;
+
+  // for dynamic page header content
+  getAppSwitcherMenuItems?: () => IMenuItem[];
+  getAppMenus?: () => IMenu[];
+  getAppActions?: () => IAction[];
+  getHelpMenuItems?: () => IMenuItem[];
+  getAdminMenuItems?: () => IMenuItem[];
+  getUserMenuItems?: () => IMenuItem[];
 }
 
 export interface IRoutableViewModel<TRoutingState> extends IBaseRoutableViewModel {
