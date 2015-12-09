@@ -41,6 +41,8 @@ export class ListViewModel<TData, TRoutingState extends IListRoutingState> exten
   }
 
   initialize() {
+    super.initialize();
+
     if (this.isMultiSelectEnabled) {
       this.subscribe(
         Rx.Observable
