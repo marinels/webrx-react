@@ -32,6 +32,18 @@ export class PageHeaderViewModel extends BaseViewModel {
   public adminMenuItems = wx.list<IMenuItem>();
   public userMenuItems = wx.list<IMenuItem>();
 
+  initialize() {
+    if (this.routeHandler != null) {
+      this.subscribe(
+        wx
+          .whenAny(this.routeHandler.currentViewModel, x => x)
+          .subscribe(x => {
+            this.addDynamicContent(x);
+          })
+      );
+    }
+  }
+
   private addDynamicContent(viewModel?: IBaseRoutableViewModel) {
     this.addItems(this.appSwitcherMenuItems, this.staticAppSwitcherMenuItems, viewModel, x => x.getAppSwitcherMenuItems)
     this.addItems(this.appMenus, this.staticAppMenus, viewModel, x => x.getAppMenus)
