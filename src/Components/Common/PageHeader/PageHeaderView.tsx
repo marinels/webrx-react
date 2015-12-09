@@ -10,7 +10,8 @@ import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import SearchView from '../Search/SearchView';
 import Icon from '../Icon/Icon';
 
-import { PageHeaderViewModel, IMenuItem } from './PageHeaderViewModel';
+import PageHeaderViewModel from './PageHeaderViewModel';
+import { IMenuItem } from './Actions'
 
 import './PageHeader.less';
 

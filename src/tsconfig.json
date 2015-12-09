@@ -68,6 +68,7 @@
     "Components/Common/DataGrid/DataGridViewModel.ts",
     "Components/Common/List/ListViewModel.ts",
     "Components/Common/PageFooter/PageFooterViewModel.ts",
+    "Components/Common/PageHeader/Actions.ts",
     "Components/Common/PageHeader/PageHeaderViewModel.ts",
     "Components/Common/Pager/PagerViewModel.ts",
     "Components/Common/RouteHandler/RouteHandlerViewModel.ts",

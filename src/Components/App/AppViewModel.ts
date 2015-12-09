@@ -4,7 +4,8 @@ import * as wx from 'webrx';
 
 import BaseViewModel from '../React/BaseViewModel';
 import AlertHostViewModel from '../Common/Alert/AlertHostViewModel';
-import { PageHeaderViewModel, IMenu, IMenuItem, IAction } from '../Common/PageHeader/PageHeaderViewModel';
+import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
+import { IMenu, IMenuItem, IAction } from '../Common/PageHeader/Actions';
 import PageFooterViewModel from '../Common/PageFooter/PageFooterViewModel';
 import SearchViewModel from '../Common/Search/SearchViewModel';
 

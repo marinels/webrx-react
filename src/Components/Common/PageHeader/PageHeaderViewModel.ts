@@ -3,27 +3,8 @@
 import * as wx from 'webrx';
 
 import BaseViewModel from '../../React/BaseViewModel';
+import { IAction, IMenu, IMenuItem } from './Actions';
 import SearchViewModel from '../Search/SearchViewModel';
-
-export interface IAction {
-  id: any;
-  header: any;
-  command: wx.ICommand<any>;
-}
-
-export interface IMenu {
-  id: any;
-  header: any;
-  items: IMenuItem[];
-}
-
-export interface IMenuItem {
-  id: any;
-  title: string;
-  iconName?: string;
-  uri?: string;
-  command?: wx.ICommand<any>
-}
 
 export class PageHeaderViewModel extends BaseViewModel {
   public static displayName = 'PageHeaderViewModel';
