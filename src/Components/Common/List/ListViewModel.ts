@@ -8,6 +8,10 @@ export interface IListRoutingState {
   selectedIndex: number;
 }
 
+export interface ISelectableItem {
+  isSelected: boolean;
+}
+
 export class ListViewModel<TData, TRoutingState extends IListRoutingState> extends BaseRoutableViewModel<TRoutingState> {
   public static displayName = 'ListViewModel';
 
