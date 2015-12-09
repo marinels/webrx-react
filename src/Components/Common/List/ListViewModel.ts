@@ -20,8 +20,8 @@ export class ListViewModel<TData, TRoutingState extends IListRoutingState> exten
   }
 
   public items = wx.list<TData>();
-  public selectIndex = wx.asyncCommand((x: number) => Rx.Observable.return(x));
-  public selectItem = wx.asyncCommand((x: TData) => Rx.Observable.return(x));
+  public selectIndex = wx.command();
+  public selectItem = wx.command();
   public selectedIndex = this.selectIndex.results.toProperty();
   public selectedItem = Rx.Observable
     .merge(
