@@ -6,16 +6,16 @@ import { BaseViewModel, IBaseViewModel } from './BaseViewModel';
 import PubSub from '../../Utils/PubSub';
 import { RoutingStateChangedKey, IRoutingStateChanged } from '../../Events/RoutingStateChanged';
 
-export interface IKeyedRoutableViewModel extends IBaseViewModel {
+export interface IBaseRoutableViewModel extends IBaseViewModel {
   getRoutingKey(): string;
 }
 
-export interface IRoutableViewModel<TRoutingState> extends IKeyedRoutableViewModel {
+export interface IRoutableViewModel<TRoutingState> extends IBaseRoutableViewModel {
   getRoutingState(context?: any): TRoutingState;
   setRoutingState(state: TRoutingState): void;
 }
 
-export interface IRoutedViewModel extends IKeyedRoutableViewModel {
+export interface IRoutedViewModel extends IBaseRoutableViewModel {
   getRoutingState(context?: any): Object;
   setRoutingState(state: Object): void;
 }
