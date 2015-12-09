@@ -27,24 +27,21 @@ export class AppViewModel extends BaseViewModel {
     if (routeManager != null) {
       this.routeHandler = new RouteHandlerViewModel(routeManager, config.routingMap);
     }
+
+    this.header = new PageHeaderViewModel(
+      this.routeHandler,
+      undefined, // search view model
+      [
+        { id: 'home', title: 'Home', uri: '#/', iconName: 'bs-home' },
+        { id: 'root', title: 'Root', uri: '/' },
+      ]
+    );
   }
 
   public config: IAppConfig;
   public alerts = new AlertHostViewModel();
   public routeHandler: RouteHandlerViewModel;
-  public header = new PageHeaderViewModel(
-    [
-      { id: 'home', title: 'Home', uri: '#/', iconName: 'bs-home' },
-      { id: 'root', title: 'Root', uri: '/' },
-    ],
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined
-  );
+  public header: PageHeaderViewModel;
   public footer = new PageFooterViewModel();
 }
 

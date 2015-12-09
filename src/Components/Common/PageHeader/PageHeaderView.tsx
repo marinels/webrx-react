@@ -26,6 +26,17 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
     brand: 'WebRx.React Rocks!!!'
   }
 
+  updateOn() {
+    return [
+      this.state.appSwitcherMenuItems.listChanged,
+      this.state.appMenus.listChanged,
+      this.state.appActions.listChanged,
+      this.state.helpMenuItems.listChanged,
+      this.state.adminMenuItems.listChanged,
+      this.state.userMenuItems.listChanged,
+    ]
+  }
+
   private isMenuItemDisabled(item: IMenuItem) {
     let isDisabled = true;
 
@@ -38,8 +49,8 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
     return isDisabled;
   }
 
-  private createMenu(items: IMenuItem[], propsCreator: () => NavDropdownProps, defaultValue?: any) {
-    return (items == null || items.length === 0) ? defaultValue : (
+  private createMenu(items: wx.IObservableList<IMenuItem> | IMenuItem[], propsCreator: () => NavDropdownProps, defaultValue?: any) {
+    return (items == null || items.length === 0 || (items.length as wx.IObservableProperty<number>)() === 0) ? defaultValue : (
       <NavDropdown {...propsCreator()}>
         {
           items.map(x => {
@@ -63,7 +74,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
 
     let eventKey = 1;
 
-    let appMenus = (this.state.appMenus == null || this.state.appMenus.length === 0) ? null : (
+    let appMenus = (this.state.appMenus == null || this.state.appMenus.length() === 0) ? null : (
       this.state.appMenus.map(x => this.createMenu(x.items, () => ({
         id: x.id,
         key: x.id,
@@ -72,7 +83,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
       })))
     );
 
-    let appActions = (this.state.appActions == null || this.state.appActions.length === 0) ? null : (
+    let appActions = (this.state.appActions == null || this.state.appActions.length() === 0) ? null : (
       this.state.appActions.map(x => (
         <Button key={x.id} className='PageHeader-actionButton'
           disabled={x.command == null || x.command.canExecute(null) === false}
