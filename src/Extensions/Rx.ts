@@ -7,11 +7,11 @@ import * as wx from 'webrx';
 
 import './Object';
 
-function invokeCommand<T, TResult>(command: () => wx.ICommand<TResult> | wx.ICommand<TResult>) {
+function invokeCommand<T, TResult>(command: (x: T) => wx.ICommand<TResult> | wx.ICommand<TResult>) {
   return (this as Rx.Observable<T>)
-    .select(x => ({ 
-      parameter: x, 
-      command: (command instanceof Function ? command() : command) as wx.ICommand<TResult>
+    .select(x => ({
+      parameter: x,
+      command: (command instanceof Function ? command(x) : command) as wx.ICommand<TResult>
     }))
     // debounce typings want the (incorrectly named) durationSelector to return a number here
     // either fix the typing file or do a .select(_ => 0) after the where to fix this
