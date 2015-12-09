@@ -117,7 +117,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
           <form className='PageHeader-navActions navbar-form navbar-left'>
             {appActions}
           </form>
-          <Nav className='PageHeader-navUser' right>
+          <Nav className='PageHeader-navUser' pullRight>
             {this.createMenu(this.state.adminMenuItems, () => ({
               id: 'admin-menu',
               eventKey: eventKey++,
@@ -129,7 +129,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
               title: userIcon
             }), <NavItem>{userIcon}</NavItem>)}
           </Nav>
-          <Nav className='PageHeader-navSite' right>
+          <Nav className='PageHeader-navSite' pullRight>
             {this.createMenu(this.state.helpMenuItems, () => ({
               id: 'help-menu',
               eventKey: eventKey++,
