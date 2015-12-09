@@ -53,7 +53,7 @@ export class PageHeaderViewModel extends BaseViewModel {
     this.addItems(this.userMenuItems, this.staticUserMenuItems, viewModel, x => x.getUserMenuItems)
   }
 
-  private addItems<T>(list: wx.IObservableList<T>, staticItems: T[], viewModel?: IBaseRoutableViewModel, delegateSelector?: (viewModel: IBaseRoutableViewModel) => (() => T[])) {
+  private addItems<T extends IBaseAction>(list: wx.IObservableList<T>, staticItems: T[], viewModel?: IBaseRoutableViewModel, delegateSelector?: (viewModel: IBaseRoutableViewModel) => (() => T[])) {
     wx.using(list.suppressChangeNotifications(), () => {
       list.clear();
       list.addRange(staticItems);
@@ -64,6 +64,8 @@ export class PageHeaderViewModel extends BaseViewModel {
           list.addRange(selector.apply(viewModel) as T[]);
         }
       }
+
+      list.sort((a, b) => (a.order || 0) - (b.order || 0))
     });
   }
 

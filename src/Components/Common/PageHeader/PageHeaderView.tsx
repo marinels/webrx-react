@@ -75,7 +75,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
     let eventKey = 1;
 
     let appMenus = (this.state.appMenus == null || this.state.appMenus.length() === 0) ? null : (
-      this.state.appMenus.map(x => this.createMenu(x.items, () => ({
+      this.state.appMenus.map(x => this.createMenu(x.items.sort((a, b) => (a.order || 0) - (b.order || 0)), () => ({
         id: x.id,
         key: x.id,
         eventKey: eventKey++,
