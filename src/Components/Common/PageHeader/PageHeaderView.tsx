@@ -50,7 +50,11 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
   }
 
   private createMenu(items: wx.IObservableList<IMenuItem> | IMenuItem[], propsCreator: () => NavDropdownProps, defaultValue?: any) {
-    return (items == null || items.length === 0 || (items.length as wx.IObservableProperty<number>)() === 0) ? defaultValue : (
+    let length = items == null ? null : items.length;
+    if (length instanceof Function) {
+      length = (length as wx.IObservableProperty<number>)();
+    }
+    return length == null || length === 0 ? defaultValue : (
       <NavDropdown {...propsCreator()}>
         {
           items.map(x => {
