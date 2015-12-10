@@ -12,6 +12,12 @@ import { RouteChangedKey, IRouteChanged } from '../../Events/RouteChanged';
 export interface IBaseViewModel {
   stateChanged: wx.ICommand<any>;
 
+  getDisplayName(): string;
+  createAlert(text: string, header?: string, style?: string, timeout?: number): void;
+  alertForError(error: Error, header?: string, style?: string, formatter?: (e: Error) => string): void;
+  runOrAlert(action: () => void, header?: string, style?: string, formatter?: (e: Error) => string): void;
+  notifyChanged(...args: any[]): void;
+
   initialize(): void;
   cleanup(): void;
   bind<T>(observable: Rx.Observable<T>, command: wx.ICommand<T>): Rx.IDisposable;
@@ -25,13 +31,13 @@ export abstract class BaseViewModel implements IBaseViewModel {
 
   protected logger = logManager.getLogger(this.getDisplayName());
 
-  protected getDisplayName() { return Object.getName(this); }
+  public getDisplayName() { return Object.getName(this); }
 
-  protected createAlert(text: string, header?: string, style?: string, timeout?: number) {
+  public createAlert(text: string, header?: string, style?: string, timeout?: number) {
     PubSub.publish<IAlertCreated>(AlertCreatedKey, { text, header, style, timeout });
   }
 
-  protected alertForError(error: Error, header = 'Unknown Error', style = 'danger', formatter?: (e: Error) => string) {
+  public alertForError(error: Error, header = 'Unknown Error', style = 'danger', formatter?: (e: Error) => string) {
     let text: string;
 
     if (formatter != null) {
@@ -50,7 +56,7 @@ export abstract class BaseViewModel implements IBaseViewModel {
     this.createAlert(text, header, style);
   }
 
-  protected runOrAlert(action: () => void, header = 'Unknown Error', style = 'danger', formatter?: (e: Error) => string) {
+  public runOrAlert(action: () => void, header = 'Unknown Error', style = 'danger', formatter?: (e: Error) => string) {
     try {
       action();
     } catch (e) {
@@ -58,7 +64,7 @@ export abstract class BaseViewModel implements IBaseViewModel {
     }
   }
 
-  protected notifyChanged(...args: any[]) {
+  public notifyChanged(...args: any[]) {
     this.stateChanged.execute(args);
   }
 
