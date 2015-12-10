@@ -86,6 +86,8 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
       .debounce(this.getRateLimit())
       .subscribe(x => {
         this.renderView();
+      }, x => {
+        this.state.alertForError(x);
       });
 
     this.logRender(true);
