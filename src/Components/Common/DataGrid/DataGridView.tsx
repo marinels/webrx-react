@@ -155,7 +155,7 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
   private columns: Column[];
 
   private renderTable() {
-    let items = this.state.projectedItems() || [];
+    let items = this.state.projectedItems.toArray() || [];
     let columns = this.columns.map((x, i) => this.props.view.renderColumn(this, this.state, x, i));
 
     let rows = items.map((row, rowIndex) => {

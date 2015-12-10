@@ -25,6 +25,8 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
     super(false, isRoutingEnabled, ...items);
   }
 
+  public projectedItems = wx.list<TData>();
+
   protected project = wx.command();
 
   public search = new SearchViewModel(true, undefined, this.isRoutingEnabled);
@@ -50,14 +52,21 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
     )
     .toProperty();
 
-  public projectedItems = this.project.results
-    .debounce(100)
-    .selectMany(x => this.projectItems())
-    .toProperty();
-    
   initialize() {
     super.initialize();
     
+    this.subscribe(
+      this.project.results
+        .debounce(100)
+        .selectMany(x => this.projectItems())
+        .subscribe(x => {
+          wx.using(this.projectedItems.suppressChangeNotifications(), disp => {
+            this.projectedItems.clear();
+            this.projectedItems.addRange(x);
+          })
+        })
+    );
+
     this.subscribe(this.toggleSortDirection.results
       .invokeCommand(x => {
         let sortDirection = this.sortDirection();
