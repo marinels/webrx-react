@@ -29,6 +29,8 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   protected getDisplayName() { return Object.getName(this); }
   protected getRateLimit() { return 100; }
 
+  protected renderView() { this.forceUpdate(); }
+
   protected initialize() {}
   protected cleanup() {}
 
@@ -83,7 +85,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
       .selectMany(x => x)
       .debounce(this.getRateLimit())
       .subscribe(x => {
-        this.forceUpdate();
+        this.renderView();
       });
 
     this.logRender(true);
