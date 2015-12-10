@@ -173,10 +173,8 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
 
   updateOn() {
     return [
-      this.state.projectedItems.changed,
-      this.state.selectedItem.changed,
-      this.state.sortField.changed,
-      this.state.sortDirection.changed
+      this.state.projectedItems.listChanged,
+      this.state.selectedItem.changed
     ]
   }
 
