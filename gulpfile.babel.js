@@ -66,8 +66,7 @@ function configureWebpack() {
       compress: {
         warnings: false
       }
-    }),
-    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en-ca|en-gb/)
+    })
   ];
 
   return webpackConfigCopy;
