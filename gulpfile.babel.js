@@ -158,6 +158,12 @@ gulp.task('webpack-dev-server', callback => {
 
   webpackConfigCopy.entry.app.unshift('webpack-dev-server/client?' + uri, 'webpack/hot/only-dev-server');
 
+  webpackConfigCopy.module.loaders.shift(); // remove css loader
+  webpackConfigCopy.module.loaders.shift(); // remove less loader
+  webpackConfigCopy.module.loaders.unshift({ test: /\.less$/, loader: 'style!css!less' });
+  webpackConfigCopy.module.loaders.unshift({ test: /\.css$/, loader: 'style!css' });
+
+  webpackConfigCopy.plugins.pop(); // remove the css extraction plugin
   webpackConfigCopy.plugins[0].DEBUG = true;
   webpackConfigCopy.plugins.push(
     new webpack.HotModuleReplacementPlugin()
