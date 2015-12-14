@@ -78,6 +78,36 @@ function writeStats(stats, filename, callback) {
 
 gulp.task('default', ['browser:webpack-dev-server']);
 
+gulp.task('help', () => {
+  const EOL = "\r\n";
+
+  let lines = ['*** Help ***'];
+  lines.push('Run ' + gutil.colors.cyan('gulp --tasks') + ' to see complete task hierarchy');
+  lines.push('');
+  lines.push('* ' + gutil.colors.cyan('gulp') + ' will start a webpack development server and open a browser window');
+  lines.push('');
+  lines.push('* ' + gutil.colors.cyan('gulp clean') + ' will delete all files in ' + gutil.colors.magenta(path.join(__dirname, config.dirs.dest)));
+  lines.push('');
+  lines.push('* ' + gutil.colors.cyan('gulp build[:*]') + ' will build the bundles (use :dev or :compat for alternate builds)');
+  lines.push('* ' + gutil.colors.cyan('gulp webpack:build[:*]') + ' -- ' + gutil.colors.yellow('same as build command'));
+  lines.push('');
+  lines.push('* ' + gutil.colors.cyan('gulp stats[:*]') + ' will create a stats[.*].json file for use with ' + gutil.colors.underline.blue('http://webpack.github.io/analyse/') + ' (use :dev for alternate stats)');
+  lines.push('* ' + gutil.colors.cyan('gulp webpack:stats[:*]') + ' -- ' + gutil.colors.yellow('same as stats command'));
+  lines.push('');
+  lines.push('* ' + gutil.colors.cyan('gulp server') + ' will start the webpack development server');
+  lines.push('* ' + gutil.colors.cyan('gulp webpack:dev-server') + ' -- ' + gutil.colors.yellow('same as server command'));
+  lines.push('');
+  lines.push('* ' + gutil.colors.cyan('gulp index[:*]') + ' will build the bundle and create an index[.*].html test file (use :dev or :compat for alternate builds)');
+  lines.push('* ' + gutil.colors.cyan('gulp index:build[:*]') + ' -- ' + gutil.colors.yellow('same as index command'));
+  lines.push('');
+  lines.push('* ' + gutil.colors.cyan('gulp browser[:*]') + ' will build the bundle and create an index[.*].html test file and open a browser window (use :dev or :compat for alternate builds)');
+  lines.push('* ' + gutil.colors.cyan('gulp browser:build[:*]') + ' -- ' + gutil.colors.yellow('same as index command'));
+  lines.push('* ' + gutil.colors.cyan('gulp browser:server') + ' -- ' + gutil.colors.yellow('same as default gulp command'));
+
+  let help = lines.join(EOL);
+  gutil.log(help);
+})
+
 gulp.task('clean', () => {
   del([`${config.dirs.dest}/*`, 'npm-debug.log'])
 });
