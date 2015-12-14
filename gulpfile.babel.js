@@ -12,7 +12,7 @@ import greplace from 'gulp-replace';
 import grename from 'gulp-rename';
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
-import webpackConfig from './webpack.config.js'
+import webpackConfigTemplate from './webpack.config.js'
 
 let args = parseArgs(process.argv);
 
@@ -47,11 +47,11 @@ function runWebpack(cfg, tag = 'default', callback) {
 }
 
 function configureWebpack() {
-  let webpackConfigCopy = Object.create(webpackConfig);
-  webpackConfigCopy.output.path = config.dirs.dest;
-  webpackConfigCopy.output.filename = gutil.replaceExtension(config.filename, '.min.js');
+  let webpackConfig = Object.create(webpackConfigTemplate);
+  webpackConfig.output.path = config.dirs.dest;
+  webpackConfig.output.filename = gutil.replaceExtension(config.filename, '.min.js');
 
-  webpackConfigCopy.plugins = [
+  webpackConfig.plugins = [
     new webpack.DefinePlugin({ DEBUG: false, PRODUCTION: true,
       'process.env': {
         'NODE_ENV': JSON.stringify('production')
@@ -67,7 +67,7 @@ function configureWebpack() {
     })
   ];
 
-  return webpackConfigCopy;
+  return webpackConfig;
 }
 
 function writeStats(stats, filename, callback) {
@@ -76,7 +76,7 @@ function writeStats(stats, filename, callback) {
   callback();
 }
 
-gulp.task('default', ['browser:webpack-dev-server']);
+gulp.task('default', ['browser:server']);
 
 gulp.task('help', () => {
   const EOL = "\r\n";
@@ -117,89 +117,89 @@ gulp.task('build:compat', ['webpack:build:compat']);
 gulp.task('build:dev', ['webpack:build:dev']);
 
 gulp.task('webpack:build', callback => {
-  let webpackConfigCopy = configureWebpack();
+  let webpackConfig = configureWebpack();
 
-  runWebpack(webpackConfigCopy, 'webpack:build', () => callback());
+  runWebpack(webpackConfig, 'webpack:build', () => callback());
 });
 
 gulp.task('webpack:build:compat', callback => {
-  // let webpackConfigCopy = Object.create(webpackConfig);
-  // webpackConfigCopy.devtool = 'sourcemap';
-  // webpackConfigCopy.debug = true;
+  let webpackConfig = configureWebpack();
+  // // uncomment this generate the compat bundle without minification
+  // webpackConfig = Object.create(webpackConfigTemplate);
+  // webpackConfig.devtool = 'sourcemap';
+  // webpackConfig.debug = true;
 
-  let webpackConfigCopy = configureWebpack();
-  webpackConfigCopy.output.filename = gutil.replaceExtension(config.filename, '.compat.min.js');
-  webpackConfigCopy.resolve.alias.rx = 'rx/dist/rx.all.compat';
-  webpackConfigCopy.ts = {
+  webpackConfig.output.filename = gutil.replaceExtension(config.filename, '.compat.min.js');
+  webpackConfig.resolve.alias.rx = 'rx/dist/rx.all.compat';
+  webpackConfig.ts = {
     compilerOptions: {
       target: 'es3'
     }
   }
 
-  webpackConfigCopy.entry.unshift('es5-shim', 'es5-shim/es5-sham');
+  webpackConfig.entry.unshift('es5-shim', 'es5-shim/es5-sham');
 
-  runWebpack(webpackConfigCopy, 'webpack:build:compat', () => {
-
+  runWebpack(webpackConfig, 'webpack:build:compat', () => {
     callback();
   });
 });
 
 gulp.task('webpack:build:dev', callback => {
-  let webpackConfigCopy = Object.create(webpackConfig);
-  webpackConfigCopy.output.path = config.dirs.dest;
-  webpackConfigCopy.output.filename = config.filename;
-  webpackConfigCopy.devtool = 'sourcemap';
-  webpackConfigCopy.debug = true;
+  let webpackConfig = Object.create(webpackConfigTemplate);
+  webpackConfig.output.path = config.dirs.dest;
+  webpackConfig.output.filename = config.filename;
+  webpackConfig.devtool = 'sourcemap';
+  webpackConfig.debug = true;
 
-  runWebpack(webpackConfigCopy, 'webpack:build:dev', () => callback());
+  runWebpack(webpackConfig, 'webpack:build:dev', () => callback());
 });
 
 gulp.task('stats', ['webpack:stats']);
 gulp.task('stats:dev', ['webpack:stats:dev']);
 
 gulp.task('webpack:stats', callback => {
-  let webpackConfigCopy = configureWebpack();
-  webpackConfigCopy.failOnError = false;
-  webpackConfigCopy.profile = true;
+  let webpackConfig = configureWebpack();
+  webpackConfig.failOnError = false;
+  webpackConfig.profile = true;
 
-  runWebpack(webpackConfigCopy, 'webpack:stats', stats => {
+  runWebpack(webpackConfig, 'webpack:stats', stats => {
     writeStats(stats, 'stats.min.json', callback);
   });
 });
 
 gulp.task('webpack:stats:dev', callback => {
-  let webpackConfigCopy = Object.create(webpackConfig);
-  webpackConfigCopy.devtool = 'sourcemap';
-  webpackConfigCopy.debug = true;
-  webpackConfigCopy.failOnError = false;
-  webpackConfigCopy.profile = true;
+  let webpackConfig = Object.create(webpackConfigTemplate);
+  webpackConfig.devtool = 'sourcemap';
+  webpackConfig.debug = true;
+  webpackConfig.failOnError = false;
+  webpackConfig.profile = true;
 
-  runWebpack(webpackConfigCopy, 'webpack:stats-dev', stats => {
+  runWebpack(webpackConfig, 'webpack:stats-dev', stats => {
     writeStats(stats, 'stats.json', callback);
   });
 });
 
-gulp.task('server', ['webpack-dev-server']);
+gulp.task('server', ['webpack:dev-server']);
 
-gulp.task('webpack-dev-server', callback => {
-  let webpackConfigCopy = Object.create(webpackConfig);
-  webpackConfigCopy.devtool = 'eval';
-  webpackConfigCopy.debug = true;
+gulp.task('webpack:dev-server', callback => {
+  let webpackConfig = Object.create(webpackConfigTemplate);
+  webpackConfig.devtool = 'eval';
+  webpackConfig.debug = true;
 
-  webpackConfigCopy.entry.app.unshift('webpack-dev-server/client?' + uri, 'webpack/hot/only-dev-server');
+  webpackConfig.entry.app.unshift('webpack-dev-server/client?' + uri, 'webpack/hot/only-dev-server');
 
-  webpackConfigCopy.module.loaders.shift(); // remove css loader
-  webpackConfigCopy.module.loaders.shift(); // remove less loader
-  webpackConfigCopy.module.loaders.unshift({ test: /\.less$/, loader: 'style!css!less' });
-  webpackConfigCopy.module.loaders.unshift({ test: /\.css$/, loader: 'style!css' });
+  webpackConfig.module.loaders.shift(); // remove css loader
+  webpackConfig.module.loaders.shift(); // remove less loader
+  webpackConfig.module.loaders.unshift({ test: /\.less$/, loader: 'style!css!less' });
+  webpackConfig.module.loaders.unshift({ test: /\.css$/, loader: 'style!css' });
 
-  webpackConfigCopy.plugins.pop(); // remove the css extraction plugin
-  webpackConfigCopy.plugins[0].DEBUG = true;
-  webpackConfigCopy.plugins.push(
+  webpackConfig.plugins.pop(); // remove the css extraction plugin
+  webpackConfig.plugins[0].DEBUG = true;
+  webpackConfig.plugins.push(
     new webpack.HotModuleReplacementPlugin()
   );
 
-  let compiler = webpack(webpackConfigCopy);
+  let compiler = webpack(webpackConfig);
   compiler.plugin('done', stats => {
     gutil.log('[webpack-dev-server]', 'Listening at ' + config.host + ':' + config.port);
     gutil.log('[webpack-dev-server]', uri + '/webpack-dev-server/index.html');
@@ -208,7 +208,7 @@ gulp.task('webpack-dev-server', callback => {
   });
 
   new WebpackDevServer(compiler, {
-    publicPath: webpackConfigCopy.output.publicPath,
+    publicPath: webpackConfig.output.publicPath,
     hot: true,
     historyApiFallback: true,
     stats: {
@@ -271,7 +271,7 @@ gulp.task('browser:build:dev', ['index:build:dev'], () => {
     .pipe(gopen({ uri }));
 });
 
-gulp.task('browser:webpack-dev-server', ['webpack-dev-server'], () => {
+gulp.task('browser:server', ['webpack:dev-server'], () => {
   gulp
     .src('')
     .pipe(gopen({ uri }));
