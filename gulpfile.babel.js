@@ -51,12 +51,16 @@ function configureWebpack() {
   webpackConfig.output.path = config.dirs.dest;
   webpackConfig.output.filename = gutil.replaceExtension(config.filename, '.min.js');
 
-  webpackConfig.plugins = [
+  webpackConfig.plugins.shift(); // remove default DefinePlugin
+  webpackConfig.plugins.unshift(
     new webpack.DefinePlugin({ DEBUG: false, PRODUCTION: true,
       'process.env': {
         'NODE_ENV': JSON.stringify('production')
       }
-    }),
+    })
+  );
+
+  webpackConfig.plugins.push(
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin({
       minimize: true,
@@ -65,7 +69,7 @@ function configureWebpack() {
         warnings: false
       }
     })
-  ];
+  );
 
   return webpackConfig;
 }
@@ -151,6 +155,11 @@ gulp.task('webpack:build:dev', callback => {
   webpackConfig.devtool = 'sourcemap';
   webpackConfig.debug = true;
 
+  webpackConfig.plugins.shift(); // remove default DefinePlugin
+  webpackConfig.plugins.unshift(
+    new webpack.DefinePlugin({ DEBUG: true, PRODUCTION: false })
+  );
+
   runWebpack(webpackConfig, 'webpack:build:dev', () => callback());
 });
 
@@ -193,8 +202,12 @@ gulp.task('webpack:dev-server', callback => {
   webpackConfig.module.loaders.unshift({ test: /\.less$/, loader: 'style!css!less' });
   webpackConfig.module.loaders.unshift({ test: /\.css$/, loader: 'style!css' });
 
+  webpackConfig.plugins.shift(); // remove default DefinePlugin
+  webpackConfig.plugins.unshift(
+    new webpack.DefinePlugin({ DEBUG: true, PRODUCTION: false })
+  );
+
   webpackConfig.plugins.pop(); // remove the css extraction plugin
-  webpackConfig.plugins[0].DEBUG = true;
   webpackConfig.plugins.push(
     new webpack.HotModuleReplacementPlugin()
   );
