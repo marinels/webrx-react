@@ -52,9 +52,7 @@ function configureWebpack() {
   webpackConfigCopy.output.filename = gutil.replaceExtension(config.filename, '.min.js');
 
   webpackConfigCopy.plugins = [
-    new webpack.DefinePlugin({
-      DEBUG: false,
-      PRODUCTION: true,
+    new webpack.DefinePlugin({ DEBUG: false, PRODUCTION: true,
       'process.env': {
         'NODE_ENV': JSON.stringify('production')
       }
@@ -160,14 +158,10 @@ gulp.task('webpack-dev-server', callback => {
 
   webpackConfigCopy.entry.app.unshift('webpack-dev-server/client?' + uri, 'webpack/hot/only-dev-server');
 
-  webpackConfigCopy.plugins = [
-    new webpack.DefinePlugin({
-      DEBUG: true,
-      PRODUCTION: false
-    }),
-    new webpack.HotModuleReplacementPlugin(),
-
-  ];
+  webpackConfigCopy.plugins[0].DEBUG = true;
+  webpackConfigCopy.plugins.push(
+    new webpack.HotModuleReplacementPlugin()
+  );
 
   let compiler = webpack(webpackConfigCopy);
   compiler.plugin('done', stats => {
