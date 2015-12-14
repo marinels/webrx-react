@@ -159,7 +159,7 @@ gulp.task('webpack-dev-server', callback => {
   webpackConfigCopy.devtool = 'eval';
   webpackConfigCopy.debug = true;
 
-  webpackConfigCopy.entry.unshift('webpack-dev-server/client?' + uri, 'webpack/hot/only-dev-server');
+  webpackConfigCopy.entry.app.unshift('webpack-dev-server/client?' + uri, 'webpack/hot/only-dev-server');
 
   webpackConfigCopy.plugins = [
     new webpack.DefinePlugin({

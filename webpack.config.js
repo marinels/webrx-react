@@ -2,16 +2,32 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-  entry: ['./src/index.tsx'],
+  entry: {
+    app: [
+      path.join(__dirname, 'src/index.tsx')
+    ],
+    vendor: [
+      'rx',
+      'ix',
+      'jquery',
+      'jquery-deparam',
+      'moment',
+      'webrx',
+      'bootstrap/less/bootstrap.less',
+      'react',
+      'react-dom',
+      'react-bootstrap',
+      'react-fa',
+      'react-addons-css-transition-group'
+    ]
+  },
   output: {
     path: path.join(__dirname, 'build'),
     filename: 'app.js'
   },
   plugins: [
-    new webpack.DefinePlugin({
-      DEBUG: false,
-      PRODUCTION: false
-    })
+    new webpack.DefinePlugin({ DEBUG: false, PRODUCTION: false }),
+    new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js')
   ],
   module: {
     loaders: [
