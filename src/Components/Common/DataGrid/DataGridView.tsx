@@ -78,10 +78,10 @@ export class TableView implements IDataGridView {
         <div className='Column-sortButtons'>
           <ButtonGroup>
             <Button bsSize="small" active={sortedAsc} onClick={view.bindEvent(x => x.sortAscending, null, x => column.fieldName)}>
-              <Icon name="bs-sort-by-attributes" fixedWidth />
+              <Icon name="fa-sort-amount-asc" fixedWidth />
             </Button>
             <Button bsSize="small" active={sortedDesc} onClick={view.bindEvent(x => x.sortDescending, null, x => column.fieldName)}>
-              <Icon name="bs-sort-by-attributes-alt" fixedWidth />
+              <Icon name="fa-sort-amount-desc" fixedWidth />
             </Button>
           </ButtonGroup>
         </div>

@@ -32,7 +32,7 @@ export class AppViewModel extends BaseViewModel {
       this.routeHandler,
       undefined, // search view model
       [
-        { id: 'home', header: 'Home', uri: '#/', iconName: 'bs-home' },
+        { id: 'home', header: 'Home', uri: '#/', iconName: 'fa-home' },
         { id: 'root', header: 'Root', uri: '/' },
       ]
     );

@@ -27,7 +27,7 @@ export class SearchView extends BaseView<ISearchProps, SearchViewModel> {
 
     if (this.props.searchButton != null && this.props.searchButton !== false) {
       let searchButton = this.props.searchButton === true ? (
-        <Icon name='bs-search' />
+        <Icon name='fa-search' />
       ) : this.props.searchButton;
 
       inputProps.buttonAfter = (

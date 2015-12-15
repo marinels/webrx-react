@@ -123,7 +123,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
             {appActions}
           </form>
           <Nav className='PageHeader-navSite navbar-right' pullRight>
-            {this.createMenu(this.state.helpMenuItems, (<Icon name='bs-question-sign' />), () => ({
+            {this.createMenu(this.state.helpMenuItems, (<Icon name='fa-question-circle' />), () => ({
               id: 'help-menu',
               className: 'PageHeader-iconNavItem PageHeader-navHelp',
               eventKey: eventKey++,
