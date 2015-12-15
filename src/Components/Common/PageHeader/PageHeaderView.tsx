@@ -49,13 +49,18 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
     return isDisabled;
   }
 
-  private createMenu(items: wx.IObservableList<IMenuItem> | IMenuItem[], propsCreator: () => NavDropdownProps, defaultValue?: any) {
+  private createMenu(items: wx.IObservableList<IMenuItem> | IMenuItem[], icon: any, propsCreator: () => NavDropdownProps, defaultValue?: any) {
     let length = items == null ? null : items.length;
     if (length instanceof Function) {
       length = (length as wx.IObservableProperty<number>)();
     }
+    let title = (
+      <div className='PageHeader-menuTitle'>
+        {icon}
+      </div>
+    );
     return length == null || length === 0 ? defaultValue : (
-      <NavDropdown {...propsCreator()}>
+      <NavDropdown title={title} {...propsCreator()}>
         {
           items.map(x => {
             let icon = <Icon name={x.iconName} fixedWidth />;
@@ -72,18 +77,15 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
   }
 
   render() {
-    let userIcon = this.state.userImage == null ?
-      <Icon name='bs-user' /> :
-      <Image className='PageHeader-profilePicture' rounded src={this.state.userImage} />;
+    let userIcon = this.state.userImage == null ? <Icon name='fa-user' /> : <Image src={this.state.userImage} />;
 
     let eventKey = 1;
 
     let appMenus = (this.state.appMenus == null || this.state.appMenus.length() === 0) ? null : (
-      this.state.appMenus.map(x => this.createMenu(x.items.sort((a, b) => (a.order || 0) - (b.order || 0)), () => ({
+      this.state.appMenus.map(x => this.createMenu(x.items.sort((a, b) => (a.order || 0) - (b.order || 0)), x.header, () => ({
         id: x.id,
         key: x.id,
-        eventKey: eventKey++,
-        title: x.header
+        eventKey: eventKey++
       })))
     );
 
@@ -107,11 +109,10 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
       <div className='PageHeader'>
         <Navbar fluid>
           <Nav className='PageHeader-navBrand'>
-            {this.createMenu(this.state.appSwitcherMenuItems, () => ({
+            {this.createMenu(this.state.appSwitcherMenuItems, (<Icon name='fa-bars' />), () => ({
               id: 'app-switcher',
               eventKey: 0,
-              noCaret: true,
-              title: (<Icon name='bs-menu-hamburger' />)
+              noCaret: true
             }))}
             <NavItem className='PageHeader-brand' href={this.state.homeLink}>{this.props.brand}</NavItem>
           </Nav>
@@ -121,23 +122,24 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
           <form className='PageHeader-navActions navbar-form navbar-left'>
             {appActions}
           </form>
-          <Nav className='PageHeader-navUser' pullRight>
-            {this.createMenu(this.state.adminMenuItems, () => ({
-              id: 'admin-menu',
-              eventKey: eventKey++,
-              title: (<Icon name='bs-cog' />)
-            }))}
-            {this.createMenu(this.state.userMenuItems, () => ({
-              id: 'user-menu',
-              eventKey: eventKey++,
-              title: userIcon
-            }), <NavItem>{userIcon}</NavItem>)}
-          </Nav>
-          <Nav className='PageHeader-navSite' pullRight>
-            {this.createMenu(this.state.helpMenuItems, () => ({
+          <Nav className='PageHeader-navSite navbar-right' pullRight>
+            {this.createMenu(this.state.helpMenuItems, (<Icon name='bs-question-sign' />), () => ({
               id: 'help-menu',
+              className: 'PageHeader-iconNavItem PageHeader-navHelp',
               eventKey: eventKey++,
-              title: (<Icon name='bs-question-sign' />)
+              noCaret: true
+            }))}
+            {this.createMenu(this.state.adminMenuItems, (<Icon name='fa-cog' />), () => ({
+              id: 'admin-menu',
+              className: 'PageHeader-iconNavItem PageHeader-navAdmin',
+              eventKey: eventKey++,
+              noCaret: true
+            }))}
+            {this.createMenu(this.state.userMenuItems, userIcon, () => ({
+              id: 'user-menu',
+              className: 'PageHeader-iconNavItem PageHeader-navUser',
+              eventKey: eventKey++,
+              noCaret: true
             }))}
           </Nav>
           {search}
