@@ -1,6 +1,7 @@
 'use strict';
 
 import * as React from 'react';
+import { PageHeader, Alert } from 'react-bootstrap';
 import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
@@ -24,12 +25,22 @@ export class RouteHandlerView extends BaseView<IRouteHandlerProps, RouteHandlerV
     super(props, context);
 
     if (this.props.viewMap['*'] == null) {
-      this.props.viewMap['*'] = 'View Not Found';
+      this.props.viewMap['*'] = this.createError('View Not Found');
     }
 
     if (this.props.viewMap[''] == null) {
-      this.props.viewMap[''] = 'Route Not Found';
+      this.props.viewMap[''] = this.createError('Route Not Found');
     }
+  }
+
+  private createError(text: string) {
+    return (
+      <div className='Error container'>
+        <Alert bsStyle='danger'>
+          <h4>{text}</h4>
+        </Alert>
+      </div>
+    )
   }
 
   private getViewKey() {
