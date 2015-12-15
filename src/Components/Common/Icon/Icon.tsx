@@ -1,24 +1,30 @@
 'use strict';
 
 import * as React from 'react';
-import { Glyphicon } from 'react-bootstrap';
-import * as FontAwesomeIcon from 'react-fa';
 import * as classNames from 'classnames';
 
 import './Icon.less';
 
 interface IIconProps {
   name?: string;
+  className?: string;
+  size?: string;
+  rotate?: number;
+  flip?: string;
   fixedWidth?: boolean;
+  spin?: boolean;
+  pulse?: boolean;
+  stack?: string;
+  inverse?: boolean;
+  Component?: string;
   hidden?: boolean;
-  props?: any;
 }
 
 export class Icon extends React.Component<IIconProps, any> {
   public displayName = 'Icon';
 
   static defaultProps = {
-    name: 'bs-NONE'
+    name: 'fa-picture-o'
   }
 
   render() {
@@ -26,24 +32,30 @@ export class Icon extends React.Component<IIconProps, any> {
 
     let iconClassNames: any = {
       'Icon': true,
-      'Icon-hidden': this.props.hidden === true,
-      'Icon-fixedWidth': this.props.fixedWidth === true
+      'Icon-hidden': this.props.hidden === true
     };
-    let props: any = {};
+    let props: any = null;
 
     if (this.props.name.indexOf('fa-') === 0) {
-      IconComponent = FontAwesomeIcon;
-      props['name'] = this.props.name.substring(3);
+      IconComponent = require('react-fa');
+      props = Object.assign({}, this.props);
+      props.name = props.name.substring(3);
     } else if (this.props.name.indexOf('bs-') === 0) {
-      IconComponent = Glyphicon;
-      props['glyph'] = this.props.name.substring(3);
+      IconComponent = require<any>('react-bootstrap').Glyphicon;
+      props = {
+        glyph: this.props.name.substring(3)
+      }
+      iconClassNames.fixedWidth = this.props.fixedWidth;
     } else {
       IconComponent = 'img';
-      props['src'] = 'http://placeholdit.imgix.net/~text?txtsize=12&txt=Icon&w=18&h=18&txttrack=0&txtpad=1'
-      props['alt'] = props['title'] = this.props.name;
+      props = {
+        src: 'http://placeholdit.imgix.net/~text?txtsize=12&txt=Icon&w=18&h=18&txttrack=0&txtpad=1',
+        title: this.props.name,
+        alt: this.props.name
+      }
     }
 
-    return <IconComponent className={classNames(iconClassNames)} {...props} {...this.props.props} />;
+    return <IconComponent className={classNames(iconClassNames)} {...props} />;
   }
 }
 
