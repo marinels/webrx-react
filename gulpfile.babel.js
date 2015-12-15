@@ -10,35 +10,62 @@ import gutil from 'gulp-util';
 import gopen from 'gulp-open';
 import greplace from 'gulp-replace';
 import grename from 'gulp-rename';
+import runSequence from 'run-sequence';
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import webpackConfigTemplate from './webpack.config.js'
 
 let args = parseArgs(process.argv);
 
 const config = {
+  verbose: args.verbose || false,
   dirs: {
-    src: 'src',
-    dest: args.dest || 'build'
+    src: args.src || path.join(__dirname, 'src'),
+    dest: args.dest || path.join(__dirname, 'build'),
+    dist: args.dist || (args.dest ? path.join(args.dest, 'dist') : path.join(__dirname, 'build', 'dist'))
   },
-  filename: 'app.js',
+  files: {
+    app: 'app.js',
+    vendor: 'vendor.js'
+  },
   host: '0.0.0.0',
   port: 3000
+};
+
+const definesTemplate = {
+  DEBUG: false,
+  PRODUCTION: false,
+  COMPAT: false
 };
 
 const uri = 'http://' + (config.host === '0.0.0.0' ? 'localhost' : config.host) + ':' + config.port;
 
 function runWebpack(cfg, tag = 'default', callback) {
-  webpack(cfg).run((err, stats) => {
+  tag = '[webpack:' + tag + ']';
+  let compiler = webpack(cfg);
+
+  gutil.log(tag, 'Bundling...');
+  compiler.run((err, stats) => {
     if (err) {
-      throw new gutil.PluginError('webpack:' + tag, err);
+      throw new gutil.PluginError(tag, err);
     }
 
-    gutil.log('[webpack:' + tag + ']', stats.toString({
-			colors: true
-		}));
+    if (args.verbose === true) {
+      gutil.log('[webpack:' + tag + ']', stats.toString({
+  			colors: true
+  		}));
+    }
 
-    gutil.log('[webpack:' + tag + ']', cfg.output.filename);
+    let outputPath = stats.compilation.outputOptions.path;
+    let assets = stats.toJson().assetsByChunkName;
+
+    gutil.log(tag, 'Bundling Complete');
+    for (let chunk in assets) {
+      for (let i in assets[chunk]) {
+        gutil.log(gutil.colors.magenta(path.join(outputPath, assets[chunk][i])))
+      }
+    }
 
     if (callback) {
       callback(stats);
@@ -46,94 +73,196 @@ function runWebpack(cfg, tag = 'default', callback) {
   })
 }
 
-function configureWebpack() {
+function getOutputPath(isProduction, isCompat, enableStats) {
+  if (enableStats === true) {
+    return path.join(config.dirs.dest, 'stats');
+  } else if (isCompat === true) {
+    return path.join(config.dirs.dest, 'compat');
+  } else if (isProduction === true) {
+    return path.join(config.dirs.dest, 'prod');
+  } else {
+    return path.join(config.dirs.dest, 'debug');
+  }
+}
+
+function configureWebpack(isProduction, isCompat, enableStats, enableServer) {
   let webpackConfig = Object.create(webpackConfigTemplate);
-  webpackConfig.output.path = config.dirs.dest;
-  webpackConfig.output.filename = gutil.replaceExtension(config.filename, '.min.js');
+  let defines = Object.create(definesTemplate);
 
-  webpackConfig.plugins.shift(); // remove default DefinePlugin
-  webpackConfig.plugins.unshift(
-    new webpack.DefinePlugin({ DEBUG: false, PRODUCTION: true,
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production')
-      }
-    })
-  );
+  webpackConfig.entry.app = [ path.join(config.dirs.src, 'index.tsx') ];
+  webpackConfig.output.path = getOutputPath(isProduction, isCompat, enableStats);
 
-  webpackConfig.plugins.push(
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-      minimize: true,
-      comments: false,
-      compress: {
-        warnings: false
-      }
-    })
-  );
+  if (isProduction === true) {
+    webpackConfig.output.filename = gutil.replaceExtension(config.files.app, isCompat ? '.compat.min.js' : '.min.js');
+
+    defines.PRODUCTION = true;
+    defines['process.env'] = {
+      'NODE_ENV': JSON.stringify('production')
+    };
+
+    webpackConfig.plugins = [
+      new webpack.DefinePlugin(defines),
+      new webpack.optimize.DedupePlugin(),
+      new webpack.optimize.UglifyJsPlugin({
+        minimize: true,
+        comments: false,
+        compress: {
+          warnings: false
+        }
+      }),
+      new webpack.optimize.CommonsChunkPlugin('vendor', gutil.replaceExtension(config.files.vendor, isCompat ? '.compat.min.js' : '.min.js')),
+      new ExtractTextPlugin('[name].min.css')
+    ]
+  } else {
+    webpackConfig.output.filename = gutil.replaceExtension(config.files.app, isCompat ? '.compat.js' : '.js');
+    webpackConfig.devtool = 'sourcemap';
+    webpackConfig.debug = true;
+
+    defines.DEBUG = true;
+
+    webpackConfig.plugins = [
+      new webpack.DefinePlugin(defines),
+      new webpack.optimize.CommonsChunkPlugin('vendor', gutil.replaceExtension(config.files.vendor, isCompat ? '.compat.js' : '.js')),
+      new ExtractTextPlugin('[name].css')
+    ];
+  }
+
+  if (enableStats === true) {
+    webpackConfig.failOnError = false;
+    webpackConfig.profile = true;
+  }
+
+  if (enableServer === true) {
+    webpackConfig.devtool = 'eval';
+
+    webpackConfig.entry.app.unshift('webpack-dev-server/client?' + uri, 'webpack/hot/only-dev-server');
+
+    webpackConfig.module.loaders[0].loader = 'style!css'; // override extract plugin css loader
+    webpackConfig.module.loaders[1].loader = 'style!css!less'; // override extract plugin less loader
+    webpackConfig.module.loaders[4].loaders.unshift('react-hot'); // inject HMR loader for react typescript
+
+    webpackConfig.plugins.pop(); // remove the css extraction plugin
+    webpackConfig.plugins.push(
+      new webpack.HotModuleReplacementPlugin()
+    );
+  }
 
   return webpackConfig;
 }
 
-function writeStats(stats, filename, callback) {
-  fs.writeFileSync(path.join(__dirname, config.dirs.dest, filename), JSON.stringify(stats.toJson(), null, 2));
+function writeStats(stats, isProduction, callback) {
+  fs.writeFileSync(
+    path.join(config.dirs.dest, isProduction ? 'stats.min.json' : 'stats.json'),
+    JSON.stringify(stats.toJson(), null, 2)
+  );
 
   callback();
 }
 
 gulp.task('default', ['browser:server']);
 
+gulp.task('config', () => {
+  gutil.log(config);
+})
 gulp.task('help', () => {
   const EOL = "\r\n";
 
-  let lines = ['*** Help ***'];
-  lines.push('Run ' + gutil.colors.cyan('gulp --tasks') + ' to see complete task hierarchy');
-  lines.push('');
-  lines.push('* ' + gutil.colors.cyan('gulp') + ' will start a webpack development server and open a browser window');
-  lines.push('');
-  lines.push('* ' + gutil.colors.cyan('gulp clean') + ' will delete all files in ' + gutil.colors.magenta(path.join(__dirname, config.dirs.dest)));
-  lines.push('');
-  lines.push('* ' + gutil.colors.cyan('gulp build[:*]') + ' will build the bundles (use :dev or :compat for alternate builds)');
-  lines.push('* ' + gutil.colors.cyan('gulp webpack:build[:*]') + ' -- ' + gutil.colors.yellow('same as build command'));
-  lines.push('');
-  lines.push('* ' + gutil.colors.cyan('gulp stats[:*]') + ' will create a stats[.*].json file for use with ' + gutil.colors.underline.blue('http://webpack.github.io/analyse/') + ' (use :dev for alternate stats)');
-  lines.push('* ' + gutil.colors.cyan('gulp webpack:stats[:*]') + ' -- ' + gutil.colors.yellow('same as stats command'));
-  lines.push('');
-  lines.push('* ' + gutil.colors.cyan('gulp server') + ' will start the webpack development server');
-  lines.push('* ' + gutil.colors.cyan('gulp webpack:dev-server') + ' -- ' + gutil.colors.yellow('same as server command'));
-  lines.push('');
-  lines.push('* ' + gutil.colors.cyan('gulp index[:*]') + ' will build the bundle and create an index[.*].html test file (use :dev or :compat for alternate builds)');
-  lines.push('* ' + gutil.colors.cyan('gulp index:build[:*]') + ' -- ' + gutil.colors.yellow('same as index command'));
-  lines.push('');
-  lines.push('* ' + gutil.colors.cyan('gulp browser[:*]') + ' will build the bundle and create an index[.*].html test file and open a browser window (use :dev or :compat for alternate builds)');
-  lines.push('* ' + gutil.colors.cyan('gulp browser:build[:*]') + ' -- ' + gutil.colors.yellow('same as index command'));
-  lines.push('* ' + gutil.colors.cyan('gulp browser:server') + ' -- ' + gutil.colors.yellow('same as default gulp command'));
-
+  let lines = [
+    '*** Help ***',
+    'Command Line Overrides:',
+    '* --verbose: print webpack module details and stats after bundling',
+    '* --src <path>: override source directory (default is "src")',
+    '* --dest <path>: override build directory (default is "build")',
+    '* --dist <path>: override dist directory (default is "dist")',
+    '',
+    'Run ' + gutil.colors.cyan('gulp --tasks') + ' to see complete task hierarchy',
+    '',
+    '* ' + gutil.colors.cyan('gulp') + ' will build a debug bundle, start a webpack development server, and open a browser window',
+    '',
+    '* ' + gutil.colors.cyan('gulp clean') + ' will delete all files in ' + gutil.colors.magenta(path.join(config.dirs.dest)),
+    '* ' + gutil.colors.cyan('gulp help') + ' will emit this help text',
+    '* ' + gutil.colors.cyan('gulp config') + ' will emit the build configuration',
+    '',
+    '* ' + gutil.colors.cyan('gulp build[:*]') + ' will build the bundles (use :dev or :compat for alternate builds)',
+    '* ' + gutil.colors.cyan('gulp build:all:bundles') + ' will build release, dev, and compat bundles',
+    '* ' + gutil.colors.cyan('gulp build:all:stats') + ' will build release and dev stats',
+    '* ' + gutil.colors.cyan('gulp build:all') + ' will build all bundles and stats',
+    '* ' + gutil.colors.cyan('gulp build:dist') + ' will build all bundles and deploy them to a dist folder',
+    '',
+    '* ' + gutil.colors.cyan('gulp stats[:*]') + ' will create a stats[.*].json file for use with ' + gutil.colors.underline.blue('http://webpack.github.io/analyse/') + ' (use :dev for alternate stats)',
+    '',
+    '* ' + gutil.colors.cyan('gulp server') + ' will start the webpack development server',
+    '',
+    '* ' + gutil.colors.cyan('gulp index[:*]') + ' will build the bundle and create an index[.*].html test file (use :dev or :compat for alternate builds)',
+    '',
+    '* ' + gutil.colors.cyan('gulp browser[:*]') + ' will build the bundle and create an index[.*].html test file and open a browser window (use :dev or :compat for alternate builds)',
+    '* ' + gutil.colors.cyan('gulp browser:stats[:dev]') + ' will build release stats and open a browser to the analyzer tool (:dev for debug stats)'
+  ];
   let help = lines.join(EOL);
   gutil.log(help);
 })
 
 gulp.task('clean', () => {
-  del([`${config.dirs.dest}/*`, 'npm-debug.log'])
+  return del([`${config.dirs.dest}/*`, 'npm-debug.log'])
 });
 
 gulp.task('build', ['webpack:build']);
 gulp.task('build:compat', ['webpack:build:compat']);
 gulp.task('build:dev', ['webpack:build:dev']);
+gulp.task('build:all', callback => {
+  runSequence(
+    'build:all:bundles',
+    'build:all:stats',
+    callback
+  );
+});
+gulp.task('build:all:bundles', callback => {
+  runSequence(
+    'webpack:build:dev',
+    'webpack:build',
+    'webpack:build:compat',
+    callback
+  );
+});
+gulp.task('build:all:stats', callback => {
+  runSequence(
+    'webpack:stats:dev',
+    'webpack:stats',
+    callback
+  );
+});
+gulp.task('build:dist', ['clean', 'build:all:bundles'], () => {
+  gulp
+    .src([
+      // debug files
+      path.join(config.dirs.dest, 'debug', '*.js'),
+      path.join(config.dirs.dest, 'debug', '*.css'),
+      path.join(config.dirs.dest, 'debug', '*.map'),
+
+      // compat files
+      path.join(config.dirs.dest, 'compat', '*.js'),
+      path.join(config.dirs.dest, 'compat', '*.js.map'),
+
+      // prod files
+      path.join(config.dirs.dest, 'prod', '*.js'),
+      path.join(config.dirs.dest, 'prod', '*.css'),
+      path.join(config.dirs.dest, 'prod', '*.map'),
+      path.join(config.dirs.dest, 'prod', 'fonts'),
+      path.join(config.dirs.dest, 'prod', 'locale')
+    ])
+    .pipe(gulp.dest(config.dirs.dist));
+});
 
 gulp.task('webpack:build', callback => {
-  let webpackConfig = configureWebpack();
+  let webpackConfig = configureWebpack(true);
 
   runWebpack(webpackConfig, 'webpack:build', () => callback());
 });
 
 gulp.task('webpack:build:compat', callback => {
-  let webpackConfig = configureWebpack();
-  // // uncomment this generate the compat bundle without minification
-  // webpackConfig = Object.create(webpackConfigTemplate);
-  // webpackConfig.devtool = 'sourcemap';
-  // webpackConfig.debug = true;
+  let webpackConfig = configureWebpack(true, true);
 
-  webpackConfig.output.filename = gutil.replaceExtension(config.filename, '.compat.min.js');
+  webpackConfig.output.filename = gutil.replaceExtension(config.files.app, '.compat.min.js');
   webpackConfig.resolve.alias.rx = 'rx/dist/rx.all.compat';
   webpackConfig.ts = {
     compilerOptions: {
@@ -141,7 +270,7 @@ gulp.task('webpack:build:compat', callback => {
     }
   }
 
-  webpackConfig.entry.unshift('es5-shim', 'es5-shim/es5-sham');
+  webpackConfig.entry.vendor.unshift('es5-shim', 'es5-shim/es5-sham');
 
   runWebpack(webpackConfig, 'webpack:build:compat', () => {
     callback();
@@ -149,16 +278,7 @@ gulp.task('webpack:build:compat', callback => {
 });
 
 gulp.task('webpack:build:dev', callback => {
-  let webpackConfig = Object.create(webpackConfigTemplate);
-  webpackConfig.output.path = config.dirs.dest;
-  webpackConfig.output.filename = config.filename;
-  webpackConfig.devtool = 'sourcemap';
-  webpackConfig.debug = true;
-
-  webpackConfig.plugins.shift(); // remove default DefinePlugin
-  webpackConfig.plugins.unshift(
-    new webpack.DefinePlugin({ DEBUG: true, PRODUCTION: false })
-  );
+  let webpackConfig = configureWebpack(false);
 
   runWebpack(webpackConfig, 'webpack:build:dev', () => callback());
 });
@@ -167,50 +287,25 @@ gulp.task('stats', ['webpack:stats']);
 gulp.task('stats:dev', ['webpack:stats:dev']);
 
 gulp.task('webpack:stats', callback => {
-  let webpackConfig = configureWebpack();
-  webpackConfig.failOnError = false;
-  webpackConfig.profile = true;
+  let webpackConfig = configureWebpack(true, false, true);
 
   runWebpack(webpackConfig, 'webpack:stats', stats => {
-    writeStats(stats, 'stats.min.json', callback);
+    writeStats(stats, true, callback);
   });
 });
 
 gulp.task('webpack:stats:dev', callback => {
-  let webpackConfig = Object.create(webpackConfigTemplate);
-  webpackConfig.devtool = 'sourcemap';
-  webpackConfig.debug = true;
-  webpackConfig.failOnError = false;
-  webpackConfig.profile = true;
+  let webpackConfig = configureWebpack(false, false, true);
 
   runWebpack(webpackConfig, 'webpack:stats-dev', stats => {
-    writeStats(stats, 'stats.json', callback);
+    writeStats(stats, false, callback);
   });
 });
 
 gulp.task('server', ['webpack:dev-server']);
 
 gulp.task('webpack:dev-server', callback => {
-  let webpackConfig = Object.create(webpackConfigTemplate);
-  webpackConfig.devtool = 'eval';
-  webpackConfig.debug = true;
-
-  webpackConfig.entry.app.unshift('webpack-dev-server/client?' + uri, 'webpack/hot/only-dev-server');
-
-  webpackConfig.module.loaders.shift(); // remove css loader
-  webpackConfig.module.loaders.shift(); // remove less loader
-  webpackConfig.module.loaders.unshift({ test: /\.less$/, loader: 'style!css!less' });
-  webpackConfig.module.loaders.unshift({ test: /\.css$/, loader: 'style!css' });
-
-  webpackConfig.plugins.shift(); // remove default DefinePlugin
-  webpackConfig.plugins.unshift(
-    new webpack.DefinePlugin({ DEBUG: true, PRODUCTION: false })
-  );
-
-  webpackConfig.plugins.pop(); // remove the css extraction plugin
-  webpackConfig.plugins.push(
-    new webpack.HotModuleReplacementPlugin()
-  );
+  let webpackConfig = configureWebpack(false, false, false, true);
 
   let compiler = webpack(webpackConfig);
   compiler.plugin('done', stats => {
@@ -234,6 +329,7 @@ gulp.task('webpack:dev-server', callback => {
   });
 });
 
+//getOutputPath(isProduction, isCompat, enableStats)
 gulp.task('index', ['index:build']);
 gulp.task('index:compat', ['index:build:compat']);
 gulp.task('index:dev', ['index:build:dev']);
@@ -242,7 +338,8 @@ gulp.task('index:build', ['webpack:build'], () => {
   gulp
     .src(path.join(__dirname, 'index.html'))
     .pipe(greplace(/app\.js/g, 'app.min.js'))
-    .pipe(gulp.dest(path.join(__dirname, config.dirs.dest, 'index.min.html')));
+    .pipe(grename('index.min.html'))
+    .pipe(gulp.dest(getOutputPath(true, false)));
 });
 
 gulp.task('index:build:compat', ['webpack:build:compat'], () => {
@@ -250,13 +347,13 @@ gulp.task('index:build:compat', ['webpack:build:compat'], () => {
     .src(path.join(__dirname, 'index.html'))
     .pipe(greplace('app.js', 'app.compat.min.js'))
     .pipe(grename('index.compat.min.html'))
-    .pipe(gulp.dest(path.join(__dirname, config.dirs.dest)));
+    .pipe(gulp.dest(getOutputPath(true, true)));
 });
 
 gulp.task('index:build:dev', ['webpack:build:dev'], () => {
   gulp
     .src(path.join(__dirname, 'index.html'))
-    .pipe(gulp.dest(path.join(__dirname, config.dirs.dest)));
+    .pipe(gulp.dest(getOutputPath(false, false)));
 });
 
 gulp.task('browser', ['browser:build']);
@@ -264,21 +361,21 @@ gulp.task('browser:compat', ['browser:build:compat']);
 gulp.task('browser:dev', ['browser:build:dev']);
 
 gulp.task('browser:build', ['index:build'], () => {
-  let uri = path.join(__dirname, config.dirs.dest, 'index.min.html');
+  let uri = path.join(getOutputPath(true, false), 'index.min.html');
   gulp
     .src('')
     .pipe(gopen({ uri }));
 });
 
 gulp.task('browser:build:compat', ['index:build:compat'], () => {
-  let uri = path.join(__dirname, config.dirs.dest, 'index.compat.min.html');
+  let uri = path.join(getOutputPath(true, true), 'index.compat.min.html');
   gulp
     .src('')
     .pipe(gopen({ uri }));
 });
 
 gulp.task('browser:build:dev', ['index:build:dev'], () => {
-  let uri = path.join(__dirname, config.dirs.dest, 'index.html');
+  let uri = path.join(getOutputPath(false, false), 'index.html');
   gulp
     .src('')
     .pipe(gopen({ uri }));
@@ -289,3 +386,15 @@ gulp.task('browser:server', ['webpack:dev-server'], () => {
     .src('')
     .pipe(gopen({ uri }));
 })
+
+gulp.task('browser:stats', ['webpack:stats'], () => {
+  gulp
+    .src('')
+    .pipe(gopen({ uri: 'http://webpack.github.io/analyse/' }));
+});
+
+gulp.task('browser:stats:dev', ['webpack:stats:dev'], () => {
+  gulp
+    .src('')
+    .pipe(gopen({ uri: 'http://webpack.github.io/analyse/' }));
+});

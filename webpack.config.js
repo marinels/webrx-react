@@ -37,7 +37,7 @@ module.exports = {
       { test: /\.less$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader!less-loader') },
       { test: /moment[\/\\]locale/, loader: 'file?name=locale/moment/[name].[ext]'},
       { test: /\.(woff|woff2|ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file?name=fonts/[name].[ext]' },
-      { test: /\.tsx?$/, loaders: ['react-hot', 'ts'], include: path.join(__dirname, 'src') }
+      { test: /\.tsx?$/, loaders: ['ts'] }
     ]
   },
   resolve: {
