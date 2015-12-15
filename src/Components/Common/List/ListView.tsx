@@ -30,22 +30,35 @@ export class StandardView<T> implements IView {
   getRows(view: ListView, items: T[]) {
     return items.map((x, i) => {
       let props = this.createListItemProps(view, x, i);
+      var isSelected = view.isSelected(x, i);
 
       if (props.key == null) {
         props.key = i;
       }
 
-      if (props.active == null && (view.props.trackActive || view.props.multiSelect || false)) {
-        props.active = view.isSelected(x, i);
+      if (props.active == null && view.props.highlightSelected === true) {
+        props.active = isSelected;
       }
 
       if (props.onClick == null) {
         props.onClick = () => view.selectItem(x, i);
       }
 
+      let selectionIcon: any = null;
+      if (view.props.checkmarkSelected === true) {
+        selectionIcon = (
+          <div className='list-group-item-selectionIcon'>
+            <Icon name='fa-check-circle' size='lg' fixedWidth hidden={!isSelected} />
+          </div>
+        );
+      }
+
       return (
         <ListGroupItem {...props}>
-          {this.renderItem(view, x, i)}
+          {selectionIcon}
+          <div className='list-group-item-content'>
+            {this.renderItem(view, x, i)}
+          </div>
         </ListGroupItem>
       );
     });
@@ -113,13 +126,14 @@ export class TreeView<T> extends StandardView<T> {
       }
 
       let props = this.createListItemProps(view, x, i);
+      let isSelected = view.isSelected(x);
 
       if (props.key == null) {
         props.key = String.format('{0}.{1}', key, i);
       }
 
-      if (props.active == null && (view.props.trackActive || view.props.multiSelect || false)) {
-        props.active = view.isSelected(x);
+      if (props.active == null && view.props.highlightSelected === true) {
+        props.active = isSelected;
       }
 
       if (props.onClick == null) {
@@ -138,8 +152,18 @@ export class TreeView<T> extends StandardView<T> {
         };
       }
 
+      let selectionIcon: any = null;
+      if (view.props.checkmarkSelected === true) {
+        selectionIcon = (
+          <div className='list-group-item-selectionIcon'>
+            <Icon name='fa-check-circle' size='lg' fixedWidth hidden={!isSelected} />
+          </div>
+        );
+      }
+
       let item = (
         <ListGroupItem {...props}>
+          {selectionIcon}
           <div className='list-group-item-expander'>
             {nodeIndents}
             {expander}
@@ -161,16 +185,18 @@ export class TreeView<T> extends StandardView<T> {
 
 interface IListProps extends IBaseViewProps {
   view?: IView;
-  trackActive?: boolean;
+  highlightSelected?: boolean;
+  checkmarkSelected?: boolean;
   multiSelect?: boolean;
 }
 
 export class ListView extends BaseView<IListProps, ListViewModel<any, any>> {
   public static displayName = 'ListView';
-  
+
   static defaultProps = {
     view: new StandardView(),
-    trackActive: false,
+    highlightSelected: false,
+    checkmarkSelected: false,
     multiSelect: false
   }
 
