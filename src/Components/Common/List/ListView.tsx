@@ -94,7 +94,7 @@ export class TreeView<T> extends StandardView<T> {
         };
         expander = (
           <span className='TreeItem-button'>
-            <Button bsStyle='link' bsSize='xsmall' componentClass='span' onClick={onExpanderClick}>
+            <Button className='fa' bsStyle='link' bsSize='xsmall' componentClass='span' onClick={onExpanderClick}>
               <Icon name={isExpanded === true ? 'fa-minus-square-o' : 'fa-plus-square-o'} size='lg' fixedWidth />
             </Button>
           </span>
