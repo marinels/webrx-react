@@ -4,48 +4,31 @@
   .Search {
     margin-bottom: 10px;
   }
-  
+
   .table {
     margin: 0;
-    
+
     tr.Row--selected {
       font-weight: bold;
       .text-shadow();
     }
-    
+
     .btn {
       outline: 0 !important;
     }
-    
-    .Column {
-      display: table;
+
+    .Column.btn {
       width: 100%;
-      
-      .btn {
-        padding: 0;
-      }
-      
+      padding: 0 5px;
+      text-align: left;
+      text-decoration: none;
+
       .Column-header {
-        display: table-cell;
-        vertical-align: middle;
-        
-        .btn-link {
-          text-decoration: none;
-        }
-      }
-      
-      .Column-sortButtons {
-        display: table-cell;
-        text-align: right;
-        vertical-align: middle;
-        
-        .btn.active {
-          cursor: default;
-        }
+        margin-left: 10px;
       }
     }
-  } 
-  
+  }
+
   .Pager {
     margin-top: 10px;
   }

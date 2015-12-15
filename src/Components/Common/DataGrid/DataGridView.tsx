@@ -66,42 +66,40 @@ export class TableView implements IDataGridView {
   }
 
   private tableProps: TableProps;
-  
+
   private renderSortButtons(view: DataGridView, grid: DataGridViewModel<any>, column: Column, index: number) {
     let buttons:JSX.Element = null;
-    
+
     if (grid.canSort() && column.sortable) {
       let sortedAsc = grid.isSortedBy(column.fieldName, SortDirection.Ascending);
       let sortedDesc = grid.isSortedBy(column.fieldName, SortDirection.Descending);
-      
+      let iconName = 'fa-sort';
+
+      if (sortedAsc === true) {
+        iconName = 'fa-sort-asc';
+      } else if (sortedDesc === true) {
+        iconName = 'fa-sort-desc';
+      }
+
       return (
-        <div className='Column-sortButtons'>
-          <ButtonGroup>
-            <Button bsSize="small" active={sortedAsc} onClick={view.bindEvent(x => x.sortAscending, null, x => column.fieldName)}>
-              <Icon name="fa-sort-amount-asc" fixedWidth />
-            </Button>
-            <Button bsSize="small" active={sortedDesc} onClick={view.bindEvent(x => x.sortDescending, null, x => column.fieldName)}>
-              <Icon name="fa-sort-amount-desc" fixedWidth />
-            </Button>
-          </ButtonGroup>
-        </div>
+        <span className='Column-sortIcons'>
+          <Icon name={iconName} size='lg' />
+        </span>
       )
     }
-    
+
     return buttons;
   }
 
   public renderColumn(view: DataGridView, grid: DataGridViewModel<any>, column: Column, index: number) {
     return (
       <th key={index} className={column.className}>
-        <div className='Column'>
-          <div className='Column-header'>
-            <Button bsStyle='link' onClick={view.bindEvent(x => x.toggleSortDirection, null, x => column.fieldName)}>
-              {column.header}
-            </Button>
-          </div>
+        <Button className='Column' bsStyle='link' onClick={view.bindEvent(x => x.toggleSortDirection, null, x => column.fieldName)}>
           {this.renderSortButtons(view, grid, column, index)}
-        </div>
+          <span className='Column-header'>
+            {column.header}
+          </span>
+        </Button>
       </th>
     );
   }
