@@ -137,9 +137,13 @@ function configureWebpack(isProduction, isCompat, enableStats, enableServer) {
 
     webpackConfig.entry.app.unshift('webpack-dev-server/client?' + uri, 'webpack/hot/only-dev-server');
 
-    webpackConfig.module.loaders[0].loader = 'style!css'; // override extract plugin css loader
-    webpackConfig.module.loaders[1].loader = 'style!css!less'; // override extract plugin less loader
-    webpackConfig.module.loaders[4].loaders.unshift('react-hot'); // inject HMR loader for react typescript
+    webpackConfig.module.loaders = [
+      { test: /\.css$/, loader: 'style!css' },
+      { test: /\.less$/, loader: 'style!css!less' },
+      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url?mimetype=application/font-woff' },
+      { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url' },
+      { test: /\.tsx?$/, loaders: ['react-hot', 'ts'] }
+    ]
 
     webpackConfig.plugins.pop(); // remove the css extraction plugin
     webpackConfig.plugins.push(
@@ -315,8 +319,14 @@ gulp.task('webpack:dev-server', callback => {
     callback();
   });
 
+  gulp
+    .src('index.html')
+    .pipe(greplace(/.*stylesheet.*/g, ''))
+    .pipe(gulp.dest(config.dirs.dest));
+
   new WebpackDevServer(compiler, {
     publicPath: webpackConfig.output.publicPath,
+    contentBase: config.dirs.dest,
     hot: true,
     historyApiFallback: true,
     stats: {
@@ -337,7 +347,8 @@ gulp.task('index:dev', ['index:build:dev']);
 gulp.task('index:build', ['webpack:build'], () => {
   gulp
     .src(path.join(__dirname, 'index.html'))
-    .pipe(greplace(/app\.js/g, 'app.min.js'))
+    .pipe(greplace('app.js', 'app.min.js'))
+    .pipe(greplace('vendor.js', 'vendor.min.js'))
     .pipe(grename('index.min.html'))
     .pipe(gulp.dest(getOutputPath(true, false)));
 });
@@ -346,7 +357,7 @@ gulp.task('index:build:compat', ['webpack:build:compat'], () => {
   gulp
     .src(path.join(__dirname, 'index.html'))
     .pipe(greplace('app.js', 'app.compat.min.js'))
-    .pipe(grename('index.compat.min.html'))
+    .pipe(greplace('vendor.js', 'vendor.compat.min.js'))
     .pipe(gulp.dest(getOutputPath(true, true)));
 });
 
