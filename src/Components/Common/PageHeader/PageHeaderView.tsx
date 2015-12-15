@@ -77,7 +77,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
   }
 
   render() {
-    let userIcon = this.state.userImage == null ? <Icon name='fa-user' /> : <Image src={this.state.userImage} />;
+    let userIcon = this.state.userImage == null ? <Icon name='fa-user' size='lg' /> : <Image src={this.state.userImage} />;
 
     let eventKey = 1;
 
@@ -109,7 +109,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
       <div className='PageHeader'>
         <Navbar fluid>
           <Nav className='PageHeader-navBrand'>
-            {this.createMenu(this.state.appSwitcherMenuItems, (<Icon name='fa-bars' />), () => ({
+            {this.createMenu(this.state.appSwitcherMenuItems, (<Icon name='fa-bars' size='lg' />), () => ({
               id: 'app-switcher',
               eventKey: 0,
               noCaret: true
@@ -123,13 +123,13 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
             {appActions}
           </form>
           <Nav className='PageHeader-navSite navbar-right' pullRight>
-            {this.createMenu(this.state.helpMenuItems, (<Icon name='fa-question-circle' />), () => ({
+            {this.createMenu(this.state.helpMenuItems, (<Icon name='fa-question-circle' size='lg' />), () => ({
               id: 'help-menu',
               className: 'PageHeader-iconNavItem PageHeader-navHelp',
               eventKey: eventKey++,
               noCaret: true
             }))}
-            {this.createMenu(this.state.adminMenuItems, (<Icon name='fa-cog' />), () => ({
+            {this.createMenu(this.state.adminMenuItems, (<Icon name='fa-cog' size='lg' />), () => ({
               id: 'admin-menu',
               className: 'PageHeader-iconNavItem PageHeader-navAdmin',
               eventKey: eventKey++,
