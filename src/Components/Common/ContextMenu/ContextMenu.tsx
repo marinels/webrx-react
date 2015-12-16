@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import * as $ from 'jquery';
 
 import { Overlay, Popover, ListGroup, ListGroupItem } from 'react-bootstrap';
 
@@ -42,20 +41,19 @@ interface IContextMenuProps {
   id: string;
   header: string;
   items: MenuItem[];
-  offsetX?: number;
-  offsetY?: number;
   children?: any;
 }
 
 interface IContextMenuState {
   isVisible: boolean;
-  target: any;
-  offsetX: number;
-  offsetY: number;
+  left: number;
+  top: number;
 }
 
 export class ContextMenu extends React.Component<IContextMenuProps, IContextMenuState> {
   public static displayName = 'ContextMenu';
+
+  private static ArrowOffset = 20;
 
   static defaultProps = {
     offsetX: 0,
@@ -75,11 +73,11 @@ export class ContextMenu extends React.Component<IContextMenuProps, IContextMenu
   private renderMenu() {
     let menu: any;
 
-    if (this.state.offsetX != null && this.state.offsetY != null) {
+    if (this.state.left != null && this.state.top != null) {
       menu = (
         <Popover id={this.props.id} placement='right' title={this.props.header}
-          arrowOffsetTop={20}
-          positionLeft={this.state.offsetX} positionTop={this.state.offsetY}>
+          arrowOffsetTop={ContextMenu.ArrowOffset}
+          positionLeft={this.state.left} positionTop={this.state.top}>
           <ListGroup>
             {this.renderMenuItems()}
           </ListGroup>
@@ -100,14 +98,10 @@ export class ContextMenu extends React.Component<IContextMenuProps, IContextMenu
     if (isVisible) {
       e.preventDefault();
 
-      let elem = $(e.currentTarget);
-      let offset = elem.offset();
-
       this.setState({
         isVisible,
-        target: e.currentTarget,
-        offsetX: e.screenX - offset.left + this.props.offsetX,
-        offsetY: e.screenY - offset.top + this.props.offsetY
+        left: e.pageX,
+        top: e.pageY - ContextMenu.ArrowOffset
       });
     }
   }
@@ -115,9 +109,8 @@ export class ContextMenu extends React.Component<IContextMenuProps, IContextMenu
   private hide() {
     this.setState({
       isVisible: false,
-      target: null,
-      offsetX: null,
-      offsetY: null,
+      left: null,
+      top: null,
     });
   }
 
@@ -128,7 +121,7 @@ export class ContextMenu extends React.Component<IContextMenuProps, IContextMenu
         <div className='ContextMenu-target' onContextMenu={e => this.handleClick(e)}>
           {this.props.children}
         </div>
-        <Overlay show={this.state.isVisible} container={this} rootClose onHide={() => this.hide()}>
+        <Overlay show={this.state.isVisible} rootClose onHide={() => this.hide()}>
           {this.renderMenu()}
         </Overlay>
       </div>

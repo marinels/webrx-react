@@ -1,6 +1,12 @@
 @import '../../../Style/Bootstrap.less';
 
 .ContextMenu {
+  // This style node is only useful for ContextMenu-target
+}
+
+// Context menus get detached from their DOM at this point, so we need two root
+// style nodes
+.ContextMenu-menu {
   .popover-title {
     font-size: 1.5em;
   }
