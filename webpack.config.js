@@ -10,8 +10,6 @@ module.exports = {
     vendor: [
       'rx',
       'ix',
-      'jquery',
-      'jquery-deparam',
       'moment',
       'webrx',
       'bootstrap/less/bootstrap.less',
