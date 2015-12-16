@@ -49,6 +49,7 @@
     "Events/AlertCreated.ts",
     "Events/RouteChanged.ts",
     "Events/RoutingStateChanged.ts",
+    "Routing/deparam.ts",
     "Routing/HashCodec.ts",
     "Routing/RouteManager.ts",
     "Stores/ObservableApi.ts",
