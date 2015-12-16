@@ -61,6 +61,7 @@
     "typescript": "^1.7.3",
     "url-loader": "^0.5.7",
     "webpack": "^1.12.9",
+    "webpack-bundle-size-analyzer": "^1.2.0",
     "webpack-dev-server": "^1.14.0",
     "webrx": "^1.4.3"
   }
