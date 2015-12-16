@@ -1,7 +1,8 @@
 'use strict';
 
-import * as $ from 'jquery';
-import * as deparam from 'jquery-deparam';
+import * as param from 'jquery-param';
+import deparam from './deparam';
+// import * as deparam from 'jquery-deparam';
 
 export class HashCodec {
   public static displayName = 'HashCodec';
@@ -41,7 +42,7 @@ export class HashCodec {
     let hash = '#' + this.NormalizePath(path);
 
     if (state) {
-      let params = $.param(state);
+      let params = param(state);
 
       if (uriEncode === false) {
         params = decodeURIComponent(params);
