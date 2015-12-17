@@ -56,7 +56,7 @@ export class TableView implements IDataGridView {
 
   constructor(
     private rowKeySelector: (row: any, index: number, cells: any[]) => any = null,
-    striped = true, bordered = true, condensed = true, hover = true, responsive = true
+    striped = false, bordered = true, condensed = true, hover = true, responsive = true
   ) {
     if (rowKeySelector == null) {
       this.rowKeySelector = (row: any, index: number, cells: any[]) => index;
@@ -103,11 +103,11 @@ export class TableView implements IDataGridView {
       </div>
     ) : (
       <Button className='Column' bsStyle='link' onClick={view.bindEvent(x => x.toggleSortDirection, null, x => column.fieldName)}>
-        {sortIcon}
         {header}
+        {sortIcon}
       </Button>
     );
-    
+
     return (
       <th key={index} className={column.className}>
         {headerContainer}
