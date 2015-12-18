@@ -75,6 +75,8 @@
     "Components/Common/Search/SearchViewModel.ts",
     "Components/Common/Tabs/TabsViewModel.ts",
     "Components/Dashboard/DashboardViewModel.ts",
+    "Components/Demo/ComponentDemoViewModel.ts",
+    "Components/Demo/RoutingMap.ts",
     "Components/React/BaseRoutableViewModel.ts",
     "Components/React/BaseViewModel.ts",
     "Components/App/AppView.tsx",
@@ -93,6 +95,8 @@
     "Components/Common/Search/SearchView.tsx",
     "Components/Common/Tabs/TabsView.tsx",
     "Components/Dashboard/DashboardView.tsx",
+    "Components/Demo/ComponentDemoView.tsx",
+    "Components/Demo/ViewMap.tsx",
     "Components/React/BaseView.tsx",
     "index.tsx"
   ],
