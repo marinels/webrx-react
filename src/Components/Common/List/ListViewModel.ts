@@ -35,7 +35,7 @@ export class ListViewModel<TData, TRoutingState extends IListRoutingState> exten
         .select(x => this.items.get(x))
     )
     .toProperty();
-  
+
   public getSelectedItems() {
     return this.items.filter(x => (x as any as ISelectableItem).isSelected === true)
   }
@@ -63,6 +63,17 @@ export class ListViewModel<TData, TRoutingState extends IListRoutingState> exten
             }
           })
       );
+    }
+  }
+
+  public reset(...items: TData[]) {
+    if (items.length == 0) {
+      this.items.reset();
+    } else {
+      wx.using(this.items.suppressChangeNotifications(), disp => {
+        this.items.clear();
+        this.items.addRange(items);
+      });
     }
   }
 

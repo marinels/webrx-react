@@ -8,6 +8,7 @@ import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import Icon from '../Icon/Icon';
 
 import { ListViewModel, ISelectableItem } from './ListViewModel';
+import LogManager from '../../App/Logging';
 
 import './ListView.less';
 
@@ -68,6 +69,8 @@ export class StandardView<T> implements IView {
 export class TreeView<T> extends StandardView<T> {
   public static displayName = 'TreeView';
 
+  private static logger = LogManager.getLogger(TreeView.displayName);
+
   constructor(
     private getIsExpanded: (x: T, i: number) => boolean,
     private setIsExpanded: (x: T, i: number, isExpanded: boolean) => void,
@@ -87,6 +90,13 @@ export class TreeView<T> extends StandardView<T> {
     return result;
   }
 
+  private toggleExpanded(view: ListView, node: T, i: number) {
+    let isExpanded = !this.getIsExpanded(node, i);
+    TreeView.logger.debug('{0} Node', isExpanded ? 'Expanding' : 'Collapsing');
+    this.setIsExpanded(node, i, isExpanded);
+    view.state.notifyChanged();
+  }
+
   private getNodes(view: ListView, result: any[], items: T[], level = 0, key = '') {
     items.forEach((x, i) => {
       let subItems = this.getItems(x, i);
@@ -94,15 +104,15 @@ export class TreeView<T> extends StandardView<T> {
       let expander: any;
 
       if (subItems != null && subItems.length > 0) {
+        // this click handler deals with the expander
         let onExpanderClick = (e: React.MouseEvent) => {
+          // we must call this so that the row click handler is ignored for this click
           e.preventDefault();
 
-          this.setIsExpanded(x, i, !isExpanded);
+          this.toggleExpanded(view, x, i);
 
           if (this.selectOnExpand === true && view.isSelected(x) === false) {
             view.selectItem(x);
-          } else {
-            view.forceUpdate();
           }
         };
         expander = (
@@ -137,17 +147,16 @@ export class TreeView<T> extends StandardView<T> {
       }
 
       if (props.onClick == null) {
+        // this click handler deals with selection of the entire row
         props.onClick = (e) => {
           if (e.defaultPrevented === false) {
             if (this.expandOnSelect === true && subItems != null && subItems.length > 0) {
-              this.setIsExpanded(x, i, !isExpanded);
-            }
-
-            if (view.isSelected(x) === true) {
-              view.state.stateChanged.execute(null);
+              this.toggleExpanded(view, x, i);
             }
 
             view.selectItem(x);
+
+            view.state.notifyChanged();
           }
         };
       }
