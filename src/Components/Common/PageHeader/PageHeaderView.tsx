@@ -63,7 +63,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
       <NavDropdown title={title} {...propsCreator()}>
         {
           items.map(x => {
-            let icon = <Icon name={x.iconName} fixedWidth />;
+            let icon = <Icon name={x.iconName} fixedWidth hidden={String.isNullOrEmpty(x.iconName)} />;
             return (
               <MenuItem key={x.id} disabled={this.isMenuItemDisabled(x)} onSelect={this.bindEvent(x => x.menuItemSelected, null, () => x)}>
                 {icon}
