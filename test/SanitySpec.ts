@@ -1,21 +1,23 @@
 'use strict';
 
+import { expect } from 'chai';
+
 import * as Rx from 'rx';
 import * as wx from 'webrx';
 
 describe('Sanity Tests', () => {
   it('Can make assertions', () => {
-    expect(true).toBe(true);
+    expect(true).to.equal(true);
   });
 
   it('Can access Rx', () => {
     let source = Rx.Observable.return(1);
-    expect(source).toBeDefined();
+    expect(source).to.exist;
   });
 
   it('Can access wx', () => {
     let prop = wx.property('asdf');
-    expect(prop).toBeDefined();
-    expect(prop()).toBe('asdf');
+    expect(prop).to.exist
+    expect(prop()).to.equal('asdf');
   });
 });
