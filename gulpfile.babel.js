@@ -14,7 +14,8 @@ import runSequence from 'run-sequence';
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
-import webpackConfigTemplate from './webpack.config.js'
+import webpackConfigTemplate from './webpack.config.js';
+import webpackTestConfigTemplate from './test/webpack.config.js';
 
 let args = parseArgs(process.argv);
 
@@ -23,14 +24,16 @@ const config = {
   dirs: {
     src: args.src || path.join(__dirname, 'src'),
     dest: args.dest || path.join(__dirname, 'build'),
-    dist: args.dist || (args.dest ? path.join(args.dest, 'dist') : path.join(__dirname, 'build', 'dist'))
+    dist: args.dist || (args.dest ? path.join(args.dest, 'dist') : path.join(__dirname, 'build', 'dist')),
+    test: args.test || path.join(__dirname, 'test')
   },
   files: {
     app: 'app.js',
     vendor: 'vendor.js'
   },
-  host: '0.0.0.0',
-  port: 3000
+  host: args.host || '0.0.0.0',
+  port: args.port || 3000,
+  testPort: args.testPort || 3001
 };
 
 const definesTemplate = {
@@ -40,6 +43,7 @@ const definesTemplate = {
 };
 
 const uri = 'http://' + (config.host === '0.0.0.0' ? 'localhost' : config.host) + ':' + config.port;
+const testUri = 'http://' + (config.host === '0.0.0.0' ? 'localhost' : config.host) + ':' + config.testPort;
 
 function runWebpack(cfg, tag = 'default', callback) {
   tag = '[webpack:' + tag + ']';
@@ -62,8 +66,14 @@ function runWebpack(cfg, tag = 'default', callback) {
 
     gutil.log(tag, 'Bundling Complete');
     for (let chunk in assets) {
-      for (let i in assets[chunk]) {
-        gutil.log(gutil.colors.magenta(path.join(outputPath, assets[chunk][i])))
+      let asset = assets[chunk];
+
+      if (Array.isArray(asset)) {
+        for (let i in assets[chunk]) {
+          gutil.log(gutil.colors.magenta(path.join(outputPath, asset[i])))
+        }
+      } else {
+        gutil.log(gutil.colors.magenta(path.join(outputPath, asset)))
       }
     }
 
@@ -73,8 +83,10 @@ function runWebpack(cfg, tag = 'default', callback) {
   })
 }
 
-function getOutputPath(isProduction, isCompat, enableStats) {
-  if (enableStats === true) {
+function getOutputPath(isProduction, isCompat, enableStats, isTest) {
+  if (isTest === true) {
+    return path.join(config.dirs.dest, 'test');
+  } else if (enableStats === true) {
     return path.join(config.dirs.dest, 'stats');
   } else if (isCompat === true) {
     return path.join(config.dirs.dest, 'compat');
@@ -154,9 +166,9 @@ function configureWebpack(isProduction, isCompat, enableStats, enableServer) {
   return webpackConfig;
 }
 
-function writeStats(stats, isProduction, callback) {
+function writeStats(stats, isProduction, isTest, callback) {
   fs.writeFileSync(
-    path.join(config.dirs.dest, isProduction ? 'stats.min.json' : 'stats.json'),
+    path.join(isTest ? getOutputPath(isProduction, false, false, true) : config.dirs.dest, isProduction ? 'stats.min.json' : 'stats.json'),
     JSON.stringify(stats.toJson(), null, 2)
   );
 
@@ -164,6 +176,7 @@ function writeStats(stats, isProduction, callback) {
 }
 
 gulp.task('default', ['browser:server']);
+gulp.task('test', ['browser:server:test']);
 
 gulp.task('config', () => {
   gutil.log(config);
@@ -213,6 +226,7 @@ gulp.task('clean', () => {
 gulp.task('build', ['webpack:build']);
 gulp.task('build:compat', ['webpack:build:compat']);
 gulp.task('build:dev', ['webpack:build:dev']);
+gulp.task('build:test', ['webpack:build:test']);
 gulp.task('build:all', callback => {
   runSequence(
     'build:all:bundles',
@@ -287,6 +301,14 @@ gulp.task('webpack:build:dev', callback => {
   runWebpack(webpackConfig, 'webpack:build:dev', () => callback());
 });
 
+gulp.task('webpack:build:test', callback => {
+  let webpackConfig = Object.create(webpackTestConfigTemplate);
+
+  runWebpack(webpackConfig, 'webpack:build:test', stats => {
+    writeStats(stats, false, true, callback);
+  });
+});
+
 gulp.task('stats', ['webpack:stats']);
 gulp.task('stats:dev', ['webpack:stats:dev']);
 
@@ -294,7 +316,7 @@ gulp.task('webpack:stats', callback => {
   let webpackConfig = configureWebpack(true, false, true);
 
   runWebpack(webpackConfig, 'webpack:stats', stats => {
-    writeStats(stats, true, callback);
+    writeStats(stats, true, false, callback);
   });
 });
 
@@ -302,11 +324,12 @@ gulp.task('webpack:stats:dev', callback => {
   let webpackConfig = configureWebpack(false, false, true);
 
   runWebpack(webpackConfig, 'webpack:stats-dev', stats => {
-    writeStats(stats, false, callback);
+    writeStats(stats, false, false, callback);
   });
 });
 
 gulp.task('server', ['webpack:dev-server']);
+gulp.task('server:test', ['webpack:dev-server:test']);
 
 gulp.task('webpack:dev-server', callback => {
   let webpackConfig = configureWebpack(false, false, false, true);
@@ -339,10 +362,36 @@ gulp.task('webpack:dev-server', callback => {
   });
 });
 
+gulp.task('webpack:dev-server:test', callback => {
+  let webpackConfig = Object.create(webpackTestConfigTemplate);
+
+  let compiler = webpack(webpackConfig);
+  compiler.plugin('done', stats => {
+    gutil.log('[webpack-dev-server]', 'Listening at ' + config.host + ':' + config.testPort);
+    gutil.log('[webpack-dev-server]', uri + '/webpack-dev-server/index.html');
+
+    callback();
+  });
+
+  new WebpackDevServer(compiler, {
+    publicPath: webpackConfig.output.publicPath,
+    contentBase: config.dirs.test,
+    hot: true,
+    stats: {
+      colors: true
+    }
+  }).listen(config.testPort, config.host, (err, result) => {
+    if (err) {
+      throw new gutil.PluginError('webpack-dev-server', err);
+    }
+  });
+});
+
 //getOutputPath(isProduction, isCompat, enableStats)
 gulp.task('index', ['index:build']);
 gulp.task('index:compat', ['index:build:compat']);
 gulp.task('index:dev', ['index:build:dev']);
+gulp.task('index:test', ['index:build:test']);
 
 gulp.task('index:build', ['webpack:build'], () => {
   gulp
@@ -367,9 +416,16 @@ gulp.task('index:build:dev', ['webpack:build:dev'], () => {
     .pipe(gulp.dest(getOutputPath(false, false)));
 });
 
+gulp.task('index:build:test', ['webpack:build:test'], () => {
+  gulp
+    .src(path.join(config.dirs.test, 'index.html'))
+    .pipe(gulp.dest(getOutputPath(false, false, false, true)));
+});
+
 gulp.task('browser', ['browser:build']);
 gulp.task('browser:compat', ['browser:build:compat']);
 gulp.task('browser:dev', ['browser:build:dev']);
+gulp.task('browser:test', ['browser:build:test']);
 
 gulp.task('browser:build', ['index:build'], () => {
   let uri = path.join(getOutputPath(true, false), 'index.min.html');
@@ -392,10 +448,23 @@ gulp.task('browser:build:dev', ['index:build:dev'], () => {
     .pipe(gopen({ uri }));
 });
 
+gulp.task('browser:build:test', ['index:build:test'], () => {
+  let uri = path.join(getOutputPath(false, false, false, true), 'index.html');
+  gulp
+    .src('')
+    .pipe(gopen({ uri }));
+});
+
 gulp.task('browser:server', ['webpack:dev-server'], () => {
   gulp
     .src('')
     .pipe(gopen({ uri }));
+})
+
+gulp.task('browser:server:test', ['webpack:dev-server:test'], () => {
+  gulp
+    .src('')
+    .pipe(gopen({ uri: testUri }));
 })
 
 gulp.task('browser:stats', ['webpack:stats'], () => {
