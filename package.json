@@ -3,11 +3,8 @@
   "version": "0.1.0",
   "description": "WebRx with React",
   "scripts": {
-    "start": "node server.js",
-    "build": "webpack -d",
-    "dist": "webpack -p",
-    "build-test": "webpack -d --config ./test/webpack.config.js",
-    "start-test": "node ./test/server.js"
+    "start": "webpack-dev-server -d --port 3000",
+    "test": "webpack-dev-server --config ./test/webpack.config.js --port 3001 --content-base ./test"
   },
   "repository": {
     "type": "git",
