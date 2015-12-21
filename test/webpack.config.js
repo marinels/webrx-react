@@ -5,7 +5,7 @@ module.exports = {
   entry: 'mocha!./test/index.ts',
   output: {
     path: path.join(__dirname, '..', 'build', 'test'),
-    filename: 'app.js'
+    filename: 'spec.js'
   },
   devtool: 'eval',
   plugins: [
