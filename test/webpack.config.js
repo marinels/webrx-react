@@ -2,7 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-  entry: 'mocha!./test/index.ts',
+  entry: ['mocha!./test/index.ts'],
   output: {
     path: path.join(__dirname, '..', 'build', 'test'),
     filename: 'spec.js'
