@@ -1,5 +1,7 @@
 'use strict';
 
+import { expect } from 'chai';
+
 import * as Rx from 'rx';
 
 import TestObservableProperty from '../Utils/ObservablePropertyUtils';
@@ -13,35 +15,36 @@ import PageHeaderViewModel from '../../src/Components/Common/PageHeader/PageHead
 import PageFooterViewModel from '../../src/Components/Common/PageFooter/PageFooterViewModel';
 
 describe('App', () => {
-  it('Has Falsy config properties by default', () => {
+  it('Has empty config properties by default', () => {
     let vm = new AppViewModel();
-    expect(vm.config).toBeDefined();
+    expect(vm.config).to.exist;
+    expect(vm.config.routingMap).to.be.undefined;
   });
 
   it('Has an alert host commponent', () => {
     let vm = new AppViewModel();
-    expect(vm.alerts).toBeDefined();
-    expect(vm.alerts).toEqual(jasmine.any(AlertHostViewModel));
+    expect(vm.alerts).to.exist;
+    expect(vm.alerts).to.be.an.instanceof(AlertHostViewModel);
   });
 
   it('Has a route handler commponent if a route manager is provided', () => {
     let vm = new AppViewModel();
-    expect(vm.routeHandler).toBeUndefined();
+    expect(vm.routeHandler).to.be.undefined;
 
     vm = new AppViewModel(new RouteManager(Rx.Observable.never<string>()))
-    expect(vm.routeHandler).toBeDefined();
-    expect(vm.routeHandler).toEqual(jasmine.any(RouteHandlerViewModel));
+    expect(vm.routeHandler).to.exist;
+    expect(vm.routeHandler).to.be.an.instanceof(RouteHandlerViewModel);
   });
 
   it('Has a page header commponent', () => {
     let vm = new AppViewModel();
-    expect(vm.header).toBeDefined();
-    expect(vm.header).toEqual(jasmine.any(PageHeaderViewModel));
+    expect(vm.header).to.exist;
+    expect(vm.header).to.be.an.instanceof(PageHeaderViewModel);
   });
 
   it('Has a page footer commponent', () => {
     let vm = new AppViewModel();
-    expect(vm.footer).toBeDefined();
-    expect(vm.footer).toEqual(jasmine.any(PageFooterViewModel));
+    expect(vm.footer).to.exist;
+    expect(vm.footer).to.be.an.instanceof(PageFooterViewModel);
   });
 });
