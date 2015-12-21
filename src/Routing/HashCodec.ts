@@ -1,8 +1,7 @@
 'use strict';
 
 import * as param from 'jquery-param';
-import deparam from './deparam';
-// import * as deparam from 'jquery-deparam';
+import * as deparam from 'jquery-deparam';
 
 export class HashCodec {
   public static displayName = 'HashCodec';
