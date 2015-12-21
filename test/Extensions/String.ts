@@ -6,27 +6,27 @@ import '../../src/Extensions/String';
 
 describe('String Extensions', () => {
   describe('String.IsNullOrEmpty', () => {
-    it('returns true when a string is undefined', () => {
+    it('Returns true when a string is undefined', () => {
       let str: string;
       expect(String.isNullOrEmpty(str)).to.equal(true);
     });
 
-    it('returns true when a string is null', () => {
+    it('Returns true when a string is null', () => {
       let str: string = null;
       expect(String.isNullOrEmpty(str)).to.equal(true);
     });
 
-    it('returns true when a string is empty', () => {
+    it('Returns true when a string is empty', () => {
       let str: string = '';
       expect(String.isNullOrEmpty(str)).to.equal(true);
     });
 
-    it('returns true when a string is empty', () => {
+    it('Returns true when a string is empty', () => {
       let str: string = '';
       expect(String.isNullOrEmpty(str)).to.equal(true);
     });
 
-    it('returns false when a string is non-empty', () => {
+    it('Returns false when a string is non-empty', () => {
       let str: string = 'asdf';
       expect(String.isNullOrEmpty(str)).to.equal(false);
     });

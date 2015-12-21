@@ -13,6 +13,9 @@ describe('Sanity Tests', () => {
   it('Can access Rx', () => {
     let source = Rx.Observable.return(1);
     expect(source).to.exist;
+    source.subscribe(x => {
+      expect(x).to.equal(1);
+    });
   });
 
   it('Can access wx', () => {

@@ -15,15 +15,16 @@ import PageHeaderViewModel from '../../src/Components/Common/PageHeader/PageHead
 import PageFooterViewModel from '../../src/Components/Common/PageFooter/PageFooterViewModel';
 
 describe('App', () => {
-  it('Has Falsy config properties by default', () => {
+  it('Has empty config properties by default', () => {
     let vm = new AppViewModel();
     expect(vm.config).to.exist;
+    expect(vm.config.routingMap).to.be.undefined;
   });
 
   it('Has an alert host commponent', () => {
     let vm = new AppViewModel();
     expect(vm.alerts).to.exist;
-    expect(vm.alerts).to.be.an('AlertHostViewModel');
+    expect(vm.alerts).to.be.an.instanceof(AlertHostViewModel);
   });
 
   it('Has a route handler commponent if a route manager is provided', () => {
@@ -32,18 +33,18 @@ describe('App', () => {
 
     vm = new AppViewModel(new RouteManager(Rx.Observable.never<string>()))
     expect(vm.routeHandler).to.exist;
-    expect(vm.routeHandler).to.be.a('RouteHandlerViewModel');
+    expect(vm.routeHandler).to.be.an.instanceof(RouteHandlerViewModel);
   });
 
   it('Has a page header commponent', () => {
     let vm = new AppViewModel();
     expect(vm.header).to.exist;
-    expect(vm.header).to.be.a('PageHeaderViewModel');
+    expect(vm.header).to.be.an.instanceof(PageHeaderViewModel);
   });
 
   it('Has a page footer commponent', () => {
     let vm = new AppViewModel();
     expect(vm.footer).to.exist;
-    expect(vm.footer).to.be.a('PageFooterViewModel');
+    expect(vm.footer).to.be.an.instanceof(PageFooterViewModel);
   });
 });

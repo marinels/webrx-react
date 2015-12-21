@@ -20,7 +20,7 @@ describe('Object Extensions', () => {
       let target = {};
       let result = Object.assign(target);
       expect(result).to.exist;
-      expect(result).to.equal(target);
+      expect(result).to.deep.equal(target);
     });
 
     it('Can have an undefined source', () => {
@@ -28,7 +28,7 @@ describe('Object Extensions', () => {
       let source: any;
       let result = Object.assign(target, source);
       expect(result).to.exist;
-      expect(result).to.equal(target);
+      expect(result).to.deep.equal(target);
     });
 
     it('Can have a null source', () => {
@@ -36,7 +36,7 @@ describe('Object Extensions', () => {
       let source: any = null;
       let result = Object.assign(target, source);
       expect(result).to.exist;
-      expect(result).to.equal(target);
+      expect(result).to.deep.equal(target);
     });
 
     it('Can merge an empty target and a single non-empty source', () => {
@@ -44,14 +44,14 @@ describe('Object Extensions', () => {
       let source = { s1: 123 };
       let result = Object.assign(target, source);
       expect(result).to.exist;
-      expect(result).to.equal(source);
+      expect(result).to.deep.equal(source);
     });
 
     it('Can merge an empty target and multiple sources', () => {
       let target = {};
       let result = Object.assign(target, { s1: 4 }, {}, { s3: 56 });
       expect(result).to.exist;
-      expect(result).to.equal({ s1: 4, s3: 56 });
+      expect(result).to.deep.equal({ s1: 4, s3: 56 });
     });
 
     it('Can merge a non-empty target and a single empty source', () => {
@@ -59,7 +59,7 @@ describe('Object Extensions', () => {
       let source = {};
       let result = Object.assign(target, source);
       expect(result).to.exist;
-      expect(result).to.equal(target);
+      expect(result).to.deep.equal(target);
     });
 
     it('Can merge a non-empty target and a single non-empty source', () => {
@@ -67,14 +67,14 @@ describe('Object Extensions', () => {
       let source = { s1: 456 };
       let result = Object.assign(target, source);
       expect(result).to.exist;
-      expect(result).to.equal({ t1: 123, s1: 456 });
+      expect(result).to.deep.equal({ t1: 123, s1: 456 });
     });
 
     it('Can merge a non-empty target and multiple sources', () => {
       let target = { t1: 123 };
       let result = Object.assign(target, { s1: 4 }, {}, { s3: 56 });
       expect(result).to.exist;
-      expect(result).to.equal({ t1: 123, s1: 4, s3: 56 });
+      expect(result).to.deep.equal({ t1: 123, s1: 4, s3: 56 });
     });
   });
 

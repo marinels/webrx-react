@@ -5,7 +5,7 @@ import { expect } from 'chai';
 import { PubSub } from '../../src/Utils/PubSub';
 
 describe('PubSub', () => {
-  it('can subscribe and publish', () => {
+  it('Can subscribe and publish', () => {
     let pubsub = new PubSub();
     let called = false;
     let handle = pubsub.subscribe('test', x => called = true);
@@ -16,7 +16,7 @@ describe('PubSub', () => {
     expect(called).to.equal(true);
   })
 
-  it('can publish with no subscribers', () => {
+  it('Can publish with no subscribers', () => {
     let pubsub = new PubSub();
     let called = false;
     let handle = pubsub.subscribe('test', x => called = true);
@@ -24,14 +24,14 @@ describe('PubSub', () => {
     expect(called).to.equal(false);
   })
 
-  it('can handle anonymous publish args', () => {
+  it('Can handle anonymous publish args', () => {
     let pubsub = new PubSub();
     let testArg1: any;
     let testArg2: any;
     let handle = pubsub.subscribe('test', (x: {arg1: string, arg2: string}) => { testArg1 = x.arg1; testArg2 = x.arg2; });
     pubsub.publish('test', {arg1: 'testing'});
     expect(testArg1).to.exist;
-    expect(testArg2).to.exist;
+    expect(testArg2).to.be.undefined;
     expect(testArg1).to.equal('testing');
     pubsub.publish('test', {arg1: 'testing1', arg2: 'testing2'});
     expect(testArg2).to.exist;
@@ -39,7 +39,7 @@ describe('PubSub', () => {
     expect(testArg2).to.equal('testing2');
   });
 
-  it('can handle strongly typed publish args', () => {
+  it('Can handle strongly typed publish args', () => {
     interface ITestArgs {
       arg1: string;
       arg2: string;
@@ -50,7 +50,7 @@ describe('PubSub', () => {
     let handle = pubsub.subscribe<ITestArgs>('test', x => { testArg1 = x.arg1; testArg2 = x.arg2; });
     pubsub.publish('test', <ITestArgs>{ arg1: 'testing' });
     expect(testArg1).to.exist;
-    expect(testArg2).to.exist;
+    expect(testArg2).to.be.undefined;
     expect(testArg1).to.equal('testing');
     pubsub.publish('test', <ITestArgs>{arg1: 'testing1', arg2: 'testing2'});
     expect(testArg2).to.exist;
@@ -58,7 +58,7 @@ describe('PubSub', () => {
     expect(testArg2).to.equal('testing2');
   });
 
-  it('can unsubscribe', () => {
+  it('Can unsubscribe', () => {
     let pubsub = new PubSub();
     let called = false;
     let handle = pubsub.subscribe('test', x => called = true);
@@ -67,7 +67,7 @@ describe('PubSub', () => {
     expect(called).to.equal(false);
   })
 
-  it('can handle multiple subscriptions on the same key', () => {
+  it('Can handle multiple subscriptions on the same key', () => {
     let pubsub = new PubSub();
     let called1 = false, called2 = false;
     let handle1 = pubsub.subscribe('test', x => called1 = true);
@@ -77,7 +77,7 @@ describe('PubSub', () => {
     expect(called2).to.equal(true);
   });
 
-  it('can unsubscribe from a single handle with multiple subscriptions on the same key', () => {
+  it('Can unsubscribe from a single handle with multiple subscriptions on the same key', () => {
     let pubsub = new PubSub();
     let called1 = false, called2 = false;
     let handle1 = pubsub.subscribe('test', x => called1 = true);
