@@ -4,7 +4,7 @@
   "description": "WebRx with React",
   "scripts": {
     "start": "webpack-dev-server -d --port 3000",
-    "test": "webpack-dev-server --config ./test/webpack.config.js --port 3001 --content-base ./test"
+    "test": "webpack-dev-server --config ./test/webpack.config.js --port 3001 --content-base ./test --inline --hot"
   },
   "repository": {
     "type": "git",
