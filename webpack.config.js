@@ -25,7 +25,7 @@ module.exports = {
     filename: 'app.js'
   },
   plugins: [
-    new webpack.DefinePlugin({ DEBUG: false, PRODUCTION: false }),
+    new webpack.DefinePlugin({ DEBUG: false, PRODUCTION: false, COMPAT: false, TEST: false }),
     new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js'),
     new ExtractTextPlugin('[name].css')
   ],
