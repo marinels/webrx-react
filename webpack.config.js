@@ -12,6 +12,8 @@ module.exports = {
       'ix',
       'moment',
       'webrx',
+      'jquery-param',
+      'jquery-deparam',
       'bootstrap/less/bootstrap.less',
       'react',
       'react-dom',
