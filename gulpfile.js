@@ -210,7 +210,7 @@ gulp.task('help', function() {
     '* ' + gutil.colors.cyan('gulp') + ' will build a debug bundle, start a webpack development server, and open a browser window',
     '* ' + gutil.colors.cyan('gulp test') + ' will build a test bundle, start a webpack development server for the tests, and open a browser window',
     '',
-    '* ' + gutil.colors.cyan('gulp clean') + ' will delete all files in ' + gutil.colors.magenta(path.join(config.dirs.dest)),
+    '* ' + gutil.colors.cyan('gulp clean[:dist]') + ' will delete all files in ' + gutil.colors.magenta(path.join(config.dirs.dest)) + ' (or ' + gutil.colors.magenta(path.join(config.dirs.dist)) + ')',
     '* ' + gutil.colors.cyan('gulp help') + ' will emit this help text',
     '* ' + gutil.colors.cyan('gulp config') + ' will emit the build configuration',
     '',
@@ -218,7 +218,9 @@ gulp.task('help', function() {
     '* ' + gutil.colors.cyan('gulp build:all:bundles') + ' will build release, dev, and compat bundles',
     '* ' + gutil.colors.cyan('gulp build:all:stats') + ' will build release and dev stats',
     '* ' + gutil.colors.cyan('gulp build:all') + ' will build all bundles and stats',
-    '* ' + gutil.colors.cyan('gulp build:dist') + ' will build all bundles and deploy them to a dist folder',
+    '',
+    '* ' + gutil.colors.cyan('gulp dist[:*]') + ' will build the bundles and deploy them to a dist folder (use :dev or :compat for alternate builds)',
+    '* ' + gutil.colors.cyan('gulp dist:all') + ' will build all bundles and deploy them to a dist folder',
     '',
     '* ' + gutil.colors.cyan('gulp stats[:*]') + ' will create a stats[.*].json file for use with ' + gutil.colors.underline.blue('http://webpack.github.io/analyse/') + ' (use :dev for alternate stats)',
     '',
@@ -238,8 +240,11 @@ gulp.task('help', function() {
   gutil.log(help);
 })
 
-gulp.task('clean', function() {
+gulp.task('clean', ['clean:dist'], function() {
   return del([path.join(config.dirs.dest, '*'), 'npm-debug.log'])
+});
+gulp.task('clean:dist', function() {
+  return del([path.join(config.dirs.dist, '*')])
 });
 
 gulp.task('build', ['webpack:build']);
@@ -269,26 +274,42 @@ gulp.task('build:all:stats', function(callback) {
     callback
   );
 });
-gulp.task('build:dist', ['clean', 'build:all:bundles'], function() {
+
+gulp.task('dist', ['webpack:build'], function() {
   gulp
     .src([
-      // debug files
-      path.join(config.dirs.dest, 'debug', '*.js'),
-      path.join(config.dirs.dest, 'debug', '*.css'),
-      path.join(config.dirs.dest, 'debug', '*.map'),
-
-      // compat files
-      path.join(config.dirs.dest, 'compat', '*.js'),
-      path.join(config.dirs.dest, 'compat', '*.js.map'),
-
-      // prod files
       path.join(config.dirs.dest, 'prod', '*.js'),
       path.join(config.dirs.dest, 'prod', '*.css'),
       path.join(config.dirs.dest, 'prod', '*.map'),
-      path.join(config.dirs.dest, 'prod', 'fonts'),
-      path.join(config.dirs.dest, 'prod', 'locale')
-    ])
+      path.join(config.dirs.dest, 'prod', 'fonts', '**', '*'),
+      path.join(config.dirs.dest, 'prod', 'locale', '**', '*')
+    ], { base: path.join(config.dirs.dest, 'prod') })
     .pipe(gulp.dest(config.dirs.dist));
+});
+gulp.task('dist:compat', ['webpack:build:compat'], function () {
+  gulp
+    .src([
+      path.join(config.dirs.dest, 'compat', '*.js'),
+      path.join(config.dirs.dest, 'compat', '*.js.map'),
+    ], { base: path.join(config.dirs.dest, 'compat') })
+    .pipe(gulp.dest(config.dirs.dist));
+});
+gulp.task('dist:dev', ['webpack:build:dev'], function () {
+  gulp
+    .src([
+      path.join(config.dirs.dest, 'debug', '*.js'),
+      path.join(config.dirs.dest, 'debug', '*.css'),
+      path.join(config.dirs.dest, 'debug', '*.map')
+    ], { base: path.join(config.dirs.dest, 'debug') })
+    .pipe(gulp.dest(config.dirs.dist));
+});
+gulp.task('dist:all', ['clean'], function(callback) {
+  runSequence(
+    'dist:dev',
+    'dist:compat',
+    'dist',
+    callback
+  );
 });
 
 gulp.task('webpack:build', function(callback) {
