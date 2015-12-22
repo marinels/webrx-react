@@ -23,6 +23,7 @@ var args = parseArgs(process.argv);
 var defaultDest = path.join(__dirname, 'build');
 var config = {
   verbose: args.verbose || false,
+  force: args.force || false,
   dirs: {
     src: args.src || path.join(__dirname, 'src'),
     dest: args.dest || defaultDest,
@@ -195,6 +196,7 @@ gulp.task('help', function() {
     '*** Help ***',
     'Command Line Overrides:',
     '* --verbose: print webpack module details and stats after bundling',
+    '* --force: force deletion of files (requried if path is outside working directory)',
     '* --src <path>: override source directory (default is "src")',
     '* --dest <path>: override build directory (default is "build")',
     '* --dist <path>: override dist directory (default is "dist")',
@@ -241,10 +243,10 @@ gulp.task('help', function() {
 })
 
 gulp.task('clean', ['clean:dist'], function() {
-  return del([path.join(config.dirs.dest, '*'), 'npm-debug.log'])
+  return del([path.join(config.dirs.dest, '*'), 'npm-debug.log'], { force: config.force });
 });
 gulp.task('clean:dist', function() {
-  return del([path.join(config.dirs.dist, '*')])
+  return del([path.join(config.dirs.dist, '*')], { force: config.force });
 });
 
 gulp.task('build', ['webpack:build']);
