@@ -242,8 +242,11 @@ gulp.task('help', function() {
   gutil.log(help);
 })
 
-gulp.task('clean', ['clean:dist'], function() {
-  return del([path.join(config.dirs.dest, '*'), 'npm-debug.log'], { force: config.force });
+gulp.task('clean', ['clean:dest', 'clean:dist'], function() {
+  return del(['npm-debug.log']);
+});
+gulp.task('clean:dest', function() {
+  return del([path.join(config.dirs.dest, '*')], { force: config.force });
 });
 gulp.task('clean:dist', function() {
   return del([path.join(config.dirs.dist, '*')], { force: config.force });
