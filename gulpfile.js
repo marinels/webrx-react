@@ -462,6 +462,8 @@ gulp.task('index:build', function() {
     .src(path.join(__dirname, 'index.html'))
     .pipe(greplace('app.js', 'app.min.js'))
     .pipe(greplace('vendor.js', 'vendor.min.js'))
+    .pipe(greplace('app.css', 'app.min.css'))
+    .pipe(greplace('vendor.css', 'vendor.min.css'))
     .pipe(grename('index.min.html'))
     .pipe(gulp.dest(getOutputPath(true, false)));
 });
@@ -471,6 +473,8 @@ gulp.task('index:build:compat', function() {
     .src(path.join(__dirname, 'index.html'))
     .pipe(greplace('app.js', 'app.compat.min.js'))
     .pipe(greplace('vendor.js', 'vendor.compat.min.js'))
+    .pipe(greplace('app.css', 'app.min.css'))
+    .pipe(greplace('vendor.css', 'vendor.min.css'))
     .pipe(gulp.dest(getOutputPath(true, true)));
 });
 
