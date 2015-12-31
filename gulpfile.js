@@ -475,6 +475,7 @@ gulp.task('index:build:compat', function() {
     .pipe(greplace('vendor.js', 'vendor.compat.min.js'))
     .pipe(greplace('app.css', 'app.min.css'))
     .pipe(greplace('vendor.css', 'vendor.min.css'))
+    .pipe(grename('index.compat.min.html'))
     .pipe(gulp.dest(getOutputPath(true, true)));
 });
 
