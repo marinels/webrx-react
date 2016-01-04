@@ -30,7 +30,9 @@ export class HashCodec {
       }
     }
 
-    return { path: this.NormalizePath(path), params };
+    path = decodeURIComponent(this.NormalizePath(path));
+
+    return { path, params };
   }
 
   private Santize(hash: string) {
