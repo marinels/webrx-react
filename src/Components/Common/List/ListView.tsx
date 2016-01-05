@@ -1,6 +1,7 @@
 'use strict';
 
 import * as React from 'react';
+import * as classNames from 'classnames';
 
 import { ListGroup, ListGroupItem, ListGroupItemProps, Button } from 'react-bootstrap';
 
@@ -37,10 +38,6 @@ export class StandardView<T> implements IView {
         props.key = i;
       }
 
-      if (props.active == null && view.props.highlightSelected === true) {
-        props.active = isSelected;
-      }
-
       if (props.onClick == null) {
         props.onClick = () => view.selectItem(x, i);
       }
@@ -55,12 +52,12 @@ export class StandardView<T> implements IView {
       }
 
       return (
-        <ListGroupItem {...props}>
+        <div className={classNames('list-group-item', { active: isSelected })} {...props}>
           {selectionIcon}
-          <div className='list-group-item-content'>
+          <div className='list-group-item-content' onClick={() => view.selectItem(x, i)}>
             {this.renderItem(view, x, i)}
           </div>
-        </ListGroupItem>
+        </div>
       );
     });
   }
@@ -142,10 +139,6 @@ export class TreeView<T> extends StandardView<T> {
         props.key = String.format('{0}.{1}', key, i);
       }
 
-      if (props.active == null && view.props.highlightSelected === true) {
-        props.active = isSelected;
-      }
-
       if (props.onClick == null) {
         // this click handler deals with selection of the entire row
         props.onClick = (e) => {
@@ -171,7 +164,7 @@ export class TreeView<T> extends StandardView<T> {
       }
 
       let item = (
-        <ListGroupItem {...props}>
+        <div className={classNames('list-group-item', { active: isSelected })} {...props}>
           {selectionIcon}
           <div className='list-group-item-expander'>
             {nodeIndents}
@@ -180,7 +173,7 @@ export class TreeView<T> extends StandardView<T> {
           <div className='list-group-item-content'>
             {this.renderItem(view, x, i)}
           </div>
-        </ListGroupItem>
+        </div>
       );
 
       result.push(item);
