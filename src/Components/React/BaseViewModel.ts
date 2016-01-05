@@ -37,23 +37,27 @@ export abstract class BaseViewModel implements IBaseViewModel {
     PubSub.publish<IAlertCreated>(AlertCreatedKey, { text, header, style, timeout });
   }
 
-  public alertForError(error: Error, header = 'Unknown Error', style = 'danger', formatter?: (e: Error) => string) {
-    let text: string;
+  public alertForError<TError>(error: TError, header = 'Unknown Error', style = 'danger', formatter?: (e: TError) => string) {
+    if (error != null) {
+      let text: string;
+      let anyError = error as any;
 
-    if (formatter != null) {
-      text = formatter(error);
-    } else {
-      text = error.message;
-    }
-
-    if (DEBUG) {
-      let e = error as any;
-      if (e.stack) {
-        this.logger.error(e.stack.toString());
+      if (formatter != null) {
+        text = formatter(error);
+      } else if (String.isNullOrEmpty(anyError.message) === false) {
+        text = anyError.message;
+      } else {
+        text = error.toString();
       }
-    }
 
-    this.createAlert(text, header, style);
+      if (DEBUG) {
+        if (anyError.stack) {
+          this.logger.error(anyError.stack.toString());
+        }
+      }
+
+      this.createAlert(text, header, style);
+    }
   }
 
   public runOrAlert(action: () => void, header = 'Unknown Error', style = 'danger', formatter?: (e: Error) => string) {
