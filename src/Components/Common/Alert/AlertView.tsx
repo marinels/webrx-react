@@ -23,7 +23,7 @@ export class AlertView extends BaseView<IAlertProps, AlertViewModel> {
       <div className='Alert'>
         <Alert bsStyle={this.state.style} onDismiss={this.bindEvent(x => x.dismiss)}>
           <h4>{this.state.header}</h4>
-          {this.state.text}
+          <span className='Alert-text'>{this.state.text}</span>
         </Alert>
       </div>
     );
