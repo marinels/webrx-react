@@ -15,6 +15,7 @@ export interface IBaseViewModel {
   getDisplayName(): string;
   createAlert(text: string, header?: string, style?: string, timeout?: number): void;
   alertForError(error: Error, header?: string, style?: string, formatter?: (e: Error) => string): void;
+  subscribeOrAlert<T>(observable: Rx.Observable<T>, header: string, onNext?: (value: T) => void, errorFormatter?: (e: Error) => string, onComplete?: () => void): Rx.IDisposable;
   runOrAlert(action: () => void, header?: string, style?: string, formatter?: (e: Error) => string): void;
   notifyChanged(...args: any[]): void;
 
@@ -58,6 +59,12 @@ export abstract class BaseViewModel implements IBaseViewModel {
 
       this.createAlert(text, header, style);
     }
+  }
+
+  public subscribeOrAlert<T, TError>(observable: Rx.Observable<T>, header: string, onNext?: (value: T) => void, errorFormatter?: (e: TError) => string, onComplete?: () => void) {
+    return observable.subscribe(onNext, (error: TError) => {
+      this.alertForError(error, header, undefined, errorFormatter);
+    }, onComplete);
   }
 
   public runOrAlert(action: () => void, header = 'Unknown Error', style = 'danger', formatter?: (e: Error) => string) {
