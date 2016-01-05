@@ -24,7 +24,7 @@ export class RouteManager implements Rx.IDisposable {
     this.currentRoute = hashChanged
       .debounce(100)
       .select(x => {
-        let route = hashCodec.Decode(x, (path, params, state) => <IRoute>{path, params, state});
+        let route = hashCodec.decode(x, (path, params, state) => <IRoute>{path, params, state});
 
         let hash = '#' + route.path;
         if (route.params && route.params.length > 0) {
@@ -53,7 +53,7 @@ export class RouteManager implements Rx.IDisposable {
         path = path.substring(1);
       }
 
-      let hash = this.hashCodec.Encode(path, state, uriEncode);
+      let hash = this.hashCodec.encode(path, state, uriEncode);
 
       this.logger.debug('Routing to Hash: {0}', hash);
 

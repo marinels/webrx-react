@@ -6,13 +6,13 @@ import * as deparam from 'jquery-deparam';
 export class HashCodec {
   public static displayName = 'HashCodec';
 
-  private NormalizePath(path: string) {
+  private normalizePath(path: string) {
     let pattern = /^\/*(\/.*?)\/*$/;
     let matches = path ? pattern.exec('/' + path) : null;
     return matches ? matches[1] : '';
   }
 
-  private GetPathAndParams(hash: string) {
+  private getPathAndParams(hash: string) {
     let path: string;
     let params: string;
     let pattern = /#(\/[^?]*)(\?.*)/g;
@@ -30,17 +30,17 @@ export class HashCodec {
       }
     }
 
-    path = decodeURIComponent(this.NormalizePath(path));
+    path = decodeURIComponent(this.normalizePath(path));
 
     return { path, params };
   }
 
-  private Santize(hash: string) {
+  private santize(hash: string) {
     return (String.isNullOrEmpty(hash) || hash[0] !== '#') ? '#/' : hash;
   }
 
-  public Encode(path: string, state?: Object, uriEncode = false) {
-    let hash = '#' + this.NormalizePath(path);
+  public encode(path: string, state?: Object, uriEncode = false) {
+    let hash = '#' + this.normalizePath(path);
 
     if (state) {
       let params = param(state);
@@ -55,10 +55,10 @@ export class HashCodec {
     return hash;
   }
 
-  public Decode<T>(hash: string, selector: (path: string, params: string, state: Object) => T) {
-    hash = this.Santize(hash);
+  public decode<T>(hash: string, selector: (path: string, params: string, state: Object) => T) {
+    hash = this.santize(hash);
 
-    let { path, params } = this.GetPathAndParams(hash);
+    let { path, params } = this.getPathAndParams(hash);
 
     let state = <Object>{};
 
