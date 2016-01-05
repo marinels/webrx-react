@@ -20,16 +20,18 @@ export class ObservableApi {
 
     this.logger.debug('Calling API: {0} ({1})', action, uri);
 
+    // if an API call throws an uncaught error, that means you are not subscribing to the observable's error
     return Rx.Observable
       .fromPromise(this.client.get<T>(uri, params, options))
       .catch(x => {
         this.logger.error('API ERROR: {0} ({1})', action, uri);
-        this.logger.error(x.toString());
+        this.logger.error(JSON.stringify(x, null, '  '));
 
-        let response = x.response.toString();
+        let response = x.response || '';
         if (String.isNullOrEmpty(response)) {
           response = 'No Response';
         }
+
         return Rx.Observable.throw<T>(new Error(String.format('[Error {0}] {1}', x.status, response)));
       });
   }
