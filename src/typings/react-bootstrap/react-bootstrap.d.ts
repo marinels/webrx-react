@@ -232,6 +232,7 @@ declare module "react-bootstrap" {
     // ----------------------------------------
     interface ModalProps extends React.HTMLAttributes {
         // Required
+        show: boolean;
         onHide: Function;
 
         // Optional
