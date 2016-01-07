@@ -73,10 +73,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
     this.logger.debug('{0}rendering', initial ? '' : 're-');
   }
 
-  componentWillMount() {
-    this.state.initialize();
-    this.initialize();
-
+  private subscribeToUpdates() {
     let updateProps = this.updateOn();
     updateProps.push(this.state.stateChanged.results);
 
@@ -89,8 +86,34 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
       }, x => {
         this.state.alertForError(x);
       });
+  }
+
+  componentWillMount() {
+    this.state.initialize();
+    this.initialize();
+
+    this.subscribeToUpdates();
 
     this.logRender(true);
+  }
+
+  componentWillReceiveProps(nextProps: TViewProps, nextContext: any) {
+    let state = nextProps.viewModel;
+
+    if (state != this.state) {
+      this.logger.debug('ViewModel Change Detected');
+
+      // cleanup old view model
+      this.state.cleanup();
+      this.updateSubscription = Object.dispose(this.updateSubscription);
+
+      // set our new view model as the current state and initialize it
+      this.state = state as TViewModel;
+      this.state.initialize();
+      this.subscribeToUpdates();
+
+      this.forceUpdate();
+    }
   }
 
   componentWillUpdate(nextProps: TViewProps, nextState: TViewModel, nextContext: any) {
@@ -99,7 +122,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
 
   componentWillUnmount() {
     this.cleanup();
-    this.props.viewModel.cleanup();
+    this.state.cleanup();
 
     this.updateSubscription = Object.dispose(this.updateSubscription);
   }
