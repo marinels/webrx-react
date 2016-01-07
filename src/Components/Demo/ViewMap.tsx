@@ -2,13 +2,12 @@
 
 import * as React from 'react';
 
-import BaseViewModel from '../React/BaseViewModel';
 
 // import DataGridViewModel from '../Common/DataGrid/DataGridViewModel';
 // import { DataGridView, DataGridColumn } from '../Common/DataGrid/DataGridView';
 
 export interface IViewActivator {
-  (viewModel: BaseViewModel): any;
+  (component: any): any;
 }
 
 export interface IViewMap {

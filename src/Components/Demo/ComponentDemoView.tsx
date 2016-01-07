@@ -7,7 +7,6 @@ import { Grid, Row, Col, PageHeader, Panel, DropdownButton, MenuItem } from 'rea
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
 import ComponentDemoViewModel from './ComponentDemoViewModel'
-import BaseViewModel from '../React/BaseViewModel';
 import { default as ViewMap, IViewActivator } from './ViewMap';
 
 interface IComponentDemoProps extends IBaseViewProps {
@@ -16,16 +15,24 @@ interface IComponentDemoProps extends IBaseViewProps {
 export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDemoViewModel> {
   public static displayName = 'ComponentDemoView';
 
-  private getView(viewModel: BaseViewModel) {
+  private getComponentName(component: { getDisplayName(): string }) {
+    if (component == null) {
+      return 'Invalid Component';
+    }
+
+    return component.getDisplayName == null ? component.toString() : component.getDisplayName();
+  }
+
+  private getView(component: any) {
     let activator: IViewActivator = null;
 
-    if (viewModel != null) {
-      let type = viewModel.getDisplayName();
+    if (component != null) {
+      let type = this.getComponentName(component);
       this.logger.debug('Loading View for "{0}"', type);
       activator = ViewMap[type];
     }
 
-    return activator == null ? null : activator(viewModel);
+    return activator == null ? null : activator(component);
   }
 
   updateOn() {
@@ -36,10 +43,10 @@ export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDe
   }
 
   render() {
-    let viewModel = this.state.component();
-    let view = this.getView(viewModel);
+    let component = this.state.component();
+    let view = this.getView(component);
 
-    let viewModelName = viewModel == null ? 'Invalid Component' : String.format('{0} Demo', viewModel.getDisplayName());
+    let componentName = this.getComponentName(component);
     let viewName = view == null ? 'No View Found' : String.format('{0} Demo', Object.getName(view.type));
 
     return (
@@ -54,7 +61,7 @@ export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDe
           </Row>
           <Row>
             <Col md={this.state.columns()}>
-              <Panel header={viewModelName} bsStyle='primary'>
+              <Panel header={componentName} bsStyle='primary'>
                 {view}
               </Panel>
             </Col>

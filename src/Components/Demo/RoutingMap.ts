@@ -1,12 +1,11 @@
 'use strict';
 
-import BaseViewModel from '../React/BaseViewModel';
 import { IMenuItem } from '../Common/PageHeader/Actions';
 
 // import DataGridViewModel from '../Common/DataGrid/DataGridViewModel';
 
 export interface IViewModelActivator {
-  (state: any): BaseViewModel;
+  (state: any): any;
 }
 
 export interface IViewModelMap {

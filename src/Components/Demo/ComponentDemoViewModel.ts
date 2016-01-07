@@ -6,7 +6,6 @@ import * as wx from 'webrx';
 import { IRoute } from '../../Routing/RouteManager';
 import { IMenu } from '../Common/PageHeader/Actions';
 
-import BaseViewModel from '../React/BaseViewModel';
 import BaseRoutableViewModel from '../React/BaseRoutableViewModel';
 import { default as RoutingMap, IViewModelActivator } from './RoutingMap';
 
@@ -18,7 +17,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<any> {
   }
 
   public columns = wx.property(12);
-  public component = wx.property<BaseViewModel>(null);
+  public component = wx.property<any>(null);
 
   getAppMenus() {
     return [
