@@ -4,7 +4,8 @@ import * as React from 'react';
 import * as wx from 'webrx';
 
 interface IBindableInputProps {
-  property: wx.IObservableProperty<string>;
+  property: wx.IObservableProperty<any>;
+  converter?: (x: any) => any;
   children?: React.ReactNode;
   valueProperty?: string;
   onChangeProperty?: string;
@@ -13,17 +14,26 @@ interface IBindableInputProps {
 export class BindableInput extends React.Component<IBindableInputProps, any> {
   public static displayName = 'BindableInput';
 
-  render() {
-    let valueProp = this.props.valueProperty || 'value';
+  static defaultProps = {
+    valueProperty: 'value',
+    onChangeProperty: 'onChange'
+  }
 
+  render() {
     let onChange = (x: any) => {
-      this.props.property(x.target[valueProp].toString());
+      let value = x.target[this.props.valueProperty];
+
+      if (this.props.converter != null) {
+        value = this.props.converter(value);
+      }
+
+      this.props.property(value);
       this.forceUpdate();
     };
 
     let props: { [key: string]: any} = {};
-    props[valueProp] = this.props.property();
-    props[this.props.onChangeProperty || 'onChange'] = onChange;
+    props[this.props.valueProperty] = this.props.property();
+    props[this.props.onChangeProperty] = onChange;
 
     let inputComponent = React.Children.only(this.props.children) as React.ReactElement<any>;
 
