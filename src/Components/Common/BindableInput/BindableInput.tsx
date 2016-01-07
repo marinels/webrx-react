@@ -10,6 +10,7 @@ interface IBindableInputProps {
   children?: React.ReactNode;
   valueProperty?: string;
   onChangeProperty?: string;
+  propSelector?: () => any;
 }
 
 export class BindableInput extends React.Component<IBindableInputProps, any> {
@@ -33,8 +34,13 @@ export class BindableInput extends React.Component<IBindableInputProps, any> {
     };
 
     let props: { [key: string]: any} = {};
+
     props[this.props.valueProperty] = this.props.property();
     props[this.props.onChangeProperty] = onChange;
+    
+    if (this.props.propSelector != null) {
+      props = Object.assign(props, this.props.propSelector());
+    }
 
     let inputComponent = React.Children.only(this.props.children) as React.ReactElement<any>;
 
