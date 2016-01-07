@@ -27,6 +27,9 @@ module.exports = {
     path: path.join(__dirname, 'build'),
     filename: 'app.js'
   },
+  externals: {
+    jquery: 'var null'
+  },
   plugins: [
     new webpack.DefinePlugin({ DEBUG: false, PRODUCTION: false, COMPAT: false, TEST: false }),
     new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js'),
