@@ -179,7 +179,7 @@ export class TreeView<T> extends StandardView<T> {
       result.push(item);
 
       if (isExpanded === true) {
-        this.getNodes(view, result, subItems, level + 1, props.key);
+        this.getNodes(view, result, subItems, level + 1, props.key as string);
       }
     });
   }
