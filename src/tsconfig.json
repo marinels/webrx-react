@@ -30,6 +30,7 @@
     "typings/jquery/jquery.d.ts",
     "typings/moment/moment-node.d.ts",
     "typings/moment/moment.d.ts",
+    "typings/react-bootstrap-datetimepicker/react-bootstrap-datetimepicker.d.ts",
     "typings/react-bootstrap/react-bootstrap.d.ts",
     "typings/react-css-transition-replace/react-css-transition-replace.d.ts",
     "typings/react-dom/react-dom.d.ts",

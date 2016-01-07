@@ -49,6 +49,7 @@
     "react-addons-css-transition-group": "^0.14.3",
     "react-addons-transition-group": "^0.14.3",
     "react-bootstrap": "^0.28.1",
+    "react-bootstrap-datetimepicker": "0.0.22",
     "react-css-transition-replace": "^1.1.0",
     "react-dom": "^0.14.3",
     "react-fa": "^4.0.0",

@@ -19,7 +19,8 @@ module.exports = {
       'react-dom',
       'react-bootstrap',
       'react-fa',
-      'react-addons-css-transition-group'
+      'react-addons-css-transition-group',
+      'react-bootstrap-datetimepicker'
     ]
   },
   output: {
