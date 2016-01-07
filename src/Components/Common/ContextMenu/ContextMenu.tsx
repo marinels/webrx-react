@@ -38,6 +38,7 @@ export class MenuItem {
 }
 
 interface IContextMenuProps {
+  key?: string | number;
   id: string;
   header: string;
   items: MenuItem[];

@@ -50,6 +50,7 @@ interface ITimeSpanInputState {
 }
 
 interface ITimeSpanInputProps {
+  key?: string | number;
   value?: moment.Moment;
   placeholder?: string;
   bsSize?: string;

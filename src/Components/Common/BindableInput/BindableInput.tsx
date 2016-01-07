@@ -4,6 +4,7 @@ import * as React from 'react';
 import * as wx from 'webrx';
 
 interface IBindableInputProps {
+  key?: string | number;
   property: wx.IObservableProperty<any>;
   converter?: (x: any) => any;
   children?: React.ReactNode;

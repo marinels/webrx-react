@@ -6,6 +6,7 @@ import * as classNames from 'classnames';
 import './Icon.less';
 
 interface IIconProps {
+  key?: string | number;
   name?: string;
   className?: string;
   size?: string;
