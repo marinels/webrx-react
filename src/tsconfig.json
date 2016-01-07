@@ -99,6 +99,7 @@
     "Components/Common/Search/SearchView.tsx",
     "Components/Common/Splash/SplashView.tsx",
     "Components/Common/Tabs/TabsView.tsx",
+    "Components/Common/TimeSpanInput/TimeSpanInput.tsx",
     "Components/Dashboard/DashboardView.tsx",
     "Components/Demo/ComponentDemoView.tsx",
     "Components/Demo/ViewMap.tsx",
