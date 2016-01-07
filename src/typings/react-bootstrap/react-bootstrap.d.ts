@@ -72,7 +72,6 @@ declare module "react-bootstrap" {
         className?: string;
         dropup?: boolean;
         href?: string;
-        key?: any; // TODO: Add more specific type
         navItem?: boolean;
         noCaret?: boolean;
         onSelect?: Function; // TODO: Add more specific type 
@@ -115,7 +114,6 @@ declare module "react-bootstrap" {
         eventKey?: any;
         header?: boolean;
         href?: string;
-        key?: any; 
         onSelect?: Function;
         target?: string;
         title?: string;
@@ -360,7 +358,6 @@ declare module "react-bootstrap" {
         className?: string;
         interpolatedClass?: any; // TODO: Add more specific type
         label?: any; // TODO: Add more specific type
-        key?: number; // TODO: Add more specific type
         max?: number;
         min?: number;
         now?: number;
@@ -502,7 +499,6 @@ declare module "react-bootstrap" {
         disabled?: boolean;
         eventKey?: any; // TODO: Add more specific type
         title?: any; // TODO: Add more specific type
-        key?: any;
     }
     interface Tab extends React.ReactElement<TabProps> { }
     interface TabClass extends React.ComponentClass<TabProps> { }
@@ -709,7 +705,6 @@ declare module "react-bootstrap" {
         eventKey?: any;
         header?: any; // TODO: Add more specific type
         href?: string;
-        key?: any; // TODO: Add more specific type 
         listItem?: boolean;
         target?: string;
     }
