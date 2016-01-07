@@ -8,6 +8,7 @@ import logManager from '../App/Logging';
 import { IBaseViewModel } from './BaseViewModel';
 
 export interface IBaseViewProps {
+  key?: string | number;
   viewModel: IBaseViewModel;
 }
 
