@@ -46,7 +46,8 @@ var config = {
 var definesTemplate = {
   DEBUG: false,
   PRODUCTION: false,
-  TEST: false
+  TEST: false,
+  WEBPACK_SERVER: false
 };
 
 var uri = 'http://' + (config.host === '0.0.0.0' ? 'localhost' : config.host) + ':' + config.port;
@@ -105,6 +106,10 @@ function getOutputPath(isProduction, enableStats, isTest) {
 function configureWebpack(isProduction, enableStats, enableServer) {
   var webpackConfig = Object.create(webpackConfigTemplate);
   var defines = Object.create(definesTemplate);
+
+  if (enableServer === true) {
+    defines.WEBPACK_SERVER = true;
+  }
 
   webpackConfig.entry.app = [ path.join(config.dirs.src, 'index.tsx') ];
   webpackConfig.output.path = getOutputPath(isProduction, enableStats);

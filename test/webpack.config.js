@@ -9,7 +9,7 @@ module.exports = {
   },
   devtool: 'eval',
   plugins: [
-    new webpack.DefinePlugin({ DEBUG: true, PRODUCTION: false, TEST: true }),
+    new webpack.DefinePlugin({ DEBUG: true, PRODUCTION: false, TEST: true, WEBPACK_SERVER: false }),
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en-ca/),
     new webpack.HotModuleReplacementPlugin()
   ],
