@@ -61,6 +61,7 @@ declare module wx {
         changing: Rx.Observable<T>;
         changed: Rx.Observable<T>;
         source?: Rx.Observable<T>;
+        thrownExceptions?: Rx.Observable<T>;
     }
 
     export interface IRangeInfo {
