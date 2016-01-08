@@ -116,6 +116,7 @@ function configureWebpack(isProduction, enableStats, enableServer) {
 
   if (isProduction === true) {
     webpackConfig.output.filename = gutil.replaceExtension(config.files.app, '.min.js');
+    webpackConfig.devtool = 'sourcemap';
 
     defines.PRODUCTION = true;
     defines['process.env'] = {
