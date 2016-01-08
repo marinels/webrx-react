@@ -43,12 +43,14 @@ var config = {
   }
 };
 
-var definesTemplate = {
-  DEBUG: false,
-  PRODUCTION: false,
-  TEST: false,
-  WEBPACK_SERVER: false
-};
+var definesTemplate = function() {
+  return {
+    DEBUG: false,
+    PRODUCTION: false,
+    TEST: false,
+    WEBPACK_SERVER: false
+  };
+}
 
 var uri = 'http://' + (config.host === '0.0.0.0' ? 'localhost' : config.host) + ':' + config.port;
 var testUri = 'http://' + (config.host === '0.0.0.0' ? 'localhost' : config.host) + ':' + config.test.port;
@@ -105,7 +107,7 @@ function getOutputPath(isProduction, enableStats, isTest) {
 
 function configureWebpack(isProduction, enableStats, enableServer) {
   var webpackConfig = Object.create(webpackConfigTemplate);
-  var defines = Object.create(definesTemplate);
+  var defines = definesTemplate();
 
   if (enableServer === true) {
     defines.WEBPACK_SERVER = true;
