@@ -17,7 +17,11 @@ export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> 
   }
 
   public filter = wx.property('');
-  public search = wx.command(x => this.notifyChanged());
+  public search = wx.asyncCommand(x => {
+    this.notifyChanged();
+
+    return Rx.Observable.return(x == null ? this.filter() : x.toString());
+  });
 
   initialize() {
     super.initialize();
