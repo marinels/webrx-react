@@ -519,7 +519,8 @@ gulp.task('test:spec', function(callback) {
   webpackConfig.resolve.alias.webrx = 'webrx/dist/web.rx.js';
   webpackConfig.plugins.pop();
   if (webpackConfig.plugins[0]) {
-    webpackConfig.plugins[0].definitions.DEBUG = false;
+    // ensure that we mock api data
+    webpackConfig.plugins[0].definitions.WEBPACK_SERVER = true;
   }
 
   runWebpack(webpackConfig, 'test:spec', function(stats) {
