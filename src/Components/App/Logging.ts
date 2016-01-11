@@ -3,7 +3,13 @@
 import LogLevel from '../../Utils/Logging/LogLevel';
 import logManager from '../../Utils/Logging/Adapters/Console';
 
-logManager.defaultLevel = DEBUG === true ? LogLevel.Debug : LogLevel.Info;
+if (TEST) {
+  logManager.defaultLevel = LogLevel.Off;
+} else if (DEBUG) {
+  logManager.defaultLevel = LogLevel.Debug;
+} else {
+  logManager.defaultLevel = LogLevel.Info;
+}
 
 let logger = logManager.getLogger('Logging');
 
