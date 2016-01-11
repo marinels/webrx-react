@@ -21,6 +21,7 @@ export class StandardView<T> implements IView {
   public static displayName = 'StandardView';
 
   constructor(
+    protected getIsVisible: (x: T, i: number) => boolean = x => true,
     protected renderItem: (view: ListView, x: T, i: number) => any = (v, x) => x.toString(),
     protected getProps?: (view: ListView, x: T, i: number) => ListGroupItemProps) {
   }
@@ -31,34 +32,36 @@ export class StandardView<T> implements IView {
 
   getRows(view: ListView, items: T[]) {
     return items.map((x, i) => {
-      let props = this.createListItemProps(view, x, i);
-      var isSelected = view.isSelected(x, i);
+      if (this.getIsVisible(x, i) === true) {
+        let props = this.createListItemProps(view, x, i);
+        var isSelected = view.isSelected(x, i);
 
-      if (props.key == null) {
-        props.key = i;
-      }
+        if (props.key == null) {
+          props.key = i;
+        }
 
-      if (props.onClick == null) {
-        props.onClick = () => view.selectItem(x, i);
-      }
+        if (props.onClick == null) {
+          props.onClick = () => view.selectItem(x, i);
+        }
 
-      let selectionIcon: any = null;
-      if (view.props.checkmarkSelected === true) {
-        selectionIcon = (
-          <div className='list-group-item-selectionIcon'>
-            <Icon name='fa-check-circle' size='lg' fixedWidth hidden={!isSelected} />
+        let selectionIcon: any = null;
+        if (view.props.checkmarkSelected === true) {
+          selectionIcon = (
+            <div className='list-group-item-selectionIcon'>
+              <Icon name='fa-check-circle' size='lg' fixedWidth hidden={!isSelected} />
+            </div>
+          );
+        }
+
+        return (
+          <div className={classNames('list-group-item', { active: isSelected })} {...props}>
+            {selectionIcon}
+            <div className='list-group-item-content' onClick={() => view.selectItem(x, i)}>
+              {this.renderItem(view, x, i)}
+            </div>
           </div>
         );
       }
-
-      return (
-        <div className={classNames('list-group-item', { active: isSelected })} {...props}>
-          {selectionIcon}
-          <div className='list-group-item-content' onClick={() => view.selectItem(x, i)}>
-            {this.renderItem(view, x, i)}
-          </div>
-        </div>
-      );
     });
   }
 }
@@ -74,9 +77,10 @@ export class TreeView<T> extends StandardView<T> {
     private getItems: (x: T, i: number) => T[],
     private selectOnExpand = false,
     private expandOnSelect = false,
+    getIsVisible?: (x: T, i: number) => boolean,
     renderItem?: (view: ListView, x: T, i: number) => any,
     getProps?: (view: ListView, x: T, i: number) => ListGroupItemProps) {
-    super(renderItem, getProps);
+    super(getIsVisible, renderItem, getProps);
   }
 
   getRows(view: ListView, items: T[]) {
@@ -96,90 +100,92 @@ export class TreeView<T> extends StandardView<T> {
 
   private getNodes(view: ListView, result: any[], items: T[], level = 0, key = '') {
     items.forEach((x, i) => {
-      let subItems = this.getItems(x, i);
-      let isExpanded = this.getIsExpanded(x, i);
-      let expander: any;
+      if (this.getIsVisible(x, i) === true) {
+        let subItems = this.getItems(x, i);
+        let isExpanded = this.getIsExpanded(x, i);
+        let expander: any;
 
-      if (subItems != null && subItems.length > 0) {
-        // this click handler deals with the expander
-        let onExpanderClick = (e: React.MouseEvent) => {
-          // we must call this so that the row click handler is ignored for this click
-          e.preventDefault();
+        if (subItems != null && subItems.length > 0) {
+          // this click handler deals with the expander
+          let onExpanderClick = (e: React.MouseEvent) => {
+            // we must call this so that the row click handler is ignored for this click
+            e.preventDefault();
 
-          this.toggleExpanded(view, x, i);
+            this.toggleExpanded(view, x, i);
 
-          if (this.selectOnExpand === true && view.isSelected(x) === false) {
-            view.selectItem(x);
-          }
-        };
-        expander = (
-          <span className='TreeItem-button'>
-            <Button className='fa' bsStyle='link' bsSize='xsmall' componentClass='span' onClick={onExpanderClick}>
-              <Icon name={isExpanded === true ? 'fa-minus-square-o' : 'fa-plus-square-o'} size='lg' fixedWidth />
-            </Button>
-          </span>
-        );
-      } else {
-        expander = (
-          <span className='TreeItem-buttonIndent' />
-        );
-      }
-
-      let nodeIndents: any[] = [];
-      if (level > 0) {
-        for (let l = 0; l < level; ++l) {
-          nodeIndents.push(<span key={l} className='TreeItem-levelIndent' />);
-        }
-      }
-
-      let props = this.createListItemProps(view, x, i);
-      let isSelected = view.isSelected(x);
-
-      if (props.key == null) {
-        props.key = String.format('{0}.{1}', key, i);
-      }
-
-      if (props.onClick == null) {
-        // this click handler deals with selection of the entire row
-        props.onClick = (e) => {
-          if (e.defaultPrevented === false) {
-            if (this.expandOnSelect === true && subItems != null && subItems.length > 0) {
-              this.toggleExpanded(view, x, i);
+            if (this.selectOnExpand === true && view.isSelected(x) === false) {
+              view.selectItem(x);
             }
+          };
+          expander = (
+            <span className='TreeItem-button'>
+              <Button className='fa' bsStyle='link' bsSize='xsmall' componentClass='span' onClick={onExpanderClick}>
+                <Icon name={isExpanded === true ? 'fa-minus-square-o' : 'fa-plus-square-o'} size='lg' fixedWidth />
+              </Button>
+            </span>
+          );
+        } else {
+          expander = (
+            <span className='TreeItem-buttonIndent' />
+          );
+        }
 
-            view.selectItem(x);
-
-            view.state.notifyChanged();
+        let nodeIndents: any[] = [];
+        if (level > 0) {
+          for (let l = 0; l < level; ++l) {
+            nodeIndents.push(<span key={l} className='TreeItem-levelIndent' />);
           }
-        };
-      }
+        }
 
-      let selectionIcon: any = null;
-      if (view.props.checkmarkSelected === true) {
-        selectionIcon = (
-          <div className='list-group-item-selectionIcon'>
-            <Icon name='fa-check-circle' size='lg' fixedWidth hidden={!isSelected} />
+        let props = this.createListItemProps(view, x, i);
+        let isSelected = view.isSelected(x);
+
+        if (props.key == null) {
+          props.key = String.format('{0}.{1}', key, i);
+        }
+
+        if (props.onClick == null) {
+          // this click handler deals with selection of the entire row
+          props.onClick = (e) => {
+            if (e.defaultPrevented === false) {
+              if (this.expandOnSelect === true && subItems != null && subItems.length > 0) {
+                this.toggleExpanded(view, x, i);
+              }
+
+              view.selectItem(x);
+
+              view.state.notifyChanged();
+            }
+          };
+        }
+
+        let selectionIcon: any = null;
+        if (view.props.checkmarkSelected === true) {
+          selectionIcon = (
+            <div className='list-group-item-selectionIcon'>
+              <Icon name='fa-check-circle' size='lg' fixedWidth hidden={!isSelected} />
+            </div>
+          );
+        }
+
+        let item = (
+          <div className={classNames('list-group-item', { active: isSelected })} {...props}>
+            {selectionIcon}
+            <div className='list-group-item-expander'>
+              {nodeIndents}
+              {expander}
+            </div>
+            <div className='list-group-item-content'>
+              {this.renderItem(view, x, i)}
+            </div>
           </div>
         );
-      }
 
-      let item = (
-        <div className={classNames('list-group-item', { active: isSelected })} {...props}>
-          {selectionIcon}
-          <div className='list-group-item-expander'>
-            {nodeIndents}
-            {expander}
-          </div>
-          <div className='list-group-item-content'>
-            {this.renderItem(view, x, i)}
-          </div>
-        </div>
-      );
+        result.push(item);
 
-      result.push(item);
-
-      if (isExpanded === true) {
-        this.getNodes(view, result, subItems, level + 1, props.key as string);
+        if (isExpanded === true) {
+          this.getNodes(view, result, subItems, level + 1, props.key as string);
+        }
       }
     });
   }
