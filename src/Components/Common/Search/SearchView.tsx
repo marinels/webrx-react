@@ -14,14 +14,19 @@ const EnterKey = 13;
 
 export interface ISearchProps extends IBaseViewProps {
   searchButton?: any;
+  placeholder?: string;
 }
 
 export class SearchView extends BaseView<ISearchProps, SearchViewModel> {
   public static displayName = 'SearchView';
 
+  static defaultProps = {
+    placeholder: 'Enter Search Terms...'
+  };
+
   render() {
     let inputProps = {
-      placeholder: 'Enter Search Terms...',
+      placeholder: this.props.placeholder,
       onKeyDown: this.bindEvent(x => x.search, undefined, (e: React.KeyboardEvent) => e.keyCode === EnterKey)
     } as InputProps;
 
