@@ -56,8 +56,8 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
 
   public bindEvent<TEvent, TParameter>(
     commandSelector: (viewModel: TViewModel) => wx.ICommand<any>,
-    conditionSelector?: (e: TEvent, x: TParameter) => boolean,
-    eventArgsSelector?: (e: TEvent, args: any[]) => TParameter
+    eventArgsSelector?: (e: TEvent, args: any[]) => TParameter,
+    conditionSelector?: (e: TEvent, x: TParameter) => boolean
   ): (event: TEvent) => void {
     return (e: TEvent, ...args: any[]) => {
       let parameter = eventArgsSelector ? eventArgsSelector(e, args) : null;

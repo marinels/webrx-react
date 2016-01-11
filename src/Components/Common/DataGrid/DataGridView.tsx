@@ -102,7 +102,7 @@ export class TableView implements IDataGridView {
         {header}
       </div>
     ) : (
-      <Button className='Column' bsStyle='link' onClick={view.bindEvent(x => x.toggleSortDirection, null, x => column.fieldName)}>
+      <Button className='Column' bsStyle='link' onClick={view.bindEvent(x => x.toggleSortDirection, x => column.fieldName)}>
         {header}
         {sortIcon}
       </Button>

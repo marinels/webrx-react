@@ -47,7 +47,7 @@ export class DashboardView extends BaseView<IDashboardProps, DashboardViewModel>
             <Col md={12}>
               <BindableInput property={this.state.alertText}>
                 <Input groupClassName='AlertText' type='text' placeholder='Enter Alert Text...' bsSize='large'
-                  buttonAfter={generateButton} onKeyDown={this.bindEvent(x => x.generateAlert, (e: React.KeyboardEvent) => e.keyCode === 13)} />
+                  buttonAfter={generateButton} onKeyDown={this.bindEvent(x => x.generateAlert, undefined, (e: React.KeyboardEvent) => e.keyCode === 13)} />
               </BindableInput>
             </Col>
           </Row>

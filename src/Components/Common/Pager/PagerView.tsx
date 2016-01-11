@@ -34,7 +34,7 @@ export class PagerView extends BaseView<IPagerProps, PagerViewModel> {
     }
 
     let pager = (this.props.limits == null || this.state.itemCount() === 0 || this.state.limit() == null) ? null : (
-      <Pagination items={this.state.pageCount()} activePage={this.state.selectedPage()} onSelect={this.bindEvent(x => x.selectPage, null, (e, x) => x[0].eventKey as number)} {...this.props} />
+      <Pagination items={this.state.pageCount()} activePage={this.state.selectedPage()} onSelect={this.bindEvent(x => x.selectPage, (e, x) => x[0].eventKey as number)} {...this.props} />
     );
 
     let limit = (this.props.limits == null || this.state.itemCount() === 0) ? null : (
