@@ -35,17 +35,16 @@ export class ModalDialogView extends BaseView<IModalDialogProps, ModalDialogView
       </Modal.Header>
     );
 
-    let body = React.Children.count(this.props.children) === 0 ? null : (
-      <Modal.Body>
-        {this.props.children}
-      </Modal.Body>
-    );
+
+    let body = this.props.children || this.state.content;
 
     return (
       <div className='ModalDialogView'>
         <Modal show={this.state.result() == null} onHide={() => this.state.cancel.execute(null)} autoFocus keyboard>
           {header}
-          {body}
+          {body == null ? null : (
+            <Modal.Body>{body}</Modal.Body>
+          )}
           <Modal.Footer>
             <Button onClick={this.bindEvent(x => x.cancel)}>{this.props.cancelText || this.state.cancelText()}</Button>
             <Button
