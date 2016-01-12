@@ -49,7 +49,7 @@ export class PageFooterView extends BaseView<IPageFooterProps, PageFooterViewMod
               <div className='PageFooter-container'>
                 <span className='PageFooter-text'>© {this.state.copyright}</span>
                 <span className='PageFooter-spacer'> | </span>
-                <span ref='viewport' className='PageFooter-viewport PageFooter-text PageFooter-text--muted'>Viewport: {this.state.viewportDimensions()}</span>
+                <span ref='viewport' className='PageFooter-viewport PageFooter-text text-muted'>Viewport: {this.state.viewportDimensions()}</span>
               </div>
             </Col>
           </Row>
