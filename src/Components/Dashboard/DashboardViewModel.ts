@@ -50,7 +50,7 @@ export class DashboardViewModel extends BaseRoutableViewModel<IDashboardRoutingS
     // so when setting routing state we must trigger the notification manually
     // we can do this by including it at the end of this function
     this.handleRoutingState(state, state => {
-      // we can extra route path elements by using the route.match
+      // we can extract route path elements by using the route.match
       // which contains the regex match groups for the regex definde in the routing map
       this.header(String.isNullOrEmpty(state.route.match[2]) ? 'WebRx.React' : state.route.match[2]);
       this.alertText(state.alertText || '');
