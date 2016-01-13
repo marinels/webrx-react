@@ -22,7 +22,7 @@ export class AsyncDataGridViewModel<TData> extends DataGridViewModel<TData> {
 
   projectItems() {
     this.dataSource.getCount(this.search.filter() || '').invokeCommand(this.pager.updateItemCount);
-    
+
     return this.dataSource.getResults(this.search.filter() || '', this.pager.offset() || 0, this.pager.limit() || 0, this.sortField(), this.sortDirection());
   }
 }

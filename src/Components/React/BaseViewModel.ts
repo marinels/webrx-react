@@ -112,11 +112,11 @@ export abstract class BaseViewModel implements IBaseViewModel {
       let keys = Object.keys(obj);
       for (let i = 0; i < keys.length; ++i) {
         let member = obj[keys[i]];
-        
+
         if (member != null) {
           let prop: { changed: Rx.Observable<any> } = member;
           let cmd: { results: Rx.Observable<any> } = member;
-          
+
           if (prop.changed != null && prop.changed.subscribe instanceof Function) {
             this.logObservable(prop.changed, keys[i]);
           } else if (cmd.results != null && cmd.results.subscribe instanceof Function) {

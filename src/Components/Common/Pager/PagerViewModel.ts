@@ -21,7 +21,7 @@ export class PagerViewModel extends BaseRoutableViewModel<IPagerRoutingState> {
 
   public updateItemCount = wx.command();
   public selectPage = wx.command();
-  
+
   public limit = wx.property<number>();
   public itemCount = this.updateItemCount.results
     .select(x => x as number)

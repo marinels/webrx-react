@@ -31,18 +31,18 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
 
   public search = new SearchViewModel(true, undefined, this.isRoutingEnabled);
   public pager = new PagerViewModel(null, this.isRoutingEnabled);
-  
+
   public sortAscending = wx.command();
   public sortDescending = wx.command();
   public toggleSortDirection = wx.command();
-  
+
   public sortField = Rx.Observable
     .merge(
       this.sortAscending.results,
       this.sortDescending.results)
     .select(x => x as string)
     .toProperty();
-  
+
   public sortDirection = Rx.Observable
     .merge(
       this.sortAscending.results
@@ -54,7 +54,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
 
   initialize() {
     super.initialize();
-    
+
     this.subscribe(
       this.project.results
         .debounce(100)
@@ -78,7 +78,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
         return sortDirection === SortDirection.Descending ? this.sortAscending : this.sortDescending
       })
     );
-    
+
     this.subscribe(
       wx.whenAny(
         this.pager.offset,
@@ -90,7 +90,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
         () => null)
       .invokeCommand(this.project)
     );
-    
+
     this.subscribe(wx
       .whenAny(
         this.items.length,
@@ -98,16 +98,16 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
       .invokeCommand(this.pager.updateItemCount)
     );
   }
-  
+
   protected projectItems() {
     let items = this.items.toArray();
-   
+
     if (this.filterer != null && String.isNullOrEmpty(this.search.filter()) === false) {
       items = items.filter(x => this.filterer(x, this.search.filter()));
     }
-    
+
     this.pager.updateItemCount.execute(items.length);
-    
+
     if (this.comparer != null && this.sortField() != null && this.sortDirection() != null) {
       items = items.sort((a, b) => this.comparer.compare(a, b, this.sortField(), this.sortDirection()));
     }
@@ -118,7 +118,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
 
       items = items.slice(offset, end);
     }
-    
+
     return Rx.Observable.return(items);
   }
 

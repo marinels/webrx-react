@@ -498,7 +498,7 @@ declare module Rx {
         */
         onCompleted(): void;
     }
-    
+
     export interface Observer<T> {
         /**
         * Notifies the observer of a new element in the sequence.

@@ -19,7 +19,7 @@ declare module moment {
         month?: number;
         /** Month */
         M?: number;
-        
+
         /** Week */
         weeks?: number;
         /** Week */
