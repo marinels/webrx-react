@@ -16,8 +16,8 @@ export class AlertHostViewModel extends BaseViewModel {
 
   public alerts = wx.list<AlertViewModel>();
 
-  private appendAlert(text: string, header?: string, style?: string, timeout?: number) {
-    let alert = new AlertViewModel(this.alerts, ++this.currentAlertKey, text, header, style, timeout);
+  private appendAlert(content: any, header?: string, style?: string, timeout?: number) {
+    let alert = new AlertViewModel(this.alerts, ++this.currentAlertKey, content, header, style, timeout);
 
     this.alerts.add(alert);
 
@@ -27,7 +27,7 @@ export class AlertHostViewModel extends BaseViewModel {
   initialize() {
     super.initialize();
 
-    this.alertCreatedHandle = PubSub.subscribe<IAlertCreated>(AlertCreatedKey, x => this.appendAlert(x.text, x.header, x.style, x.timeout));
+    this.alertCreatedHandle = PubSub.subscribe<IAlertCreated>(AlertCreatedKey, x => this.appendAlert(x.content, x.header, x.style, x.timeout));
   }
 
   cleanup() {

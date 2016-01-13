@@ -1,7 +1,7 @@
 export const AlertCreatedKey = 'AlertCreated';
 
 export interface IAlertCreated {
-  text: string;
+  content: any;
   header?: string;
   style?: string;
   timeout?: number;

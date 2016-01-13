@@ -34,8 +34,8 @@ export abstract class BaseViewModel implements IBaseViewModel {
 
   public getDisplayName() { return Object.getName(this); }
 
-  public createAlert(text: string, header?: string, style?: string, timeout?: number) {
-    PubSub.publish<IAlertCreated>(AlertCreatedKey, { text, header, style, timeout });
+  public createAlert(content: any, header?: string, style?: string, timeout?: number) {
+    PubSub.publish<IAlertCreated>(AlertCreatedKey, { content, header, style, timeout });
   }
 
   public alertForError<TError>(error: TError, header = 'Unknown Error', style = 'danger', formatter?: (e: TError) => string) {

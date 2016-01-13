@@ -7,7 +7,7 @@ import BaseViewModel from '../../React/BaseViewModel';
 
 export interface IAlert {
   key: string;
-  text: string;
+  content: any;
   header?: string;
   style?: string;
   timeout?: number;
@@ -19,7 +19,7 @@ export const DefaultTimeout = 5000;
 export class AlertViewModel extends BaseViewModel {
   public static displayName = 'AlertViewModel';
 
-  constructor(private owner: wx.IObservableList<AlertViewModel>, public key: any, public text: string, public header?: string, public style = DefaultStyle, private timeout = DefaultTimeout) {
+  constructor(private owner: wx.IObservableList<AlertViewModel>, public key: any, public content: any, public header?: string, public style = DefaultStyle, private timeout = DefaultTimeout) {
     super();
   }
 
