@@ -22,6 +22,7 @@
     "../src/typings/jquery/jquery.d.ts",
     "../src/typings/moment/moment-node.d.ts",
     "../src/typings/moment/moment.d.ts",
+    "../src/typings/react-bootstrap-datetimepicker/react-bootstrap-datetimepicker.d.ts",
     "../src/typings/react-bootstrap/react-bootstrap.d.ts",
     "../src/typings/react-css-transition-replace/react-css-transition-replace.d.ts",
     "../src/typings/react-dom/react-dom.d.ts",
