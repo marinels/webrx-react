@@ -47,11 +47,11 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
     return this.state.bind(observable, commandSelector(this.state));
   }
 
-  public bindCallback<TParameter>(
+  public bindCallback<TEvent, TParameter>(
     targetSelector: (viewModel: TViewModel) => wx.IObservableProperty<TParameter>,
-    paramSelector: (...args: any[]) => TParameter
-  ) : (args: any[]) => void {
-    return (...args: any[]) => targetSelector(this.state)(paramSelector(args));
+    paramSelector: (event: TEvent, ...args: any[]) => TParameter
+  ) : (event: TEvent) => void {
+    return (event: TEvent, ...args: any[]) => targetSelector(this.state)(paramSelector(event, args));
   }
 
   public bindEvent<TEvent, TParameter>(

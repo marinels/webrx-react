@@ -70,7 +70,7 @@ export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDe
             <Col md={12}>
               <div className='pull-right'>
                 <DropdownButton id='col-width' bsStyle='info' title='Column Width'
-                  onSelect={this.bindCallback(x => x.columns, x => x[1])}>
+                  onSelect={this.bindCallback(x => x.columns, (e, x) => x[0])}>
                   {
                     Ix.Enumerable
                       .range(1, 12)
