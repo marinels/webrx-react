@@ -71,7 +71,7 @@ export class TableView implements IDataGridView {
     let icon:JSX.Element = null;
 
     if (grid.canSort() && column.sortable) {
-      let iconName = 'fa-sort';
+      let iconName = '';
 
       if (grid.isSortedBy(column.fieldName, SortDirection.Ascending) === true) {
         iconName = 'fa-sort-asc';
@@ -81,7 +81,7 @@ export class TableView implements IDataGridView {
 
       return (
         <span className='Column-sortIcon'>
-          <Icon name={iconName} size='lg' />
+          { String.isNullOrEmpty(iconName) ? null : <Icon name={iconName} size='lg' /> }
         </span>
       )
     }
