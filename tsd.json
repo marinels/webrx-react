@@ -5,34 +5,55 @@
   "path": "src/typings",
   "installed": {
     "react/react.d.ts": {
-      "commit": "68548c2daab053869f323d475419c693478bbb73"
+      "commit": "1984ea435fe9e93a012d50db7773db58ae5d494b"
+    },
+    "react/react-dom.d.ts": {
+      "commit": "1984ea435fe9e93a012d50db7773db58ae5d494b"
     },
     "react/react-global.d.ts": {
-      "commit": "68548c2daab053869f323d475419c693478bbb73"
-    },
-    "react-dom/react-dom.d.ts": {
-      "commit": "68548c2daab053869f323d475419c693478bbb73"
+      "commit": "1984ea435fe9e93a012d50db7773db58ae5d494b"
     },
     "classnames/classnames.d.ts": {
-      "commit": "68548c2daab053869f323d475419c693478bbb73"
+      "commit": "1984ea435fe9e93a012d50db7773db58ae5d494b"
     },
     "react-bootstrap/react-bootstrap.d.ts": {
-      "commit": "68548c2daab053869f323d475419c693478bbb73"
+      "commit": "1984ea435fe9e93a012d50db7773db58ae5d494b"
     },
     "moment/moment.d.ts": {
-      "commit": "68548c2daab053869f323d475419c693478bbb73"
+      "commit": "1984ea435fe9e93a012d50db7773db58ae5d494b"
     },
     "moment/moment-node.d.ts": {
-      "commit": "68548c2daab053869f323d475419c693478bbb73"
-    },
-    "jquery/jquery.d.ts": {
-      "commit": "68548c2daab053869f323d475419c693478bbb73"
+      "commit": "1984ea435fe9e93a012d50db7773db58ae5d494b"
     },
     "ix.js/ix.d.ts": {
-      "commit": "c2c22c3b953fe9730d4802022d5e0d18d083909e"
+      "commit": "1984ea435fe9e93a012d50db7773db58ae5d494b"
     },
     "ix.js/l2o.d.ts": {
-      "commit": "c2c22c3b953fe9730d4802022d5e0d18d083909e"
+      "commit": "1984ea435fe9e93a012d50db7773db58ae5d494b"
+    },
+    "react/react-addons-create-fragment.d.ts": {
+      "commit": "1984ea435fe9e93a012d50db7773db58ae5d494b"
+    },
+    "react/react-addons-perf.d.ts": {
+      "commit": "1984ea435fe9e93a012d50db7773db58ae5d494b"
+    },
+    "react/react-addons-test-utils.d.ts": {
+      "commit": "1984ea435fe9e93a012d50db7773db58ae5d494b"
+    },
+    "react/react-addons-linked-state-mixin.d.ts": {
+      "commit": "1984ea435fe9e93a012d50db7773db58ae5d494b"
+    },
+    "react/react-addons-pure-render-mixin.d.ts": {
+      "commit": "1984ea435fe9e93a012d50db7773db58ae5d494b"
+    },
+    "react/react-addons-update.d.ts": {
+      "commit": "1984ea435fe9e93a012d50db7773db58ae5d494b"
+    },
+    "react/react-addons-css-transition-group.d.ts": {
+      "commit": "1984ea435fe9e93a012d50db7773db58ae5d494b"
+    },
+    "react/react-addons-transition-group.d.ts": {
+      "commit": "1984ea435fe9e93a012d50db7773db58ae5d494b"
     }
   }
 }
