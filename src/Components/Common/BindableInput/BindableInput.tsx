@@ -11,6 +11,8 @@ interface IBindableInputProps {
   valueProperty?: string;
   onChangeProperty?: string;
   propSelector?: () => any;
+  valueGetter?: (property: wx.IObservableProperty<any>) => any;
+  valueSetter?: (property: wx.IObservableProperty<any>, value: any) => void;
 }
 
 export class BindableInput extends React.Component<IBindableInputProps, any> {
@@ -18,7 +20,9 @@ export class BindableInput extends React.Component<IBindableInputProps, any> {
 
   static defaultProps = {
     valueProperty: 'value',
-    onChangeProperty: 'onChange'
+    onChangeProperty: 'onChange',
+    valueGetter: (property: wx.IObservableProperty<any>) => { return property(); },
+    valueSetter: (property: wx.IObservableProperty<any>, value: any) => { property(value); }
   }
 
   render() {
@@ -29,13 +33,13 @@ export class BindableInput extends React.Component<IBindableInputProps, any> {
         value = this.props.converter(value);
       }
 
-      this.props.property(value);
+      this.props.valueSetter(this.props.property, value);
       this.forceUpdate();
     };
 
     let props: { [key: string]: any} = {};
 
-    props[this.props.valueProperty] = this.props.property();
+    props[this.props.valueProperty] = this.props.valueGetter(this.props.property);
     props[this.props.onChangeProperty] = onChange;
     
     if (this.props.propSelector != null) {
