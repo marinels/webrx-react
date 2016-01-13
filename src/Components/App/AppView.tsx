@@ -25,14 +25,12 @@ export class AppView extends BaseView<IAppProps, AppViewModel> {
   render() {
     return (
       <div className='App'>
+        <div className='float-container'>
+          <Grid>
+            <AlertHostView viewModel={this.state.alerts} />
+          </Grid>
+        </div>
         <PageHeaderView viewModel={this.state.header} />
-        <Grid>
-          <Row>
-            <Col md={12}>
-              <AlertHostView viewModel={this.state.alerts} />
-            </Col>
-          </Row>
-        </Grid>
         <RouteHandlerView viewModel={this.state.routeHandler} viewMap={ViewMap} />
         <PageFooterView viewModel={this.state.footer} />
       </div>
