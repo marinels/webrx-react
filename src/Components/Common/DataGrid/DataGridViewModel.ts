@@ -112,10 +112,11 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
       items = items.sort((a, b) => this.comparer.compare(a, b, this.sortField(), this.sortDirection()));
     }
 
-    if (this.pager.offset() > 0 || this.pager.limit() != null) {
-      let end = this.pager.limit() == null ? items.length : this.pager.offset() + this.pager.limit();
-      
-      items = items.slice(this.pager.offset(), end);
+    let offset = this.pager.offset() || 0;
+    if (offset > 0 || this.pager.limit() != null) {
+      let end = this.pager.limit() == null ? items.length : offset + this.pager.limit();
+
+      items = items.slice(offset, end);
     }
     
     return Rx.Observable.return(items);
