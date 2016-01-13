@@ -326,6 +326,9 @@ declare namespace __React {
     interface HTMLProps<T> extends HTMLAttributes, Props<T> {
     }
 
+    interface DOMProps<T> extends DOMAttributes, Props<T> {
+    }
+
     interface SVGProps extends SVGAttributes, Props<SVGElement> {
     }
 
