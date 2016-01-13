@@ -8,7 +8,8 @@
     "webpack": "webpack",
     "gulp": "gulp",
     "mocha": "mocha",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "tsd": "tsd"
   },
   "repository": {
     "type": "git",
