@@ -14,7 +14,7 @@ function stringify(value: any, replacer?: any, space: string | number = 2) {
 
 function format(format: string, ...args: any[]) {
   if (format != null) {
-    format = format.replace(/\{\d+\}/g, x => args[parseInt(x.match(/\d+/)[0])]);
+    format = format.replace(/\{\d+\}/g, x => stringify(args[parseInt(x.match(/\d+/)[0])]));
   }
 
   return format;
