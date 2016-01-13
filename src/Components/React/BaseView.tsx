@@ -38,7 +38,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   public bindText(propertySelector: (viewModel: TViewModel) => wx.IObservableProperty<string>) {
     return (x: any) => {
       let value = (x.target as React.HTMLAttributes).value;
-      propertySelector(this.state)(value);
+      propertySelector(this.state)(value as string);
       this.forceUpdate();
     }
   }
