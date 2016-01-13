@@ -163,8 +163,7 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
 
   private columns: Column[];
 
-  private renderTable() {
-    let items = this.state.projectedItems.toArray() || [];
+  private renderTable(items: any[]) {
     let columns = this.columns.map((x, i) => this.props.view.renderColumn(this, this.state, x, i));
 
     let rows = items.map((row, rowIndex) => {
@@ -180,6 +179,16 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
     return table;
   }
 
+  private getColumns(items: any[]) {
+    if (this.columns == null) {
+      this.columns = Object
+        .keys(items[0])
+        .map(x => new Column(x));
+    }
+
+    return this.columns;
+  }
+
   updateOn() {
     return [
       this.state.projectedItems.listChanged,
@@ -190,9 +199,11 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
   initialize() {
     super.initialize();
 
-    this.columns = React.Children.map(this.props.children, (x: React.ReactElement<IDataGridColumnProps>) => {
-      return Column.create(x);
-    }) || [];
+    if (React.Children.count(this.props.children) > 0) {
+      this.columns = React.Children.map(this.props.children, (x: React.ReactElement<IDataGridColumnProps>) => {
+        return Column.create(x);
+      });
+    }
   }
 
   render() {
@@ -200,11 +211,15 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
     let table: any;
     let pager: any;
 
-    if (this.columns.length > 0) {
+    let items = this.state.projectedItems.toArray() || [];
+
+    if (items.length > 0) {
+      let columns = this.getColumns(items);
+
       search = (this.props.searchProps == null || this.state.canFilter() === false) ? null : (
         <SearchView {...this.props.searchProps} viewModel={this.state.search}/>
       );
-      table = this.renderTable();
+      table = this.renderTable(items);
       pager = this.props.pagerProps == null ? null : (
         <PagerView {...this.props.pagerProps} viewModel={this.state.pager} />
       );
