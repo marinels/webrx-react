@@ -1,7 +1,7 @@
 /// <reference path="../typings/rx/rx.all.d.ts" />
 
 declare interface ObjectConstructor {
-  assign(target: Object, ...sources: Object[]): Object;
+  assign<T>(target: Object, ...sources: Object[]): T;
   dispose<T>(disposable: T, returnNull?: boolean): T;
   getName(source: any, undefined?: string): string;
   getValueOrDefault<T>(value: T, defaultValue: T): T;

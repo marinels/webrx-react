@@ -4,7 +4,7 @@
 
 import * as Rx from 'rx';
 
-function assign(target: Object, ...sources: Object[]) {
+function assign<T>(target: Object, ...sources: Object[]) {
   if (target === undefined || target === null) {
     throw new TypeError('Cannot convert first argument to object');
   }
@@ -32,7 +32,7 @@ function assign(target: Object, ...sources: Object[]) {
     }
   }
 
-  return to;
+  return to as T;
 }
 
 function dispose<T>(disposable: T, returnNull = true) {
