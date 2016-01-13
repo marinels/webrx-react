@@ -72,7 +72,7 @@ export class TimeSpanInput extends React.Component<ITimeSpanInputProps, ITimeSpa
     minUnit: UnitTypes.Seconds,
     defaultUnit: UnitTypes.Seconds,
     format: 'LLLL',
-    standalone: true
+    standalone: false
   };
 
   constructor(props?: ITimeSpanInputProps, context?: any) {
