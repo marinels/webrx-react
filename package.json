@@ -44,11 +44,11 @@
     "minimist": "^1.2.0",
     "mocha": "^2.3.4",
     "mocha-loader": "^0.7.1",
-    "moment": "^2.10.6",
-    "react": "^0.14.3",
+    "moment": "^2.11.1",
+    "react": "^0.14.6",
     "react-addons-css-transition-group": "^0.14.3",
     "react-addons-transition-group": "^0.14.3",
-    "react-bootstrap": "^0.28.1",
+    "react-bootstrap": "^0.28.2",
     "react-bootstrap-datetimepicker": "0.0.22",
     "react-css-transition-replace": "^1.1.0",
     "react-dom": "^0.14.3",
@@ -61,9 +61,9 @@
     "tsd": "^0.6.4",
     "typescript": "^1.7.5",
     "url-loader": "^0.5.7",
-    "webpack": "^1.12.9",
+    "webpack": "^1.12.11",
     "webpack-bundle-size-analyzer": "^1.2.0",
-    "webpack-dev-server": "^1.14.0",
+    "webpack-dev-server": "^1.14.1",
     "webrx": "^1.4.3"
   }
 }
