@@ -61,6 +61,8 @@ interface ITimeSpanInputProps {
   format?: string;
   onChange?: (e: any) => void;
   groupClassName?: string;
+  standalone?: boolean;
+  title?: string;
 }
 
 export class TimeSpanInput extends React.Component<ITimeSpanInputProps, ITimeSpanInputState> {
@@ -69,7 +71,8 @@ export class TimeSpanInput extends React.Component<ITimeSpanInputProps, ITimeSpa
   static defaultProps = {
     minUnit: UnitTypes.Seconds,
     defaultUnit: UnitTypes.Seconds,
-    format: 'LLLL'
+    format: 'LLLL',
+    standalone: true
   };
 
   constructor(props?: ITimeSpanInputProps, context?: any) {
@@ -181,10 +184,10 @@ export class TimeSpanInput extends React.Component<ITimeSpanInputProps, ITimeSpa
     return (
       <Input groupClassName={classNames('TimeSpanInput', this.props.groupClassName)}
         type='text' bsSize={this.props.bsSize} bsStyle={isInvalid ? 'error' : null}
-        title={this.state.value == null ? 'Invalid Format' : this.state.value.format(this.props.format)}
+        title={this.props.title || (this.state.value == null ? 'Invalid Format' : this.state.value.format(this.props.format))}
         placeholder={this.props.placeholder} value={this.state.text}
         buttonAfter={[incrementButton, decrementButton, unitDropdown]}
-        onChange={(e: any) => this.textChanged(e)} />
+        onChange={(e: any) => this.textChanged(e)} standalone={this.props.standalone} />
     )
   }
 }
