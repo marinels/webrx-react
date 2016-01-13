@@ -13,9 +13,7 @@ function invokeCommand<T, TResult>(command: (x: T) => wx.ICommand<TResult> | wx.
       parameter: x,
       command: (command instanceof Function ? command(x) : command) as wx.ICommand<TResult>
     }))
-    // debounce typings want the (incorrectly named) durationSelector to return a number here
-    // either fix the typing file or do a .select(_ => 0) after the where to fix this
-    .debounce(x => x.command.canExecuteObservable.startWith(x.command.canExecute(x.parameter)).where(b => b))
+    .debounce(x => x.command.canExecuteObservable.startWith(x.command.canExecute(x.parameter)))
     .select(x => x.command.executeAsync(x.parameter).catch(Rx.Observable.empty<TResult>()))
     .switch()
     .subscribe();
