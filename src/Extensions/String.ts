@@ -8,6 +8,10 @@ function isNullOrEmpty(value: string) {
   return value == null || value === '';
 }
 
+function stringify(value: any, replacer?: any, space: string | number = 2) {
+  return typeof value === 'object' ? JSON.stringify(value, replacer, space) : value.toString();
+}
+
 function format(format: string, ...args: any[]) {
   if (format != null) {
     format = format.replace(/\{\d+\}/g, x => args[parseInt(x.match(/\d+/)[0])]);
@@ -17,4 +21,5 @@ function format(format: string, ...args: any[]) {
 }
 
 String.isNullOrEmpty = Object.getValueOrDefault(String.isNullOrEmpty, isNullOrEmpty);
+String.stringify = Object.getValueOrDefault(String.stringify, stringify);
 String.format = Object.getValueOrDefault(String.format, format);
