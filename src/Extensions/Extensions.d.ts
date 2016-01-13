@@ -29,3 +29,9 @@ declare module Rx {
 interface Function {
   name: string;
 }
+
+declare module wx {
+  interface IObservableProperty<T> {
+    thrownExceptions?: Rx.Observable<T>;
+  }
+}
