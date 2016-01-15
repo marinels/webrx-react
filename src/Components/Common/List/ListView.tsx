@@ -236,10 +236,16 @@ export class ListView extends BaseView<IListProps, ListViewModel<any, any>> {
   }
 
   render() {
+    let rows = this.props.view.getRows(this, this.state.items.toArray());
+
     return (
       <div className='List'>
         <ListGroup>
-          {this.props.view.getRows(this, this.state.items.toArray())}
+          {
+            rows.length === 0 ? (
+              <div className='List-empty'>Nothing to Display...</div>
+            ) : rows
+          }
         </ListGroup>
       </div>
     );
