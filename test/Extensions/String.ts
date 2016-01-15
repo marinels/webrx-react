@@ -32,6 +32,28 @@ describe('String Extensions', () => {
     });
   });
 
+  describe('String.stringify', () => {
+    it('Can handle a null value', () => {
+      let val: any = null;
+      expect(String.stringify(val)).to.equal(null);
+    });
+
+    it('Can stringify an empty object', () => {
+      let val: any = {};
+      expect(String.stringify(val)).to.equal(JSON.stringify(val, null, 2));
+    });
+
+    it('Can stringify a non-empty object', () => {
+      let val: any = { text: 'test' };
+      expect(String.stringify(val)).to.equal(JSON.stringify(val, null, 2));
+    });
+
+    it('Can stringify with custom spaces', () => {
+      let val: any = { text: 'test' };
+      expect(String.stringify(val, null, 4)).to.equal(JSON.stringify(val, null, 4));
+    });
+  });
+
   describe('String.Format', () => {
     it('Can format an undefined string', () => {
       let format: string;
