@@ -12,11 +12,12 @@ import './Extensions/Object';
 import './Extensions/String';
 import './Extensions/Rx';
 
-import logManager from './Components/App/Logging';
+import logManager from './Components/Common/App/Logging';
 import RouteManager from './Routing/RouteManager';
-import AppView from './Components/App/AppView';
-import { AppViewModel, IAppConfig } from './Components/App/AppViewModel';
-import RoutingMap from './Components/App/RoutingMap';
+import AppView from './Components/Common/App/AppView';
+import { AppViewModel, IAppConfig } from './Components/Common/App/AppViewModel';
+import RoutingMap from './Components/Common/App/RoutingMap';
+import ViewMap from './Components/Common/App/ViewMap';
 
 let logger = logManager.getLogger('index');
 
@@ -35,5 +36,5 @@ if (container) {
   let routeManager = new RouteManager(hashChanged)
   let viewModel = new AppViewModel(routeManager, config);
 
-  ReactDOM.render(<AppView viewModel={viewModel}/>, document.getElementById('app'));
+  ReactDOM.render(<AppView viewModel={viewModel} viewMap={ViewMap} />, document.getElementById('app'));
 }
