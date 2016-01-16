@@ -2,7 +2,7 @@
 
 import { IMenuItem } from '../Common/PageHeader/Actions';
 
-// import DataGridViewModel from '../Common/DataGrid/DataGridViewModel';
+import SplashViewModel from '../Common/Splash/SplashViewModel';
 
 export interface IViewModelActivator {
   (state: any): any;
@@ -37,13 +37,6 @@ class RoutingMap {
 
 let routingMap = new RoutingMap();
 
-// routingMap.addRoute('DataGrid', 'Data Grid', (state: any) => new DataGridViewModel(
-//   undefined,
-//   undefined,
-//   false,
-//   { id: 1, value: 'a' },
-//   { id: 2, value: 'b' },
-//   { id: 3, value: 'c' }
-// ));
+routingMap.addRoute('splash', 'Splash', (state: any) => new SplashViewModel('Demo Splash Screen'));
 
 export default routingMap;

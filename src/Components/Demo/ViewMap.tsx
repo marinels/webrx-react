@@ -2,9 +2,8 @@
 
 import * as React from 'react';
 
-
-// import DataGridViewModel from '../Common/DataGrid/DataGridViewModel';
-// import { DataGridView, DataGridColumn } from '../Common/DataGrid/DataGridView';
+import SplashViewModel from '../Common/Splash/SplashViewModel';
+import SplashView from '../Common/Splash/SplashView';
 
 export interface IViewActivator {
   (component: any): any;
@@ -15,12 +14,7 @@ export interface IViewMap {
 }
 
 let viewMap: IViewMap = {
-  // DataGridViewModel: (viewModel: DataGridViewModel<any>) => (
-  //   <DataGridView viewModel={viewModel}>
-  //     <DataGridColumn fieldName='id' header='ID' sortable />
-  //     <DataGridColumn fieldName='value' header='Value' sortable className='col-md-4' />
-  //   </DataGridView>
-  // ),
+  SplashViewModel: (viewModel: SplashViewModel) => <SplashView viewModel={viewModel} fluid />,
 };
 
 export default viewMap;
