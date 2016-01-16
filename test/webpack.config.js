@@ -7,6 +7,9 @@ module.exports = {
     path: path.join(__dirname, '..', 'build', 'test'),
     filename: 'spec.js'
   },
+  externals: {
+    jquery: 'var null'
+  },
   devtool: 'eval',
   plugins: [
     new webpack.DefinePlugin({ DEBUG: true, PRODUCTION: false, TEST: true, MOCK_API: true }),
