@@ -14,12 +14,12 @@ export class PageHeaderViewModel extends BaseViewModel {
   constructor(
     public routeHandler?: RouteHandlerViewModel,
     public search?: SearchViewModel,
-    private staticAppSwitcherMenuItems: IMenuItem[] = [],
-    private staticAppMenus: IMenu[] = [],
-    private staticAppActions: ICommandAction[] = [],
-    private staticHelpMenuItems: IMenuItem[] = [],
-    private staticAdminMenuItems: IMenuItem[] = [],
-    private staticUserMenuItems: IMenuItem[] = [],
+    public staticAppSwitcherMenuItems: IMenuItem[] = [],
+    public staticAppMenus: IMenu[] = [],
+    public staticAppActions: ICommandAction[] = [],
+    public staticHelpMenuItems: IMenuItem[] = [],
+    public staticAdminMenuItems: IMenuItem[] = [],
+    public staticUserMenuItems: IMenuItem[] = [],
     public userImage?: string,
     public homeLink = '#/') {
     super();
