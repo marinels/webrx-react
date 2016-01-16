@@ -48,7 +48,7 @@ var definesTemplate = function() {
     DEBUG: false,
     PRODUCTION: false,
     TEST: false,
-    WEBPACK_SERVER: false
+    MOCK_API: false
   };
 }
 
@@ -110,7 +110,7 @@ function configureWebpack(isProduction, enableStats, enableServer) {
   var defines = definesTemplate();
 
   if (enableServer === true) {
-    defines.WEBPACK_SERVER = true;
+    defines.MOCK_API = true;
   }
 
   webpackConfig.entry.app = [ path.join(config.dirs.src, 'index.tsx') ];
@@ -518,10 +518,6 @@ gulp.task('test:spec', function(callback) {
   // resolve properly
   webpackConfig.resolve.alias.webrx = 'webrx/dist/web.rx.js';
   webpackConfig.plugins.pop();
-  if (webpackConfig.plugins[0]) {
-    // ensure that we mock api data
-    webpackConfig.plugins[0].definitions.WEBPACK_SERVER = true;
-  }
 
   runWebpack(webpackConfig, 'test:spec', function(stats) {
     callback();
