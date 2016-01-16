@@ -13,6 +13,7 @@ import './Splash.less';
 interface ISplashProps extends IBaseViewProps {
   active?: boolean;
   striped?: boolean;
+  fluid?: boolean;
 }
 
 export class SplashView extends BaseView<ISplashProps, SplashViewModel> {
@@ -20,7 +21,8 @@ export class SplashView extends BaseView<ISplashProps, SplashViewModel> {
 
   static defaultProps = {
     active: true,
-    striped: true
+    striped: true,
+    fluid: false
   };
 
   updateOn() {
@@ -39,12 +41,8 @@ export class SplashView extends BaseView<ISplashProps, SplashViewModel> {
 
     return (
       <div className='Splash'>
-        <Grid>
-          <Row>
-            <Col md={12}>
-              <ProgressBar bsSize='large' label={text} now={this.state.value()} {...this.props} />
-            </Col>
-          </Row>
+        <Grid fluid={this.props.fluid}>
+          <ProgressBar bsSize='large' label={text} now={this.state.value()} {...this.props} />
         </Grid>
       </div>
     );
