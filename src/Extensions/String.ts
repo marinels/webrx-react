@@ -9,8 +9,13 @@ function isNullOrEmpty(value: string) {
 }
 
 function stringify(value: any, replacer?: any, space: string | number = 2) {
-  return value == null ? null :
-    (typeof value === 'object' ? JSON.stringify(value, replacer, space) : value.toString());
+  let result = value == null ? null : value.toString();
+
+  if (result === '[object Object]') {
+    result = JSON.stringify(value, replacer, space);
+  }
+
+  return result;
 }
 
 function format(format: string, ...args: any[]) {

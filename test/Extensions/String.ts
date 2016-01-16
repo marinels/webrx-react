@@ -52,6 +52,34 @@ describe('String Extensions', () => {
       let val: any = { text: 'test' };
       expect(String.stringify(val, null, 4)).to.equal(JSON.stringify(val, null, 4));
     });
+
+    it('Can stringify an object with an overridden toString() function', () => {
+      class Test {
+        public text = 'test';
+
+        toString() {
+          return this.text;
+        }
+      }
+
+      let val = new Test();
+      expect(String.stringify(val)).to.equal('test');
+    });
+
+    it('Can stringify an object with an overridden toString() function in a base class', () => {
+      class Base {
+        public text = 'test';
+
+        toString() {
+          return this.text;
+        }
+      }
+      class Test extends Base {
+      }
+
+      let val = new Test();
+      expect(String.stringify(val)).to.equal('test');
+    });
   });
 
   describe('String.Format', () => {
