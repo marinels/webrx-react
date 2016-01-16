@@ -9,7 +9,7 @@ import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import Icon from '../Icon/Icon';
 
 import { ListViewModel, ISelectableItem } from './ListViewModel';
-import LogManager from '../../App/Logging';
+import LogManager from '../../Common/App/Logging';
 
 import './ListView.less';
 

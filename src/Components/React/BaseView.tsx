@@ -4,7 +4,7 @@ import * as React from 'react';
 import * as Rx from 'rx';
 import * as wx from 'webrx';
 
-import logManager from '../App/Logging';
+import logManager from '../Common/App/Logging';
 import { IBaseViewModel } from './BaseViewModel';
 
 export interface IBaseViewProps {

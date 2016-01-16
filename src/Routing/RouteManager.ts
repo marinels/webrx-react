@@ -3,7 +3,7 @@
 import * as Rx from 'rx';
 import * as wx from 'webrx';
 
-import logManager from '../Components/App/Logging';
+import logManager from '../Components/Common/App/Logging';
 import HashCodec from './HashCodec';
 import { default as PubSub, ISubscriptionHandle } from '../Utils/PubSub';
 import { RouteChangedKey, IRouteChanged } from '../Events/RouteChanged';

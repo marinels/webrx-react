@@ -4,7 +4,7 @@ import * as Rx from 'rx';
 import * as wx from 'webrx';
 
 import LogLevel from '../../Utils/Logging/LogLevel';
-import logManager from '../App/Logging';
+import logManager from '../Common/App/Logging';
 import PubSub from '../../Utils/PubSub';
 import { AlertCreatedKey, IAlertCreated } from '../../Events/AlertCreated';
 import { RouteChangedKey, IRouteChanged } from '../../Events/RouteChanged';
