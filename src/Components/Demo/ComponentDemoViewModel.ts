@@ -6,15 +6,23 @@ import * as wx from 'webrx';
 import { IRoute } from '../../Routing/RouteManager';
 import { IMenu } from '../Common/PageHeader/Actions';
 
-import BaseRoutableViewModel from '../React/BaseRoutableViewModel';
+import { BaseRoutableViewModel, IRoutedViewModel } from '../React/BaseRoutableViewModel';
 import { default as RoutingMap, IViewModelActivator } from './RoutingMap';
 
-export class ComponentDemoViewModel extends BaseRoutableViewModel<any> {
+interface IComponentDemoRoutingState {
+  route: IRoute;
+  componentName: string;
+  columns: number;
+}
+
+export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemoRoutingState> {
   public static displayName = 'ComponentDemoViewModel';
 
   constructor() {
     super(true);
   }
+
+  private componentName: string;
 
   public columns = wx.property(12);
   public component = wx.property<any>(null);
@@ -25,35 +33,72 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<any> {
     ];
   }
 
-  private getComponentName(state: { route: IRoute }) {
-    return (state != null && String.isNullOrEmpty(state.route.match[2]) == false) ?
-      state.route.match[2] : null;
-  }
-
   private getViewModel(componentName: string, state: any) {
     let activator: IViewModelActivator = null;
 
     if (componentName != null) {
       this.logger.debug('Loading View Model for "{0}"...', componentName);
       activator = RoutingMap.map[componentName];
+
+      if (activator == null) {
+        let result = Ix.Enumerable
+          .fromArray(Object.keys(RoutingMap.map))
+          .where(x => x != null && x.length > 0 && x[0] === '^')
+          .select(x => ({ path: x, regex: new RegExp(x, 'i') }))
+          .select(x => ({ path: x.path, match: x.regex.exec(componentName) }))
+          .where(x => x.match != null)
+          .select(x => ({ match: x.match, activator: RoutingMap.map[x.path] }))
+          .firstOrDefault();
+
+        if (result != null) {
+          activator = result.activator;
+
+          // override the routed state's match with the demo's context
+          state.route.match = result.match;
+        }
+      }
     }
 
     return activator == null ? null : activator(state);
   }
 
-  getRoutingState(context?: any): any {
-    // we don't actually produce state in this view model
-    return null;
+  initialize() {
+    this.subscribe(wx
+      .whenAny(this.columns.changed, x => null)
+      .invokeCommand(this.routingStateChanged)
+    );
   }
 
-  setRoutingState(state: any) {
-    let componentName = this.getComponentName(state);
+  getRoutingState(context?: any): any {
+    return this.createRoutingState(state => {
+      state.route = <IRoute>{
+        path: String.format('demo/{0}', this.componentName)
+      };
 
-    if (componentName == null) {
-      this.navTo(RoutingMap.getUri(RoutingMap.getRoutablePaths().shift()));
+      if (this.columns() !== 12) {
+        state.columns = this.columns();
+      }
+    });
+  }
+
+  setRoutingState(state: IComponentDemoRoutingState) {
+    this.componentName = state.componentName || state.route.match[2];
+
+    if (this.componentName == null) {
+      if (RoutingMap.menuItems.length > 0) {
+        this.navTo(RoutingMap.menuItems[0].uri);
+      }
     } else {
       this.handleRoutingState(state, state => {
-        this.component(this.getViewModel(componentName, state));
+        this.columns(state.columns || 12);
+
+        let component = this.getViewModel(this.componentName, state) as IRoutedViewModel;
+
+        if (component.setRoutingState) {
+          component.setRoutingState(state);
+        }
+
+        this.component(component);
       });
     }
   }
