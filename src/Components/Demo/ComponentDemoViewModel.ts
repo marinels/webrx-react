@@ -1,6 +1,7 @@
 'use strict';
 
 import * as Rx from 'rx';
+import * as Ix from 'ix';
 import * as wx from 'webrx';
 
 import { IRoute } from '../../Routing/RouteManager';
