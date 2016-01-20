@@ -299,7 +299,9 @@ gulp.task('dist:dev', ['webpack:build:dev'], function () {
     .src([
       path.join(config.dirs.dest, 'debug', '*.js'),
       path.join(config.dirs.dest, 'debug', '*.css'),
-      path.join(config.dirs.dest, 'debug', '*.map')
+      path.join(config.dirs.dest, 'debug', '*.map'),
+      path.join(config.dirs.dest, 'debug', 'fonts', '**', '*'),
+      path.join(config.dirs.dest, 'debug', 'locale', '**', '*')
     ], { base: path.join(config.dirs.dest, 'debug') })
     .pipe(gulp.dest(config.dirs.dist));
 });
