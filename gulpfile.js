@@ -29,6 +29,7 @@ var config = {
     dest: args.dest || defaultDest,
     dist: args.dist || path.join(args.dest || defaultDest, 'dist'),
     test: args.test || path.join(args.dest || defaultDest, 'test'),
+    publicPath: args.publicPath,
   },
   files: {
     app: 'app.js',
@@ -108,6 +109,8 @@ function getOutputPath(isProduction, enableStats, isTest) {
 function configureWebpack(isProduction, enableStats, enableServer) {
   var webpackConfig = Object.create(webpackConfigTemplate);
   var defines = definesTemplate();
+
+  webpackConfig.output.publicPath = config.dirs.publicPath;
 
   if (enableServer === true) {
     defines.MOCK_API = true;
@@ -206,6 +209,7 @@ gulp.task('help', function() {
     '* --dest <path>: override build directory (default is "build")',
     '* --dist <path>: override dist directory (default is "dist")',
     '* --test <path>: override test directory (default is "test")',
+    '* --publicPath <path>: overrides the public path (default is empty)',
     '* --host <host>: override development server host (default is "0.0.0.0")',
     '* --port <port>: override development server port (default is "3000")',
     '* --testSrc <path>: override mocha test source directory (default is "test")',
