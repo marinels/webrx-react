@@ -48,12 +48,30 @@ export abstract class BaseViewModel implements IBaseViewModel {
       } else if (String.isNullOrEmpty(anyError.message) === false) {
         text = anyError.message;
       } else {
-        text = error.toString();
-      }
+        let anyError = error as any;
+        let childError = anyError.error;
 
-      if (DEBUG) {
-        if (anyError.stack) {
-          this.logger.error(anyError.stack.toString());
+        let code = anyError.status || anyError.Status || anyError.code || anyError.Code;
+        if (code == null && childError != null) {
+          code = childError.status || childError.Status || childError.code || childError.Code;
+        }
+
+        let message = anyError.message || anyError.Message;
+        if (message == null && childError != null) {
+          message = childError.message || childError.Message;
+        }
+
+        text = String.format('Error {0}: {1}', code || '', message || String.stringify(error, null, 2));
+
+        if (DEBUG) {
+          let stack = anyError.stack || anyError.stacktrace || anyError.stackTrace || anyError.StackTrace;
+          if (stack == null && childError != null) {
+            stack = childError.stack || childError.stacktrace || childError.stackTrace || childError.StackTrace;
+          }
+
+          if (stack != null) {
+            this.logger.error(stack.toString());
+          }
         }
       }
 
