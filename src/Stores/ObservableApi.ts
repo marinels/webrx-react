@@ -15,7 +15,7 @@ export class ObservableApi {
 
   private client = wx.injector.get<wx.IHttpClient>(wx.res.httpClient);
 
-  public getObservable<T>(action: string, params?: Object, options?: wx.IHttpClientOptions, baseUri?: string) {
+  public getObservable<T>(action: string, params?: any, options?: wx.IHttpClientOptions, baseUri?: string) {
     let uri = (baseUri || this.baseUri) + action;
 
     this.logger.debug('Calling API: {0} ({1})', action, uri);

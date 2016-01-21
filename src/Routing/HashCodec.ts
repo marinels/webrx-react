@@ -39,7 +39,7 @@ export class HashCodec {
     return (String.isNullOrEmpty(hash) || hash[0] !== '#') ? '#/' : hash;
   }
 
-  public encode(path: string, state?: Object, uriEncode = false) {
+  public encode(path: string, state?: any, uriEncode = false) {
     let hash = '#' + this.normalizePath(path);
 
     if (state) {
@@ -55,7 +55,7 @@ export class HashCodec {
     return hash;
   }
 
-  public decode<T>(hash: string, selector: (path: string, params: string, state: Object) => T) {
+  public decode<T>(hash: string, selector: (path: string, params: string, state: any) => T) {
     hash = this.santize(hash);
 
     let { path, params } = this.getPathAndParams(hash);

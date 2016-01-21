@@ -1,6 +1,6 @@
 declare namespace __JQueryParam {
   interface JQueryParamStatic {
-    (obj: Object): string;
+    (obj: any): string;
   }
 }
 

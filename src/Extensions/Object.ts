@@ -4,7 +4,7 @@
 
 import * as Rx from 'rx';
 
-function assign<T>(target: Object, ...sources: Object[]) {
+function assign<T>(target: any, ...sources: any[]) {
   if (target === undefined || target === null) {
     throw new TypeError('Cannot convert first argument to object');
   }
@@ -47,7 +47,7 @@ function dispose<T>(disposable: T, returnNull = true) {
   return returnNull ? null : disposable;
 }
 
-function getName(source: Object, undefined = 'undefined', isStatic = false) {
+function getName(source: any, undefined = 'undefined', isStatic = false) {
   const typeNameProperty = 'typeName';
   const displayNameProperty = 'displayName';
   const nameProperty = 'name';

@@ -2,7 +2,7 @@ export const RouteChangedKey = 'RouteChanged';
 
 export interface IRouteChanged {
   path: string;
-  state: Object;
+  state: any;
   uriEncode: boolean;
 }
 

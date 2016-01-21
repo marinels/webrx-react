@@ -25,8 +25,8 @@ export interface IRoutableViewModel<TRoutingState> extends IBaseRoutableViewMode
 }
 
 export interface IRoutedViewModel extends IBaseRoutableViewModel {
-  getRoutingState(context?: any): Object;
-  setRoutingState(state: Object): void;
+  getRoutingState(context?: any): any;
+  setRoutingState(state: any): void;
 }
 
 export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel implements IRoutableViewModel<TRoutingState> {

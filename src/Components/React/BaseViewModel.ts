@@ -98,7 +98,7 @@ export abstract class BaseViewModel implements IBaseViewModel {
     return subscription;
   }
 
-  protected navTo(path: string, state?: Object, uriEncode = false) {
+  protected navTo(path: string, state?: any, uriEncode = false) {
     PubSub.publish<IRouteChanged>(RouteChangedKey, { path, state, uriEncode });
   }
 
