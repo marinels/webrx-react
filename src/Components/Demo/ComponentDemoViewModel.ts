@@ -110,9 +110,11 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
 
         let component = this.getViewModel(this.componentRoute, state) as IRoutedViewModel;
 
-        let newComponent = this.component() == null || component.getDisplayName() !== this.component().getDisplayName();
+        let isNewComponent = this.component() == null ||
+          (component.getDisplayName == null ? component.toString() : component.getDisplayName()) !==
+          (this.component().getDisplayName == null ? this.component().toString() : this.component().getDisplayName());
 
-        if (newComponent === false) {
+        if (isNewComponent === false) {
           component = this.component();
         }
 
@@ -120,7 +122,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
           component.setRoutingState(state);
         }
 
-        if (newComponent) {
+        if (isNewComponent) {
           this.component(component);
         }
       });
