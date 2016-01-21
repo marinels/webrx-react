@@ -25,14 +25,18 @@ export class ObservableApi {
       .fromPromise(this.client.get<T>(uri, params, options))
       .catch(x => {
         this.logger.error('API ERROR: {0} ({1})', action, uri);
-        this.logger.error(JSON.stringify(x, null, '  '));
+        this.logger.error(JSON.stringify(x, null, 2));
 
-        let response = x.response || '';
-        if (String.isNullOrEmpty(response)) {
-          response = 'No Response';
+        let error: any = null;
+
+        try {
+          error = JSON.parse(x.response);
+        } catch (e) {
         }
 
-        return Rx.Observable.throw<T>(new Error(String.format('[Error {0}] {1}', x.status, response)));
+        x.error = error;
+
+        return Rx.Observable.throw<T>(x);
       });
   }
 }
