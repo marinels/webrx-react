@@ -7,7 +7,7 @@ export class HashCodec {
   public static displayName = 'HashCodec';
 
   private normalizePath(path: string) {
-    let pattern = /^\/*(\/.*?)\/*$/;
+    let pattern = /^\/*(\/.*?\/?)\/*$/;
     let matches = path ? pattern.exec('/' + path) : null;
     return matches ? matches[1] : '';
   }
