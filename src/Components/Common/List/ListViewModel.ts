@@ -29,7 +29,7 @@ export class ListViewModel<TData, TRoutingState extends IListRoutingState> exten
   public selectedIndex = this.selectIndex.results.toProperty();
   public selectedItem = Rx.Observable
     .merge(
-      this.selectItem.results,
+      this.selectItem.results.select(x => x as TData),
       this.selectedIndex.changed
         .where(x => x >= 0 && x < this.items.length())
         .select(x => this.items.get(x))
