@@ -2,11 +2,17 @@
   .progress {
     height: 50px;
     margin: 0;
-  }
 
-  .Splash-text {
-    font-size: 3em;
-    font-weight: bold;
-    line-height: normal;
+    .progress-bar {
+      display: table;
+
+      .Splash-text {
+        font-size: 3em;
+        font-weight: bold;
+        line-height: normal;
+        display: table-cell;
+        vertical-align: middle;
+      }
+    }
   }
 }
