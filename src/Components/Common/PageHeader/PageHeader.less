@@ -1,46 +1,57 @@
 .PageHeader {
   font-size: 1.25em;
 
-  .PageHeader-brand {
-    font-weight: bold;
-  }
-
-  .PageHeader-actionButton {
-    margin-left: 10px;
-  }
-
-  .PageHeader-menuTitle {
-    display: inline-block;
-  }
-
-  .PageHeader-navUser {
-    .PageHeader-menuTitle {
-      border-radius: 50%;
-      background-color: #ddd;
-      overflow: hidden;
+  .PageHeader-navBrand {
+    .PageHeader-brand {
+      font-weight: bold;
     }
   }
 
-  .PageHeader-iconNavItem {
-    .dropdown-toggle {
-      padding: 10px;
-      width: 50px;
-      height: 50px;
+  .PageHeader-navMenus {
+    .PageHeader-menuTitle {
+      display: inline-block;
+    }
+  }
 
+  .PageHeader-navActions {
+    .PageHeader-actionButton {
+      margin-left: 10px;
+    }
+  }
+
+  .PageHeader-navSite {
+    margin: 0;
+    
+    .PageHeader-navUser {
       .PageHeader-menuTitle {
-        display: table;
+        border-radius: 50%;
+        background-color: #ddd;
+        overflow: hidden;
+      }
+    }
 
-        span, img {
-          width: 30px;
-          height: 30px;
-          display: table-cell;
-          text-align: center;
-          vertical-align: middle;
+    .PageHeader-iconNavItem {
+      .dropdown-toggle {
+        padding: 10px;
+        width: 50px;
+        height: 50px;
+
+        .PageHeader-menuTitle {
+          display: table;
+
+          span, img {
+            width: 30px;
+            height: 30px;
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle;
+          }
         }
       }
     }
   }
 
+  // this style affects all menus so it must reside on the root style node
   .MenuItem-text {
     margin-left: 5px;
   }
