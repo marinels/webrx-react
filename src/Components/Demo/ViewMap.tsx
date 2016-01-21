@@ -14,7 +14,7 @@ export interface IViewMap {
 }
 
 let viewMap: IViewMap = {
-  SplashViewModel: (viewModel: SplashViewModel) => <SplashView viewModel={viewModel} fluid />,
+  SplashViewModel: (viewModel: SplashViewModel) => <SplashView viewModel={viewModel} />,
 };
 
 export default viewMap;
