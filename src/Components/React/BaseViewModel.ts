@@ -41,12 +41,9 @@ export abstract class BaseViewModel implements IBaseViewModel {
   public alertForError<TError>(error: TError, header = 'Unknown Error', style = 'danger', formatter?: (e: TError) => string) {
     if (error != null) {
       let text: string;
-      let anyError = error as any;
 
       if (formatter != null) {
         text = formatter(error);
-      } else if (String.isNullOrEmpty(anyError.message) === false) {
-        text = anyError.message;
       } else {
         let anyError = error as any;
         let childError = anyError.error;
