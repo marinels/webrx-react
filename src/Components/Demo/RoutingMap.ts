@@ -21,22 +21,18 @@ class RoutingMap {
   public map: IViewModelMap = {};
   public menuItems: IMenuItem[] = [];
 
-  public addRoute(path: string, name: string, activator: IViewModelActivator, iconName?: string) {
+  public addRoute(path: string, name: string, activator: IViewModelActivator, uri?: string, iconName?: string) {
     this.map[path] = activator;
-    this.menuItems.push({ id: path, header: name, uri: this.getUri(path), iconName: iconName || this.defaultIconName });
+    this.menuItems.push(<IMenuItem>{ id: path, header: name, uri: this.getUri(path, uri), iconName: iconName || this.defaultIconName, order: this.menuItems.length });
   }
 
-  public getUri(path: string) {
-    return String.format('{0}/{1}', this.baseUri, path);
-  }
-
-  public getRoutablePaths() {
-    return Object.getOwnPropertyNames(this.map);
+  public getUri(path: string, uri: string) {
+    return String.format('{0}/{1}', this.baseUri, uri || path);
   }
 }
 
 let routingMap = new RoutingMap();
 
-routingMap.addRoute('splash', 'Splash', (state: any) => new SplashViewModel('Demo Splash Screen'));
+routingMap.addRoute('Splash', 'Splash', (state: any) => new SplashViewModel('Demo Splash Screen'));
 
 export default routingMap;
