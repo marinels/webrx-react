@@ -1,6 +1,7 @@
 declare namespace __JQueryDeparam {
   interface JQueryDeparamStatic {
-    (params: string, coerce?: boolean): Object;
+    (params: string, coerce?: boolean): any;
+    <T>(params: string, coerce?: boolean): T;
   }
 }
 
