@@ -134,6 +134,12 @@ export class RouteHandlerViewModel extends BaseViewModel {
   initialize() {
     super.initialize();
 
+    this.subscribe(this.currentViewModel.thrownExceptions
+      .subscribe(x => {
+        this.alertForError(x);
+      })
+    );
+
     this.routingStateChangedHandle = PubSub.subscribe<IRoutingStateChanged>(RoutingStateChangedKey, x => {
       if (this.currentViewModel() != null) {
         let state = this.currentViewModel().getRoutingState(x);
