@@ -9,6 +9,8 @@ import { BaseView, IBaseViewProps } from '../React/BaseView';
 import ComponentDemoViewModel from './ComponentDemoViewModel'
 import { default as ViewMap, IViewActivator } from './ViewMap';
 
+import './ComponentDemo.less';
+
 interface IComponentDemoProps extends IBaseViewProps {
 }
 
@@ -49,9 +51,13 @@ export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDe
     let componentName = this.getComponentName(component);
     let viewName = view == null ? 'No View Found' : String.format('{0} Demo', Object.getName(view.type));
 
+    let cols = this.state.columns();
+    let widthVal = cols === 0 ? 12 : cols;
+    let widthName = cols === 0 ? 'Full Width' : widthVal;
+
     return (
       <div className='ComponentDemo'>
-        <Grid>
+        <Grid fluid={cols === 0}>
           <Row>
             <Col md={12}>
               <PageHeader style={({textAlign: 'center'})}>
@@ -60,8 +66,8 @@ export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDe
             </Col>
           </Row>
           <Row>
-            <Col md={this.state.columns()}>
-              <Panel header={componentName} bsStyle='primary'>
+            <Col md={widthVal}>
+              <Panel className='ComponentDemo-view' header={componentName} bsStyle='primary'>
                 {view}
               </Panel>
             </Col>
@@ -69,14 +75,15 @@ export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDe
           <Row>
             <Col md={12}>
               <div className='pull-right'>
-                <DropdownButton id='col-width' bsStyle='info' title='Column Width'
+                <DropdownButton id='col-width' bsStyle='info' title={String.format('Column Width ({0})', widthName)}
                   onSelect={this.bindCallback(x => x.columns, (e, x) => x[0])}>
                   {
                     Ix.Enumerable
-                      .range(1, 12)
+                      .range(1, 13)
                       .reverse()
+                      .select(x => x % 13)
                       .select(x =>
-                        <MenuItem key={x} eventKey={x} active={this.state.columns() === x}>{x}</MenuItem>
+                        <MenuItem key={x} eventKey={x} active={cols === x}>{x === 0 ? 'Full Width' : x}</MenuItem>
                       )
                       .toArray()
                   }

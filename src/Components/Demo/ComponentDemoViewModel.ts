@@ -5,14 +5,14 @@ import * as Ix from 'ix';
 import * as wx from 'webrx';
 
 import { IRoute } from '../../Routing/RouteManager';
-import { IMenu } from '../Common/PageHeader/Actions';
+import { ICommandAction, IMenu, IMenuItem } from '../Common/PageHeader/Actions';
 
 import { BaseRoutableViewModel, IRoutedViewModel } from '../React/BaseRoutableViewModel';
 import { default as RoutingMap, IViewModelActivator } from './RoutingMap';
 
 interface IComponentDemoRoutingState {
   route: IRoute;
-  componentName: string;
+  componentRoute: string;
   columns: number;
 }
 
@@ -23,32 +23,40 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
     super(true);
   }
 
-  private componentName: string;
+  private componentRoute: string;
 
   public columns = wx.property(12);
   public component = wx.property<any>(null);
 
+  public reRender = wx.command();
+
   getAppMenus() {
-    return [
-      { id: 'demos', header: 'Component Demos', items: RoutingMap.menuItems }
+    return <IMenu[]>[
+      { id: 'demos', header: 'Component Demos', items: RoutingMap.menuItems },
     ];
   }
 
-  private getViewModel(componentName: string, state: any) {
+  getAppActions() {
+    return <ICommandAction[]>[
+      { id: 'reRender', header: 'Re-Render', command: this.reRender },
+    ];
+  }
+
+  private getViewModel(componentRoute: string, state: any) {
     let activator: IViewModelActivator = null;
 
-    if (componentName != null) {
-      this.logger.debug('Loading View Model for "{0}"...', componentName);
-      activator = RoutingMap.map[componentName];
+    if (componentRoute != null) {
+      this.logger.debug('Loading View Model for "{0}"...', componentRoute);
+      activator = RoutingMap.map[componentRoute];
 
       if (activator == null) {
         let result = Ix.Enumerable
           .fromArray(Object.keys(RoutingMap.map))
           .where(x => x != null && x.length > 0 && x[0] === '^')
           .select(x => ({ path: x, regex: new RegExp(x, 'i') }))
-          .select(x => ({ path: x.path, match: x.regex.exec(componentName) }))
+          .select(x => ({ path: x.path, match: x.regex.exec(componentRoute) }))
           .where(x => x.match != null)
-          .select(x => ({ match: x.match, activator: RoutingMap.map[x.path] }))
+          .select(x => ({ path: x.path, match: x.match, activator: RoutingMap.map[x.path] }))
           .firstOrDefault();
 
         if (result != null) {
@@ -68,12 +76,16 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
       .whenAny(this.columns.changed, x => null)
       .invokeCommand(this.routingStateChanged)
     );
+
+    this.subscribe(this.reRender.results
+      .invokeCommand(x => this.stateChanged)
+    );
   }
 
   getRoutingState(context?: any): any {
     return this.createRoutingState(state => {
       state.route = <IRoute>{
-        path: String.format('demo/{0}', this.componentName)
+        path: String.format('/demo/{0}', this.componentRoute)
       };
 
       if (this.columns() !== 12) {
@@ -83,23 +95,31 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
   }
 
   setRoutingState(state: IComponentDemoRoutingState) {
-    this.componentName = state.componentName || state.route.match[2];
+    this.componentRoute = state.componentRoute || state.route.match[2];
 
-    if (this.componentName == null) {
+    if (this.componentRoute == null) {
       if (RoutingMap.menuItems.length > 0) {
         this.navTo(RoutingMap.menuItems[0].uri);
       }
     } else {
       this.handleRoutingState(state, state => {
-        this.columns(state.columns || 12);
+        this.columns(state.columns == null ? 12 : state.columns);
 
-        let component = this.getViewModel(this.componentName, state) as IRoutedViewModel;
+        let component = this.getViewModel(this.componentRoute, state) as IRoutedViewModel;
+
+        let newComponent = this.component() == null || component.getDisplayName() !== this.component().getDisplayName();
+
+        if (newComponent === false) {
+          component = this.component();
+        }
 
         if (component.setRoutingState) {
           component.setRoutingState(state);
         }
 
-        this.component(component);
+        if (newComponent) {
+          this.component(component);
+        }
       });
     }
   }
