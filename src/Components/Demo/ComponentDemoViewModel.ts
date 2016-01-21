@@ -103,6 +103,9 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
       }
     } else {
       this.handleRoutingState(state, state => {
+        // try columns routing state first, then fall back onto view model columns state
+        state.columns = state.columns != null ? state.columns : this.columns();
+
         this.columns(state.columns == null ? 12 : state.columns);
 
         let component = this.getViewModel(this.componentRoute, state) as IRoutedViewModel;
