@@ -231,6 +231,7 @@ gulp.task('help', function() {
     '* ' + gutil.colors.cyan('gulp build:all') + ' will build all bundles and stats',
     '',
     '* ' + gutil.colors.cyan('gulp dist[:*]') + ' will build the bundles and deploy them to a dist folder (use :dev for alternate build)',
+    '* ' + gutil.colors.cyan('gulp dist:watch[:*]') + ' will watch source and build the bundles and deploy them to a dist folder (use :dev for alternate build)',
     '* ' + gutil.colors.cyan('gulp dist:all') + ' will build all bundles and deploy them to a dist folder',
     '',
     '* ' + gutil.colors.cyan('gulp stats[:*]') + ' will create a stats[.*].json file for use with ' + gutil.colors.underline.blue('http://webpack.github.io/analyse/') + ' (use :dev for alternate stats)',
@@ -315,6 +316,18 @@ gulp.task('dist:all', ['clean'], function(callback) {
     'dist',
     callback
   );
+});
+gulp.task('dist:watch', ['dist'], function() {
+  gulp
+    .watch([
+      path.join(config.dirs.src, '**', '*')
+    ], ['dist']);
+});
+gulp.task('dist:watch:dev', ['dist:dev'], function() {
+  gulp
+    .watch([
+      path.join(config.dirs.src, '**', '*')
+    ], ['dist:dev']);
 });
 
 gulp.task('webpack:build', function(callback) {
