@@ -12,7 +12,7 @@ module.exports = {
   },
   devtool: 'eval',
   plugins: [
-    new webpack.DefinePlugin({ DEBUG: true, PRODUCTION: false, TEST: true, MOCK_API: true }),
+    new webpack.DefinePlugin({ DEBUG: true, PRODUCTION: false, TEST: true, WEBPACK_DEV_SERVER: true }),
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en-ca/),
     new webpack.HotModuleReplacementPlugin()
   ],

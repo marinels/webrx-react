@@ -49,7 +49,7 @@ var definesTemplate = function() {
     DEBUG: false,
     PRODUCTION: false,
     TEST: false,
-    MOCK_API: false
+    WEBPACK_DEV_SERVER: false
   };
 }
 
@@ -113,7 +113,7 @@ function configureWebpack(isProduction, enableStats, enableServer) {
   webpackConfig.output.publicPath = config.dirs.publicPath;
 
   if (enableServer === true) {
-    defines.MOCK_API = true;
+    defines.WEBPACK_DEV_SERVER = true;
   }
 
   webpackConfig.entry.app = [ path.join(config.dirs.src, 'index.tsx') ];
