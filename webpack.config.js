@@ -5,7 +5,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 module.exports = {
   entry: {
     app: [
-      path.join(__dirname, 'src/index.tsx')
+      path.join(__dirname, 'src/app.tsx')
     ],
     vendor: [
       'rx',
@@ -30,6 +30,7 @@ module.exports = {
   externals: {
     jquery: 'var null'
   },
+  devtool: 'sourcemap',
   plugins: [
     new webpack.DefinePlugin({ DEBUG: false, PRODUCTION: false, TEST: false, WEBPACK_DEV_SERVER: false }),
     new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js'),
@@ -39,7 +40,7 @@ module.exports = {
     loaders: [
       { test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader') },
       { test: /\.less$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader!less-loader') },
-      { test: /moment[\/\\]locale/, loader: 'file?name=locale/moment/[name].[ext]'},
+      { test: /moment[\\\/]locale/, loader: 'file?name=locale/moment/[name].[ext]' },
       { test: /\.(woff|woff2|ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file?name=fonts/[name].[ext]' },
       { test: /\.tsx?$/, loader: 'ts' }
     ]
@@ -47,9 +48,8 @@ module.exports = {
   resolve: {
     extensions: ['', '.ts', '.tsx', '.webpack.js', '.web.js', '.js'],
     alias: {
-      Ix: 'ix/l2o', // the ix package uses Ix to refer to l2o for some reason
+      Ix: 'ix/l2o' // the ix package uses Ix to refer to l2o for some reason
     }
   },
-  progress: true,
   failOnError: true
 };
