@@ -7,7 +7,7 @@ import { Table, TableProps, ButtonGroup, Button } from 'react-bootstrap';
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import { SearchView, ISearchProps } from '../Search/SearchView';
 import { PagerView, IPagerProps } from '../Pager/PagerView';
-import Icon from '../Icon/Icon';
+import * as Icon from 'react-fa';
 
 import { DataGridViewModel } from './DataGridViewModel';
 import { SortDirection } from '../../../Utils/Compare';
@@ -74,9 +74,9 @@ export class TableView implements IDataGridView {
       let iconName = '';
 
       if (grid.isSortedBy(column.fieldName, SortDirection.Ascending) === true) {
-        iconName = 'fa-sort-asc';
+        iconName = 'sort-asc';
       } else if (grid.isSortedBy(column.fieldName, SortDirection.Descending) === true) {
-        iconName = 'fa-sort-desc';
+        iconName = 'sort-desc';
       }
 
       return (
