@@ -1,135 +1,218 @@
 'use strict';
 
-var fs = require('fs');
 var path = require('path');
-var del = require('del');
-var parseArgs = require('minimist');
+var fs = require('fs');
+var minimist = require('minimist');
+var tsconfigGlob = require('tsconfig-glob');
+var webpack = require('webpack');
+var webpackStream = require('webpack-stream');
+var WebpackDevServer = require('webpack-dev-server');
 
 var gulp = require('gulp');
 var gutil = require('gulp-util');
-var gopen = require('gulp-open');
-var greplace = require('gulp-replace');
-var grename = require('gulp-rename');
-var gmocha = require('gulp-mocha');
+var clean = require('gulp-clean');
+var mocha = require('gulp-mocha');
+var filter = require('gulp-filter');
+var replace = require('gulp-replace');
+var open = require('gulp-open');
+var through = require('through');
 var runSequence = require('run-sequence');
-var webpack = require('webpack');
-var WebpackDevServer = require('webpack-dev-server');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var webpackConfigTemplate = require('./webpack.config.js');
-var webpackTestConfigTemplate = require('./test/webpack.config.js');
 
-var args = parseArgs(process.argv);
+var args = minimist(process.argv);
 
-var defaultDest = path.join(__dirname, 'build');
 var config = {
   verbose: args.verbose || false,
-  force: args.force || false,
-  dirs: {
-    src: args.src || path.join(__dirname, 'src'),
-    dest: args.dest || defaultDest,
-    dist: args.dist || path.join(args.dest || defaultDest, 'dist'),
-    test: args.test || path.join(args.dest || defaultDest, 'test'),
-    publicPath: args.publicPath,
-  },
-  files: {
-    app: 'app.js',
-    vendor: 'vendor.js'
-  },
+  quiet: args.quiet || false,
   host: args.host || '0.0.0.0',
   port: args.port || 3000,
+  publicPath: args.publicPath || '/',
+  profile: args.profile || false,
+  builds: {
+    debug: 'debug',
+    release: 'release',
+    test: 'test',
+    watch: 'watch'
+  },
+  files: {
+    webpack: 'webpack.config.js',
+    stats: 'stats.json',
+    index: 'index.html'
+  },
+  dirs: {
+    src: path.join(__dirname, 'src'),
+    test: path.join(__dirname, 'test'),
+    build: path.join(__dirname, 'build'),
+    dist: args.dist || path.join(__dirname, 'build', 'dist')
+  },
   test: {
-    src: args.testSrc || path.join(__dirname, 'test'),
-    port: args.testPort || 3001,
-    reporter: args.reporter || 'dot'
+    reporter: args.reporter || 'spec'
   }
 };
 
-var definesTemplate = function() {
-  return {
-    DEBUG: false,
-    PRODUCTION: false,
-    TEST: false,
-    WEBPACK_DEV_SERVER: false
-  };
-}
-
-var uri = 'http://' + (config.host === '0.0.0.0' ? 'localhost' : config.host) + ':' + config.port;
-var testUri = 'http://' + (config.host === '0.0.0.0' ? 'localhost' : config.host) + ':' + config.test.port;
-
-function runWebpack(cfg, tag, callback) {
-  tag = '[webpack:' + tag + ']';
-  var compiler = webpack(cfg);
-
-  gutil.log(tag, 'Bundling...');
-  compiler.run(function(err, stats) {
-    if (err) {
-      throw new gutil.PluginError(tag, err);
-    }
-
-    if (args.verbose === true) {
-      gutil.log('[webpack:' + tag + ']', stats.toString({
-  			colors: true
-  		}));
-    }
-
-    var outputPath = stats.compilation.outputOptions.path;
-    var assets = stats.toJson().assetsByChunkName;
-
-    gutil.log(tag, 'Bundling Complete');
-    for (var chunk in assets) {
-      var asset = assets[chunk];
-
-      if (Array.isArray(asset)) {
-        for (var i in assets[chunk]) {
-          gutil.log(gutil.colors.magenta(path.join(outputPath, asset[i])))
-        }
-      } else {
-        gutil.log(gutil.colors.magenta(path.join(outputPath, asset)))
-      }
-    }
-
-    if (callback) {
-      callback(stats);
-    }
-  })
-}
-
-function getOutputPath(isProduction, enableStats, isTest) {
-  if (isTest === true) {
-    return path.join(config.dirs.dest, 'test');
-  } else if (enableStats === true) {
-    return path.join(config.dirs.dest, 'stats');
-  } else if (isProduction === true) {
-    return path.join(config.dirs.dest, 'prod');
-  } else {
-    return path.join(config.dirs.dest, 'debug');
+function log() {
+  if (config.quiet === false) {
+    gutil.log.apply(null, arguments);
   }
 }
 
-function configureWebpack(isProduction, enableStats, enableServer) {
-  var webpackConfig = Object.create(webpackConfigTemplate);
-  var defines = definesTemplate();
+if (config.verbose) {
+  log('Gulp Config:', JSON.stringify(config, null, 2));
+}
 
-  webpackConfig.output.publicPath = config.dirs.publicPath;
+gulp.task('default', ['browser']);  // Default build task
+gulp.task('test', ['mocha']);       // Default test task
 
-  if (enableServer === true) {
-    defines.WEBPACK_DEV_SERVER = true;
+gulp.task('config', function() {
+  gutil.log('Gulp Config: ', config);
+});
+
+gulp.task('help', function() {
+  var lines = [
+    '*** Gulp Help ***',
+    '',
+    'Command Line Overrides:',
+    gutil.colors.cyan('--verbose') + ': emit webpack module details and stats after bundling (' + gutil.colors.magenta(config.verbose) + ')',
+    gutil.colors.cyan('--quiet') + ': do not emit any extra build details (' + gutil.colors.magenta(config.quiet) + ')',
+    gutil.colors.cyan('--host') + ' ' + gutil.colors.yellow('<host>') + ': override development server host (' + gutil.colors.magenta(config.host) + ')',
+    gutil.colors.cyan('--port') + ' ' + gutil.colors.yellow('<port>') + ': override development server port (' + gutil.colors.magenta(config.port) + ')',
+    gutil.colors.cyan('--publicPath') + ' ' + gutil.colors.yellow('<path>') + ': overrides the public path (' + gutil.colors.magenta(config.publicPath) + ')',
+    gutil.colors.cyan('--profile') + ': provides webpack build profiling in ' + gutil.colors.magenta(config.files.stats) + ' (' + gutil.colors.magenta(config.profile) + ')',
+    gutil.colors.cyan('--dist') + ' ' + gutil.colors.yellow('<path>') + ': override dist directory (' + gutil.colors.magenta(config.dirs.dist) + ')',
+    gutil.colors.cyan('--reporter') + ' ' + gutil.colors.yellow('<name>') + ': mocha test reporter (' + gutil.colors.magenta(config.test.reporter) + ')',
+    '          options: ' + ['spec', 'list', 'progress', 'min'].map(function(x) { return gutil.colors.magenta(x); }).join(', '),
+    '',
+    'Run ' + gutil.colors.cyan('gulp --tasks') + ' to see complete task hierarchy',
+    '',
+    '* ' + gutil.colors.cyan('gulp') + ' will build a debug bundle, start a webpack development server, and open a browser window',
+    '* ' + gutil.colors.cyan('gulp test') + ' will build a test bundle, run Mocha against the tests, and report the results in this console window',
+    '',
+    '* ' + gutil.colors.cyan('gulp config') + ' will emit the build configuration',
+    '* ' + gutil.colors.cyan('gulp help') + ' will emit this help text',
+    '',
+    '* ' + gutil.colors.cyan('gulp clean') + ' will delete all files in ' + gutil.colors.magenta(config.dirs.build),
+    '  ' + ['debug', 'release', 'test', 'watch', 'dist', 'all'].map(function(x) { return gutil.colors.cyan('clean:' + x); }).join(', '),
+    '',
+    '* ' + gutil.colors.cyan('gulp tsconfig:glob') + ' will expand the ' + gutil.colors.cyan('filesGlob') + ' in the ' + gutil.colors.magenta('tsconfig.json') + ' file',
+    '  ' + ['src', 'test', 'all'].map(function(x) { return gutil.colors.cyan('tsconfig:glob:' + x); }).join(', '),
+    '',
+    '* ' + gutil.colors.cyan('gulp webpack') + ' will build the bundles using webpack',
+    '  ' + ['debug', 'release', 'test', 'all'].map(function(x) { return gutil.colors.cyan('webpack:' + x); }).join(', '),
+    '',
+    '* ' + gutil.colors.cyan('gulp mocha') + ' will build the test bundle and run Mocha against the tests (same as ' + gutil.colors.cyan('gulp test') + ')',
+    '* ' + gutil.colors.cyan('gulp mocha:test') + ' will run Mocha against the tests (but not build the test bundle)',
+    '',
+    '* ' + gutil.colors.cyan('gulp watch') + ' will start a webpack development server (same as ' + gutil.colors.cyan('watch:webpack') + ')',
+    '* ' + gutil.colors.cyan('gulp watch:mocha') + ' will start webpack in ' + gutil.colors.magenta('watch') + ' mode, and run all tests after any detected change',
+    '* ' + gutil.colors.cyan('gulp watch:dist') + ' will watch source files for changes and deploy the bundles to ' + gutil.colors.magenta(config.dirs.dist),
+    '  ' + ['debug', 'release'].map(function(x) { return gutil.colors.cyan('watch:dist:' + x); }).join(', '),
+    '',
+    '* ' + gutil.colors.cyan('gulp index') + ' will copy (and transform) the ' + gutil.colors.magenta(config.files.index) + ' file for builds',
+    '  ' + ['debug', 'release', 'watch', 'all'].map(function(x) { return gutil.colors.cyan('index:' + x); }).join(', '),
+    '',
+    '* ' + gutil.colors.cyan('gulp browser') + ' will open a browser window for a build',
+    '  ' + ['debug', 'release', 'watch'].map(function(x) { return gutil.colors.cyan('browser:' + x); }).join(', '),
+    '* ' + gutil.colors.cyan('gulp browser:stats') + ' will open a browser window to ' + gutil.colors.underline.blue('http://webpack.github.io/analyse/'),
+    '',
+    '* ' + gutil.colors.cyan('gulp dist') + ' will copy the bundles to ' + gutil.colors.magenta(config.dirs.dist),
+    '  ' + ['debug', 'release', 'all'].map(function(x) { return gutil.colors.cyan('dist:' + x); }).join(', '),
+    '',
+    '* ' + gutil.colors.cyan('gulp deploy') + ' will build the bundles and copy them to ' + gutil.colors.magenta(config.dirs.dist),
+    '  ' + ['debug', 'release', 'all'].map(function(x) { return gutil.colors.cyan('deploy:' + x); }).join(', '),
+    ''
+  ];
+
+  gutil.log(lines.join(`\r\n`));
+});
+
+gulp.task('clean', ['clean:all']);
+gulp.task('clean:all', ['clean:debug', 'clean:release', 'clean:test', 'clean:watch', 'clean:dist'], function() {
+  var target = path.join(config.dirs.build, '*');
+  log('Cleaning', gutil.colors.magenta(target));
+
+  return gulp
+    .src(target, { read: false })
+    .pipe(clean());
+});
+
+gulp.task('clean:debug', function() {
+  var target = path.join(config.dirs.build, config.builds.debug, '*');
+  log('Cleaning', gutil.colors.magenta(target));
+
+  return gulp
+    .src(target, { read: false })
+    .pipe(clean());
+});
+
+gulp.task('clean:release', function() {
+  var target = path.join(config.dirs.build, config.builds.release, '*');
+  log('Cleaning', gutil.colors.magenta(target));
+
+  return gulp
+    .src(target, { read: false })
+    .pipe(clean());
+});
+
+gulp.task('clean:test', function() {
+  var target = path.join(config.dirs.build, config.builds.test, '*');
+  log('Cleaning', gutil.colors.magenta(target));
+
+  return gulp
+    .src(target, { read: false })
+    .pipe(clean());
+});
+
+gulp.task('clean:watch', function() {
+  var target = path.join(config.dirs.build, config.builds.watch, '*');
+  log('Cleaning', gutil.colors.magenta(target));
+
+  return gulp
+    .src(target, { read: false })
+    .pipe(clean());
+});
+
+gulp.task('clean:dist', function() {
+  var target = path.join(config.dirs.dist, '*');
+  log('Cleaning', gutil.colors.magenta(target));
+
+  var force = false;
+  if (args.dist) {
+    force = true;
   }
 
-  webpackConfig.entry.app = [ path.join(config.dirs.src, 'index.tsx') ];
-  webpackConfig.output.path = getOutputPath(isProduction, enableStats);
+  return gulp
+    .src([target, config.dirs.dist], { read: false })
+    .pipe(clean({ force }));
+});
 
-  if (isProduction === true) {
-    webpackConfig.output.filename = gutil.replaceExtension(config.files.app, '.min.js');
-    webpackConfig.devtool = 'sourcemap';
+gulp.task('tsconfig:glob', ['tsconfig:glob:all']);
+gulp.task('tsconfig:glob:all', ['tsconfig:glob:src', 'tsconfig:glob:test']);
 
-    defines.PRODUCTION = true;
-    defines['process.env'] = {
+gulp.task('tsconfig:glob:src', function() {
+  log('Globbing', gutil.colors.magenta(config.dirs.src));
+
+  return tsconfigGlob({ configPath: config.dirs.src, indent: 2 });
+});
+
+gulp.task('tsconfig:glob:test', function() {
+  log('Globbing', gutil.colors.magenta(config.dirs.test));
+
+  return tsconfigGlob({ configPath: config.dirs.test, indent: 2 });
+});
+
+function getWebpackConfig(build) {
+  var webpackConfig = require(path.join(__dirname, build === config.builds.test ? build : '', config.files.webpack));
+
+  if (build === config.builds.debug) {
+    webpackConfig.plugins[0].definitions.DEBUG = true;
+    webpackConfig.debug = true;
+  } else if (build === config.builds.release) {
+    webpackConfig.output.filename = gutil.replaceExtension(webpackConfig.output.filename, '.min.js');
+    webpackConfig.plugins[0].definitions.RELEASE = true;
+    webpackConfig.plugins[0].definitions['process.env'] = {
       'NODE_ENV': JSON.stringify('production')
     };
-
-    webpackConfig.plugins = [
-      new webpack.DefinePlugin(defines),
+    webpackConfig.plugins[1].filenameTemplate = gutil.replaceExtension(webpackConfig.plugins[1].filenameTemplate, '.min.js');
+    webpackConfig.plugins.push(
       new webpack.optimize.DedupePlugin(),
       new webpack.optimize.UglifyJsPlugin({
         minimize: true,
@@ -137,275 +220,166 @@ function configureWebpack(isProduction, enableStats, enableServer) {
         compress: {
           warnings: false
         }
-      }),
-      new webpack.optimize.CommonsChunkPlugin('vendor', gutil.replaceExtension(config.files.vendor, '.min.js')),
-      new ExtractTextPlugin('[name].min.css')
-    ]
-  } else {
-    webpackConfig.output.filename = gutil.replaceExtension(config.files.app, '.js');
-    webpackConfig.devtool = 'sourcemap';
-    webpackConfig.debug = true;
-
-    defines.DEBUG = true;
-
-    webpackConfig.plugins = [
-      new webpack.DefinePlugin(defines),
-      new webpack.optimize.CommonsChunkPlugin('vendor', gutil.replaceExtension(config.files.vendor, '.js')),
-      new ExtractTextPlugin('[name].css')
-    ];
-  }
-
-  if (enableStats === true) {
-    webpackConfig.failOnError = false;
-    webpackConfig.profile = true;
-  }
-
-  if (enableServer === true) {
-    webpackConfig.devtool = 'eval';
-
-    webpackConfig.entry.app.unshift('webpack-dev-server/client?' + uri, 'webpack/hot/only-dev-server');
-
-    webpackConfig.module.loaders = [
-      { test: /\.css$/, loader: 'style!css' },
-      { test: /\.less$/, loader: 'style!css!less' },
-      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url?mimetype=application/font-woff' },
-      { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url' },
-      { test: /\.tsx?$/, loaders: ['react-hot', 'ts'] }
-    ]
-
-    webpackConfig.plugins.pop(); // remove the css extraction plugin
-    webpackConfig.plugins.push(
-      new webpack.HotModuleReplacementPlugin()
+      })
     );
   }
 
   return webpackConfig;
 }
 
-function writeStats(stats, isProduction, isTest, callback) {
-  fs.writeFileSync(
-    path.join(isTest ? getOutputPath(isProduction, false, true) : config.dirs.dest, isProduction ? 'stats.min.json' : 'stats.json'),
-    JSON.stringify(stats.toJson(), null, 2)
-  );
+function webpackBuild(build, webpackConfig, callback) {
+  var target = path.join(config.dirs.build, build);
 
-  callback();
+  webpackConfig.output.path = target;
+  webpackConfig.output.publicPath = config.publicPath;
+  webpackConfig.profile = config.profile;
+
+  log('Bundling', gutil.colors.yellow(build), 'Build:', gutil.colors.magenta(target));
+
+  return gulp
+    .src([])
+    .pipe(webpackStream(webpackConfig, null, function(err, stats) {
+      if (callback) {
+        callback(err, stats);
+      } else {
+        onWebpackComplete(build, err, stats);
+      }
+    })).on('error', function() {})
+    .pipe(gulp.dest(webpackConfig.output.path));
 }
 
-gulp.task('default', ['browser:server']);
-gulp.task('test', ['browser:server:test']);
+function onWebpackComplete(build, err, stats) {
+  if (err) {
+    throw new gutil.PluginError('webpack:' + build, err);
+  }
 
-gulp.task('config', function() {
-  gutil.log(config);
-})
-gulp.task('help', function() {
-  var EOL = "\r\n";
+  if (stats) {
+    var jsonStats = stats.toJson() || {};
 
-  var lines = [
-    '*** Help ***',
-    'Command Line Overrides:',
-    '* --verbose: print webpack module details and stats after bundling',
-    '* --force: force deletion of files (requried if path is outside working directory)',
-    '* --src <path>: override source directory (default is "src")',
-    '* --dest <path>: override build directory (default is "build")',
-    '* --dist <path>: override dist directory (default is "dist")',
-    '* --test <path>: override test directory (default is "test")',
-    '* --publicPath <path>: overrides the public path (default is empty)',
-    '* --host <host>: override development server host (default is "0.0.0.0")',
-    '* --port <port>: override development server port (default is "3000")',
-    '* --testSrc <path>: override mocha test source directory (default is "test")',
-    '* --testPort <port>: override mocha test server port (default is "3001")',
-    '* --reporter <name>: mocha test reporter (default is "dot", options: "spec", "list", "progress", "min")',
-    '',
-    'Run ' + gutil.colors.cyan('gulp --tasks') + ' to see complete task hierarchy',
-    '',
-    '* ' + gutil.colors.cyan('gulp') + ' will build a debug bundle, start a webpack development server, and open a browser window',
-    '* ' + gutil.colors.cyan('gulp test') + ' will build a test bundle, start a webpack development server for the tests, and open a browser window',
-    '',
-    '* ' + gutil.colors.cyan('gulp clean[:dist]') + ' will delete all files in ' + gutil.colors.magenta(path.join(config.dirs.dest)) + ' (or ' + gutil.colors.magenta(path.join(config.dirs.dist)) + ')',
-    '* ' + gutil.colors.cyan('gulp help') + ' will emit this help text',
-    '* ' + gutil.colors.cyan('gulp config') + ' will emit the build configuration',
-    '',
-    '* ' + gutil.colors.cyan('gulp build[:*]') + ' will build the bundles (use :dev, or :test for alternate builds)',
-    '* ' + gutil.colors.cyan('gulp build:all:bundles') + ' will build release, and dev bundles',
-    '* ' + gutil.colors.cyan('gulp build:all:stats') + ' will build release and dev stats',
-    '* ' + gutil.colors.cyan('gulp build:all') + ' will build all bundles and stats',
-    '',
-    '* ' + gutil.colors.cyan('gulp dist[:*]') + ' will build the bundles and deploy them to a dist folder (use :dev for alternate build)',
-    '* ' + gutil.colors.cyan('gulp dist:watch[:*]') + ' will watch source and build the bundles and deploy them to a dist folder (use :dev for alternate build)',
-    '* ' + gutil.colors.cyan('gulp dist:all') + ' will build all bundles and deploy them to a dist folder',
-    '',
-    '* ' + gutil.colors.cyan('gulp stats[:*]') + ' will create a stats[.*].json file for use with ' + gutil.colors.underline.blue('http://webpack.github.io/analyse/') + ' (use :dev for alternate stats)',
-    '',
-    '* ' + gutil.colors.cyan('gulp server') + ' will start the webpack development server',
-    '* ' + gutil.colors.cyan('gulp server:test') + ' will start the webpack development server for the mocha tests',
-    '',
-    '* ' + gutil.colors.cyan('gulp index[:*]') + ' will build the bundle and create an index[.*].html test file (use :dev or :test for alternate builds)',
-    '',
-    '* ' + gutil.colors.cyan('gulp browser[:*]') + ' will build the bundle and create an index[.*].html test file and open a browser window (use :dev or :test for alternate builds)',
-    '* ' + gutil.colors.cyan('gulp browser:stats[:*]') + ' will build release stats and open a browser to the analyzer tool (use :dev or :test for alternate stats)',
-    '',
-    '* ' + gutil.colors.cyan('gulp test:spec') + ' will build the unit test spec file',
-    '* ' + gutil.colors.cyan('gulp test:run') + ' will run the unit test spec file in the console',
-    '* ' + gutil.colors.cyan('gulp test:watch') + ' will watch for unit test changes and run the unit test spec file in the console'
+    if (config.quiet === false) {
+      if (config.verbose) {
+        log(stats.toString({
+          colors: gutil.colors.supportsColor
+        }));
+      } else {
+        var errors = jsonStats.errors || [];
+        if (errors.length) {
+          var errorMessage = errors.reduce(function(resultMessage, nextError) {
+            return (resultMessage += nextError.toString().replace(/\r?\n/, `\r\n`) + `\r\n\r\n`);
+          }, '');
+          log(gutil.colors.red('Error'), errorMessage.trim());
+        }
+
+        var outputPath = path.join(config.dirs.build, build);
+        var assets = jsonStats.assetsByChunkName;
+        for (var chunk in assets) {
+          var asset = assets[chunk];
+
+          if (Array.isArray(asset)) {
+            for (var i in asset) {
+              log(gutil.colors.magenta(path.join(outputPath, asset[i])));
+            }
+          } else {
+            log(gutil.colors.magenta(path.join(outputPath, asset)));
+          }
+        }
+      }
+    }
+
+    if (config.profile) {
+      var statsPath = path.join(config.dirs.build, build, config.files.stats);
+      if (fs.existsSync(path.dirname(statsPath)) === false) {
+        fs.mkdirSync(path.dirname(statsPath));
+      }
+      fs.writeFileSync(statsPath, JSON.stringify(jsonStats, null, 2));
+    }
+  }
+}
+
+gulp.task('webpack', ['webpack:debug']);
+gulp.task('webpack:all', function(cb) {
+  return runSequence('webpack:debug', 'webpack:release', 'webpack:test', cb);
+});
+
+gulp.task('webpack:debug', ['tsconfig:glob:src'], function(cb) {
+  var webpackConfig = getWebpackConfig(config.builds.debug);
+
+  return webpackBuild(config.builds.debug, webpackConfig);
+});
+
+gulp.task('webpack:release', ['tsconfig:glob:src'], function(cb) {
+  var webpackConfig = getWebpackConfig(config.builds.release);
+
+  return webpackBuild(config.builds.release, webpackConfig);
+});
+
+gulp.task('webpack:test', ['tsconfig:glob:test'], function(cb) {
+  var webpackConfig = getWebpackConfig(config.builds.test);
+
+  return webpackBuild(config.builds.test, webpackConfig);
+});
+
+gulp.task('mocha', function(cb) {
+  return runSequence('webpack:test', 'mocha:test', cb);
+});
+
+gulp.task('mocha:test', function() {
+  var webpackConfig = getWebpackConfig(config.builds.test);
+  var target = path.join(config.dirs.build, config.builds.test, webpackConfig.output.filename);
+  log('Testing with Mocha:', gutil.colors.magenta(target));
+
+  var reporter = args.reporter || (config.quiet ? 'dot' : config.test.reporter);
+
+  return gulp
+    .src(target)
+    .pipe(mocha({ reporter }));
+});
+
+gulp.task('watch', ['watch:webpack']);
+
+gulp.task('watch:webpack', ['tsconfig:glob:src', 'clean:watch', 'index:watch'], function(cb) {
+  var webpackConfig = getWebpackConfig(config.builds.debug);
+  var uri = 'http://' + (config.host === '0.0.0.0' ? 'localhost' : config.host) + ':' + config.port;
+
+  webpackConfig.entry.app.unshift('webpack-dev-server/client?' + uri, 'webpack/hot/only-dev-server');
+  webpackConfig.output.path = path.join(config.dirs.build, config.builds.watch);
+  webpackConfig.output.publicPath = config.publicPath;
+  webpackConfig.plugins.pop(); // ExtractTextPlugin
+  webpackConfig.plugins[0].definitions.WEBPACK_DEV_SERVER = true;
+  webpackConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
+  webpackConfig.devtool = 'eval';
+  webpackConfig.watch = true;
+  webpackConfig.profile = config.profile;
+
+  webpackConfig.module.loaders = [
+    { test: /\.css$/, loader: 'style!css' },
+    { test: /\.less$/, loader: 'style!css!less' },
+    { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url?mimetype=application/font-woff' },
+    { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url' },
+    { test: /\.tsx?$/, loaders: ['react-hot', 'ts'] }
   ];
-  var help = lines.join(EOL);
-  gutil.log(help);
-})
-
-gulp.task('clean', ['clean:dest', 'clean:dist'], function() {
-  return del(['npm-debug.log']);
-});
-gulp.task('clean:dest', function() {
-  return del([path.join(config.dirs.dest, '*')], { force: config.force });
-});
-gulp.task('clean:dist', function() {
-  return del([path.join(config.dirs.dist, '*')], { force: config.force });
-});
-
-gulp.task('build', ['webpack:build']);
-gulp.task('build:dev', ['webpack:build:dev']);
-gulp.task('build:test', ['webpack:build:test']);
-gulp.task('build:test:spec', ['webpack:build:test:spec']);
-gulp.task('build:all', function(callback) {
-  runSequence(
-    'build:all:bundles',
-    'build:all:stats',
-    callback
-  );
-});
-gulp.task('build:all:bundles', function(callback) {
-  runSequence(
-    'webpack:build:dev',
-    'webpack:build',
-    callback
-  );
-});
-gulp.task('build:all:stats', function(callback) {
-  runSequence(
-    'webpack:stats:dev',
-    'webpack:stats',
-    callback
-  );
-});
-
-gulp.task('dist', ['webpack:build'], function() {
-  gulp
-    .src([
-      path.join(config.dirs.dest, 'prod', '*.js'),
-      path.join(config.dirs.dest, 'prod', '*.css'),
-      path.join(config.dirs.dest, 'prod', '*.map'),
-      path.join(config.dirs.dest, 'prod', 'fonts', '**', '*'),
-      path.join(config.dirs.dest, 'prod', 'locale', '**', '*')
-    ], { base: path.join(config.dirs.dest, 'prod') })
-    .pipe(gulp.dest(config.dirs.dist));
-});
-gulp.task('dist:dev', ['webpack:build:dev'], function () {
-  gulp
-    .src([
-      path.join(config.dirs.dest, 'debug', '*.js'),
-      path.join(config.dirs.dest, 'debug', '*.css'),
-      path.join(config.dirs.dest, 'debug', '*.map'),
-      path.join(config.dirs.dest, 'debug', 'fonts', '**', '*'),
-      path.join(config.dirs.dest, 'debug', 'locale', '**', '*')
-    ], { base: path.join(config.dirs.dest, 'debug') })
-    .pipe(gulp.dest(config.dirs.dist));
-});
-gulp.task('dist:all', ['clean'], function(callback) {
-  runSequence(
-    'dist:dev',
-    'dist',
-    callback
-  );
-});
-gulp.task('dist:watch', ['dist'], function() {
-  gulp
-    .watch([
-      path.join(config.dirs.src, '**', '*')
-    ], ['dist']);
-});
-gulp.task('dist:watch:dev', ['dist:dev'], function() {
-  gulp
-    .watch([
-      path.join(config.dirs.src, '**', '*')
-    ], ['dist:dev']);
-});
-
-gulp.task('webpack:build', function(callback) {
-  var webpackConfig = configureWebpack(true);
-
-  runWebpack(webpackConfig, 'webpack:build', function() { callback(); });
-});
-
-gulp.task('webpack:build:dev', function(callback) {
-  var webpackConfig = configureWebpack(false);
-
-  runWebpack(webpackConfig, 'webpack:build:dev', function() { callback(); });
-});
-
-gulp.task('webpack:build:test', function(callback) {
-  var webpackConfig = Object.create(webpackTestConfigTemplate);
-
-  runWebpack(webpackConfig, 'webpack:build:test', function(stats) {
-    writeStats(stats, false, true, callback);
-  });
-});
-
-gulp.task('webpack:build:test:spec', function(callback) {
-  var webpackConfig = Object.create(webpackTestConfigTemplate);
-  webpackConfig.entry = path.join(config.test.src, 'index.ts');
-  webpackConfig.plugins.pop();
-
-  runWebpack(webpackConfig, 'webpack:build:test:spec', function(stats) {
-    writeStats(stats, false, true, callback);
-  });
-});
-
-gulp.task('stats', ['webpack:stats']);
-gulp.task('stats:dev', ['webpack:stats:dev']);
-
-gulp.task('webpack:stats', function(callback) {
-  var webpackConfig = configureWebpack(true, true);
-
-  runWebpack(webpackConfig, 'webpack:stats', function(stats) {
-    writeStats(stats, true, false, callback);
-  });
-});
-
-gulp.task('webpack:stats:dev', function(callback) {
-  var webpackConfig = configureWebpack(false, true);
-
-  runWebpack(webpackConfig, 'webpack:stats-dev', function(stats) {
-    writeStats(stats, false, false, callback);
-  });
-});
-
-gulp.task('server', ['webpack:dev-server']);
-gulp.task('server:test', ['webpack:dev-server:test']);
-
-gulp.task('webpack:dev-server', function(callback) {
-  var webpackConfig = configureWebpack(false, false, true);
 
   var compiler = webpack(webpackConfig);
   compiler.plugin('done', function(stats) {
-    gutil.log('[webpack-dev-server]', 'Listening at ' + config.host + ':' + config.port);
-    gutil.log('[webpack-dev-server]', uri + '/webpack-dev-server/index.html');
+    onWebpackComplete(config.builds.watch, null, stats);
 
-    if (callback) {
-      callback();
-      callback = null;
+    if (cb) {
+      cb();
+      cb = null;
+
+      log('[webpack-dev-server]', 'Listening at ' + gutil.colors.magenta(config.host + ':' + config.port));
+      log('[webpack-dev-server]', gutil.colors.magenta(uri + '/' + config.files.index));
+      log('[webpack-dev-server]', gutil.colors.magenta(uri + '/webpack-dev-server/' + config.files.index));
     }
   });
 
-  gulp
-    .src('index.html')
-    .pipe(greplace(/.*stylesheet.*/g, ''))
-    .pipe(gulp.dest(config.dirs.dest));
-
   new WebpackDevServer(compiler, {
     publicPath: webpackConfig.output.publicPath,
-    contentBase: config.dirs.dest,
+    contentBase: path.join(config.dirs.build, config.builds.watch),
     hot: true,
     historyApiFallback: true,
+    quiet: true,
+    noInfo: false,
     stats: {
       colors: true
     }
@@ -416,147 +390,134 @@ gulp.task('webpack:dev-server', function(callback) {
   });
 });
 
-gulp.task('webpack:dev-server:test', ['index:build:test'], function(callback) {
-  var webpackConfig = Object.create(webpackTestConfigTemplate);
-  webpackConfig.target = 'web';
+gulp.task('watch:mocha', ['clean:watch'], function(cb) {
+  var webpackConfig = getWebpackConfig(config.builds.test);
 
-  webpackConfig.entry.unshift('webpack-dev-server/client?' + testUri, 'webpack/hot/only-dev-server');
+  webpackConfig.devtool = 'eval';
+  webpackConfig.watch = true;
+  webpackConfig.debug = true;
 
-  var compiler = webpack(webpackConfig);
-  compiler.plugin('done', function(stats) {
-    gutil.log('[webpack-dev-server]', 'Listening at ' + config.host + ':' + config.test.port);
-    gutil.log('[webpack-dev-server]', uri + '/webpack-dev-server/index.html');
+  var reporter = args.reporter || 'dot';
 
-    if (callback) {
-      callback();
-      callback = null;
-    }
-  });
-
-  new WebpackDevServer(compiler, {
-    publicPath: webpackConfig.output.publicPath,
-    contentBase: config.dirs.test,
-    hot: true,
-    stats: {
-      colors: true
-    }
-  }).listen(config.test.port, config.host, function(err, result) {
-    if (err) {
-      throw new gutil.PluginError('webpack-dev-server', err);
-    }
-  });
+  return webpackBuild(config.builds.watch, webpackConfig, function() {})
+    .pipe(filter(function(file) { return file.path === path.join(webpackConfig.output.path, webpackConfig.output.filename); }))
+    .pipe(through(function(file) {
+      var target = path.join(webpackConfig.output.path, webpackConfig.output.filename);
+      if (file.path === target) {
+        gulp
+          .src(target)
+          .pipe(mocha({ reporter }));
+      }
+    }));
 });
 
-gulp.task('index', ['index:build']);
-gulp.task('index:dev', ['index:build:dev']);
-gulp.task('index:test', ['index:build:test']);
+gulp.task('watch:dist', ['watch:dist:debug']);
 
-gulp.task('index:build', function() {
+gulp.task('watch:dist:debug', [], function() {
+  var webpackConfig = getWebpackConfig(config.builds.debug);
+
+  webpackConfig.watch = true;
+
+  return webpackBuild(config.builds.debug, webpackConfig, function() {})
+    .pipe(gulp.dest(path.join(config.dirs.dist, config.builds.debug)));
+});
+
+gulp.task('watch:dist:release', [], function() {
+  var webpackConfig = getWebpackConfig(config.builds.release);
+
+  webpackConfig.watch = true;
+
+  return webpackBuild(config.builds.release, webpackConfig, function() {})
+    .pipe(gulp.dest(path.join(config.dirs.dist, config.builds.release)));
+});
+
+gulp.task('index', ['index:all']);
+gulp.task('index:all', ['index:debug', 'index:release', 'index:watch']);
+
+gulp.task('index:debug', ['clean:debug'], function() {
+  var target = path.join(config.dirs.build, config.builds.debug);
+  log('Transforming', gutil.colors.magenta(path.join(target, config.files.index)));
+
   gulp
-    .src(path.join(__dirname, 'index.html'))
-    .pipe(greplace('app.js', 'app.min.js'))
-    .pipe(greplace('vendor.js', 'vendor.min.js'))
-    .pipe(greplace('app.css', 'app.min.css'))
-    .pipe(greplace('vendor.css', 'vendor.min.css'))
-    .pipe(grename('index.min.html'))
-    .pipe(gulp.dest(getOutputPath(true)));
+    .src(config.files.index)
+    .pipe(gulp.dest(target));
 });
 
-gulp.task('index:build:dev', function() {
+gulp.task('index:release', ['clean:release'], function() {
+  var target = path.join(config.dirs.build, config.builds.release);
+  log('Transforming', gutil.colors.magenta(path.join(target, config.files.index)));
+
   gulp
-    .src(path.join(__dirname, 'index.html'))
-    .pipe(gulp.dest(getOutputPath(false)));
+    .src(config.files.index)
+    .pipe(gulp.dest(target));
 });
 
-gulp.task('index:build:test', function() {
+gulp.task('index:watch', ['clean:watch'], function() {
+  var target = path.join(config.dirs.build, config.builds.watch);
+  log('Transforming', gutil.colors.magenta(path.join(target, config.files.index)));
+
   gulp
-    .src(path.join(config.test.src, 'index.html'))
-    .pipe(gulp.dest(getOutputPath(false, false, true)));
+    .src(config.files.index)
+    .pipe(replace(/.*stylesheet.*/g, ''))
+    .pipe(gulp.dest(target));
 });
 
-gulp.task('browser', ['browser:build']);
-gulp.task('browser:dev', ['browser:build:dev']);
-gulp.task('browser:test', ['browser:build:test']);
+gulp.task('browser', ['browser:watch']);
 
-gulp.task('browser:build', ['index:build', 'webpack:build'], function() {
-  var uri = path.join(getOutputPath(true), 'index.min.html');
-  gulp
-    .src('')
-    .pipe(gopen({ uri: uri }));
-});
-
-gulp.task('browser:build:dev', ['index:build:dev', 'webpack:build:dev'], function() {
-  var uri = path.join(getOutputPath(false), 'index.html');
-  gulp
-    .src('')
-    .pipe(gopen({ uri: uri }));
-});
-
-gulp.task('browser:build:test', ['index:build:test', 'webpack:build:test'], function() {
-  var uri = path.join(getOutputPath(false, false, true), 'index.html');
+gulp.task('browser:debug', ['webpack:debug', 'index:debug'], function() {
   gulp
     .src('')
-    .pipe(gopen({ uri: uri }));
+    .pipe(open({ uri: path.join(config.dirs.build, config.builds.debug, config.files.index) }));
 });
 
-gulp.task('browser:server', ['webpack:dev-server'], function() {
+gulp.task('browser:release', ['webpack:release', 'index:release'], function() {
   gulp
     .src('')
-    .pipe(gopen({ uri: uri }));
-})
+    .pipe(open({ uri: path.join(config.dirs.build, config.builds.release, config.files.index) }));
+});
 
-gulp.task('browser:server:test', ['webpack:dev-server:test'], function() {
+gulp.task('browser:watch', ['watch:webpack', 'index:watch'], function() {
   gulp
     .src('')
-    .pipe(gopen({ uri: testUri }));
-})
+    .pipe(open({ uri: 'http://' + (config.host === '0.0.0.0' ? 'localhost' : config.host) + ':' + config.port }));
+});
 
-gulp.task('browser:stats', ['webpack:stats'], function() {
+gulp.task('browser:stats', function() {
   gulp
     .src('')
-    .pipe(gopen({ uri: 'http://webpack.github.io/analyse/' }));
+    .pipe(open({ uri: 'http://webpack.github.io/analyse/' }));
 });
 
-gulp.task('browser:stats:dev', ['webpack:stats:dev'], function() {
+gulp.task('dist', ['dist:all']);
+gulp.task('dist:all', ['dist:debug', 'dist:release']);
+
+gulp.task('dist:debug', [], function() {
+  var target = path.join(config.dirs.dist, config.builds.debug);
+  log('Deploying', gutil.colors.yellow(config.builds.debug), 'Build to ', gutil.colors.magenta(target));
+
   gulp
-    .src('')
-    .pipe(gopen({ uri: 'http://webpack.github.io/analyse/' }));
+    .src(path.join(config.dirs.build, config.builds.debug, '**', '*'))
+    .pipe(gulp.dest(target));
 });
 
-gulp.task('browser:stats:test', ['webpack:build:test'], function() {
+gulp.task('dist:release', [], function() {
+  var target = path.join(config.dirs.dist, config.builds.release);
+  log('Deploying', gutil.colors.yellow(config.builds.release), 'Build to ', gutil.colors.magenta(target));
+
   gulp
-    .src('')
-    .pipe(gopen({ uri: 'http://webpack.github.io/analyse/' }));
+    .src(path.join(config.dirs.build, config.builds.release, '**', '*'))
+    .pipe(gulp.dest(target));
 });
 
-gulp.task('test:spec', function(callback) {
-  var webpackConfig = Object.create(webpackTestConfigTemplate);
-  webpackConfig.entry = path.join(config.test.src, 'index.ts');
-  webpackConfig.target = 'node';
-  // we need to set an alias for webrx because in the gulp context it doesn't
-  // resolve properly
-  webpackConfig.resolve.alias.webrx = 'webrx/dist/web.rx.js';
-  webpackConfig.plugins.pop();
-
-  runWebpack(webpackConfig, 'test:spec', function(stats) {
-    callback();
-  });
+gulp.task('deploy', ['deploy:all']);
+gulp.task('deploy:all', function(cb) {
+  return runSequence('deploy:debug', 'deploy:release', cb);
 });
 
-gulp.task('test:run', ['test:spec'], function() {
-  var bundle = path.join(config.dirs.test, 'spec.js');
-
-  gutil.log('Testing', gutil.colors.magenta(bundle), '...');
-
-  return gulp
-    .src(bundle)
-    .pipe(gmocha({ reporter: config.test.reporter }));
+gulp.task('deploy:debug', function(cb) {
+  return runSequence('webpack:debug', 'dist:debug', cb);
 });
 
-gulp.task('test:watch', ['test:run'], function() {
-  gulp
-    .watch([
-      path.join(config.test.src, '**', '*.ts'),
-      path.join(config.dirs.src, '*')
-    ], ['test:run']);
+gulp.task('deploy:release', function(cb) {
+  return runSequence('webpack:release', 'dist:release', cb);
 });

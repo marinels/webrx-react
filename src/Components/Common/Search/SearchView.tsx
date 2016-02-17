@@ -6,7 +6,7 @@ import { Input, InputProps, Button } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import BindableInput from '../BindableInput/BindableInput';
-import Icon from '../Icon/Icon';
+import * as Icon from 'react-fa';
 
 import SearchViewModel from './SearchViewModel';
 
@@ -32,7 +32,7 @@ export class SearchView extends BaseView<ISearchProps, SearchViewModel> {
 
     if (this.props.searchButton != null && this.props.searchButton !== false) {
       let searchButton = this.props.searchButton === true ? (
-        <Icon name='fa-search' />
+        <Icon name='search' />
       ) : this.props.searchButton;
 
       inputProps.buttonAfter = (

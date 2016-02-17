@@ -6,7 +6,7 @@ import * as classNames from 'classnames';
 import { ListGroup, ListGroupItem, ListGroupItemProps, Button } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
-import Icon from '../Icon/Icon';
+import * as Icon from 'react-fa';
 
 import { ListViewModel, ISelectableItem } from './ListViewModel';
 import LogManager from '../../Common/App/Logging';
@@ -48,7 +48,7 @@ export class StandardView<T> implements IView {
         if (view.props.checkmarkSelected === true) {
           selectionIcon = (
             <div className='list-group-item-selectionIcon'>
-              <Icon name='fa-check-circle' size='lg' fixedWidth hidden={!isSelected} />
+              { isSelected ? <Icon name='check-circle' size='lg' fixedWidth /> : null }
             </div>
           );
         }
@@ -120,7 +120,7 @@ export class TreeView<T> extends StandardView<T> {
           expander = (
             <span className='TreeItem-button'>
               <Button className='fa' bsStyle='link' bsSize='xsmall' componentClass='span' onClick={onExpanderClick}>
-                <Icon name={isExpanded === true ? 'fa-minus-square-o' : 'fa-plus-square-o'} size='lg' fixedWidth />
+                <Icon name={isExpanded === true ? 'minus-square-o' : 'plus-square-o'} size='lg' fixedWidth />
               </Button>
             </span>
           );
@@ -163,7 +163,7 @@ export class TreeView<T> extends StandardView<T> {
         if (view.props.checkmarkSelected === true) {
           selectionIcon = (
             <div className='list-group-item-selectionIcon'>
-              <Icon name='fa-check-circle' size='lg' fixedWidth hidden={!isSelected} />
+              { isSelected ? <Icon name='check-circle' size='lg' fixedWidth /> : null }
             </div>
           );
         }

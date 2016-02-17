@@ -5,9 +5,9 @@ import * as ReactDOM from 'react-dom';
 
 import { Overlay, Popover, ListGroup, ListGroupItem } from 'react-bootstrap';
 
-import Icon from '../Icon/Icon';
+import * as Icon from 'react-fa';
 
-import './ContextMenu.less'
+import './ContextMenu.less';
 
 export class MenuItem {
   public static displayName = 'MenuItem';

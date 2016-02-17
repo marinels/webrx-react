@@ -15,7 +15,7 @@ export interface IViewModelMap {
 class RoutingMap {
   public static displayName = 'RoutingMap';
 
-  constructor(private baseUri = '#/demo', private defaultIconName = 'fa-flask') {
+  constructor(private baseUri = '#/demo', private defaultIconName = 'flask') {
   }
 
   public map: IViewModelMap = {};

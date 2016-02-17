@@ -33,7 +33,7 @@ if (container) {
     routingMap: RoutingMap
   };
 
-  let routeManager = new RouteManager(hashChanged)
+  let routeManager = new RouteManager(hashChanged);
   let viewModel = new AppViewModel(routeManager, config);
 
   ReactDOM.render(<AppView viewModel={viewModel} viewMap={ViewMap} />, document.getElementById('app'));

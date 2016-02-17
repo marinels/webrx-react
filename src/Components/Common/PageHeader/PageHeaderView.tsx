@@ -8,10 +8,10 @@ import { Image } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import SearchView from '../Search/SearchView';
-import Icon from '../Icon/Icon';
+import * as Icon from 'react-fa';
 
 import PageHeaderViewModel from './PageHeaderViewModel';
-import { IMenuItem } from './Actions'
+import { IMenuItem } from './Actions';
 
 import './PageHeader.less';
 
@@ -63,7 +63,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
       <NavDropdown title={title} {...propsCreator()}>
         {
           items.map(x => {
-            let icon = <Icon name={x.iconName} fixedWidth hidden={String.isNullOrEmpty(x.iconName)} />;
+            let icon = String.isNullOrEmpty(x.iconName) ? null : <Icon name={x.iconName} fixedWidth />;
             return (
               <MenuItem key={x.id} disabled={this.isMenuItemDisabled(x)} onSelect={this.bindEvent(x => x.menuItemSelected, () => x)}>
                 {icon}
@@ -77,7 +77,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
   }
 
   render() {
-    let userIcon = this.state.userImage == null ? <Icon name='fa-user' size='lg' /> : <Image src={this.state.userImage} />;
+    let userIcon = this.state.userImage == null ? <Icon name='user' size='lg' /> : <Image src={this.state.userImage} />;
 
     let eventKey = 1;
 
@@ -109,7 +109,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
       <div className='PageHeader'>
         <Navbar fluid>
           <Nav className='PageHeader-navBrand'>
-            {this.createMenu(this.state.appSwitcherMenuItems, (<Icon name='fa-bars' size='lg' />), () => ({
+            {this.createMenu(this.state.appSwitcherMenuItems, (<Icon name='bars' size='lg' />), () => ({
               id: 'app-switcher',
               eventKey: 0,
               noCaret: true
@@ -123,13 +123,13 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
             {appActions}
           </form>
           <Nav className='PageHeader-navSite' pullRight>
-            {this.createMenu(this.state.helpMenuItems, (<Icon name='fa-question-circle' size='lg' />), () => ({
+            {this.createMenu(this.state.helpMenuItems, (<Icon name='question-circle' size='lg' />), () => ({
               id: 'help-menu',
               className: 'PageHeader-iconNavItem PageHeader-navHelp',
               eventKey: eventKey++,
               noCaret: true
             }))}
-            {this.createMenu(this.state.adminMenuItems, (<Icon name='fa-cog' size='lg' />), () => ({
+            {this.createMenu(this.state.adminMenuItems, (<Icon name='cog' size='lg' />), () => ({
               id: 'admin-menu',
               className: 'PageHeader-iconNavItem PageHeader-navAdmin',
               eventKey: eventKey++,
