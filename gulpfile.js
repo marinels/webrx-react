@@ -212,6 +212,7 @@ function getWebpackConfig(build) {
       'NODE_ENV': JSON.stringify('production')
     };
     webpackConfig.plugins[1].filenameTemplate = gutil.replaceExtension(webpackConfig.plugins[1].filenameTemplate, '.min.js');
+    webpackConfig.plugins[2].filename = gutil.replaceExtension(webpackConfig.plugins[2].filename, '.min.css');
     webpackConfig.plugins.push(
       new webpack.optimize.DedupePlugin(),
       new webpack.optimize.UglifyJsPlugin({
