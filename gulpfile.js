@@ -419,7 +419,7 @@ gulp.task('watch:dist:debug', [], function() {
 
   webpackConfig.watch = true;
 
-  return webpackBuild(config.builds.debug, webpackConfig, function() {})
+  return webpackBuild(config.builds.debug, webpackConfig)
     .pipe(gulp.dest(path.join(config.dirs.dist, config.builds.debug)));
 });
 
@@ -428,7 +428,7 @@ gulp.task('watch:dist:release', [], function() {
 
   webpackConfig.watch = true;
 
-  return webpackBuild(config.builds.release, webpackConfig, function() {})
+  return webpackBuild(config.builds.release, webpackConfig)
     .pipe(gulp.dest(path.join(config.dirs.dist, config.builds.release)));
 });
 
