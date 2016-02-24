@@ -63,6 +63,8 @@
     "run-sequence": "^1.1.5",
     "rx": "^4.0.7",
     "style-loader": "^0.13.0",
+    "stylelint": "^4.4.0",
+    "stylelint-config-standard": "^3.0.0",
     "through": "^2.3.8",
     "ts-loader": "^0.7.2",
     "tsconfig-glob": "^0.4.1",
