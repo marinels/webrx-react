@@ -3,6 +3,9 @@
 import { IMenuItem } from '../Common/PageHeader/Actions';
 
 import SplashViewModel from '../Common/Splash/SplashViewModel';
+import TimeSpanInput from '../Common/TimeSpanInput/TimeSpanInput';
+import ListViewModel from '../Common/List/ListViewModel';
+import DataGridViewModel from '../Common/DataGrid/DataGridViewModel';
 
 export interface IViewModelActivator {
   (state: any): any;
@@ -34,5 +37,20 @@ class RoutingMap {
 let routingMap = new RoutingMap();
 
 routingMap.addRoute('Splash', 'Splash', (state: any) => new SplashViewModel('Demo Splash Screen'));
+routingMap.addRoute('TimeSpanInput', 'Time Span Input', (state: any) => 'TimeSpanInput');
+routingMap.addRoute('List', 'List', (state: any) => new ListViewModel(true, false,
+  { name: 'test 1', requiredBy: 'now' },
+  { name: 'test 2', requiredBy: 'tomorrow' },
+  { name: 'test 3', requiredBy: 'yesterday' }
+));
+routingMap.addRoute('DataGrid', 'Data Grid', (state: any) => {
+  let viewModel = new DataGridViewModel(undefined, undefined, false,
+    { name: 'test 1', requiredBy: 'now' },
+    { name: 'test 2', requiredBy: 'tomorrow' },
+    { name: 'test 3', requiredBy: 'yesterday' }
+  );
+  viewModel.pager.limit(10);
+  return viewModel;
+});
 
 export default routingMap;
