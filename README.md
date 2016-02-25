@@ -6,6 +6,7 @@
 
 * `gulp help` -- _displays a full listing of all commands and overrides available_
 * `gulp` -- _runs the webpack development server with hot module reload_
+* `gulp webpack` -- _runs the webpack and builds a debug app bundle_
 * `gulp test` -- _builds and runs the unit tests and reports out to the console_
 * `gulp watch:mocha` -- _runs the unit tests **watch** mode_
 
