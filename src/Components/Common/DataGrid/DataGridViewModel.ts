@@ -71,7 +71,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
       .invokeCommand(x => {
         let sortDirection = this.sortDirection();
 
-        if (x !== this.sortField()) {
+        if (x != null && x !== this.sortField()) {
           sortDirection = null;
         }
 
