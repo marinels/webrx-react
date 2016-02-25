@@ -63,7 +63,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
           wx.using(this.projectedItems.suppressChangeNotifications(), disp => {
             this.projectedItems.clear();
             this.projectedItems.addRange(x);
-          })
+          });
         })
     );
 
@@ -75,7 +75,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
           sortDirection = null;
         }
 
-        return sortDirection === SortDirection.Descending ? this.sortAscending : this.sortDescending
+        return sortDirection === SortDirection.Descending ? this.sortAscending : this.sortDescending;
       })
     );
 

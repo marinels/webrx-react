@@ -33,7 +33,7 @@ export class MenuItem {
           {this.content}
         </div>
       </ListGroupItem>
-    )
+    );
   }
 }
 

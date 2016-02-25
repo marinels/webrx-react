@@ -27,7 +27,7 @@ class SubscriptionList<T> {
   public add(key: string, callback: ISubscriptionCallback<T>) {
     let handle = <ISubscriptionHandle>{ id: ++this.currentHandle, key };
 
-    this.list.push(<ISubscription<T>>{ callback, handle })
+    this.list.push(<ISubscription<T>>{ callback, handle });
 
     return handle;
   }
@@ -42,7 +42,7 @@ class SubscriptionList<T> {
 
   public invoke<T>(arg: T) {
     if (this.list.length > 0) {
-      this.list.forEach(x => x.callback.action.apply(x.callback.thisArg, [arg]))
+      this.list.forEach(x => x.callback.action.apply(x.callback.thisArg, [arg]));
     }
   }
 }
@@ -71,7 +71,7 @@ export class PubSub {
   public subscribe<T>(key: string, action: ISubscriptionAction<T>, thisArg?: any) {
     let handle: ISubscriptionHandle;
 
-    this.getList<T>(key, x => { handle = x.add(key, <ISubscriptionCallback<T>>{action, thisArg}) }, true);
+    this.getList<T>(key, x => { handle = x.add(key, <ISubscriptionCallback<T>>{action, thisArg}); }, true);
 
     return handle;
   }

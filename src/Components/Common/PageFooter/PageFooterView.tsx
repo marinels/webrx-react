@@ -18,7 +18,7 @@ export class PageFooterView extends BaseView<IPageFooterProps, PageFooterViewMod
     return {
       width: window.innerWidth,
       height: window.innerHeight
-    }
+    };
   }
 
   updateOn() {

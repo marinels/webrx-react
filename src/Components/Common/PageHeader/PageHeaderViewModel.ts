@@ -45,12 +45,12 @@ export class PageHeaderViewModel extends BaseViewModel {
   }
 
   private addDynamicContent(viewModel?: IBaseRoutableViewModel) {
-    this.addItems(this.appSwitcherMenuItems, this.staticAppSwitcherMenuItems, viewModel, x => x.getAppSwitcherMenuItems)
-    this.addItems(this.appMenus, this.staticAppMenus, viewModel, x => x.getAppMenus)
-    this.addItems(this.appActions, this.staticAppActions, viewModel, x => x.getAppActions)
-    this.addItems(this.helpMenuItems, this.staticHelpMenuItems, viewModel, x => x.getHelpMenuItems)
-    this.addItems(this.adminMenuItems, this.staticAdminMenuItems, viewModel, x => x.getAdminMenuItems)
-    this.addItems(this.userMenuItems, this.staticUserMenuItems, viewModel, x => x.getUserMenuItems)
+    this.addItems(this.appSwitcherMenuItems, this.staticAppSwitcherMenuItems, viewModel, x => x.getAppSwitcherMenuItems);
+    this.addItems(this.appMenus, this.staticAppMenus, viewModel, x => x.getAppMenus);
+    this.addItems(this.appActions, this.staticAppActions, viewModel, x => x.getAppActions);
+    this.addItems(this.helpMenuItems, this.staticHelpMenuItems, viewModel, x => x.getHelpMenuItems);
+    this.addItems(this.adminMenuItems, this.staticAdminMenuItems, viewModel, x => x.getAdminMenuItems);
+    this.addItems(this.userMenuItems, this.staticUserMenuItems, viewModel, x => x.getUserMenuItems);
   }
 
   private addItems<T extends IBaseAction>(list: wx.IObservableList<T>, staticItems: T[], viewModel?: IBaseRoutableViewModel, delegateSelector?: (viewModel: IBaseRoutableViewModel) => (() => T[])) {
@@ -65,7 +65,7 @@ export class PageHeaderViewModel extends BaseViewModel {
         }
       }
 
-      list.sort((a, b) => (a.order || 0) - (b.order || 0))
+      list.sort((a, b) => (a.order || 0) - (b.order || 0));
     });
   }
 

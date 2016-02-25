@@ -78,7 +78,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
     );
 
     this.subscribe(this.reRender.results
-      .invokeCommand(x => this.stateChanged)
+      .invokeCommand(() => this.stateChanged)
     );
   }
 

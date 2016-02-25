@@ -6,7 +6,7 @@ import * as React from 'react';
 import { Grid, Row, Col, PageHeader, Panel, DropdownButton, MenuItem } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
-import ComponentDemoViewModel from './ComponentDemoViewModel'
+import ComponentDemoViewModel from './ComponentDemoViewModel';
 import { default as ViewMap, IViewActivator } from './ViewMap';
 
 import './ComponentDemo.less';
@@ -41,7 +41,7 @@ export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDe
     return [
       this.state.columns.changed,
       this.state.component.changed
-    ]
+    ];
   }
 
   render() {

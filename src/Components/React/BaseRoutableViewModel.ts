@@ -40,7 +40,7 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
     if (this.isRoutingEnabled) {
       PubSub.publish<IRoutingStateChanged>(RoutingStateChangedKey, x);
     }
-  })
+  });
 
   protected createRoutingState(initializer: (state: TRoutingState) => void, initialState = {} as TRoutingState) {
     if (this.isRoutingEnabled === true && initializer != null) {

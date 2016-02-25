@@ -25,7 +25,7 @@ export class ModalDialogView extends BaseView<IModalDialogProps, ModalDialogView
       this.state.accept.canExecuteObservable
         .debounce(100)
         .distinctUntilChanged()
-    ]
+    ];
   }
 
   render() {

@@ -38,7 +38,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
   private getRoutedViewModel(route: IRoute) {
     // by default we set the view model to the current routed view model
     // if our route is for a new view model we will override it there
-    let viewModel:IRoutedViewModel = this.currentViewModel();
+    let viewModel: IRoutedViewModel = this.currentViewModel();
 
     // get the activator for the requested route
     let activator = this.getActivator(route);

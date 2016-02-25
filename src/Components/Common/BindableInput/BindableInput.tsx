@@ -23,7 +23,7 @@ export class BindableInput extends React.Component<IBindableInputProps, any> {
     onChangeProperty: 'onChange',
     valueGetter: (property: wx.IObservableProperty<any>) => { return property(); },
     valueSetter: (property: wx.IObservableProperty<any>, value: any) => { property(value); }
-  }
+  };
 
   render() {
     let onChange = (x: any) => {

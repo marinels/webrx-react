@@ -40,7 +40,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
       let value = (x.target as React.HTMLAttributes).value;
       propertySelector(this.state)(value as string);
       this.forceUpdate();
-    }
+    };
   }
 
   public bindObservable<TResult>(commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>, observable: Rx.Observable<TResult>) {
@@ -49,16 +49,14 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
 
   public bindCallback<TEvent, TParameter>(
     targetSelector: (viewModel: TViewModel) => wx.IObservableProperty<TParameter>,
-    paramSelector: (event: TEvent, ...args: any[]) => TParameter
-  ) : (event: TEvent) => void {
+    paramSelector: (event: TEvent, ...args: any[]) => TParameter): (event: TEvent) => void {
     return (event: TEvent, ...args: any[]) => targetSelector(this.state)(paramSelector(event, args));
   }
 
   public bindEvent<TEvent, TParameter>(
     commandSelector: (viewModel: TViewModel) => wx.ICommand<any>,
     eventArgsSelector?: (e: TEvent, args: any[]) => TParameter,
-    conditionSelector?: (e: TEvent, x: TParameter) => boolean
-  ): (event: TEvent) => void {
+    conditionSelector?: (e: TEvent, x: TParameter) => boolean): (event: TEvent) => void {
     return (e: TEvent, ...args: any[]) => {
       let parameter = eventArgsSelector ? eventArgsSelector(e, args) : null;
       if (conditionSelector == null || conditionSelector(e, parameter) === true) {
@@ -101,7 +99,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   componentWillReceiveProps(nextProps: TViewProps, nextContext: any) {
     let state = nextProps.viewModel;
 
-    if (state != this.state) {
+    if (state !== this.state) {
       this.logger.debug('ViewModel Change Detected');
 
       // cleanup old view model

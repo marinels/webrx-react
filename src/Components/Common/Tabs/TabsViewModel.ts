@@ -42,7 +42,7 @@ export class TabsViewModel extends BaseRoutableViewModel<ITabsRoutingState> {
       if (this.selectedIndex() !== 0) {
         state.tab = this.selectedIndex();
       }
-    })
+    });
   }
 
   setRoutingState(state: ITabsRoutingState) {

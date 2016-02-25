@@ -40,7 +40,7 @@ export class RouteHandlerView extends BaseView<IRouteHandlerProps, RouteHandlerV
           <h4>{text}</h4>
         </Alert>
       </div>
-    )
+    );
   }
 
   private getViewKey() {

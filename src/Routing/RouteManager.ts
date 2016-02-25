@@ -61,7 +61,7 @@ export class RouteManager implements Rx.IDisposable {
 
   public navTo(path: string, state?: any, uriEncode = false) {
     path = this.getPath(state) || path;
-    if (String.isNullOrEmpty(path) == false) {
+    if (String.isNullOrEmpty(path) === false) {
       if (path[0] === '#') {
         path = path.substring(1);
       }

@@ -9,8 +9,6 @@ import * as classNames from 'classnames';
 
 import { Input, Button, DropdownButton, MenuItem } from 'react-bootstrap';
 
-import './TimeSpanInput.less';
-
 export enum UnitTypes {
   Ticks = 0,
   Milliseconds = 1,
@@ -85,7 +83,7 @@ export class TimeSpanInput extends React.Component<ITimeSpanInputProps, ITimeSpa
       text: null,
       value: this.props.value || moment(),
       unit
-    }
+    };
   }
 
   private units: IUnit[];
@@ -109,7 +107,7 @@ export class TimeSpanInput extends React.Component<ITimeSpanInputProps, ITimeSpa
     let units: any = [];
 
     while (unit != null && unit.type <= (this.props.maxUnit || UnitTypes.Years)) {
-      units.push(<MenuItem key={unit.type} eventKey={unit} selected={unit.type === this.props.defaultUnit}>{unit.name}</MenuItem>)
+      units.push(<MenuItem key={unit.type} eventKey={unit} selected={unit.type === this.props.defaultUnit}>{unit.name}</MenuItem>);
       unit = Units[unit.type + 1];
     }
 
@@ -177,8 +175,8 @@ export class TimeSpanInput extends React.Component<ITimeSpanInputProps, ITimeSpa
         {this.units}
       </DropdownButton>
     );
-    let incrementButton = <Button key='up' onClick={() => this.adjust(1)}><Icon name='chevron-up'/></Button>
-    let decrementButton = <Button key='down' onClick={() => this.adjust(-1)}><Icon name='chevron-down'/></Button>
+    let incrementButton = <Button key='up' onClick={() => this.adjust(1)}><Icon name='chevron-up'/></Button>;
+    let decrementButton = <Button key='down' onClick={() => this.adjust(-1)}><Icon name='chevron-down'/></Button>;
     let isInvalid = this.state.value == null || this.state.value.isValid() !== true;
 
     return (
@@ -188,7 +186,7 @@ export class TimeSpanInput extends React.Component<ITimeSpanInputProps, ITimeSpa
         placeholder={this.props.placeholder} value={this.state.text}
         buttonAfter={[incrementButton, decrementButton, unitDropdown]}
         onChange={(e: any) => this.textChanged(e)} standalone={this.props.standalone} />
-    )
+    );
   }
 }
 

@@ -37,7 +37,7 @@ export class ListViewModel<TData, TRoutingState extends IListRoutingState> exten
     .toProperty();
 
   public getSelectedItems() {
-    return this.items.filter(x => (x as any as ISelectableItem).isSelected === true)
+    return this.items.filter(x => (x as any as ISelectableItem).isSelected === true);
   }
 
   initialize() {
@@ -67,7 +67,7 @@ export class ListViewModel<TData, TRoutingState extends IListRoutingState> exten
   }
 
   public reset(...items: TData[]) {
-    if (items.length == 0) {
+    if (items.length === 0) {
       this.items.reset();
     } else {
       wx.using(this.items.suppressChangeNotifications(), disp => {

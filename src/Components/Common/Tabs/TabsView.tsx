@@ -36,16 +36,16 @@ export class TabsView extends BaseView<ITabsProps, TabsViewModel> {
   private getTabs() {
     let selectedIndex = this.state.selectedIndex();
 
-    return this.props.dataTemplate == null ?
+    return this.props.dataTemplate === null ?
       React.Children.map(this.props.children, (x: React.ReactElement<TabProps>, i: number) => {
-        return React.cloneElement(x, x.props, selectedIndex == i ? x.props.children : null);
+        return React.cloneElement(x, x.props, selectedIndex === i ? x.props.children : null);
       }) :
       this.state.items.map((x, i) => {
         let tab = this.props.dataTemplate(x, i);
 
         return (
           <Tab key={i} eventKey={i} title={tab.header}>
-            {selectedIndex == i ? tab.children : null}
+            {selectedIndex === i ? tab.children : null}
           </Tab>
         );
       });
@@ -55,7 +55,7 @@ export class TabsView extends BaseView<ITabsProps, TabsViewModel> {
     return [
       this.state.items.listChanged,
       this.state.selectedIndex.changed
-    ]
+    ];
   }
 
   render() {

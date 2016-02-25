@@ -22,7 +22,7 @@ export class PagerView extends BaseView<IPagerProps, PagerViewModel> {
     return [
       this.state.pageCount.changed,
       this.state.selectedPage.changed
-    ]
+    ];
   }
 
   render() {

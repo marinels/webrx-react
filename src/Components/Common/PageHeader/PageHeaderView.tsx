@@ -24,7 +24,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
 
   static defaultProps = {
     brand: 'WebRx.React Rocks!!!'
-  }
+  };
 
   updateOn() {
     return [
@@ -34,7 +34,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
       this.state.helpMenuItems.listChanged,
       this.state.adminMenuItems.listChanged,
       this.state.userMenuItems.listChanged,
-    ]
+    ];
   }
 
   private isMenuItemDisabled(item: IMenuItem) {
@@ -103,7 +103,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
       <form className='PageHeader-navSearch navbar-form navbar-right' role='search'>
         <SearchView viewModel={this.state.search} />
       </form>
-    )
+    );
 
     return (
       <div className='PageHeader'>

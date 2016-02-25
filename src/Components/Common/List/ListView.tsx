@@ -34,7 +34,7 @@ export class StandardView<T> implements IView {
     return items.map((x, i) => {
       if (this.getIsVisible(x, i) === true) {
         let props = this.createListItemProps(view, x, i);
-        var isSelected = view.isSelected(x, i);
+        let isSelected = view.isSelected(x, i);
 
         if (props.key == null) {
           props.key = i;
@@ -206,7 +206,7 @@ export class ListView extends BaseView<IListProps, ListViewModel<any, any>> {
     highlightSelected: false,
     checkmarkSelected: false,
     multiSelect: false
-  }
+  };
 
   public isSelected(item: any, index?: number) {
     let isSelected = false;
@@ -232,7 +232,7 @@ export class ListView extends BaseView<IListProps, ListViewModel<any, any>> {
     return [
       this.state.items.listChanged,
       this.state.selectedItem.changed
-    ]
+    ];
   }
 
   render() {

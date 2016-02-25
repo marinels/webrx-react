@@ -47,7 +47,7 @@ function dispose<T>(disposable: T, returnNull = true) {
   return returnNull ? null : disposable;
 }
 
-function getName(source: any, undefined = 'undefined', isStatic = false) {
+function getName(source: any, undefinedValue = 'undefined', isStatic = false) {
   const typeNameProperty = 'typeName';
   const displayNameProperty = 'displayName';
   const nameProperty = 'name';
@@ -77,7 +77,7 @@ function getName(source: any, undefined = 'undefined', isStatic = false) {
       // this allows us to inspect the static properties of the source object
       // but we don't want to go beyond the the static properties
       if (isStatic === false) {
-        name = getName(source.constructor, undefined, true);
+        name = getName(source.constructor, undefinedValue, true);
       } else {
         // IE is pretty dumb and doesn't expose any useful naming properties
         // so we can try and extract it from the toString()
@@ -90,7 +90,7 @@ function getName(source: any, undefined = 'undefined', isStatic = false) {
   }
 
   if (name == null) {
-    name = undefined;
+    name = undefinedValue;
   }
 
   return name;

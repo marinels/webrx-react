@@ -68,7 +68,7 @@ export class TableView implements IDataGridView {
   private tableProps: TableProps;
 
   private renderSortIcon(view: DataGridView, grid: DataGridViewModel<any>, column: Column, index: number) {
-    let icon:JSX.Element = null;
+    let icon: JSX.Element = null;
 
     if (grid.canSort() && column.sortable) {
       let iconName = '';
@@ -83,7 +83,7 @@ export class TableView implements IDataGridView {
         <span className='Column-sortIcon'>
           { String.isNullOrEmpty(iconName) ? null : <Icon name={iconName} size='lg' /> }
         </span>
-      )
+      );
     }
 
     return icon;
@@ -159,7 +159,7 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
       next: true,
       last: true
     }
-  }
+  };
 
   private columns: Column[];
 
@@ -193,7 +193,7 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
     return [
       this.state.projectedItems.listChanged,
       this.state.selectedItem.changed
-    ]
+    ];
   }
 
   initialize() {

@@ -63,7 +63,7 @@ export class ObjectComparer<T> {
     }
 
     if (this.getComparer() == null) {
-      this.comparers[ObjectComparer.DefaultComparerKey] = ObjectComparer.createFieldComparer(ObjectComparer.DefaultComparerKey, Comparer.DefaultComparison)
+      this.comparers[ObjectComparer.DefaultComparerKey] = ObjectComparer.createFieldComparer(ObjectComparer.DefaultComparerKey, Comparer.DefaultComparison);
     }
   }
 
@@ -72,7 +72,7 @@ export class ObjectComparer<T> {
       field,
       compare: compare,
       valueSelector
-    } as IFieldComparer<T>
+    } as IFieldComparer<T>;
   }
 
   private getComparer(field?: string) {

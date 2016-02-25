@@ -10,7 +10,6 @@ import * as ReactDOM from 'react-dom';
 
 import './Extensions/Object';
 import './Extensions/String';
-import './Extensions/Rx';
 
 import logManager from './Components/Common/App/Logging';
 import RouteManager from './Routing/RouteManager';

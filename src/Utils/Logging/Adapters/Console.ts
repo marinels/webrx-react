@@ -14,13 +14,13 @@ export class ConsoleLogManager extends DelegateLogManager {
   private getStyles(level: LogLevel) {
     // these colors should never get used
     let bgcolor = 'black';
-    let color = 'white'
+    let color = 'white';
 
     if (level >= LogLevel.Fatal) {
       bgcolor = 'darkred';
       color = 'lightcoral';
     } else if (level >= LogLevel.Error) {
-      bgcolor = 'lightcoral'
+      bgcolor = 'lightcoral';
       color = 'black';
     } else if (level >= LogLevel.Warn) {
       bgcolor = 'blanchedalmond ';
