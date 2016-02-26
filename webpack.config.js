@@ -48,6 +48,7 @@ module.exports = {
   resolve: {
     extensions: ['', '.ts', '.tsx', '.webpack.js', '.web.js', '.js'],
     alias: {
+      webrx: 'webrx/dist/web.rx.lite.js',
       Ix: 'ix/l2o' // the ix package uses Ix to refer to l2o for some reason
     }
   },
