@@ -100,11 +100,7 @@ export abstract class BaseViewModel implements IBaseViewModel {
 
   protected logObservable(observable: Rx.Observable<any>, name: string) {
     this.subscribe(observable.subscribe(x => {
-      let value = x;
-      if (x != null) {
-        value = (typeof x === 'object') ? Object.getName(x, x.toString()) : x.toString();
-      }
-      this.logger.debug('{0} = {1}', name, value);
+      this.logger.debug('{0} = {1}', name, x);
     }));
   }
 
