@@ -10,7 +10,7 @@
     "!../typings/tsd.d.ts",
     "../src/**/*.d.ts",
     "./**/*.d.ts",
-    "./app.ts"
+    "./**/*.ts"
   ],
   "files": [
     "../typings/chai/chai.d.ts",
@@ -42,6 +42,15 @@
     "../typings/webrx/web.rx.d.ts",
     "../src/defines.d.ts",
     "../src/Extensions/Extensions.d.ts",
-    "./app.ts"
+    "./app.ts",
+    "./Components/AllComponents.ts",
+    "./Extensions/AllExtensions.ts",
+    "./Extensions/Object.ts",
+    "./Extensions/String.ts",
+    "./SanitySpec.ts",
+    "./TestSetup.ts",
+    "./Utils/ObservableListUtils.ts",
+    "./Utils/ObservablePropertyUtils.ts",
+    "./Utils/PubSubSpec.ts"
   ]
 }
