@@ -41,6 +41,7 @@
     "gulp-mocha": "^2.2.0",
     "gulp-open": "^1.0.0",
     "gulp-replace": "^0.5.4",
+    "gulp-tslint": "^4.3.2",
     "gulp-util": "^3.0.7",
     "ix": "^1.0.6",
     "jquery-deparam": "^0.5.2",

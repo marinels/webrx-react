@@ -11,6 +11,7 @@ var WebpackDevServer = require('webpack-dev-server');
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var clean = require('gulp-clean');
+var tslint = require('gulp-tslint');
 var mocha = require('gulp-mocha');
 var filter = require('gulp-filter');
 var replace = require('gulp-replace');
@@ -95,6 +96,9 @@ gulp.task('help', function() {
     '* ' + gutil.colors.cyan('gulp tsconfig:glob') + ' will expand the ' + gutil.colors.cyan('filesGlob') + ' in the ' + gutil.colors.magenta('tsconfig.json') + ' file',
     '  ' + ['src', 'test', 'all'].map(function(x) { return gutil.colors.cyan('tsconfig:glob:' + x); }).join(', '),
     '',
+    '* ' + gutil.colors.cyan('gulp lint') + ' will scan for coding style rule infractions',
+    '  ' + ['ts'].map(function(x) { return gutil.colors.cyan('lint:' + x); }).join(', '),
+    '',
     '* ' + gutil.colors.cyan('gulp webpack') + ' will build the bundles using webpack',
     '  ' + ['debug', 'release', 'test', 'all'].map(function(x) { return gutil.colors.cyan('webpack:' + x); }).join(', '),
     '',
@@ -103,6 +107,7 @@ gulp.task('help', function() {
     '',
     '* ' + gutil.colors.cyan('gulp watch') + ' will start a webpack development server (same as ' + gutil.colors.cyan('watch:webpack') + ')',
     '* ' + gutil.colors.cyan('gulp watch:mocha') + ' will start webpack in ' + gutil.colors.magenta('watch') + ' mode, and run all tests after any detected change',
+    '* ' + gutil.colors.cyan('gulp watch:lint') + ' will watch source files for changes and run lint against them',
     '* ' + gutil.colors.cyan('gulp watch:dist') + ' will watch source files for changes and deploy the bundles to ' + gutil.colors.magenta(config.dirs.dist),
     '  ' + ['debug', 'release'].map(function(x) { return gutil.colors.cyan('watch:dist:' + x); }).join(', '),
     '',
@@ -197,6 +202,18 @@ gulp.task('tsconfig:glob:test', function() {
   log('Globbing', gutil.colors.magenta(config.dirs.test));
 
   return tsconfigGlob({ configPath: config.dirs.test, indent: 2 });
+});
+
+gulp.task('lint', ['lint:ts']);
+
+gulp.task('lint:ts', function() {
+  gulp
+    .src([
+      path.join(config.dirs.src, '**', '*.ts'),
+      path.join(config.dirs.src, '**', '*.tsx'),
+      path.join(config.dirs.test, '**', '*.ts')])
+    .pipe(tslint())
+    .pipe(tslint.report('verbose', { emitError: false, summarizeFailureOutput: true }));
 });
 
 function getWebpackConfig(build) {
@@ -410,6 +427,14 @@ gulp.task('watch:mocha', ['clean:watch'], function(cb) {
           .pipe(mocha({ reporter }));
       }
     }));
+});
+
+gulp.task('watch:lint', ['lint'], function() {
+  gulp
+    .watch([
+      path.join(config.dirs.src, '**', '*.ts'),
+      path.join(config.dirs.src, '**', '*.tsx'),
+      path.join(config.dirs.test, '**', '*.ts')], ['lint']);
 });
 
 gulp.task('watch:dist', ['watch:dist:debug']);
