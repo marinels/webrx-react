@@ -25,9 +25,9 @@ function setupWebRx() {
           getElementsByTagName: () => {
             return {
               iElems: [false]
-            }
+            };
           }
-        }
+        };
       },
       implementation: {
         createHTMLDocument: () => {

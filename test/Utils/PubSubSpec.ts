@@ -14,7 +14,7 @@ describe('PubSub', () => {
     expect(handle.key).to.equal('test');
     pubsub.publish('test');
     expect(called).to.equal(true);
-  })
+  });
 
   it('Can publish with no subscribers', () => {
     let pubsub = new PubSub();
@@ -22,7 +22,7 @@ describe('PubSub', () => {
     let handle = pubsub.subscribe('test', x => called = true);
     pubsub.publish('test2');
     expect(called).to.equal(false);
-  })
+  });
 
   it('Can handle anonymous publish args', () => {
     let pubsub = new PubSub();
@@ -65,7 +65,7 @@ describe('PubSub', () => {
     pubsub.unsubscribe(handle);
     pubsub.publish('test');
     expect(called).to.equal(false);
-  })
+  });
 
   it('Can handle multiple subscriptions on the same key', () => {
     let pubsub = new PubSub();

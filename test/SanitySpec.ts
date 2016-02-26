@@ -20,7 +20,7 @@ describe('Sanity Tests', () => {
 
   it('Can access wx', () => {
     let prop = wx.property('asdf');
-    expect(prop).to.exist
+    expect(prop).to.exist;
     expect(prop()).to.equal('asdf');
   });
 });
