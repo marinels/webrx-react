@@ -388,6 +388,8 @@ gulp.task('watch:webpack', ['tsconfig:glob:src', 'clean:watch', 'index:watch'], 
       log('[webpack-dev-server]', 'Listening at ' + gutil.colors.magenta(config.host + ':' + config.port));
       log('[webpack-dev-server]', gutil.colors.magenta(uri + '/' + config.files.index));
       log('[webpack-dev-server]', gutil.colors.magenta(uri + '/webpack-dev-server/' + config.files.index));
+    } else {
+      log('watching for changes');
     }
   });
 
