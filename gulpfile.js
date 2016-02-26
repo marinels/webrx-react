@@ -439,7 +439,7 @@ gulp.task('watch:lint', ['lint'], function() {
 
 gulp.task('watch:dist', ['watch:dist:debug']);
 
-gulp.task('watch:dist:debug', [], function() {
+gulp.task('watch:dist:debug', function() {
   var webpackConfig = getWebpackConfig(config.builds.debug);
 
   webpackConfig.watch = true;
@@ -448,7 +448,7 @@ gulp.task('watch:dist:debug', [], function() {
     .pipe(gulp.dest(path.join(config.dirs.dist, config.builds.debug)));
 });
 
-gulp.task('watch:dist:release', [], function() {
+gulp.task('watch:dist:release', function() {
   var webpackConfig = getWebpackConfig(config.builds.release);
 
   webpackConfig.watch = true;
