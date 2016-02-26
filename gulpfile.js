@@ -193,13 +193,13 @@ gulp.task('tsconfig:glob', ['tsconfig:glob:all']);
 gulp.task('tsconfig:glob:all', ['tsconfig:glob:src', 'tsconfig:glob:test']);
 
 gulp.task('tsconfig:glob:src', function() {
-  log('Globbing', gutil.colors.magenta(config.dirs.src));
+  log('Globbing', gutil.colors.magenta(path.join(config.dirs.src, 'tsconfig.json')));
 
   return tsconfigGlob({ configPath: config.dirs.src, indent: 2 });
 });
 
 gulp.task('tsconfig:glob:test', function() {
-  log('Globbing', gutil.colors.magenta(config.dirs.test));
+  log('Globbing', gutil.colors.magenta(path.join(config.dirs.test, 'tsconfig.json')));
 
   return tsconfigGlob({ configPath: config.dirs.test, indent: 2 });
 });
