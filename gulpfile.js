@@ -12,6 +12,7 @@ var gulp = require('gulp');
 var gutil = require('gulp-util');
 var clean = require('gulp-clean');
 var tslint = require('gulp-tslint');
+var eslint = require('gulp-eslint');
 var mocha = require('gulp-mocha');
 var filter = require('gulp-filter');
 var replace = require('gulp-replace');
@@ -204,7 +205,20 @@ gulp.task('tsconfig:glob:test', function() {
   return tsconfigGlob({ configPath: config.dirs.test, indent: 2 });
 });
 
-gulp.task('lint', ['lint:ts']);
+gulp.task('lint', ['lint:all']);
+
+gulp.task('lint:all', ['lint:ts', 'list:js']);
+
+gulp.task('lint:es', function() {
+  gulp
+    .src([
+      path.join(config.dirs.src, '**', '*.js'),
+      path.join(config.dirs.test, '**', '*.js'),
+      path.join(__dirname, '*.js')])
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
+});
 
 gulp.task('lint:ts', function() {
   gulp
