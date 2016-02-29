@@ -248,17 +248,15 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
 
     let items = this.state.projectedItems.toArray() || [];
 
-    if (items.length > 0) {
-      let columns = this.getColumns(items);
+    let columns = this.getColumns(items);
 
-      search = (this.props.searchProps == null || this.state.canFilter() === false) ? null : (
-        <SearchView {...this.props.searchProps} viewModel={this.state.search}/>
-      );
-      table = this.renderTable(items);
-      pager = this.props.pagerProps == null ? null : (
-        <PagerView {...this.props.pagerProps} viewModel={this.state.pager} />
-      );
-    }
+    search = (this.props.searchProps == null || this.state.canFilter() === false) ? null : (
+      <SearchView {...this.props.searchProps} viewModel={this.state.search}/>
+    );
+    table = this.renderTable(items);
+    pager = this.props.pagerProps == null ? null : (
+      <PagerView {...this.props.pagerProps} viewModel={this.state.pager} />
+    );
 
     return (
       <div className='DataGrid'>
