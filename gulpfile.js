@@ -456,21 +456,27 @@ gulp.task('watch:lint', ['lint'], function() {
 gulp.task('watch:dist', ['watch:dist:debug']);
 
 gulp.task('watch:dist:debug', function() {
+  var target = path.join(config.dirs.dist, config.builds.debug);
+  log('Deploying', gutil.colors.yellow(config.builds.debug), 'Build to ', gutil.colors.magenta(target));
+
   var webpackConfig = getWebpackConfig(config.builds.debug);
 
   webpackConfig.watch = true;
 
   return webpackBuild(config.builds.debug, webpackConfig)
-    .pipe(gulp.dest(path.join(config.dirs.dist, config.builds.debug)));
+    .pipe(gulp.dest(target));
 });
 
 gulp.task('watch:dist:release', function() {
+  var target = path.join(config.dirs.dist, config.builds.release);
+  log('Deploying', gutil.colors.yellow(config.builds.release), 'Build to ', gutil.colors.magenta(target));
+
   var webpackConfig = getWebpackConfig(config.builds.release);
 
   webpackConfig.watch = true;
 
   return webpackBuild(config.builds.release, webpackConfig)
-    .pipe(gulp.dest(path.join(config.dirs.dist, config.builds.release)));
+    .pipe(gulp.dest(target));
 });
 
 gulp.task('index', ['index:all']);
