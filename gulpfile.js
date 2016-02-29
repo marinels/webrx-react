@@ -549,7 +549,7 @@ gulp.task('dist:debug', [], function() {
   var target = path.join(config.dirs.dist, config.builds.debug);
   log('Deploying', gutil.colors.yellow(config.builds.debug), 'Build to ', gutil.colors.magenta(target));
 
-  gulp
+  return gulp
     .src(path.join(config.dirs.build, config.builds.debug, '**', '*'))
     .pipe(gulp.dest(target))
     .pipe(through(function(file) {
@@ -561,7 +561,7 @@ gulp.task('dist:release', [], function() {
   var target = path.join(config.dirs.dist, config.builds.release);
   log('Deploying', gutil.colors.yellow(config.builds.release), 'Build to ', gutil.colors.magenta(target));
 
-  gulp
+  return gulp
     .src(path.join(config.dirs.build, config.builds.release, '**', '*'))
     .pipe(gulp.dest(target))
     .pipe(through(function(file) {
