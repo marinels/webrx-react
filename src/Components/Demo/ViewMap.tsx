@@ -1,6 +1,7 @@
 'use strict';
 
 import * as React from 'react';
+import { ListGroupItem } from 'react-bootstrap';
 
 import SplashViewModel from '../Common/Splash/SplashViewModel';
 import SplashView from '../Common/Splash/SplashView';
@@ -13,7 +14,7 @@ import ListViewModel from '../Common/List/ListViewModel';
 import { ListView, StandardView } from '../Common/List/ListView';
 
 import DataGridViewModel from '../Common/DataGrid/DataGridViewModel';
-import DataGridView from '../Common/DataGrid/DataGridView';
+import { DataGridView, DataGridColumn, IDataGridView, ListView as DataGridListView } from '../Common/DataGrid/DataGridView';
 
 export interface IViewActivator {
   (component: any, componentRoute: string): any;
@@ -43,7 +44,26 @@ let viewMap: IViewMap = {
     })}>
     </ListView>
   ),
-  DataGridViewModel: (viewModel: DataGridViewModel<any>) => <DataGridView viewModel={viewModel} />,
+  DataGridViewModel: (viewModel: DataGridViewModel<any>, componentRoute: string) => {
+    let view: IDataGridView = undefined;
+
+    if (componentRoute === 'DataGridList') {
+      view = new DataGridListView<{name: string, requiredBy: string}>(
+        (v, vm, x, i) => (
+          <ListGroupItem key={x.name} className='ItemRow' onClick={() => {}}>
+            {`Name: ${x.name}, Required By: ${x.requiredBy}`}
+          </ListGroupItem>
+        )
+      );
+    }
+
+    return (
+      <DataGridView viewModel={viewModel} view={view}>
+        <DataGridColumn fieldName='name' sortable />
+        <DataGridColumn fieldName='requiredBy' sortable />
+      </DataGridView>
+    );
+  },
 };
 
 export default viewMap;

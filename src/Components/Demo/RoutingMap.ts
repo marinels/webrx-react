@@ -52,5 +52,16 @@ routingMap.addRoute('DataGrid', 'Data Grid', (state: any) => {
   viewModel.pager.limit(10);
   return viewModel;
 });
+routingMap.addRoute('DataGridList', 'DataGrid (List View)', (state: any) => {
+  let viewModel = new DataGridViewModel<{name: string, requiredBy: string}>(
+    (item, filter) => `${item.name} ${item.requiredBy}`.search(new RegExp(filter, 'i')) >= 0,
+    undefined, false,
+    { name: 'test 1', requiredBy: 'now' },
+    { name: 'test 2', requiredBy: 'tomorrow' },
+    { name: 'test 3', requiredBy: 'yesterday' }
+  );
+  viewModel.pager.limit(10);
+  return viewModel;
+});
 
 export default routingMap;
