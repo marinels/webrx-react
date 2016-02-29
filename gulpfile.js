@@ -463,8 +463,11 @@ gulp.task('watch:dist:debug', function() {
 
   webpackConfig.watch = true;
 
-  return webpackBuild(config.builds.debug, webpackConfig)
-    .pipe(gulp.dest(target));
+  return webpackBuild(config.builds.debug, webpackConfig, function() {})
+    .pipe(gulp.dest(target))
+    .pipe(through(function(file) {
+      gutil.log('Deploying', gutil.colors.magenta(file.path));
+    }));
 });
 
 gulp.task('watch:dist:release', function() {
@@ -475,8 +478,11 @@ gulp.task('watch:dist:release', function() {
 
   webpackConfig.watch = true;
 
-  return webpackBuild(config.builds.release, webpackConfig)
-    .pipe(gulp.dest(target));
+  return webpackBuild(config.builds.release, webpackConfig, function() {})
+    .pipe(gulp.dest(target))
+    .pipe(through(function(file) {
+      gutil.log('Deploying', gutil.colors.magenta(file.path));
+    }));
 });
 
 gulp.task('index', ['index:all']);
@@ -545,7 +551,10 @@ gulp.task('dist:debug', [], function() {
 
   gulp
     .src(path.join(config.dirs.build, config.builds.debug, '**', '*'))
-    .pipe(gulp.dest(target));
+    .pipe(gulp.dest(target))
+    .pipe(through(function(file) {
+      gutil.log('Deploying', gutil.colors.magenta(file.path));
+    }));
 });
 
 gulp.task('dist:release', [], function() {
@@ -554,7 +563,10 @@ gulp.task('dist:release', [], function() {
 
   gulp
     .src(path.join(config.dirs.build, config.builds.release, '**', '*'))
-    .pipe(gulp.dest(target));
+    .pipe(gulp.dest(target))
+    .pipe(through(function(file) {
+      gutil.log('Deploying', gutil.colors.magenta(file.path));
+    }));
 });
 
 gulp.task('deploy', ['deploy:all']);
