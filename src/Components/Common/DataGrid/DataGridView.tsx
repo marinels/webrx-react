@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { Table, TableProps, ButtonGroup, Button } from 'react-bootstrap';
+import { Table, TableProps, ButtonGroup, Button, ListGroup } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import { SearchView, ISearchProps } from '../Search/SearchView';
@@ -49,6 +49,41 @@ export interface IDataGridView {
   renderCell: (view: DataGridView, grid: DataGridViewModel<any>, column: Column, index: number, value: any) => any;
   renderRow: (view: DataGridView, grid: DataGridViewModel<any>, row: any, index: number, cells: any[]) => any;
   renderTable: (view: DataGridView, grid: DataGridViewModel<any>, data: any[], columns: any, rows: any) => any;
+}
+
+export class ListView<T> implements IDataGridView {
+  public static displayName = 'ListView';
+
+  constructor(
+    protected renderItem: (view: DataGridView, grid: DataGridViewModel<T>, row: T, index: number) => any
+  ) {
+  }
+
+  renderColumn(view: DataGridView, grid: DataGridViewModel<any>, column: Column, index: number): any {
+    return null;
+  }
+
+  renderCell(view: DataGridView, grid: DataGridViewModel<any>, column: Column, index: number, value: any): any {
+    return null;
+  }
+
+  renderRow(view: DataGridView, grid: DataGridViewModel<T>, row: T, index: number, cells: any[]) {
+    return this.renderItem(view, grid, row, index);
+  }
+
+  renderTable(view: DataGridView, grid: DataGridViewModel<T>, data: T[], columns: any, rows: any) {
+    return (
+      <div className='List'>
+        <ListGroup>
+          {
+            data == null || data.length === 0 ? (
+              <div className='List-empty'>Nothing to Display...</div>
+            ) : rows
+          }
+        </ListGroup>
+      </div>
+    );
+  }
 }
 
 export class TableView implements IDataGridView {
