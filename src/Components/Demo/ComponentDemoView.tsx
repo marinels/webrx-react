@@ -34,7 +34,7 @@ export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDe
       activator = ViewMap[type];
     }
 
-    return activator == null ? null : activator(component);
+    return activator == null ? null : activator(component, this.state.componentRoute);
   }
 
   updateOn() {

@@ -23,7 +23,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
     super(true);
   }
 
-  private componentRoute: string;
+  public componentRoute: string;
 
   public columns = wx.property(12);
   public component = wx.property<any>(null);

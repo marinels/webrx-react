@@ -16,7 +16,7 @@ import DataGridViewModel from '../Common/DataGrid/DataGridViewModel';
 import DataGridView from '../Common/DataGrid/DataGridView';
 
 export interface IViewActivator {
-  (component: any): any;
+  (component: any, componentRoute: string): any;
 }
 
 export interface IViewMap {
