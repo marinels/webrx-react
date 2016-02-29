@@ -217,7 +217,7 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
   private getColumns(items: any[]) {
     if (this.columns == null) {
       this.columns = Object
-        .keys(items[0])
+        .keys(items[0] || {})
         .map(x => new Column(x));
     }
 
