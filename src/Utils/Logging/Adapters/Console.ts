@@ -11,45 +11,49 @@ export class ConsoleLogManager extends DelegateLogManager {
     super((action, level, text) => this.logAction(action, level, text), defaultLevel);
   }
 
+  private getColorStyle(bgColor = 'transparent', color = 'black') {
+    return `display: block; border:0; margin: 0; padding: 5px 0; line-height: 19px; background-color: ${bgColor}; color: ${color};`;
+  }
+
   private getStyles(level: LogLevel) {
-    // these colors should never get used
-    let bgcolor = 'black';
-    let color = 'white';
+    let styles: string[] = [];
 
     if (level >= LogLevel.Fatal) {
-      bgcolor = 'darkred';
-      color = 'lightcoral';
     } else if (level >= LogLevel.Error) {
-      bgcolor = 'lightcoral';
-      color = 'black';
     } else if (level >= LogLevel.Warn) {
-      bgcolor = 'blanchedalmond ';
-      color = 'black';
     } else if (level >= LogLevel.Info) {
-      bgcolor = 'lightblue ';
-      color = 'black';
+      styles.push(this.getColorStyle('lightblue'));
     } else if (level >= LogLevel.Debug) {
-      bgcolor = 'lightcyan';
-      color = 'black';
+      styles.push(this.getColorStyle('lightcyan'));
     } else {
-      bgcolor = 'transparent';
-      color = 'black';
+      styles.push(this.getColorStyle());
     }
 
-    return [
-      String.format('background-color: {0}; color: {1}; margin: 0; padding: 3px 0', bgcolor, color)
-    ];
+    return styles;
   }
 
   private logAction(logger: ILogger, level: LogLevel, text: string) {
+    let styles = this.getStyles(level);
+
     this.logToConsole(
-      String.format('%c[{0}][{1}][{2}] {3}', moment().format('HH:mm:ss.SSS'), getLevelName(level), logger.name, text),
-      ...this.getStyles(level)
+      `${styles.length > 0 ? '%c' : ''}[${moment().format('HH:mm:ss.SSS')}][${getLevelName(level)}][${logger.name}] ${text}`,
+      level,
+      ...styles
     );
   }
 
-  private logToConsole(text: string, ...formatting: string[]) {
-    console.log(text, ...formatting);
+  private logToConsole(text: string, level: LogLevel, ...formatting: string[]) {
+    if (level >= LogLevel.Error) {
+      console.error(text, ...formatting);
+    } else if (level >= LogLevel.Warn) {
+      console.warn(text, ...formatting);
+    } else if (level >= LogLevel.Info) {
+      console.info(text, ...formatting);
+    } else if (level >= LogLevel.Debug) {
+      console.debug(text, ...formatting);
+    } else {
+      console.log(text, ...formatting);
+    }
   }
 }
 
