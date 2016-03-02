@@ -73,6 +73,8 @@
     "./Routing/HashCodec.ts",
     "./Routing/RouteManager.ts",
     "./Stores/ObservableApi.ts",
+    "./Stores/SampleData/BaseSampleDataStore.ts",
+    "./Stores/SampleData/SampleData.ts",
     "./Utils/Alerts.ts",
     "./Utils/Compare.ts",
     "./Utils/Logging/Adapters/Console.ts",
