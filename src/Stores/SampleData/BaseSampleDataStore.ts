@@ -16,7 +16,7 @@ export abstract class BaseSampleDataStore {
   public abstract getActions(): ISampleDataActionSet;
 
   protected createAlert(action: string, params: any = {}) {
-    Alerts.create(JSON.stringify(params, null, 2), action);
+    Alerts.create(JSON.stringify(params, null, 2), `SampleData API Call: ${action}`);
   }
 }
 
