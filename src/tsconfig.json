@@ -72,6 +72,7 @@
     "./Extensions/String.ts",
     "./Routing/HashCodec.ts",
     "./Routing/RouteManager.ts",
+    "./Stores/BaseStore.ts",
     "./Stores/ObservableApi.ts",
     "./Stores/SampleData/BaseSampleDataStore.ts",
     "./Stores/SampleData/SampleData.ts",
