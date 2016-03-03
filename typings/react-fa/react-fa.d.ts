@@ -13,6 +13,7 @@ declare module 'react-fa' {
     stack?: string;
     inverse?: boolean;
     Component?: string;
+    style?: React.CSSProperties;
   }
 
   interface Icon extends React.ReactElement<IconProps> { }
