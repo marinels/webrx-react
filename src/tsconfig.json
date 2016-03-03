@@ -97,6 +97,7 @@
     "./Components/Common/PageFooter/PageFooterView.tsx",
     "./Components/Common/PageHeader/PageHeaderView.tsx",
     "./Components/Common/Pager/PagerView.tsx",
+    "./Components/Common/ProfilePicture/ProfilePictureView.tsx",
     "./Components/Common/RouteHandler/RouteHandlerView.tsx",
     "./Components/Common/Search/SearchView.tsx",
     "./Components/Common/Splash/SplashView.tsx",
