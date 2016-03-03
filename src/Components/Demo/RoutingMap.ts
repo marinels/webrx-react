@@ -29,7 +29,7 @@ class RoutingMap {
   }
 
   public getUri(path: string, uri: string) {
-    return String.format('{0}/{1}', this.baseUri, uri || path);
+    return `${this.baseUri}/${uri || path}`;
   }
 }
 

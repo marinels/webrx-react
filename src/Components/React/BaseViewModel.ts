@@ -58,7 +58,7 @@ export abstract class BaseViewModel implements IBaseViewModel {
           message = childError.message || childError.Message;
         }
 
-        text = String.format('Error {0}: {1}', code || '', message || String.stringify(error, null, 2));
+        text = `Error ${code || ''}: ${message || String.stringify(error, null, 2)}`;
 
         if (DEBUG) {
           let stack = anyError.stack || anyError.stacktrace || anyError.stackTrace || anyError.StackTrace;
@@ -131,7 +131,7 @@ export abstract class BaseViewModel implements IBaseViewModel {
           if (prop.changed != null && prop.changed.subscribe instanceof Function) {
             this.logObservable(prop.changed, keys[i]);
           } else if (cmd.results != null && cmd.results.subscribe instanceof Function) {
-            this.logObservable(cmd.results, String.format('<{0}>', keys[i]));
+            this.logObservable(cmd.results, `<${keys[i]}>`);
           }
         }
       }

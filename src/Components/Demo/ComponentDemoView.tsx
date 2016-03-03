@@ -49,7 +49,7 @@ export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDe
     let view = this.getView(component);
 
     let componentName = this.getComponentName(component);
-    let viewName = view == null ? 'No View Found' : String.format('{0} Demo', Object.getName(view.type));
+    let viewName = view == null ? 'No View Found' : `${Object.getName(view.type)} Demo`;
 
     let cols = this.state.columns();
     let widthVal = cols === 0 ? 12 : cols;
@@ -75,7 +75,7 @@ export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDe
           <Row>
             <Col md={12}>
               <div className='pull-right'>
-                <DropdownButton id='col-width' bsStyle='info' title={String.format('Column Width ({0})', widthName)}
+                <DropdownButton id='col-width' bsStyle='info' title={`Column Width (${widthName})`}
                   onSelect={this.bindCallback(x => x.columns, (e, x) => x[0])}>
                   {
                     Ix.Enumerable

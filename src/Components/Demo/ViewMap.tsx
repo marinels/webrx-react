@@ -40,7 +40,7 @@ let viewMap: IViewMap = {
   ),
   ListViewModel: (viewModel: ListViewModel<any, any>) => (
     <ListView viewModel={viewModel} checkmarkSelected view={new StandardView<any>(undefined, (v, x) => {
-      return String.format('{0} (Required By {1})', x.name, x.requiredBy);
+      return `${x.name} (Required By ${x.requiredBy})`;
     })}>
     </ListView>
   ),

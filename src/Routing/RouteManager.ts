@@ -69,7 +69,7 @@ export class RouteManager implements Rx.IDisposable {
       if (path[0] !== '/') {
         // relative path
         let currentPath = this.hashCodec.decode(window.location.hash, x => x);
-        path = String.format('{0}/{1}', currentPath.split('/').slice(0, -1).join('/'), path);
+        path = `${currentPath.split('/').slice(0, -1).join('/')}/${path}`;
       }
 
       let hash = this.hashCodec.encode(path, state, uriEncode);

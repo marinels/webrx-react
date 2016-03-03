@@ -25,7 +25,7 @@ export class PageFooterViewModel extends BaseViewModel {
   public viewportDimensions = this.viewportDimensionsChanged.results
     .debounce(100)
     .where(x => x != null && x.width != null && x.height != null)
-    .select(x => String.format('{0}x{1}', x.width, x.height))
+    .select(x => `${x.width}x${x.height}`)
     .toProperty();
 }
 

@@ -141,7 +141,7 @@ export class TreeView<T> extends StandardView<T> {
         let isSelected = view.isSelected(x);
 
         if (props.key == null) {
-          props.key = String.format('{0}.{1}', key, i);
+          props.key = `${key}.${i}`;
         }
 
         if (props.onClick == null) {
