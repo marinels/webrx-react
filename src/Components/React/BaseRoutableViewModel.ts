@@ -69,8 +69,23 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
 
   public getRoutingKey() { return Object.getName(this); }
 
-  public abstract getRoutingState(context?: any): TRoutingState;
-  public abstract setRoutingState(state: TRoutingState): void;
+  public getRoutingState(context?: any) {
+    return this.createRoutingState(state => {
+      this.saveRoutingState(state);
+    });
+  }
+
+  protected saveRoutingState(state: TRoutingState) {
+  }
+
+  public setRoutingState(state: TRoutingState) {
+    this.handleRoutingState(state, state => {
+      this.loadRoutingState(state);
+    });
+  }
+
+  protected loadRoutingState(state: TRoutingState) {
+  }
 }
 
 export default BaseRoutableViewModel;
