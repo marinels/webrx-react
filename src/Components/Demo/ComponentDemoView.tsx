@@ -51,6 +51,10 @@ export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDe
     let componentName = this.getComponentName(component);
     let viewName = view == null ? 'No View Found' : `${view instanceof React.Component ? Object.getName(view.type) : componentName} Demo`;
 
+    if (view != null) {
+      this.logger.debug(`Rendering "${viewName}"...`, view);
+    }
+
     let cols = this.state.columns();
     let widthVal = cols === 0 ? 12 : cols;
     let widthName = cols === 0 ? 'Full Width' : widthVal;
