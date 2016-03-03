@@ -69,7 +69,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   }
 
   private logRender(initial: boolean) {
-    this.logger.debug('{0}rendering', initial ? '' : 're-');
+    this.logger.debug(`${initial ? '' : 're-'}rendering`);
   }
 
   private subscribeToUpdates() {

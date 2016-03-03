@@ -93,7 +93,7 @@ export class TreeView<T> extends StandardView<T> {
 
   private toggleExpanded(view: ListView, node: T, i: number) {
     let isExpanded = !this.getIsExpanded(node, i);
-    TreeView.logger.debug('{0} Node', isExpanded ? 'Expanding' : 'Collapsing');
+    TreeView.logger.debug(`${isExpanded ? 'Expanding' : 'Collapsing'} Node`);
     this.setIsExpanded(node, i, isExpanded);
     view.state.notifyChanged();
   }

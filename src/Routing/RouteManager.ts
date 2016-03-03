@@ -74,7 +74,7 @@ export class RouteManager implements Rx.IDisposable {
 
       let hash = this.hashCodec.encode(path, state, uriEncode);
 
-      this.logger.debug('Routing to Hash: {0}', hash);
+      this.logger.debug(`Routing to Hash: ${hash}`);
 
       if (state != null) {
         this.logger.debug(JSON.stringify(state, null, 2));

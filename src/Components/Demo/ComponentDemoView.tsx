@@ -30,7 +30,7 @@ export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDe
 
     if (component != null) {
       let type = this.getComponentName(component);
-      this.logger.debug('Loading View for "{0}"', type);
+      this.logger.debug(`Loading View for "${type}"...`);
       activator = ViewMap[type];
     }
 

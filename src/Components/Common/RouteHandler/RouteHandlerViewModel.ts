@@ -49,7 +49,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
     } else {
       if (activator.path != null && activator.creator == null) {
         // this is a simple redirect route
-        this.logger.debug('Redirecting from {0} to {1}', route.path, activator.path);
+        this.logger.debug(`Redirecting from ${route.path} to ${activator.path}`);
 
         // only redirect to a different path
         this.manager.navTo(activator.path);
@@ -57,13 +57,13 @@ export class RouteHandlerViewModel extends BaseViewModel {
         // this is a routed view model path
         if ((activator.path || route.path) === this.currentPath) {
           // we're on the same path (or virtual path)
-          this.logger.debug('Routing to Same Path: ({0} || {1}) == {2}', activator.path, route.path, this.currentPath);
+          this.logger.debug(`Routing to Same Path: (${activator.path} || ${route.path}) == ${this.currentPath}`);
 
           // we can just update the current routed component's state
           this.updateRoutingState(route);
         } else {
           // a new routing path is requested
-          this.logger.debug('Routing to Path: {0}', route.path);
+          this.logger.debug(`Routing to Path: ${route.path}`);
 
           // update the current path (use the virtual path if specified, otherwise the routing path)
           this.currentPath = activator.path == null ? route.path : activator.path;
@@ -84,7 +84,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
     viewModel = viewModel || this.currentViewModel();
 
     if (viewModel != null) {
-      this.logger.debug('Updating Routing State: {0}', route.path);
+      this.logger.debug(`Updating Routing State: ${route.path}`);
 
       if (route.state != null) {
         this.logger.debug(JSON.stringify(route.state, null, 2));

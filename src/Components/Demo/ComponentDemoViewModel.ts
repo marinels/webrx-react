@@ -46,7 +46,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
     let activator: IViewModelActivator = null;
 
     if (componentRoute != null) {
-      this.logger.debug('Loading View Model for "{0}"...', componentRoute);
+      this.logger.debug(`Loading View Model for "${componentRoute}"...`);
       activator = RoutingMap.map[componentRoute];
 
       if (activator == null) {
