@@ -12,26 +12,26 @@ export interface ILogger {
 
   isEnabledFor(level: LogLevel | number): boolean;
 
-  log(level: LogLevel | number, format: string, ...args: any[]): void;
-  log(level: LogLevel | number, fn: IMessageDelegate): void;
+  log(level: LogLevel | number, text: string, ...args: any[]): void;
+  log(level: LogLevel | number, fn: IMessageDelegate, ...args: any[]): void;
 
-  trace(format: string, ...args: any[]): void;
-  trace(fn: IMessageDelegate): void;
+  trace(text: string, ...args: any[]): void;
+  trace(fn: IMessageDelegate, ...args: any[]): void;
 
-  debug(format: string, ...args: any[]): void;
-  debug(fn: IMessageDelegate): void;
+  debug(text: string, ...args: any[]): void;
+  debug(fn: IMessageDelegate, ...args: any[]): void;
 
-  info(format: string, ...args: any[]): void;
-  info(fn: IMessageDelegate): void;
+  info(text: string, ...args: any[]): void;
+  info(fn: IMessageDelegate, ...args: any[]): void;
 
-  warn(format: string, ...args: any[]): void;
-  warn(fn: IMessageDelegate): void;
+  warn(text: string, ...args: any[]): void;
+  warn(fn: IMessageDelegate, ...args: any[]): void;
 
-  error(format: string, ...args: any[]): void;
-  error(fn: IMessageDelegate): void;
+  error(text: string, ...args: any[]): void;
+  error(fn: IMessageDelegate, ...args: any[]): void;
 
-  fatal(format: string, ...args: any[]): void;
-  fatal(fn: IMessageDelegate): void;
+  fatal(text: string, ...args: any[]): void;
+  fatal(fn: IMessageDelegate, ...args: any[]): void;
 }
 
 export abstract class BaseLogger implements ILogger {
@@ -42,54 +42,54 @@ export abstract class BaseLogger implements ILogger {
     return this.level <= level;
   }
 
-  abstract log(level: LogLevel | number, format: string, ...args: any[]): void;
-  abstract log(level: LogLevel | number, fn: () => string): void;
+  abstract log(level: LogLevel | number, text: string, ...args: any[]): void;
+  abstract log(level: LogLevel | number, fn: () => string, ...args: any[]): void;
 
-  trace(formatOrFn: string | IMessageDelegate, ...args: any[]) {
-    if (formatOrFn instanceof Function) {
-      this.log(LogLevel.Trace, formatOrFn);
+  trace(textOrFn: string | IMessageDelegate, ...args: any[]) {
+    if (textOrFn instanceof Function) {
+      this.log(LogLevel.Trace, textOrFn, ...args);
     } else {
-      this.log(LogLevel.Trace, formatOrFn as string, ...args);
+      this.log(LogLevel.Trace, textOrFn.toString(), ...args);
     }
   }
 
-  debug(formatOrFn: string | IMessageDelegate, ...args: any[]) {
-    if (formatOrFn instanceof Function) {
-      this.log(LogLevel.Debug, formatOrFn);
+  debug(textOrFn: string | IMessageDelegate, ...args: any[]) {
+    if (textOrFn instanceof Function) {
+      this.log(LogLevel.Debug, textOrFn, ...args);
     } else {
-      this.log(LogLevel.Debug, formatOrFn as string, ...args);
+      this.log(LogLevel.Debug, textOrFn.toString(), ...args);
     }
   }
 
-  info(formatOrFn: string | IMessageDelegate, ...args: any[]) {
-    if (formatOrFn instanceof Function) {
-      this.log(LogLevel.Info, formatOrFn);
+  info(textOrFn: string | IMessageDelegate, ...args: any[]) {
+    if (textOrFn instanceof Function) {
+      this.log(LogLevel.Info, textOrFn, ...args);
     } else {
-      this.log(LogLevel.Info, formatOrFn as string, ...args);
+      this.log(LogLevel.Info, textOrFn.toString(), ...args);
     }
   }
 
-  warn(formatOrFn: string | IMessageDelegate, ...args: any[]) {
-    if (formatOrFn instanceof Function) {
-      this.log(LogLevel.Warn, formatOrFn);
+  warn(textOrFn: string | IMessageDelegate, ...args: any[]) {
+    if (textOrFn instanceof Function) {
+      this.log(LogLevel.Warn, textOrFn, ...args);
     } else {
-      this.log(LogLevel.Warn, formatOrFn as string, ...args);
+      this.log(LogLevel.Warn, textOrFn.toString(), ...args);
     }
   }
 
-  error(formatOrFn: string | IMessageDelegate, ...args: any[]) {
-    if (formatOrFn instanceof Function) {
-      this.log(LogLevel.Error, formatOrFn);
+  error(textOrFn: string | IMessageDelegate, ...args: any[]) {
+    if (textOrFn instanceof Function) {
+      this.log(LogLevel.Error, textOrFn, ...args);
     } else {
-      this.log(LogLevel.Error, formatOrFn as string, ...args);
+      this.log(LogLevel.Error, textOrFn.toString(), ...args);
     }
   }
 
-  fatal(formatOrFn: string | IMessageDelegate, ...args: any[]) {
-    if (formatOrFn instanceof Function) {
-      this.log(LogLevel.Fatal, formatOrFn);
+  fatal(textOrFn: string | IMessageDelegate, ...args: any[]) {
+    if (textOrFn instanceof Function) {
+      this.log(LogLevel.Fatal, textOrFn, ...args);
     } else {
-      this.log(LogLevel.Fatal, formatOrFn as string, ...args);
+      this.log(LogLevel.Fatal, textOrFn.toString(), ...args);
     }
   }
 }

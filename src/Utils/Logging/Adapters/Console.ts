@@ -8,7 +8,7 @@ import DelegateLogManager from './Delegate';
 
 export class ConsoleLogManager extends DelegateLogManager {
   constructor(defaultLevel: LogLevel) {
-    super((action, level, text) => this.logAction(action, level, text), defaultLevel);
+    super((action, level, text, args) => this.logAction(action, level, text, args), defaultLevel);
   }
 
   private getColorStyle(bgColor = 'transparent', color = 'black') {
@@ -32,27 +32,33 @@ export class ConsoleLogManager extends DelegateLogManager {
     return styles;
   }
 
-  private logAction(logger: ILogger, level: LogLevel, text: string) {
+  private logAction(logger: ILogger, level: LogLevel, text: string, args: any[]) {
     let styles = this.getStyles(level);
 
     this.logToConsole(
-      `${styles.length > 0 ? '%c' : ''}[${moment().format('HH:mm:ss.SSS')}][${getLevelName(level)}][${logger.name}] ${text}`,
       level,
+      `${styles.length > 0 ? '%c' : ''}[${moment().format('HH:mm:ss.SSS')}][${getLevelName(level)}][${logger.name}] ${text}`,
       ...styles
     );
+
+    if (args != null && args.length > 0) {
+      args.forEach(x => {
+        this.logToConsole(level, x);
+      });
+    }
   }
 
-  private logToConsole(text: string, level: LogLevel, ...formatting: string[]) {
+  private logToConsole(level: LogLevel, message: any, ...formatting: string[]) {
     if (level >= LogLevel.Error) {
-      console.error(text, ...formatting);
+      console.error(message, ...formatting);
     } else if (level >= LogLevel.Warn) {
-      console.warn(text, ...formatting);
+      console.warn(message, ...formatting);
     } else if (level >= LogLevel.Info) {
-      console.info(text, ...formatting);
+      console.info(message, ...formatting);
     } else if (level >= LogLevel.Debug) {
-      console.debug(text, ...formatting);
+      console.debug(message, ...formatting);
     } else {
-      console.log(text, ...formatting);
+      console.log(message, ...formatting);
     }
   }
 }
