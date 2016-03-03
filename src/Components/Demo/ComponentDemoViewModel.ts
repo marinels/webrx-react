@@ -72,6 +72,8 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
   }
 
   initialize() {
+    super.initialize();
+
     this.subscribe(wx
       .whenAny(this.columns.changed, x => null)
       .invokeCommand(this.routingStateChanged)
