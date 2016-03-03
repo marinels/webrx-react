@@ -5,6 +5,7 @@ import { IMenuItem } from '../Common/PageHeader/Actions';
 import SplashViewModel from '../Common/Splash/SplashViewModel';
 import ListViewModel from '../Common/List/ListViewModel';
 import DataGridViewModel from '../Common/DataGrid/DataGridViewModel';
+import ModalDialogViewModel from '../Common/ModalDialog/ModalDialogViewModel';
 
 export interface IViewModelActivator {
   (state: any): any;
@@ -38,6 +39,7 @@ let routingMap = new RoutingMap();
 routingMap.addRoute('Splash', 'Splash', (state: any) => new SplashViewModel('Demo Splash Screen'));
 routingMap.addRoute('TimeSpanInput', 'Time Span Input', (state: any) => 'TimeSpanInput');
 routingMap.addRoute('ContextMenu', 'Context Menu', (state: any) => 'ContextMenu');
+routingMap.addRoute('ProfilePicture', 'Profile Picture', (state: any) => 'ProfilePicture');
 routingMap.addRoute('List', 'List', (state: any) => new ListViewModel(true, false,
   { name: 'test 1', requiredBy: 'now' },
   { name: 'test 2', requiredBy: 'tomorrow' },
@@ -63,5 +65,6 @@ routingMap.addRoute('DataGridList', 'DataGrid (List View)', (state: any) => {
   viewModel.pager.limit(10);
   return viewModel;
 });
+routingMap.addRoute('ModalDialog', 'Modal Dialog', (state: any) => new ModalDialogViewModel('Modal Dialog Demo', 'Content...'));
 
 export default routingMap;
