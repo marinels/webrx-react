@@ -33,8 +33,7 @@ export class ModalDialogViewModel extends BaseViewModel {
   public reset = wx.asyncCommand(x => Rx.Observable.return(null));
 
   public result = Rx.Observable
-    .merge(this.accept.results, this.cancel.results)
-    .take(1)
+    .merge(this.accept.results, this.cancel.results, this.reset.results)
     .toProperty();
 
   private getCanAccept() {
