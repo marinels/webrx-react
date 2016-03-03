@@ -10,5 +10,4 @@ declare interface ObjectConstructor {
 declare interface StringConstructor {
   isNullOrEmpty(value: string): boolean;
   stringify(value: any, replacer?: any, space?: string | number): string;
-  format(format: string, ...args: any[]): string;
 }
