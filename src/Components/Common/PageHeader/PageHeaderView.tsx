@@ -9,6 +9,7 @@ import { Image } from 'react-bootstrap';
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import SearchView from '../Search/SearchView';
 import * as Icon from 'react-fa';
+import ProfilePicture from '../ProfilePicture/ProfilePictureView';
 
 import PageHeaderViewModel from './PageHeaderViewModel';
 import { IMenuItem } from './Actions';
@@ -77,8 +78,6 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
   }
 
   render() {
-    let userIcon = this.state.userImage == null ? <Icon name='user' size='lg' /> : <Image src={this.state.userImage} />;
-
     let eventKey = 1;
 
     let appMenus = (this.state.appMenus == null || this.state.appMenus.length() === 0) ? null : (
@@ -135,7 +134,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
               eventKey: eventKey++,
               noCaret: true
             }))}
-            {this.createMenu(this.state.userMenuItems, userIcon, () => ({
+            {this.createMenu(this.state.userMenuItems, (<ProfilePicture src={this.state.userImage} iconSize='lg' block />), () => ({
               id: 'user-menu',
               className: 'PageHeader-iconNavItem PageHeader-navUser',
               eventKey: eventKey++,
