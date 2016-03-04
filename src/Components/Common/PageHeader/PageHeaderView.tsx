@@ -129,9 +129,9 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
               eventKey: eventKey++,
               noCaret: true
             }))}
-            {this.createMenu(this.state.adminMenuItems, (<Icon name='cog' size='lg' />), () => ({
+            {this.createMenu(this.state.adminMenuItems, (<Icon className='hover-tilt' name='cog' size='lg' />), () => ({
               id: 'admin-menu',
-              className: 'PageHeader-iconNavItem PageHeader-navAdmin',
+              className: 'PageHeader-iconNavItem PageHeader-navAdmin hover-tilt-host',
               eventKey: eventKey++,
               noCaret: true
             }))}
