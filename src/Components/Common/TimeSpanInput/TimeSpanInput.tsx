@@ -107,7 +107,7 @@ export class TimeSpanInput extends React.Component<ITimeSpanInputProps, ITimeSpa
     let units: any = [];
 
     while (unit != null && unit.type <= (this.props.maxUnit || UnitTypes.Years)) {
-      units.push(<MenuItem key={unit.type} eventKey={unit} selected={unit.type === this.props.defaultUnit}>{unit.name}</MenuItem>);
+      units.push(<MenuItem key={unit.type} eventKey={unit} active={unit.type === this.props.defaultUnit}>{unit.name}</MenuItem>);
       unit = Units[unit.type + 1];
     }
 
