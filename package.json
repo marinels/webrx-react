@@ -43,6 +43,7 @@
     "gulp-replace": "^0.5.4",
     "gulp-tslint": "^4.3.2",
     "gulp-rimraf": "^0.2.0",
+    "gulp-typings": "^1.1.0",
     "gulp-util": "^3.0.7",
     "ix": "^1.0.6",
     "jquery-deparam": "^0.5.2",

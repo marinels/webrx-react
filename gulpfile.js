@@ -13,6 +13,7 @@ var gutil = require('gulp-util');
 var clean = require('gulp-rimraf');
 var tslint = require('gulp-tslint');
 var eslint = require('gulp-eslint');
+var typings = require('gulp-typings');
 var mocha = require('gulp-mocha');
 var filter = require('gulp-filter');
 var replace = require('gulp-replace');
@@ -36,11 +37,13 @@ var config = {
     watch: 'watch'
   },
   files: {
+    typings: 'typings.json',
     webpack: 'webpack.config.js',
     stats: 'stats.json',
     index: 'index.html'
   },
   dirs: {
+    typings: path.join(__dirname, 'typings'),
     src: path.join(__dirname, 'src'),
     test: path.join(__dirname, 'test'),
     build: path.join(__dirname, 'build'),
@@ -229,6 +232,32 @@ gulp.task('lint:ts', function() {
       path.join(config.dirs.test, '**', '*.ts')])
     .pipe(tslint())
     .pipe(tslint.report('verbose', { emitError: false, summarizeFailureOutput: true }));
+});
+
+gulp.task('typings', ['typings:install']);
+
+gulp.task('typings:install', function() {
+  return gulp
+    .src(path.join(__dirname, config.files.typings))
+    .pipe(typings());
+});
+
+gulp.task('typings:ensure', function(cb) {
+  var count = 0;
+
+  return gulp
+    .src(path.join(config.dirs.typings, '**', '*.d.ts'), { read: false })
+    .pipe(through(function(file) {
+      ++count;
+    }, function() {
+      if (count === 0) {
+        runSequence('typings:install', cb);
+      } else {
+        log('Found', gutil.colors.magenta(count), 'Typings Files');
+
+        cb();
+      }
+    }));
 });
 
 function getWebpackConfig(build) {
