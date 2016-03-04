@@ -1,13 +1,18 @@
 'use strict';
 
 import * as React from 'react';
-import { Image, ImageProps } from 'react-bootstrap';
+import { Image } from 'react-bootstrap';
 import * as Icon from 'react-fa';
 import * as classNames from 'classnames';
 
 import './ProfilePicture.less';
 
-interface IProfilePictureProps extends ImageProps {
+interface IProfilePictureProps extends React.HTMLProps<HTMLDivElement> {
+  src: string;
+  responsive?: boolean;
+  rounded?: boolean;
+  circle?: boolean;
+  thumbnail?: boolean;
   defaultSrc?: string;
   defaultIcon?: string;
   iconSize?: string;
@@ -38,7 +43,7 @@ export class ProfilePictureView extends React.Component<IProfilePictureProps, an
         'borderRadius': this.props.rounded ? '4px' : '0',
       };
 
-      image = <Icon className={classNames({'fa-border': this.props.thumbnail})} style={iconStyle} name={this.props.defaultIcon} size={this.props.iconSize} />;
+      image = <Icon className={classNames({'fa-border': this.props.thumbnail, 'fa-rounded': this.props.rounded})} name={this.props.defaultIcon} size={this.props.iconSize} />;
     } else {
       image = <Image src={src} responsive={this.props.responsive}
         rounded={this.props.rounded} circle={this.props.circle} thumbnail={this.props.thumbnail} />;
@@ -51,7 +56,7 @@ export class ProfilePictureView extends React.Component<IProfilePictureProps, an
     }, this.props.style);
 
     return (
-      <div className='ProfilePicture' style={blockStyle} title={this.props.title}>
+      <div className='ProfilePicture' {...this.props} style={blockStyle}>
         {image}
       </div>
     );
