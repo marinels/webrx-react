@@ -21,6 +21,7 @@ export class PageHeaderViewModel extends BaseViewModel {
     public staticAdminMenuItems: IMenuItem[] = [],
     public staticUserMenuItems: IMenuItem[] = [],
     public userImage?: string,
+    public userDisplayName?: string,
     public homeLink = '#/') {
     super();
   }

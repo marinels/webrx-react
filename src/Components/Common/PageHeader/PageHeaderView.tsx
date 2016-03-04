@@ -135,7 +135,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
               eventKey: eventKey++,
               noCaret: true
             }))}
-            {this.createMenu(this.state.userMenuItems, (<ProfilePicture src={this.state.userImage} iconSize='lg' block />), () => ({
+            {this.createMenu(this.state.userMenuItems, (<ProfilePicture src={this.state.userImage} title={this.state.userDisplayName} iconSize='lg' block />), () => ({
               id: 'user-menu',
               className: 'PageHeader-iconNavItem PageHeader-navUser',
               eventKey: eventKey++,
