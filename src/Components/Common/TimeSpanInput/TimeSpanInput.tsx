@@ -45,6 +45,7 @@ interface ITimeSpanInputState {
   text: string;
   value: moment.Moment;
   unit: IUnit;
+  defaultUnit: UnitTypes;
 }
 
 interface ITimeSpanInputProps {
@@ -76,14 +77,17 @@ export class TimeSpanInput extends React.Component<ITimeSpanInputProps, ITimeSpa
   constructor(props?: ITimeSpanInputProps, context?: any) {
     super(props, context);
 
-    let unit = Units[this.props.defaultUnit < this.props.minUnit ? this.props.minUnit : this.props.defaultUnit];
-    this.units = this.props.units || this.createUnitRange(unit);
+    let defaultUnit = this.props.defaultUnit < this.props.minUnit ? this.props.minUnit : this.props.defaultUnit;
+    let unit = Units[defaultUnit];
 
     this.state = {
       text: null,
       value: this.props.value || moment(),
-      unit
+      unit,
+      defaultUnit
     };
+
+    this.units = this.props.units || this.createUnitRange(unit);
   }
 
   private units: IUnit[];
@@ -107,7 +111,7 @@ export class TimeSpanInput extends React.Component<ITimeSpanInputProps, ITimeSpa
     let units: any = [];
 
     while (unit != null && unit.type <= (this.props.maxUnit || UnitTypes.Years)) {
-      units.push(<MenuItem key={unit.type} eventKey={unit} active={unit.type === this.props.defaultUnit}>{unit.name}</MenuItem>);
+      units.push(<MenuItem key={unit.type} eventKey={unit} active={unit.type === this.state.defaultUnit}>{unit.name}</MenuItem>);
       unit = Units[unit.type + 1];
     }
 
