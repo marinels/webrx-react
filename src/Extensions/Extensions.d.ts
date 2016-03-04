@@ -1,5 +1,3 @@
-/// <reference path="../../typings/rx/rx.all.d.ts" />
-
 declare interface ObjectConstructor {
   assign<T>(target: any, ...sources: any[]): T;
   dispose<T>(disposable: T, returnNull?: boolean): T;
