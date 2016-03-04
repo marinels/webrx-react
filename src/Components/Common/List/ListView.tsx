@@ -146,7 +146,7 @@ export class TreeView<T> extends StandardView<T> {
 
         if (props.onClick == null) {
           // this click handler deals with selection of the entire row
-          props.onClick = (e) => {
+          props.onClick = (e: React.SyntheticEvent) => {
             if (e.defaultPrevented === false) {
               if (this.expandOnSelect === true && subItems != null && subItems.length > 0) {
                 this.toggleExpanded(view, x, i);
