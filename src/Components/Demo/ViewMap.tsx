@@ -55,9 +55,9 @@ let viewMap: IViewMap = {
         <ProfilePictureView style={style} src={null} iconSize='4x' thumbnail width={60} height={60} title='Fixed Width/Height Icon' />
         <ProfilePictureView style={style} src={null} iconSize='4x' thumbnail rounded width={60} height={60} title='Rounded Icon' />
         <ProfilePictureView style={style} src={imageData} title='Basic Image' />
+        <ProfilePictureView style={style} src={imageData} rounded title='Rounded Image' />
         <ProfilePictureView style={style} src={imageData} thumbnail title='Thumbnail Image' />
         <ProfilePictureView style={style} src={imageData} thumbnail width={60} height={60} title='Fixed Width/Height Image' />
-        <ProfilePictureView style={style} src={imageData} thumbnail rounded width={60} height={60} title='Rounded Image' />
       </span>
     );
   },
