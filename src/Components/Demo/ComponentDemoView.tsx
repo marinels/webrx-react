@@ -64,7 +64,7 @@ export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDe
         <Grid fluid={cols === 0}>
           <Row>
             <Col md={12}>
-              <PageHeader style={({textAlign: 'center'})}>
+              <PageHeader>
                 {viewName}
               </PageHeader>
             </Col>
