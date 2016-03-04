@@ -28,7 +28,9 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
   public columns = wx.property(12);
   public component = wx.property<any>(null);
 
-  public reRender = wx.command();
+  public reRender = wx.command(x => {
+    this.navTo(`/demo/${this.componentRoute}?rand=${Math.random()}`);
+  });
 
   getAppMenus() {
     return <IMenu[]>[
@@ -77,10 +79,6 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
     this.subscribe(wx
       .whenAny(this.columns.changed, x => null)
       .invokeCommand(this.routingStateChanged)
-    );
-
-    this.subscribe(this.reRender.results
-      .invokeCommand(() => this.stateChanged)
     );
   }
 
