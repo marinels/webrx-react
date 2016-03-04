@@ -8,7 +8,8 @@ import logManager from '../Common/App/Logging';
 import { IBaseViewModel } from './BaseViewModel';
 
 export interface IBaseViewProps {
-  key?: string | number;
+  children?: React.ReactNode;
+  key?: React.Key;
   viewModel: IBaseViewModel;
 }
 
