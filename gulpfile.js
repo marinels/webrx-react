@@ -485,7 +485,7 @@ gulp.task('watch:lint', ['lint'], function() {
 
 gulp.task('watch:dist', ['watch:dist:debug']);
 
-gulp.task('watch:dist:debug', function() {
+gulp.task('watch:dist:debug', ['tsconfig:glob'], function() {
   var target = path.join(config.dirs.dist, config.builds.debug);
   log('Deploying', gutil.colors.yellow(config.builds.debug), 'Build to ', gutil.colors.magenta(target));
 
@@ -500,7 +500,7 @@ gulp.task('watch:dist:debug', function() {
     }));
 });
 
-gulp.task('watch:dist:release', function() {
+gulp.task('watch:dist:release', ['tsconfig:glob'], function() {
   var target = path.join(config.dirs.dist, config.builds.release);
   log('Deploying', gutil.colors.yellow(config.builds.release), 'Build to ', gutil.colors.magenta(target));
 
