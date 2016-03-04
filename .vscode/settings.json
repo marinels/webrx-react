@@ -4,5 +4,6 @@
   "editor.insertSpaces": true,
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
-  "stylelint.enable": true
+  "stylelint.enable": true,
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
