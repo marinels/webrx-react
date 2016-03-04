@@ -68,7 +68,7 @@ gulp.task('default', ['browser']);  // Default build task
 gulp.task('test', ['mocha']);       // Default test task
 
 gulp.task('config', function() {
-  gutil.log('Gulp Config: ', config);
+  gutil.log('Gulp Config:', config);
 });
 
 gulp.task('help', function() {
@@ -429,7 +429,7 @@ gulp.task('watch:webpack', ['tsconfig:glob', 'clean:watch', 'index:watch'], func
       cb();
       cb = null;
 
-      log('[webpack-dev-server]', 'Listening at ' + gutil.colors.magenta(config.host + ':' + config.port));
+      log('[webpack-dev-server]', 'Listening at' + gutil.colors.magenta(config.host + ':' + config.port));
       log('[webpack-dev-server]', gutil.colors.magenta(uri + '/' + config.files.index));
       log('[webpack-dev-server]', gutil.colors.magenta(uri + '/webpack-dev-server/' + config.files.index));
     } else {
@@ -487,7 +487,7 @@ gulp.task('watch:dist', ['watch:dist:debug']);
 
 gulp.task('watch:dist:debug', ['tsconfig:glob'], function() {
   var target = path.join(config.dirs.dist, config.builds.debug);
-  log('Deploying', gutil.colors.yellow(config.builds.debug), 'Build to ', gutil.colors.magenta(target));
+  log('Deploying', gutil.colors.yellow(config.builds.debug), 'Build to', gutil.colors.magenta(target));
 
   var webpackConfig = getWebpackConfig(config.builds.debug);
 
@@ -502,7 +502,7 @@ gulp.task('watch:dist:debug', ['tsconfig:glob'], function() {
 
 gulp.task('watch:dist:release', ['tsconfig:glob'], function() {
   var target = path.join(config.dirs.dist, config.builds.release);
-  log('Deploying', gutil.colors.yellow(config.builds.release), 'Build to ', gutil.colors.magenta(target));
+  log('Deploying', gutil.colors.yellow(config.builds.release), 'Build to', gutil.colors.magenta(target));
 
   var webpackConfig = getWebpackConfig(config.builds.release);
 
@@ -575,9 +575,9 @@ gulp.task('browser:stats', function() {
 gulp.task('dist', ['dist:all']);
 gulp.task('dist:all', ['dist:debug', 'dist:release']);
 
-gulp.task('dist:debug', [], function() {
+gulp.task('dist:debug', function() {
   var target = path.join(config.dirs.dist, config.builds.debug);
-  log('Deploying', gutil.colors.yellow(config.builds.debug), 'Build to ', gutil.colors.magenta(target));
+  log('Deploying', gutil.colors.yellow(config.builds.debug), 'Build to', gutil.colors.magenta(target));
 
   return gulp
     .src(path.join(config.dirs.build, config.builds.debug, '**', '*'))
@@ -587,9 +587,9 @@ gulp.task('dist:debug', [], function() {
     }));
 });
 
-gulp.task('dist:release', [], function() {
+gulp.task('dist:release', function() {
   var target = path.join(config.dirs.dist, config.builds.release);
-  log('Deploying', gutil.colors.yellow(config.builds.release), 'Build to ', gutil.colors.magenta(target));
+  log('Deploying', gutil.colors.yellow(config.builds.release), 'Build to', gutil.colors.magenta(target));
 
   return gulp
     .src(path.join(config.dirs.build, config.builds.release, '**', '*'))
