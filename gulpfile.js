@@ -95,7 +95,6 @@ gulp.task('help', function() {
     '  ' + ['debug', 'release', 'test', 'watch', 'dist', 'all'].map(function(x) { return gutil.colors.cyan('clean:' + x); }).join(', '),
     '',
     '* ' + gutil.colors.cyan('gulp tsconfig:glob') + ' will expand the ' + gutil.colors.cyan('filesGlob') + ' in the ' + gutil.colors.magenta('tsconfig.json') + ' file',
-    '  ' + ['src', 'test', 'all'].map(function(x) { return gutil.colors.cyan('tsconfig:glob:' + x); }).join(', '),
     '',
     '* ' + gutil.colors.cyan('gulp lint') + ' will scan for coding style rule infractions',
     '  ' + ['ts'].map(function(x) { return gutil.colors.cyan('lint:' + x); }).join(', '),
@@ -190,19 +189,10 @@ gulp.task('clean:dist', function() {
     .pipe(clean({ force }));
 });
 
-gulp.task('tsconfig:glob', ['tsconfig:glob:all']);
-gulp.task('tsconfig:glob:all', ['tsconfig:glob:src', 'tsconfig:glob:test']);
+gulp.task('tsconfig:glob', function() {
+  log('Globbing', gutil.colors.magenta(path.join(__dirname, 'tsconfig.json')));
 
-gulp.task('tsconfig:glob:src', function() {
-  log('Globbing', gutil.colors.magenta(path.join(config.dirs.src, 'tsconfig.json')));
-
-  return tsconfigGlob({ configPath: config.dirs.src, indent: 2 });
-});
-
-gulp.task('tsconfig:glob:test', function() {
-  log('Globbing', gutil.colors.magenta(path.join(config.dirs.test, 'tsconfig.json')));
-
-  return tsconfigGlob({ configPath: config.dirs.test, indent: 2 });
+  return tsconfigGlob({ configPath: __dirname, indent: 2 });
 });
 
 gulp.task('lint', ['lint:all']);
@@ -333,19 +323,19 @@ gulp.task('webpack:all', function(cb) {
   return runSequence('webpack:debug', 'webpack:release', 'webpack:test', cb);
 });
 
-gulp.task('webpack:debug', ['tsconfig:glob:src'], function(cb) {
+gulp.task('webpack:debug', ['tsconfig:glob'], function(cb) {
   var webpackConfig = getWebpackConfig(config.builds.debug);
 
   return webpackBuild(config.builds.debug, webpackConfig);
 });
 
-gulp.task('webpack:release', ['tsconfig:glob:src'], function(cb) {
+gulp.task('webpack:release', ['tsconfig:glob'], function(cb) {
   var webpackConfig = getWebpackConfig(config.builds.release);
 
   return webpackBuild(config.builds.release, webpackConfig);
 });
 
-gulp.task('webpack:test', ['tsconfig:glob:test'], function(cb) {
+gulp.task('webpack:test', ['tsconfig:glob'], function(cb) {
   var webpackConfig = getWebpackConfig(config.builds.test);
 
   return webpackBuild(config.builds.test, webpackConfig);
@@ -369,7 +359,7 @@ gulp.task('mocha:test', function() {
 
 gulp.task('watch', ['watch:webpack']);
 
-gulp.task('watch:webpack', ['tsconfig:glob:src', 'clean:watch', 'index:watch'], function(cb) {
+gulp.task('watch:webpack', ['tsconfig:glob', 'clean:watch', 'index:watch'], function(cb) {
   var webpackConfig = getWebpackConfig(config.builds.debug);
   var uri = 'http://' + (config.host === '0.0.0.0' ? 'localhost' : config.host) + ':' + config.port;
 

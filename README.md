@@ -1,6 +1,8 @@
 ## Getting Started
 
 * `npm install` -- _installs all required development packages_
+* `typings install` -- _installs all required typings files_
+    * you may need to run `npm install -g typings` first
 
 ### Gulp Commands
 

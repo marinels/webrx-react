@@ -1,6 +1,3 @@
-///<reference path="../react/react.d.ts"/>
-/// <reference path="../moment/moment.d.ts"/>
-
 declare namespace __ReactBootstrapDateTimePicker {
   interface DateTimeFieldProps {
     dateTime?: string | number;
@@ -18,8 +15,8 @@ declare namespace __ReactBootstrapDateTimePicker {
     defaultText?: string;
   }
 
-  interface DateTimeField extends React.ReactElement<DateTimeFieldProps> { }
-  interface DateTimeFieldClass extends React.ComponentClass<DateTimeFieldProps> { }
+  interface DateTimeField extends __React.ReactElement<DateTimeFieldProps> { }
+  interface DateTimeFieldClass extends __React.ComponentClass<DateTimeFieldProps> { }
 }
 
 declare module 'react-bootstrap-datetimepicker' {
