@@ -1,5 +1,6 @@
 @import './Variables.less';
 @import './Mixins.less';
+@import './Animations.less';
 
 .text-muted {
   color: @text-muted;
@@ -15,4 +16,10 @@
 
 .panel {
   margin: 0;
+}
+
+.hover-tilt-host:hover {
+  .hover-tilt {
+    .tilt-animation();
+  }
 }

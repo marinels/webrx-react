@@ -1,0 +1,12 @@
+@keyframes tilt-45 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(45deg);
+  }
+}
+
+.tilt-animation(@duration: 100ms, @function: ease-in, @delay: 50ms) {
+  animation: tilt-45 @duration @function @delay normal;
+}
