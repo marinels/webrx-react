@@ -59,7 +59,7 @@ let viewMap: IViewMap = {
         <ProfilePictureView style={style} src={imageData} thumbnail width={60} height={60} title='Fixed Width/Height Image' />
         <ProfilePictureView style={style} src={imageData} thumbnail rounded width={60} height={60} title='Rounded Image' />
       </span>
-    )
+    );
   },
   ListViewModel: (viewModel: ListViewModel<any, any>) => (
     <ListView viewModel={viewModel} checkmarkSelected view={new StandardView<any>(undefined, (v, x) => {

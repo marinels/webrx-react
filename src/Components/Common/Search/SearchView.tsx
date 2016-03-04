@@ -27,7 +27,7 @@ export class SearchView extends BaseView<ISearchProps, SearchViewModel> {
   render() {
     let inputProps = {
       placeholder: this.props.placeholder,
-      onKeyDown: this.bindEvent(x => x.search, undefined, (e: React.KeyboardEvent) => e.keyCode === EnterKey)
+      onKeyDown: this.bindEvent(x => x.search, undefined, (e: React.KeyboardEvent) => e.keyCode === EnterKey),
     } as InputProps;
 
     if (this.props.searchButton != null && this.props.searchButton !== false) {
