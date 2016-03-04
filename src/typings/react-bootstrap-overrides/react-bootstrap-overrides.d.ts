@@ -1,11 +1,16 @@
 declare module 'react-bootstrap' {
-  interface InputProps {
+  interface ITitleProp {
+    // title renders as a tooltip
+    title?: string;
+  }
+
+  interface InputProps extends ITitleProp {
     // If you don't want the form-group class applied apply the prop named standalone
     // see: https://react-bootstrap.github.io/components.html#forms
     standalone?: boolean;
+  }
 
-    // adds a tooltip
-    title?: string;
+  interface LabelProps extends ITitleProp {
   }
 
   // <Image />
