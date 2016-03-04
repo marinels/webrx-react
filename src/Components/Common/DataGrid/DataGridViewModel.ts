@@ -18,7 +18,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
   public static displayName = 'DataGridViewModel';
 
   constructor(
-    protected filterer?: (item: TData, filter: string) => boolean,
+    protected filterer?: (item: TData, regex: RegExp) => boolean,
     protected comparer = new ObjectComparer<TData>(),
     isRoutingEnabled = false,
     ...items: TData[]) {
@@ -29,7 +29,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
 
   protected project = wx.command();
 
-  public search = new SearchViewModel(true, undefined, this.isRoutingEnabled);
+  public search = new SearchViewModel(true, undefined, undefined, this.isRoutingEnabled);
   public pager = new PagerViewModel(null, this.isRoutingEnabled);
 
   public sortAscending = wx.command();
@@ -101,9 +101,10 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
 
   protected projectItems() {
     let items = this.items.toArray();
+    let regex = this.search.regex();
 
-    if (this.filterer != null && String.isNullOrEmpty(this.search.filter()) === false) {
-      items = items.filter(x => this.filterer(x, this.search.filter()));
+    if (this.filterer != null && regex != null) {
+      items = items.filter(x => this.filterer(x, regex));
     }
 
     this.pager.updateItemCount.execute(items.length);

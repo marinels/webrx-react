@@ -56,7 +56,7 @@ routingMap.addRoute('DataGrid', 'Data Grid', (state: any) => {
 });
 routingMap.addRoute('DataGridList', 'DataGrid (List View)', (state: any) => {
   let viewModel = new DataGridViewModel<{name: string, requiredBy: string}>(
-    (item, filter) => `${item.name} ${item.requiredBy}`.search(new RegExp(filter, 'i')) >= 0,
+    (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0,
     undefined, false,
     { name: 'test 1', requiredBy: 'now' },
     { name: 'test 2', requiredBy: 'tomorrow' },
