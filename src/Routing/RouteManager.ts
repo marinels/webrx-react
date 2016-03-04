@@ -72,6 +72,22 @@ export class RouteManager implements Rx.IDisposable {
         path = `${currentPath.split('/').slice(0, -1).join('/')}/${path}`;
       }
 
+      // manage relative path elements (..)
+      let pathElems = path.split('/');
+      for (let i = 0; i < pathElems.length; ++i) {
+        if (pathElems[i] === '..') {
+          if (i === 0) {
+            pathElems.shift();
+            --i;
+          } else {
+            pathElems.splice(i - 1, 2);
+            i -= 2;
+          }
+        }
+      }
+
+      path = pathElems.join('/');
+
       let hash = this.hashCodec.encode(path, state, uriEncode);
 
       this.logger.debug(`Routing to Hash: ${hash}`);
