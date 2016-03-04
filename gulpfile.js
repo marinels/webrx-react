@@ -10,7 +10,7 @@ var WebpackDevServer = require('webpack-dev-server');
 
 var gulp = require('gulp');
 var gutil = require('gulp-util');
-var clean = require('gulp-clean');
+var clean = require('gulp-rimraf');
 var tslint = require('gulp-tslint');
 var eslint = require('gulp-eslint');
 var mocha = require('gulp-mocha');
