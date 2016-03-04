@@ -92,7 +92,7 @@ gulp.task('help', function() {
     '* ' + gutil.colors.cyan('gulp help') + ' will emit this help text',
     '',
     '* ' + gutil.colors.cyan('gulp clean') + ' will delete all files in ' + gutil.colors.magenta(config.dirs.build),
-    '  ' + ['debug', 'release', 'test', 'watch', 'dist', 'all'].map(function(x) { return gutil.colors.cyan('clean:' + x); }).join(', '),
+    '  ' + ['typings', 'debug', 'release', 'test', 'watch', 'dist', 'build', 'all'].map(function(x) { return gutil.colors.cyan('clean:' + x); }).join(', '),
     '',
     '* ' + gutil.colors.cyan('gulp tsconfig:glob') + ' will expand the ' + gutil.colors.cyan('filesGlob') + ' in the ' + gutil.colors.magenta('tsconfig.json') + ' file',
     '',
@@ -130,8 +130,19 @@ gulp.task('help', function() {
 });
 
 gulp.task('clean', ['clean:all']);
-gulp.task('clean:all', ['clean:debug', 'clean:release', 'clean:test', 'clean:watch', 'clean:dist'], function() {
-  var target = path.join(config.dirs.build, '*');
+gulp.task('clean:all', ['clean:typings', 'clean:dist', 'clean:build']);
+
+gulp.task('clean:typings', function() {
+  var target = config.dirs.typings;
+  log('Cleaning', gutil.colors.magenta(target));
+
+  return gulp
+    .src(target, { read: false })
+    .pipe(clean());
+});
+
+gulp.task('clean:build', function() {
+  var target = config.dirs.build;
   log('Cleaning', gutil.colors.magenta(target));
 
   return gulp
@@ -140,7 +151,7 @@ gulp.task('clean:all', ['clean:debug', 'clean:release', 'clean:test', 'clean:wat
 });
 
 gulp.task('clean:debug', function() {
-  var target = path.join(config.dirs.build, config.builds.debug, '*');
+  var target = path.join(config.dirs.build, config.builds.debug);
   log('Cleaning', gutil.colors.magenta(target));
 
   return gulp
@@ -149,7 +160,7 @@ gulp.task('clean:debug', function() {
 });
 
 gulp.task('clean:release', function() {
-  var target = path.join(config.dirs.build, config.builds.release, '*');
+  var target = path.join(config.dirs.build, config.builds.release);
   log('Cleaning', gutil.colors.magenta(target));
 
   return gulp
@@ -158,7 +169,7 @@ gulp.task('clean:release', function() {
 });
 
 gulp.task('clean:test', function() {
-  var target = path.join(config.dirs.build, config.builds.test, '*');
+  var target = path.join(config.dirs.build, config.builds.test);
   log('Cleaning', gutil.colors.magenta(target));
 
   return gulp
@@ -167,7 +178,7 @@ gulp.task('clean:test', function() {
 });
 
 gulp.task('clean:watch', function() {
-  var target = path.join(config.dirs.build, config.builds.watch, '*');
+  var target = path.join(config.dirs.build, config.builds.watch);
   log('Cleaning', gutil.colors.magenta(target));
 
   return gulp
@@ -176,7 +187,7 @@ gulp.task('clean:watch', function() {
 });
 
 gulp.task('clean:dist', function() {
-  var target = path.join(config.dirs.dist, '*');
+  var target = path.join(config.dirs.dist);
   log('Cleaning', gutil.colors.magenta(target));
 
   var force = false;
