@@ -39,16 +39,25 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   protected initialize() {}
   protected cleanup() {}
 
+  /**
+   * Binds an observable to a command on the view model
+   */
   public bindObservable<TResult>(commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>, observable: Rx.Observable<TResult>) {
     return this.state.bind(observable, commandSelector(this.state));
   }
 
+  /**
+   * Binds a DOM event to an observable property on the view model
+   */
   public bindCallback<TEvent, TParameter>(
     targetSelector: (viewModel: TViewModel) => wx.IObservableProperty<TParameter>,
     paramSelector: (event: TEvent, ...args: any[]) => TParameter): (event: TEvent) => void {
     return (event: TEvent, ...args: any[]) => targetSelector(this.state)(paramSelector(event, args));
   }
 
+  /**
+   * Binds a DOM event to an observable command on the view model
+   */
   public bindEvent<TEvent, TParameter>(
     commandSelector: (viewModel: TViewModel) => wx.ICommand<any>,
     eventArgsSelector?: (e: TEvent, args: any[]) => TParameter,
