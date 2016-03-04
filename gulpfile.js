@@ -97,7 +97,7 @@ gulp.task('help', function() {
     '* ' + gutil.colors.cyan('gulp tsconfig:glob') + ' will expand the ' + gutil.colors.cyan('filesGlob') + ' in the ' + gutil.colors.magenta('tsconfig.json') + ' file',
     '',
     '* ' + gutil.colors.cyan('gulp lint') + ' will scan for coding style rule infractions',
-    '  ' + ['ts'].map(function(x) { return gutil.colors.cyan('lint:' + x); }).join(', '),
+    '  ' + ['ts', 'es'].map(function(x) { return gutil.colors.cyan('lint:' + x); }).join(', '),
     '',
     '* ' + gutil.colors.cyan('gulp webpack') + ' will build the bundles using webpack',
     '  ' + ['debug', 'release', 'test', 'all'].map(function(x) { return gutil.colors.cyan('webpack:' + x); }).join(', '),
@@ -208,7 +208,7 @@ gulp.task('tsconfig:glob', function() {
 
 gulp.task('lint', ['lint:all']);
 
-gulp.task('lint:all', ['lint:ts', 'list:js']);
+gulp.task('lint:all', ['lint:ts', 'lint:es']);
 
 gulp.task('lint:es', function() {
   gulp
