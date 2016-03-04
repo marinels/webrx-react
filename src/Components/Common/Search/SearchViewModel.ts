@@ -12,16 +12,36 @@ export interface ISearchRoutingState {
 export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> {
   public static displayName = 'SearchViewModel';
 
-  constructor(public isLiveSearchEnabled = false, private liveSearchTimeout = 250, isRoutingEnabled = false) {
+  constructor(public isLiveSearchEnabled = false, private liveSearchTimeout = 250, private isCaseInsensitive = true, isRoutingEnabled = false) {
     super(isRoutingEnabled);
   }
 
   public filter = wx.property('');
-  public search = wx.asyncCommand(x => {
+  public regex = this.filter.changed
+    .select(x => this.createRegex(x))
+    .distinctUntilChanged()
+    .toProperty();
+
+  public search = wx.asyncCommand((x: RegExp) => {
     this.notifyChanged();
 
-    return Rx.Observable.return(x == null ? this.filter() : x.toString());
+    return Rx.Observable.return(x);
   });
+
+  protected createRegex(filter: string) {
+    let regex: RegExp = null;
+
+    if (String.isNullOrEmpty(filter) === false) {
+      try {
+        regex = new RegExp(filter, this.isCaseInsensitive ? 'i' : null);
+      } catch (e) {
+        filter = filter.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+        regex = new RegExp(filter, this.isCaseInsensitive ? 'i' : null);
+      }
+    }
+
+    return regex;
+  }
 
   initialize() {
     super.initialize();
@@ -30,7 +50,7 @@ export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> 
       .invokeCommand(this.routingStateChanged));
 
     if (this.isLiveSearchEnabled) {
-      this.subscribe(this.filter.changed
+      this.subscribe(this.regex.changed
         .debounce(this.liveSearchTimeout)
         .invokeCommand(this.search)
       );
