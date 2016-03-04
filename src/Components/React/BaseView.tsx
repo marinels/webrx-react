@@ -13,6 +13,9 @@ export interface IBaseViewProps {
   viewModel: IBaseViewModel;
 }
 
+export interface IBaseHTMLDivViewProps extends IBaseViewProps, React.HTMLProps<HTMLDivElement> {
+}
+
 export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel extends IBaseViewModel> extends React.Component<TViewProps, TViewModel> {
   public static displayName = 'BaseView';
 
