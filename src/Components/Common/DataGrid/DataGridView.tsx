@@ -164,7 +164,7 @@ export class TableView implements IDataGridView {
 
   public renderTable(view: DataGridView, grid: DataGridViewModel<any>, data: any[], cols: any, rows: any) {
     return (
-      <Table {...this.tableProps}>
+      <Table {...this.tableProps as any}>
         <thead><tr>{cols}</tr></thead>
         <tbody>{rows}</tbody>
       </Table>
@@ -255,7 +255,7 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
     );
     table = this.renderTable(items);
     pager = this.props.pagerProps == null ? null : (
-      <PagerView {...this.props.pagerProps} viewModel={this.state.pager} />
+      <PagerView {...this.props.pagerProps as any} viewModel={this.state.pager} />
     );
 
     return (

@@ -45,7 +45,7 @@ export class SearchView extends BaseView<ISearchProps, SearchViewModel> {
     return (
       <div className='Search'>
         <BindableInput property={this.state.filter}>
-          <Input standalone className='Search-text' type='text' {...inputProps} />
+          <Input standalone className='Search-text' type='text' {...inputProps as any} />
         </BindableInput>
       </div>
     );

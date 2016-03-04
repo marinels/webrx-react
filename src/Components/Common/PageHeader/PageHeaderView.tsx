@@ -50,7 +50,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
     return isDisabled;
   }
 
-  private createMenu(items: wx.IObservableList<IMenuItem> | IMenuItem[], icon: any, propsCreator: () => NavDropdownProps, defaultValue?: any) {
+  private createMenu(items: wx.IObservableList<IMenuItem> | IMenuItem[], icon: any, propsCreator: () => any, defaultValue?: any) {
     let length = items == null ? null : items.length;
     if (length instanceof Function) {
       length = (length as wx.IObservableProperty<number>)();
@@ -61,7 +61,8 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
       </div>
     );
     return length == null || length === 0 ? defaultValue : (
-      <NavDropdown title={title} {...propsCreator()}>
+      // title as any: the typings for NavDropdownProps incorrectly define title as a string
+      <NavDropdown title={title as any} {...propsCreator()}>
         {
           items.map(x => {
             let icon = String.isNullOrEmpty(x.iconName) ? null : <Icon name={x.iconName} fixedWidth />;
