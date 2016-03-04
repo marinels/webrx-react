@@ -203,7 +203,7 @@ gulp.task('clean:dist', function() {
     .pipe(clean({ force }));
 });
 
-gulp.task('tsconfig:glob', function() {
+gulp.task('tsconfig:glob', ['typings:ensure'], function() {
   log('Globbing', gutil.colors.magenta(path.join(__dirname, 'tsconfig.json')));
 
   return tsconfigGlob({ configPath: __dirname, indent: 2 });
