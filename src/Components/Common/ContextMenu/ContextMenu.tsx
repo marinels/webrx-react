@@ -15,7 +15,7 @@ export class MenuItem {
   constructor(public content: any, public onSelect?: () => void, public iconName?: any) {
   }
 
-  private handleClick(e: React.MouseEvent, hide: () => void) {
+  private handleClick(hide: () => void) {
     if (this.onSelect != null) {
       this.onSelect();
     }
@@ -25,7 +25,7 @@ export class MenuItem {
 
   public render(index: number, hide: () => void) {
     return (
-      <ListGroupItem className='ContextMenu-item' key={index} disabled={this.onSelect == null} onClick={e => this.handleClick(e, hide)}>
+      <ListGroupItem className='ContextMenu-item' key={index} disabled={this.onSelect == null} onClick={() => this.handleClick(hide)}>
         <div className='ContextMenu-itemIcon'>
           <Icon name={this.iconName} fixedWidth />
         </div>
