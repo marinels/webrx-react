@@ -21,11 +21,12 @@
     "react-fa": "github:DefinitelyTyped/DefinitelyTyped/react-fa/react-fa.d.ts#f318fbd33149ef0921b84657996ad31dab1e3241",
     "rx": "npm:rx/ts/rx.all.d.ts",
     "web.rx": "npm:webrx/dist/web.rx.d.ts",
-    "webrx-overrides": "file:./typings-custom/webrx-overrides/webrx-overrides.d.ts",
-    "react-bootstrap-overrides": "file:./typings-custom/react-bootstrap-overrides/react-bootstrap-overrides.d.ts",
-    "react-bootstrap-datetimepicker": "file:./typings-custom/react-bootstrap-datetimepicker/react-bootstrap-datetimepicker.d.ts",
-    "react-css-transition-replace": "file:./typings-custom/react-css-transition-replace/react-css-transition-replace.d.ts",
-    "jquery-deparam": "file:./typings-custom/jquery-deparam/jquery-deparam.d.ts",
-    "jquery-param": "file:./typings-custom/jquery-param/jquery-param.d.ts"
+    "webrx-overrides": "file:./src/typings/webrx-overrides/webrx-overrides.d.ts",
+    "react-bootstrap-overrides": "file:./src/typings/react-bootstrap-overrides/react-bootstrap-overrides.d.ts",
+    "react-bootstrap-datetimepicker": "file:./src/typings/react-bootstrap-datetimepicker/react-bootstrap-datetimepicker.d.ts",
+    "react-css-transition-replace": "file:./src/typings/react-css-transition-replace/react-css-transition-replace.d.ts",
+    "jquery-deparam": "file:./src/typings/jquery-deparam/jquery-deparam.d.ts",
+    "jquery-param": "file:./src/typings/jquery-param/jquery-param.d.ts",
+    "webpack-defines": "file:./src/typings/webpack-defines/webpack-defines.d.ts"
   }
 }

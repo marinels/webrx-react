@@ -8,14 +8,13 @@
   },
   "filesGlob": [
     "./typings/main.d.ts",
-    "./src/**/*.d.ts",
+    "!./src/typings/**/*",
     "./src/**/*.ts",
     "./src/**/*.tsx",
     "./test/**/*.ts"
   ],
   "files": [
     "./typings/main.d.ts",
-    "./src/defines.d.ts",
     "./src/Extensions/Extensions.d.ts",
     "./src/Components/Common/Alert/AlertHostViewModel.ts",
     "./src/Components/Common/Alert/AlertViewModel.ts",
