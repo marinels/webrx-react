@@ -8,7 +8,6 @@ import AlertHostViewModel from '../Alert/AlertHostViewModel';
 import { PageHeaderViewModel } from '../PageHeader/PageHeaderViewModel';
 import { IMenu, IMenuItem, ICommandAction } from '../PageHeader/Actions';
 import PageFooterViewModel from '../PageFooter/PageFooterViewModel';
-import SearchViewModel from '../Search/SearchViewModel';
 
 import { RouteHandlerViewModel, IRoutingMap } from '../RouteHandler/RouteHandlerViewModel';
 import RouteManager from '../../../Routing/RouteManager';
