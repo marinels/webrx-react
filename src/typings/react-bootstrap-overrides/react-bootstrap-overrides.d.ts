@@ -27,5 +27,5 @@ declare module 'react-bootstrap' {
   }
   interface Image extends __React.ReactElement<ImageProps> { }
   interface ImageClass extends __React.ComponentClass<ImageProps> { }
-  var Image: ImageClass;
+  let Image: ImageClass;
 }

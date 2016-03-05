@@ -5,8 +5,8 @@ declare namespace __JQueryParam {
 }
 
 declare module 'jquery-param' {
-    var param: __JQueryParam.JQueryParamStatic;
+    let param: __JQueryParam.JQueryParamStatic;
     export = param;
 }
 
-declare var param: __JQueryParam.JQueryParamStatic;
+declare let param: __JQueryParam.JQueryParamStatic;

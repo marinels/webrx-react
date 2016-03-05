@@ -20,6 +20,6 @@ declare namespace __ReactBootstrapDateTimePicker {
 }
 
 declare module 'react-bootstrap-datetimepicker' {
-  var DateTimeField: __ReactBootstrapDateTimePicker.DateTimeFieldClass;
+  let DateTimeField: __ReactBootstrapDateTimePicker.DateTimeFieldClass;
   export = DateTimeField;
 }
