@@ -1,3 +1,6 @@
+/// <reference path="../../../typings/main/ambient/react/react.d.ts" />
+/// <reference path="../../../typings/main/ambient/moment-node/moment-node.d.ts" />
+
 declare namespace __ReactBootstrapDateTimePicker {
   interface DateTimeFieldProps {
     dateTime?: string | number;

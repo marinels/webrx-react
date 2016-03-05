@@ -1,3 +1,5 @@
+/// <reference path="../../../typings/main/ambient/react/react.d.ts" />
+
 declare module 'react-bootstrap' {
   interface ITitleProp {
     // title renders as a tooltip
