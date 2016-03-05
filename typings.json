@@ -9,6 +9,8 @@
   "ambientDependencies": {
     "classnames": "github:DefinitelyTyped/DefinitelyTyped/classnames/classnames.d.ts#8287192198a14bcb31533afe381aa24ac7eed4c6",
     "ix": "github:DefinitelyTyped/DefinitelyTyped/ix.js/ix.d.ts#89eaf81496522fc45b0b20ca45e737490d2d729f",
+    "jquery-deparam": "file:./src/typings/jquery-deparam/jquery-deparam.d.ts",
+    "jquery-param": "file:./src/typings/jquery-param/jquery-param.d.ts",
     "l2o": "github:DefinitelyTyped/DefinitelyTyped/ix.js/l2o.d.ts#89eaf81496522fc45b0b20ca45e737490d2d729f",
     "moment-node": "github:DefinitelyTyped/DefinitelyTyped/moment/moment-node.d.ts#1be6a281906e5cd179a97c86bd58ebf9cdc9c6a5",
     "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#48c1e3c1d6baefa4f1a126f188c27c4fefd36bff",
@@ -16,16 +18,14 @@
     "react-addons-css-transition-group": "github:DefinitelyTyped/DefinitelyTyped/react/react-addons-css-transition-group.d.ts#097e6616f04a7ab2a507ecce2afd36e63ca2a36e",
     "react-addons-transition-group": "github:DefinitelyTyped/DefinitelyTyped/react/react-addons-transition-group.d.ts#ca5bfe76d2d9bf6852cbc712d9f3e0047c93486e",
     "react-bootstrap": "github:DefinitelyTyped/DefinitelyTyped/react-bootstrap/react-bootstrap.d.ts#5f3b413653e738d5d9bfd1575d075e5334b5e564",
+    "react-bootstrap-datetimepicker": "file:./src/typings/react-bootstrap-datetimepicker/react-bootstrap-datetimepicker.d.ts",
+    "react-bootstrap-overrides": "file:./src/typings/react-bootstrap-overrides/react-bootstrap-overrides.d.ts",
+    "react-css-transition-replace": "file:./src/typings/react-css-transition-replace/react-css-transition-replace.d.ts",
     "react-dom": "github:DefinitelyTyped/DefinitelyTyped/react/react-dom.d.ts#ca5bfe76d2d9bf6852cbc712d9f3e0047c93486e",
     "react-fa": "github:DefinitelyTyped/DefinitelyTyped/react-fa/react-fa.d.ts#f318fbd33149ef0921b84657996ad31dab1e3241",
     "rx": "npm:rx/ts/rx.all.d.ts",
     "web.rx": "npm:webrx/dist/web.rx.d.ts",
-    "webrx-overrides": "file:./src/typings/webrx-overrides/webrx-overrides.d.ts",
-    "react-bootstrap-overrides": "file:./src/typings/react-bootstrap-overrides/react-bootstrap-overrides.d.ts",
-    "react-bootstrap-datetimepicker": "file:./src/typings/react-bootstrap-datetimepicker/react-bootstrap-datetimepicker.d.ts",
-    "react-css-transition-replace": "file:./src/typings/react-css-transition-replace/react-css-transition-replace.d.ts",
-    "jquery-deparam": "file:./src/typings/jquery-deparam/jquery-deparam.d.ts",
-    "jquery-param": "file:./src/typings/jquery-param/jquery-param.d.ts",
-    "webpack-defines": "file:./src/typings/webpack-defines/webpack-defines.d.ts"
+    "webpack-defines": "file:./src/typings/webpack-defines/webpack-defines.d.ts",
+    "webrx-overrides": "file:./src/typings/webrx-overrides/webrx-overrides.d.ts"
   }
 }
