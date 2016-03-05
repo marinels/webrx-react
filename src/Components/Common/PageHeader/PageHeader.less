@@ -1,3 +1,5 @@
+@import (reference) '../../../Style/Bootstrap.less';
+
 .PageHeader {
   font-size: 1.25em;
 
@@ -27,6 +29,10 @@
 
   .PageHeader-navSite {
     margin: 0;
+
+    .PageHeader-navAdmin {
+      .tilt-animation(tilt-90 150ms 0ms ease-in, tilt-reverse-45 500ms 0ms ease);
+    }
 
     .PageHeader-navUser {
       .PageHeader-menuTitle {
