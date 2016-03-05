@@ -1,12 +1,38 @@
-@keyframes tilt-45 {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(45deg);
+// create a custom keyframe
+.tilt-frames(@name, @from: 0deg, @to: 180deg) {
+  @keyframes @name {
+    from {
+      transform: rotate(@from);
+    }
+    to {
+      transform: rotate(@to);
+    }
   }
 }
 
-.tilt-animation(@duration: 100ms, @function: ease-in, @delay: 50ms) {
-  animation: tilt-45 @duration @function @delay normal;
+// apply tilt animation to current tilt host
+// ex: .tilt-animation(tilt-90 150ms 0ms ease-in, tilt-reverse-45 500ms 0ms ease);
+.tilt-animation(@in, @out) {
+  .hover-tilt {
+    animation: @out;
+  }
+
+  &:hover {
+    .hover-tilt {
+      animation: @in;
+    }
+  }
 }
+
+// create some default keyframes
+.tilt-frames(tilt-45, 0deg, 45deg);
+.tilt-frames(tilt-reverse-45, 45deg, 0deg);
+
+.tilt-frames(tilt-90, 0deg, 90deg);
+.tilt-frames(tilt-reverse-90, 90deg, 0deg);
+
+.tilt-frames(tilt-180, 0deg, 180deg);
+.tilt-frames(tilt-reverse-180, 180deg, 0deg);
+
+.tilt-frames(tilt-360, 0deg, 360deg);
+.tilt-frames(tilt-reverse-360, 360deg, 0deg);
