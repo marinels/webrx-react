@@ -9,6 +9,9 @@ import Alerts from '../../Utils/Alerts';
 export class SampleData {
   protected actions: ISampleDataActionSet = {};
 
+  constructor(protected delay = 0) {
+  }
+
   public addDataStore(data: BaseSampleDataStore): void {
     Object.assign(this.actions, data.getActions());
   }
@@ -29,7 +32,8 @@ export class SampleData {
       result = Rx.Observable.never<T>();
     }
 
-    return result;
+    return result
+      .delay(this.delay);
   }
 }
 
