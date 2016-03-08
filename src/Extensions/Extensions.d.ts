@@ -9,3 +9,7 @@ declare interface StringConstructor {
   isNullOrEmpty(value: string): boolean;
   stringify(value: any, replacer?: any, space?: string | number): string;
 }
+
+declare interface NumberConstructor {
+  isNumeric(value: any): boolean;
+}
