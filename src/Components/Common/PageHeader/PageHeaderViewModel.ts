@@ -39,13 +39,15 @@ export class PageHeaderViewModel extends BaseViewModel {
         wx
           .whenAny(this.routeHandler.currentViewModel, x => x)
           .subscribe(x => {
-            this.addDynamicContent(x);
+            this.updateDynamicContent();
           })
       );
     }
   }
 
-  private addDynamicContent(viewModel?: IBaseRoutableViewModel) {
+  public updateDynamicContent() {
+    let viewModel = this.routeHandler.currentViewModel();
+
     this.addItems(this.appSwitcherMenuItems, this.staticAppSwitcherMenuItems, viewModel, x => x.getAppSwitcherMenuItems);
     this.addItems(this.appMenus, this.staticAppMenus, viewModel, x => x.getAppMenus);
     this.addItems(this.appActions, this.staticAppActions, viewModel, x => x.getAppActions);
