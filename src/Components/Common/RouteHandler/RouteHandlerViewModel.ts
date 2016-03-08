@@ -31,6 +31,12 @@ export class RouteHandlerViewModel extends BaseViewModel {
     .select(x => this.getRoutedViewModel(x))
     .toProperty();
 
+  public isLoading = this.currentViewModel.changed
+    .select(x => false)
+    .take(1)
+    .startWith(true)
+    .toProperty();
+
   private routingStateChangedHandle: ISubscriptionHandle;
 
   private getRoutedViewModel(route: IRoute) {
