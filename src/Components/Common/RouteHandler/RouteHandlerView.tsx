@@ -5,6 +5,7 @@ import { PageHeader, Alert } from 'react-bootstrap';
 import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
+import Splash from '../Splash/Splash';
 
 import RouteHandlerViewModel from './RouteHandlerViewModel';
 
@@ -31,6 +32,10 @@ export class RouteHandlerView extends BaseView<IRouteHandlerProps, RouteHandlerV
     if (this.props.viewMap[''] == null) {
       this.props.viewMap[''] = this.createError('Route Not Found');
     }
+
+    if (this.props.viewMap['Splash'] == null) {
+      this.props.viewMap['Splash'] = <Splash text='WebRx.React' />;
+    }
   }
 
   private createError(text: string) {
@@ -44,7 +49,9 @@ export class RouteHandlerView extends BaseView<IRouteHandlerProps, RouteHandlerV
   }
 
   private getViewKey() {
-    return this.state.currentViewModel() == null ? '' : this.state.currentViewModel().getRoutingKey();
+    return this.state.isLoading() === true ? 'Splash' :
+      this.state.currentViewModel() == null ? '' :
+      this.state.currentViewModel().getRoutingKey();
   }
 
   private getView(key: string): any {
@@ -73,6 +80,7 @@ export class RouteHandlerView extends BaseView<IRouteHandlerProps, RouteHandlerV
   render() {
     let key = this.getViewKey();
     let view = this.getView(key) || 'Catastrophic Failure';
+
     return (
       <div className='RouteHandler'>
         <ReactCSSTransitionGroup transitionName='view' transitionLeave={false} transitionEnterTimeout={250}>
