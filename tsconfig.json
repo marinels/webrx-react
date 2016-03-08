@@ -65,6 +65,7 @@
     "./src/Components/Common/ContextMenu/ContextMenu.tsx",
     "./src/Components/Common/DataGrid/DataGridView.tsx",
     "./src/Components/Common/List/ListView.tsx",
+    "./src/Components/Common/Loading/Loading.tsx",
     "./src/Components/Common/ModalDialog/ModalDialogView.tsx",
     "./src/Components/Common/PageFooter/PageFooterView.tsx",
     "./src/Components/Common/PageHeader/PageHeaderView.tsx",
