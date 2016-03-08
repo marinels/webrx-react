@@ -1,6 +1,7 @@
 'use strict';
 
 import * as Rx from 'rx';
+import * as Ix from 'ix';
 import * as wx from 'webrx';
 import * as React from 'react';
 import * as moment from 'moment';
@@ -25,39 +26,39 @@ export enum UnitTypes {
 interface IUnit {
   type: UnitTypes;
   name: string;
-  shortName?: string;
+  key?: string;
+  shortKey?: string;
 }
 
 const Units = [
   { type: UnitTypes.Ticks, name: 'Ticks' },
-  { type: UnitTypes.Milliseconds, name: 'Milliseconds', shortName: 'ms' },
-  { type: UnitTypes.Seconds, name: 'Seconds', shortName: 's' },
-  { type: UnitTypes.Minutes, name: 'Minutes', shortName: 'm' },
-  { type: UnitTypes.Hours, name: 'Hours', shortName: 'h' },
-  { type: UnitTypes.Days, name: 'Days', shortName: 'd' },
-  { type: UnitTypes.Weeks, name: 'Weeks', shortName: 'w' },
-  { type: UnitTypes.Months, name: 'Months', shortName: 'M' },
-  { type: UnitTypes.Quarters, name: 'Quarters', shortName: 'Q' },
-  { type: UnitTypes.Years, name: 'Years', shortName: 'y' },
+  { type: UnitTypes.Milliseconds, name: 'Milliseconds', key: 'millisecond', shortKey: 'ms' },
+  { type: UnitTypes.Seconds, name: 'Seconds', key: 'second', shortKey: 's' },
+  { type: UnitTypes.Minutes, name: 'Minutes', key: 'minute', shortKey: 'm' },
+  { type: UnitTypes.Hours, name: 'Hours', key: 'hour', shortKey: 'h' },
+  { type: UnitTypes.Days, name: 'Days', key: 'day', shortKey: 'd' },
+  { type: UnitTypes.Weeks, name: 'Weeks', key: 'week', shortKey: 'w' },
+  { type: UnitTypes.Months, name: 'Months', key: 'month', shortKey: 'M' },
+  { type: UnitTypes.Quarters, name: 'Quarters', key: 'quarter', shortKey: 'Q' },
+  { type: UnitTypes.Years, name: 'Years', key: 'year', shortKey: 'y' },
 ] as IUnit[];
 
 interface ITimeSpanInputState {
   text: string;
-  value: moment.Moment;
+  value: moment.Duration;
   unit: IUnit;
-  defaultUnit: UnitTypes;
 }
 
 interface ITimeSpanInputProps {
   key?: string | number;
-  value?: moment.Moment;
+  value?: moment.Duration;
   placeholder?: string;
   bsSize?: string;
   minUnit?: UnitTypes;
   maxUnit?: UnitTypes;
   defaultUnit?: UnitTypes;
   units?: UnitTypes[];
-  format?: string;
+  precision?: number;
   onChange?: (e: any) => void;
   groupClassName?: string;
   standalone?: boolean;
@@ -69,25 +70,24 @@ export class TimeSpanInput extends React.Component<ITimeSpanInputProps, ITimeSpa
 
   static defaultProps = {
     minUnit: UnitTypes.Seconds,
+    maxUnit: UnitTypes.Years,
     defaultUnit: UnitTypes.Seconds,
-    format: 'LLLL',
-    standalone: false
+    precision: 2,
+    standalone: false,
   };
 
   constructor(props?: ITimeSpanInputProps, context?: any) {
     super(props, context);
 
     let defaultUnit = this.props.defaultUnit < this.props.minUnit ? this.props.minUnit : this.props.defaultUnit;
-    let unit = Units[defaultUnit];
 
     this.state = {
       text: null,
-      value: this.props.value || moment(),
-      unit,
-      defaultUnit
+      value: this.props.value,
+      unit: Units[defaultUnit],
     };
 
-    this.units = this.props.units || this.createUnitRange(unit);
+    this.units = this.props.units || this.createUnitRange(this.props.minUnit, this.props.maxUnit);
   }
 
   private units: IUnit[];
@@ -107,11 +107,12 @@ export class TimeSpanInput extends React.Component<ITimeSpanInputProps, ITimeSpa
     this.textInputHandle = Object.dispose(this.textInputHandle);
   }
 
-  private createUnitRange(unit: IUnit) {
+  private createUnitRange(minUnit: UnitTypes, maxUnit: UnitTypes) {
     let units: any = [];
+    let unit = Units[minUnit];
 
-    while (unit != null && unit.type <= (this.props.maxUnit || UnitTypes.Years)) {
-      units.push(<MenuItem key={unit.type} eventKey={unit} active={unit.type === this.state.defaultUnit}>{unit.name}</MenuItem>);
+    while (unit != null && unit.type <= maxUnit) {
+      units.push(<MenuItem key={unit.type} eventKey={unit} active={unit.type === this.state.unit.type}>{unit.name}</MenuItem>);
       unit = Units[unit.type + 1];
     }
 
@@ -124,11 +125,13 @@ export class TimeSpanInput extends React.Component<ITimeSpanInputProps, ITimeSpa
   }
 
   private adjust(delta: number) {
-    this.state.value = this.state.value.add(delta, this.state.unit.shortName);
-    this.state.text = this.state.value.fromNow();
-    this.setState(this.state);
+    if (this.state.value != null) {
+      this.state.value = this.state.value.add(delta, this.state.unit.shortKey);
+      this.state.text = this.getDurationText();
+      this.setState(this.state);
 
-    this.onValueChanged();
+      this.onValueChanged();
+    }
   }
 
   private textChanged(e: any) {
@@ -140,27 +143,57 @@ export class TimeSpanInput extends React.Component<ITimeSpanInputProps, ITimeSpa
     this.setState(this.state);
   }
 
-  private parseText(text: string) {
-    let args = text.split(' ', 2);
+  private getDurationText() {
+    let value = this.state.value.as(this.state.unit.shortKey);
+    let units = this.state.unit.name;
 
-    if (args.length === 1 && args[0].length >= 6) {
-      let value = moment(text);
-      if (value.isValid() === true) {
-        this.state.value = value;
-      }
-    } else if (args.length === 2 && args[1].length > 0) {
-      let duration = moment.duration(Number(args[0]), args[1]);
-
-      if (duration.asMilliseconds() > 0) {
-        this.state.value = moment().add(duration);
-      }
+    if (value === 1) {
+      units = units.replace(/s$/, '');
     }
 
-    if (this.state.value != null) {
-      this.state.text = this.state.value.fromNow();
-      this.setState(this.state);
+    return `${Number(value.toFixed(this.props.precision))} ${units}`;
+  }
 
-      this.onValueChanged();
+  private parseText(text: string) {
+    this.state.value = null;
+
+    if (String.isNullOrEmpty(text) === false) {
+      let args = text.split(' ', 2);
+
+      if (Number.isNumeric(args[0])) {
+        // only process if it's numeric
+        if (args.length === 1) {
+          // single arg
+          // just assume we're using the currently selected units
+          this.state.value = moment.duration(Number(args[0]), this.state.unit.shortKey);
+        } else if (args.length === 2) {
+          // two args
+          // first determine the units used
+          let unitName = moment.normalizeUnits(args[1]);
+
+          if (String.isNullOrEmpty(unitName) === false) {
+            let unit = Ix.Enumerable
+              .fromArray(Units)
+              .where(x => x.key === unitName)
+              .firstOrDefault();
+
+            if (unit != null) {
+              // if the unit type is valid process the value
+              this.state.value = moment.duration(Number(args[0]), unitName);
+              // only update the currently selected units if they are parsed
+              this.state.unit = unit;
+            }
+          }
+        }
+      }
+
+      // if we updated the value then set the text and invoke a render
+      if (this.state.value != null && this.state.value.asMilliseconds() > 0) {
+        this.state.text = this.getDurationText();
+        this.setState(this.state);
+
+        this.onValueChanged();
+      }
     }
   }
 
@@ -181,12 +214,12 @@ export class TimeSpanInput extends React.Component<ITimeSpanInputProps, ITimeSpa
     );
     let incrementButton = <Button key='up' onClick={() => this.adjust(1)}><Icon name='chevron-up'/></Button>;
     let decrementButton = <Button key='down' onClick={() => this.adjust(-1)}><Icon name='chevron-down'/></Button>;
-    let isInvalid = this.state.value == null || this.state.value.isValid() !== true;
+    let isInvalid = this.state.value == null || this.state.value.asMilliseconds() === 0;
 
     return (
       <Input groupClassName={classNames('TimeSpanInput', this.props.groupClassName)}
         type='text' bsSize={this.props.bsSize} bsStyle={isInvalid ? 'error' : null}
-        title={this.props.title || (this.state.value == null ? 'Invalid Format' : this.state.value.format(this.props.format))}
+        title={this.props.title}
         placeholder={this.props.placeholder} value={this.state.text}
         buttonAfter={[incrementButton, decrementButton, unitDropdown]}
         onChange={(e: any) => this.textChanged(e)} standalone={this.props.standalone} />
