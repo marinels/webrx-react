@@ -125,13 +125,15 @@ export class TimeSpanInput extends React.Component<ITimeSpanInputProps, ITimeSpa
   }
 
   private adjust(delta: number) {
-    if (this.state.value != null) {
-      this.state.value = this.state.value.add(delta, this.state.unit.shortKey);
-      this.state.text = this.getDurationText();
-      this.setState(this.state);
-
-      this.onValueChanged();
+    if (this.state.value == null) {
+      this.state.value = moment.duration(0);
     }
+
+    this.state.value = this.state.value.add(delta, this.state.unit.shortKey);
+    this.state.text = this.getDurationText();
+    this.setState(this.state);
+
+    this.onValueChanged();
   }
 
   private textChanged(e: any) {
