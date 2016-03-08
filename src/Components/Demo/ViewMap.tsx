@@ -3,8 +3,7 @@
 import * as React from 'react';
 import { ListGroupItem, Button } from 'react-bootstrap';
 
-import SplashViewModel from '../Common/Splash/SplashViewModel';
-import SplashView from '../Common/Splash/SplashView';
+import Splash from '../Common/Splash/Splash';
 
 import { TimeSpanInput, UnitTypes } from '../Common/TimeSpanInput/TimeSpanInput';
 
@@ -30,7 +29,7 @@ export interface IViewMap {
 }
 
 let viewMap: IViewMap = {
-  SplashViewModel: (viewModel: SplashViewModel) => <SplashView viewModel={viewModel} />,
+  Splash: () => <Splash fluid animationPeriod={100} text='WebRx.React Demo' logo='http://placehold.it/100x100?text=Logo' />,
   TimeSpanInput: () => <TimeSpanInput placeholder='Type in a timespan, or use the controls on the right...' minUnit={UnitTypes.Days} standalone />,
   ContextMenu: () => (
     <div>

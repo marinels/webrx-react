@@ -4,7 +4,6 @@ import * as Ix from 'ix';
 import * as wx from 'webrx';
 
 import BaseViewModel from '../../React/BaseViewModel';
-import SplashViewModel from '../Splash/SplashViewModel';
 import { IRoutedViewModel } from '../../React/BaseRoutableViewModel';
 import { RouteManager, IRoute } from '../../../Routing/RouteManager';
 import { default as PubSub, ISubscriptionHandle } from '../../../Utils/PubSub';
@@ -22,7 +21,7 @@ export interface IRoutingMap {
 export class RouteHandlerViewModel extends BaseViewModel {
   public static displayName = 'RouteHandlerViewModel';
 
-  constructor(public manager: RouteManager, public routingMap: IRoutingMap, private initialViewModel: IRoutedViewModel = new SplashViewModel()) {
+  constructor(public manager: RouteManager, public routingMap: IRoutingMap) {
     super();
   }
 
@@ -30,7 +29,6 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
   public currentViewModel = this.manager.currentRoute.changed
     .select(x => this.getRoutedViewModel(x))
-    .startWith(this.initialViewModel)
     .toProperty();
 
   private routingStateChangedHandle: ISubscriptionHandle;

@@ -2,7 +2,6 @@
 
 import { IMenuItem } from '../Common/PageHeader/Actions';
 
-import SplashViewModel from '../Common/Splash/SplashViewModel';
 import ListViewModel from '../Common/List/ListViewModel';
 import DataGridViewModel from '../Common/DataGrid/DataGridViewModel';
 import ModalDialogViewModel from '../Common/ModalDialog/ModalDialogViewModel';
@@ -36,7 +35,7 @@ class RoutingMap {
 
 let routingMap = new RoutingMap();
 
-routingMap.addRoute('Splash', 'Splash', (state: any) => new SplashViewModel('Demo Splash Screen'));
+routingMap.addRoute('Splash', 'Splash', (state: any) => 'Splash');
 routingMap.addRoute('TimeSpanInput', 'Time Span Input', (state: any) => 'TimeSpanInput');
 routingMap.addRoute('ContextMenu', 'Context Menu', (state: any) => 'ContextMenu');
 routingMap.addRoute('ProfilePicture', 'Profile Picture', (state: any) => 'ProfilePicture');
