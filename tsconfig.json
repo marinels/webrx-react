@@ -58,6 +58,7 @@
     "./src/Utils/Logging/LogLevel.ts",
     "./src/Utils/Logging/LogManager.ts",
     "./src/Utils/PubSub.ts",
+    "./src/Utils/SubMan.ts",
     "./src/app.tsx",
     "./src/Components/Common/Alert/AlertHostView.tsx",
     "./src/Components/Common/Alert/AlertView.tsx",
