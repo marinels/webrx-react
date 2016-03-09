@@ -5,7 +5,8 @@ import { ListGroupItem, Button } from 'react-bootstrap';
 
 import Splash from '../Common/Splash/Splash';
 
-import { TimeSpanInput, UnitTypes } from '../Common/TimeSpanInput/TimeSpanInput';
+import { TimeSpanInputViewModel, UnitType } from '../Common/TimeSpanInput/TimeSpanInputViewModel';
+import TimeSpanInputView from '../Common/TimeSpanInput/TimeSpanInputView';
 
 import { ContextMenu, MenuItem } from '../Common/ContextMenu/ContextMenu';
 
@@ -30,7 +31,7 @@ export interface IViewMap {
 
 let viewMap: IViewMap = {
   Splash: () => <Splash fluid animationPeriod={100} text='WebRx.React Demo' logo='http://placehold.it/100x100?text=Logo' />,
-  TimeSpanInput: () => <TimeSpanInput placeholder='Type in a timespan, or use the controls on the right...' minUnit={UnitTypes.Days} standalone />,
+  TimeSpanInputViewModel: (viewModel: TimeSpanInputViewModel) => <TimeSpanInputView viewModel={viewModel} id='demo' placeholder='Type in a timespan, or use the controls on the right...' standalone />,
   ContextMenu: () => (
     <div>
       <ContextMenu id='demo' header='Demo Context Menu' items={[

@@ -2,6 +2,7 @@
 
 import { IMenuItem } from '../Common/PageHeader/Actions';
 
+import { TimeSpanInputViewModel, UnitType } from '../Common/TimeSpanInput/TimeSpanInputViewModel';
 import ListViewModel from '../Common/List/ListViewModel';
 import DataGridViewModel from '../Common/DataGrid/DataGridViewModel';
 import ModalDialogViewModel from '../Common/ModalDialog/ModalDialogViewModel';
@@ -36,7 +37,7 @@ class RoutingMap {
 let routingMap = new RoutingMap();
 
 routingMap.addRoute('Splash', 'Splash', (state: any) => 'Splash');
-routingMap.addRoute('TimeSpanInput', 'Time Span Input', (state: any) => 'TimeSpanInput');
+routingMap.addRoute('TimeSpanInput', 'Time Span Input', (state: any) => new TimeSpanInputViewModel());
 routingMap.addRoute('ContextMenu', 'Context Menu', (state: any) => 'ContextMenu');
 routingMap.addRoute('ProfilePicture', 'Profile Picture', (state: any) => 'ProfilePicture');
 routingMap.addRoute('List', 'List', (state: any) => new ListViewModel(true, false,
