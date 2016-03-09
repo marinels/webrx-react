@@ -54,6 +54,9 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
     if (this.isRoutingEnabled && handler != null) {
       let sub: Rx.IDisposable;
 
+      // if any observables are passed in then we watch them for any changes
+      // if any changes are detected we invoke a stateChanged (i.e. force a render)
+      // this allows an observable that doesn't normally drive rendering to invoke a render
       if (observables.length > 0) {
         sub = Rx.Observable
           .combineLatest(observables, () => null)
@@ -63,6 +66,7 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
 
       handler(state);
 
+      // don't listen to the observables after we have finished handling the routing state
       Object.dispose(sub);
     }
   }
