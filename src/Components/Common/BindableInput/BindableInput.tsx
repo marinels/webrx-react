@@ -5,14 +5,14 @@ import * as wx from 'webrx';
 
 interface IBindableInputProps {
   key?: string | number;
-  property: wx.IObservableProperty<any>;
+  property: any;
   converter?: (x: any) => any;
   children?: React.ReactNode;
   valueProperty?: string;
   onChangeProperty?: string;
   propSelector?: () => any;
-  valueGetter?: (property: wx.IObservableProperty<any>) => any;
-  valueSetter?: (property: wx.IObservableProperty<any>, value: any) => void;
+  valueGetter?: (property: any) => any;
+  valueSetter?: (property: any, value: any) => void;
 }
 
 export class BindableInput extends React.Component<IBindableInputProps, any> {
@@ -46,7 +46,7 @@ export class BindableInput extends React.Component<IBindableInputProps, any> {
       props = Object.assign(props, this.props.propSelector());
     }
 
-    let inputComponent = React.Children.only(this.props.children) as React.ReactElement<any>;
+    let inputComponent = React.Children.only(this.props.children);
 
     return React.cloneElement(inputComponent, props);
   }
