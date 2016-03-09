@@ -6,6 +6,7 @@ import * as wx from 'webrx';
 import LogLevel from '../../Utils/Logging/LogLevel';
 import logManager from '../Common/App/Logging';
 import PubSub from '../../Utils/PubSub';
+import SubMan from '../../Utils/SubMan';
 import { AlertCreatedKey, IAlertCreated } from '../../Events/AlertCreated';
 import { RouteChangedKey, IRouteChanged } from '../../Events/RouteChanged';
 
@@ -27,7 +28,7 @@ export interface IBaseViewModel {
 export abstract class BaseViewModel implements IBaseViewModel {
   public static displayName = 'BaseViewModel';
 
-  private subscriptions: Rx.IDisposable[] = [];
+  private subs = new SubMan();
   public stateChanged = wx.command();
 
   protected logger = logManager.getLogger(this.getDisplayName());
@@ -115,7 +116,7 @@ export abstract class BaseViewModel implements IBaseViewModel {
   }
 
   protected subscribe(subscription: Rx.IDisposable) {
-    this.subscriptions.push(subscription);
+    this.subs.add(subscription);
     return subscription;
   }
 
@@ -149,8 +150,7 @@ export abstract class BaseViewModel implements IBaseViewModel {
   }
 
   public cleanup() {
-    this.subscriptions.forEach(x => x.dispose());
-    this.subscriptions = [];
+    this.subs.dispose();
   }
 }
 

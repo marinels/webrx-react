@@ -5,6 +5,8 @@ import * as React from 'react';
 import { Grid } from 'react-bootstrap';
 import { ProgressBar, ProgressBarProps } from 'react-bootstrap';
 
+import SubMan from '../../../Utils/SubMan';
+
 import './Loading.less';
 
 export interface ILoadingProps extends ProgressBarProps {
@@ -31,7 +33,8 @@ export class Loading extends React.Component<ILoadingProps, ILoadingState> {
     animationCycleDelay: 2000,
   };
 
-  private animationSubscription: Rx.IDisposable = null;
+  // private animationSubscription: Rx.IDisposable = null;
+  private subs = new SubMan();
 
   constructor(props?: ILoadingProps, context?: any) {
     super(props, context);
@@ -44,7 +47,7 @@ export class Loading extends React.Component<ILoadingProps, ILoadingState> {
 
   componentDidMount() {
     if (this.props.animationPeriod > 0) {
-      this.animationSubscription = Rx.Observable
+      this.subs.add(Rx.Observable
         .timer(this.props.animationPeriod, this.props.animationPeriod)
         .select(x => {
           let val = ++this.state.value;
@@ -55,16 +58,13 @@ export class Loading extends React.Component<ILoadingProps, ILoadingState> {
         })
         .subscribe(x => {
           this.setState(this.state);
-        });
+        })
+      );
     }
   }
 
   componentWillUnmount() {
-    if (this.animationSubscription != null) {
-      this.animationSubscription.dispose();
-
-      this.animationSubscription = null;
-    }
+    this.subs.dispose();
   }
 
   render() {
