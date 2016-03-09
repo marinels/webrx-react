@@ -31,6 +31,7 @@ export class TimeSpanInputView extends BaseView<ITimeSpanInputProps, TimeSpanInp
     return [
       this.state.value.changed,
       this.state.unit.changed,
+      this.state.isValid.changed,
     ];
   }
 
@@ -49,13 +50,12 @@ export class TimeSpanInputView extends BaseView<ITimeSpanInputProps, TimeSpanInp
     );
     let incrementButton = <Button key='up' onClick={this.bindEvent(x => x.adjustValue, () => 1)}><Icon name='chevron-up'/></Button>;
     let decrementButton = <Button key='down' onClick={this.bindEvent(x => x.adjustValue, () => -1)}><Icon name='chevron-down'/></Button>;
-    let isInvalid = this.state.value() == null || this.state.value().asMilliseconds() === 0;
 
     return (
       <div className='TimeSpanInput'>
         <BindableInput property={this.state.text}>
           <Input groupClassName={this.props.groupClassName}
-            type='text' bsSize={this.props.bsSize} bsStyle={isInvalid ? 'error' : null}
+            type='text' bsSize={this.props.bsSize} bsStyle={this.state.isValid() ? null : 'error'}
             title={this.props.title}
             placeholder={this.props.placeholder}
             buttonAfter={[incrementButton, decrementButton, unitDropdown]}

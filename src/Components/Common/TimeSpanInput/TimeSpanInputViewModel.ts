@@ -46,6 +46,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
   constructor(
     private initialValue?: moment.Duration,
     unit = Units[UnitType.Seconds],
+    public required = false,
     units?: UnitType[],
     public minValue?: moment.Duration,
     public maxValue?: moment.Duration,
@@ -77,6 +78,19 @@ export class TimeSpanInputViewModel extends BaseViewModel {
   public unit = wx.property<IUnit>();
   public value = wx.property<moment.Duration>();
 
+  public isValid = wx
+    .whenAny(this.text, this.value, (text, value) => ({ text, value }))
+    .select(x => {
+      let result = x.value != null && x.value.asMilliseconds() !== 0;
+
+      if (this.required === false && String.isNullOrEmpty(x.text) === true) {
+        result = true;
+      }
+
+      return result;
+    })
+    .toProperty();
+
   public setUnit = wx.command((unit: IUnit) => {
     this.unit(unit);
   });
@@ -91,13 +105,16 @@ export class TimeSpanInputViewModel extends BaseViewModel {
     this.parseText(text);
   });
 
+  public get milliseconds() {
+    return this.value() == null ? null : this.value().asMilliseconds();
+  }
+
   initialize() {
     super.initialize();
 
     if (this.parseDelay > 0) {
       this.subscribe(this.text.changed
         .debounce(this.parseDelay)
-        .where(x => String.isNullOrEmpty(x) === false)
         .invokeCommand(this.parse)
       );
     }
@@ -117,7 +134,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
   }
 
   private setValue(value: moment.Duration) {
-    if ((this.minValue == null || value >= this.minValue) && (this.maxValue == null || value <= this.maxValue)) {
+    if (value == null || (this.minValue == null || value >= this.minValue) && (this.maxValue == null || value <= this.maxValue)) {
       this.value(value);
     }
   }
