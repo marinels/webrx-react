@@ -50,7 +50,7 @@
     "./src/Stores/ObservableApi.ts",
     "./src/Stores/SampleData/BaseSampleDataStore.ts",
     "./src/Stores/SampleData/SampleData.ts",
-    "./src/Utils/Alerts.ts",
+    "./src/Utils/Alert.ts",
     "./src/Utils/Compare.ts",
     "./src/Utils/Logging/Adapters/Console.ts",
     "./src/Utils/Logging/Adapters/Delegate.ts",

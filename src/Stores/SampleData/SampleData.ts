@@ -4,7 +4,7 @@ import * as Rx from 'rx';
 import * as Ix from 'ix';
 
 import { BaseSampleDataStore, ISampleDataActionSet, ISampleDataAction } from './BaseSampleDataStore';
-import Alerts from '../../Utils/Alerts';
+import Alert from '../../Utils/Alert';
 
 export class SampleData {
   protected actions: ISampleDataActionSet = {};
@@ -27,7 +27,7 @@ export class SampleData {
     if (sampleDataAction != null) {
       result = sampleDataAction(params);
     } else {
-      Alerts.create(action, 'Sample DataStore Action Not Found', 'warning');
+      Alert.create(action, 'Sample DataStore Action Not Found', 'warning');
 
       result = Rx.Observable.never<T>();
     }
