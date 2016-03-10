@@ -90,8 +90,12 @@
     "./test/Extensions/String.ts",
     "./test/SanitySpec.ts",
     "./test/TestSetup.ts",
+    "./test/Utils/AlertSpec.ts",
+    "./test/Utils/AllUtils.ts",
+    "./test/Utils/MomentSpec.ts",
     "./test/Utils/ObservableListUtils.ts",
     "./test/Utils/ObservablePropertyUtils.ts",
-    "./test/Utils/PubSubSpec.ts"
+    "./test/Utils/PubSubSpec.ts",
+    "./test/Utils/SubManSpec.ts"
   ]
 }

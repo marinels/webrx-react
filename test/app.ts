@@ -4,5 +4,5 @@ import './TestSetup';
 
 import './SanitySpec';
 import './Extensions/AllExtensions';
-import './Utils/PubSubSpec';
+import './Utils/AllUtils';
 import './Components/AllComponents';
