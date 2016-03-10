@@ -220,8 +220,7 @@ gulp.task('lint:es', function() {
       path.join(config.dirs.test, '**', '*.js'),
       path.join(__dirname, '*.js')])
     .pipe(eslint())
-    .pipe(eslint.format())
-    .pipe(eslint.failAfterError());
+    .pipe(eslint.format());
 });
 
 gulp.task('lint:ts', function() {
