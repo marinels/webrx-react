@@ -297,16 +297,14 @@ function webpackBuild(build, webpackConfig, callback) {
 
   log('Bundling', gutil.colors.yellow(build), 'Build:', gutil.colors.magenta(target));
 
-  return gulp
-    .src([])
-    .pipe(webpackStream(webpackConfig, null, function(err, stats) {
-      if (callback) {
-        callback(err, stats);
-      } else {
-        onWebpackComplete(build, err, stats);
-      }
-    })).on('error', function() {})
-    .pipe(gulp.dest(webpackConfig.output.path));
+  return webpackStream(webpackConfig, null, function(err, stats) {
+    if (callback) {
+      callback(err, stats);
+    } else {
+      onWebpackComplete(build, err, stats);
+    }
+  }).on('error', function() {})
+  .pipe(gulp.dest(webpackConfig.output.path));
 }
 
 function onWebpackComplete(build, err, stats) {
