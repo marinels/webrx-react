@@ -477,7 +477,13 @@ gulp.task('watch:lint', ['lint'], function() {
     .watch([
       path.join(config.dirs.src, '**', '*.ts'),
       path.join(config.dirs.src, '**', '*.tsx'),
-      path.join(config.dirs.test, '**', '*.ts')], ['lint']);
+      path.join(config.dirs.test, '**', '*.ts'),
+      path.join(config.dirs.src, '**', '*.js'),
+      path.join(config.dirs.test, '**', '*.js'),
+      path.join(__dirname, '*.js')], ['lint'])
+    .on('change', function(e) {
+      log('linting...');
+    });
 });
 
 gulp.task('watch:dist', ['watch:dist:debug']);
