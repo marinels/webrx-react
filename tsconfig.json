@@ -57,6 +57,7 @@
     "./src/Utils/Logging/Logger.ts",
     "./src/Utils/Logging/LogLevel.ts",
     "./src/Utils/Logging/LogManager.ts",
+    "./src/Utils/Moment.ts",
     "./src/Utils/PubSub.ts",
     "./src/Utils/SubMan.ts",
     "./src/app.tsx",
