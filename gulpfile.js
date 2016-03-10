@@ -451,25 +451,28 @@ gulp.task('watch:webpack', ['tsconfig:glob', 'clean:watch', 'index:watch'], func
   });
 });
 
-gulp.task('watch:mocha', ['clean:watch'], function(cb) {
+gulp.task('watch:mocha', ['clean:test'], function() {
   var webpackConfig = getWebpackConfig(config.builds.test);
 
   webpackConfig.devtool = 'eval';
-  webpackConfig.watch = true;
   webpackConfig.debug = true;
 
   var reporter = args.reporter || 'dot';
 
-  return webpackBuild(config.builds.watch, webpackConfig, function() {})
-    .pipe(filter(function(file) { return file.path === path.join(webpackConfig.output.path, webpackConfig.output.filename); }))
-    .pipe(through(function(file) {
-      var target = path.join(webpackConfig.output.path, webpackConfig.output.filename);
-      if (file.path === target) {
-        gulp
-          .src(target)
-          .pipe(mocha({ reporter }));
-      }
-    }));
+  webpackBuild(config.builds.test, webpackConfig)
+    .pipe(mocha({ reporter }))
+    .on('error', function() {});
+
+  gulp
+    .watch([
+      path.join(config.dirs.src, '**', '*.ts'),
+      path.join(config.dirs.src, '**', '*.tsx'),
+      path.join(config.dirs.test, '**', '*.ts')
+    ], function() {
+      webpackBuild(config.builds.test, webpackConfig)
+        .pipe(mocha({ reporter }))
+        .on('error', function() {});
+    });
 });
 
 gulp.task('watch:lint', ['lint'], function() {
