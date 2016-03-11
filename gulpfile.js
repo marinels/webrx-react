@@ -464,7 +464,7 @@ gulp.task('watch:mocha', ['clean:test', 'typings:ensure'], function() {
     .pipe(mocha({ reporter }))
     .on('error', function() {});
 
-  gulp
+  return gulp
     .watch([
       path.join(config.dirs.src, '**', '*.ts'),
       path.join(config.dirs.src, '**', '*.tsx'),
