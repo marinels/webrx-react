@@ -17,7 +17,7 @@ export class SubMan implements Rx.IDisposable {
 
   dispose() {
     this.subscriptions.forEach(x => x.dispose());
-    this.subscriptions = [];
+    this.subscriptions.length = 0;
   }
 }
 
