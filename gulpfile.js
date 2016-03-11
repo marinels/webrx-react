@@ -451,7 +451,7 @@ gulp.task('watch:webpack', ['tsconfig:glob', 'clean:watch', 'index:watch'], func
   });
 });
 
-gulp.task('watch:mocha', ['clean:test'], function() {
+gulp.task('watch:mocha', ['clean:test', 'typings:ensure'], function() {
   var webpackConfig = getWebpackConfig(config.builds.test);
 
   webpackConfig.devtool = 'eval';
