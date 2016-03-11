@@ -9,6 +9,11 @@ import * as moment from 'moment';
 export const TicksPerMillisecond = 10000;
 
 /**
+ * Offset from .NET milliseconds to unix milliseconds
+ */
+export const EpochOffset = 62135596800000;
+
+/**
  * Parse format for the default string serialization of a .NET DateTime
  */
 export const DefaultDateTimeFormat = 'YYYY-MM-DD hh:mm:ss A';
@@ -28,7 +33,7 @@ export class DateTime {
    * i.e. "2016-03-09 4:32:32 PM" or "2016-03-09 4:32:32 PM -08:00" (default formats)
    */
   public static fromString(value: string, ...formats: string[]) {
-    return moment.utc(value, formats.length === 0 ? DefaultDateTimeFormats : formats);
+    return String.isNullOrEmpty(value) ? null : moment.utc(value, formats.length === 0 ? DefaultDateTimeFormats : formats);
   }
 
   /**
@@ -37,14 +42,14 @@ export class DateTime {
    */
   public static fromNumber(value: number, offset?: number | string) {
     // we cast as <any> here because the moment typings don't support unioned types
-    return moment(value / TicksPerMillisecond).utcOffset(<any>offset || 0);
+    return value == null ? null : moment(value / TicksPerMillisecond - EpochOffset).utcOffset(<any>offset || 0);
   }
 
   /**
    * Converts a moment value to a DateTime.Ticks
    */
   public static toNumber(value: moment.Moment) {
-    return value.valueOf() * TicksPerMillisecond;
+    return (value != null && value.isValid()) ? (value.valueOf() + EpochOffset) * TicksPerMillisecond : null;
   }
 }
 
@@ -57,20 +62,20 @@ export class TimeSpan {
    * i.e. "1.05:37:46.6660000" (1.23456789 days)
    */
   public static fromString(value: string) {
-    return moment.duration(value);
+    return String.isNullOrEmpty(value) ? null : moment.duration(value);
   }
 
   /**
    * Converts a .NET TimeSpan.Ticks value to a moment duration
    */
   public static fromNumber(value: number) {
-    return moment.duration(value / TicksPerMillisecond);
+    return value == null ? null : moment.duration(value / TicksPerMillisecond);
   }
 
   /**
    * Converts a moment duration a .NET TimeSpan.Ticks amount
    */
   public static toNumber(value: moment.Duration) {
-    return value.asMilliseconds() * TicksPerMillisecond;
+    return value == null ? null : value.asMilliseconds() * TicksPerMillisecond;
   }
 }
