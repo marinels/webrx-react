@@ -15,7 +15,6 @@ var tslint = require('gulp-tslint');
 var eslint = require('gulp-eslint');
 var typings = require('gulp-typings');
 var mocha = require('gulp-mocha');
-var filter = require('gulp-filter');
 var replace = require('gulp-replace');
 var open = require('gulp-open');
 var through = require('through');
