@@ -303,7 +303,9 @@ function webpackBuild(build, webpackConfig, callback) {
     } else {
       onWebpackComplete(build, err, stats);
     }
-  }).on('error', function() {})
+  }).on('error', function() {
+    this.emit('end');
+  })
   .pipe(gulp.dest(webpackConfig.output.path));
 }
 
