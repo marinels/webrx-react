@@ -472,8 +472,14 @@ gulp.task('watch:mocha', ['clean:test', 'typings:ensure'], function() {
       path.join(config.dirs.test, '**', '*.ts')
     ], function() {
       webpackBuild(config.builds.test, webpackConfig)
-        .pipe(mocha({ reporter }))
-        .on('error', function() {});
+        .pipe(through(function(file) {
+          log('Testing', gutil.colors.magenta(file.path), '...');
+
+          gulp
+            .src(file.path)
+            .pipe(mocha({ reporter }))
+            .on('error', function() {});
+        }));
     });
 });
 
