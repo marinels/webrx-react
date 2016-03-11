@@ -73,6 +73,7 @@
     "tsconfig-glob": "^0.4.1",
     "tsd": "^0.6.4",
     "tslint": "^3.5.0",
+    "typemoq": "0.0.6",
     "typescript": "^1.8.7",
     "url-loader": "^0.5.7",
     "webpack": "^1.12.14",
