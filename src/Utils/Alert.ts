@@ -8,7 +8,9 @@ export class Alert {
   }
 
   public create(content: any, header?: string, style?: string, timeout?: number) {
-    this.pubSub.publish<IAlertCreated>(AlertCreatedKey, { content, header, style, timeout });
+    if (String.isNullOrEmpty(content) === false || String.isNullOrEmpty(header) === false) {
+      this.pubSub.publish<IAlertCreated>(AlertCreatedKey, { content, header, style, timeout });
+    }
   }
 }
 
