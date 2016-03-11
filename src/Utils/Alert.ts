@@ -1,12 +1,15 @@
 'use strict';
 
-import PubSub from './PubSub';
+import { PubSub, default as PubSubInstance } from './PubSub';
 import { AlertCreatedKey, IAlertCreated } from '../Events/AlertCreated';
 
 export class Alert {
-  public static create(content: any, header?: string, style?: string, timeout?: number) {
-    PubSub.publish<IAlertCreated>(AlertCreatedKey, { content, header, style, timeout });
+  constructor(private pubSub: PubSub) {
+  }
+
+  public create(content: any, header?: string, style?: string, timeout?: number) {
+    this.pubSub.publish<IAlertCreated>(AlertCreatedKey, { content, header, style, timeout });
   }
 }
 
-export default Alert;
+export default new Alert(PubSubInstance);
