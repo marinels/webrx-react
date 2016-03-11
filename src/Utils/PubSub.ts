@@ -87,6 +87,4 @@ export class PubSub {
   }
 }
 
-export let Default = new PubSub();
-
-export default Default;
+export default new PubSub();
