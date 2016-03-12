@@ -49,10 +49,9 @@ export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDe
     let view = this.getView(component);
 
     let componentName = this.getComponentName(component);
-    let viewName = view == null ? 'No View Found' : `${view instanceof React.Component ? Object.getName(view.type) : componentName} Demo`;
 
     if (view != null) {
-      this.logger.debug(`Rendering "${viewName}"...`, view);
+      this.logger.debug(`Rendering View...`, view);
     }
 
     let cols = this.state.columns();
@@ -65,17 +64,17 @@ export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDe
           <Row>
             <Col md={12}>
               <PageHeader>
-                {viewName}
+                <span>{componentName} Demo</span>
               </PageHeader>
             </Col>
           </Row>
           <Row>
             <Col md={widthVal}>
-              <Panel className='ComponentDemo-view' header={componentName} bsStyle='primary'>
-                {view}
-              </Panel>
+              {view}
             </Col>
           </Row>
+        </Grid>
+        <Grid className='ComponentDemo-footer'>
           <Row>
             <Col md={12}>
               <div className='pull-right'>
