@@ -105,10 +105,6 @@ export class TimeSpanInputViewModel extends BaseViewModel {
     this.parseText(text);
   });
 
-  public get milliseconds() {
-    return this.value() == null ? null : this.value().asMilliseconds();
-  }
-
   initialize() {
     super.initialize();
 
