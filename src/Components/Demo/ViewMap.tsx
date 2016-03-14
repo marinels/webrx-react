@@ -83,7 +83,7 @@ let viewMap: IViewMap = {
     return (
       <DataGridView viewModel={viewModel} view={view}>
         <DataGridColumn fieldName='name' sortable />
-        <DataGridColumn fieldName='requiredBy' sortable />
+        <DataGridColumn fieldName='requiredBy' sortable width={250} />
       </DataGridView>
     );
   },
