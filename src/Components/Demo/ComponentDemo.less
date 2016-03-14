@@ -1,4 +1,12 @@
+@import (reference) '../../Style/Bootstrap.less';
+
 .ComponentDemo {
+  .ComponentDemo-view {
+    border: 2px solid @brand-primary;
+    padding: 5px;
+    background-color: fade(@brand-primary, 35%);
+  }
+
   & > .container-fluid {
     margin: 0 15px;
   }

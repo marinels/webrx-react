@@ -70,7 +70,9 @@ export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDe
           </Row>
           <Row>
             <Col md={widthVal}>
-              {view}
+              <div className='ComponentDemo-view'>
+                {view}
+              </div>
             </Col>
           </Row>
         </Grid>
