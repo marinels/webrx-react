@@ -20,6 +20,7 @@ interface IDataGridColumnProps {
   valueSelector?: (x: any) => any;
   sortable?: boolean;
   className?: string;
+  width?: number | string;
 }
 
 export class DataGridColumn extends React.Component<IDataGridColumnProps, any> {
@@ -29,7 +30,7 @@ export class DataGridColumn extends React.Component<IDataGridColumnProps, any> {
 class Column {
   public static displayName = 'Column';
 
-  constructor(public fieldName: string, public header?: string, public valueSelector?: (x: any) => any, public sortable = false, public className?: string) {
+  constructor(public fieldName: string, public header?: string, public valueSelector?: (x: any) => any, public sortable = false, public className?: string, public width?: number | string) {
     if (this.header == null) {
       this.header = this.fieldName;
     }
@@ -40,7 +41,7 @@ class Column {
   }
 
   public static create(element: React.ReactElement<IDataGridColumnProps>) {
-    return new Column(element.props.fieldName, element.props.header, element.props.valueSelector, element.props.sortable, element.props.className);
+    return new Column(element.props.fieldName, element.props.header, element.props.valueSelector, element.props.sortable, element.props.className, element.props.width);
   }
 }
 
@@ -144,7 +145,7 @@ export class TableView implements IDataGridView {
     );
 
     return (
-      <th key={index} className={column.className}>
+      <th key={index} className={column.className} width={column.width}>
         {headerContainer}
       </th>
     );
