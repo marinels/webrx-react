@@ -13,15 +13,28 @@ export interface IValidatable {
   isValid: Rx.Observable<boolean>;
 }
 
-export class ModalDialogViewModel extends BaseViewModel {
+export class ModalDialogViewModel<T> extends BaseViewModel {
   public static displayName = 'ModalDialogViewModel';
 
-  constructor(title?: string, public content?: IValidatable | any) {
+  constructor(title?: string, public content?: T, isVisible = false) {
     super();
+
+    this.content = content;
 
     if (String.isNullOrEmpty(title) === false) {
       this.title(title);
     }
+
+    this.isVisible = Rx.Observable
+      .merge(
+        this.accept.results.select(x => false),
+        this.cancel.results.select(x => false),
+        this.reset.results.select(x => false),
+        this.show.results,
+        this.hide.results
+      )
+      .startWith(isVisible)
+      .toProperty();
   }
 
   public title = wx.property('');
@@ -31,15 +44,19 @@ export class ModalDialogViewModel extends BaseViewModel {
   public accept = wx.asyncCommand(this.getCanAccept(), x => Rx.Observable.return(DialogResult.Accepted));
   public cancel = wx.asyncCommand(x => Rx.Observable.return(DialogResult.Cancelled));
   public reset = wx.asyncCommand(x => Rx.Observable.return(null));
+  public show = wx.asyncCommand(x => Rx.Observable.return(true));
+  public hide = wx.asyncCommand(x => Rx.Observable.return(false));
+
+  public isVisible: wx.IObservableProperty<boolean> = null;
 
   public result = Rx.Observable
-    .merge(this.accept.results, this.cancel.results, this.reset.results)
+    .merge<DialogResult>(this.accept.results, this.cancel.results, this.reset.results)
     .toProperty();
 
   private getCanAccept() {
-    let validatable = this.content as IValidatable;
+    let validatable = <any>this.content as IValidatable;
 
-    return validatable.isValid == null ? Rx.Observable.return(true) : validatable.isValid;
+    return (validatable == null || validatable.isValid == null) ? Rx.Observable.return(true) : validatable.isValid;
   }
 };
 

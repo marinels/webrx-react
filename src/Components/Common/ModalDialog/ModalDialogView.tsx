@@ -11,9 +11,10 @@ interface IModalDialogProps extends IBaseViewProps {
   acceptText?: string;
   cancelText?: string;
   children?: any;
+  content?: any;
 }
 
-export class ModalDialogView extends BaseView<IModalDialogProps, ModalDialogViewModel> {
+export class ModalDialogView extends BaseView<IModalDialogProps, ModalDialogViewModel<any>> {
   public static displayName = 'ModalDialogView';
 
   updateOn() {
@@ -21,39 +22,53 @@ export class ModalDialogView extends BaseView<IModalDialogProps, ModalDialogView
       this.state.title.changed,
       this.state.cancelText.changed,
       this.state.acceptText.changed,
-      this.state.result.changed,
-      this.state.accept.canExecuteObservable
-        .debounce(100)
-        .distinctUntilChanged()
+      this.state.isVisible.changed,
     ];
   }
 
   render() {
-    let header = String.isNullOrEmpty(this.state.title()) ? null : (
-      <Modal.Header closeButton>
-        <Modal.Title>{this.state.title()}</Modal.Title>
-      </Modal.Header>
-    );
+    let content: any = null;
 
+    // don't render any content if the modal is hidden
+    if (this.state.isVisible()) {
+      let header = String.isNullOrEmpty(this.state.title()) ? null : (
+        <Modal.Header closeButton>
+          <Modal.Title>{this.state.title()}</Modal.Title>
+        </Modal.Header>
+      );
 
-    let body = this.props.children || this.state.content;
+      let body = this.props.content || this.props.children || this.state.content;
+
+      if (body instanceof Function) {
+        body = body.apply(this, [this.state]);
+      }
+
+      content = (
+        <div className='ModalDialogView'>
+          <Modal show={this.state.isVisible()} onHide={() => this.state.hide.execute(null)} autoFocus keyboard>
+            {header}
+            {body == null ? null : (
+              <Modal.Body>{body}</Modal.Body>
+            )}
+            <Modal.Footer>
+              <Button onClick={this.bindEvent(x => x.cancel)}>
+                {this.props.cancelText || this.state.cancelText()}
+              </Button>
+              <Button
+                disabled={this.state.accept.canExecute(null) === false}
+                onClick={this.bindEvent(x => x.accept)} bsStyle='primary'>
+                {this.props.acceptText || this.state.acceptText()}
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </div>
+      );
+    }
 
     return (
-      <div className='ModalDialogView'>
-        <Modal show={this.state.result() == null} onHide={() => this.state.cancel.execute(null)} autoFocus keyboard>
-          {header}
-          {body == null ? null : (
-            <Modal.Body>{body}</Modal.Body>
-          )}
-          <Modal.Footer>
-            <Button onClick={this.bindEvent(x => x.cancel)}>{this.props.cancelText || this.state.cancelText()}</Button>
-            <Button
-              disabled={this.state.accept.canExecute(null) === false}
-              onClick={this.bindEvent(x => x.accept)} bsStyle='primary'>{this.props.acceptText || this.state.acceptText()}</Button>
-          </Modal.Footer>
-        </Modal>
-      </div>
+      <div className='ModalDialogView'>{content}</div>
     );
+
   }
 }
 

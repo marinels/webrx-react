@@ -87,9 +87,9 @@ let viewMap: IViewMap = {
       </DataGridView>
     );
   },
-  ModalDialogViewModel: (viewModel: ModalDialogViewModel) => (
+  ModalDialogViewModel: (viewModel: ModalDialogViewModel<any>) => (
     <div>
-      <Button onClick={() => viewModel.reset.execute(null)}>Show Dialog</Button>
+      <Button onClick={() => viewModel.show.execute(null)}>Show Dialog</Button>
       <ModalDialogView viewModel={viewModel} />
     </div>
   ),
