@@ -35,9 +35,9 @@ let viewMap: IViewMap = {
   ContextMenu: () => (
     <div>
       <ContextMenu id='demo' header='Demo Context Menu' items={[
-        new MenuItem('Item 1', () => console.log('Item 1 Clicked'), 'fa-flask'),
-        new MenuItem('Item 2', () => console.log('Item 2 Clicked'), 'fa-flask'),
-        new MenuItem('Item 3', null, 'fa-flask'),
+        new MenuItem('Item 1', () => console.log('Item 1 Clicked'), 'flask'),
+        new MenuItem('Item 2', () => console.log('Item 2 Clicked'), 'flask'),
+        new MenuItem('Item 3', null, 'flask'),
       ]}>
         <span>Right Click Here for the Context Menu</span>
       </ContextMenu>
