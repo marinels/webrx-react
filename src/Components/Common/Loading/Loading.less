@@ -1,32 +1,29 @@
 .Loading {
-  position: relative;
-  font-size: 4em;
   font-weight: bold;
-  text-align: center;
+
   line-height: normal;
-  height: 1em;
-  width: 100%;
   color: #fff;
-  background-color: #777;
-  border-radius: 4px;
-  overflow: hidden;
 
-  .progress-bar {
-    position: absolute;
-    top: 0;
-    z-index: 1;
-    transition: width 500ms ease-out;
-  }
+  .Loading-wrapper {
+    position: relative;
+    background-color: #777;
+    border-radius: 4px;
+    height: 70px;
+    overflow: hidden;
 
-  .progress-bar--static {
-    transition: none;
-  }
+    .Loading-progress {
+      position: relative;
+      transition: left 200ms linear;
+      z-index: 1;
+    }
 
-  .Loading-text {
-    position: absolute;
-    top: 0;
-    z-index: 2;
-    font-size: 0.85em;
-    width: 100%;
+    .Loading-text {
+      position: absolute;
+      left: 0;
+      font-size: 4em;
+      z-index: 2;
+      width: 100%;
+      text-align: center;
+    }
   }
 }

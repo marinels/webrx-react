@@ -2,62 +2,60 @@
 
 import * as Rx from 'rx';
 import * as React from 'react';
+import * as classNames from 'classnames';
 import { Grid } from 'react-bootstrap';
-import { ProgressBar, ProgressBarProps } from 'react-bootstrap';
+import { ProgressBar } from 'react-bootstrap';
 
 import SubMan from '../../../Utils/SubMan';
 
 import './Loading.less';
 
-export interface ILoadingProps extends ProgressBarProps {
+export interface ILoadingProps {
   value?: number;
   text?: string;
-  animationPeriod?: number;
-  animationCycleDelay?: number;
+  indeterminate?: boolean;
+  fluid?: boolean;
 }
 
 export interface ILoadingState {
-  value: number;
-  text: string;
+  width: number;
+  left: number;
 }
+
+const IndeterminateWidth = 10;
+const IndeterminateAnimationPeriod = 50;
 
 export class Loading extends React.Component<ILoadingProps, ILoadingState> {
   public static displayName = 'Loading';
 
   static defaultProps = {
-    active: true,
-    striped: true,
     value: 100,
     text: 'Loading...',
-    animationPeriod: 0,
-    animationCycleDelay: 2000,
+    indeterminate: false,
+    fluid: false,
   };
 
-  // private animationSubscription: Rx.IDisposable = null;
   private subs = new SubMan();
 
   constructor(props?: ILoadingProps, context?: any) {
     super(props, context);
 
     this.state = {
-      value: this.props.animationPeriod > 0 ? 0 : this.props.value,
-      text: this.props.text,
+      width: this.props.indeterminate === true ? IndeterminateWidth : this.props.value,
+      left: this.props.indeterminate === true ? -IndeterminateWidth : 0,
     };
   }
 
   componentDidMount() {
-    if (this.props.animationPeriod > 0) {
+    if (this.props.indeterminate === true) {
       this.subs.add(Rx.Observable
-        .timer(this.props.animationPeriod, this.props.animationPeriod)
-        .select(x => {
-          let val = ++this.state.value;
-          if ((val - 100) * this.props.animationPeriod >= this.props.animationCycleDelay) {
-            this.state.value = 0;
-          }
-          return this.state.value;
-        })
+        .timer(IndeterminateAnimationPeriod, IndeterminateAnimationPeriod)
         .subscribe(x => {
-          this.setState(this.state);
+          if (++this.state.left > 100) {
+            this.state.left = -IndeterminateWidth;
+          }
+
+          this.forceUpdate();
         })
       );
     }
@@ -68,15 +66,23 @@ export class Loading extends React.Component<ILoadingProps, ILoadingState> {
   }
 
   render() {
-    let props = Object.assign<any>({}, this.props);
-    props.isChild = true; // Hack to only render the progress bar and not the container
-
-    let classNames = this.state.value === 0 ? 'progress-bar--static' : null;
-
     return (
       <div className='Loading'>
-        <ProgressBar className={classNames} now={Math.min(100, this.state.value)} {...props} />
-        <div className='Loading-text'>{this.state.text}</div>
+        <Grid fluid={this.props.fluid}>
+          <div className='Loading-wrapper'>
+            <div
+              className='Loading-progress progress-bar progress-bar-striped active'
+              role='progressbar'
+              aria-valuemin={0} aria-valuemax={100}
+              style={({
+                width: `${this.state.width}%`,
+                left: `${this.state.left}%`,
+                transition: this.state.left === -IndeterminateWidth ? 'none' : null,
+              })}
+            />
+            <div className='Loading-text'>{this.props.text}</div>
+          </div>
+        </Grid>
       </div>
     );
   }
