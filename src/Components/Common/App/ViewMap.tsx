@@ -4,10 +4,13 @@ import * as React from 'react';
 
 import { IViewMap } from '../RouteHandler/RouteHandlerView';
 
+import Splash from '../Splash/Splash';
+
 import ComponentDemoViewModel from '../../Demo/ComponentDemoViewModel';
 import ComponentDemoView from '../../Demo/ComponentDemoView';
 
 export let ViewMap: IViewMap = {
+  Splash: () => <Splash header='WebRx.React' />,
   ComponentDemoViewModel: (viewModel: ComponentDemoViewModel) => <ComponentDemoView viewModel={viewModel} />
 };
 

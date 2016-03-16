@@ -5,11 +5,12 @@ import { Grid, PageHeader, Alert } from 'react-bootstrap';
 import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
-import Splash from '../Splash/Splash';
 
 import RouteHandlerViewModel from './RouteHandlerViewModel';
 
 import './RouteHandler.less';
+
+export const SplashKey = 'Splash';
 
 export interface IViewMap {
   [key: string]: any;
@@ -33,8 +34,8 @@ export class RouteHandlerView extends BaseView<IRouteHandlerProps, RouteHandlerV
       this.props.viewMap[''] = this.createError('Route Not Found');
     }
 
-    if (this.props.viewMap['Splash'] == null) {
-      this.props.viewMap['Splash'] = <Splash text='WebRx.React' />;
+    if (this.props.viewMap[SplashKey] == null) {
+      this.props.viewMap[SplashKey] = null;
     }
   }
 
@@ -49,7 +50,7 @@ export class RouteHandlerView extends BaseView<IRouteHandlerProps, RouteHandlerV
   }
 
   private getViewKey() {
-    return this.state.isLoading() === true ? 'Splash' :
+    return this.state.isLoading() === true ? SplashKey :
       this.state.currentViewModel() == null ? '' :
       this.state.currentViewModel().getRoutingKey();
   }
@@ -58,7 +59,7 @@ export class RouteHandlerView extends BaseView<IRouteHandlerProps, RouteHandlerV
     let viewModel = this.state.currentViewModel();
 
     let activator = this.props.viewMap[key];
-    if (activator == null) {
+    if (activator == null && key !== SplashKey) {
       activator = this.props.viewMap['*'];
     }
 
