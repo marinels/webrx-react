@@ -36,6 +36,7 @@ class RoutingMap {
 
 let routingMap = new RoutingMap();
 
+routingMap.addRoute('Loading', 'Loading', (state: any) => 'Loading');
 routingMap.addRoute('Splash', 'Splash', (state: any) => 'Splash');
 routingMap.addRoute('TimeSpanInput', 'Time Span Input', (state: any) => new TimeSpanInputViewModel());
 routingMap.addRoute('ContextMenu', 'Context Menu', (state: any) => 'ContextMenu');

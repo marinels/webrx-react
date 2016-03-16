@@ -1,14 +1,15 @@
 'use strict';
 
 import * as React from 'react';
-import { ListGroupItem, Button } from 'react-bootstrap';
+import { ListGroupItem, Button, MenuItem } from 'react-bootstrap';
 
+import Loading from '../Common/Loading/Loading';
 import Splash from '../Common/Splash/Splash';
 
 import { TimeSpanInputViewModel, UnitType } from '../Common/TimeSpanInput/TimeSpanInputViewModel';
 import TimeSpanInputView from '../Common/TimeSpanInput/TimeSpanInputView';
 
-import { ContextMenu, MenuItem } from '../Common/ContextMenu/ContextMenu';
+import ContextMenu from '../Common/ContextMenu/ContextMenu';
 
 import ProfilePictureView from '../Common/ProfilePicture/ProfilePictureView';
 
@@ -30,16 +31,22 @@ export interface IViewMap {
 }
 
 let viewMap: IViewMap = {
-  Splash: () => <Splash fluid animationPeriod={100} text='WebRx.React Demo' logo='http://placehold.it/100x100?text=Logo' />,
+  Loading: () => <Loading fluid indeterminate text='Loading Text...' />,
+  Splash: () => <Splash fluid indeterminate header='WebRx.React Demo' logo='http://placehold.it/100x100?text=Logo' />,
   TimeSpanInputViewModel: (viewModel: TimeSpanInputViewModel) => <TimeSpanInputView viewModel={viewModel} id='demo' placeholder='Type in a timespan, or use the controls on the right...' standalone />,
   ContextMenu: () => (
     <div>
-      <ContextMenu id='demo' header='Demo Context Menu' items={[
-        new MenuItem('Item 1', () => console.log('Item 1 Clicked'), 'flask'),
-        new MenuItem('Item 2', () => console.log('Item 2 Clicked'), 'flask'),
-        new MenuItem('Item 3', null, 'flask'),
-      ]}>
+      <ContextMenu id='demo' header='Optional Header' onSelect={(item) => {
+        console.log(item.eventKey || item.href);
+      }}>
         <span>Right Click Here for the Context Menu</span>
+
+        <MenuItem header>Section Header</MenuItem>
+        <MenuItem title='Item 1 Tooltip' href='#/demo/ContextMenu?clicked=1'>Item 1</MenuItem>
+        <MenuItem title='#/demo/ContextMenu' eventKey={({val: 1})}>Item 2</MenuItem>
+        <MenuItem divider />
+        <MenuItem header>Disabled Items</MenuItem>
+        <MenuItem disabled>Item 3</MenuItem>
       </ContextMenu>
     </div>
   ),
