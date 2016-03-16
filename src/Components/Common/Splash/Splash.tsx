@@ -8,10 +8,10 @@ import { Loading } from '../Loading/Loading';
 import './Splash.less';
 
 interface ISplashProps {
-  text: string;
+  header: any;
   logo?: string;
-  loadingText?: string;
-  animationPeriod?: number;
+  text?: string;
+  indeterminate?: boolean;
   fluid?: boolean;
 }
 
@@ -29,10 +29,10 @@ export class Splash extends React.Component<ISplashProps, any> {
         <Grid fluid={this.props.fluid}>
           <div className='Splash-header'>
             { this.props.logo == null ? null : <Image src={this.props.logo}/> }
-            <span className='Splash-headerText'>{this.props.text}</span>
+            <span className='Splash-headerText'>{this.props.header}</span>
           </div>
 
-          <Loading animationPeriod={this.props.animationPeriod} text={String.isNullOrEmpty(this.props.loadingText) ? undefined : this.props.loadingText} />
+          <Loading fluid indeterminate={this.props.indeterminate} text={this.props.text} />
         </Grid>
       </div>
     );
