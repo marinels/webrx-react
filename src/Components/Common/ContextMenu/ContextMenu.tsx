@@ -3,45 +3,15 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { Overlay, Popover, ListGroup, ListGroupItem } from 'react-bootstrap';
-
-import * as Icon from 'react-fa';
+import { Overlay, Popover, MenuItemProps } from 'react-bootstrap';
 
 import './ContextMenu.less';
-
-export class MenuItem {
-  public static displayName = 'MenuItem';
-
-  constructor(public content: any, public onSelect?: () => void, public iconName?: any) {
-  }
-
-  private handleClick(hide: () => void) {
-    if (this.onSelect != null) {
-      this.onSelect();
-    }
-
-    hide();
-  }
-
-  public render(index: number, hide: () => void) {
-    return (
-      <ListGroupItem className='ContextMenu-item' key={index} disabled={this.onSelect == null} onClick={() => this.handleClick(hide)}>
-        <div className='ContextMenu-itemIcon'>
-          <Icon name={this.iconName} fixedWidth />
-        </div>
-        <div className='ContextMenu-itemContent'>
-          {this.content}
-        </div>
-      </ListGroupItem>
-    );
-  }
-}
 
 interface IContextMenuProps {
   key?: string | number;
   id: string;
-  header: string;
-  items: MenuItem[];
+  header?: string;
+  onSelect?: (item: MenuItemProps) => void;
   children?: any;
 }
 
@@ -67,32 +37,6 @@ export class ContextMenu extends React.Component<IContextMenuProps, IContextMenu
     this.state = { isVisible: false } as IContextMenuState;
   }
 
-  private renderMenuItems() {
-    return this.props.items.map((x, i) => x.render(i, () => this.hide()));
-  }
-
-  private renderMenu() {
-    let menu: any;
-
-    if (this.state.left != null && this.state.top != null) {
-      menu = (
-        <Popover id={this.props.id} placement='right' title={this.props.header}
-          arrowOffsetTop={ContextMenu.ArrowOffset}
-          positionLeft={this.state.left} positionTop={this.state.top}>
-          <ListGroup>
-            {this.renderMenuItems()}
-          </ListGroup>
-        </Popover>
-      );
-    }
-
-    return (
-      <div className='ContextMenu-menu'>
-        {menu}
-      </div>
-    );
-  }
-
   private handleClick(e: React.MouseEvent) {
     let isVisible = e.button === 2;
 
@@ -116,14 +60,40 @@ export class ContextMenu extends React.Component<IContextMenuProps, IContextMenu
   }
 
   render() {
+    let menuItems = React.Children.toArray(this.props.children);
+    let target = menuItems.shift();
+
+    let menu: any;
+
+    if (this.state.left != null && this.state.top != null) {
+      if (this.props.onSelect != null) {
+        menuItems = React.Children.map(menuItems, (x: React.ReactElement<any>) => {
+          return React.cloneElement(x, { onSelect: () => this.props.onSelect(x.props) });
+        });
+      }
+
+      menu = (
+        <Popover id={this.props.id} placement='right' title={this.props.header}
+          arrowOffsetTop={ContextMenu.ArrowOffset}
+          positionLeft={this.state.left} positionTop={this.state.top}>
+          <div className='open'>
+            <ul className='dropdown-menu'>
+              {menuItems}
+            </ul>
+          </div>
+        </Popover>
+      );
+    }
 
     return (
       <div className='ContextMenu'>
         <div className='ContextMenu-target' onContextMenu={e => this.handleClick(e)}>
-          {this.props.children}
+          {target}
         </div>
         <Overlay show={this.state.isVisible} rootClose onHide={() => this.hide()}>
-          {this.renderMenu()}
+          <div className='ContextMenu-menu'>
+            {menu}
+          </div>
         </Overlay>
       </div>
     );
