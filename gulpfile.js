@@ -302,10 +302,7 @@ function webpackBuild(build, webpackConfig, callback) {
     } else {
       onWebpackComplete(build, err, stats);
     }
-  }).on('error', function() {
-    this.emit('end');
-  })
-  .pipe(gulp.dest(webpackConfig.output.path));
+  });
 }
 
 function onWebpackComplete(build, err, stats) {
@@ -364,19 +361,22 @@ gulp.task('webpack:all', function(cb) {
 gulp.task('webpack:debug', ['tsconfig:glob'], function(cb) {
   var webpackConfig = getWebpackConfig(config.builds.debug);
 
-  return webpackBuild(config.builds.debug, webpackConfig);
+  return webpackBuild(config.builds.debug, webpackConfig)
+    .pipe(gulp.dest(webpackConfig.output.path));
 });
 
 gulp.task('webpack:release', ['tsconfig:glob'], function(cb) {
   var webpackConfig = getWebpackConfig(config.builds.release);
 
-  return webpackBuild(config.builds.release, webpackConfig);
+  return webpackBuild(config.builds.release, webpackConfig)
+    .pipe(gulp.dest(webpackConfig.output.path));
 });
 
 gulp.task('webpack:test', ['tsconfig:glob'], function(cb) {
   var webpackConfig = getWebpackConfig(config.builds.test);
 
-  return webpackBuild(config.builds.test, webpackConfig);
+  return webpackBuild(config.builds.test, webpackConfig)
+    .pipe(gulp.dest(webpackConfig.output.path));
 });
 
 gulp.task('mocha', function(cb) {
@@ -461,8 +461,14 @@ gulp.task('watch:mocha', ['clean:test', 'typings:ensure'], function() {
   var reporter = args.reporter || 'dot';
 
   webpackBuild(config.builds.test, webpackConfig)
+    .on('error', function(err) {
+      log(err.message);
+    })
+    .pipe(gulp.dest(webpackConfig.output.path))
     .pipe(mocha({ reporter }))
-    .on('error', function() {});
+    .on('error', function(err) {
+      log(err.message);
+    });
 
   return gulp
     .watch([
@@ -471,13 +477,19 @@ gulp.task('watch:mocha', ['clean:test', 'typings:ensure'], function() {
       path.join(config.dirs.test, '**', '*.ts')
     ], function() {
       webpackBuild(config.builds.test, webpackConfig)
+        .on('error', function(err) {
+          log(err.message);
+        })
+        .pipe(gulp.dest(webpackConfig.output.path))
         .pipe(through(function(file) {
           log('Testing', gutil.colors.magenta(file.path), '...');
 
           gulp
-            .src(file.path)
+            .src(file.path, { read: false })
             .pipe(mocha({ reporter }))
-            .on('error', function() {});
+            .on('error', function(err) {
+              log(err.message);
+            });
         }));
     });
 });
@@ -504,9 +516,15 @@ gulp.task('watch:dist:debug', ['tsconfig:glob'], function() {
 
   var webpackConfig = getWebpackConfig(config.builds.debug);
 
+  webpackConfig.devtool = 'eval';
   webpackConfig.watch = true;
+  webpackConfig.failOnError = false;
+  webpackConfig.debug = true;
 
   return webpackBuild(config.builds.debug, webpackConfig, function() {})
+    .on('error', function(err) {
+      log(err.message);
+    })
     .pipe(gulp.dest(target))
     .pipe(through(function(file) {
       gutil.log('Deploying', gutil.colors.magenta(file.path));
@@ -520,11 +538,16 @@ gulp.task('watch:dist:release', ['tsconfig:glob'], function() {
   var webpackConfig = getWebpackConfig(config.builds.release);
 
   webpackConfig.watch = true;
+  webpackConfig.failOnError = false;
+  webpackConfig.debug = true;
 
   return webpackBuild(config.builds.release, webpackConfig, function() {})
+    .on('error', function(err) {
+      log(err.message);
+    })
     .pipe(gulp.dest(target))
     .pipe(through(function(file) {
-      gutil.log('Deploying', gutil.colors.magenta(file.path));
+      log('Deploying', gutil.colors.magenta(file.path));
     }));
 });
 
