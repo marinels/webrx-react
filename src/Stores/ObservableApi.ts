@@ -34,11 +34,10 @@ export class ObservableApi {
           try {
             error = JSON.parse(x.response);
           } catch (e) {
+            error = 'Unknown Error';
           }
 
-          x.error = error;
-
-          return Rx.Observable.throw<T>(x);
+          return Rx.Observable.throw<T>(error);
         }) :
         // if sample data has been created just use that instead (opt-in)
         this.sampleData.getObservable<T>(action, params);
