@@ -7,6 +7,7 @@ import LogLevel from '../../Utils/Logging/LogLevel';
 import logManager from '../Common/App/Logging';
 import PubSub from '../../Utils/PubSub';
 import SubMan from '../../Utils/SubMan';
+import Alert from '../../Utils/Alert';
 import { AlertCreatedKey, IAlertCreated } from '../../Events/AlertCreated';
 import { RouteChangedKey, IRouteChanged } from '../../Events/RouteChanged';
 
@@ -15,9 +16,9 @@ export interface IBaseViewModel {
 
   getDisplayName(): string;
   createAlert(text: string, header?: string, style?: string, timeout?: number): void;
-  alertForError(error: Error, header?: string, style?: string, formatter?: (e: Error) => string): void;
-  subscribeOrAlert<T>(observable: () => Rx.Observable<T>, header: string, onNext?: (value: T) => void, onComplete?: () => void, errorFormatter?: (e: Error) => string): Rx.IDisposable;
-  runOrAlert(action: () => void, header?: string, style?: string, formatter?: (e: Error) => string): void;
+  alertForError(error: Error, header?: string, style?: string, timeout?: number, formatter?: (e: Error) => string): void;
+  subscribeOrAlert<T>(observable: () => Rx.Observable<T>, header: string, onNext?: (value: T) => void, onComplete?: () => void, style?: string, timeout?: number, errorFormatter?: (e: Error) => string): Rx.IDisposable;
+  runOrAlert(action: () => void, header?: string, style?: string, timeout?: number, formatter?: (e: Error) => string): void;
   notifyChanged(...args: any[]): void;
 
   initialize(): void;
@@ -36,62 +37,28 @@ export abstract class BaseViewModel implements IBaseViewModel {
   public getDisplayName() { return Object.getName(this); }
 
   public createAlert(content: any, header?: string, style?: string, timeout?: number) {
-    PubSub.publish<IAlertCreated>(AlertCreatedKey, { content, header, style, timeout });
+    Alert.create(content, header, style, timeout);
   }
 
-  public alertForError<TError>(error: TError, header = 'Unknown Error', style = 'danger', formatter?: (e: TError) => string) {
-    if (error != null) {
-      let text: string;
-
-      if (formatter != null) {
-        text = formatter(error);
-      } else {
-        let anyError = error as any;
-        let childError = anyError.error;
-
-        let code = anyError.status || anyError.Status || anyError.code || anyError.Code;
-        if (code == null && childError != null) {
-          code = childError.status || childError.Status || childError.code || childError.Code;
-        }
-
-        let message = anyError.message || anyError.Message;
-        if (message == null && childError != null) {
-          message = childError.message || childError.Message;
-        }
-
-        text = `Error ${code || ''}: ${message || String.stringify(error, null, 2)}`;
-
-        if (DEBUG) {
-          let stack = anyError.stack || anyError.stacktrace || anyError.stackTrace || anyError.StackTrace;
-          if (stack == null && childError != null) {
-            stack = childError.stack || childError.stacktrace || childError.stackTrace || childError.StackTrace;
-          }
-
-          if (stack != null) {
-            this.logger.error(stack.toString());
-          }
-        }
-      }
-
-      this.createAlert(text, header, style);
-    }
+  public alertForError<TError>(error: TError, header?: string, style?: string, timeout?: number, formatter?: (e: TError) => string) {
+    Alert.createForError(error, header, style, timeout, formatter);
   }
 
-  public subscribeOrAlert<T, TError>(observable: () => Rx.Observable<T>, header: string, onNext?: (value: T) => void, onComplete?: () => void, errorFormatter?: (e: TError) => string) {
+  public subscribeOrAlert<T, TError>(observable: () => Rx.Observable<T>, header: string, onNext?: (value: T) => void, onComplete?: () => void, style?: string, timeout?: number, errorFormatter?: (e: TError) => string) {
     try {
       return observable().subscribe(onNext, (error: TError) => {
-        this.alertForError(error, header, undefined, errorFormatter);
+        this.alertForError(error, header, undefined, timeout, errorFormatter);
       }, onComplete);
     } catch (e) {
-      this.alertForError(e as Error);
+      this.alertForError(e, header, style, timeout, errorFormatter);
     }
   }
 
-  public runOrAlert(action: () => void, header = 'Unknown Error', style = 'danger', formatter?: (e: Error) => string) {
+  public runOrAlert(action: () => void, header = 'Unknown Error', style?: string, timeout?: number, formatter?: (e: Error) => string) {
     try {
       action();
     } catch (e) {
-      this.alertForError(e as Error);
+      this.alertForError(e, header, style, timeout, formatter);
     }
   }
 
