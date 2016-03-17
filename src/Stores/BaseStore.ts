@@ -20,9 +20,13 @@ export abstract class BaseStore<T extends ObservableApi> {
     this.logger.debug('Store Created');
   }
 
+  private getNonNullParams(params?: any) {
+    return params == null ? null : JSON.parse(JSON.stringify(params));
+  }
+
   protected getObservable<T>(action: string, params?: any, options?: wx.IHttpClientOptions, baseUri?: string) {
     return this.api.value
-      .getObservable<T>(action, params, options, baseUri);
+      .getObservable<T>(action, this.getNonNullParams(params), options, baseUri);
   }
 }
 
