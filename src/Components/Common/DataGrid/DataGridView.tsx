@@ -5,8 +5,8 @@ import * as React from 'react';
 import { Table, TableProps, ButtonGroup, Button, ListGroup } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
-import { SearchView, ISearchProps } from '../Search/SearchView';
-import { PagerView, IPagerProps } from '../Pager/PagerView';
+import { SearchView } from '../Search/SearchView';
+import { PagerView } from '../Pager/PagerView';
 import * as Icon from 'react-fa';
 
 import { DataGridViewModel } from './DataGridViewModel';
@@ -25,46 +25,32 @@ interface IDataGridColumnProps {
 
 export class DataGridColumn extends React.Component<IDataGridColumnProps, any> {
   public static displayName = 'DataGridColumn';
-}
 
-class Column {
-  public static displayName = 'Column';
-
-  constructor(public fieldName: string, public header?: string, public valueSelector?: (x: any) => any, public sortable = false, public className?: string, public width?: number | string) {
-    if (this.header == null) {
-      this.header = this.fieldName;
-    }
-
-    if (this.valueSelector == null) {
-      this.valueSelector = (x: any) => x[this.fieldName];
-    }
-  }
-
-  public static create(element: React.ReactElement<IDataGridColumnProps>) {
-    return new Column(element.props.fieldName, element.props.header, element.props.valueSelector, element.props.sortable, element.props.className, element.props.width);
-  }
+  static defaultProps = {
+    sortable: false,
+  };
 }
 
 export interface IDataGridView {
-  renderColumn: (view: DataGridView, grid: DataGridViewModel<any>, column: Column, index: number) => any;
-  renderCell: (view: DataGridView, grid: DataGridViewModel<any>, column: Column, index: number, value: any) => any;
+  renderColumn: (view: DataGridView, grid: DataGridViewModel<any>, column: IDataGridColumnProps, index: number) => any;
+  renderCell: (view: DataGridView, grid: DataGridViewModel<any>, column: IDataGridColumnProps, index: number, value: any) => any;
   renderRow: (view: DataGridView, grid: DataGridViewModel<any>, row: any, index: number, cells: any[]) => any;
   renderTable: (view: DataGridView, grid: DataGridViewModel<any>, data: any[], columns: any, rows: any) => any;
 }
 
-export class ListView<T> implements IDataGridView {
-  public static displayName = 'ListView';
+export class DataGridListView<T> implements IDataGridView {
+  public static displayName = 'DataGridListView';
 
   constructor(
     protected renderItem: (view: DataGridView, grid: DataGridViewModel<T>, row: T, index: number) => any
   ) {
   }
 
-  renderColumn(view: DataGridView, grid: DataGridViewModel<any>, column: Column, index: number): any {
+  renderColumn(view: DataGridView, grid: DataGridViewModel<any>, column: IDataGridColumnProps, index: number): any {
     return null;
   }
 
-  renderCell(view: DataGridView, grid: DataGridViewModel<any>, column: Column, index: number, value: any): any {
+  renderCell(view: DataGridView, grid: DataGridViewModel<any>, column: IDataGridColumnProps, index: number, value: any): any {
     return null;
   }
 
@@ -87,8 +73,8 @@ export class ListView<T> implements IDataGridView {
   }
 }
 
-export class TableView implements IDataGridView {
-  public static displayName = 'TableView';
+export class DataGridTableView implements IDataGridView {
+  public static displayName = 'DataGridTableView';
 
   constructor(
     private rowKeySelector: (row: any, index: number, cells: any[]) => any = null,
@@ -103,8 +89,8 @@ export class TableView implements IDataGridView {
 
   private tableProps: TableProps;
 
-  private renderSortIcon(view: DataGridView, grid: DataGridViewModel<any>, column: Column, index: number) {
-    let icon: JSX.Element = null;
+  private renderSortIcon(view: DataGridView, grid: DataGridViewModel<any>, column: IDataGridColumnProps, index: number) {
+    let icon: any = null;
 
     if (grid.canSort() && column.sortable) {
       let iconName = '';
@@ -125,7 +111,7 @@ export class TableView implements IDataGridView {
     return icon;
   }
 
-  public renderColumn(view: DataGridView, grid: DataGridViewModel<any>, column: Column, index: number) {
+  public renderColumn(view: DataGridView, grid: DataGridViewModel<any>, column: IDataGridColumnProps, index: number) {
     let sortIcon = this.renderSortIcon(view, grid, column, index);
     let header = (
       <span className='Column-header'>
@@ -151,7 +137,7 @@ export class TableView implements IDataGridView {
     );
   }
 
-  public renderCell(view: DataGridView, grid: DataGridViewModel<any>, column: Column, index: number, value: any) {
+  public renderCell(view: DataGridView, grid: DataGridViewModel<any>, column: IDataGridColumnProps, index: number, value: any) {
     return (
       <td className={column.className} key={index}>{value}</td>
     );
@@ -175,8 +161,6 @@ export class TableView implements IDataGridView {
 
 interface IDataGridProps extends IBaseViewProps {
   view?: IDataGridView;
-  searchProps?: ISearchProps;
-  pagerProps?: IPagerProps;
   children?: DataGridColumn[];
 }
 
@@ -184,7 +168,7 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
   public static displayName = 'DataGridView';
 
   static defaultProps = {
-    view: new TableView(),
+    view: new DataGridTableView(),
     searchProps: {
     },
     pagerProps: {
@@ -197,7 +181,7 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
     }
   };
 
-  private columns: Column[];
+  private columns: IDataGridColumnProps[];
 
   private renderTable(items: any[]) {
     let columns = this.columns.map((x, i) => this.props.view.renderColumn(this, this.state, x, i));
@@ -219,7 +203,7 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
     if (this.columns == null) {
       this.columns = Object
         .keys(items[0] || {})
-        .map(x => new Column(x));
+        .map(x => ({ fieldName: x } as IDataGridColumnProps));
     }
 
     return this.columns;
@@ -237,7 +221,17 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
 
     if (React.Children.count(this.props.children) > 0) {
       this.columns = React.Children.map(this.props.children, (x: React.ReactElement<IDataGridColumnProps>) => {
-        return Column.create(x);
+        let column = Object.assign<IDataGridColumnProps>({}, x.props);
+
+        if (column.header == null) {
+          column.header = column.fieldName;
+        }
+
+        if (column.valueSelector == null) {
+          column.valueSelector = ((x: any) => x[column.fieldName]);
+        }
+
+        return column;
       });
     }
   }
@@ -251,12 +245,12 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
 
     let columns = this.getColumns(items);
 
-    search = (this.props.searchProps == null || this.state.canFilter() === false) ? null : (
-      <SearchView {...this.props.searchProps} viewModel={this.state.search}/>
+    search = (this.state.canFilter() === false) ? null : (
+      <SearchView viewModel={this.state.search}/>
     );
     table = this.renderTable(items);
-    pager = this.props.pagerProps == null ? null : (
-      <PagerView {...this.props.pagerProps as any} viewModel={this.state.pager} />
+    pager = (
+      <PagerView viewModel={this.state.pager} />
     );
 
     return (

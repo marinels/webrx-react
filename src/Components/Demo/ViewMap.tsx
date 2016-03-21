@@ -17,7 +17,7 @@ import ListViewModel from '../Common/List/ListViewModel';
 import { ListView, StandardListView } from '../Common/List/ListView';
 
 import DataGridViewModel from '../Common/DataGrid/DataGridViewModel';
-import { DataGridView, DataGridColumn, IDataGridView, ListView as DataGridListView } from '../Common/DataGrid/DataGridView';
+import { DataGridView, DataGridColumn, IDataGridView, DataGridListView as DataGridListView } from '../Common/DataGrid/DataGridView';
 
 import ModalDialogViewModel from '../Common/ModalDialog/ModalDialogViewModel';
 import ModalDialogView from '../Common/ModalDialog/ModalDialogView';
