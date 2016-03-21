@@ -20,7 +20,14 @@ export class RouteManager implements Rx.IDisposable {
 
   protected logger = getLogger(RouteManager.displayName);
 
-  constructor(hashChanged: Rx.Observable<string>, public hashCodec = new HashCodec()) {
+  constructor(hashChanged?: Rx.Observable<string>, public hashCodec = new HashCodec()) {
+    if (hashChanged == null) {
+      hashChanged = Rx.Observable
+        .fromEvent<HashChangeEvent>(window, 'hashchange')
+        .select(x => window.location.hash)
+        .startWith(window.location.hash);
+    }
+
     this.currentRoute = hashChanged
       .debounce(100)
       .select(x => {
