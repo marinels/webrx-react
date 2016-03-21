@@ -88,6 +88,19 @@ export namespace Events {
   export const RoutingStateChangedKey = RoutingStateChangedTypes.RoutingStateChangedKey;
 }
 
+import * as BaseStoreTypes from './Stores/BaseStore';
+import * as ObservableApiTypes from './Stores/ObservableApi';
+import * as BaseSampleDataStoreTypes from './Stores/SampleData/BaseSampleDataStore';
+import * as SampleDataTypes from './Stores/SampleData/SampleData';
+
+export namespace Stores {
+  export import BaseModel = BaseStoreTypes.BaseModel;
+  export import BaseStore = BaseStoreTypes.BaseStore;
+  export import ObservableApi = ObservableApiTypes.ObservableApi;
+  export import BaseSampleDataStore = BaseSampleDataStoreTypes.BaseSampleDataStore;
+  export import SampleData = SampleDataTypes.SampleData;
+}
+
 import * as BaseViewModelTypes from './Components/React/BaseViewModel';
 import * as BaseRoutableViewModelTypes from './Components/React/BaseRoutableViewModel';
 import * as BaseViewTypes from './Components/React/BaseView';
