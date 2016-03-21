@@ -11,17 +11,23 @@ import RouteHandlerView from '../RouteHandler/RouteHandlerView';
 import PageHeaderView from '../PageHeader/PageHeaderView';
 import PageFooterView from '../PageFooter/PageFooterView';
 
+import ViewMap from './ViewMap';
+
 import AppViewModel from './AppViewModel';
 
 import './App.less';
 
 interface IAppProps extends IBaseViewProps {
-  viewMap: IViewMap;
+  viewMap?: IViewMap;
   brand?: any;
 }
 
 export class AppView extends BaseView<IAppProps, AppViewModel> {
   public static displayName = 'AppView';
+
+  static defaultProps = {
+    viewMap: ViewMap,
+  };
 
   render() {
     return (
