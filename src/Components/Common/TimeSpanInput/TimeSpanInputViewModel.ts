@@ -7,7 +7,7 @@ import * as moment from 'moment';
 
 import BaseViewModel from '../../React/BaseViewModel';
 
-export enum UnitType {
+export enum TimeSpanUnitType {
   Ticks = 0,
   Milliseconds = 1,
   Seconds = 2,
@@ -20,62 +20,62 @@ export enum UnitType {
   Years = 9
 }
 
-export interface IUnit {
-  type: UnitType;
+export interface ITimeSpanUnit {
+  type: TimeSpanUnitType;
   name: string;
   key?: string;
   shortKey?: string;
 }
 
-export const Units = [
-  { type: UnitType.Ticks, name: 'Ticks' },
-  { type: UnitType.Milliseconds, name: 'Milliseconds', key: 'millisecond', shortKey: 'ms' },
-  { type: UnitType.Seconds, name: 'Seconds', key: 'second', shortKey: 's' },
-  { type: UnitType.Minutes, name: 'Minutes', key: 'minute', shortKey: 'm' },
-  { type: UnitType.Hours, name: 'Hours', key: 'hour', shortKey: 'h' },
-  { type: UnitType.Days, name: 'Days', key: 'day', shortKey: 'd' },
-  { type: UnitType.Weeks, name: 'Weeks', key: 'week', shortKey: 'w' },
-  { type: UnitType.Months, name: 'Months', key: 'month', shortKey: 'M' },
-  { type: UnitType.Quarters, name: 'Quarters', key: 'quarter', shortKey: 'Q' },
-  { type: UnitType.Years, name: 'Years', key: 'year', shortKey: 'y' },
-] as IUnit[];
+export const TimeSpanUnits = [
+  { type: TimeSpanUnitType.Ticks, name: 'Ticks' },
+  { type: TimeSpanUnitType.Milliseconds, name: 'Milliseconds', key: 'millisecond', shortKey: 'ms' },
+  { type: TimeSpanUnitType.Seconds, name: 'Seconds', key: 'second', shortKey: 's' },
+  { type: TimeSpanUnitType.Minutes, name: 'Minutes', key: 'minute', shortKey: 'm' },
+  { type: TimeSpanUnitType.Hours, name: 'Hours', key: 'hour', shortKey: 'h' },
+  { type: TimeSpanUnitType.Days, name: 'Days', key: 'day', shortKey: 'd' },
+  { type: TimeSpanUnitType.Weeks, name: 'Weeks', key: 'week', shortKey: 'w' },
+  { type: TimeSpanUnitType.Months, name: 'Months', key: 'month', shortKey: 'M' },
+  { type: TimeSpanUnitType.Quarters, name: 'Quarters', key: 'quarter', shortKey: 'Q' },
+  { type: TimeSpanUnitType.Years, name: 'Years', key: 'year', shortKey: 'y' },
+] as ITimeSpanUnit[];
 
 export class TimeSpanInputViewModel extends BaseViewModel {
   public static displayName = 'TimeSpanInputViewModel';
 
   constructor(
     private initialValue?: moment.Duration,
-    unit = Units[UnitType.Seconds],
+    unit = TimeSpanUnits[TimeSpanUnitType.Seconds],
     public required = false,
-    units?: UnitType[],
+    units?: TimeSpanUnitType[],
     public minValue?: moment.Duration,
     public maxValue?: moment.Duration,
-    public minUnit = UnitType.Days,
-    public maxUnit = UnitType.Years,
+    public minUnit = TimeSpanUnitType.Days,
+    public maxUnit = TimeSpanUnitType.Years,
     public precision = 2,
     public parseDelay = 500
     ) {
     super();
 
-    this.unit(unit.type < minUnit ? Units[minUnit] : unit);
+    this.unit(unit.type < minUnit ? TimeSpanUnits[minUnit] : unit);
     this.minValue = this.minValue || moment.duration(1, this.unit().key);
 
     if (units == null) {
       this.units = Ix.Enumerable
-        .fromArray(Units)
+        .fromArray(TimeSpanUnits)
         .where(x => x.type >= minUnit && x.type <= maxUnit)
         .toArray();
     } else {
       this.units = Ix.Enumerable
         .fromArray(units)
-        .select(x => Units[x])
+        .select(x => TimeSpanUnits[x])
         .toArray();
     }
   }
 
-  public units: IUnit[];
+  public units: ITimeSpanUnit[];
   public text = wx.property('');
-  public unit = wx.property<IUnit>();
+  public unit = wx.property<ITimeSpanUnit>();
   public value = wx.property<moment.Duration>();
 
   public isValid = wx
@@ -91,7 +91,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
     })
     .toProperty();
 
-  public setUnit = wx.command((unit: IUnit) => {
+  public setUnit = wx.command((unit: ITimeSpanUnit) => {
     this.unit(unit);
   });
 
@@ -154,7 +154,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
 
           if (String.isNullOrEmpty(unitName) === false) {
             let unit = Ix.Enumerable
-              .fromArray(Units)
+              .fromArray(TimeSpanUnits)
               .where(x => x.key === unitName)
               .firstOrDefault();
 

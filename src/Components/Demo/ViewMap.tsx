@@ -6,7 +6,7 @@ import { ListGroupItem, Button, MenuItem } from 'react-bootstrap';
 import Loading from '../Common/Loading/Loading';
 import Splash from '../Common/Splash/Splash';
 
-import { TimeSpanInputViewModel, UnitType } from '../Common/TimeSpanInput/TimeSpanInputViewModel';
+import { TimeSpanInputViewModel, TimeSpanUnitType } from '../Common/TimeSpanInput/TimeSpanInputViewModel';
 import TimeSpanInputView from '../Common/TimeSpanInput/TimeSpanInputView';
 
 import ContextMenu from '../Common/ContextMenu/ContextMenu';

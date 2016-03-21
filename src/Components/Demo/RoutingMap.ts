@@ -2,7 +2,7 @@
 
 import { IMenuItem } from '../Common/PageHeader/Actions';
 
-import { TimeSpanInputViewModel, UnitType } from '../Common/TimeSpanInput/TimeSpanInputViewModel';
+import { TimeSpanInputViewModel, TimeSpanUnitType } from '../Common/TimeSpanInput/TimeSpanInputViewModel';
 import ListViewModel from '../Common/List/ListViewModel';
 import DataGridViewModel from '../Common/DataGrid/DataGridViewModel';
 import ModalDialogViewModel from '../Common/ModalDialog/ModalDialogViewModel';

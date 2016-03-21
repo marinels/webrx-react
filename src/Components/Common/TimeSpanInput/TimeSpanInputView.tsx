@@ -9,7 +9,7 @@ import * as moment from 'moment';
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import BindableInput from '../BindableInput/BindableInput';
 
-import { TimeSpanInputViewModel, IUnit } from './TimeSpanInputViewModel';
+import { TimeSpanInputViewModel, ITimeSpanUnit } from './TimeSpanInputViewModel';
 
 interface ITimeSpanInputProps extends IBaseViewProps {
   id: string;
