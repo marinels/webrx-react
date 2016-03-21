@@ -138,11 +138,11 @@ import * as DataGridViewModelTypes from './Components/Common/DataGrid/DataGridVi
 import * as AsyncDataGridViewModelTypes from './Components/Common/DataGrid/AsyncDataGridViewModel';
 import * as DataGridViewTypes from './Components/Common/DataGrid/DataGridView';
 
-import * as AppViewModelTypes from './Components/Common/App/AppViewModel';
-import * as AppViewTypes from './Components/Common/App/AppView';
-
 import * as ComponentDemoViewModelTypes from './Components/Demo/ComponentDemoViewModel';
 import * as ComponentDemoViewTypes from './Components/Demo/ComponentDemoView';
+
+import * as AppViewModelTypes from './Components/Common/App/AppViewModel';
+import * as AppViewTypes from './Components/Common/App/AppView';
 
 export namespace Components {
   export import IBaseViewModel = BaseViewModelTypes.IBaseViewModel;
@@ -219,10 +219,10 @@ export namespace Components {
   export import DataGridTableView = DataGridViewTypes.DataGridTableView;
   export import DataGridView = DataGridViewTypes.DataGridView;
 
+  export import ComponentDemoViewModel = ComponentDemoViewModelTypes.ComponentDemoViewModel;
+  export import ComponentDemoView = ComponentDemoViewTypes.ComponentDemoView;
+
   export import IAppConfig = AppViewModelTypes.IAppConfig;
   export import AppViewModel = AppViewModelTypes.AppViewModel;
   export import AppView = AppViewTypes.AppView;
-
-  export import ComponentDemoViewModel = ComponentDemoViewModelTypes.ComponentDemoViewModel;
-  export import ComponentDemoView = ComponentDemoViewTypes.ComponentDemoView;
 }
