@@ -14,11 +14,11 @@ import { ListViewModel, ISelectableItem } from './ListViewModel';
 
 import './ListView.less';
 
-interface IView {
-  getRows(view: ListView, items: any[]): JSX.Element[];
+export interface IListView {
+  getRows(view: ListView, items: any[]): any[];
 }
 
-export class StandardView<T> implements IView {
+export class StandardListView<T> implements IListView {
   public static displayName = 'StandardView';
 
   constructor(
@@ -67,7 +67,7 @@ export class StandardView<T> implements IView {
   }
 }
 
-export class TreeView<T> extends StandardView<T> {
+export class TreeListView<T> extends StandardListView<T> {
   public static displayName = 'TreeView';
 
   private static logger = getLogger(TreeListView.displayName);
@@ -94,7 +94,7 @@ export class TreeView<T> extends StandardView<T> {
 
   private toggleExpanded(view: ListView, node: T, i: number) {
     let isExpanded = !this.getIsExpanded(node, i);
-    TreeView.logger.debug(`${isExpanded ? 'Expanding' : 'Collapsing'} Node`);
+    TreeListView.logger.debug(`${isExpanded ? 'Expanding' : 'Collapsing'} Node`);
     this.setIsExpanded(node, i, isExpanded);
     view.state.notifyChanged();
   }
@@ -193,7 +193,7 @@ export class TreeView<T> extends StandardView<T> {
 }
 
 interface IListProps extends IBaseViewProps {
-  view?: IView;
+  view?: IListView;
   highlightSelected?: boolean;
   checkmarkSelected?: boolean;
   multiSelect?: boolean;
@@ -203,7 +203,7 @@ export class ListView extends BaseView<IListProps, ListViewModel<any, any>> {
   public static displayName = 'ListView';
 
   static defaultProps = {
-    view: new StandardView(),
+    view: new StandardListView(),
     highlightSelected: false,
     checkmarkSelected: false,
     multiSelect: false

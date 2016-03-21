@@ -14,7 +14,7 @@ import ContextMenu from '../Common/ContextMenu/ContextMenu';
 import ProfilePicture from '../Common/ProfilePicture/ProfilePicture';
 
 import ListViewModel from '../Common/List/ListViewModel';
-import { ListView, StandardView } from '../Common/List/ListView';
+import { ListView, StandardListView } from '../Common/List/ListView';
 
 import DataGridViewModel from '../Common/DataGrid/DataGridViewModel';
 import { DataGridView, DataGridColumn, IDataGridView, ListView as DataGridListView } from '../Common/DataGrid/DataGridView';
@@ -69,7 +69,7 @@ let viewMap: IViewMap = {
     );
   },
   ListViewModel: (viewModel: ListViewModel<any, any>) => (
-    <ListView viewModel={viewModel} checkmarkSelected view={new StandardView<any>(undefined, (v, x) => {
+    <ListView viewModel={viewModel} checkmarkSelected view={new StandardListView<any>(undefined, (v, x) => {
       return `${x.name} (Required By ${x.requiredBy})`;
     })}>
     </ListView>
