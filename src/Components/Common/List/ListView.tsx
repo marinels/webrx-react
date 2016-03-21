@@ -5,11 +5,12 @@ import * as classNames from 'classnames';
 
 import { ListGroup, ListGroupItem, ListGroupItemProps, Button } from 'react-bootstrap';
 
+import { getLogger } from '../../../Utils/Logging/LogManager';
+
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import * as Icon from 'react-fa';
 
 import { ListViewModel, ISelectableItem } from './ListViewModel';
-import LogManager from '../../Common/App/Logging';
 
 import './ListView.less';
 
@@ -69,7 +70,7 @@ export class StandardView<T> implements IView {
 export class TreeView<T> extends StandardView<T> {
   public static displayName = 'TreeView';
 
-  private static logger = LogManager.getLogger(TreeView.displayName);
+  private static logger = getLogger(TreeListView.displayName);
 
   constructor(
     private getIsExpanded: (x: T, i: number) => boolean,

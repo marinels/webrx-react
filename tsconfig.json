@@ -19,7 +19,6 @@
     "./src/Components/Common/Alert/AlertHostViewModel.ts",
     "./src/Components/Common/Alert/AlertViewModel.ts",
     "./src/Components/Common/App/AppViewModel.ts",
-    "./src/Components/Common/App/Logging.ts",
     "./src/Components/Common/App/RoutingMap.ts",
     "./src/Components/Common/DataGrid/AsyncDataGridViewModel.ts",
     "./src/Components/Common/DataGrid/DataGridViewModel.ts",

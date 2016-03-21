@@ -2,7 +2,7 @@
 
 import * as wx from 'webrx';
 
-import logManager from '../Components/Common/App/Logging';
+import { getLogger } from '../Utils/Logging/LogManager';
 import ObservableApi from './ObservableApi';
 
 export class BaseModel<T> {
@@ -14,7 +14,7 @@ export class BaseModel<T> {
 export abstract class BaseStore<T extends ObservableApi> {
   public static displayName = 'BaseStore';
 
-  protected logger = logManager.getLogger(Object.getName(this));
+  protected logger = getLogger(BaseStore.displayName);
 
   constructor(public api: wx.Lazy<T>) {
     this.logger.debug('Store Created');

@@ -3,7 +3,7 @@
 import * as Rx from 'rx';
 import * as wx from 'webrx';
 
-import logManager from '../Components/Common/App/Logging';
+import { getLogger } from '../Utils/Logging/LogManager';
 import HashCodec from './HashCodec';
 import { default as PubSub, ISubscriptionHandle } from '../Utils/PubSub';
 import { RouteChangedKey, IRouteChanged } from '../Events/RouteChanged';
@@ -18,7 +18,7 @@ export interface IRoute {
 export class RouteManager implements Rx.IDisposable {
   public static displayName = 'RouteManager';
 
-  protected logger = logManager.getLogger(Object.getName(this));
+  protected logger = getLogger(RouteManager.displayName);
 
   constructor(hashChanged: Rx.Observable<string>, public hashCodec = new HashCodec()) {
     this.currentRoute = hashChanged

@@ -3,13 +3,13 @@
 import * as Rx from 'rx';
 import * as wx from 'webrx';
 
-import logManager from '../Components/Common/App/Logging';
+import { getLogger } from '../Utils/Logging/LogManager';
 import SampleData from './SampleData/SampleData';
 
 export class ObservableApi {
   public static displayName = 'ObservableApi';
 
-  protected logger = logManager.getLogger(Object.getName(this));
+  protected logger = getLogger(ObservableApi.displayName);
   protected sampleData: SampleData = null;
 
   constructor(public baseUri: string) {

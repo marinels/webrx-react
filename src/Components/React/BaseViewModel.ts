@@ -4,7 +4,7 @@ import * as Rx from 'rx';
 import * as wx from 'webrx';
 
 import LogLevel from '../../Utils/Logging/LogLevel';
-import logManager from '../Common/App/Logging';
+import { getLogger } from '../../Utils/Logging/LogManager';
 import PubSub from '../../Utils/PubSub';
 import SubMan from '../../Utils/SubMan';
 import Alert from '../../Utils/Alert';
@@ -32,7 +32,7 @@ export abstract class BaseViewModel implements IBaseViewModel {
   private subs = new SubMan();
   public stateChanged = wx.command();
 
-  protected logger = logManager.getLogger(this.getDisplayName());
+  protected logger = getLogger(this.getDisplayName());
 
   public getDisplayName() { return Object.getName(this); }
 

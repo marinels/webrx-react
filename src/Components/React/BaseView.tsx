@@ -4,7 +4,7 @@ import * as React from 'react';
 import * as Rx from 'rx';
 import * as wx from 'webrx';
 
-import logManager from '../Common/App/Logging';
+import { getLogger } from '../../Utils/Logging/LogManager';
 import { IBaseViewModel } from './BaseViewModel';
 
 export interface IBaseViewProps {
@@ -21,7 +21,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
 
   private updateSubscription: Rx.IDisposable;
 
-  protected logger = logManager.getLogger(this.getDisplayName());
+  protected logger = getLogger(this.getDisplayName());
 
   constructor(props?: TViewProps, context?: any) {
     super(props, context);

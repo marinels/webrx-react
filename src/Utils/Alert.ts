@@ -1,6 +1,6 @@
 'use strict';
 
-import logManager from '../Components/Common/App/Logging';
+import { getLogger } from './Logging/LogManager';
 import { PubSub, default as PubSubInstance } from './PubSub';
 import { AlertCreatedKey, IAlertCreated } from '../Events/AlertCreated';
 
@@ -10,7 +10,7 @@ export class Alert {
   constructor(private pubSub: PubSub) {
   }
 
-  private logger = logManager.getLogger(Alert.displayName);
+  private logger = getLogger(Alert.displayName);
 
   public create(content: any, header?: string, style?: string, timeout?: number) {
     if (String.isNullOrEmpty(content) === false || String.isNullOrEmpty(header) === false) {

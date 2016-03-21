@@ -63,6 +63,14 @@ export class ConsoleLogManager extends DelegateLogManager {
   }
 }
 
-export let Default = new ConsoleLogManager(LogLevel.Debug);
+let defaultLevel: LogLevel = null;
 
-export default Default;
+if (TEST) {
+  defaultLevel = LogLevel.Off;
+} else if (DEBUG) {
+  defaultLevel = LogLevel.Debug;
+} else {
+  defaultLevel = LogLevel.Info;
+}
+
+export default new ConsoleLogManager(defaultLevel);
