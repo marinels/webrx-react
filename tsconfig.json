@@ -39,7 +39,7 @@
     "./src/Events/AlertCreated.ts",
     "./src/Events/RouteChanged.ts",
     "./src/Events/RoutingStateChanged.ts",
-    "./src/Extensions/All.ts",
+    "./src/Extensions/index.ts",
     "./src/Extensions/Number.ts",
     "./src/Extensions/Object.ts",
     "./src/Extensions/String.ts",
