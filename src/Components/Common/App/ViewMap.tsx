@@ -9,9 +9,7 @@ import Splash from '../Splash/Splash';
 import ComponentDemoViewModel from '../../Demo/ComponentDemoViewModel';
 import ComponentDemoView from '../../Demo/ComponentDemoView';
 
-export let ViewMap: IViewMap = {
+export default {
   Splash: () => <Splash header='WebRx.React' />,
   ComponentDemoViewModel: (viewModel: ComponentDemoViewModel) => <ComponentDemoView viewModel={viewModel} />
-};
-
-export default ViewMap;
+} as IViewMap;
