@@ -9,7 +9,7 @@ import { Image } from 'react-bootstrap';
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import SearchView from '../Search/SearchView';
 import * as Icon from 'react-fa';
-import ProfilePicture from '../ProfilePicture/ProfilePictureView';
+import ProfilePicture from '../ProfilePicture/ProfilePicture';
 
 import PageHeaderViewModel from './PageHeaderViewModel';
 import { IMenuItem } from './Actions';

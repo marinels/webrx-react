@@ -11,7 +11,7 @@ import TimeSpanInputView from '../Common/TimeSpanInput/TimeSpanInputView';
 
 import ContextMenu from '../Common/ContextMenu/ContextMenu';
 
-import ProfilePictureView from '../Common/ProfilePicture/ProfilePictureView';
+import ProfilePicture from '../Common/ProfilePicture/ProfilePicture';
 
 import ListViewModel from '../Common/List/ListViewModel';
 import { ListView, StandardView } from '../Common/List/ListView';
@@ -56,15 +56,15 @@ let viewMap: IViewMap = {
 
     return (
       <span>
-        <ProfilePictureView style={style} src={null} title='Basic Icon' />
-        <ProfilePictureView style={style} src={null} iconSize='4x' title='4x Size Icon' />
-        <ProfilePictureView style={style} src={null} iconSize='4x' thumbnail title='Thumbnail Icon' />
-        <ProfilePictureView style={style} src={null} iconSize='4x' thumbnail width={60} height={60} title='Fixed Width/Height Icon' />
-        <ProfilePictureView style={style} src={null} iconSize='4x' thumbnail rounded width={60} height={60} title='Rounded Icon' />
-        <ProfilePictureView style={style} src={imageData} title='Basic Image' />
-        <ProfilePictureView style={style} src={imageData} rounded title='Rounded Image' />
-        <ProfilePictureView style={style} src={imageData} thumbnail title='Thumbnail Image' />
-        <ProfilePictureView style={style} src={imageData} thumbnail width={60} height={60} title='Fixed Width/Height Image' />
+        <ProfilePicture style={style} src={null} title='Basic Icon' />
+        <ProfilePicture style={style} src={null} iconSize='4x' title='4x Size Icon' />
+        <ProfilePicture style={style} src={null} iconSize='4x' thumbnail title='Thumbnail Icon' />
+        <ProfilePicture style={style} src={null} iconSize='4x' thumbnail width={60} height={60} title='Fixed Width/Height Icon' />
+        <ProfilePicture style={style} src={null} iconSize='4x' thumbnail rounded width={60} height={60} title='Rounded Icon' />
+        <ProfilePicture style={style} src={imageData} title='Basic Image' />
+        <ProfilePicture style={style} src={imageData} rounded title='Rounded Image' />
+        <ProfilePicture style={style} src={imageData} thumbnail title='Thumbnail Image' />
+        <ProfilePicture style={style} src={imageData} thumbnail width={60} height={60} title='Fixed Width/Height Image' />
       </span>
     );
   },

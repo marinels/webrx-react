@@ -21,8 +21,8 @@ interface IProfilePictureProps extends React.HTMLProps<HTMLDivElement> {
 
 const dataUriPrefix = 'data:image;base64,';
 
-export class ProfilePictureView extends React.Component<IProfilePictureProps, any> {
-  public static displayName = 'ProfilePictureView';
+export class ProfilePicture extends React.Component<IProfilePictureProps, any> {
+  public static displayName = 'ProfilePicture';
 
   static defaultProps = {
     defaultIcon: 'user',
@@ -63,4 +63,4 @@ export class ProfilePictureView extends React.Component<IProfilePictureProps, an
   }
 }
 
-export default ProfilePictureView;
+export default ProfilePicture;

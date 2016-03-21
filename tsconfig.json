@@ -73,7 +73,7 @@
     "./src/Components/Common/PageFooter/PageFooterView.tsx",
     "./src/Components/Common/PageHeader/PageHeaderView.tsx",
     "./src/Components/Common/Pager/PagerView.tsx",
-    "./src/Components/Common/ProfilePicture/ProfilePictureView.tsx",
+    "./src/Components/Common/ProfilePicture/ProfilePicture.tsx",
     "./src/Components/Common/RouteHandler/RouteHandlerView.tsx",
     "./src/Components/Common/Search/SearchView.tsx",
     "./src/Components/Common/Splash/Splash.tsx",
