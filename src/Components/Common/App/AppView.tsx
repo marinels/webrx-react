@@ -11,7 +11,7 @@ import RouteHandlerView from '../RouteHandler/RouteHandlerView';
 import PageHeaderView from '../PageHeader/PageHeaderView';
 import PageFooterView from '../PageFooter/PageFooterView';
 
-import ViewMap from './ViewMap';
+import { ViewMap } from './ViewMap';
 
 import AppViewModel from './AppViewModel';
 

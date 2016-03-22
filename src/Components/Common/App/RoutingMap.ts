@@ -5,7 +5,7 @@ import { IRoute } from '../../../Routing/RouteManager';
 
 import ComponentDemoViewModel from '../../Demo/ComponentDemoViewModel';
 
-export default <IRoutingMap>{
+export const RoutingMap = <IRoutingMap>{
   '/': { path: '/demo' },
   // The Demo routing regex contains a group to allow extracting path elements when routed to
   // we also override the serialized routing path (to remove the additional path elements)
