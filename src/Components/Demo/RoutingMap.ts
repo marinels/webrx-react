@@ -15,7 +15,7 @@ export interface IViewModelMap {
   [key: string]: IViewModelActivator;
 }
 
-class RoutingMap {
+export class RoutingMap {
   public static displayName = 'RoutingMap';
 
   constructor(private baseUri = '#/demo', private defaultIconName = 'flask') {
@@ -34,7 +34,7 @@ class RoutingMap {
   }
 }
 
-let routingMap = new RoutingMap();
+const routingMap = new RoutingMap();
 
 routingMap.addRoute('Loading', 'Loading', (state: any) => 'Loading');
 routingMap.addRoute('Splash', 'Splash', (state: any) => 'Splash');
@@ -68,4 +68,4 @@ routingMap.addRoute('DataGridList', 'DataGrid (List View)', (state: any) => {
 });
 routingMap.addRoute('ModalDialog', 'Modal Dialog', (state: any) => new ModalDialogViewModel('Modal Dialog Demo', 'Content...'));
 
-export default routingMap;
+export const Default = routingMap;

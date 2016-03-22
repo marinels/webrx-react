@@ -7,7 +7,7 @@ import { Grid, Row, Col, PageHeader, Panel, DropdownButton, MenuItem } from 'rea
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
 import ComponentDemoViewModel from './ComponentDemoViewModel';
-import { default as ViewMap, IViewActivator } from './ViewMap';
+import { Default as ViewMap, IViewActivator } from './ViewMap';
 
 import './ComponentDemo.less';
 

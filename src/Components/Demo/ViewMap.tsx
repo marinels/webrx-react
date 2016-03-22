@@ -30,7 +30,7 @@ export interface IViewMap {
   [key: string]: IViewActivator;
 }
 
-let viewMap: IViewMap = {
+const viewMap: IViewMap = {
   Loading: () => <Loading fluid indeterminate text='Loading Text...' />,
   Splash: () => <Splash fluid indeterminate header='WebRx.React Demo' logo='http://placehold.it/100x100?text=Logo' />,
   TimeSpanInputViewModel: (viewModel: TimeSpanInputViewModel) => <TimeSpanInputView viewModel={viewModel} id='demo' placeholder='Type in a timespan, or use the controls on the right...' standalone />,
@@ -102,4 +102,4 @@ let viewMap: IViewMap = {
   ),
 };
 
-export default viewMap;
+export const Default = viewMap;

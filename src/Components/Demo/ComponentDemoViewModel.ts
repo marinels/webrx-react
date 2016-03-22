@@ -8,7 +8,7 @@ import { IRoute } from '../../Routing/RouteManager';
 import { ICommandAction, IMenu, IMenuItem } from '../Common/PageHeader/Actions';
 
 import { BaseRoutableViewModel, IRoutedViewModel } from '../React/BaseRoutableViewModel';
-import { default as RoutingMap, IViewModelActivator } from './RoutingMap';
+import { Default as RoutingMap, IViewModelActivator } from './RoutingMap';
 
 interface IComponentDemoRoutingState {
   route: IRoute;

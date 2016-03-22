@@ -156,6 +156,8 @@ import * as DataGridViewModelTypes from './Components/Common/DataGrid/DataGridVi
 import * as AsyncDataGridViewModelTypes from './Components/Common/DataGrid/AsyncDataGridViewModel';
 import * as DataGridViewTypes from './Components/Common/DataGrid/DataGridView';
 
+import * as DemoRoutingMapTypes from './Components/Demo/RoutingMap';
+import * as DemoViewMapTypes from './Components/Demo/ViewMap';
 import * as ComponentDemoViewModelTypes from './Components/Demo/ComponentDemoViewModel';
 import * as ComponentDemoViewTypes from './Components/Demo/ComponentDemoView';
 
@@ -243,6 +245,12 @@ export namespace Components {
   export import DataGridTableView = DataGridViewTypes.DataGridTableView;
   export import DataGridView = DataGridViewTypes.DataGridView;
 
+  export import IDemoViewModelActivator = DemoRoutingMapTypes.IViewModelActivator;
+  export import IDemoViewModelMap = DemoRoutingMapTypes.IViewModelMap;
+  export import DemoRoutingMap = DemoRoutingMapTypes.Default;
+  export import IDemoViewMap = DemoViewMapTypes.IViewMap;
+  export import IDemoViewActivator = DemoViewMapTypes.IViewActivator;
+  export import DemoViewMap = DemoViewMapTypes.Default;
   export import ComponentDemoViewModel = ComponentDemoViewModelTypes.ComponentDemoViewModel;
   export import ComponentDemoView = ComponentDemoViewTypes.ComponentDemoView;
 
