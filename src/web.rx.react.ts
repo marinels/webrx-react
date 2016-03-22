@@ -144,6 +144,7 @@ import * as PagerViewTypes from './Components/Common/Pager/PagerView';
 import * as TabsViewModelTypes from './Components/Common/Tabs/TabsViewModel';
 import * as TabsViewTypes from './Components/Common/Tabs/TabsView';
 
+import * as ActionTypes from './Components/Common/PageHeader/Actions';
 import * as PageHeaderViewModelTypes from './Components/Common/PageHeader/PageHeaderViewModel';
 import * as PageHeaderViewTypes from './Components/Common/PageHeader/PageHeaderView';
 
@@ -154,7 +155,9 @@ import * as DataGridViewTypes from './Components/Common/DataGrid/DataGridView';
 import * as ComponentDemoViewModelTypes from './Components/Demo/ComponentDemoViewModel';
 import * as ComponentDemoViewTypes from './Components/Demo/ComponentDemoView';
 
+import * as RoutingMapTypes from './Components/Common/App/RoutingMap';
 import * as AppViewModelTypes from './Components/Common/App/AppViewModel';
+import * as ViewMapTypes from './Components/Common/App/ViewMap';
 import * as AppViewTypes from './Components/Common/App/AppView';
 
 export namespace Components {
@@ -220,6 +223,10 @@ export namespace Components {
   export import ITab = TabsViewTypes.ITab;
   export import TabsView = TabsViewTypes.TabsView;
 
+  export import IBaseAction = ActionTypes.IBaseAction;
+  export import ICommandAction = ActionTypes.ICommandAction;
+  export import IMenu = ActionTypes.IMenu;
+  export import IMenuItem = ActionTypes.IMenuItem;
   export import PageHeaderViewModel = PageHeaderViewModelTypes.PageHeaderViewModel;
   export import PageHeaderView = PageHeaderViewTypes.PageHeaderView;
 
@@ -235,7 +242,9 @@ export namespace Components {
   export import ComponentDemoViewModel = ComponentDemoViewModelTypes.ComponentDemoViewModel;
   export import ComponentDemoView = ComponentDemoViewTypes.ComponentDemoView;
 
+  export import RoutingMap = RoutingMapTypes.RoutingMap;
   export import IAppConfig = AppViewModelTypes.IAppConfig;
   export import AppViewModel = AppViewModelTypes.AppViewModel;
+  export import ViewMap = ViewMapTypes.ViewMap;
   export import AppView = AppViewTypes.AppView;
 }
