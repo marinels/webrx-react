@@ -97,6 +97,8 @@ export namespace Stores {
   export import BaseModel = BaseStoreTypes.BaseModel;
   export import BaseStore = BaseStoreTypes.BaseStore;
   export import ObservableApi = ObservableApiTypes.ObservableApi;
+  export import ISampleDataAction = BaseSampleDataStoreTypes.ISampleDataAction;
+  export import ISampleDataActionSet = BaseSampleDataStoreTypes.ISampleDataActionSet;
   export import BaseSampleDataStore = BaseSampleDataStoreTypes.BaseSampleDataStore;
   export import SampleData = SampleDataTypes.SampleData;
 }
