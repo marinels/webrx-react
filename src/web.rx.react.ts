@@ -65,6 +65,8 @@ export namespace PubSub {
   export const unsubscribe = PubSubTypes.default.unsubscribe;
 }
 
+export { SubMan } from './Utils/SubMan';
+
 import * as HashCodecTypes from './Routing/HashCodec';
 import * as RouteManagerTypes from './Routing/RouteManager';
 
