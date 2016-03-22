@@ -3,7 +3,7 @@
 import * as Ix from 'ix';
 import * as React from 'react';
 
-import { Grid, Row, Col, PageHeader, Panel, DropdownButton, MenuItem } from 'react-bootstrap';
+import { Grid, Row, Col, PageHeader, Panel, DropdownButton, MenuItem, Alert } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
 import ComponentDemoViewModel from './ComponentDemoViewModel';
@@ -50,13 +50,17 @@ export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDe
 
     let componentName = this.getComponentName(component);
 
-    if (view != null) {
-      this.logger.debug(`Rendering View...`, view);
-    }
-
-    let cols = this.state.columns();
+    let cols = view == null ? 12 : this.state.columns();
     let widthVal = cols === 0 ? 12 : cols;
     let widthName = cols === 0 ? 'Full Width' : widthVal;
+
+    if (view == null) {
+      view = (
+        <Alert bsStyle='danger'>{component == null ? 'No Component for This Route' : `No View Mapped for ${componentName}`}</Alert>
+      );
+    } else {
+      this.logger.debug(`Rendering View...`, view);
+    }
 
     return (
       <div className='ComponentDemo'>

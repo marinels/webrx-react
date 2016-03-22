@@ -119,7 +119,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
         // update columns down here since the activator could adjust columns for us
         this.columns(state.columns == null ? 12 : state.columns);
 
-        if (component.setRoutingState) {
+        if (component != null && component.setRoutingState) {
           component.setRoutingState(state);
         }
 
