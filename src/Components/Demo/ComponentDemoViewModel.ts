@@ -7,7 +7,9 @@ import * as wx from 'webrx';
 import { IRoute } from '../../Routing/RouteManager';
 import { ICommandAction, IMenu, IMenuItem } from '../Common/PageHeader/Actions';
 
-import { BaseRoutableViewModel, IRoutedViewModel } from '../React/BaseRoutableViewModel';
+import { BaseRoutableViewModel, IBaseRoutableViewModel, IRoutedViewModel } from '../React/BaseRoutableViewModel';
+import { SearchViewModel } from '../Common/Search/SearchViewModel';
+import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
 import { Default as RoutingMap, IViewModelActivator } from './RoutingMap';
 
 interface IComponentDemoRoutingState {
@@ -28,9 +30,20 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
   public columns = wx.property(12);
   public component = wx.property<any>(null);
 
+  private pageHeader: PageHeaderViewModel = null;
+
   public reRender = wx.command(x => {
     this.navTo(`/demo/${this.componentRoute}?rand=${Math.random()}`);
   });
+
+  getSearch(context: PageHeaderViewModel) {
+    // we need to store the page header here so we can invoke an update on it later
+    this.pageHeader = context;
+
+    let viewModel = <IBaseRoutableViewModel>this.component();
+
+    return (viewModel != null && viewModel.getSearch != null) ? viewModel.getSearch(context) : null;
+  }
 
   getAppMenus() {
     return <IMenu[]>[
@@ -80,6 +93,12 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
       .whenAny(this.columns.changed, x => null)
       .invokeCommand(this.routingStateChanged)
     );
+
+    this.subscribe(this.component.changed
+      .subscribe(x => {
+        this.pageHeader.updateDynamicContent();
+      })
+    )
   }
 
   getRoutingState(context?: any): any {
