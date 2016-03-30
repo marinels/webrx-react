@@ -156,16 +156,6 @@ import * as DataGridViewModelTypes from './Components/Common/DataGrid/DataGridVi
 import * as AsyncDataGridViewModelTypes from './Components/Common/DataGrid/AsyncDataGridViewModel';
 import * as DataGridViewTypes from './Components/Common/DataGrid/DataGridView';
 
-import * as DemoRoutingMapTypes from './Components/Demo/RoutingMap';
-import * as DemoViewMapTypes from './Components/Demo/ViewMap';
-import * as ComponentDemoViewModelTypes from './Components/Demo/ComponentDemoViewModel';
-import * as ComponentDemoViewTypes from './Components/Demo/ComponentDemoView';
-
-import * as RoutingMapTypes from './Components/Common/App/RoutingMap';
-import * as AppViewModelTypes from './Components/Common/App/AppViewModel';
-import * as ViewMapTypes from './Components/Common/App/ViewMap';
-import * as AppViewTypes from './Components/Common/App/AppView';
-
 export namespace Components {
   export import IBaseViewModel = BaseViewModelTypes.IBaseViewModel;
   export import BaseViewModel = BaseViewModelTypes.BaseViewModel;
@@ -244,7 +234,19 @@ export namespace Components {
   export import DataGridListView = DataGridViewTypes.DataGridListView;
   export import DataGridTableView = DataGridViewTypes.DataGridTableView;
   export import DataGridView = DataGridViewTypes.DataGridView;
+}
 
+import * as DemoRoutingMapTypes from './Components/Demo/RoutingMap';
+import * as DemoViewMapTypes from './Components/Demo/ViewMap';
+import * as ComponentDemoViewModelTypes from './Components/Demo/ComponentDemoViewModel';
+import * as ComponentDemoViewTypes from './Components/Demo/ComponentDemoView';
+
+import * as RoutingMapTypes from './Components/Common/App/RoutingMap';
+import * as AppViewModelTypes from './Components/Common/App/AppViewModel';
+import * as ViewMapTypes from './Components/Common/App/ViewMap';
+import * as AppViewTypes from './Components/Common/App/AppView';
+
+export namespace Components {
   export import IDemoViewModelActivator = DemoRoutingMapTypes.IViewModelActivator;
   export import IDemoViewModelMap = DemoRoutingMapTypes.IViewModelMap;
   export import DemoRoutingMap = DemoRoutingMapTypes.Default;

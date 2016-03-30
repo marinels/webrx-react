@@ -3,24 +3,21 @@
 import * as React from 'react';
 import { ListGroupItem, Button, MenuItem } from 'react-bootstrap';
 
-import Loading from '../Common/Loading/Loading';
-import Splash from '../Common/Splash/Splash';
+import * as wxr from '../../web.rx.react';
 
-import { TimeSpanInputViewModel, TimeSpanUnitType } from '../Common/TimeSpanInput/TimeSpanInputViewModel';
-import TimeSpanInputView from '../Common/TimeSpanInput/TimeSpanInputView';
-
-import ContextMenu from '../Common/ContextMenu/ContextMenu';
-
-import ProfilePicture from '../Common/ProfilePicture/ProfilePicture';
-
-import ListViewModel from '../Common/List/ListViewModel';
-import { ListView, StandardListView } from '../Common/List/ListView';
-
-import DataGridViewModel from '../Common/DataGrid/DataGridViewModel';
-import { DataGridView, DataGridColumn, IDataGridView, DataGridListView as DataGridListView } from '../Common/DataGrid/DataGridView';
-
-import ModalDialogViewModel from '../Common/ModalDialog/ModalDialogViewModel';
-import ModalDialogView from '../Common/ModalDialog/ModalDialogView';
+const {
+  Loading,
+  Splash,
+  TimeSpanInputView,
+  ContextMenu,
+  ProfilePicture,
+  ListView,
+  StandardListView,
+  DataGridView,
+  DataGridColumn,
+  DataGridListView,
+  ModalDialogView
+} = wxr.Components;
 
 export interface IViewActivator {
   (component: any, componentRoute: string): any;
@@ -33,7 +30,7 @@ export interface IViewMap {
 const viewMap: IViewMap = {
   Loading: () => <Loading fluid indeterminate text='Loading Text...' />,
   Splash: () => <Splash fluid indeterminate header='WebRx.React Demo' logo='http://placehold.it/100x100?text=Logo' />,
-  TimeSpanInputViewModel: (viewModel: TimeSpanInputViewModel) => <TimeSpanInputView viewModel={viewModel} id='demo' placeholder='Type in a timespan, or use the controls on the right...' standalone />,
+  TimeSpanInputViewModel: (viewModel: wxr.Components.TimeSpanInputViewModel) => <TimeSpanInputView viewModel={viewModel} id='demo' placeholder='Type in a timespan, or use the controls on the right...' standalone />,
   ContextMenu: () => (
     <div>
       <ContextMenu id='demo' header='Optional Header' onSelect={(item) => {
@@ -68,14 +65,14 @@ const viewMap: IViewMap = {
       </span>
     );
   },
-  ListViewModel: (viewModel: ListViewModel<any, any>) => (
+  ListViewModel: (viewModel: wxr.Components.ListViewModel<any, any>) => (
     <ListView viewModel={viewModel} checkmarkSelected view={new StandardListView<any>(undefined, (v, x) => {
       return `${x.name} (Required By ${x.requiredBy})`;
     })}>
     </ListView>
   ),
-  DataGridViewModel: (viewModel: DataGridViewModel<any>, componentRoute: string) => {
-    let view: IDataGridView = undefined;
+  DataGridViewModel: (viewModel: wxr.Components.DataGridViewModel<any>, componentRoute: string) => {
+    let view: wxr.Components.IDataGridView = undefined;
 
     if (componentRoute === 'DataGridList') {
       view = new DataGridListView<{name: string, requiredBy: string}>(
@@ -94,7 +91,7 @@ const viewMap: IViewMap = {
       </DataGridView>
     );
   },
-  ModalDialogViewModel: (viewModel: ModalDialogViewModel<any>) => (
+  ModalDialogViewModel: (viewModel: wxr.Components.ModalDialogViewModel<any>) => (
     <div>
       <Button onClick={() => viewModel.show.execute(null)}>Show Dialog</Button>
       <ModalDialogView viewModel={viewModel} />
