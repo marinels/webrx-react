@@ -1,0 +1,51 @@
+@import (reference) '../../../Style/Bootstrap.less';
+
+.List {
+  .list-group {
+    margin: 0;
+  }
+
+  .list-group-item {
+    cursor: pointer;
+  }
+
+  .list-group-item:focus {
+    outline: 0;
+  }
+
+  .list-group-item.active .TreeItem-button .btn {
+    color: @list-group-active-color;
+  }
+
+  .TreeItem-button > .btn:hover {
+    background-color: transparent;
+  }
+
+  .list-group-item-selectionIcon, .list-group-item-expander, .list-group-item-content {
+    display: table-cell;
+    vertical-align: middle;
+  }
+
+  .list-group-item-selectionIcon {
+    width: 24px;
+  }
+
+  .list-group-item-content {
+    padding-left: 5px;
+    width: 100%;
+  }
+
+  .List-empty {
+    text-align: center;
+    margin: 20px;
+    font-size: 1.25em;
+  }
+
+  .TreeItem-buttonIndent {
+    margin: 0 12px;
+  }
+
+  .TreeItem-levelIndent {
+    margin: 0 10px;
+  }
+}

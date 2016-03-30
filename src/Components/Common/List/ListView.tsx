@@ -12,7 +12,7 @@ import * as Icon from 'react-fa';
 
 import { ListViewModel, ISelectableItem } from './ListViewModel';
 
-import './ListView.less';
+import './List.less';
 
 export interface IListView {
   getRows(view: ListView, items: any[]): any[];
