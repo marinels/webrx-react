@@ -11,6 +11,8 @@ export interface IBaseRoutableViewModel extends IBaseViewModel {
   getRoutingKey(): string;
 
   // for dynamic page header content
+  // NOTE: getSearch needs to be typeless due to circular dependencies
+  getSearch?: (context?: any) => any;
   getAppSwitcherMenuItems?: () => IMenuItem[];
   getAppMenus?: () => IMenu[];
   getAppActions?: () => ICommandAction[];

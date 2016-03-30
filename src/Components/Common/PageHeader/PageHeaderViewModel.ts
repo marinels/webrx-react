@@ -13,7 +13,6 @@ export class PageHeaderViewModel extends BaseViewModel {
 
   constructor(
     public routeHandler?: RouteHandlerViewModel,
-    public search?: SearchViewModel,
     public staticAppSwitcherMenuItems: IMenuItem[] = [],
     public staticAppMenus: IMenu[] = [],
     public staticAppActions: ICommandAction[] = [],
@@ -26,6 +25,7 @@ export class PageHeaderViewModel extends BaseViewModel {
     super();
   }
 
+  public search: SearchViewModel = null;
   public appSwitcherMenuItems = wx.list<IMenuItem>();
   public appMenus = wx.list<IMenu>();
   public appActions = wx.list<ICommandAction>();
@@ -47,6 +47,8 @@ export class PageHeaderViewModel extends BaseViewModel {
 
   public updateDynamicContent() {
     let viewModel = this.routeHandler.currentViewModel();
+
+    this.search = (viewModel != null && viewModel.getSearch != null) ? viewModel.getSearch.apply(viewModel, [this]) : null;
 
     this.addItems(this.appSwitcherMenuItems, this.staticAppSwitcherMenuItems, viewModel, x => x.getAppSwitcherMenuItems);
     this.addItems(this.appMenus, this.staticAppMenus, viewModel, x => x.getAppMenus);
