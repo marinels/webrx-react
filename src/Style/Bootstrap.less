@@ -18,9 +18,15 @@
   margin: 0;
 }
 
+// default hover background color
 .btn:hover,
 .table-hover > tbody > tr:hover,
 .list-group > .list-group-item:hover,
 .dropdown-menu > li > a:hover {
   background-color: @default-hover-background;
+}
+
+// default hover background color for active list items
+.list-group > .list-group-item.active:hover {
+  background-color: lighten(@brand-primary, 6.5%);
 }
