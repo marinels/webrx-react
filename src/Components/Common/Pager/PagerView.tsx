@@ -18,6 +18,14 @@ export interface IPagerProps extends IBaseViewProps, PaginationProps {
 export class PagerView extends BaseView<IPagerProps, PagerViewModel> {
   public static displayName = 'PagerView';
 
+  static defaultProps = {
+    info: true,
+    first: true,
+    prev: true,
+    next: true,
+    last: true,
+  };
+
   updateOn() {
     return [
       this.state.pageCount.changed,
