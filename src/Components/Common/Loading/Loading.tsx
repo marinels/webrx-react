@@ -14,6 +14,7 @@ export interface ILoadingProps {
   text?: string;
   indeterminate?: boolean;
   fluid?: boolean;
+  fontSize?: number;
 }
 
 export interface ILoadingState {
@@ -32,6 +33,7 @@ export class Loading extends React.Component<ILoadingProps, ILoadingState> {
     text: 'Loading...',
     indeterminate: false,
     fluid: false,
+    fontSize: 50,
   };
 
   private subs = new SubMan();
@@ -66,9 +68,9 @@ export class Loading extends React.Component<ILoadingProps, ILoadingState> {
 
   render() {
     return (
-      <div className='Loading'>
+      <div className='Loading' style={({fontSize: this.props.fontSize, lineHeight: `${this.props.fontSize * 1.35}px`})}>
         <Grid fluid={this.props.fluid}>
-          <div className='Loading-wrapper'>
+          <div className='Loading-wrapper' style={({height: `${this.props.fontSize * 1.4}px`})}>
             <div
               className='Loading-progress progress-bar progress-bar-striped active'
               role='progressbar'
@@ -79,7 +81,11 @@ export class Loading extends React.Component<ILoadingProps, ILoadingState> {
                 transition: this.state.left === -IndeterminateWidth ? 'none' : null,
               })}
             />
-            <div className='Loading-text'>{this.props.text}</div>
+            <div className='Loading-textContainer'>
+              <span className='Loading-text'>
+                {this.props.text}
+              </span>
+            </div>
           </div>
         </Grid>
       </div>
