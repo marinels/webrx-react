@@ -161,6 +161,8 @@ export class DataGridTableView implements IDataGridView {
 
 interface IDataGridProps extends IBaseViewProps {
   view?: IDataGridView;
+  hideSearch?: boolean;
+  pagerLimits?: number[];
   children?: DataGridColumn[];
 }
 
@@ -169,16 +171,8 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
 
   static defaultProps = {
     view: new DataGridTableView(),
-    searchProps: {
-    },
-    pagerProps: {
-      info: true,
-      limits: [10, 25, null],
-      first: true,
-      prev: true,
-      next: true,
-      last: true
-    }
+    hideSearch: false,
+    pagerLimits: [10, 25, null],
   };
 
   private columns: IDataGridColumnProps[];
@@ -245,12 +239,12 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
 
     let columns = this.getColumns(items);
 
-    search = (this.state.canFilter() === false) ? null : (
+    search = (this.props.hideSearch === true || this.state.canFilter() === false) ? null : (
       <SearchView viewModel={this.state.search}/>
     );
     table = this.renderTable(items);
     pager = (
-      <PagerView viewModel={this.state.pager} />
+      <PagerView viewModel={this.state.pager} limits={this.props.pagerLimits} />
     );
 
     return (
