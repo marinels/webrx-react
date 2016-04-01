@@ -1,5 +1,11 @@
 'use strict';
 
+function exportFunction<T extends Function>(item: T, thisArg: any = null): T {
+  return <T><Function>function() {
+    item.apply(thisArg, arguments);
+  };
+}
+
 import './Extensions';
 
 import * as ConsoleLogManagerTypes from './Utils/Logging/Adapters/Console';
@@ -29,17 +35,17 @@ export namespace PubSub {
   export import ISubscriptionHandle = PubSubTypes.ISubscriptionHandle;
   export import PubSub = PubSubTypes.PubSub;
 
-  export const publish = PubSubTypes.default.publish;
-  export const subscribe = PubSubTypes.default.subscribe;
-  export const unsubscribe = PubSubTypes.default.unsubscribe;
+  export const publish = exportFunction(PubSubTypes.default.publish, PubSubTypes.default);
+  export const subscribe = exportFunction(PubSubTypes.default.subscribe, PubSubTypes.default);
+  export const unsubscribe = exportFunction(PubSubTypes.default.unsubscribe, PubSubTypes.default);
 }
 
 import * as AlertTypes from './Utils/Alert';
 
 export namespace Alert {
   export import Alert = AlertTypes.Alert;
-  export const create = AlertTypes.default.create;
-  export const createForError = AlertTypes.default.createForError;
+  export const create = exportFunction(AlertTypes.default.create, AlertTypes.default);
+  export const createForError = exportFunction(AlertTypes.default.createForError, AlertTypes.default);
 }
 
 import * as CompareTypes from './Utils/Compare';
