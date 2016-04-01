@@ -22,6 +22,18 @@ export namespace Logging {
   export const getLevelName = LogLevelTypes.getLevelName;
 };
 
+import * as PubSubTypes from './Utils/PubSub';
+
+export namespace PubSub {
+  export import ISubscriptionAction = PubSubTypes.ISubscriptionAction;
+  export import ISubscriptionHandle = PubSubTypes.ISubscriptionHandle;
+  export import PubSub = PubSubTypes.PubSub;
+
+  export const publish = PubSubTypes.default.publish;
+  export const subscribe = PubSubTypes.default.subscribe;
+  export const unsubscribe = PubSubTypes.default.unsubscribe;
+}
+
 import * as AlertTypes from './Utils/Alert';
 
 export namespace Alert {
@@ -51,18 +63,6 @@ export namespace Moment {
   export import DefaultDateTimeOffsetFormat = MomentTypes.DefaultDateTimeOffsetFormat;
   export import DateTime = MomentTypes.DateTime;
   export import TimeSpan = MomentTypes.TimeSpan;
-}
-
-import * as PubSubTypes from './Utils/PubSub';
-
-export namespace PubSub {
-  export import ISubscriptionAction = PubSubTypes.ISubscriptionAction;
-  export import ISubscriptionHandle = PubSubTypes.ISubscriptionHandle;
-  export import PubSub = PubSubTypes.PubSub;
-
-  export const publish = PubSubTypes.default.publish;
-  export const subscribe = PubSubTypes.default.subscribe;
-  export const unsubscribe = PubSubTypes.default.unsubscribe;
 }
 
 export { SubMan } from './Utils/SubMan';
