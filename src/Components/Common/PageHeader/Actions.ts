@@ -8,6 +8,7 @@ export interface IBaseAction {
 
 export interface ICommandAction extends IBaseAction {
   command: wx.ICommand<any>;
+  commandParameter?: any;
 }
 
 export interface IMenu extends IBaseAction {
@@ -18,4 +19,5 @@ export interface IMenuItem extends IBaseAction {
   iconName?: string;
   uri?: string;
   command?: wx.ICommand<any>;
+  commandParameter?: any;
 }
