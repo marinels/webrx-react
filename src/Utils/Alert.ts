@@ -1,5 +1,7 @@
 'use strict';
 
+import * as wx from 'webrx';
+
 import { getLogger } from './Logging/LogManager';
 import { PubSub, default as PubSubInstance } from './PubSub';
 import { AlertCreatedKey, IAlertCreated } from '../Events/AlertCreated';
@@ -10,7 +12,7 @@ export class Alert {
   constructor(private pubSub: PubSub) {
   }
 
-  private logger = getLogger(Alert.displayName);
+  private logger = new wx.Lazy(() => getLogger(Alert.displayName));
 
   public create(content: any, header?: string, style?: string, timeout?: number) {
     if (String.isNullOrEmpty(content) === false || String.isNullOrEmpty(header) === false) {
@@ -47,7 +49,7 @@ export class Alert {
           }
 
           if (stack != null) {
-            this.logger.error(`${header}: ${message}`, error);
+            this.logger.value.error(`${header}: ${message}`, error);
           }
         }
       }

@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import * as classNames from 'classnames';
+import * as wx from 'webrx';
 
 import { ListGroup, ListGroupItem, ListGroupItemProps, Button } from 'react-bootstrap';
 
@@ -70,7 +71,7 @@ export class StandardListView<T> implements IListView {
 export class TreeListView<T> extends StandardListView<T> {
   public static displayName = 'TreeView';
 
-  private static logger = getLogger(TreeListView.displayName);
+  private static logger = new wx.Lazy(() => getLogger(TreeListView.displayName));
 
   constructor(
     private getIsExpanded: (x: T, i: number) => boolean,
@@ -94,7 +95,7 @@ export class TreeListView<T> extends StandardListView<T> {
 
   private toggleExpanded(view: ListView, node: T, i: number) {
     let isExpanded = !this.getIsExpanded(node, i);
-    TreeListView.logger.debug(`${isExpanded ? 'Expanding' : 'Collapsing'} Node`);
+    TreeListView.logger.value.debug(`${isExpanded ? 'Expanding' : 'Collapsing'} Node`);
     this.setIsExpanded(node, i, isExpanded);
     view.state.notifyChanged();
   }
