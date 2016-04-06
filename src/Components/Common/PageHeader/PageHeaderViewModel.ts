@@ -7,6 +7,7 @@ import { IBaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 import { IBaseAction, ICommandAction, IMenu, IMenuItem } from './Actions';
 import RouteHandlerViewModel from '../RouteHandler/RouteHandlerViewModel';
 import SearchViewModel from '../Search/SearchViewModel';
+import SubMan from '../../../Utils/SubMan';
 
 export class PageHeaderViewModel extends BaseViewModel {
   public static displayName = 'PageHeaderViewModel';
@@ -24,6 +25,8 @@ export class PageHeaderViewModel extends BaseViewModel {
     public homeLink = '#/') {
     super();
   }
+
+  private dynamicSubs = new SubMan();
 
   public search: SearchViewModel = null;
   public appSwitcherMenuItems = wx.list<IMenuItem>();
@@ -71,6 +74,16 @@ export class PageHeaderViewModel extends BaseViewModel {
       }
 
       list.sort((a, b) => (a.order || 0) - (b.order || 0));
+    });
+
+    list.forEach((x: any) => {
+      if (x.command != null && x.command.canExecuteObservable) {
+        const canExecute = <Rx.Observable<boolean>>x.command.canExecuteObservable;
+
+        this.dynamicSubs.add(canExecute.subscribe(y => {
+          this.notifyChanged();
+        }));
+      }
     });
   }
 

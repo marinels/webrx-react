@@ -43,7 +43,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
 
     if (item.command == null && String.isNullOrEmpty(item.uri) === false) {
       isDisabled = false;
-    } else if (item.command != null && item.command.canExecute(null) === true) {
+    } else if (item.command != null && item.command.canExecute(item.commandParameter) === true) {
       isDisabled = false;
     }
 
@@ -90,13 +90,15 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
     );
 
     let appActions = (this.state.appActions == null || this.state.appActions.length() === 0) ? null : (
-      this.state.appActions.map(x => (
-        <Button key={x.id} className='PageHeader-actionButton'
-          disabled={x.command == null || x.command.canExecute(null) === false}
-          onClick={() => { if (x.command != null) { x.command.execute(x); } }}>
-          {x.header}
-        </Button>
-      ))
+      this.state.appActions
+        .filter(x => x.command.canExecute(x.commandParameter) === true)
+        .map(x => (
+          <Button key={x.id} className='PageHeader-actionButton'
+            disabled={x.command == null}
+            onClick={() => { if (x.command != null) { x.command.execute(x); } }}>
+            {x.header}
+          </Button>
+        ))
     );
 
     let search = (this.state.search == null) ? null : (
