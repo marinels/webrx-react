@@ -37,6 +37,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   protected renderView() { this.forceUpdate(); }
 
   protected initialize() {}
+  protected loaded() {}
   protected cleanup() {}
 
   /**
@@ -99,6 +100,11 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
     this.subscribeToUpdates();
 
     this.logRender(true);
+  }
+
+  componentDidMount() {
+    this.state.loaded();
+    this.loaded();
   }
 
   componentWillReceiveProps(nextProps: TViewProps, nextContext: any) {

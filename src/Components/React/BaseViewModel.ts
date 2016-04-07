@@ -22,6 +22,7 @@ export interface IBaseViewModel {
   notifyChanged(...args: any[]): void;
 
   initialize(): void;
+  loaded(): void;
   cleanup(): void;
   bind<T>(observable: Rx.Observable<T>, command: wx.ICommand<T>): Rx.IDisposable;
 }
@@ -115,6 +116,8 @@ export abstract class BaseViewModel implements IBaseViewModel {
       }
     }
   }
+
+  public loaded() {}
 
   public cleanup() {
     this.subs.dispose();
