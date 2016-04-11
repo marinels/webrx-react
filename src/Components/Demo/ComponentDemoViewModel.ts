@@ -99,7 +99,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
       .subscribe(x => {
         this.pageHeader.updateDynamicContent();
       })
-    )
+    );
   }
 
   getRoutingState(context?: any): any {
