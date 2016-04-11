@@ -51,11 +51,15 @@ export class PageHeaderViewModel extends BaseViewModel {
   public updateDynamicContent() {
     let viewModel = this.routeHandler.currentViewModel();
 
+    this.logger.debug('Updating Page Header Dynamic Content', viewModel);
+
     if (viewModel != null && viewModel.componentRouted != null) {
       viewModel.componentRouted.apply(viewModel, [ this ]);
     }
 
     this.search = (viewModel == null || viewModel.getSearch == null) ? null : viewModel.getSearch.apply(viewModel);
+
+    this.dynamicSubs.dispose();
 
     this.addItems(this.appSwitcherMenuItems, this.staticAppSwitcherMenuItems, viewModel, x => x.getAppSwitcherMenuItems);
     this.addItems(this.appMenus, this.staticAppMenus, viewModel, x => x.getAppMenus);
@@ -84,9 +88,12 @@ export class PageHeaderViewModel extends BaseViewModel {
       if (x.command != null && x.command.canExecuteObservable) {
         const canExecute = <Rx.Observable<boolean>>x.command.canExecuteObservable;
 
-        this.dynamicSubs.add(canExecute.subscribe(y => {
-          this.notifyChanged();
-        }));
+        this.dynamicSubs.add(canExecute
+          .distinctUntilChanged()
+          .subscribe(y => {
+            this.notifyChanged();
+          })
+        );
       }
     });
   }
