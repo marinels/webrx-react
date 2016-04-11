@@ -10,9 +10,9 @@ import { ICommandAction, IMenu, IMenuItem } from '../Common/PageHeader/Actions';
 export interface IBaseRoutableViewModel extends IBaseViewModel {
   getRoutingKey(): string;
 
-  // for dynamic page header content
-  // NOTE: getSearch needs to be typeless due to circular dependencies
-  getSearch?: (context?: any) => any;
+  // NOTE: componentRouted and getSearch need typeless arguments due to circular dependencies
+  componentRouted?: (pageHeader?: any) => void;
+  getSearch?: () => any;
   getAppSwitcherMenuItems?: () => IMenuItem[];
   getAppMenus?: () => IMenu[];
   getAppActions?: () => ICommandAction[];

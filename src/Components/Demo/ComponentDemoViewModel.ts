@@ -36,13 +36,14 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
     this.navTo(`/demo/${this.componentRoute}?rand=${Math.random()}`);
   });
 
-  getSearch(context: PageHeaderViewModel) {
-    // we need to store the page header here so we can invoke an update on it later
-    this.pageHeader = context;
+  componentRouted(pageHeader: PageHeaderViewModel) {
+    this.pageHeader = pageHeader;
+  }
 
+  getSearch() {
     let viewModel = <IBaseRoutableViewModel>this.component();
 
-    return (viewModel != null && viewModel.getSearch != null) ? viewModel.getSearch(context) : null;
+    return (viewModel != null && viewModel.getSearch != null) ? viewModel.getSearch() : null;
   }
 
   getAppMenus() {

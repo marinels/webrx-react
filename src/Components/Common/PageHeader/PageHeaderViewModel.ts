@@ -51,7 +51,11 @@ export class PageHeaderViewModel extends BaseViewModel {
   public updateDynamicContent() {
     let viewModel = this.routeHandler.currentViewModel();
 
-    this.search = (viewModel != null && viewModel.getSearch != null) ? viewModel.getSearch.apply(viewModel, [this]) : null;
+    if (viewModel != null && viewModel.componentRouted != null) {
+      viewModel.componentRouted.apply(viewModel, [ this ]);
+    }
+
+    this.search = (viewModel == null || viewModel.getSearch == null) ? null : viewModel.getSearch.apply(viewModel);
 
     this.addItems(this.appSwitcherMenuItems, this.staticAppSwitcherMenuItems, viewModel, x => x.getAppSwitcherMenuItems);
     this.addItems(this.appMenus, this.staticAppMenus, viewModel, x => x.getAppMenus);
