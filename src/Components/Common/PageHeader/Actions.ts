@@ -9,6 +9,7 @@ export interface IBaseAction {
 export interface ICommandAction extends IBaseAction {
   command: wx.ICommand<any>;
   commandParameter?: any;
+  iconName?: string;
 }
 
 export interface IMenu extends IBaseAction {

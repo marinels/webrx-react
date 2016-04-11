@@ -5,12 +5,11 @@ import * as React from 'react';
 
 import { Navbar, Nav, NavItem, NavDropdown, NavDropdownProps, MenuItem, Button } from 'react-bootstrap';
 import { Image } from 'react-bootstrap';
+import * as Icon from 'react-fa';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import SearchView from '../Search/SearchView';
-import * as Icon from 'react-fa';
 import ProfilePicture from '../ProfilePicture/ProfilePicture';
-
 import PageHeaderViewModel from './PageHeaderViewModel';
 import { IMenuItem } from './Actions';
 
@@ -96,7 +95,10 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
           <Button key={x.id} className='PageHeader-actionButton'
             disabled={x.command == null}
             onClick={() => { if (x.command != null) { x.command.execute(x); } }}>
-            {x.header}
+            <div className='PageHeader-actionHeader'>
+              <Icon className='PageHeader-actionHeaderIcon' name={x.iconName} />
+              <span className='PageHeader-actionHeaderText'>{x.header}</span>
+            </div>
           </Button>
         ))
     );
