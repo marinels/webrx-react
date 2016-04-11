@@ -25,15 +25,13 @@ export class SampleData {
     let sampleDataAction = this.actions[action];
 
     if (sampleDataAction != null) {
-      result = sampleDataAction(params);
+      result = sampleDataAction(params)
+        .delay(this.delay);
     } else {
-      Alert.create(action, 'Sample DataStore Action Not Found', 'warning');
-
-      result = Rx.Observable.never<T>();
+      result = Rx.Observable.throw<T>(`Sample DataStore Action Not Found: ${action}`);
     }
 
-    return result
-      .delay(this.delay);
+    return result;
   }
 }
 
