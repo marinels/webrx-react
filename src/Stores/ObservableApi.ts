@@ -20,7 +20,7 @@ export class ObservableApi {
   public getObservable<T>(action: string, params?: any, options?: wx.IHttpClientOptions, baseUri?: string) {
     let uri = (baseUri || this.baseUri) + action;
 
-    this.logger.debug(`Calling API: ${action} (${uri})`, params);
+    this.logger.info(`Calling API: ${action} (${uri})`, params);
 
     return this.sampleData == null ?
       // if an API call throws an uncaught error, that means you are not subscribing to the observable's error
