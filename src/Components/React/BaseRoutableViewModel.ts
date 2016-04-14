@@ -84,10 +84,10 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
   protected saveRoutingState(state: TRoutingState) {
   }
 
-  public setRoutingState(state: TRoutingState) {
+  public setRoutingState(state: TRoutingState, ...observables: Rx.Observable<any>[]) {
     this.handleRoutingState(state, state => {
       this.loadRoutingState(state);
-    });
+    }, ...observables);
   }
 
   protected loadRoutingState(state: TRoutingState) {
