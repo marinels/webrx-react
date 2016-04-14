@@ -135,27 +135,27 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
     return fieldName === this.sortField() && direction === this.sortDirection();
   }
 
-  getRoutingState(context?: any) {
-    return this.createRoutingState(state => {
-      state.search = this.search.getRoutingState(context);
+  saveRoutingState(state: IDataGridRoutingState) {
+    state.search = this.search.getRoutingState(context);
 
-      if (this.sortField() != null) {
-        state.sortBy = this.sortField();
-      }
+    if (this.sortField() != null) {
+      state.sortBy = this.sortField();
+    }
 
-      if (this.sortDirection() != null) {
-        state.sortDir = this.sortDirection();
-      }
+    if (this.sortDirection() != null) {
+      state.sortDir = this.sortDirection();
+    }
 
-      state.pager = this.pager.getRoutingState();
-    });
+    state.pager = this.pager.getRoutingState();
+
+    super.saveRoutingState(state);
   }
 
-  setRoutingState(state: IDataGridRoutingState) {
-    this.handleRoutingState(state, state => {
-      this.search.setRoutingState(state.search);
-      this.pager.setRoutingState(state.pager);
-    });
+  loadRoutingState(state: IDataGridRoutingState) {
+    this.search.setRoutingState(state.search);
+    this.pager.setRoutingState(state.pager);
+
+    super.loadRoutingState(state);
   }
 }
 

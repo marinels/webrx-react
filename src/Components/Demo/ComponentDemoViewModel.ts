@@ -102,16 +102,16 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
     );
   }
 
-  getRoutingState(context?: any): any {
-    return this.createRoutingState(state => {
-      state.route = <IRoute>{
-        path: `/demo/${this.componentRoute}`
-      };
+  saveRoutingState(state: IComponentDemoRoutingState): any {
+    state.route = <IRoute>{
+      path: `/demo/${this.componentRoute}`
+    };
 
-      if (this.columns() !== 12) {
-        state.columns = this.columns();
-      }
-    });
+    if (this.columns() !== 12) {
+      state.columns = this.columns();
+    }
+
+    super.saveRoutingState(state);
   }
 
   setRoutingState(state: IComponentDemoRoutingState) {
@@ -122,32 +122,36 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
         this.navTo(RoutingMap.menuItems[0].uri);
       }
     } else {
-      this.handleRoutingState(state, state => {
-        // try columns routing state first, then fall back onto view model columns state
-        state.columns = state.columns != null ? state.columns : this.columns();
-
-        let component = this.getViewModel(this.componentRoute, state) as IRoutedViewModel;
-
-        let isNewComponent = this.component() == null || this.component() !== component ||
-          (component.getDisplayName == null ? component.toString() : component.getDisplayName()) !==
-          (this.component().getDisplayName == null ? this.component().toString() : this.component().getDisplayName());
-
-        if (isNewComponent === false) {
-          component = this.component();
-        }
-
-        // update columns down here since the activator could adjust columns for us
-        this.columns(state.columns == null ? 12 : state.columns);
-
-        if (component != null && component.setRoutingState) {
-          component.setRoutingState(state);
-        }
-
-        if (isNewComponent) {
-          this.component(component);
-        }
-      });
+      super.setRoutingState(state);
     }
+  }
+
+  loadRoutingState(state: IComponentDemoRoutingState) {
+    // try columns routing state first, then fall back onto view model columns state
+    state.columns = state.columns != null ? state.columns : this.columns();
+
+    let component = this.getViewModel(this.componentRoute, state) as IRoutedViewModel;
+
+    let isNewComponent = this.component() == null || this.component() !== component ||
+      (component.getDisplayName == null ? component.toString() : component.getDisplayName()) !==
+      (this.component().getDisplayName == null ? this.component().toString() : this.component().getDisplayName());
+
+    if (isNewComponent === false) {
+      component = this.component();
+    }
+
+    // update columns down here since the activator could adjust columns for us
+    this.columns(state.columns == null ? 12 : state.columns);
+
+    if (component != null && component.setRoutingState) {
+      component.setRoutingState(state);
+    }
+
+    if (isNewComponent) {
+      this.component(component);
+    }
+
+    super.loadRoutingState(state);
   }
 }
 

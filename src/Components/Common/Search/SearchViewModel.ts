@@ -57,18 +57,18 @@ export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> 
     }
   }
 
-  getRoutingState(context?: any) {
-    return this.createRoutingState(state => {
-      if (String.isNullOrEmpty(this.filter()) === false) {
-        state.filter = this.filter();
-      }
-    });
+  saveRoutingState(state: ISearchRoutingState) {
+    if (String.isNullOrEmpty(this.filter()) === false) {
+      state.filter = this.filter();
+    }
+
+    super.saveRoutingState(state);
   }
 
-  setRoutingState(state: ISearchRoutingState) {
-    this.handleRoutingState(state, state => {
-      this.filter(state.filter || '');
-    });
+  loadRoutingState(state: ISearchRoutingState) {
+    this.filter(state.filter || '');
+
+    super.loadRoutingState(state);
   }
 }
 

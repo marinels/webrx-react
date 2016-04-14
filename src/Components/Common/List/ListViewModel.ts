@@ -77,20 +77,20 @@ export class ListViewModel<TData, TRoutingState extends IListRoutingState> exten
     }
   }
 
-  getRoutingState(context?: any) {
-    return this.createRoutingState(state => {
-      if (this.selectedIndex() != null) {
-        state.selectedIndex = this.selectedIndex();
-      }
-    });
+  saveRoutingState(state: TRoutingState) {
+    if (this.selectedIndex() != null) {
+      state.selectedIndex = this.selectedIndex();
+    }
+
+    super.saveRoutingState(state);
   }
 
-  setRoutingState(state: TRoutingState) {
-    this.handleRoutingState(state, state => {
-      if (state.selectedIndex != null) {
-        this.selectedIndex(state.selectedIndex);
-      }
-    });
+  loadRoutingState(state: TRoutingState) {
+    if (state.selectedIndex != null) {
+      this.selectedIndex(state.selectedIndex);
+    }
+
+    super.loadRoutingState(state);
   }
 }
 
