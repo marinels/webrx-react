@@ -15,6 +15,12 @@ export interface ISampleDataActionSet {
 export abstract class BaseSampleDataStore {
   public abstract getActions(): ISampleDataActionSet;
 
+  protected connect(actions: ISampleDataActionSet, action: string, api: ISampleDataAction, thisArg: any = this) {
+    actions[action] = function () {
+      return api.apply(thisArg, arguments);
+    };
+  }
+
   protected createAlert(action: string, params: any = {}) {
     Alert.create(JSON.stringify(params, null, 2), `SampleData API Call: ${action}`);
   }
