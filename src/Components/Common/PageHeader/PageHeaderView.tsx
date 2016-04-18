@@ -65,8 +65,9 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
         {
           items.map(x => {
             let icon = String.isNullOrEmpty(x.iconName) ? null : <Icon name={x.iconName} fixedWidth />;
+            let onSelect = x.uri == null ? this.bindEvent(x => x.menuItemSelected, () => x) : null;
             return (
-              <MenuItem key={x.id} disabled={this.isMenuItemDisabled(x)} onSelect={this.bindEvent(x => x.menuItemSelected, () => x)}>
+              <MenuItem key={x.id} disabled={this.isMenuItemDisabled(x)} href={x.uri} onSelect={onSelect}>
                 {icon}
                 <span className='MenuItem-text'>{x.header}</span>
               </MenuItem>
