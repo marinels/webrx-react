@@ -43,6 +43,7 @@
     "./src/Extensions/Number.ts",
     "./src/Extensions/Object.ts",
     "./src/Extensions/String.ts",
+    "./src/Extensions/WebRx.ts",
     "./src/Routing/HashCodec.ts",
     "./src/Routing/RouteManager.ts",
     "./src/Stores/BaseStore.ts",

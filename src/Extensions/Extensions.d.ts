@@ -13,3 +13,9 @@ declare interface StringConstructor {
 declare interface NumberConstructor {
   isNumeric(value: any): boolean;
 }
+
+declare module wx {
+  interface ICommand<T> {
+    catchExceptions(onError: (error: Error) => void): ICommand<T>;
+  }
+}
