@@ -96,7 +96,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
             disabled={x.command == null}
             onClick={() => { if (x.command != null) { x.command.execute(x); } }}>
             <div className='PageHeader-actionHeader'>
-              <Icon className='PageHeader-actionHeaderIcon' name={x.iconName} />
+              { String.isNullOrEmpty(x.iconName) ? null : <Icon className='PageHeader-actionHeaderIcon' name={x.iconName} /> }
               <span className='PageHeader-actionHeaderText'>{x.header}</span>
             </div>
           </Button>
