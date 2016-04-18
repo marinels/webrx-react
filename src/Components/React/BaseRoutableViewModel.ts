@@ -87,6 +87,8 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
   }
 
   public setRoutingState(state: TRoutingState, ...observables: Rx.Observable<any>[]) {
+    this.routingState(null);
+
     this.handleRoutingState(state, state => {
       this.loadRoutingState(state);
     }, ...observables);
