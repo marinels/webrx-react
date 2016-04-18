@@ -123,9 +123,6 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
           <Nav className='PageHeader-navMenus'>
             {appMenus}
           </Nav>
-          <form className='PageHeader-navActions navbar-form navbar-left'>
-            {appActions}
-          </form>
           <Nav className='PageHeader-navSite' pullRight>
             {this.createMenu(this.state.helpMenuItems, (<Icon name='question-circle' size='lg' />), () => ({
               id: 'help-menu',
@@ -147,6 +144,9 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
             }))}
           </Nav>
           {search}
+          <form className='PageHeader-navActions navbar-form navbar-right'>
+            {appActions}
+          </form>
       </Navbar>
     </div>
     );
