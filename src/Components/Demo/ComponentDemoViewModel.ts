@@ -54,7 +54,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
 
   getAppActions() {
     return <ICommandAction[]>[
-      { id: 'reRender', header: 'Re-Render', command: this.reRender },
+      { id: 'reRender', header: 'Re-Render', command: this.reRender, bsStyle: 'primary' },
     ];
   }
 
