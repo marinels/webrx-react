@@ -92,7 +92,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
       this.state.appActions
         .filter(x => x.command.canExecute(x.commandParameter) === true)
         .map(x => (
-          <Button key={x.id} className='PageHeader-actionButton'
+          <Button key={x.id} className='PageHeader-actionButton' bsStyle={x.bsStyle}
             disabled={x.command == null}
             onClick={() => { if (x.command != null) { x.command.execute(x); } }}>
             <div className='PageHeader-actionHeader'>
