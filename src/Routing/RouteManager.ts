@@ -63,8 +63,7 @@ export class RouteManager implements Rx.IDisposable {
     return path;
   }
 
-  public navTo(path: string, state?: any, uriEncode = false) {
-    path = this.getPath(state) || path;
+  public normalizePath(path: string) {
     if (String.isNullOrEmpty(path) === false) {
       if (path[0] === '#') {
         path = path.substring(1);
@@ -87,11 +86,22 @@ export class RouteManager implements Rx.IDisposable {
             pathElems.splice(i - 1, 2);
             i -= 2;
           }
+        } else if (pathElems[i] === '') {
+          // trim out empty path elements
+          pathElems.splice(i--, 1);
         }
       }
 
-      path = pathElems.join('/');
+      path = `/${pathElems.join('/')}`;
+    }
 
+    return path;
+  }
+
+  public navTo(path: string, state?: any, uriEncode = false) {
+    path = this.normalizePath(this.getPath(state) || path);
+
+    if (String.isNullOrEmpty(path) === false) {
       let hash = this.hashCodec.encode(path, state, uriEncode);
 
       this.logger.debug(`Routing to Hash: ${hash}`);
