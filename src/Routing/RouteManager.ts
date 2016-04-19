@@ -65,7 +65,11 @@ export class RouteManager implements Rx.IDisposable {
 
   public normalizePath(path: string, currentPath?: string) {
     if (String.isNullOrEmpty(path) === false) {
-      if (path[0] !== '/' && currentPath != null) {
+      if (path[0] !== '/') {
+        if (String.isNullOrEmpty(currentPath)) {
+          currentPath = this.hashCodec.decode(window.location.hash, x => x);
+        }
+
         // relative path
         path = `${currentPath.split('/').slice(0, -1).join('/')}/${path}`;
       }
@@ -103,7 +107,7 @@ export class RouteManager implements Rx.IDisposable {
         path = path.substring(1);
       }
 
-      path = this.normalizePath(path, this.hashCodec.decode(window.location.hash, x => x));
+      path = this.normalizePath(path);
 
       let hash = this.hashCodec.encode(path, state, uriEncode);
 
