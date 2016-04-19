@@ -5,6 +5,7 @@ import * as wx from 'webrx';
 
 import { getLogger } from '../Utils/Logging/LogManager';
 import SampleData from './SampleData/SampleData';
+import { Default as routeManager } from '../Routing/RouteManager';
 
 export class ObservableApi {
   public static displayName = 'ObservableApi';
@@ -18,7 +19,7 @@ export class ObservableApi {
   private client = wx.injector.get<wx.IHttpClient>(wx.res.httpClient);
 
   public getObservable<T>(action: string, params?: any, options?: wx.IHttpClientOptions, baseUri?: string) {
-    let uri = (baseUri || this.baseUri) + action;
+    const uri = `${baseUri || this.baseUri}${routeManager.normalizePath(`/${action}`)}`;
 
     this.logger.info(`Calling API: ${action} (${uri})`, params);
 
