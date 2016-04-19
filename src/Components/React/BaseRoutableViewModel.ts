@@ -41,10 +41,14 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
   protected routingState = wx.property<TRoutingState>();
 
   public routingStateChanged = wx.command(x => {
-    if (this.isRoutingEnabled) {
-      PubSub.publish<IRoutingStateChanged>(RoutingStateChangedKey, x);
-    }
+    this.notifyRoutingStateChanged(x);
   });
+
+  protected notifyRoutingStateChanged(context?: any) {
+    if (this.isRoutingEnabled) {
+      PubSub.publish<IRoutingStateChanged>(RoutingStateChangedKey, context);
+    }
+  }
 
   protected createRoutingState(initializer: (state: TRoutingState) => void, initialState = {} as TRoutingState) {
     if (this.isRoutingEnabled === true && initializer != null) {
