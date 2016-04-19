@@ -55,7 +55,7 @@ export abstract class BaseViewModel implements IBaseViewModel {
     }
   }
 
-  public runOrAlert(action: () => void, header = 'Unknown Error', style?: string, timeout?: number, formatter?: (e: Error) => string) {
+  public runOrAlert(action: () => void, header?: string, style?: string, timeout?: number, formatter?: (e: Error) => string) {
     try {
       action();
     } catch (e) {
