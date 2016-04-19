@@ -37,7 +37,6 @@
     "./src/Components/React/BaseRoutableViewModel.ts",
     "./src/Components/React/BaseViewModel.ts",
     "./src/Events/AlertCreated.ts",
-    "./src/Events/RouteChanged.ts",
     "./src/Events/RoutingStateChanged.ts",
     "./src/Extensions/index.ts",
     "./src/Extensions/Number.ts",

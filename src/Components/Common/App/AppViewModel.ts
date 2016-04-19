@@ -10,7 +10,7 @@ import { IMenu, IMenuItem, ICommandAction } from '../PageHeader/Actions';
 import PageFooterViewModel from '../PageFooter/PageFooterViewModel';
 
 import { RouteHandlerViewModel, IRoutingMap } from '../RouteHandler/RouteHandlerViewModel';
-import RouteManager from '../../../Routing/RouteManager';
+import { Default as routeManager } from '../../../Routing/RouteManager';
 
 export interface IAppConfig {
   routingMap: IRoutingMap;
@@ -19,14 +19,12 @@ export interface IAppConfig {
 export class AppViewModel extends BaseViewModel {
   public static displayName = 'AppViewModel';
 
-  constructor(public routeManager?: RouteManager, public config = <IAppConfig>{}) {
+  constructor(public config = <IAppConfig>{}) {
     super();
 
     this.config = config;
 
-    if (routeManager != null) {
-      this.routeHandler = new RouteHandlerViewModel(routeManager, config.routingMap);
-    }
+    this.routeHandler = new RouteHandlerViewModel(routeManager, config.routingMap);
 
     this.header = new PageHeaderViewModel(this.routeHandler);
   }

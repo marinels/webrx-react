@@ -9,7 +9,7 @@ import PubSub from '../../Utils/PubSub';
 import SubMan from '../../Utils/SubMan';
 import Alert from '../../Utils/Alert';
 import { AlertCreatedKey, IAlertCreated } from '../../Events/AlertCreated';
-import { RouteChangedKey, IRouteChanged } from '../../Events/RouteChanged';
+import { Default as routeManager } from '../../Routing/RouteManager';
 
 export interface IBaseViewModel {
   stateChanged: wx.ICommand<any>;
@@ -108,7 +108,7 @@ export abstract class BaseViewModel implements IBaseViewModel {
   }
 
   protected navTo(path: string, state?: any, uriEncode = false) {
-    PubSub.publish<IRouteChanged>(RouteChangedKey, { path, state, uriEncode });
+    routeManager.navTo(path, state, uriEncode);
   }
 
   public bind<T>(observable: Rx.Observable<T>, command: wx.ICommand<T>) {

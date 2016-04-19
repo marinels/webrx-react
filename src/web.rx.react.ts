@@ -80,19 +80,17 @@ export namespace Routing {
   export import HashCodec = HashCodecTypes.HashCodec;
   export import IRoute = RouteManagerTypes.IRoute;
   export import RouteManager = RouteManagerTypes.RouteManager;
+  export import Manager = RouteManagerTypes.Default;
 }
 
 import * as AlertCreatedTypes from './Events/AlertCreated';
-import * as RouteChangedTypes from './Events/RouteChanged';
 import * as RoutingStateChangedTypes from './Events/RoutingStateChanged';
 
 export namespace Events {
   export import IAlertCreated = AlertCreatedTypes.IAlertCreated;
-  export import IRouteChanged = RouteChangedTypes.IRouteChanged;
   export import IRoutingStateChanged =  RoutingStateChangedTypes.IRoutingStateChanged;
 
   export const AlertCreatedKey = AlertCreatedTypes.AlertCreatedKey;
-  export const RouteChangedKey = RouteChangedTypes.RouteChangedKey;
   export const RoutingStateChangedKey = RoutingStateChangedTypes.RoutingStateChangedKey;
 }
 
