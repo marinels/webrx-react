@@ -63,15 +63,10 @@ export class RouteManager implements Rx.IDisposable {
     return path;
   }
 
-  public normalizePath(path: string) {
+  public normalizePath(path: string, currentPath?: string) {
     if (String.isNullOrEmpty(path) === false) {
-      if (path[0] === '#') {
-        path = path.substring(1);
-      }
-
-      if (path[0] !== '/') {
+      if (path[0] !== '/' && currentPath != null) {
         // relative path
-        let currentPath = this.hashCodec.decode(window.location.hash, x => x);
         path = `${currentPath.split('/').slice(0, -1).join('/')}/${path}`;
       }
 
@@ -88,20 +83,28 @@ export class RouteManager implements Rx.IDisposable {
           }
         } else if (pathElems[i] === '') {
           // trim out empty path elements
-          pathElems.splice(i--, 1);
+          if (i > 0 && i < pathElems.length - 1) {
+            pathElems.splice(i--, 1);
+          }
         }
       }
 
-      path = `/${pathElems.join('/')}`;
+      path = pathElems.join('/');
     }
 
     return path;
   }
 
   public navTo(path: string, state?: any, uriEncode = false) {
-    path = this.normalizePath(this.getPath(state) || path);
+    path = this.getPath(state) || path;
 
     if (String.isNullOrEmpty(path) === false) {
+      if (path[0] === '#') {
+        path = path.substring(1);
+      }
+
+      path = this.normalizePath(path, this.hashCodec.decode(window.location.hash, x => x));
+
       let hash = this.hashCodec.encode(path, state, uriEncode);
 
       this.logger.debug(`Routing to Hash: ${hash}`);
