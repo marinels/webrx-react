@@ -34,7 +34,9 @@ export class ObservableApi {
           try {
             error = JSON.parse(x.response);
           } catch (e) {
-            error = 'Unknown Error';
+            this.logger.error('Unable to Get Error Response', e);
+
+            error = 'Unknown Error: Invalid Response from API Host';
           }
 
           return Rx.Observable.throw<T>(error);
