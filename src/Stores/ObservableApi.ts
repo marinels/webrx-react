@@ -18,8 +18,24 @@ export class ObservableApi {
 
   private client = wx.injector.get<wx.IHttpClient>(wx.res.httpClient);
 
+  private getNonNullParams(params?: any) {
+    if (params == null) {
+      return null;
+    }
+
+    for (var key in params) {
+      if (params[key] == null) {
+        delete params[key];
+      }
+    }
+
+    return params;
+  }
+
   public getObservable<T>(action: string, params?: any, options?: wx.IHttpClientOptions, baseUri?: string) {
     const uri = `${baseUri || this.baseUri}${action}`;
+
+    params = this.getNonNullParams(params);
 
     this.logger.info(`Calling API: ${action} (${uri})`, params);
 
