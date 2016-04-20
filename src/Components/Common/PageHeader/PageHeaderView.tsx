@@ -112,7 +112,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
 
     return (
       <div className='PageHeader'>
-        <Navbar fluid>
+        <Navbar fluid fixedTop>
           <Nav className='PageHeader-navBrand'>
             {this.createMenu(this.state.appSwitcherMenuItems, (<Icon name='bars' size='lg' />), () => ({
               id: 'app-switcher',
