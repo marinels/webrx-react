@@ -23,7 +23,7 @@ export class AlertHostView extends BaseView<IAlertHostProps, AlertHostViewModel>
   }
 
   render() {
-    let alerts = this.state.alerts == null ? '' : this.state.alerts.map(x => <AlertView viewModel={x} key={x.key}/>);
+    let alerts = this.state.alerts == null ? null : this.state.alerts.map(x => <AlertView viewModel={x} key={x.key}/>);
 
     return (
       <div className='AlertHost'>
