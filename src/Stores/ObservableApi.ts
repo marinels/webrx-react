@@ -7,6 +7,11 @@ import { getLogger } from '../Utils/Logging/LogManager';
 import SampleData from './SampleData/SampleData';
 import { Default as routeManager } from '../Routing/RouteManager';
 
+export enum HttpRequestMethod {
+  GET,
+  POST,
+}
+
 export class ObservableApi {
   public static displayName = 'ObservableApi';
 
@@ -32,7 +37,7 @@ export class ObservableApi {
     return params;
   }
 
-  public getObservable<T>(action: string, params?: any, options?: wx.IHttpClientOptions, baseUri?: string) {
+  public getObservable<T>(action: string, params?: any, method: HttpRequestMethod = HttpRequestMethod.GET, options?: wx.IHttpClientOptions, baseUri?: string) {
     const uri = `${baseUri || this.baseUri}${action}`;
 
     params = this.getNonNullParams(params);
@@ -42,7 +47,7 @@ export class ObservableApi {
     return this.sampleData == null ?
       // if an API call throws an uncaught error, that means you are not subscribing to the observable's error
       Rx.Observable
-        .fromPromise(this.client.get<T>(uri, params, options))
+        .fromPromise(method === HttpRequestMethod.POST ? this.client.post<T>(uri, params, options) : this.client.get<T>(uri, params, options))
         .catch(x => {
           this.logger.error(`API ERROR: ${action} (${uri})`, x);
 

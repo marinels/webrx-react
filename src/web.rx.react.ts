@@ -102,6 +102,7 @@ import * as SampleDataTypes from './Stores/SampleData/SampleData';
 export namespace Stores {
   export import BaseModel = BaseStoreTypes.BaseModel;
   export import BaseStore = BaseStoreTypes.BaseStore;
+  export import HttpRequestMethod = ObservableApiTypes.HttpRequestMethod;
   export import ObservableApi = ObservableApiTypes.ObservableApi;
   export import ISampleDataAction = BaseSampleDataStoreTypes.ISampleDataAction;
   export import ISampleDataActionSet = BaseSampleDataStoreTypes.ISampleDataActionSet;
