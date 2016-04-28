@@ -67,5 +67,3 @@ export class ObservableApi {
         this.sampleData.getObservable<T>(action, params);
   }
 }
-
-export default ObservableApi;
