@@ -5,7 +5,6 @@ import * as wx from 'webrx';
 
 import { getLogger } from '../Utils/Logging/LogManager';
 import SampleData from './SampleData/SampleData';
-import { Default as routeManager } from '../Routing/RouteManager';
 
 export enum HttpRequestMethod {
   GET,
@@ -28,7 +27,7 @@ export class ObservableApi {
       return null;
     }
 
-    for (var key in params) {
+    for (const key in params) {
       if (params[key] == null) {
         delete params[key];
       }

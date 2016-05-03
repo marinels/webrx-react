@@ -59,7 +59,7 @@ describe('SubMan', () => {
 
   describe('dispose', () => {
     it('disposes subscriptions and empties the list', () => {
-      let sub = Rx.Disposable.create(() => {});
+      let sub = Rx.Disposable.create(() => null);
       let subman = new SubMan(sub);
       let subs = (<any>subman).subscriptions as Rx.IDisposable[];
 

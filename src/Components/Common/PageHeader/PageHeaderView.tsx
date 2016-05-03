@@ -1,10 +1,8 @@
 'use strict';
 
-import * as Rx from 'rx';
 import * as React from 'react';
 
-import { Navbar, Nav, NavItem, NavDropdown, NavDropdownProps, MenuItem, Button } from 'react-bootstrap';
-import { Image } from 'react-bootstrap';
+import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Button } from 'react-bootstrap';
 import * as Icon from 'react-fa';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
@@ -63,13 +61,13 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
       // title as any: the typings for NavDropdownProps incorrectly define title as a string
       <NavDropdown title={title as any} {...propsCreator()}>
         {
-          items.map(x => {
-            let icon = String.isNullOrEmpty(x.iconName) ? null : <Icon name={x.iconName} fixedWidth />;
-            let onSelect = x.uri == null ? this.bindEvent(x => x.menuItemSelected, () => x) : null;
+          items.map(item => {
+            let itemIcon = String.isNullOrEmpty(item.iconName) ? null : <Icon name={item.iconName} fixedWidth />;
+            let onSelect = item.uri == null ? this.bindEvent(x => x.menuItemSelected, () => item) : null;
             return (
-              <MenuItem key={x.id} disabled={this.isMenuItemDisabled(x)} href={x.uri} onSelect={onSelect}>
-                {icon}
-                <span className='MenuItem-text'>{x.header}</span>
+              <MenuItem key={item.id} disabled={this.isMenuItemDisabled(item)} href={item.uri} onSelect={onSelect}>
+                {itemIcon}
+                <span className='MenuItem-text'>{item.header}</span>
               </MenuItem>
             );
           })

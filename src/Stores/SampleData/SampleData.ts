@@ -1,10 +1,8 @@
 'use strict';
 
 import * as Rx from 'rx';
-import * as Ix from 'ix';
 
 import { BaseSampleDataStore, ISampleDataActionSet, ISampleDataAction } from './BaseSampleDataStore';
-import Alert from '../../Utils/Alert';
 
 export class SampleData {
   protected actions: ISampleDataActionSet = {};

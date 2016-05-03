@@ -1,9 +1,8 @@
 'use strict';
 
-import * as Rx from 'rx';
 import * as React from 'react';
 
-import { Fade, Alert } from 'react-bootstrap';
+import { Alert } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 

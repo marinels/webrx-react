@@ -8,17 +8,18 @@ import { RoutingStateChangedKey, IRoutingStateChanged } from '../../Events/Routi
 import { ICommandAction, IMenu, IMenuItem } from '../Common/PageHeader/Actions';
 
 export interface IBaseRoutableViewModel extends IBaseViewModel {
-  getRoutingKey(): string;
-
   // NOTE: componentRouted and getSearch need typeless arguments due to circular dependencies
   componentRouted?: (pageHeader?: any) => void;
   getSearch?: () => any;
+
   getAppSwitcherMenuItems?: () => IMenuItem[];
   getAppMenus?: () => IMenu[];
   getAppActions?: () => ICommandAction[];
   getHelpMenuItems?: () => IMenuItem[];
   getAdminMenuItems?: () => IMenuItem[];
   getUserMenuItems?: () => IMenuItem[];
+
+  getRoutingKey(): string;
 }
 
 export interface IRoutableViewModel<TRoutingState> extends IBaseRoutableViewModel {
@@ -88,13 +89,14 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
   }
 
   protected saveRoutingState(state: TRoutingState) {
+    // do nothing by default
   }
 
   public setRoutingState(state: TRoutingState, ...observables: Rx.Observable<any>[]) {
     this.routingState(null);
 
-    this.handleRoutingState(state, state => {
-      this.loadRoutingState(state);
+    this.handleRoutingState(state, x => {
+      this.loadRoutingState(x);
     }, ...observables);
   }
 

@@ -1,7 +1,6 @@
 'use strict';
 
 import * as Ix from 'ix';
-import * as wx from 'webrx';
 
 import BaseViewModel from '../../React/BaseViewModel';
 import { IRoutedViewModel } from '../../React/BaseRoutableViewModel';

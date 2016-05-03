@@ -1,7 +1,7 @@
 'use strict';
 
 import * as React from 'react';
-import { Grid, PageHeader, Alert } from 'react-bootstrap';
+import { Grid, Alert } from 'react-bootstrap';
 import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';

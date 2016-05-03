@@ -114,6 +114,7 @@ describe('Object Extensions', () => {
 
     it('Can return a name of a function', () => {
       function test() {
+        // do nothing
       }
       expect(Object.getName(test)).to.equal('test');
     });

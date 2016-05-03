@@ -1,11 +1,12 @@
-var path = require('path');
-var webpack = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const webpackCommon = require('./webpack.common');
 
-module.exports = {
+module.exports = Object.assign({}, webpackCommon, {
   entry: {
     app: [
-      path.join(__dirname, 'src/app.tsx')
+      path.join(__dirname, 'src/app.tsx'),
     ],
     vendor: [
       'rx',
@@ -20,21 +21,17 @@ module.exports = {
       'react-bootstrap',
       'react-fa',
       'react-addons-css-transition-group',
-      'react-bootstrap-datetimepicker'
-    ]
+      'react-bootstrap-datetimepicker',
+    ],
   },
   output: {
     path: path.join(__dirname, 'build'),
-    filename: 'app.js'
+    filename: 'app.js',
   },
-  externals: {
-    jquery: 'var null'
-  },
-  devtool: 'sourcemap',
   plugins: [
-    new webpack.DefinePlugin({ DEBUG: false, PRODUCTION: false, TEST: false, WEBPACK_DEV_SERVER: false }),
+    webpackCommon.plugins[0],
     new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js'),
-    new ExtractTextPlugin('[name].css')
+    new ExtractTextPlugin('[name].css'),
   ],
   module: {
     loaders: [
@@ -42,15 +39,7 @@ module.exports = {
       { test: /\.less$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader!less-loader') },
       { test: /moment[\\\/]locale/, loader: 'file?name=locale/moment/[name].[ext]' },
       { test: /\.(woff|woff2|ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file?name=fonts/[name].[ext]' },
-      { test: /\.tsx?$/, loader: 'ts' }
-    ]
+      { test: /\.tsx?$/, loader: 'ts' },
+    ],
   },
-  resolve: {
-    extensions: ['', '.ts', '.tsx', '.webpack.js', '.web.js', '.js'],
-    alias: {
-      webrx: 'webrx/dist/web.rx.lite.js',
-      Ix: 'ix/l2o' // the ix package uses Ix to refer to l2o for some reason
-    }
-  },
-  failOnError: true
-};
+});

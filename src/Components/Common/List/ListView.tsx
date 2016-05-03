@@ -4,7 +4,7 @@ import * as React from 'react';
 import * as classNames from 'classnames';
 import * as wx from 'webrx';
 
-import { ListGroup, ListGroupItem, ListGroupItemProps, Button } from 'react-bootstrap';
+import { ListGroup, ListGroupItemProps, Button } from 'react-bootstrap';
 
 import { getLogger } from '../../../Utils/Logging/LogManager';
 

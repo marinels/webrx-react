@@ -36,9 +36,17 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
 
   protected renderView() { this.forceUpdate(); }
 
-  protected initialize() {}
-  protected loaded() {}
-  protected cleanup() {}
+  protected initialize() {
+    // do nothing by default
+  }
+
+  protected loaded() {
+    // do nothing by default
+  }
+
+  protected cleanup() {
+    // do nothing by default
+  }
 
   /**
    * Binds an observable to a command on the view model

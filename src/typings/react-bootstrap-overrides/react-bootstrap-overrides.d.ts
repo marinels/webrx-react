@@ -1,4 +1,5 @@
 /// <reference path="../../../typings/main/ambient/react/react.d.ts" />
+// tslint:disable:no-unused-variable
 
 declare module 'react-bootstrap' {
   interface ITitleProp {

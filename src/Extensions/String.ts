@@ -21,8 +21,8 @@ function stringify(value: any, replacer?: any, space: string | number = 2) {
         try {
           result = JSON.stringify(value, replacer, space);
         } catch (e) {
-          console.warn('Attempt to stringify failed');
-          console.log(e);
+          // console.warn('Attempt to stringify failed');
+          // console.log(e);
         }
       }
     }

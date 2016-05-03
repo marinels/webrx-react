@@ -27,6 +27,8 @@ export interface IViewMap {
   [key: string]: IViewActivator;
 }
 
+const logger = wxr.Logging.getLogger('Demo.ViewMap');
+
 const viewMap: IViewMap = {
   Loading: () => <Loading fluid indeterminate text='Loading Text...' />,
   Splash: () => <Splash fluid indeterminate header='WebRx.React Demo' logo='http://placehold.it/100x100?text=Logo' />,
@@ -34,7 +36,7 @@ const viewMap: IViewMap = {
   ContextMenu: () => (
     <div>
       <ContextMenu id='demo' header='Optional Header' onSelect={(item) => {
-        console.log(item.eventKey || item.href);
+        logger.info(item.eventKey || item.href);
       }}>
         <span>Right Click Here for the Context Menu</span>
 
@@ -77,7 +79,9 @@ const viewMap: IViewMap = {
     if (componentRoute === 'DataGridList') {
       view = new DataGridListView<{name: string, requiredBy: string}>(
         (v, vm, x, i) => (
-          <ListGroupItem key={x.name} className='ItemRow' onClick={() => {}}>
+          <ListGroupItem key={x.name} className='ItemRow' onClick={() => {
+            logger.info(`{x.name} clicked`);
+          }}>
             {`Name: ${x.name}, Required By: ${x.requiredBy}`}
           </ListGroupItem>
         )

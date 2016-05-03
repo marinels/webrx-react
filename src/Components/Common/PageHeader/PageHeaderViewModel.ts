@@ -36,6 +36,20 @@ export class PageHeaderViewModel extends BaseViewModel {
   public adminMenuItems = wx.list<IMenuItem>();
   public userMenuItems = wx.list<IMenuItem>();
 
+  public menuItemSelected = wx.command((x: IMenuItem) => {
+    if (x != null) {
+      if (x.command != null) {
+        x.command.execute(x);
+      } else if (x.uri != null && x.uri.length > 0) {
+        if (x.uri[0] === '#') {
+          this.navTo(x.uri);
+        } else {
+          window.location.href = x.uri;
+        }
+      }
+    }
+  });
+
   initialize() {
     if (this.routeHandler != null) {
       this.subscribe(
@@ -97,20 +111,6 @@ export class PageHeaderViewModel extends BaseViewModel {
       }
     });
   }
-
-  public menuItemSelected = wx.command((x: IMenuItem) => {
-    if (x != null) {
-      if (x.command != null) {
-        x.command.execute(x);
-      } else if (x.uri != null && x.uri.length > 0) {
-        if (x.uri[0] === '#') {
-          this.navTo(x.uri);
-        } else {
-          window.location.href = x.uri;
-        }
-      }
-    }
-  });
 }
 
 export default PageHeaderViewModel;

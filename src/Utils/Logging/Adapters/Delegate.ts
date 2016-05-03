@@ -1,6 +1,6 @@
 'use strict';
 
-import { LogLevel, getLevelName } from '../LogLevel';
+import { LogLevel } from '../LogLevel';
 import { ILogger, BaseLogger, IMessageDelegate } from '../Logger';
 import ILogManager from '../LogManager';
 

@@ -1,8 +1,6 @@
 The MIT License (MIT)
 
-Based on react-hot-boilerplate: https://github.com/gaearon/react-hot-boilerplate
-
-Copyright (c) 2014 Dan Abramov
+Copyright (c) 2016 Pat Sissons <patricksissons@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -1,6 +1,5 @@
 'use strict';
 
-import * as Rx from 'rx';
 import * as Ix from 'ix';
 import * as wx from 'webrx';
 import * as moment from 'moment';

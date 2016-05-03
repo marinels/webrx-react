@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { Grid, Row, Col } from 'react-bootstrap';
+import { Grid } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import { IViewMap } from '../RouteHandler/RouteHandlerView';

@@ -4,12 +4,11 @@ import * as Ix from 'ix';
 import * as React from 'react';
 import { Input, Button, DropdownButton, MenuItem } from 'react-bootstrap';
 import * as Icon from 'react-fa';
-import * as moment from 'moment';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import BindableInput from '../BindableInput/BindableInput';
 
-import { TimeSpanInputViewModel, ITimeSpanUnit } from './TimeSpanInputViewModel';
+import { TimeSpanInputViewModel } from './TimeSpanInputViewModel';
 
 interface ITimeSpanInputProps extends IBaseViewProps {
   id: string;

@@ -1,7 +1,6 @@
 'use strict';
 
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 
 import { Overlay, Popover, MenuItemProps } from 'react-bootstrap';
 

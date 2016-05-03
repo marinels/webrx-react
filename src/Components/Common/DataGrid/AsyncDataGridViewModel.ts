@@ -1,7 +1,6 @@
 'use strict';
 
 import * as Rx from 'rx';
-import * as wx from 'webrx';
 
 import { DataGridViewModel } from './DataGridViewModel';
 import { SortDirection } from '../../../Utils/Compare';

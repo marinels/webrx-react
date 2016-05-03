@@ -5,10 +5,8 @@ import * as wx from 'webrx';
 
 import LogLevel from '../../Utils/Logging/LogLevel';
 import { getLogger } from '../../Utils/Logging/LogManager';
-import PubSub from '../../Utils/PubSub';
 import SubMan from '../../Utils/SubMan';
 import Alert from '../../Utils/Alert';
-import { AlertCreatedKey, IAlertCreated } from '../../Events/AlertCreated';
 import { Default as routeManager } from '../../Routing/RouteManager';
 
 export interface IBaseViewModel {
@@ -121,7 +119,9 @@ export abstract class BaseViewModel implements IBaseViewModel {
     }
   }
 
-  public loaded() {}
+  public loaded() {
+    // do nothing by default
+  }
 
   public cleanup() {
     this.subs.dispose();

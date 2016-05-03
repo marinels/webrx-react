@@ -14,8 +14,10 @@ declare interface NumberConstructor {
   isNumeric(value: any): boolean;
 }
 
+// tslint:disable:no-internal-module
 declare module wx {
   interface ICommand<T> {
     catchExceptions(onError: (error: Error) => void): ICommand<T>;
   }
 }
+// tslint:enable:no-internal-module

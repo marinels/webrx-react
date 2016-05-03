@@ -3,7 +3,7 @@
 import * as Ix from 'ix';
 import * as React from 'react';
 
-import { Grid, Row, Col, PageHeader, Panel, DropdownButton, MenuItem, Alert } from 'react-bootstrap';
+import { Grid, Row, Col, PageHeader, DropdownButton, MenuItem, Alert } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
 import ComponentDemoViewModel from './ComponentDemoViewModel';

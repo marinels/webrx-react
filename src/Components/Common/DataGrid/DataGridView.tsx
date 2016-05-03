@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { Table, TableProps, ButtonGroup, Button, ListGroup } from 'react-bootstrap';
+import { Table, TableProps, Button, ListGroup } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import { SearchView } from '../Search/SearchView';
@@ -193,15 +193,15 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
     return table;
   }
 
-  private getColumns(items: any[]) {
-    if (this.columns == null) {
-      this.columns = Object
-        .keys(items[0] || {})
-        .map(x => ({ fieldName: x } as IDataGridColumnProps));
-    }
+  // private getColumns(items: any[]) {
+  //   if (this.columns == null) {
+  //     this.columns = Object
+  //       .keys(items[0] || {})
+  //       .map(x => ({ fieldName: x } as IDataGridColumnProps));
+  //   }
 
-    return this.columns;
-  }
+  //   return this.columns;
+  // }
 
   updateOn() {
     return [
@@ -214,8 +214,8 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
     super.initialize();
 
     if (React.Children.count(this.props.children) > 0) {
-      this.columns = React.Children.map(this.props.children, (x: React.ReactElement<IDataGridColumnProps>) => {
-        let column = Object.assign<IDataGridColumnProps>({}, x.props);
+      this.columns = React.Children.map(this.props.children, (col: React.ReactElement<IDataGridColumnProps>) => {
+        let column = Object.assign<IDataGridColumnProps>({}, col.props);
 
         if (column.header == null) {
           column.header = column.fieldName;
@@ -237,7 +237,7 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
 
     let items = this.state.projectedItems.toArray() || [];
 
-    let columns = this.getColumns(items);
+    // let columns = this.getColumns(items);
 
     search = (this.props.hideSearch === true || this.state.canFilter() === false) ? null : (
       <SearchView viewModel={this.state.search}/>

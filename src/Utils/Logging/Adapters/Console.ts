@@ -19,8 +19,11 @@ export class ConsoleLogManager extends DelegateLogManager {
     let styles: string[] = [];
 
     if (level >= LogLevel.Fatal) {
+      // do nothing
     } else if (level >= LogLevel.Error) {
+      // do nothing
     } else if (level >= LogLevel.Warn) {
+      // do nothing
     } else if (level >= LogLevel.Info) {
       styles.push(this.getColorStyle('lightblue'));
     } else if (level >= LogLevel.Debug) {
@@ -48,6 +51,7 @@ export class ConsoleLogManager extends DelegateLogManager {
     }
   }
 
+  // tslint:disable:no-console
   private logToConsole(level: LogLevel, message: any, ...formatting: string[]) {
     if (level >= LogLevel.Error) {
       console.error(message, ...formatting);
@@ -61,6 +65,7 @@ export class ConsoleLogManager extends DelegateLogManager {
       console.log(message, ...formatting);
     }
   }
+  // tslint:enable:no-console
 }
 
 let defaultLevel: LogLevel = null;

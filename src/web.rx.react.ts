@@ -1,4 +1,4 @@
-'use strict';
+// tslint:disable:no-unused-variable
 
 function exportFunction<T extends Function>(item: T, thisArg: any = null): T {
   return <T><Function>function() {

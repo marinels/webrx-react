@@ -1,14 +1,12 @@
 'use strict';
 
-import * as Rx from 'rx';
 import * as Ix from 'ix';
 import * as wx from 'webrx';
 
 import { IRoute } from '../../Routing/RouteManager';
-import { ICommandAction, IMenu, IMenuItem } from '../Common/PageHeader/Actions';
+import { ICommandAction, IMenu } from '../Common/PageHeader/Actions';
 
 import { BaseRoutableViewModel, IBaseRoutableViewModel, IRoutedViewModel } from '../React/BaseRoutableViewModel';
-import { SearchViewModel } from '../Common/Search/SearchViewModel';
 import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
 import { Default as RoutingMap, IViewModelActivator } from './RoutingMap';
 

@@ -3,7 +3,6 @@
 import * as Rx from 'rx';
 import * as React from 'react';
 import { Grid } from 'react-bootstrap';
-import { ProgressBar } from 'react-bootstrap';
 
 import SubMan from '../../../Utils/SubMan';
 

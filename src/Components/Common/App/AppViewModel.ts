@@ -1,12 +1,8 @@
 'use strict';
 
-import * as wx from 'webrx';
-import * as moment from 'moment';
-
 import BaseViewModel from '../../React/BaseViewModel';
 import AlertHostViewModel from '../Alert/AlertHostViewModel';
 import { PageHeaderViewModel } from '../PageHeader/PageHeaderViewModel';
-import { IMenu, IMenuItem, ICommandAction } from '../PageHeader/Actions';
 import PageFooterViewModel from '../PageFooter/PageFooterViewModel';
 
 import { RouteHandlerViewModel, IRoutingMap } from '../RouteHandler/RouteHandlerViewModel';

@@ -1,9 +1,5 @@
 /// <reference path="./Extensions.d.ts"/>
 
-'use strict';
-
-import * as Rx from 'rx';
-
 function assign<T>(target: any, ...sources: any[]) {
   if (target === undefined || target === null) {
     throw new TypeError('Cannot convert first argument to object');
