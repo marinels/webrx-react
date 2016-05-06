@@ -3,7 +3,7 @@
 import * as React from 'react';
 
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Button } from 'react-bootstrap';
-import * as Icon from 'react-fa';
+import { Icon } from 'react-fa';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import SearchView from '../Search/SearchView';

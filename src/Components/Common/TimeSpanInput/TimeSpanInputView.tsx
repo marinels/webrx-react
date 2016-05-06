@@ -3,7 +3,7 @@
 import * as Ix from 'ix';
 import * as React from 'react';
 import { Input, Button, DropdownButton, MenuItem } from 'react-bootstrap';
-import * as Icon from 'react-fa';
+import { Icon } from 'react-fa';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import BindableInput from '../BindableInput/BindableInput';

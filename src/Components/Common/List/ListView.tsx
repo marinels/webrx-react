@@ -9,7 +9,7 @@ import { ListGroup, ListGroupItemProps, Button } from 'react-bootstrap';
 import { getLogger } from '../../../Utils/Logging/LogManager';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
-import * as Icon from 'react-fa';
+import { Icon } from 'react-fa';
 
 import { ListViewModel, ISelectableItem } from './ListViewModel';
 

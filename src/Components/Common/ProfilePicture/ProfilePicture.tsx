@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { Image } from 'react-bootstrap';
-import * as Icon from 'react-fa';
+import { Icon } from 'react-fa';
 import * as classNames from 'classnames';
 
 import './ProfilePicture.less';

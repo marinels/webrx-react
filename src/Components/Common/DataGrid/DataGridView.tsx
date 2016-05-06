@@ -7,7 +7,7 @@ import { Table, TableProps, Button, ListGroup } from 'react-bootstrap';
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import { SearchView } from '../Search/SearchView';
 import { PagerView } from '../Pager/PagerView';
-import * as Icon from 'react-fa';
+import { Icon } from 'react-fa';
 
 import { DataGridViewModel } from './DataGridViewModel';
 import { SortDirection } from '../../../Utils/Compare';

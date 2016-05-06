@@ -6,7 +6,7 @@ import { Input, InputProps, Button } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import BindableInput from '../BindableInput/BindableInput';
-import * as Icon from 'react-fa';
+import { Icon } from 'react-fa';
 
 import SearchViewModel from './SearchViewModel';
 
