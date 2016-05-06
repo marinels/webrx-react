@@ -12,20 +12,6 @@ import SubMan from '../../../Utils/SubMan';
 export class PageHeaderViewModel extends BaseViewModel {
   public static displayName = 'PageHeaderViewModel';
 
-  constructor(
-    public routeHandler?: RouteHandlerViewModel,
-    public staticAppSwitcherMenuItems: IMenuItem[] = [],
-    public staticAppMenus: IMenu[] = [],
-    public staticAppActions: ICommandAction[] = [],
-    public staticHelpMenuItems: IMenuItem[] = [],
-    public staticAdminMenuItems: IMenuItem[] = [],
-    public staticUserMenuItems: IMenuItem[] = [],
-    public userImage?: string,
-    public userDisplayName?: string,
-    public homeLink = '#/') {
-    super();
-  }
-
   private dynamicSubs = new SubMan();
 
   public search: SearchViewModel = null;
@@ -49,6 +35,20 @@ export class PageHeaderViewModel extends BaseViewModel {
       }
     }
   });
+
+  constructor(
+    public routeHandler?: RouteHandlerViewModel,
+    public staticAppSwitcherMenuItems: IMenuItem[] = [],
+    public staticAppMenus: IMenu[] = [],
+    public staticAppActions: ICommandAction[] = [],
+    public staticHelpMenuItems: IMenuItem[] = [],
+    public staticAdminMenuItems: IMenuItem[] = [],
+    public staticUserMenuItems: IMenuItem[] = [],
+    public userImage?: string,
+    public userDisplayName?: string,
+    public homeLink = '#/') {
+    super();
+  }
 
   initialize() {
     if (this.routeHandler != null) {

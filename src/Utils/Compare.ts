@@ -13,9 +13,6 @@ export interface IComparison<T> {
 }
 
 export class Comparer<T> implements IComparer<T> {
-  constructor(public comparison: IComparison<T>) {
-  }
-
   public static DefaultComparison: IComparison<any> = (a: any, b: any) => {
     if (a == null && b == null) {
       return 0;
@@ -34,6 +31,9 @@ export class Comparer<T> implements IComparer<T> {
 
   public static create<T>(comparison?: IComparison<T>) {
     return new Comparer(comparison || Comparer.DefaultComparison);
+  }
+
+  constructor(public comparison: IComparison<T>) {
   }
 
   compare(a: T, b: T) {
@@ -56,6 +56,14 @@ export class ObjectComparer<T> {
 
   private comparers: { [key: string]: IFieldComparer<any> } = {};
 
+  public static createFieldComparer<T>(field: string, compare: IComparison<T>, valueSelector?: (source: any, field: string) => T) {
+    return {
+      field,
+      compare: compare,
+      valueSelector
+    } as IFieldComparer<T>;
+  }
+
   constructor(...comparers: IFieldComparer<any>[]) {
     for (let i = 0; i < comparers.length; ++i) {
       let comparer = comparers[i];
@@ -65,14 +73,6 @@ export class ObjectComparer<T> {
     if (this.getComparer() == null) {
       this.comparers[ObjectComparer.DefaultComparerKey] = ObjectComparer.createFieldComparer(ObjectComparer.DefaultComparerKey, Comparer.DefaultComparison);
     }
-  }
-
-  public static createFieldComparer<T>(field: string, compare: IComparison<T>, valueSelector?: (source: any, field: string) => T) {
-    return {
-      field,
-      compare: compare,
-      valueSelector
-    } as IFieldComparer<T>;
   }
 
   private getComparer(field?: string) {

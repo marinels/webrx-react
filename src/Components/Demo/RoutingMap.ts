@@ -11,11 +11,11 @@ export interface IViewModelMap {
 export class RoutingMap {
   public static displayName = 'RoutingMap';
 
-  constructor(private baseUri = '#/demo', private defaultIconName = 'flask') {
-  }
-
   public map: IViewModelMap = {};
   public menuItems: wxr.Components.IMenuItem[] = [];
+
+  constructor(private baseUri = '#/demo', private defaultIconName = 'flask') {
+  }
 
   public addRoute(path: string, name: string, activator: IViewModelActivator, uri?: string, iconName?: string) {
     this.map[path] = activator;

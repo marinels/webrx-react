@@ -20,10 +20,6 @@ export interface IRoutingMap {
 export class RouteHandlerViewModel extends BaseViewModel {
   public static displayName = 'RouteHandlerViewModel';
 
-  constructor(public manager: RouteManager, public routingMap: IRoutingMap) {
-    super();
-  }
-
   private currentPath: string;
 
   public currentViewModel = this.manager.currentRoute.changed
@@ -37,6 +33,10 @@ export class RouteHandlerViewModel extends BaseViewModel {
     .toProperty();
 
   private routingStateChangedHandle: ISubscriptionHandle;
+
+  constructor(public manager: RouteManager, public routingMap: IRoutingMap) {
+    super();
+  }
 
   private getRoutedViewModel(route: IRoute) {
     // by default we set the view model to the current routed view model

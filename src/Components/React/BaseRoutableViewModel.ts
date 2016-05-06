@@ -35,15 +35,15 @@ export interface IRoutedViewModel extends IBaseRoutableViewModel {
 export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel implements IRoutableViewModel<TRoutingState> {
   public static displayName = 'BaseRoutableViewModel';
 
-  constructor(public isRoutingEnabled = false) {
-    super();
-  }
-
   protected routingState = wx.property<TRoutingState>();
 
   public routingStateChanged = wx.command(x => {
     this.notifyRoutingStateChanged(x);
   });
+
+  constructor(public isRoutingEnabled = false) {
+    super();
+  }
 
   protected notifyRoutingStateChanged(context?: any) {
     if (this.isRoutingEnabled) {

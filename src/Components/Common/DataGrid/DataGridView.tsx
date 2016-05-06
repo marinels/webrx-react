@@ -76,18 +76,18 @@ export class DataGridListView<T> implements IDataGridView {
 export class DataGridTableView implements IDataGridView {
   public static displayName = 'DataGridTableView';
 
+  private tableProps: TableProps;
+
   constructor(
     private rowKeySelector: (row: any, index: number, cells: any[]) => any = null,
-    striped = false, bordered = true, condensed = true, hover = true, responsive = true
-  ) {
+    striped = false, bordered = true, condensed = true, hover = true, responsive = true) {
+
     if (rowKeySelector == null) {
       this.rowKeySelector = (row: any, index: number, cells: any[]) => index;
     }
 
     this.tableProps = { striped, bordered, condensed, hover, responsive };
   }
-
-  private tableProps: TableProps;
 
   private renderSortIcon(view: DataGridView, grid: DataGridViewModel<any>, column: IDataGridColumnProps, index: number) {
     let icon: any = null;

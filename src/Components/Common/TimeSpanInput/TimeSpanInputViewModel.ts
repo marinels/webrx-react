@@ -42,36 +42,6 @@ export const TimeSpanUnits = [
 export class TimeSpanInputViewModel extends BaseViewModel {
   public static displayName = 'TimeSpanInputViewModel';
 
-  constructor(
-    private initialValue?: moment.Duration,
-    unit = TimeSpanUnits[TimeSpanUnitType.Seconds],
-    public required = false,
-    units?: TimeSpanUnitType[],
-    public minValue?: moment.Duration,
-    public maxValue?: moment.Duration,
-    public minUnit = TimeSpanUnitType.Days,
-    public maxUnit = TimeSpanUnitType.Years,
-    public precision = 2,
-    public parseDelay = 500
-    ) {
-    super();
-
-    this.unit(unit.type < minUnit ? TimeSpanUnits[minUnit] : unit);
-    this.minValue = this.minValue || moment.duration(1, this.unit().key);
-
-    if (units == null) {
-      this.units = Ix.Enumerable
-        .fromArray(TimeSpanUnits)
-        .where(x => x.type >= minUnit && x.type <= maxUnit)
-        .toArray();
-    } else {
-      this.units = Ix.Enumerable
-        .fromArray(units)
-        .select(x => TimeSpanUnits[x])
-        .toArray();
-    }
-  }
-
   public units: ITimeSpanUnit[];
   public text = wx.property('');
   public unit = wx.property<ITimeSpanUnit>();
@@ -103,6 +73,36 @@ export class TimeSpanInputViewModel extends BaseViewModel {
   public parse = wx.command((text: string) => {
     this.parseText(text);
   });
+
+  constructor(
+    private initialValue?: moment.Duration,
+    unit = TimeSpanUnits[TimeSpanUnitType.Seconds],
+    public required = false,
+    units?: TimeSpanUnitType[],
+    public minValue?: moment.Duration,
+    public maxValue?: moment.Duration,
+    public minUnit = TimeSpanUnitType.Days,
+    public maxUnit = TimeSpanUnitType.Years,
+    public precision = 2,
+    public parseDelay = 500
+    ) {
+    super();
+
+    this.unit(unit.type < minUnit ? TimeSpanUnits[minUnit] : unit);
+    this.minValue = this.minValue || moment.duration(1, this.unit().key);
+
+    if (units == null) {
+      this.units = Ix.Enumerable
+        .fromArray(TimeSpanUnits)
+        .where(x => x.type >= minUnit && x.type <= maxUnit)
+        .toArray();
+    } else {
+      this.units = Ix.Enumerable
+        .fromArray(units)
+        .select(x => TimeSpanUnits[x])
+        .toArray();
+    }
+  }
 
   initialize() {
     super.initialize();

@@ -11,6 +11,14 @@ export interface ITabsRoutingState {
 export class TabsViewModel extends BaseRoutableViewModel<ITabsRoutingState> {
   public static displayName = 'TabsViewModel';
 
+  public items = wx.list();
+  public selectIndex = wx.command();
+  public selectedIndex = this.selectIndex.results.toProperty();
+  public selectedItem = this.selectedIndex.changed
+    .where(x => x >= 0 && x < this.items.length())
+    .select(x => this.items.get(x))
+    .toProperty();
+
   constructor(isRoutingEnabled = false, ...items: any[]) {
     super(isRoutingEnabled);
 
@@ -20,14 +28,6 @@ export class TabsViewModel extends BaseRoutableViewModel<ITabsRoutingState> {
       this.selectIndex.execute(0);
     }
   }
-
-  public items = wx.list();
-  public selectIndex = wx.command();
-  public selectedIndex = this.selectIndex.results.toProperty();
-  public selectedItem = this.selectedIndex.changed
-    .where(x => x >= 0 && x < this.items.length())
-    .select(x => this.items.get(x))
-    .toProperty();
 
   initialize() {
     super.initialize();

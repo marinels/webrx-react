@@ -17,7 +17,9 @@ export interface IRoute {
 export class RouteManager implements Rx.IDisposable {
   public static displayName = 'RouteManager';
 
-  protected logger = getLogger(RouteManager.displayName);
+  private routeChangedHandle: ISubscriptionHandle;
+  private logger = getLogger(RouteManager.displayName);
+  public currentRoute: wx.IObservableProperty<IRoute>;
 
   constructor(hashChanged?: Rx.Observable<string>, public hashCodec = new HashCodec()) {
     if (hashChanged == null) {
@@ -47,9 +49,6 @@ export class RouteManager implements Rx.IDisposable {
       .where(x => x != null)
       .toProperty();
   }
-
-  private routeChangedHandle: ISubscriptionHandle;
-  public currentRoute: wx.IObservableProperty<IRoute>;
 
   private getPath(state: {route: IRoute}) {
     let path: string = null;

@@ -12,10 +12,6 @@ export interface ISearchRoutingState {
 export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> {
   public static displayName = 'SearchViewModel';
 
-  constructor(public isLiveSearchEnabled = false, private liveSearchTimeout = 250, private isCaseInsensitive = true, isRoutingEnabled = false) {
-    super(isRoutingEnabled);
-  }
-
   public filter = wx.property('');
   public regex = this.filter.changed
     .debounce(this.isLiveSearchEnabled ? this.liveSearchTimeout : 0)
@@ -28,6 +24,10 @@ export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> 
 
     return Rx.Observable.return(x);
   });
+
+  constructor(public isLiveSearchEnabled = false, private liveSearchTimeout = 250, private isCaseInsensitive = true, isRoutingEnabled = false) {
+    super(isRoutingEnabled);
+  }
 
   protected createRegex(filter: string) {
     let regex: RegExp = null;

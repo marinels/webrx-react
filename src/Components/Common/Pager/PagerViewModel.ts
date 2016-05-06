@@ -13,12 +13,6 @@ export interface IPagerRoutingState {
 export class PagerViewModel extends BaseRoutableViewModel<IPagerRoutingState> {
   public static displayName = 'PagerViewModel';
 
-  constructor(limit?: number, isRoutingEnabled = false) {
-    super(isRoutingEnabled);
-
-    this.limit(limit);
-  }
-
   public updateItemCount = wx.command();
   public selectPage = wx.command();
 
@@ -48,6 +42,12 @@ export class PagerViewModel extends BaseRoutableViewModel<IPagerRoutingState> {
     .where(x => x.selectedPage != null)
     .select(x => (x.selectedPage - 1) * (x.limit || 0))
     .toProperty();
+
+  constructor(limit?: number, isRoutingEnabled = false) {
+    super(isRoutingEnabled);
+
+    this.limit(limit);
+  }
 
   private isValidLimit(limit: number) {
     return limit != null && limit > 0;

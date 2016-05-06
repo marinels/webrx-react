@@ -15,14 +15,6 @@ export interface ISelectableItem {
 export class ListViewModel<TData, TRoutingState extends IListRoutingState> extends BaseRoutableViewModel<TRoutingState> {
   public static displayName = 'ListViewModel';
 
-  constructor(public isMultiSelectEnabled = false, isRoutingEnabled = false, ...items: TData[]) {
-    super(isRoutingEnabled);
-
-    if (items.length > 0) {
-      this.items.addRange(items);
-    }
-  }
-
   public items = wx.list<TData>();
   public selectIndex = wx.command();
   public selectItem = wx.command();
@@ -35,6 +27,14 @@ export class ListViewModel<TData, TRoutingState extends IListRoutingState> exten
         .select(x => this.items.get(x))
     )
     .toProperty();
+
+  constructor(public isMultiSelectEnabled = false, isRoutingEnabled = false, ...items: TData[]) {
+    super(isRoutingEnabled);
+
+    if (items.length > 0) {
+      this.items.addRange(items);
+    }
+  }
 
   public getSelectedItems() {
     return this.items.filter(x => (x as any as ISelectableItem).isSelected === true);

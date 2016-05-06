@@ -14,13 +14,12 @@ export enum HttpRequestMethod {
 export class ObservableApi {
   public static displayName = 'ObservableApi';
 
-  protected logger = getLogger(ObservableApi.displayName);
+  private logger = getLogger(ObservableApi.displayName);
+  private client = wx.injector.get<wx.IHttpClient>(wx.res.httpClient);
   protected sampleData: SampleData = null;
 
   constructor(public baseUri: string) {
   }
-
-  private client = wx.injector.get<wx.IHttpClient>(wx.res.httpClient);
 
   private getNonNullParams(params?: any) {
     if (params == null) {

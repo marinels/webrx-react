@@ -15,6 +15,11 @@ export interface IAppConfig {
 export class AppViewModel extends BaseViewModel {
   public static displayName = 'AppViewModel';
 
+  public alerts = new AlertHostViewModel();
+  public routeHandler: RouteHandlerViewModel;
+  public header: PageHeaderViewModel;
+  public footer = new PageFooterViewModel();
+
   constructor(public config = <IAppConfig>{}) {
     super();
 
@@ -24,11 +29,6 @@ export class AppViewModel extends BaseViewModel {
 
     this.header = new PageHeaderViewModel(this.routeHandler);
   }
-
-  public alerts = new AlertHostViewModel();
-  public routeHandler: RouteHandlerViewModel;
-  public header: PageHeaderViewModel;
-  public footer = new PageFooterViewModel();
 }
 
 export default AppViewModel;

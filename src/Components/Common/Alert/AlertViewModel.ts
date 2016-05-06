@@ -19,10 +19,6 @@ export const DefaultTimeout = 5000;
 export class AlertViewModel extends BaseViewModel {
   public static displayName = 'AlertViewModel';
 
-  constructor(private owner: wx.IObservableList<AlertViewModel>, public key: any, public content: any, public header?: string, public style = DefaultStyle, private timeout = DefaultTimeout) {
-    super();
-  }
-
   public show = wx.asyncCommand(x => Rx.Observable.return(true));
   public dismiss = wx.asyncCommand(x => Rx.Observable.return(false));
 
@@ -32,6 +28,10 @@ export class AlertViewModel extends BaseViewModel {
       this.dismiss.results.take(1)
     )
     .toProperty();
+
+  constructor(private owner: wx.IObservableList<AlertViewModel>, public key: any, public content: any, public header?: string, public style = DefaultStyle, private timeout = DefaultTimeout) {
+    super();
+  }
 
   initialize() {
     super.initialize();

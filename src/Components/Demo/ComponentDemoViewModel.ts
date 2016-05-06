@@ -19,10 +19,6 @@ interface IComponentDemoRoutingState {
 export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemoRoutingState> {
   public static displayName = 'ComponentDemoViewModel';
 
-  constructor() {
-    super(true);
-  }
-
   public componentRoute: string;
 
   public columns = wx.property(12);
@@ -33,6 +29,10 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
   public reRender = wx.command(x => {
     this.navTo(`/demo/${this.componentRoute}?rand=${Math.random()}`);
   });
+
+  constructor() {
+    super(true);
+  }
 
   componentRouted(pageHeader: PageHeaderViewModel) {
     this.pageHeader = pageHeader;

@@ -17,14 +17,6 @@ export interface IDataGridRoutingState extends IListRoutingState {
 export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRoutingState> {
   public static displayName = 'DataGridViewModel';
 
-  constructor(
-    protected filterer?: (item: TData, regex: RegExp) => boolean,
-    protected comparer = new ObjectComparer<TData>(),
-    isRoutingEnabled = false,
-    ...items: TData[]) {
-    super(false, isRoutingEnabled, ...items);
-  }
-
   public projectedItems = wx.list<TData>();
 
   protected project = wx.command();
@@ -51,6 +43,14 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
         .select(x => SortDirection.Descending)
     )
     .toProperty();
+
+  constructor(
+    protected filterer?: (item: TData, regex: RegExp) => boolean,
+    protected comparer = new ObjectComparer<TData>(),
+    isRoutingEnabled = false,
+    ...items: TData[]) {
+    super(false, isRoutingEnabled, ...items);
+  }
 
   initialize() {
     super.initialize();

@@ -9,10 +9,10 @@ import { AlertCreatedKey, IAlertCreated } from '../Events/AlertCreated';
 export class Alert {
   private static displayName = 'Alert';
 
+  private logger = new wx.Lazy(() => getLogger(Alert.displayName));
+
   constructor(private pubSub: PubSub) {
   }
-
-  private logger = new wx.Lazy(() => getLogger(Alert.displayName));
 
   public create(content: any, header?: string, style?: string, timeout?: number) {
     if (String.isNullOrEmpty(content) === false || String.isNullOrEmpty(header) === false) {
