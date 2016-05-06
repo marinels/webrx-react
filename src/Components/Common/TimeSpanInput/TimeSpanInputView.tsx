@@ -29,11 +29,13 @@ export class TimeSpanInputView extends BaseView<ITimeSpanInputProps, TimeSpanInp
       this.state.value.changed,
       this.state.unit.changed,
       this.state.isValid.changed,
+      this.state.validationError.changed,
     ];
   }
 
   render() {
     const isValid = this.state.isValid();
+    const validationError = this.state.validationError();
 
     return (
       <div className='TimeSpanInput'>
@@ -59,7 +61,7 @@ export class TimeSpanInputView extends BaseView<ITimeSpanInputProps, TimeSpanInp
             </InputGroup.Button>
           </InputGroup>
           <FormControl.Feedback />
-          <HelpBlock className={({hidden: isValid})}>Unable to Understand Time Span Formatting</HelpBlock>
+          <HelpBlock className={({hidden: isValid})}>{ validationError }</HelpBlock>
         </FormGroup>
       </div>
     );

@@ -47,17 +47,30 @@ export class TimeSpanInputViewModel extends BaseViewModel {
   public unit = wx.property<ITimeSpanUnit>();
   public value = wx.property<moment.Duration>();
 
-  public isValid = wx
-    .whenAny(this.text, this.value, (text, value) => ({ text, value }))
-    .select(x => {
-      let result = x.value != null && x.value.asMilliseconds() !== 0;
+  public validate = wx.command();
 
-      if (this.required === false && String.isNullOrEmpty(x.text) === true) {
-        result = true;
+  public validationError = this.validate.results
+    .select(x => ({ value: this.value(), text: this.text() }))
+    .select(x => {
+      let error: string;
+
+      if (x.value == null || x.value.asMilliseconds() === 0) {
+        // invalid value
+        if (String.isNullOrEmpty(x.text) === true) {
+          if (this.required === true) {
+            error = 'This field is required';
+          }
+        } else {
+          error = 'Unable to Understand Time Span Formatting';
+        }
       }
 
-      return result;
+      return error;
     })
+    .toProperty();
+
+  public isValid = this.validationError.changed
+    .select(x => String.isNullOrEmpty(x) === true)
     .toProperty();
 
   public setUnit = wx.command((unit: ITimeSpanUnit) => {
@@ -114,6 +127,10 @@ export class TimeSpanInputViewModel extends BaseViewModel {
       );
     }
 
+    this.subscribe(this.parse.results
+      .invokeCommand(this.validate)
+    );
+
     this.subscribe(this.value.changed
       .where(x => x != null)
       .subscribe(x => {
@@ -126,6 +143,10 @@ export class TimeSpanInputViewModel extends BaseViewModel {
     );
 
     this.setValue(this.initialValue);
+
+    if (this.required) {
+      this.validate.execute(null);
+    }
   }
 
   private setValue(value: moment.Duration) {
