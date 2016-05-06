@@ -169,7 +169,6 @@ export namespace Components {
   export import IRoutedViewModel = BaseRoutableViewModelTypes.IRoutedViewModel;
   export import BaseRoutableViewModel = BaseRoutableViewModelTypes.BaseRoutableViewModel;
   export import IBaseViewProps = BaseViewTypes.IBaseViewProps;
-  export import IBaseHTMLDivViewProps = BaseViewTypes.IBaseHTMLDivViewProps;
   export import BaseView = BaseViewTypes.BaseView;
 
   export import IAlert = AlertViewModelTypes.IAlert;

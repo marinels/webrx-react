@@ -7,13 +7,8 @@ import * as wx from 'webrx';
 import { getLogger } from '../../Utils/Logging/LogManager';
 import { IBaseViewModel } from './BaseViewModel';
 
-export interface IBaseViewProps {
-  children?: React.ReactNode;
-  key?: React.Key;
+export interface IBaseViewProps extends React.HTMLAttributes {
   viewModel: IBaseViewModel;
-}
-
-export interface IBaseHTMLDivViewProps extends IBaseViewProps, React.HTMLProps<HTMLDivElement> {
 }
 
 export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel extends IBaseViewModel> extends React.Component<TViewProps, TViewModel> {
