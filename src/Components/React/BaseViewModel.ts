@@ -15,8 +15,18 @@ export interface IBaseViewModel {
   getDisplayName(): string;
   createAlert(text: string, header?: string, style?: string, timeout?: number): void;
   alertForError(error: Error, header?: string, style?: string, timeout?: number, formatter?: (e: Error) => string): void;
-  subscribeOrAlert<T>(observable: () => Rx.Observable<T>, header: string, onNext?: (value: T) => void, onComplete?: () => void, style?: string, timeout?: number, errorFormatter?: (e: Error) => string): Rx.IDisposable;
-  runOrAlert(action: () => void, header?: string, style?: string, timeout?: number, formatter?: (e: Error) => string): void;
+    getObservableOrAlert<TResult, TError>(
+    observableFactory: () => Rx.Observable<TResult>,
+    header: string,
+    style?: string,
+    timeout?: number,
+    errorFormatter?: (e: TError) => string): Rx.Observable<TResult>;
+  getObservableResultOrAlert<TResult, TError>(
+    resultFactory: () => TResult,
+    header?: string,
+    style?: string,
+    timeout?: number,
+    errorFormatter?: (e: TError) => string): Rx.Observable<TResult>;
   notifyChanged(...args: any[]): void;
 
   initialize(): void;
@@ -43,22 +53,32 @@ export abstract class BaseViewModel implements IBaseViewModel {
     Alert.createForError(error, header, style, timeout, formatter);
   }
 
-  public subscribeOrAlert<T, TError>(observable: () => Rx.Observable<T>, header: string, onNext?: (value: T) => void, onComplete?: () => void, style?: string, timeout?: number, errorFormatter?: (e: TError) => string) {
-    try {
-      return observable().subscribe(onNext, (error: TError) => {
-        this.alertForError(error, header, undefined, timeout, errorFormatter);
-      }, onComplete);
-    } catch (e) {
-      this.alertForError(e, header, style, timeout, errorFormatter);
-    }
+  public getObservableOrAlert<T, TError>(
+    observableFactory: () => Rx.Observable<T>,
+    header: string,
+    style?: string,
+    timeout?: number,
+    errorFormatter?: (e: TError) => string) {
+
+    return Rx.Observable
+      .defer(observableFactory)
+      .doOnError(err => {
+        this.alertForError(err, header, style, timeout, errorFormatter);
+      });
   }
 
-  public runOrAlert(action: () => void, header?: string, style?: string, timeout?: number, formatter?: (e: Error) => string) {
-    try {
-      action();
-    } catch (e) {
-      this.alertForError(e, header, style, timeout, formatter);
-    }
+  public getObservableResultOrAlert<TResult, TError>(
+    resultFactory: () => TResult,
+    header?: string,
+    style?: string,
+    timeout?: number,
+    errorFormatter?: (e: TError) => string) {
+
+    return Rx.Observable
+      .defer(() => Rx.Observable.return(<TResult>resultFactory.call(this)))
+      .doOnError(err => {
+        this.alertForError(err, header, style, timeout, errorFormatter);
+      });
   }
 
   public notifyChanged(...args: any[]) {
