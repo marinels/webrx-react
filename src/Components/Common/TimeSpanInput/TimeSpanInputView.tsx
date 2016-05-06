@@ -2,7 +2,7 @@
 
 import * as Ix from 'ix';
 import * as React from 'react';
-import { Input, Button, DropdownButton, MenuItem } from 'react-bootstrap';
+import { FormGroup, InputGroup, FormControl, Button, DropdownButton, MenuItem, HelpBlock } from 'react-bootstrap';
 import { Icon } from 'react-fa';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
@@ -12,11 +12,7 @@ import { TimeSpanInputViewModel } from './TimeSpanInputViewModel';
 
 interface ITimeSpanInputProps extends IBaseViewProps {
   id: string;
-  placeholder?: string;
-  title?: string;
-  standalone?: boolean;
   bsSize?: string;
-  groupClassName?: string;
 }
 
 export class TimeSpanInputView extends BaseView<ITimeSpanInputProps, TimeSpanInputViewModel> {
@@ -35,32 +31,34 @@ export class TimeSpanInputView extends BaseView<ITimeSpanInputProps, TimeSpanInp
   }
 
   render() {
-    let units = Ix.Enumerable
-      .fromArray(this.state.units)
-      .select(x => <MenuItem key={x.type} eventKey={x} active={x.type === this.state.unit().type}>{x.name}</MenuItem>)
-      .toArray();
-
-    let unitDropdown = (
-      <DropdownButton id={`TimeSpan-units-${this.props.id}`} className='TimeSpan-units' key='units'
-        title={this.state.unit().name} bsSize={this.props.bsSize}
-        onSelect={this.bindEvent(x => x.setUnit, (e, args) => args[0])}>
-        { units }
-      </DropdownButton>
-    );
-    let incrementButton = <Button key='up' onClick={this.bindEvent(x => x.adjustValue, () => 1)}><Icon name='chevron-up'/></Button>;
-    let decrementButton = <Button key='down' onClick={this.bindEvent(x => x.adjustValue, () => -1)}><Icon name='chevron-down'/></Button>;
+    const isValid = this.state.isValid();
 
     return (
       <div className='TimeSpanInput'>
-        <BindableInput property={this.state.text}>
-          <Input groupClassName={this.props.groupClassName}
-            type='text' bsSize={this.props.bsSize} bsStyle={this.state.isValid() ? null : 'error'}
-            title={this.props.title}
-            placeholder={this.props.placeholder}
-            buttonAfter={[incrementButton, decrementButton, unitDropdown]}
-            standalone={this.props.standalone}
-            onBlur={this.state.parseDelay === 0 ? this.bindEvent(x => x.parse) : null} />
-        </BindableInput>
+        <FormGroup controlId={this.props.id} validationState={isValid ? null : 'error'}>
+          <InputGroup>
+            <BindableInput property={this.state.text}>
+              <FormControl type='text' {...this.props}>
+              </FormControl>
+            </BindableInput>
+            <InputGroup.Button>
+              <DropdownButton id={`TimeSpan-units-${this.props.id}`} className='TimeSpan-units' key='units'
+                title={this.state.unit().name} bsSize={this.props.bsSize}
+                onSelect={this.bindEvent(x => x.setUnit, (e, args) => args[0])}>
+                {
+                  Ix.Enumerable
+                    .fromArray(this.state.units)
+                    .select(x => <MenuItem key={x.type} eventKey={x} active={x.type === this.state.unit().type}>{x.name}</MenuItem>)
+                    .toArray()
+                }
+              </DropdownButton>
+              <Button key='up' onClick={this.bindEvent(x => x.adjustValue, () => 1)}><Icon name='chevron-up'/></Button>
+              <Button key='down' onClick={this.bindEvent(x => x.adjustValue, () => -1)}><Icon name='chevron-down'/></Button>
+            </InputGroup.Button>
+          </InputGroup>
+          <FormControl.Feedback />
+          <HelpBlock className={({hidden: isValid})}>Unable to Understand Time Span Formatting</HelpBlock>
+        </FormGroup>
       </div>
     );
   }
