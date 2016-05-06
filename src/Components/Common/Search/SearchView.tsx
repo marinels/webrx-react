@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { Input, InputProps, Button } from 'react-bootstrap';
+import { InputGroup, FormControl, Button } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import BindableInput from '../BindableInput/BindableInput';
@@ -25,28 +25,27 @@ export class SearchView extends BaseView<ISearchProps, SearchViewModel> {
   };
 
   render() {
-    let inputProps = {
-      placeholder: this.props.placeholder,
-      onKeyDown: this.bindEvent(x => x.search, undefined, (e: React.KeyboardEvent) => e.keyCode === EnterKey),
-    } as InputProps;
+    let searchButton: any;
 
     if (this.props.searchButton != null && this.props.searchButton !== false) {
-      let searchButton = this.props.searchButton === true ? (
-        <Icon name='search' />
-      ) : this.props.searchButton;
-
-      inputProps.buttonAfter = (
-        <Button disabled={this.state.search == null || this.state.search.canExecute(null) === false} onClick={this.bindEvent(x => x.search)}>
-          {searchButton}
-        </Button>
+      searchButton = (
+        <InputGroup.Button>
+          <Button disabled={this.state.search == null || this.state.search.canExecute(null) === false} onClick={this.bindEvent(x => x.search)}>
+            { this.props.searchButton === true ? <Icon name='search' /> : this.props.searchButton }
+          </Button>
+        </InputGroup.Button>
       );
     }
 
     return (
       <div className='Search'>
-        <BindableInput property={this.state.filter}>
-          <Input standalone className='Search-text' type='text' {...inputProps as any} />
-        </BindableInput>
+        <InputGroup>
+          <BindableInput property={this.state.filter}>
+            <FormControl className='Search-text' type='text' placeholder={this.props.placeholder}
+              onKeyDown={this.bindEvent(x => x.search, undefined, (e: React.KeyboardEvent) => e.keyCode === EnterKey)} />
+          </BindableInput>
+          { searchButton }
+        </InputGroup>
       </div>
     );
   }
