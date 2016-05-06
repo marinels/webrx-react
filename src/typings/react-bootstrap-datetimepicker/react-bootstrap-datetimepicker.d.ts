@@ -1,5 +1,5 @@
-/// <reference path="../../../typings/main/ambient/react/react.d.ts" />
-/// <reference path="../../../typings/main/ambient/moment-node/moment-node.d.ts" />
+/// <reference path="../../../typings/main/ambient/react/index.d.ts" />
+/// <reference path="../../../typings/main/ambient/moment-node/index.d.ts" />
 
 declare namespace __ReactBootstrapDateTimePicker {
   interface DateTimeFieldProps {
@@ -20,9 +20,9 @@ declare namespace __ReactBootstrapDateTimePicker {
 
   interface DateTimeField extends __React.ReactElement<DateTimeFieldProps> { }
   interface DateTimeFieldClass extends __React.ComponentClass<DateTimeFieldProps> { }
+  const DateTimeField: DateTimeFieldClass;
 }
 
 declare module 'react-bootstrap-datetimepicker' {
-  let DateTimeField: __ReactBootstrapDateTimePicker.DateTimeFieldClass;
-  export = DateTimeField;
+  export = __ReactBootstrapDateTimePicker.DateTimeField;
 }

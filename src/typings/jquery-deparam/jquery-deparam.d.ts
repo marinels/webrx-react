@@ -6,8 +6,6 @@ declare namespace __JQueryDeparam {
 }
 
 declare module 'jquery-deparam' {
-    let deparam: __JQueryDeparam.JQueryDeparamStatic;
+    const deparam: __JQueryDeparam.JQueryDeparamStatic;
     export = deparam;
 }
-
-declare let deparam: __JQueryDeparam.JQueryDeparamStatic;
