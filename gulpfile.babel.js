@@ -196,6 +196,10 @@ gulp.task('typings:install', () => {
     .pipe(typings());
 });
 
+gulp.task('typings:reinstall', [ 'clean:typings' ], (done) => {
+  runSequence('typings:install', done);
+});
+
 gulp.task('typings:ensure', (done) => {
   let count = 0;
 
