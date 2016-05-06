@@ -10,6 +10,8 @@ import BindableInput from '../BindableInput/BindableInput';
 
 import { TimeSpanInputViewModel } from './TimeSpanInputViewModel';
 
+import './TimeSpanInput.less';
+
 interface ITimeSpanInputProps extends IBaseViewProps {
   id: string;
   bsSize?: string;

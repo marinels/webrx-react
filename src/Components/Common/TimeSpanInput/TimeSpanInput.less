@@ -1,0 +1,24 @@
+.TimeSpanInput {
+  .form-group {
+    margin: 0;
+
+    .input-group-btn {
+      // WARNING: these static widths are required so we can position the
+      //          feedback icon below
+
+      & > .dropdown {
+        width: 70px;
+      }
+
+      & > .btn {
+        width: 40px;
+      }
+    }
+
+    .form-control-feedback {
+      // 70 + 40 + 40 - 3 = 147
+      //                ^------- the 3 input group buttons are margined with -1
+      right: 147px;
+    }
+  }
+}
