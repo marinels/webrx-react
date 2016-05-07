@@ -144,9 +144,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
 
     this.setValue(this.initialValue);
 
-    if (this.required) {
-      this.validate.execute(null);
-    }
+    this.validate.execute(null);
   }
 
   private setValue(value: moment.Duration) {
