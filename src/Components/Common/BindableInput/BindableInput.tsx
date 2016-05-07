@@ -39,7 +39,7 @@ export class BindableInput extends React.Component<IBindableInputProps, any> {
 
     let props: { [key: string]: any} = {};
 
-    props[this.props.valueProperty] = this.props.valueGetter(this.props.property);
+    props[this.props.valueProperty] = this.props.valueGetter(this.props.property) || '';
     props[this.props.onChangeProperty] = onChange;
 
     if (this.props.propSelector != null) {
