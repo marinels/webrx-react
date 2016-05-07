@@ -76,7 +76,9 @@ if (config.verbose) {
 // Default build task
 gulp.task('default', [ 'browser' ]);
 // Default test task
-gulp.task('test', [ 'mocha' ]);
+gulp.task('test', (done) => {
+  runSequence('lint', 'mocha', done);
+});
 // Default npm test task
 gulp.task('npm:test', (done) => {
   runSequence('lint', 'webpack:test', 'mocha:run', 'deploy:all', done);
