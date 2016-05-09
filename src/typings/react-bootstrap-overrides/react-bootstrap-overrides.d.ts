@@ -1,7 +1,5 @@
 /// <reference path="../../../typings/main/ambient/react/index.d.ts" />
 
-// tslint:disable:no-unused-variable
-
 // The react-bootstrap typing are a bit out of date
 // these overrides will fill in the missing components
 
@@ -14,7 +12,7 @@ declare module 'react-bootstrap' {
     controlId?: string;
     validationState?: string;
   }
-  class FormGroup extends __React.Component<FormGroupProps, any> { }
+  class FormGroup extends React.Component<FormGroupProps, any> { }
 
   interface FormControlProps extends React.HTMLAttributes {
     bsClass?: string;
@@ -25,8 +23,8 @@ declare module 'react-bootstrap' {
   interface FormControlFeedbackProps extends React.HTMLAttributes {
     bsClass?: string;
   }
-  class FormControlFeedback extends __React.Component<FormControlFeedbackProps, any> { }
-  class FormControl extends __React.Component<FormControlProps, any> {
+  class FormControlFeedback extends React.Component<FormControlFeedbackProps, any> { }
+  class FormControl extends React.Component<FormControlProps, any> {
     static Feedback: FormControlFeedback;
   }
 
