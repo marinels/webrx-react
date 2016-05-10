@@ -23,6 +23,7 @@ export class ModalDialogView extends BaseView<IModalDialogProps, ModalDialogView
       this.state.cancelText.changed,
       this.state.acceptText.changed,
       this.state.isVisible.changed,
+      this.state.accept.canExecuteObservable,
     ];
   }
 
