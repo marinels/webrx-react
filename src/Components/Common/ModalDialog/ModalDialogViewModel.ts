@@ -10,7 +10,7 @@ export enum DialogResult {
 }
 
 export interface IValidatable {
-  isValidObservable: Rx.Observable<boolean>;
+  isValid: wx.IObservableProperty<boolean>;
 }
 
 export class ModalDialogViewModel<T> extends BaseViewModel {
@@ -56,7 +56,9 @@ export class ModalDialogViewModel<T> extends BaseViewModel {
   private getCanAccept() {
     let validatable = <any>this.content as IValidatable;
 
-    return (validatable == null || validatable.isValidObservable == null) ? Rx.Observable.return(true) : validatable.isValidObservable;
+    return (validatable == null || validatable.isValid == null) ?
+      Rx.Observable.return(true) :
+      validatable.isValid.changed.startWith(validatable.isValid());
   }
 };
 
