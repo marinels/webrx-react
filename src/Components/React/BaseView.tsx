@@ -53,7 +53,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   /**
    * Binds a DOM event to an observable property on the view model
    */
-  public bindCallback<TEvent, TParameter>(
+  public bindEventToProperty<TEvent, TParameter>(
     targetSelector: (viewModel: TViewModel) => wx.IObservableProperty<TParameter>,
     paramSelector: (event: TEvent, ...args: any[]) => TParameter): (event: TEvent) => void {
     return (event: TEvent, ...args: any[]) => targetSelector(this.state)(paramSelector(event, args));

@@ -46,7 +46,7 @@ export class PagerView extends BaseView<IPagerProps, PagerViewModel> {
     );
 
     let limit = (this.props.limits == null || this.state.itemCount() === 0) ? null : (
-      <DropdownButton id='pager-limit-selector' title={`Items per Page (${this.state.limit() || 'All'})`} onSelect={this.bindCallback(x => x.limit, (e, x) => x[0])}>
+      <DropdownButton id='pager-limit-selector' title={`Items per Page (${this.state.limit() || 'All'})`} onSelect={this.bindEventToProperty(x => x.limit, (e, x) => x[0])}>
         {this.props.limits.map((x, i) => (
           <MenuItem key={i} eventKey={x}>{x || 'All'}</MenuItem>
         ))}
