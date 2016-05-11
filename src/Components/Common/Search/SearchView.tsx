@@ -25,27 +25,29 @@ export class SearchView extends BaseView<ISearchProps, SearchViewModel> {
   };
 
   render() {
-    let searchButton: any;
+    let input = (
+      <BindableInput property={this.state.filter}>
+        <FormControl className='Search-text' type='text' placeholder={this.props.placeholder}
+          onKeyDown={this.bindEventToCommand<any, React.KeyboardEvent>(x => x.search, undefined, e => e.keyCode === EnterKey)} />
+      </BindableInput>
+    );
 
     if (this.props.searchButton != null && this.props.searchButton !== false) {
-      searchButton = (
-        <InputGroup.Button>
-          <Button disabled={this.state.search == null || this.state.search.canExecute(null) === false} onClick={this.bindEventToCommand(x => x.search)}>
-            { this.props.searchButton === true ? <Icon name='search' /> : this.props.searchButton }
-          </Button>
-        </InputGroup.Button>
+      input = (
+        <InputGroup>
+          { input }
+          <InputGroup.Button>
+            <Button disabled={this.state.search == null || this.state.search.canExecute(null) === false} onClick={this.bindEventToCommand(x => x.search)}>
+              { this.props.searchButton === true ? <Icon name='search' /> : this.props.searchButton }
+            </Button>
+          </InputGroup.Button>
+        </InputGroup>
       );
     }
 
     return (
       <div className='Search'>
-        <InputGroup>
-          <BindableInput property={this.state.filter}>
-            <FormControl className='Search-text' type='text' placeholder={this.props.placeholder}
-              onKeyDown={this.bindEventToCommand<any, React.KeyboardEvent>(x => x.search, undefined, e => e.keyCode === EnterKey)} />
-          </BindableInput>
-          { searchButton }
-        </InputGroup>
+        { input }
       </div>
     );
   }
