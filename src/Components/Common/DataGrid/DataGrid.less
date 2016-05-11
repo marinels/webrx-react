@@ -7,20 +7,26 @@
     margin: 0;
     background-color: #fff;
 
+    th {
+      padding: 0;
+
+      .Column.btn {
+        width: 100%;
+        padding: 5px;
+        text-align: left;
+        text-decoration: none;
+
+        .Column-sortIcon {
+          margin-left: 10px;
+        }
+      }
+    }
+
     tr.Row--selected {
       font-weight: bold;
     }
 
-    .Column.btn {
-      width: 100%;
-      padding: 0;
-      text-align: left;
-      text-decoration: none;
 
-      .Column-sortIcon {
-        margin-left: 10px;
-      }
-    }
   }
 
   .Pager {
