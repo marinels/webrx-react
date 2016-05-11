@@ -42,7 +42,7 @@ export class SearchView extends BaseView<ISearchProps, SearchViewModel> {
         <InputGroup>
           <BindableInput property={this.state.filter}>
             <FormControl className='Search-text' type='text' placeholder={this.props.placeholder}
-              onKeyDown={this.bindEventToCommand(x => x.search, undefined, (e: React.KeyboardEvent) => e.keyCode === EnterKey)} />
+              onKeyDown={this.bindEventToCommand<any, React.KeyboardEvent>(x => x.search, undefined, e => e.keyCode === EnterKey)} />
           </BindableInput>
           { searchButton }
         </InputGroup>

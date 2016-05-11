@@ -72,17 +72,23 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   /**
    * Binds a DOM event to an observable command on the view model
    */
-  public bindEventToCommand<TEvent, TParameter>(
+  public bindEventToCommand<TParameter, TEvent>(
     commandSelector: (viewModel: TViewModel) => wx.ICommand<any>,
-    eventArgsSelector?: (e: TEvent, args: any[]) => TParameter,
-    conditionSelector?: (e: TEvent, x: TParameter) => boolean): (event: TEvent) => void {
-    return (e: TEvent, ...args: any[]) => {
-      let parameter = eventArgsSelector ? eventArgsSelector(e, args) : null;
-      if (conditionSelector == null || conditionSelector(e, parameter) === true) {
-        let cmd = commandSelector(this.state);
-        if (cmd.canExecute(parameter)) {
-          cmd.execute(parameter);
-        }
+    paramSelector?: (eventKey: any, event: TEvent) => TParameter,
+    conditionSelector?: (event: TEvent, eventKey: any) => boolean) {
+    return (eventKey: any, event: TEvent) => {
+      if (event == null) {
+        // this ensures that we can still use this function for basic HTML events
+        event = eventKey;
+      }
+
+      const param = (paramSelector == null ? eventKey : paramSelector.apply(this, [ eventKey, event ])) as TParameter;
+      const canExecute = conditionSelector == null || (conditionSelector.apply(this, [ event, eventKey ]) as boolean);
+
+      if (canExecute) {
+        const cmd = commandSelector.apply(this, [ this.state ]) as wx.ICommand<any>;
+
+        cmd.execute(param);
       }
     };
   }

@@ -48,7 +48,7 @@ export class TimeSpanInputView extends BaseView<ITimeSpanInputProps, TimeSpanInp
             <InputGroup.Button>
               <DropdownButton id={`TimeSpan-units-${this.props.id}`} className='TimeSpan-units' key='units'
                 title={this.state.unit().name} bsSize={this.props.bsSize}
-                onSelect={this.bindEventToCommand(x => x.setUnit, (e, args) => args[0])}>
+                onSelect={this.bindEventToCommand(x => x.setUnit)}>
                 {
                   Ix.Enumerable
                     .fromArray(this.state.units)

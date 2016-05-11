@@ -61,7 +61,7 @@ export class TabsView extends BaseView<ITabsProps, TabsViewModel> {
   render() {
     return (
       <div className='Tabs'>
-        <Tabs activeKey={this.state.selectedIndex()} onSelect={this.bindEventToCommand(x => x.selectIndex, (x: number) => x)}>
+        <Tabs activeKey={this.state.selectedIndex()} onSelect={this.bindEventToCommand(x => x.selectIndex)}>
           {this.getTabs()}
         </Tabs>
       </div>
