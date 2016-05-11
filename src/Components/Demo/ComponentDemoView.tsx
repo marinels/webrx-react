@@ -85,7 +85,7 @@ export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDe
             <Col md={12}>
               <div className='pull-right'>
                 <DropdownButton id='col-width' bsStyle='info' title={`Column Width (${widthName})`}
-                  onSelect={this.bindEventToProperty(x => x.columns, (e, x) => x[0])}>
+                  onSelect={this.bindEventToProperty(x => x.columns)}>
                   {
                     Ix.Enumerable
                       .range(1, 13)
