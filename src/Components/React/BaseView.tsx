@@ -53,9 +53,10 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   /**
    * Binds a DOM event to an observable property on the view model
    */
-  public bindEventToProperty<TValue, TEvent>(
+  public bindEventToProperty<TValue, TEvent extends Event | React.SyntheticEvent>(
     targetSelector: (viewModel: TViewModel) => wx.IObservableProperty<TValue>,
-    valueSelector?: (eventKey: any, event: TEvent) => TValue) {
+    valueSelector?: (eventKey: any, event: TEvent) => TValue
+  ) {
     return (eventKey: any, event: TEvent) => {
       if (event == null) {
         // this ensures that we can still use this function for basic HTML events
@@ -72,11 +73,12 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   /**
    * Binds a DOM event to an observable command on the view model
    */
-  public bindEventToCommand<TParameter, TEvent>(
+  public bindEventToCommand<TParameter, TEvent extends Event | React.SyntheticEvent>(
     commandSelector: (viewModel: TViewModel) => wx.ICommand<any>,
     paramSelector?: (eventKey: any, event: TEvent) => TParameter,
-    conditionSelector?: (event: TEvent, eventKey: any) => boolean) {
-    return (eventKey: any, event: TEvent) => {
+    conditionSelector?: (event: TEvent, eventKey: any) => boolean
+  ) {
+    return (eventKey: any, event: Event) => {
       if (event == null) {
         // this ensures that we can still use this function for basic HTML events
         event = eventKey;
