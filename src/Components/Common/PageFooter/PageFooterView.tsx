@@ -30,7 +30,7 @@ export class PageFooterView extends BaseView<IPageFooterProps, PageFooterViewMod
   initialize() {
     super.initialize();
 
-    this.bindObservable(x => x.viewportDimensionsChanged,
+    this.bindObservableToCommand(x => x.viewportDimensionsChanged,
       Rx.Observable
         .merge(
           Rx.Observable.fromEvent<UIEvent>(window, 'resize'),

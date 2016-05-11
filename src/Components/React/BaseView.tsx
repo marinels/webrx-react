@@ -46,7 +46,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   /**
    * Binds an observable to a command on the view model
    */
-  public bindObservable<TResult>(commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>, observable: Rx.Observable<TResult>) {
+  public bindObservableToCommand<TResult>(commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>, observable: Rx.Observable<TResult>) {
     return this.state.bind(observable, commandSelector(this.state));
   }
 
