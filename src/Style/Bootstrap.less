@@ -19,6 +19,20 @@
   z-index: 3;
 }
 
+// this fixes a bug where feedback form controls in input groups don't have a
+// right error border due to negative margining from the input-group buttons.
+.form-group.has-feedback {
+  &.has-success, &.has-warning, &.has-error {
+    .input-group > input {
+      z-index: 3;
+    }
+  }
+
+  & > .form-control-feedback {
+    z-index: 3;
+  }
+}
+
 // default hover background color
 .btn-default:hover,
 .table-hover > tbody > tr:hover,
