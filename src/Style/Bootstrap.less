@@ -14,6 +14,11 @@
   margin: 0;
 }
 
+// this fixes a bug where focused buttons in input groups have cut-off outlines
+.input-group-btn > .btn:focus {
+  z-index: 3;
+}
+
 // default hover background color
 .btn-default:hover,
 .table-hover > tbody > tr:hover,
