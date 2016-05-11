@@ -43,7 +43,15 @@ routingMap.addRoute('DataGrid', 'Data Grid', (state: any) => {
   let viewModel = new wxr.Components.DataGridViewModel(undefined, undefined, false,
     { name: 'test 1', requiredBy: 'now' },
     { name: 'test 2', requiredBy: 'tomorrow' },
-    { name: 'test 3', requiredBy: 'yesterday' }
+    { name: 'test 3', requiredBy: 'yesterday' },
+    { name: 'test 4', requiredBy: 'test4' },
+    { name: 'test 5', requiredBy: 'test5' },
+    { name: 'test 6', requiredBy: 'test6' },
+    { name: 'test 7', requiredBy: 'test7' },
+    { name: 'test 8', requiredBy: 'test8' },
+    { name: 'test 9', requiredBy: 'test9' },
+    { name: 'test 10', requiredBy: 'test10' },
+    { name: 'test 11', requiredBy: 'test11' }
   );
   viewModel.pager.limit(10);
   return viewModel;
@@ -54,7 +62,15 @@ routingMap.addRoute('DataGridList', 'DataGrid (List View)', (state: any) => {
     undefined, false,
     { name: 'test 1', requiredBy: 'now' },
     { name: 'test 2', requiredBy: 'tomorrow' },
-    { name: 'test 3', requiredBy: 'yesterday' }
+    { name: 'test 3', requiredBy: 'yesterday' },
+    { name: 'test 4', requiredBy: 'test4' },
+    { name: 'test 5', requiredBy: 'test5' },
+    { name: 'test 6', requiredBy: 'test6' },
+    { name: 'test 7', requiredBy: 'test7' },
+    { name: 'test 8', requiredBy: 'test8' },
+    { name: 'test 9', requiredBy: 'test9' },
+    { name: 'test 10', requiredBy: 'test10' },
+    { name: 'test 11', requiredBy: 'test11' }
   );
   viewModel.pager.limit(10);
   return viewModel;
