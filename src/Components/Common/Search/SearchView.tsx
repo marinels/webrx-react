@@ -30,7 +30,7 @@ export class SearchView extends BaseView<ISearchProps, SearchViewModel> {
     if (this.props.searchButton != null && this.props.searchButton !== false) {
       searchButton = (
         <InputGroup.Button>
-          <Button disabled={this.state.search == null || this.state.search.canExecute(null) === false} onClick={this.bindEvent(x => x.search)}>
+          <Button disabled={this.state.search == null || this.state.search.canExecute(null) === false} onClick={this.bindEventToCommand(x => x.search)}>
             { this.props.searchButton === true ? <Icon name='search' /> : this.props.searchButton }
           </Button>
         </InputGroup.Button>
@@ -42,7 +42,7 @@ export class SearchView extends BaseView<ISearchProps, SearchViewModel> {
         <InputGroup>
           <BindableInput property={this.state.filter}>
             <FormControl className='Search-text' type='text' placeholder={this.props.placeholder}
-              onKeyDown={this.bindEvent(x => x.search, undefined, (e: React.KeyboardEvent) => e.keyCode === EnterKey)} />
+              onKeyDown={this.bindEventToCommand(x => x.search, undefined, (e: React.KeyboardEvent) => e.keyCode === EnterKey)} />
           </BindableInput>
           { searchButton }
         </InputGroup>

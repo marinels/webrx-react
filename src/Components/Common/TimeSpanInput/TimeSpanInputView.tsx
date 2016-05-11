@@ -48,7 +48,7 @@ export class TimeSpanInputView extends BaseView<ITimeSpanInputProps, TimeSpanInp
             <InputGroup.Button>
               <DropdownButton id={`TimeSpan-units-${this.props.id}`} className='TimeSpan-units' key='units'
                 title={this.state.unit().name} bsSize={this.props.bsSize}
-                onSelect={this.bindEvent(x => x.setUnit, (e, args) => args[0])}>
+                onSelect={this.bindEventToCommand(x => x.setUnit, (e, args) => args[0])}>
                 {
                   Ix.Enumerable
                     .fromArray(this.state.units)
@@ -56,8 +56,8 @@ export class TimeSpanInputView extends BaseView<ITimeSpanInputProps, TimeSpanInp
                     .toArray()
                 }
               </DropdownButton>
-              <Button key='up' onClick={this.bindEvent(x => x.adjustValue, () => 1)}><Icon name='chevron-up'/></Button>
-              <Button key='down' onClick={this.bindEvent(x => x.adjustValue, () => -1)}><Icon name='chevron-down'/></Button>
+              <Button key='up' onClick={this.bindEventToCommand(x => x.adjustValue, () => 1)}><Icon name='chevron-up'/></Button>
+              <Button key='down' onClick={this.bindEventToCommand(x => x.adjustValue, () => -1)}><Icon name='chevron-down'/></Button>
             </InputGroup.Button>
           </InputGroup>
           <FormControl.Feedback />

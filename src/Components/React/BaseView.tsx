@@ -62,7 +62,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   /**
    * Binds a DOM event to an observable command on the view model
    */
-  public bindEvent<TEvent, TParameter>(
+  public bindEventToCommand<TEvent, TParameter>(
     commandSelector: (viewModel: TViewModel) => wx.ICommand<any>,
     eventArgsSelector?: (e: TEvent, args: any[]) => TParameter,
     conditionSelector?: (e: TEvent, x: TParameter) => boolean): (event: TEvent) => void {

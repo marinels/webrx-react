@@ -52,12 +52,12 @@ export class ModalDialogView extends BaseView<IModalDialogProps, ModalDialogView
               <Modal.Body>{body}</Modal.Body>
             )}
             <Modal.Footer>
-              <Button onClick={this.bindEvent(x => x.cancel)}>
+              <Button onClick={this.bindEventToCommand(x => x.cancel)}>
                 {this.props.cancelText || this.state.cancelText()}
               </Button>
               <Button
                 disabled={this.state.accept.canExecute(null) === false}
-                onClick={this.bindEvent(x => x.accept)} bsStyle='primary'>
+                onClick={this.bindEventToCommand(x => x.accept)} bsStyle='primary'>
                 {this.props.acceptText || this.state.acceptText()}
               </Button>
             </Modal.Footer>

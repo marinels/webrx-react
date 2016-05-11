@@ -124,7 +124,7 @@ export class DataGridTableView implements IDataGridView {
         {header}
       </div>
     ) : (
-      <Button className='Column' bsStyle='link' onClick={view.bindEvent(x => x.toggleSortDirection, x => column.fieldName)}>
+      <Button className='Column' bsStyle='link' onClick={view.bindEventToCommand(x => x.toggleSortDirection, x => column.fieldName)}>
         {header}
         {sortIcon}
       </Button>

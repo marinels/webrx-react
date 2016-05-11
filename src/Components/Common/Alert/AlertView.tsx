@@ -20,7 +20,7 @@ export class AlertView extends BaseView<IAlertProps, AlertViewModel> {
   render() {
     return (
       <div className='Alert'>
-        <Alert bsStyle={this.state.style} onDismiss={this.bindEvent(x => x.dismiss)}>
+        <Alert bsStyle={this.state.style} onDismiss={this.bindEventToCommand(x => x.dismiss)}>
           <h4>{this.state.header}</h4>
           <span className='Alert-text' dangerouslySetInnerHTML={{__html: this.state.content}}></span>
         </Alert>
