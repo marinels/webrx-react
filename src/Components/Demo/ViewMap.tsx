@@ -32,6 +32,12 @@ const logger = wxr.Logging.getLogger('Demo.ViewMap');
 const viewMap: IViewMap = {
   Loading: () => <Loading fluid indeterminate text='Loading Text...' />,
   Splash: () => <Splash fluid indeterminate header='WebRx.React Demo' logo='http://placehold.it/100x100?text=Logo' />,
+  Alert: () => (
+    <div>
+      <Button onClick={() => wxr.Alert.create(`Alert Content: ${new Date()}`, 'Info Alert', 'info')}>Info Alert</Button>
+      <Button onClick={() => wxr.Alert.createForError(new Error(`Error Message: ${new Date()}`), 'Error Alert')}>Error Alert</Button>
+    </div>
+  ),
   TimeSpanInputViewModel: (viewModel: wxr.Components.TimeSpanInputViewModel) => <TimeSpanInputView viewModel={viewModel} id='demo' placeholder='Type in a timespan, or use the controls on the right...' standalone />,
   ContextMenu: () => (
     <div>
