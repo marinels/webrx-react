@@ -619,6 +619,7 @@ gulp.task('watch:lint', () => {
       path.join(config.dirs.test, '**', '*.ts'),
       path.join(config.dirs.src, '**', '*.js'),
       path.join(config.dirs.test, '**', '*.js'),
+      path.join(config.dirs.src, '**', '*.css'),
       path.join(config.dirs.src, '**', '*.less'),
       path.join(__dirname, '*.js'),
     ], [ 'lint' ]);
