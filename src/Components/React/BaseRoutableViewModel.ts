@@ -84,7 +84,11 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
 
   public getRoutingKey() { return Object.getName(this); }
 
-  public getTitle() { return Object.getName(this); }
+  public getTitle() {
+    this.logger.warn(`${Object.getName(this)} does not provide a custom routed browser title`);
+
+    return Object.getName(this);
+  }
 
   public getRoutingState(context?: any) {
     return this.createRoutingState(state => {
