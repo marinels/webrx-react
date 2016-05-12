@@ -22,7 +22,9 @@
 // this fixes a bug where feedback form controls in input groups don't have a
 // right error border due to negative margining from the input-group buttons.
 .form-group.has-feedback {
-  &.has-success, &.has-warning, &.has-error {
+  &.has-success,
+  &.has-warning,
+  &.has-error {
     .input-group > input {
       z-index: 3;
     }
