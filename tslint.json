@@ -1,10 +1,19 @@
 {
   "extends": "tslint-config-unional",
   "rules": {
+    // ensure our code structure is consistent
     "member-ordering": [ true, "static-before-instance", "variables-before-functions" ],
+
+    // we need to enable react here so we don't find lint errors in tsx files
     "no-unused-variable": [ true, "react" ],
+
+    // this rule allows us to have implicit types (variables, params, functions, etc...)
     "typedef": [ false ],
-    "variable-name": [ true, "ban-keywords" ],
+
+    // allow pascal case (for class imports) and ban any keywords
+    "variable-name": [ true, "check-format", "allow-pascal-case", "ban-keywords" ],
+
+    // [***TEMPORARY***] this rule will allow interfaces to being with I
     "interface-name": [ false ]
   }
 }
