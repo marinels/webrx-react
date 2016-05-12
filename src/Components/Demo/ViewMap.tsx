@@ -82,6 +82,7 @@ const viewMap: IViewMap = {
   ),
   DataGridViewModel: (viewModel: wxr.Components.DataGridViewModel<any>, componentRoute: string) => {
     let view: wxr.Components.IDataGridView = undefined;
+    let columns: any;
 
     if (componentRoute === 'DataGridList') {
       view = new DataGridListView<{name: string, requiredBy: string}>(
@@ -95,10 +96,16 @@ const viewMap: IViewMap = {
       );
     }
 
+    if (componentRoute === 'DataGrid') {
+      columns = [
+        <DataGridColumn key='name' fieldName='name' sortable />,
+        <DataGridColumn key='requiredBy' fieldName='requiredBy' sortable width={250} />,
+      ];
+    }
+
     return (
-      <DataGridView viewModel={viewModel} view={view}>
-        <DataGridColumn fieldName='name' sortable />
-        <DataGridColumn fieldName='requiredBy' sortable width={250} />
+      <DataGridView key={componentRoute} viewModel={viewModel} view={view}>
+        { columns }
       </DataGridView>
     );
   },
