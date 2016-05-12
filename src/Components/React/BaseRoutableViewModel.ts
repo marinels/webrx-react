@@ -20,6 +20,7 @@ export interface IBaseRoutableViewModel extends IBaseViewModel {
   getUserMenuItems?: () => IMenuItem[];
 
   getRoutingKey(): string;
+  getTitle(): string;
 }
 
 export interface IRoutableViewModel<TRoutingState> extends IBaseRoutableViewModel {
@@ -30,6 +31,7 @@ export interface IRoutableViewModel<TRoutingState> extends IBaseRoutableViewMode
 export interface IRoutedViewModel extends IBaseRoutableViewModel {
   getRoutingState(context?: any): any;
   setRoutingState(state: any): void;
+  getTitle(): string;
 }
 
 export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel implements IRoutableViewModel<TRoutingState> {
@@ -81,6 +83,8 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
   }
 
   public getRoutingKey() { return Object.getName(this); }
+
+  public getTitle() { return Object.getName(this); }
 
   public getRoutingState(context?: any) {
     return this.createRoutingState(state => {

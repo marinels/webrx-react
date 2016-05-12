@@ -24,6 +24,11 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
   public currentViewModel = this.manager.currentRoute.changed
     .select(x => this.getRoutedViewModel(x))
+    .doOnNext(x => {
+      if (x != null) {
+        document.title = x.getTitle();
+      }
+    })
     .toProperty();
 
   public isLoading = this.currentViewModel.changed
