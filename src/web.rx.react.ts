@@ -220,7 +220,6 @@ export namespace Components {
   export import PagerView = PagerViewTypes.PagerView;
 
   export import TabsViewModel = TabsViewModelTypes.TabsViewModel;
-  export import ITab = TabsViewTypes.ITab;
   export import TabsView = TabsViewTypes.TabsView;
 
   export import IBaseAction = ActionTypes.IBaseAction;

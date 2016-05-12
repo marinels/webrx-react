@@ -10,19 +10,14 @@ import { TabsViewModel } from './TabsViewModel';
 
 import './Tabs.less';
 
-export interface ITab {
-  header: string;
-  disabled?: boolean;
-  children?: any;
-}
-
 interface ITabsProps extends IBaseViewProps {
+  id: string;
   selectedIndex?: number;
-  dataTemplate?: (x: any, i: number) => ITab;
+  dataTemplate?: (x: any, i: number, isVisible: boolean) => React.HTMLProps<TabProps>;
   children?: any;
 }
 
-export class TabsView extends BaseView<ITabsProps, TabsViewModel> {
+export class TabsView extends BaseView<ITabsProps, TabsViewModel<any>> {
   public static displayName = 'TabsView';
 
   constructor(props?: ITabsProps, context?: any) {
@@ -33,36 +28,80 @@ export class TabsView extends BaseView<ITabsProps, TabsViewModel> {
     }
   }
 
-  private getTabs() {
-    let selectedIndex = this.state.selectedIndex();
+  private getTab(content: React.ReactElement<TabProps>, i: number, isVisible: boolean) {
+    let tab: any;
 
-    return this.props.dataTemplate === null ?
-      React.Children.map(this.props.children, (x: React.ReactElement<TabProps>, i: number) => {
-        return React.cloneElement(x, x.props, selectedIndex === i ? x.props.children : null);
-      }) :
-      this.state.items.map((x, i) => {
-        let tab = this.props.dataTemplate(x, i);
+    if (content != null) {
+      const props: any = {
+        key: content.key || i,
+        eventKey: content.props.eventKey || i,
+        title: content.props.title || `Tab ${i}`,
+        // there is a bug in react-bootstrap where the active tab is not properly
+        // set after removing or switching tabs. this className override along with
+        // disabling animation on the Tabs component corrects this issue.
+        // see: https://github.com/react-bootstrap/react-bootstrap/issues/1892
+        className: { active: isVisible },
+      };
 
-        return (
-          <Tab key={i} eventKey={i} title={tab.header}>
-            {selectedIndex === i ? tab.children : null}
+      if (content.type === Tab) {
+        tab = React.cloneElement(content, props, isVisible ? content.props.children : null);
+      } else {
+        tab = (
+          <Tab {...props}>
+            { isVisible ? content : null }
           </Tab>
         );
+      }
+    }
+
+    return tab;
+  }
+
+  private getTabs() {
+    const tabs: any[] = [];
+    const selectedIndex = this.state.selectedIndex();
+
+    if (this.props.dataTemplate == null) {
+      // static tabs
+      React.Children.map(this.props.children, (x: React.ReactElement<TabProps>, i: number) => {
+        const isVisible = selectedIndex === i;
+        const tab = this.getTab(x, i, isVisible);
+
+        if (tab != null) {
+          tabs.push(tab);
+        }
       });
+    } else {
+      // dynamic tabs
+      this.state.items.forEach((x, i) => {
+        const isVisible = selectedIndex === i;
+        const tabContent = this.props.dataTemplate.apply(this, [ x, i, isVisible ]) as React.ReactElement<TabProps>;
+        const tab = this.getTab(tabContent, i, isVisible);
+
+        if (tab != null) {
+          tabs.push(tab);
+        }
+      });
+    }
+
+    return tabs;
   }
 
   updateOn() {
     return [
       this.state.items.listChanged,
-      this.state.selectedIndex.changed
+      this.state.selectedIndex.changed,
     ];
   }
 
   render() {
+    const selectedIndex = this.state.selectedIndex();
+    const tabs = this.getTabs();
+
     return (
       <div className='Tabs'>
-        <Tabs activeKey={this.state.selectedIndex()} onSelect={this.bindEventToCommand(x => x.selectIndex)}>
-          {this.getTabs()}
+        <Tabs animation={false} id={this.props.id} activeKey={selectedIndex} onSelect={this.bindEventToCommand(x => x.selectIndex)}>
+          { tabs }
         </Tabs>
       </div>
     );

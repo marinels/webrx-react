@@ -8,18 +8,19 @@ export interface ITabsRoutingState {
   tab: number;
 }
 
-export class TabsViewModel extends BaseRoutableViewModel<ITabsRoutingState> {
+export class TabsViewModel<T> extends BaseRoutableViewModel<ITabsRoutingState> {
   public static displayName = 'TabsViewModel';
 
-  public items = wx.list();
-  public selectIndex = wx.command();
-  public selectedIndex = this.selectIndex.results.toProperty();
+  public items = wx.list<T>();
+  public selectIndex = wx.asyncCommand<number>(x => Rx.Observable.return(x));
+  public selectedIndex = this.selectIndex.results
+    .toProperty();
   public selectedItem = this.selectedIndex.changed
     .where(x => x >= 0 && x < this.items.length())
     .select(x => this.items.get(x))
     .toProperty();
 
-  constructor(isRoutingEnabled = false, ...items: any[]) {
+  constructor(isRoutingEnabled = false, ...items: T[]) {
     super(isRoutingEnabled);
 
     if (this.items.length() > 0) {
