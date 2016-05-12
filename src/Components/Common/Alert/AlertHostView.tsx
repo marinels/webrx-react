@@ -18,7 +18,7 @@ export class AlertHostView extends BaseView<IAlertHostProps, AlertHostViewModel>
 
   updateOn() {
     return [
-      this.state.alerts.listChanged
+      this.state.alerts.listChanged,
     ];
   }
 

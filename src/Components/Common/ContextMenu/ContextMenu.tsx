@@ -27,7 +27,7 @@ export class ContextMenu extends React.Component<IContextMenuProps, IContextMenu
 
   static defaultProps = {
     offsetX: 0,
-    offsetY: 0
+    offsetY: 0,
   };
 
   constructor(props?: IContextMenuProps, context?: any) {
@@ -45,7 +45,7 @@ export class ContextMenu extends React.Component<IContextMenuProps, IContextMenu
       this.setState({
         isVisible,
         left: e.pageX,
-        top: e.pageY - ContextMenu.ArrowOffset
+        top: e.pageY - ContextMenu.ArrowOffset,
       });
     }
   }

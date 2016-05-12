@@ -134,7 +134,7 @@ const viewMap: IViewMap = {
         )} />
       </div>
     );
-  }
+  },
 };
 
 export const Default = viewMap;

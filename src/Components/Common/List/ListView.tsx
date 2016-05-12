@@ -207,7 +207,7 @@ export class ListView extends BaseView<IListProps, ListViewModel<any, any>> {
     view: new StandardListView(),
     highlightSelected: false,
     checkmarkSelected: false,
-    multiSelect: false
+    multiSelect: false,
   };
 
   public isSelected(item: any, index?: number) {
@@ -233,7 +233,7 @@ export class ListView extends BaseView<IListProps, ListViewModel<any, any>> {
   updateOn() {
     return [
       this.state.items.listChanged,
-      this.state.selectedItem.changed
+      this.state.selectedItem.changed,
     ];
   }
 

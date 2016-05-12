@@ -17,13 +17,13 @@ export class PageFooterView extends BaseView<IPageFooterProps, PageFooterViewMod
   private getDimensions(): IViewportDimension {
     return {
       width: window.innerWidth,
-      height: window.innerHeight
+      height: window.innerHeight,
     };
   }
 
   updateOn() {
     return [
-      this.state.viewportDimensions.changed
+      this.state.viewportDimensions.changed,
     ];
   }
 

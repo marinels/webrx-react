@@ -60,7 +60,7 @@ export class ObjectComparer<T> {
     return {
       field,
       compare: compare,
-      valueSelector
+      valueSelector,
     } as IFieldComparer<T>;
   }
 

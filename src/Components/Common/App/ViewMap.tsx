@@ -11,5 +11,5 @@ import ComponentDemoView from '../../Demo/ComponentDemoView';
 
 export const ViewMap = {
   Splash: () => <Splash header='WebRx.React' />,
-  ComponentDemoViewModel: (viewModel: ComponentDemoViewModel) => <ComponentDemoView viewModel={viewModel} />
+  ComponentDemoViewModel: (viewModel: ComponentDemoViewModel) => <ComponentDemoView viewModel={viewModel} />,
 } as IViewMap;

@@ -74,7 +74,7 @@ export class RouteHandlerView extends BaseView<IRouteHandlerProps, RouteHandlerV
 
   updateOn() {
     return [
-      this.state.currentViewModel.changed
+      this.state.currentViewModel.changed,
     ];
   }
 

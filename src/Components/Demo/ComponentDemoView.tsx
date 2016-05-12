@@ -40,7 +40,7 @@ export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDe
   updateOn() {
     return [
       this.state.columns.changed,
-      this.state.component.changed
+      this.state.component.changed,
     ];
   }
 

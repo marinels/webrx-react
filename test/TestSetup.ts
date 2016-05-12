@@ -12,8 +12,8 @@ function setupWebRx() {
     // fake window for WebRx
     global.window = {
       navigator: {
-        userAgent: 'Mocha'
-      }
+        userAgent: 'Mocha',
+      },
     };
   }
 
@@ -24,29 +24,29 @@ function setupWebRx() {
         return {
           getElementsByTagName: () => {
             return {
-              iElems: [false]
+              iElems: [ false ],
             };
-          }
+          },
         };
       },
       implementation: {
         createHTMLDocument: () => {
           return {};
-        }
-      }
+        },
+      },
     };
   }
 
   // fake jasmine for WebRx
   global.window.jasmine = {
-    version_: 'Mocha'
+    version_: 'Mocha',
   };
 
   // WebRx calls this when in a unit test context
   // this is a fake (empty) result that won't interfere
   global.window.createMockHistory = () => {
     return {
-      onPopState: Rx.Observable.never<PopStateEvent>()
+      onPopState: Rx.Observable.never<PopStateEvent>(),
     };
   };
 }

@@ -21,7 +21,7 @@ export class SearchView extends BaseView<ISearchProps, SearchViewModel> {
   public static displayName = 'SearchView';
 
   static defaultProps = {
-    placeholder: 'Enter Search Terms...'
+    placeholder: 'Enter Search Terms...',
   };
 
   render() {

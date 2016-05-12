@@ -117,7 +117,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
 
   saveRoutingState(state: IComponentDemoRoutingState): any {
     state.route = <IRoute>{
-      path: `/demo/${this.componentRoute}`
+      path: `/demo/${this.componentRoute}`,
     };
 
     if (this.columns() !== 12) {

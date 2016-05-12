@@ -21,7 +21,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
   public static displayName = 'PageHeaderView';
 
   static defaultProps = {
-    brand: 'WebRx.React Rocks!!!'
+    brand: 'WebRx.React Rocks!!!',
   };
 
   updateOn() {
@@ -83,7 +83,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
       this.state.appMenus.map(x => this.createMenu(x.items.sort((a, b) => (a.order || 0) - (b.order || 0)), x.header, () => ({
         id: x.id,
         key: x.id,
-        eventKey: eventKey++
+        eventKey: eventKey++,
       })))
     );
 
@@ -115,7 +115,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
             {this.createMenu(this.state.appSwitcherMenuItems, (<Icon name='bars' size='lg' />), () => ({
               id: 'app-switcher',
               eventKey: 0,
-              noCaret: true
+              noCaret: true,
             }))}
             <NavItem className='PageHeader-brand' href={this.state.homeLink}>{this.props.brand}</NavItem>
           </Nav>
@@ -127,19 +127,19 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
               id: 'help-menu',
               className: 'PageHeader-iconNavItem PageHeader-navHelp',
               eventKey: eventKey++,
-              noCaret: true
+              noCaret: true,
             }))}
             {this.createMenu(this.state.adminMenuItems, (<Icon className='hover-tilt' name='cog' size='lg' />), () => ({
               id: 'admin-menu',
               className: 'PageHeader-iconNavItem PageHeader-navAdmin hover-tilt-host',
               eventKey: eventKey++,
-              noCaret: true
+              noCaret: true,
             }))}
             {this.createMenu(this.state.userMenuItems, (<ProfilePicture src={this.state.userImage} title={this.state.userDisplayName} iconSize='lg' block />), () => ({
               id: 'user-menu',
               className: 'PageHeader-iconNavItem PageHeader-navUser',
               eventKey: eventKey++,
-              noCaret: true
+              noCaret: true,
             }))}
           </Nav>
           {search}
