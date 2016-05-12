@@ -77,5 +77,6 @@ routingMap.addRoute('DataGridList', 'DataGrid (List View)', (state: any) => {
   return viewModel;
 });
 routingMap.addRoute('ModalDialog', 'Modal Dialog', (state: any) => new wxr.Components.ModalDialogViewModel('Modal Dialog Demo', 'Content...'));
+routingMap.addRoute('Tabs', 'Tabs', (state: any) => new wxr.Components.TabsViewModel());
 
 export const Default = routingMap;

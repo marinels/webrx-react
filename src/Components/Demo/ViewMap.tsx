@@ -16,7 +16,8 @@ const {
   DataGridView,
   DataGridColumn,
   DataGridListView,
-  ModalDialogView
+  ModalDialogView,
+  TabsView,
 } = wxr.Components;
 
 export interface IViewActivator {
@@ -107,6 +108,23 @@ const viewMap: IViewMap = {
       <ModalDialogView viewModel={viewModel} />
     </div>
   ),
+  TabsViewModel: (viewModel: wxr.Components.TabsViewModel<any>) => {
+    let c = 0;
+    return (
+      <div>
+        <Button style={({ width: '100%', marginBottom: 10 })}
+          onClick={() => { viewModel.items.add(++c); viewModel.selectIndex.execute(viewModel.items.length() - 1); } }>
+          Create Tab
+        </Button>
+        <TabsView viewModel={viewModel} id='demo-tabs' dataTemplate={(x, i) => (
+          <Button style={({ width: '100%', marginTop: 10 })}
+            onClick={() => { viewModel.items.removeAt(i); viewModel.selectIndex.execute(i - 1); } }>
+            Close Tab{i}
+          </Button>
+        )} />
+      </div>
+    );
+  }
 };
 
 export const Default = viewMap;
