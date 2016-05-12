@@ -104,7 +104,10 @@ const viewMap: IViewMap = {
   },
   ModalDialogViewModel: (viewModel: wxr.Components.ModalDialogViewModel<any>) => (
     <div>
-      <Button onClick={() => viewModel.show.execute(null)}>Show Dialog</Button>
+      <Button style={({ width: '100%' })}
+        onClick={() => viewModel.show.execute(null)}>
+        Show Dialog
+      </Button>
       <ModalDialogView viewModel={viewModel} />
     </div>
   ),
