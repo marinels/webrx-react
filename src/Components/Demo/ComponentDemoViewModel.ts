@@ -56,6 +56,21 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
     ];
   }
 
+  getTitle() {
+    let title: string;
+    const component = this.component() as IRoutedViewModel;
+
+    if (component == null) {
+      title = 'No Routed Component';
+    } else if (component.getTitle instanceof Function) {
+      title = component.getTitle();
+    } else {
+      title = component.toString();
+    }
+
+    return `Demo: ${title}`;
+  }
+
   private getViewModel(componentRoute: string, state: any) {
     let activator: IViewModelActivator = null;
 
