@@ -193,41 +193,27 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
     return table;
   }
 
-  // private getColumns(items: any[]) {
-  //   if (this.columns == null) {
-  //     this.columns = Object
-  //       .keys(items[0] || {})
-  //       .map(x => ({ fieldName: x } as IDataGridColumnProps));
-  //   }
+  private createColumns(columns: DataGridColumn[]) {
+    this.columns = React.Children.map(columns, (col: React.ReactElement<IDataGridColumnProps>) => {
+      let column = Object.assign<IDataGridColumnProps>({}, col.props);
 
-  //   return this.columns;
-  // }
+      if (column.header == null) {
+        column.header = column.fieldName;
+      }
+
+      if (column.valueSelector == null) {
+        column.valueSelector = ((x: any) => x[column.fieldName]);
+      }
+
+      return column;
+    });
+  }
 
   updateOn() {
     return [
       this.state.projectedItems.listChanged,
       this.state.selectedItem.changed
     ];
-  }
-
-  initialize() {
-    super.initialize();
-
-    if (React.Children.count(this.props.children) > 0) {
-      this.columns = React.Children.map(this.props.children, (col: React.ReactElement<IDataGridColumnProps>) => {
-        let column = Object.assign<IDataGridColumnProps>({}, col.props);
-
-        if (column.header == null) {
-          column.header = column.fieldName;
-        }
-
-        if (column.valueSelector == null) {
-          column.valueSelector = ((x: any) => x[column.fieldName]);
-        }
-
-        return column;
-      });
-    }
   }
 
   render() {
@@ -237,15 +223,38 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
 
     let items = this.state.projectedItems.toArray() || [];
 
-    // let columns = this.getColumns(items);
+    if (this.columns == null) {
+      let columns: DataGridColumn[];
 
-    search = (this.props.hideSearch === true || this.state.canFilter() === false) ? null : (
-      <SearchView viewModel={this.state.search}/>
-    );
-    table = this.renderTable(items);
-    pager = (
-      <PagerView viewModel={this.state.pager} limits={this.props.pagerLimits} />
-    );
+      if (React.Children.count(this.props.children) === 0) {
+        // no columns were provided, try to auto-create columns
+        if (items.length > 0) {
+          columns = Object
+            .keys(items[0] || {})
+            .map(x => (
+              <DataGridColumn fieldName={x} />
+            )) as any;
+        }
+
+      } else {
+        // columns were provided declaratively
+        columns = this.props.children;
+      }
+
+      if (columns != null) {
+        this.createColumns(columns);
+      }
+    }
+
+    if (this.columns != null) {
+      search = (this.props.hideSearch === true || this.state.canFilter() === false) ? null : (
+        <SearchView viewModel={this.state.search}/>
+      );
+      table = this.renderTable(items);
+      pager = (
+        <PagerView viewModel={this.state.pager} limits={this.props.pagerLimits} />
+      );
+    }
 
     return (
       <div className='DataGrid'>
