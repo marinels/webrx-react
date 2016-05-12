@@ -231,7 +231,7 @@ gulp.task('tsconfig:glob', [ 'typings:ensure' ], () => {
 
 gulp.task('lint', [ 'lint:all' ]);
 
-gulp.task('lint:all', [ 'lint:ts', 'lint:es' ]);
+gulp.task('lint:all', [ 'lint:ts', 'lint:es', 'lint:style:css', 'lint:style:less' ]);
 
 gulp.task('lint:es', () => {
   log('Linting with ESLint...');
