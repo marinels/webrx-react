@@ -45,7 +45,7 @@ const viewMap: IViewMap = {
       <ContextMenu id='demo' header='Optional Header' onSelect={(item) => {
         logger.info(item.eventKey || item.href);
       }}>
-        <span>Right Click Here for the Context Menu</span>
+        <div style={({ padding: 15, border: '1px dashed black' })}>Right Click Here for the Context Menu</div>
 
         <MenuItem header>Section Header</MenuItem>
         <MenuItem title='Item 1 Tooltip' href='#/demo/ContextMenu?clicked=1'>Item 1</MenuItem>
