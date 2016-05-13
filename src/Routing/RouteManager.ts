@@ -84,6 +84,8 @@ export class RouteManager implements Rx.IDisposable {
             pathElems.splice(i - 1, 2);
             i -= 2;
           }
+        } else if (pathElems[i] === '.') {
+          pathElems.splice(i--, 1);
         } else if (pathElems[i] === '') {
           // trim out empty path elements
           if (i > 0 && i < pathElems.length - 1) {
