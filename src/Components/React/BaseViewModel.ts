@@ -38,7 +38,7 @@ export interface IBaseViewModel {
 export abstract class BaseViewModel implements IBaseViewModel {
   public static displayName = 'BaseViewModel';
 
-  private subs = new SubMan();
+  protected subs = new SubMan();
   public stateChanged = wx.command();
 
   protected logger = getLogger(this.getDisplayName());
