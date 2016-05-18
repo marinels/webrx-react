@@ -29,6 +29,10 @@ export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> 
     super(isRoutingEnabled);
   }
 
+  public get results() {
+    return this.search.results;
+  }
+
   protected createRegex(filter: string) {
     let regex: RegExp = null;
 
@@ -47,7 +51,7 @@ export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> 
   initialize() {
     super.initialize();
 
-    this.subscribe(this.search.results
+    this.subscribe(this.results
       .invokeCommand(this.routingStateChanged));
 
     if (this.isLiveSearchEnabled) {

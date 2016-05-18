@@ -86,7 +86,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
         this.sortField,
         this.sortDirection,
         this.items.listChanged.startWith(false),
-        this.search.search.results.startWith(null),
+        this.search.results.startWith(null),
         () => null)
       .invokeCommand(this.project)
     );
