@@ -21,6 +21,11 @@ export abstract class BaseViewModel {
 
   protected logger = getLogger(this.getDisplayName());
 
+  // -----------------------------------------
+  // These are special methods that handle the
+  // lifecycle internally (do not override!!!)
+  // -----------------------------------------
+  // tslint:disable:no-unused-variable
   private initializeViewModel() {
     this.initialize();
 
@@ -38,6 +43,8 @@ export abstract class BaseViewModel {
 
     this.subs.dispose();
   }
+  // tslint:enable:no-unused-variable
+  // -----------------------------------------
 
   protected initialize() {
     // do nothing by default
