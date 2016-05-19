@@ -1,5 +1,3 @@
-'use strict';
-
 export enum LogLevel {
   All = 0,
   Trace = 10,
@@ -32,5 +30,3 @@ export function getLevelName(level: LogLevel | number) {
 
   return name;
 }
-
-export default LogLevel;

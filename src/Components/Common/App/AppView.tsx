@@ -1,19 +1,17 @@
-'use strict';
-
 import * as React from 'react';
 
 import { Grid } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import { IViewMap } from '../RouteHandler/RouteHandlerView';
-import AlertHostView from '../Alert/AlertHostView';
-import RouteHandlerView from '../RouteHandler/RouteHandlerView';
-import PageHeaderView from '../PageHeader/PageHeaderView';
-import PageFooterView from '../PageFooter/PageFooterView';
+import { AlertHostView } from '../Alert/AlertHostView';
+import { RouteHandlerView } from '../RouteHandler/RouteHandlerView';
+import { PageHeaderView } from '../PageHeader/PageHeaderView';
+import { PageFooterView } from '../PageFooter/PageFooterView';
 
 import { ViewMap } from './ViewMap';
 
-import AppViewModel from './AppViewModel';
+import { AppViewModel } from './AppViewModel';
 
 import './App.less';
 
@@ -44,5 +42,3 @@ export class AppView extends BaseView<IAppProps, AppViewModel> {
     );
   }
 }
-
-export default AppView;

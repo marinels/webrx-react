@@ -1,6 +1,4 @@
-'use strict';
-
-import LogLevel from './LogLevel';
+import { LogLevel } from './LogLevel';
 
 export interface IMessageDelegate {
   (): string;
@@ -93,5 +91,3 @@ export abstract class BaseLogger implements ILogger {
     }
   }
 }
-
-export default ILogger;

@@ -1,5 +1,3 @@
-'use strict';
-
 import * as React from 'react';
 import * as wx from 'webrx';
 
@@ -51,5 +49,3 @@ export class BindableInput extends React.Component<IBindableInputProps, any> {
     return React.cloneElement(inputComponent, props);
   }
 }
-
-export default BindableInput;

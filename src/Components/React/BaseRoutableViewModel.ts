@@ -1,9 +1,7 @@
-'use strict';
-
 import * as wx from 'webrx';
 
 import { BaseViewModel, IBaseViewModel } from './BaseViewModel';
-import PubSub from '../../Utils/PubSub';
+import { Default as pubSub } from '../../Utils/PubSub';
 import { RoutingStateChangedKey, IRoutingStateChanged } from '../../Events/RoutingStateChanged';
 import { ICommandAction, IMenu, IMenuItem } from '../Common/PageHeader/Actions';
 
@@ -49,7 +47,7 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
 
   protected notifyRoutingStateChanged(context?: any) {
     if (this.isRoutingEnabled) {
-      PubSub.publish<IRoutingStateChanged>(RoutingStateChangedKey, context);
+      pubSub.publish<IRoutingStateChanged>(RoutingStateChangedKey, context);
     }
   }
 
@@ -112,5 +110,3 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
     this.routingState(state);
   }
 }
-
-export default BaseRoutableViewModel;

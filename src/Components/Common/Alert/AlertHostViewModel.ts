@@ -1,11 +1,9 @@
-'use strict';
-
 import * as wx from 'webrx';
 
-import BaseViewModel from '../../React/BaseViewModel';
-import AlertViewModel from '../Alert/AlertViewModel';
+import { BaseViewModel } from '../../React/BaseViewModel';
+import { AlertViewModel } from '../Alert/AlertViewModel';
 
-import { default as PubSub, ISubscriptionHandle } from '../../../Utils/PubSub';
+import { Default as pubSub, ISubscriptionHandle } from '../../../Utils/PubSub';
 import { AlertCreatedKey, IAlertCreated } from '../../../Events/AlertCreated';
 
 export class AlertHostViewModel extends BaseViewModel {
@@ -27,14 +25,12 @@ export class AlertHostViewModel extends BaseViewModel {
   initialize() {
     super.initialize();
 
-    this.alertCreatedHandle = PubSub.subscribe<IAlertCreated>(AlertCreatedKey, x => this.appendAlert(x.content, x.header, x.style, x.timeout));
+    this.alertCreatedHandle = pubSub.subscribe<IAlertCreated>(AlertCreatedKey, x => this.appendAlert(x.content, x.header, x.style, x.timeout));
   }
 
   cleanup() {
     super.cleanup();
 
-    this.alertCreatedHandle = PubSub.unsubscribe(this.alertCreatedHandle);
+    this.alertCreatedHandle = pubSub.unsubscribe(this.alertCreatedHandle);
   }
 }
-
-export default AlertHostViewModel;

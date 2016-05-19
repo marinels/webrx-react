@@ -1,12 +1,10 @@
-'use strict';
-
 import * as React from 'react';
 import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
-import AlertView from './AlertView';
+import { AlertView } from './AlertView';
 
-import AlertHostViewModel from './AlertHostViewModel';
+import { AlertHostViewModel } from './AlertHostViewModel';
 
 import './AlertHost.less';
 
@@ -34,5 +32,3 @@ export class AlertHostView extends BaseView<IAlertHostProps, AlertHostViewModel>
     );
   }
 }
-
-export default AlertHostView;

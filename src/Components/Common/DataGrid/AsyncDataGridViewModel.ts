@@ -1,5 +1,3 @@
-'use strict';
-
 import * as Rx from 'rx';
 
 import { DataGridViewModel } from './DataGridViewModel';
@@ -25,5 +23,3 @@ export class AsyncDataGridViewModel<TData> extends DataGridViewModel<TData> {
     return this.dataSource.getResults(this.search.filter() || '', this.pager.offset() || 0, this.pager.limit() || 0, this.sortField(), this.sortDirection());
   }
 }
-
-export default AsyncDataGridViewModel;

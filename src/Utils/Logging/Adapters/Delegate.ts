@@ -1,8 +1,6 @@
-'use strict';
-
 import { LogLevel } from '../LogLevel';
 import { ILogger, BaseLogger, IMessageDelegate } from '../Logger';
-import ILogManager from '../LogManager';
+import { ILogManager } from '../LogManager';
 
 class DelegateLogger extends BaseLogger {
   constructor(private action: (logger: ILogger, level: LogLevel, text: string, args: any[]) => void, name: string, level: LogLevel) {
@@ -28,5 +26,3 @@ export class DelegateLogManager implements ILogManager {
     return new DelegateLogger(this.action, name, level || this.defaultLevel);
   }
 }
-
-export default DelegateLogManager;

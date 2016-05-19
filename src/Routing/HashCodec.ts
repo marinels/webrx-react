@@ -1,5 +1,3 @@
-'use strict';
-
 import * as param from 'jquery-param';
 import * as deparam from 'jquery-deparam';
 
@@ -73,5 +71,3 @@ export class HashCodec {
     return selector(path, params, state);
   }
 }
-
-export default HashCodec;

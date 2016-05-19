@@ -1,9 +1,7 @@
-'use strict';
-
 import * as Rx from 'rx';
 import * as wx from 'webrx';
 
-import BaseRoutableViewModel from '../../React/BaseRoutableViewModel';
+import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 
 export interface ISearchRoutingState {
   filter: string;
@@ -75,5 +73,3 @@ export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> 
     super.loadRoutingState(state);
   }
 }
-
-export default SearchViewModel;

@@ -1,5 +1,3 @@
-'use strict';
-
 import * as Rx from 'rx';
 
 export class SubMan implements Rx.IDisposable {
@@ -20,5 +18,3 @@ export class SubMan implements Rx.IDisposable {
     this.subscriptions.length = 0;
   }
 }
-
-export default SubMan;

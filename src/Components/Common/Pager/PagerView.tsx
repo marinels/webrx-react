@@ -1,12 +1,10 @@
-'use strict';
-
 import * as React from 'react';
 
 import { Pagination, PaginationProps, DropdownButton, MenuItem } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 
-import PagerViewModel from './PagerViewModel';
+import { PagerViewModel } from './PagerViewModel';
 
 import './Pager.less';
 
@@ -62,5 +60,3 @@ export class PagerView extends BaseView<IPagerProps, PagerViewModel> {
     );
   }
 }
-
-export default PagerView;

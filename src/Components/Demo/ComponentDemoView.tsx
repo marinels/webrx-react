@@ -1,12 +1,10 @@
-'use strict';
-
 import * as Ix from 'ix';
 import * as React from 'react';
 
 import { Grid, Row, Col, PageHeader, DropdownButton, MenuItem, Alert } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
-import ComponentDemoViewModel from './ComponentDemoViewModel';
+import { ComponentDemoViewModel } from './ComponentDemoViewModel';
 import { Default as ViewMap, IViewActivator } from './ViewMap';
 
 import './ComponentDemo.less';
@@ -105,5 +103,3 @@ export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDe
     );
   }
 }
-
-export default ComponentDemoView;

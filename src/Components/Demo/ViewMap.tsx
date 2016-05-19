@@ -1,5 +1,3 @@
-'use strict';
-
 import * as React from 'react';
 import { ListGroupItem, Button, MenuItem } from 'react-bootstrap';
 

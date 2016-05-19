@@ -1,9 +1,7 @@
-'use strict';
-
 import * as wx from 'webrx';
 
 import { getLogger } from './Logging/LogManager';
-import { PubSub, default as PubSubInstance } from './PubSub';
+import { PubSub, Default as PubSubInstance } from './PubSub';
 import { AlertCreatedKey, IAlertCreated } from '../Events/AlertCreated';
 
 export class Alert {
@@ -59,4 +57,4 @@ export class Alert {
   }
 }
 
-export default new Alert(PubSubInstance);
+export const Default = new Alert(PubSubInstance);

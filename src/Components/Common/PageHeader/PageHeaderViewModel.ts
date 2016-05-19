@@ -1,13 +1,11 @@
-'use strict';
-
 import * as wx from 'webrx';
 
-import BaseViewModel from '../../React/BaseViewModel';
 import { IBaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
+import { BaseViewModel } from '../../React/BaseViewModel';
 import { IBaseAction, ICommandAction, IMenu, IMenuItem } from './Actions';
-import RouteHandlerViewModel from '../RouteHandler/RouteHandlerViewModel';
-import SearchViewModel from '../Search/SearchViewModel';
-import SubMan from '../../../Utils/SubMan';
+import { RouteHandlerViewModel } from '../RouteHandler/RouteHandlerViewModel';
+import { SearchViewModel } from '../Search/SearchViewModel';
+import { SubMan } from '../../../Utils/SubMan';
 
 export class PageHeaderViewModel extends BaseViewModel {
   public static displayName = 'PageHeaderViewModel';
@@ -112,5 +110,3 @@ export class PageHeaderViewModel extends BaseViewModel {
     });
   }
 }
-
-export default PageHeaderViewModel;

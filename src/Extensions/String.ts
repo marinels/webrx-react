@@ -1,7 +1,5 @@
 /// <reference path="./Extensions.d.ts"/>
 
-'use strict';
-
 import './Object';
 
 function isNullOrEmpty(value: string) {

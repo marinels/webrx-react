@@ -1,9 +1,7 @@
-'use strict';
-
 import * as wx from 'webrx';
 import * as moment from 'moment';
 
-import BaseViewModel from '../../React/BaseViewModel';
+import { BaseViewModel } from '../../React/BaseViewModel';
 
 export interface IViewportDimension {
   width: number;

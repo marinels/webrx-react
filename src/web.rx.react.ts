@@ -35,17 +35,17 @@ export namespace PubSub {
   export import ISubscriptionHandle = PubSubTypes.ISubscriptionHandle;
   export import PubSub = PubSubTypes.PubSub;
 
-  export const publish = exportFunction(PubSubTypes.default.publish, PubSubTypes.default);
-  export const subscribe = exportFunction(PubSubTypes.default.subscribe, PubSubTypes.default);
-  export const unsubscribe = exportFunction(PubSubTypes.default.unsubscribe, PubSubTypes.default);
+  export const publish = exportFunction(PubSubTypes.Default.publish, PubSubTypes.Default);
+  export const subscribe = exportFunction(PubSubTypes.Default.subscribe, PubSubTypes.Default);
+  export const unsubscribe = exportFunction(PubSubTypes.Default.unsubscribe, PubSubTypes.Default);
 }
 
 import * as AlertTypes from './Utils/Alert';
 
 export namespace Alert {
   export import Alert = AlertTypes.Alert;
-  export const create = exportFunction(AlertTypes.default.create, AlertTypes.default);
-  export const createForError = exportFunction(AlertTypes.default.createForError, AlertTypes.default);
+  export const create = exportFunction(AlertTypes.Default.create, AlertTypes.Default);
+  export const createForError = exportFunction(AlertTypes.Default.createForError, AlertTypes.Default);
 }
 
 import * as CompareTypes from './Utils/Compare';

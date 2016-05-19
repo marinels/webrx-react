@@ -1,10 +1,8 @@
-'use strict';
-
 import * as Ix from 'ix';
 import * as wx from 'webrx';
 import * as moment from 'moment';
 
-import BaseViewModel from '../../React/BaseViewModel';
+import { BaseViewModel } from '../../React/BaseViewModel';
 
 export enum TimeSpanUnitType {
   Ticks = 0,
@@ -190,5 +188,3 @@ export class TimeSpanInputViewModel extends BaseViewModel {
     this.setValue(value);
   }
 };
-
-export default TimeSpanInputViewModel;

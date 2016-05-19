@@ -1,9 +1,7 @@
-'use strict';
-
 import { IRoutingMap } from '../RouteHandler/RouteHandlerViewModel';
 import { IRoute } from '../../../Routing/RouteManager';
 
-import ComponentDemoViewModel from '../../Demo/ComponentDemoViewModel';
+import { ComponentDemoViewModel } from '../../Demo/ComponentDemoViewModel';
 
 export const RoutingMap = <IRoutingMap>{
   '/': { path: '/demo' },

@@ -1,12 +1,10 @@
-'use strict';
-
 import * as Rx from 'rx';
 import * as wx from 'webrx';
 
-import LogLevel from '../../Utils/Logging/LogLevel';
+import { LogLevel } from '../../Utils/Logging/LogLevel';
 import { getLogger } from '../../Utils/Logging/LogManager';
-import SubMan from '../../Utils/SubMan';
-import Alert from '../../Utils/Alert';
+import { SubMan } from '../../Utils/SubMan';
+import { Default as alert } from '../../Utils/Alert';
 import { Default as routeManager } from '../../Routing/RouteManager';
 
 export interface IBaseViewModel {
@@ -46,11 +44,11 @@ export abstract class BaseViewModel implements IBaseViewModel {
   public getDisplayName() { return Object.getName(this); }
 
   public createAlert(content: any, header?: string, style?: string, timeout?: number) {
-    Alert.create(content, header, style, timeout);
+    alert.create(content, header, style, timeout);
   }
 
   public alertForError<TError>(error: TError, header?: string, style?: string, timeout?: number, formatter?: (e: TError) => string) {
-    Alert.createForError(error, header, style, timeout, formatter);
+    alert.createForError(error, header, style, timeout, formatter);
   }
 
   public getObservableOrAlert<T, TError>(
@@ -147,5 +145,3 @@ export abstract class BaseViewModel implements IBaseViewModel {
     this.subs.dispose();
   }
 }
-
-export default BaseViewModel;

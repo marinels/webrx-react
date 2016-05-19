@@ -1,5 +1,3 @@
-'use strict';
-
 import * as React from 'react';
 import { Image } from 'react-bootstrap';
 import { Icon } from 'react-fa';
@@ -58,5 +56,3 @@ export class ProfilePicture extends React.Component<IProfilePictureProps, any> {
     );
   }
 }
-
-export default ProfilePicture;

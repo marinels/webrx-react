@@ -1,14 +1,12 @@
-'use strict';
-
 import * as React from 'react';
 
 import { InputGroup, FormControl, Button } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
-import BindableInput from '../BindableInput/BindableInput';
+import { BindableInput } from '../BindableInput/BindableInput';
 import { Icon } from 'react-fa';
 
-import SearchViewModel from './SearchViewModel';
+import { SearchViewModel } from './SearchViewModel';
 
 const EnterKey = 13;
 
@@ -52,5 +50,3 @@ export class SearchView extends BaseView<ISearchProps, SearchViewModel> {
     );
   }
 }
-
-export default SearchView;

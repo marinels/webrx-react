@@ -1,11 +1,9 @@
-'use strict';
-
 import * as Ix from 'ix';
 
-import BaseViewModel from '../../React/BaseViewModel';
 import { IRoutedViewModel } from '../../React/BaseRoutableViewModel';
+import { BaseViewModel } from '../../React/BaseViewModel';
 import { RouteManager, IRoute } from '../../../Routing/RouteManager';
-import { default as PubSub, ISubscriptionHandle } from '../../../Utils/PubSub';
+import { Default as pubSub, ISubscriptionHandle } from '../../../Utils/PubSub';
 import { RoutingStateChangedKey, IRoutingStateChanged } from '../../../Events/RoutingStateChanged';
 
 export interface IViewModelActivator {
@@ -148,7 +146,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
       })
     );
 
-    this.routingStateChangedHandle = PubSub.subscribe<IRoutingStateChanged>(RoutingStateChangedKey, x => {
+    this.routingStateChangedHandle = pubSub.subscribe<IRoutingStateChanged>(RoutingStateChangedKey, x => {
       if (this.currentViewModel() != null) {
         let state = this.currentViewModel().getRoutingState(x);
 
@@ -160,8 +158,6 @@ export class RouteHandlerViewModel extends BaseViewModel {
   cleanup() {
     super.cleanup();
 
-    this.routingStateChangedHandle = PubSub.unsubscribe(this.routingStateChangedHandle);
+    this.routingStateChangedHandle = pubSub.unsubscribe(this.routingStateChangedHandle);
   }
 }
-
-export default RouteHandlerViewModel;

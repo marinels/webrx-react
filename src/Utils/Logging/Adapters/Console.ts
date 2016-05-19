@@ -1,10 +1,8 @@
-'use strict';
-
 import * as moment from 'moment';
 
 import { LogLevel, getLevelName } from '../LogLevel';
-import ILogger from '../Logger';
-import DelegateLogManager from './Delegate';
+import { ILogger } from '../Logger';
+import { DelegateLogManager } from './Delegate';
 
 export class ConsoleLogManager extends DelegateLogManager {
   constructor(defaultLevel: LogLevel) {
@@ -78,4 +76,4 @@ if (TEST) {
   defaultLevel = LogLevel.Info;
 }
 
-export default new ConsoleLogManager(defaultLevel);
+export const Default = new ConsoleLogManager(defaultLevel);

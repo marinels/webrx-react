@@ -1,5 +1,3 @@
-'use strict';
-
 import * as React from 'react';
 
 import { Tabs, Tab, TabProps } from 'react-bootstrap';
@@ -107,5 +105,3 @@ export class TabsView extends BaseView<ITabsProps, TabsViewModel<any>> {
     );
   }
 }
-
-export default TabsView;

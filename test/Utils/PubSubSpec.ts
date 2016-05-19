@@ -1,5 +1,3 @@
-'use strict';
-
 import { expect } from 'chai';
 
 import { PubSub } from '../../src/Utils/PubSub';

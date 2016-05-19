@@ -1,5 +1,3 @@
-'use strict';
-
 declare var global: any;
 
 import * as Rx from 'rx';

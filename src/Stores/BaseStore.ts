@@ -1,5 +1,3 @@
-'use strict';
-
 import * as wx from 'webrx';
 
 import { getLogger } from '../Utils/Logging/LogManager';
@@ -25,5 +23,3 @@ export abstract class BaseStore<T extends ObservableApi> {
       .getObservable<T>(action, params, method, options, baseUri);
   }
 }
-
-export default BaseStore;

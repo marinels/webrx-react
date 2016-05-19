@@ -1,5 +1,3 @@
-'use strict';
-
 import * as wx from 'webrx';
 
 import { ObjectComparer, SortDirection } from '../../../Utils/Compare';
@@ -158,5 +156,3 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
     super.loadRoutingState(state);
   }
 }
-
-export default DataGridViewModel;

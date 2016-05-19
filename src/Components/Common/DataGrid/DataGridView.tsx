@@ -1,5 +1,3 @@
-'use strict';
-
 import * as React from 'react';
 
 import { Table, TableProps, Button, ListGroup } from 'react-bootstrap';
@@ -265,5 +263,3 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
     );
   }
 }
-
-export default DataGridView;

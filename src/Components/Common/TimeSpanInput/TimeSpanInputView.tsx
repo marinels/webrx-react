@@ -1,12 +1,10 @@
-'use strict';
-
 import * as Ix from 'ix';
 import * as React from 'react';
 import { FormGroup, InputGroup, FormControl, Button, DropdownButton, MenuItem, HelpBlock } from 'react-bootstrap';
 import { Icon } from 'react-fa';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
-import BindableInput from '../BindableInput/BindableInput';
+import { BindableInput } from '../BindableInput/BindableInput';
 
 import { TimeSpanInputViewModel } from './TimeSpanInputViewModel';
 
@@ -67,5 +65,3 @@ export class TimeSpanInputView extends BaseView<ITimeSpanInputProps, TimeSpanInp
     );
   }
 }
-
-export default TimeSpanInputView;

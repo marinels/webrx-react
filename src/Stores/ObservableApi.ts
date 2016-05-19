@@ -1,10 +1,8 @@
-'use strict';
-
 import * as Rx from 'rx';
 import * as wx from 'webrx';
 
 import { getLogger } from '../Utils/Logging/LogManager';
-import SampleData from './SampleData/SampleData';
+import { SampleData } from './SampleData/SampleData';
 
 export enum HttpRequestMethod {
   GET,

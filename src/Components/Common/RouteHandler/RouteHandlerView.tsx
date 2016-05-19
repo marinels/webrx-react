@@ -1,12 +1,10 @@
-'use strict';
-
 import * as React from 'react';
 import { Grid, Alert } from 'react-bootstrap';
 import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 
-import RouteHandlerViewModel from './RouteHandlerViewModel';
+import { RouteHandlerViewModel } from './RouteHandlerViewModel';
 
 import './RouteHandler.less';
 
@@ -93,5 +91,3 @@ export class RouteHandlerView extends BaseView<IRouteHandlerProps, RouteHandlerV
     );
   }
 }
-
-export default RouteHandlerView;

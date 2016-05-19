@@ -1,5 +1,3 @@
-'use strict';
-
 import * as React from 'react';
 
 import { Overlay, Popover, MenuItemProps } from 'react-bootstrap';
@@ -98,5 +96,3 @@ export class ContextMenu extends React.Component<IContextMenuProps, IContextMenu
     );
   }
 }
-
-export default ContextMenu;

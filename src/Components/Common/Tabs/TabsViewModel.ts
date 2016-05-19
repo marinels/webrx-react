@@ -1,8 +1,6 @@
-'use strict';
-
 import * as wx from 'webrx';
 
-import BaseRoutableViewModel from '../../React/BaseRoutableViewModel';
+import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 
 export interface ITabsRoutingState {
   tab: number;
@@ -52,5 +50,3 @@ export class TabsViewModel<T> extends BaseRoutableViewModel<ITabsRoutingState> {
     super.loadRoutingState(state);
   }
 }
-
-export default TabsViewModel;

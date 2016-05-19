@@ -1,9 +1,7 @@
-'use strict';
-
 import * as Rx from 'rx';
 import * as wx from 'webrx';
 
-import BaseViewModel from '../../React/BaseViewModel';
+import { BaseViewModel } from '../../React/BaseViewModel';
 
 export interface IAlert {
   key: string;
@@ -49,5 +47,3 @@ export class AlertViewModel extends BaseViewModel {
       }));
   }
 }
-
-export default AlertViewModel;

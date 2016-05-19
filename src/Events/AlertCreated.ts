@@ -6,5 +6,3 @@ export interface IAlertCreated {
   style?: string;
   timeout?: number;
 }
-
-export default AlertCreatedKey;

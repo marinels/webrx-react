@@ -1,9 +1,7 @@
-'use strict';
-
 import * as Rx from 'rx';
 import * as wx from 'webrx';
 
-import BaseRoutableViewModel from '../../React/BaseRoutableViewModel';
+import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 
 export interface IPagerRoutingState {
   limit: number;
@@ -92,5 +90,3 @@ export class PagerViewModel extends BaseRoutableViewModel<IPagerRoutingState> {
     super.loadRoutingState(state);
   }
 }
-
-export default PagerViewModel;

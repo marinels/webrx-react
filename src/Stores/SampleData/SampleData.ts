@@ -1,5 +1,3 @@
-'use strict';
-
 import * as Rx from 'rx';
 
 import { BaseSampleDataStore, ISampleDataActionSet, ISampleDataAction } from './BaseSampleDataStore';
@@ -32,5 +30,3 @@ export class SampleData {
     return result;
   }
 }
-
-export default SampleData;

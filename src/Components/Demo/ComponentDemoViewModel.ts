@@ -1,5 +1,3 @@
-'use strict';
-
 import * as Ix from 'ix';
 import * as wx from 'webrx';
 
@@ -167,5 +165,3 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
     super.loadRoutingState(state);
   }
 }
-
-export default ComponentDemoViewModel;

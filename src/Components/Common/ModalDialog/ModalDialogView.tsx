@@ -1,11 +1,9 @@
-'use strict';
-
 import * as React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 
-import ModalDialogViewModel from './ModalDialogViewModel';
+import { ModalDialogViewModel } from './ModalDialogViewModel';
 
 interface IModalDialogProps extends IBaseViewProps {
   acceptText?: string;
@@ -72,5 +70,3 @@ export class ModalDialogView extends BaseView<IModalDialogProps, ModalDialogView
 
   }
 }
-
-export default ModalDialogView;

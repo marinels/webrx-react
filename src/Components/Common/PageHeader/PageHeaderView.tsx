@@ -1,14 +1,12 @@
-'use strict';
-
 import * as React from 'react';
 
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Button } from 'react-bootstrap';
 import { Icon } from 'react-fa';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
-import SearchView from '../Search/SearchView';
-import ProfilePicture from '../ProfilePicture/ProfilePicture';
-import PageHeaderViewModel from './PageHeaderViewModel';
+import { SearchView } from '../Search/SearchView';
+import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
+import { PageHeaderViewModel } from './PageHeaderViewModel';
 import { IMenuItem } from './Actions';
 
 import './PageHeader.less';
@@ -151,5 +149,3 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
     );
   }
 }
-
-export default PageHeaderView;

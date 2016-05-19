@@ -1,12 +1,10 @@
-'use strict';
-
 import * as React from 'react';
 
 import { Alert } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 
-import AlertViewModel from './AlertViewModel';
+import { AlertViewModel } from './AlertViewModel';
 
 import './Alert.less';
 
@@ -28,5 +26,3 @@ export class AlertView extends BaseView<IAlertProps, AlertViewModel> {
     );
   }
 }
-
-export default AlertView;

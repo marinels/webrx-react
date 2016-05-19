@@ -1,10 +1,8 @@
-'use strict';
-
 import * as Rx from 'rx';
 import * as React from 'react';
 import { Grid } from 'react-bootstrap';
 
-import SubMan from '../../../Utils/SubMan';
+import { SubMan } from '../../../Utils/SubMan';
 
 import './Loading.less';
 
@@ -91,5 +89,3 @@ export class Loading extends React.Component<ILoadingProps, ILoadingState> {
     );
   }
 }
-
-export default Loading;

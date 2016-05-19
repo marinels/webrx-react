@@ -1,11 +1,9 @@
-'use strict';
-
 import * as Rx from 'rx';
 import * as wx from 'webrx';
 
 import { getLogger } from '../Utils/Logging/LogManager';
-import HashCodec from './HashCodec';
-import { default as PubSub, ISubscriptionHandle } from '../Utils/PubSub';
+import { HashCodec } from './HashCodec';
+import { Default as pubSub, ISubscriptionHandle } from '../Utils/PubSub';
 
 export interface IRoute {
   path: string;
@@ -123,7 +121,7 @@ export class RouteManager implements Rx.IDisposable {
   }
 
   public dispose() {
-    this.routeChangedHandle = PubSub.unsubscribe(this.routeChangedHandle);
+    this.routeChangedHandle = pubSub.unsubscribe(this.routeChangedHandle);
   }
 }
 

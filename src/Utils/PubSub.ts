@@ -1,5 +1,3 @@
-'use strict';
-
 export interface ISubscriptionAction<T> {
   (arg: T): void;
 }
@@ -87,4 +85,4 @@ export class PubSub {
   }
 }
 
-export default new PubSub();
+export const Default = new PubSub();

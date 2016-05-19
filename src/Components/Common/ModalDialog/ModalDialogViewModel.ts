@@ -1,8 +1,6 @@
-'use strict';
-
 import * as wx from 'webrx';
 
-import BaseViewModel from '../../React/BaseViewModel';
+import { BaseViewModel } from '../../React/BaseViewModel';
 
 export enum DialogResult {
   Accepted,
@@ -61,5 +59,3 @@ export class ModalDialogViewModel<T> extends BaseViewModel {
       validatable.isValid.changed.startWith(validatable.isValid());
   }
 };
-
-export default ModalDialogViewModel;

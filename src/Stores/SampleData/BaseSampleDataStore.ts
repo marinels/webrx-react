@@ -1,8 +1,6 @@
-'use strict';
-
 import * as Rx from 'rx';
 
-import Alert from '../../Utils/Alert';
+import { Default as alert } from '../../Utils/Alert';
 
 export interface ISampleDataAction {
   (params: any): Rx.Observable<any>;
@@ -22,8 +20,6 @@ export abstract class BaseSampleDataStore {
   }
 
   protected createAlert(action: string, params: any = {}) {
-    Alert.create(JSON.stringify(params, null, 2), `SampleData API Call: ${action}`);
+    alert.create(JSON.stringify(params, null, 2), `SampleData API Call: ${action}`);
   }
 }
-
-export default BaseSampleDataStore;

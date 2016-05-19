@@ -1,5 +1,3 @@
-'use strict';
-
 import * as React from 'react';
 import * as classNames from 'classnames';
 import * as wx from 'webrx';
@@ -253,5 +251,3 @@ export class ListView extends BaseView<IListProps, ListViewModel<any, any>> {
     );
   }
 }
-
-export default ListView;

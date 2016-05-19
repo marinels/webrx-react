@@ -1,9 +1,7 @@
-'use strict';
-
-import BaseViewModel from '../../React/BaseViewModel';
-import AlertHostViewModel from '../Alert/AlertHostViewModel';
+import { BaseViewModel } from '../../React/BaseViewModel';
+import { AlertHostViewModel } from '../Alert/AlertHostViewModel';
 import { PageHeaderViewModel } from '../PageHeader/PageHeaderViewModel';
-import PageFooterViewModel from '../PageFooter/PageFooterViewModel';
+import { PageFooterViewModel } from '../PageFooter/PageFooterViewModel';
 
 import { RouteHandlerViewModel, IRoutingMap } from '../RouteHandler/RouteHandlerViewModel';
 import { Default as routeManager } from '../../../Routing/RouteManager';
@@ -30,5 +28,3 @@ export class AppViewModel extends BaseViewModel {
     this.header = new PageHeaderViewModel(this.routeHandler);
   }
 }
-
-export default AppViewModel;

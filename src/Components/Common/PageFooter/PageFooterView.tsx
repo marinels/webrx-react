@@ -1,5 +1,3 @@
-'use strict';
-
 import * as React from 'react';
 import { Grid, Row, Col } from 'react-bootstrap';
 
@@ -58,5 +56,3 @@ export class PageFooterView extends BaseView<IPageFooterProps, PageFooterViewMod
     );
   }
 }
-
-export default PageFooterView;

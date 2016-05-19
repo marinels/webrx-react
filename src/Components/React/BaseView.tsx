@@ -1,5 +1,3 @@
-'use strict';
-
 import * as React from 'react';
 import * as Rx from 'rx';
 import * as wx from 'webrx';
@@ -158,5 +156,3 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
     this.updateSubscription = Object.dispose(this.updateSubscription);
   }
 }
-
-export default BaseView;

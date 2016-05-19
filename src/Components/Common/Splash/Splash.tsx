@@ -1,5 +1,3 @@
-'use strict';
-
 import * as React from 'react';
 import { Grid, Image } from 'react-bootstrap';
 
@@ -38,5 +36,3 @@ export class Splash extends React.Component<ISplashProps, any> {
     );
   }
 }
-
-export default Splash;

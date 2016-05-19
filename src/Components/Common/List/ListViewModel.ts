@@ -1,8 +1,6 @@
-'use strict';
-
 import * as wx from 'webrx';
 
-import BaseRoutableViewModel from '../../React/BaseRoutableViewModel';
+import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 
 export interface IListRoutingState {
   selectedIndex: number;
@@ -93,5 +91,3 @@ export class ListViewModel<TData, TRoutingState extends IListRoutingState> exten
     super.loadRoutingState(state);
   }
 }
-
-export default ListViewModel;
