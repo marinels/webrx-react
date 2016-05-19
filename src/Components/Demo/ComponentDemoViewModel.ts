@@ -6,6 +6,7 @@ import { ICommandAction, IMenu } from '../Common/PageHeader/Actions';
 
 import { BaseRoutableViewModel } from '../React/BaseRoutableViewModel';
 import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
+import { Current as App } from '../Common/App/AppViewModel';
 import { Default as RoutingMap, IViewModelActivator } from './RoutingMap';
 
 interface IComponentDemoRoutingState {
@@ -72,6 +73,10 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
         this.pageHeader.updateDynamicContent();
       })
     );
+  }
+
+  routed() {
+    this.pageHeader = App.header;
   }
 
   saveRoutingState(state: IComponentDemoRoutingState): any {

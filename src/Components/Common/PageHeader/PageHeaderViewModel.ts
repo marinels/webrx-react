@@ -65,10 +65,6 @@ export class PageHeaderViewModel extends BaseViewModel {
 
     this.logger.debug('Updating Page Header Dynamic Content', viewModel);
 
-    if (viewModel != null && viewModel.componentRouted != null) {
-      viewModel.componentRouted.apply(viewModel, [ this ]);
-    }
-
     this.search = (viewModel == null || viewModel.getSearch == null) ? null : viewModel.getSearch.apply(viewModel);
 
     this.dynamicSubs.dispose();
