@@ -34,10 +34,6 @@ export class ListViewModel<TData, TRoutingState extends IListRoutingState> exten
     }
   }
 
-  public getSelectedItems() {
-    return this.items.filter(x => (x as any as ISelectableItem).isSelected === true);
-  }
-
   initialize() {
     if (this.isMultiSelectEnabled) {
       this.subscribe(
@@ -62,6 +58,18 @@ export class ListViewModel<TData, TRoutingState extends IListRoutingState> exten
     }
   }
 
+  saveRoutingState(state: TRoutingState) {
+    if (this.selectedIndex() != null) {
+      state.selectedIndex = this.selectedIndex();
+    }
+  }
+
+  loadRoutingState(state: TRoutingState) {
+    if (state.selectedIndex != null) {
+      this.selectedIndex(state.selectedIndex);
+    }
+  }
+
   public reset(...items: TData[]) {
     if (items.length === 0) {
       this.items.reset();
@@ -73,15 +81,7 @@ export class ListViewModel<TData, TRoutingState extends IListRoutingState> exten
     }
   }
 
-  saveRoutingState(state: TRoutingState) {
-    if (this.selectedIndex() != null) {
-      state.selectedIndex = this.selectedIndex();
-    }
-  }
-
-  loadRoutingState(state: TRoutingState) {
-    if (state.selectedIndex != null) {
-      this.selectedIndex(state.selectedIndex);
-    }
+  public getSelectedItems() {
+    return this.items.filter(x => (x as any as ISelectableItem).isSelected === true);
   }
 }
