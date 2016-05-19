@@ -7,39 +7,49 @@ import { SubMan } from '../../Utils/SubMan';
 import { Default as alert } from '../../Utils/Alert';
 import { Default as routeManager } from '../../Routing/RouteManager';
 
-export interface IBaseViewModel {
-  stateChanged: wx.ICommand<any>;
-
-  getDisplayName(): string;
-  createAlert(text: string, header?: string, style?: string, timeout?: number): void;
-  alertForError(error: Error, header?: string, style?: string, timeout?: number, formatter?: (e: Error) => string): void;
-    getObservableOrAlert<TResult, TError>(
-    observableFactory: () => Rx.Observable<TResult>,
-    header: string,
-    style?: string,
-    timeout?: number,
-    errorFormatter?: (e: TError) => string): Rx.Observable<TResult>;
-  getObservableResultOrAlert<TResult, TError>(
-    resultFactory: () => TResult,
-    header?: string,
-    style?: string,
-    timeout?: number,
-    errorFormatter?: (e: TError) => string): Rx.Observable<TResult>;
-  notifyChanged(...args: any[]): void;
-
-  initialize(): void;
-  loaded(): void;
-  cleanup(): void;
-  bind<T>(observable: Rx.Observable<T>, command: wx.ICommand<T>): Rx.IDisposable;
+export interface LifecycleComponentViewModel {
+  initializeViewModel(): void;
+  loadedViewModel(): void;
+  cleanupViewModel(): void;
 }
 
-export abstract class BaseViewModel implements IBaseViewModel {
+export abstract class BaseViewModel {
   public static displayName = 'BaseViewModel';
 
   protected subs = new SubMan();
   public stateChanged = wx.command();
 
   protected logger = getLogger(this.getDisplayName());
+
+  private initializeViewModel() {
+    this.initialize();
+
+    if (this.logger.level <= LogLevel.Debug) {
+      this.logMemberObservables();
+    }
+  }
+
+  private loadedViewModel() {
+    this.loaded();
+  }
+
+  private cleanupViewModel() {
+    this.cleanup();
+
+    this.subs.dispose();
+  }
+
+  protected initialize() {
+    // do nothing by default
+  }
+
+  protected loaded() {
+    // do nothing by default
+  }
+
+  protected cleanup() {
+    // do nothing by default
+  }
 
   public getDisplayName() { return Object.getName(this); }
 
@@ -129,19 +139,5 @@ export abstract class BaseViewModel implements IBaseViewModel {
 
   public bind<T>(observable: Rx.Observable<T>, command: wx.ICommand<T>) {
     return this.subscribe(observable.invokeCommand(command));
-  }
-
-  public initialize() {
-    if (this.logger.level <= LogLevel.Debug) {
-      this.logMemberObservables();
-    }
-  }
-
-  public loaded() {
-    // do nothing by default
-  }
-
-  public cleanup() {
-    this.subs.dispose();
   }
 }

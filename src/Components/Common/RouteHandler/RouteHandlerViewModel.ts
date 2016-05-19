@@ -1,14 +1,14 @@
 import * as Ix from 'ix';
 
-import { IRoutedViewModel } from '../../React/BaseRoutableViewModel';
 import { BaseViewModel } from '../../React/BaseViewModel';
+import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 import { RouteManager, IRoute } from '../../../Routing/RouteManager';
 import { Default as pubSub, ISubscriptionHandle } from '../../../Utils/PubSub';
 import { RoutingStateChangedKey, IRoutingStateChanged } from '../../../Events/RoutingStateChanged';
 
 export interface IViewModelActivator {
   path?: string;
-  creator?: (route: IRoute) => IRoutedViewModel;
+  creator?: (route: IRoute) => BaseRoutableViewModel<any>;
 }
 
 export interface IRoutingMap {
@@ -44,7 +44,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
   private getRoutedViewModel(route: IRoute) {
     // by default we set the view model to the current routed view model
     // if our route is for a new view model we will override it there
-    let viewModel: IRoutedViewModel = this.currentViewModel();
+    let viewModel: BaseRoutableViewModel<any> = this.currentViewModel();
 
     // get the activator for the requested route
     let activator = this.getActivator(route);
@@ -86,7 +86,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
     return viewModel;
   }
 
-  private updateRoutingState(route: IRoute, viewModel?: IRoutedViewModel) {
+  private updateRoutingState(route: IRoute, viewModel?: BaseRoutableViewModel<any>) {
     viewModel = viewModel || this.currentViewModel();
 
     if (viewModel != null) {
@@ -98,7 +98,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
       // initialize the routing state to default as an empty object
       route.state = route.state || {};
-      // assing the route in the state (so the routed view model can access route properties)
+      // assigning the route in the state (so the routed view model can access route properties)
       route.state.route = route;
 
       // start the routing state assignment
@@ -146,7 +146,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
     this.routingStateChangedHandle = pubSub.subscribe<IRoutingStateChanged>(RoutingStateChangedKey, x => {
       if (this.currentViewModel() != null) {
-        let state = this.currentViewModel().getRoutingState(x);
+        let state = this.currentViewModel().getRoutingState(x.context);
 
         this.manager.navTo(this.currentPath, state);
       }

@@ -4,7 +4,7 @@ import * as wx from 'webrx';
 import { IRoute } from '../../Routing/RouteManager';
 import { ICommandAction, IMenu } from '../Common/PageHeader/Actions';
 
-import { BaseRoutableViewModel, IBaseRoutableViewModel, IRoutedViewModel } from '../React/BaseRoutableViewModel';
+import { BaseRoutableViewModel } from '../React/BaseRoutableViewModel';
 import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
 import { Default as RoutingMap, IViewModelActivator } from './RoutingMap';
 
@@ -137,7 +137,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
     // try columns routing state first, then fall back onto view model columns state
     state.columns = state.columns != null ? state.columns : this.columns();
 
-    let component = this.getViewModel(this.componentRoute, state) as IRoutedViewModel;
+    let component = this.getViewModel(this.componentRoute, state) as BaseRoutableViewModel<any>;
 
     let isNewComponent = this.component() == null || this.component() !== component ||
       (component.getDisplayName == null ? component.toString() : component.getDisplayName()) !==

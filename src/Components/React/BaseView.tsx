@@ -3,13 +3,13 @@ import * as Rx from 'rx';
 import * as wx from 'webrx';
 
 import { getLogger } from '../../Utils/Logging/LogManager';
-import { IBaseViewModel } from './BaseViewModel';
+import { BaseViewModel, LifecycleComponentViewModel } from './BaseViewModel';
 
 export interface IBaseViewProps extends React.HTMLAttributes {
-  viewModel: IBaseViewModel;
+  viewModel: BaseViewModel;
 }
 
-export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel extends IBaseViewModel> extends React.Component<TViewProps, TViewModel> {
+export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel extends BaseViewModel> extends React.Component<TViewProps, TViewModel> {
   public static displayName = 'BaseView';
 
   private updateSubscription: Rx.IDisposable;
@@ -22,13 +22,95 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
     this.state = props.viewModel as TViewModel;
   }
 
-  protected updateOn(): Rx.Observable<any>[] { return []; }
+  private logRender(initial: boolean) {
+    this.logger.debug(`${initial ? '' : 're-'}rendering`);
+  }
 
-  protected getDisplayName() { return Object.getName(this); }
-  protected getRateLimit() { return 100; }
+  private subscribeToUpdates() {
+    let updateProps = this.updateOn();
+    updateProps.push(this.state.stateChanged.results);
 
-  protected renderView() { this.forceUpdate(); }
+    this.updateSubscription = Rx.Observable
+      .fromArray(updateProps)
+      .selectMany(x => x)
+      .debounce(this.getRateLimit())
+      .subscribe(x => {
+        this.renderView();
+      }, x => {
+        this.state.alertForError(x);
+      });
+  }
 
+  // -----------------------------------------
+  // these are react lifecycle functions
+  // -----------------------------------------
+  componentWillMount() {
+    this.initializeView();
+
+    this.subscribeToUpdates();
+
+    this.logRender(true);
+  }
+
+  componentDidMount() {
+    this.loadedView();
+  }
+
+  componentWillReceiveProps(nextProps: TViewProps, nextContext: any) {
+    let state = nextProps.viewModel;
+
+    // TODO: need to find a better way to handle this case...
+    if (state !== this.state) {
+      this.logger.debug('ViewModel Change Detected');
+
+      // cleanup old view model
+      (this.state as any as LifecycleComponentViewModel).cleanupViewModel();
+      this.updateSubscription = Object.dispose(this.updateSubscription);
+
+      // set our new view model as the current state and initialize it
+      this.state = state as TViewModel;
+      (this.state as any as LifecycleComponentViewModel).initializeViewModel();
+      this.subscribeToUpdates();
+
+      this.forceUpdate();
+
+      (this.state as any as LifecycleComponentViewModel).loadedViewModel();
+    }
+  }
+
+  componentWillUpdate(nextProps: TViewProps, nextState: TViewModel, nextContext: any) {
+    this.logRender(false);
+  }
+
+  componentWillUnmount() {
+    this.cleanupView();
+
+    this.updateSubscription = Object.dispose(this.updateSubscription);
+  }
+  // -----------------------------------------
+
+  // -----------------------------------------
+  // these are internal lifecycle functions
+  // -----------------------------------------
+  private initializeView() {
+    (this.state as any as LifecycleComponentViewModel).initializeViewModel();
+    this.initialize();
+  }
+
+  private loadedView() {
+    this.loaded();
+    (this.state as any as LifecycleComponentViewModel).loadedViewModel();
+  }
+
+  private cleanupView() {
+    this.cleanup();
+    (this.state as any as LifecycleComponentViewModel).cleanupViewModel();
+  }
+  // -----------------------------------------
+
+  // -----------------------------------------
+  // these are overridable lifecycle functions
+  // -----------------------------------------
   protected initialize() {
     // do nothing by default
   }
@@ -40,6 +122,18 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   protected cleanup() {
     // do nothing by default
   }
+  // -----------------------------------------
+
+  // -----------------------------------------
+  // these overridable view functions
+  // -----------------------------------------
+  protected updateOn(): Rx.Observable<any>[] { return []; }
+
+  protected getDisplayName() { return Object.getName(this); }
+  protected getRateLimit() { return 100; }
+
+  protected renderView() { this.forceUpdate(); }
+  // -----------------------------------------
 
   /**
    * Binds an observable to a command on the view model
@@ -91,68 +185,5 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
         cmd.execute(param);
       }
     };
-  }
-
-  private logRender(initial: boolean) {
-    this.logger.debug(`${initial ? '' : 're-'}rendering`);
-  }
-
-  private subscribeToUpdates() {
-    let updateProps = this.updateOn();
-    updateProps.push(this.state.stateChanged.results);
-
-    this.updateSubscription = Rx.Observable
-      .fromArray(updateProps)
-      .selectMany(x => x)
-      .debounce(this.getRateLimit())
-      .subscribe(x => {
-        this.renderView();
-      }, x => {
-        this.state.alertForError(x);
-      });
-  }
-
-  componentWillMount() {
-    this.state.initialize();
-    this.initialize();
-
-    this.subscribeToUpdates();
-
-    this.logRender(true);
-  }
-
-  componentDidMount() {
-    this.state.loaded();
-    this.loaded();
-  }
-
-  componentWillReceiveProps(nextProps: TViewProps, nextContext: any) {
-    let state = nextProps.viewModel;
-
-    if (state !== this.state) {
-      this.logger.debug('ViewModel Change Detected');
-
-      // cleanup old view model
-      this.state.cleanup();
-      this.updateSubscription = Object.dispose(this.updateSubscription);
-
-      // set our new view model as the current state and initialize it
-      this.state = state as TViewModel;
-      this.state.initialize();
-      this.subscribeToUpdates();
-
-      this.forceUpdate();
-    }
-  }
-
-  componentWillUpdate(nextProps: TViewProps, nextState: TViewModel, nextContext: any) {
-    this.logRender(false);
-  }
-
-  componentWillUnmount() {
-    this.cleanup();
-    this.state.cleanup();
-
-    this.updateSubscription = Object.dispose(this.updateSubscription);
   }
 }

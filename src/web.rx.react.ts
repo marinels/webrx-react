@@ -162,11 +162,7 @@ import * as AsyncDataGridViewModelTypes from './Components/Common/DataGrid/Async
 import * as DataGridViewTypes from './Components/Common/DataGrid/DataGridView';
 
 export namespace Components {
-  export import IBaseViewModel = BaseViewModelTypes.IBaseViewModel;
   export import BaseViewModel = BaseViewModelTypes.BaseViewModel;
-  export import IBaseRoutableViewModel = BaseRoutableViewModelTypes.IBaseRoutableViewModel;
-  export import IRoutableViewModel = BaseRoutableViewModelTypes.IRoutableViewModel;
-  export import IRoutedViewModel = BaseRoutableViewModelTypes.IRoutedViewModel;
   export import BaseRoutableViewModel = BaseRoutableViewModelTypes.BaseRoutableViewModel;
   export import IBaseViewProps = BaseViewTypes.IBaseViewProps;
   export import BaseView = BaseViewTypes.BaseView;
@@ -262,6 +258,7 @@ export namespace Components {
   export import RoutingMap = RoutingMapTypes.RoutingMap;
   export import IAppConfig = AppViewModelTypes.IAppConfig;
   export import AppViewModel = AppViewModelTypes.AppViewModel;
+  export import CurrentApp = AppViewModelTypes.Current;
   export import ViewMap = ViewMapTypes.ViewMap;
   export import AppView = AppViewTypes.AppView;
 }

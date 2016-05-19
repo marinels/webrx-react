@@ -1,38 +1,11 @@
 import * as wx from 'webrx';
 
-import { BaseViewModel, IBaseViewModel } from './BaseViewModel';
+import { BaseViewModel } from './BaseViewModel';
 import { Default as pubSub } from '../../Utils/PubSub';
 import { RoutingStateChangedKey, IRoutingStateChanged } from '../../Events/RoutingStateChanged';
 import { ICommandAction, IMenu, IMenuItem } from '../Common/PageHeader/Actions';
 
-export interface IBaseRoutableViewModel extends IBaseViewModel {
-  // NOTE: componentRouted and getSearch need typeless arguments due to circular dependencies
-  componentRouted?: (pageHeader?: any) => void;
-  getSearch?: () => any;
-
-  getAppSwitcherMenuItems?: () => IMenuItem[];
-  getAppMenus?: () => IMenu[];
-  getAppActions?: () => ICommandAction[];
-  getHelpMenuItems?: () => IMenuItem[];
-  getAdminMenuItems?: () => IMenuItem[];
-  getUserMenuItems?: () => IMenuItem[];
-
-  getRoutingKey(): string;
-  getTitle(): string;
-}
-
-export interface IRoutableViewModel<TRoutingState> extends IBaseRoutableViewModel {
-  getRoutingState(context?: any): TRoutingState;
-  setRoutingState(state: TRoutingState): void;
-}
-
-export interface IRoutedViewModel extends IBaseRoutableViewModel {
-  getRoutingState(context?: any): any;
-  setRoutingState(state: any): void;
-  getTitle(): string;
-}
-
-export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel implements IRoutableViewModel<TRoutingState> {
+export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel {
   public static displayName = 'BaseRoutableViewModel';
 
   protected routingState = wx.property<TRoutingState>();
@@ -51,7 +24,7 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
     }
   }
 
-  protected createRoutingState(initializer: (state: TRoutingState) => void, initialState = {} as TRoutingState) {
+  private createRoutingState(initializer: (state: TRoutingState) => void, initialState = {} as TRoutingState) {
     if (this.isRoutingEnabled === true && initializer != null) {
       initializer(initialState);
     }
@@ -59,7 +32,7 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
     return initialState;
   }
 
-  protected handleRoutingState(state = {} as TRoutingState, handler: (state: TRoutingState) => void, ...observables: Rx.Observable<any>[]) {
+  private handleRoutingState(state = {} as TRoutingState, handler: (state: TRoutingState) => void, ...observables: Rx.Observable<any>[]) {
     if (this.isRoutingEnabled && handler != null) {
       let sub: Rx.IDisposable;
 
@@ -80,7 +53,56 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
     }
   }
 
-  public getRoutingKey() { return Object.getName(this); }
+  // -------------------------------------------------------
+  // These are overridable routing state functions
+  // -------------------------------------------------------
+  protected saveRoutingState(state: TRoutingState) {
+    // do nothing by default
+  }
+
+  protected loadRoutingState(state: TRoutingState) {
+    // do nothing by default
+  }
+  // -------------------------------------------------------
+
+  // -------------------------------------------------------
+  // These are overridable routing lifecycle functions
+  // -------------------------------------------------------
+  protected routed() {
+    // do nothing
+  }
+  // -------------------------------------------------------
+
+  /**
+   * Get the current routing state
+   */
+  public getRoutingState(context?: any) {
+    return this.createRoutingState(state => {
+      this.saveRoutingState(state);
+    });
+  }
+
+  /**
+   * Apply a new routing state
+   */
+  public setRoutingState(state: TRoutingState, ...observables: Rx.Observable<any>[]) {
+    this.routingState(null);
+
+    this.handleRoutingState(state, x => {
+      this.loadRoutingState(x);
+
+      this.routingState(state);
+    }, ...observables);
+
+    this.routed();
+  }
+
+  // -------------------------------------------------------
+  // These are overridable dynamic routing content functions
+  // -------------------------------------------------------
+  public getRoutingKey() {
+    return Object.getName(this);
+  }
 
   public getTitle() {
     this.logger.warn(`${Object.getName(this)} does not provide a custom routed browser title`);
@@ -88,25 +110,32 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
     return Object.getName(this);
   }
 
-  public getRoutingState(context?: any) {
-    return this.createRoutingState(state => {
-      this.saveRoutingState(state);
-    });
+  public getSearch() {
+    return <any>null;
   }
 
-  protected saveRoutingState(state: TRoutingState) {
-    // do nothing by default
+  public getAppSwitcherMenuItems() {
+    return <IMenuItem[]>[];
   }
 
-  public setRoutingState(state: TRoutingState, ...observables: Rx.Observable<any>[]) {
-    this.routingState(null);
-
-    this.handleRoutingState(state, x => {
-      this.loadRoutingState(x);
-    }, ...observables);
+  public getAppMenus() {
+    return <IMenu[]>[];
   }
 
-  protected loadRoutingState(state: TRoutingState) {
-    this.routingState(state);
+  public getAppActions() {
+    return <ICommandAction[]>[];
   }
+
+  public getHelpMenuItems() {
+    return <IMenuItem[]>[];
+  }
+
+  public getAdminMenuItems() {
+    return <IMenuItem[]>[];
+  }
+
+  public getUserMenuItems() {
+    return <IMenuItem[]>[];
+  }
+  // -------------------------------------------------------
 }

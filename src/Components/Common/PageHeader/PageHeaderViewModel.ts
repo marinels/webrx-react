@@ -1,7 +1,7 @@
 import * as wx from 'webrx';
 
-import { IBaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 import { BaseViewModel } from '../../React/BaseViewModel';
+import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 import { IBaseAction, ICommandAction, IMenu, IMenuItem } from './Actions';
 import { RouteHandlerViewModel } from '../RouteHandler/RouteHandlerViewModel';
 import { SearchViewModel } from '../Search/SearchViewModel';
@@ -81,7 +81,7 @@ export class PageHeaderViewModel extends BaseViewModel {
     this.addItems(this.userMenuItems, this.staticUserMenuItems, viewModel, x => x.getUserMenuItems);
   }
 
-  private addItems<T extends IBaseAction>(list: wx.IObservableList<T>, staticItems: T[], viewModel?: IBaseRoutableViewModel, delegateSelector?: (viewModel: IBaseRoutableViewModel) => (() => T[])) {
+  private addItems<T extends IBaseAction>(list: wx.IObservableList<T>, staticItems: T[], viewModel?: BaseRoutableViewModel<any>, delegateSelector?: (viewModel: BaseRoutableViewModel<any>) => (() => T[])) {
     wx.using(list.suppressChangeNotifications(), () => {
       list.clear();
       list.addRange(staticItems);
