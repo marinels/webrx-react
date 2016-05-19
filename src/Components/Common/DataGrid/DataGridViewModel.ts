@@ -131,6 +131,10 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
     return fieldName === this.sortField() && direction === this.sortDirection();
   }
 
+  getSearch() {
+    return this.search;
+  }
+
   saveRoutingState(state: IDataGridRoutingState) {
     state.search = this.search.getRoutingState();
 

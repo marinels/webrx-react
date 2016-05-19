@@ -102,7 +102,7 @@ const viewMap: IViewMap = {
     }
 
     return (
-      <DataGridView key={componentRoute} viewModel={viewModel} view={view}>
+      <DataGridView key={componentRoute} viewModel={viewModel} view={view} hideSearch>
         { columns }
       </DataGridView>
     );
