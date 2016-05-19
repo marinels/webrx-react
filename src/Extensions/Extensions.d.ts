@@ -14,6 +14,10 @@ declare interface NumberConstructor {
   isNumeric(value: any): boolean;
 }
 
+declare interface Array<T> {
+  asEnumerable(): Ix.Enumerable<T>;
+}
+
 // tslint:disable:no-internal-module
 declare module wx {
   interface ICommand<T> {
