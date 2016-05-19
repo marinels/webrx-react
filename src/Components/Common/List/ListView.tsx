@@ -242,9 +242,12 @@ export class ListView extends BaseView<IListProps, ListViewModel<any, any>> {
       <div className='List'>
         <ListGroup>
           {
-            rows.length === 0 ? (
-              <div className='List-empty'>Nothing to Display...</div>
-            ) : rows
+            (rows || [])
+              .asEnumerable()
+              .defaultIfEmpty(
+                <div key='empty' className='List-empty'>Nothing to Display...</div>
+              )
+              .toArray()
           }
         </ListGroup>
       </div>

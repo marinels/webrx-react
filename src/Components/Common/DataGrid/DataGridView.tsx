@@ -33,7 +33,7 @@ export interface IDataGridView {
   renderColumn: (view: DataGridView, grid: DataGridViewModel<any>, column: IDataGridColumnProps, index: number) => any;
   renderCell: (view: DataGridView, grid: DataGridViewModel<any>, column: IDataGridColumnProps, index: number, value: any) => any;
   renderRow: (view: DataGridView, grid: DataGridViewModel<any>, row: any, index: number, cells: any[]) => any;
-  renderTable: (view: DataGridView, grid: DataGridViewModel<any>, data: any[], columns: any, rows: any) => any;
+  renderTable: (view: DataGridView, grid: DataGridViewModel<any>, data: any[], columns: any[], rows: any[]) => any;
 }
 
 export class DataGridListView<T> implements IDataGridView {
@@ -56,14 +56,17 @@ export class DataGridListView<T> implements IDataGridView {
     return this.renderItem(view, grid, row, index);
   }
 
-  renderTable(view: DataGridView, grid: DataGridViewModel<T>, data: T[], columns: any, rows: any) {
+  renderTable(view: DataGridView, grid: DataGridViewModel<T>, data: T[], columns: any[], rows: any[]) {
     return (
       <div className='List'>
         <ListGroup>
           {
-            data == null || data.length === 0 ? (
-              <div className='List-empty'>Nothing to Display...</div>
-            ) : rows
+            (rows || [])
+              .asEnumerable()
+              .defaultIfEmpty(
+                <div key='empty' className='DataGrid-empty text-muted'>Nothing to Display...</div>
+              )
+              .toArray()
           }
         </ListGroup>
       </div>
@@ -147,11 +150,37 @@ export class DataGridTableView implements IDataGridView {
     );
   }
 
-  public renderTable(view: DataGridView, grid: DataGridViewModel<any>, data: any[], cols: any, rows: any) {
+  public renderTable(view: DataGridView, grid: DataGridViewModel<any>, data: any[], cols: any[], rows: any[]) {
     return (
       <Table {...this.tableProps as any}>
-        <thead><tr>{cols}</tr></thead>
-        <tbody>{rows}</tbody>
+        <thead>
+          <tr>
+            {
+              (cols || [])
+                .asEnumerable()
+                .defaultIfEmpty(
+                  <th key='empty'>
+                    <div className='DataGridView-empty text-muted'>No Columns Defined...</div>
+                  </th>
+                )
+                .toArray()
+            }
+          </tr>
+        </thead>
+        <tbody>
+          {
+            (rows || [])
+              .asEnumerable()
+              .defaultIfEmpty(
+                <tr key='empty'>
+                  <td>
+                    <div className='DataGridView-empty text-muted'>No Rows to Display...</div>
+                  </td>
+                </tr>
+              )
+              .toArray()
+          }
+        </tbody>
       </Table>
     );
   }
