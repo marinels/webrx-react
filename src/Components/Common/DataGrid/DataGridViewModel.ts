@@ -51,8 +51,6 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
   }
 
   initialize() {
-    super.initialize();
-
     this.subscribe(
       this.project.results
         .debounce(100)
@@ -145,14 +143,10 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
     }
 
     state.pager = this.pager.getRoutingState();
-
-    super.saveRoutingState(state);
   }
 
   loadRoutingState(state: IDataGridRoutingState) {
     this.search.setRoutingState(state.search);
     this.pager.setRoutingState(state.pager);
-
-    super.loadRoutingState(state);
   }
 }

@@ -23,14 +23,10 @@ export class AlertHostViewModel extends BaseViewModel {
   }
 
   initialize() {
-    super.initialize();
-
     this.alertCreatedHandle = pubSub.subscribe<IAlertCreated>(AlertCreatedKey, x => this.appendAlert(x.content, x.header, x.style, x.timeout));
   }
 
   cleanup() {
-    super.cleanup();
-
     this.alertCreatedHandle = pubSub.unsubscribe(this.alertCreatedHandle);
   }
 }

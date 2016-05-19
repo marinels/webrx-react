@@ -116,8 +116,6 @@ export class TimeSpanInputViewModel extends BaseViewModel {
   }
 
   initialize() {
-    super.initialize();
-
     if (this.parseDelay > 0) {
       this.subscribe(this.text.changed
         .debounce(this.parseDelay)

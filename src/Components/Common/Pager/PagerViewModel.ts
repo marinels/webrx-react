@@ -56,8 +56,6 @@ export class PagerViewModel extends BaseRoutableViewModel<IPagerRoutingState> {
   }
 
   initialize() {
-    super.initialize();
-
     this.subscribe(this.pageCount.changed
       .select(x => this.selectedPage() || 1)
       .invokeCommand(this.selectPage));
@@ -79,14 +77,10 @@ export class PagerViewModel extends BaseRoutableViewModel<IPagerRoutingState> {
       state.limit = this.limit();
       state.page = this.selectedPage();
     }
-
-    super.saveRoutingState(state);
   }
 
   loadRoutingState(state: IPagerRoutingState) {
     this.limit(state.limit || null);
     this.selectedPage(state.page || 1);
-
-    super.loadRoutingState(state);
   }
 }

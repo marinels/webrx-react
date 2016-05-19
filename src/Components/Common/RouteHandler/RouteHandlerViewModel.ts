@@ -138,8 +138,6 @@ export class RouteHandlerViewModel extends BaseViewModel {
   }
 
   initialize() {
-    super.initialize();
-
     this.subscribe(this.currentViewModel.thrownExceptions
       .subscribe(x => {
         this.alertForError(x);
@@ -156,8 +154,6 @@ export class RouteHandlerViewModel extends BaseViewModel {
   }
 
   cleanup() {
-    super.cleanup();
-
     this.routingStateChangedHandle = pubSub.unsubscribe(this.routingStateChangedHandle);
   }
 }

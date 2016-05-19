@@ -47,8 +47,6 @@ export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> 
   }
 
   initialize() {
-    super.initialize();
-
     this.subscribe(this.results
       .invokeCommand(this.routingStateChanged));
 
@@ -63,13 +61,9 @@ export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> 
     if (String.isNullOrEmpty(this.filter()) === false) {
       state.filter = this.filter();
     }
-
-    super.saveRoutingState(state);
   }
 
   loadRoutingState(state: ISearchRoutingState) {
     this.filter(state.filter || '');
-
-    super.loadRoutingState(state);
   }
 }

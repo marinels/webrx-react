@@ -26,8 +26,6 @@ export class PageFooterView extends BaseView<IPageFooterProps, PageFooterViewMod
   }
 
   initialize() {
-    super.initialize();
-
     this.bindObservableToCommand(x => x.viewportDimensionsChanged,
       Rx.Observable
         .merge(

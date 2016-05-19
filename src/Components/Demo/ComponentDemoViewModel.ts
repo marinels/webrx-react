@@ -99,8 +99,6 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
   }
 
   initialize() {
-    super.initialize();
-
     this.subscribe(wx
       .whenAny(this.columns.changed, x => null)
       .invokeCommand(this.routingStateChanged)
@@ -121,8 +119,6 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
     if (this.columns() !== 12) {
       state.columns = this.columns();
     }
-
-    super.saveRoutingState(state);
   }
 
   setRoutingState(state: IComponentDemoRoutingState) {

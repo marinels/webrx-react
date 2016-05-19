@@ -32,8 +32,6 @@ export class AlertViewModel extends BaseViewModel {
   }
 
   initialize() {
-    super.initialize();
-
     this.subscribe(Rx.Observable
       .return(false)
       .delay(this.timeout)

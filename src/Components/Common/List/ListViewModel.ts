@@ -39,8 +39,6 @@ export class ListViewModel<TData, TRoutingState extends IListRoutingState> exten
   }
 
   initialize() {
-    super.initialize();
-
     if (this.isMultiSelectEnabled) {
       this.subscribe(
         Rx.Observable
@@ -79,15 +77,11 @@ export class ListViewModel<TData, TRoutingState extends IListRoutingState> exten
     if (this.selectedIndex() != null) {
       state.selectedIndex = this.selectedIndex();
     }
-
-    super.saveRoutingState(state);
   }
 
   loadRoutingState(state: TRoutingState) {
     if (state.selectedIndex != null) {
       this.selectedIndex(state.selectedIndex);
     }
-
-    super.loadRoutingState(state);
   }
 }

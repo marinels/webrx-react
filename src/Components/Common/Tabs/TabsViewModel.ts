@@ -29,8 +29,6 @@ export class TabsViewModel<T> extends BaseRoutableViewModel<ITabsRoutingState> {
   }
 
   initialize() {
-    super.initialize();
-
     this.subscribe(this.selectedIndex
       .changed
       .invokeCommand(this.routingStateChanged));
@@ -40,13 +38,9 @@ export class TabsViewModel<T> extends BaseRoutableViewModel<ITabsRoutingState> {
     if (this.selectedIndex() !== 0) {
       state.tab = this.selectedIndex();
     }
-
-    super.saveRoutingState(state);
   }
 
   loadRoutingState(state: ITabsRoutingState) {
     this.selectIndex.execute(state.tab || this.selectedIndex() || 0);
-
-    super.loadRoutingState(state);
   }
 }
