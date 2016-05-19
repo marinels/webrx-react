@@ -26,5 +26,9 @@ export class AppViewModel extends BaseViewModel {
     this.routeHandler = new RouteHandlerViewModel(routeManager, config.routingMap);
 
     this.header = new PageHeaderViewModel(this.routeHandler);
+
+    Current = this;
   }
 }
+
+export let Current: AppViewModel = null;
