@@ -154,7 +154,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
     } else if (component.getTitle instanceof Function) {
       title = component.getTitle();
     } else {
-      title = component.toString();
+      title = Object.getName(component);
     }
 
     return `Demo: ${title}`;
