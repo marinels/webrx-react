@@ -10,6 +10,8 @@ export interface ISampleDataActionSet {
   [ action: string ]: ISampleDataAction;
 }
 
+const EnableAlerts = false;
+
 export abstract class BaseSampleDataStore {
   public abstract getActions(): ISampleDataActionSet;
 
@@ -20,6 +22,8 @@ export abstract class BaseSampleDataStore {
   }
 
   protected createAlert(action: string, params: any = {}) {
-    alert.create(JSON.stringify(params, null, 2), `SampleData API Call: ${action}`);
+    if (EnableAlerts === true) {
+      alert.create(JSON.stringify(params, null, 2), `SampleData API Call: ${action}`);
+    }
   }
 }
