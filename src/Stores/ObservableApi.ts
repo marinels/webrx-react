@@ -62,4 +62,9 @@ export class ObservableApi {
         // if sample data has been created just use that instead (opt-in)
         this.sampleData.getObservable<T>(action, params);
   }
+
+    public getSampleData(name: string, selector: (data: any) => any) {
+      const sampleData = (<any>this.sampleData || {})[name];
+      return sampleData == null ? null : Object.assign<any>({}, selector(sampleData));
+    }
 }

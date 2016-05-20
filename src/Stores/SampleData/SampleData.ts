@@ -8,8 +8,12 @@ export class SampleData {
   constructor(protected delay = 0) {
   }
 
-  public addDataStore(data: BaseSampleDataStore): void {
+  public addDataStore(data: BaseSampleDataStore, name?: string): void {
     Object.assign(this.actions, data.getActions());
+
+    if (String.isNullOrEmpty(name) === false) {
+      (<any>this)[name] = data;
+    }
   }
 
   public addAction(action: string, dataAction: ISampleDataAction) {
