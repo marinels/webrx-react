@@ -18,12 +18,12 @@ interface IComponentDemoRoutingState {
 export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemoRoutingState> {
   public static displayName = 'ComponentDemoViewModel';
 
+  private pageHeader: PageHeaderViewModel = null;
+
   public componentRoute: string;
 
   public columns = wx.property(12);
   public component = wx.property<any>(null);
-
-  private pageHeader: PageHeaderViewModel = null;
 
   public reRender = wx.command(x => {
     this.navTo(`/demo/${this.componentRoute}?rand=${Math.random()}`);
@@ -33,19 +33,19 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
     super(true);
   }
 
-  private getViewModel(componentRoute: string, state: any) {
+  private getViewModel(state: any) {
     let activator: IViewModelActivator = null;
 
-    if (componentRoute != null) {
-      this.logger.debug(`Loading View Model for "${componentRoute}"...`);
-      activator = RoutingMap.map[componentRoute];
+    if (this.componentRoute != null) {
+      this.logger.debug(`Loading View Model for "${this.componentRoute}"...`);
+      activator = RoutingMap.map[this.componentRoute];
 
       if (activator == null) {
         let result = Ix.Enumerable
           .fromArray(Object.keys(RoutingMap.map))
           .where(x => x != null && x.length > 0 && x[0] === '^')
           .select(x => ({ path: x, regex: new RegExp(x, 'i') }))
-          .select(x => ({ path: x.path, match: x.regex.exec(componentRoute) }))
+          .select(x => ({ path: x.path, match: x.regex.exec(this.componentRoute) }))
           .where(x => x.match != null)
           .select(x => ({ path: x.path, match: x.match, activator: RoutingMap.map[x.path] }))
           .firstOrDefault();
@@ -68,9 +68,12 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
       .invokeCommand(this.routingStateChanged)
     );
 
-    this.subscribe(this.component.changed
+    this.subscribe(wx
+      .whenAny(this.component, x => x)
       .subscribe(x => {
-        this.pageHeader.updateDynamicContent();
+        if (this.pageHeader != null) {
+          this.pageHeader.updateDynamicContent();
+        }
       })
     );
   }
@@ -89,41 +92,33 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
     }
   }
 
-  setRoutingState(state: IComponentDemoRoutingState) {
+  loadRoutingState(state: IComponentDemoRoutingState) {
+    // try columns routing state first, then fall back onto view model columns state
+    state.columns = state.columns || this.columns() || 12;
+
+    // try and extract the component route from the routing state
     this.componentRoute = state.componentRoute || state.route.match[2];
 
     if (this.componentRoute == null) {
+      // if we don't have any component to route to, then try and pick a default
       if (RoutingMap.menuItems.length > 0) {
         this.navTo(RoutingMap.menuItems[0].uri);
       }
     } else {
-      super.setRoutingState(state);
-    }
-  }
+      // create the routed component
+      let proposedComponent = this.getViewModel(state) as BaseRoutableViewModel<any>;
 
-  loadRoutingState(state: IComponentDemoRoutingState) {
-    // try columns routing state first, then fall back onto view model columns state
-    state.columns = state.columns != null ? state.columns : this.columns();
+      // update columns down here since the activator could adjust columns for us
+      this.columns(state.columns);
 
-    let component = this.getViewModel(this.componentRoute, state) as BaseRoutableViewModel<any>;
+      if (proposedComponent != null && proposedComponent.setRoutingState instanceof Function) {
+        // if our proposed component is a valid routable component, then update
+        // the component's routing state
+        proposedComponent.setRoutingState(state);
+      }
 
-    let isNewComponent = this.component() == null || this.component() !== component ||
-      (component.getDisplayName == null ? component.toString() : component.getDisplayName()) !==
-      (this.component().getDisplayName == null ? this.component().toString() : this.component().getDisplayName());
-
-    if (isNewComponent === false) {
-      component = this.component();
-    }
-
-    // update columns down here since the activator could adjust columns for us
-    this.columns(state.columns == null ? 12 : state.columns);
-
-    if (component != null && component.setRoutingState) {
-      component.setRoutingState(state);
-    }
-
-    if (isNewComponent) {
-      this.component(component);
+      // if we have a new component then update our routed component property
+      this.component(proposedComponent);
     }
   }
 
