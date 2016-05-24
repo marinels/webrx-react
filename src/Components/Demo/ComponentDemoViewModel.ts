@@ -26,7 +26,9 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
   public component = wx.property<any>(null);
 
   public reRender = wx.command(x => {
-    this.navTo(`/demo/${this.componentRoute}?rand=${Math.random()}`);
+    const state = this.routingState() || <IComponentDemoRoutingState>{};
+    state.componentRoute = this.componentRoute;
+    this.setRoutingState(state);
   });
 
   constructor() {
