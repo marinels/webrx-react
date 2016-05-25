@@ -1,7 +1,7 @@
 export interface IBaseAction {
   id: any;
-  order?: number;
   header: any;
+  order?: number;
 }
 
 export interface ICommandAction extends IBaseAction {
