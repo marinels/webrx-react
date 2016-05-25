@@ -135,6 +135,26 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   protected renderView() { this.forceUpdate(); }
   // -----------------------------------------
 
+  protected renderLoadable(
+    isLoading: wx.IObservableProperty<boolean>,
+    loadingContent: Function | any,
+    content: Function | any
+  ) {
+    return isLoading() ?
+      (loadingContent instanceof Function ? loadingContent.apply() : loadingContent) :
+      (content instanceof Function ? content.apply(this) : content);
+  }
+
+  protected renderEnumerable<T, TResult>(
+    source: T[] | Ix.Enumerable<T>,
+    selector: (data: T[]) => TResult = (data) => data as any as TResult,
+    defaultSelector: () => TResult = () => null as TResult
+  ) {
+    const array = (source instanceof Array) ? source : source.toArray();
+
+    return array.length > 0 ? selector(array) : defaultSelector();
+  }
+
   /**
    * Binds an observable to a command on the view model
    */
