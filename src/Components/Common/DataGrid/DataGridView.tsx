@@ -41,8 +41,21 @@ export class DataGridListViewTemplate<T> implements DataGridViewTemplate {
   public static displayName = 'DataGridListViewTemplate';
 
   constructor(
-    protected renderItem: (row: T, index: number, grid: DataGridViewModel<T>, view: DataGridView) => any
+    protected renderItem: (row: T, index: number, grid: DataGridViewModel<T>, view: DataGridView) => any = x => x,
+    protected keySelector: (row: T, index: number, grid: DataGridViewModel<T>, view: DataGridView) => any = (r, i) => i,
+    protected renderItemContainer?: (contents: any, row: T, index: number, grid: DataGridViewModel<T>, view: DataGridView) => any
   ) {
+    this.renderItemContainer = this.renderItemContainer || this.defaultRenderItemContainer;
+  }
+
+  protected defaultRenderItemContainer(contents: any, row: T, index: number, grid: DataGridViewModel<T>, view: DataGridView) {
+    return (
+      <ListGroupItem className='DataGrid-row' key={ this.keySelector(row, index, grid, view) } active={grid.selectedItem() === row}>
+        <div className='DataGrid-rowContainer' onClick={() => grid.selectItem.execute(row)}>
+          { contents }
+        </div>
+      </ListGroupItem>
+    );
   }
 
   renderColumn(column: DataGridColumnProps, index: number, grid: DataGridViewModel<any>, view: DataGridView): any {
@@ -54,14 +67,7 @@ export class DataGridListViewTemplate<T> implements DataGridViewTemplate {
   }
 
   renderRow(row: any, cells: any[], index: number, grid: DataGridViewModel<any>, view: DataGridView) {
-    return (
-      <ListGroupItem className='DataGrid-row' key={index}
-        active={grid.selectedItem() === row}
-        onClick={() => grid.selectItem.execute(row)}
-      >
-        { this.renderItem(row, index, grid, view) }
-      </ListGroupItem>
-    );
+    return this.renderItemContainer(this.renderItem(row, index, grid, view), row, index, grid, view);
   }
 
   renderTable(rows: any[], columns: any[], data: any[], grid: DataGridViewModel<any>, view: DataGridView) {
