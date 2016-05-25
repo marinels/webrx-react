@@ -1,46 +1,62 @@
 import * as wxr from '../../web.rx.react';
 
-export interface IViewModelActivator {
+export interface ViewModelActivator {
   (state: any): any;
 }
 
-export interface IViewModelMap {
-  [key: string]: IViewModelActivator;
+export interface ViewModelActivatorMap {
+  [key: string]: ViewModelActivator;
+}
+
+export interface MenuMap {
+  [key: string]: wxr.Components.IMenu;
 }
 
 export class RoutingMap {
   public static displayName = 'RoutingMap';
 
-  public map: IViewModelMap = {};
-  public menuItems: wxr.Components.IMenuItem[] = [];
+  public viewModelMap: ViewModelActivatorMap = {};
+  public menuMap: MenuMap = {};
 
   constructor(private baseUri = '#/demo', private defaultIconName = 'flask') {
   }
 
-  public addRoute(path: string, name: string, activator: IViewModelActivator, uri?: string, iconName?: string) {
-    this.map[path] = activator;
-    this.menuItems.push(<wxr.Components.IMenuItem>{ id: path, header: name, uri: this.getUri(path, uri), iconName: iconName || this.defaultIconName, order: this.menuItems.length });
+  public addRoute(menuName: string, path: string, name: string, activator: ViewModelActivator, uri?: string, iconName?: string) {
+    this.viewModelMap[path] = activator;
+    const menu = this.menuMap[menuName] = this.menuMap[menuName] || <wxr.Components.IMenu>{
+      id: menuName,
+      header: `${menuName} Demos`,
+      items: [],
+    };
+    menu.items.push(<wxr.Components.IMenuItem>{ id: path, header: name, uri: this.getUri(path, uri), iconName: iconName || this.defaultIconName, order: menu.items.length });
   }
 
   public getUri(path: string, uri: string) {
     return `${this.baseUri}/${uri || path}`;
   }
+
+  public get menus() {
+    return Object.getOwnPropertyNames(this.menuMap)
+      .asEnumerable()
+      .select(x => this.menuMap[x])
+      .toArray();
+  }
 }
 
 const routingMap = new RoutingMap();
 
-routingMap.addRoute('Loading', 'Loading', (state: any) => 'Loading');
-routingMap.addRoute('Splash', 'Splash', (state: any) => 'Splash');
-routingMap.addRoute('Alert', 'Alert', (state: any) => 'Alert');
-routingMap.addRoute('TimeSpanInput', 'Time Span Input', (state: any) => new wxr.Components.TimeSpanInputViewModel(undefined, undefined, true));
-routingMap.addRoute('ContextMenu', 'Context Menu', (state: any) => 'ContextMenu');
-routingMap.addRoute('ProfilePicture', 'Profile Picture', (state: any) => 'ProfilePicture');
-routingMap.addRoute('List', 'List', (state: any) => new wxr.Components.ListViewModel(true, false,
+routingMap.addRoute('Framework', 'Loading', 'Loading', (state: any) => 'Loading');
+routingMap.addRoute('Framework', 'Splash', 'Splash', (state: any) => 'Splash');
+routingMap.addRoute('Framework', 'Alert', 'Alert', (state: any) => 'Alert');
+routingMap.addRoute('Framework', 'TimeSpanInput', 'Time Span Input', (state: any) => new wxr.Components.TimeSpanInputViewModel(undefined, undefined, true));
+routingMap.addRoute('Framework', 'ContextMenu', 'Context Menu', (state: any) => 'ContextMenu');
+routingMap.addRoute('Framework', 'ProfilePicture', 'Profile Picture', (state: any) => 'ProfilePicture');
+routingMap.addRoute('Framework', 'List', 'List', (state: any) => new wxr.Components.ListViewModel(true, false,
   { name: 'test 1', requiredBy: 'now' },
   { name: 'test 2', requiredBy: 'tomorrow' },
   { name: 'test 3', requiredBy: 'yesterday' }
 ));
-routingMap.addRoute('DataGrid', 'Data Grid', (state: any) => {
+routingMap.addRoute('Framework', 'DataGrid', 'Data Grid', (state: any) => {
   let viewModel = new wxr.Components.DataGridViewModel(undefined, undefined, false,
     { name: 'test 1', requiredBy: 'now' },
     { name: 'test 2', requiredBy: 'tomorrow' },
@@ -57,7 +73,7 @@ routingMap.addRoute('DataGrid', 'Data Grid', (state: any) => {
   viewModel.pager.limit(10);
   return viewModel;
 });
-routingMap.addRoute('DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: any) => {
+routingMap.addRoute('Framework', 'DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: any) => {
   let viewModel = new wxr.Components.DataGridViewModel(undefined, undefined, false,
     { name: 'test 1', requiredBy: 'now' },
     { name: 'test 2', requiredBy: 'tomorrow' },
@@ -74,7 +90,7 @@ routingMap.addRoute('DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: 
   viewModel.pager.limit(10);
   return viewModel;
 });
-routingMap.addRoute('DataGridList', 'DataGrid (List View)', (state: any) => {
+routingMap.addRoute('Framework', 'DataGridList', 'DataGrid (List View)', (state: any) => {
   let viewModel = new wxr.Components.DataGridViewModel<{name: string, requiredBy: string}>(
     (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0,
     undefined, false,
@@ -93,7 +109,7 @@ routingMap.addRoute('DataGridList', 'DataGrid (List View)', (state: any) => {
   viewModel.pager.limit(10);
   return viewModel;
 });
-routingMap.addRoute('ModalDialog', 'Modal Dialog', (state: any) => new wxr.Components.ModalDialogViewModel('Modal Dialog Demo', 'Content...'));
-routingMap.addRoute('Tabs', 'Tabs', (state: any) => new wxr.Components.TabsViewModel());
+routingMap.addRoute('Framework', 'ModalDialog', 'Modal Dialog', (state: any) => new wxr.Components.ModalDialogViewModel('Modal Dialog Demo', 'Content...'));
+routingMap.addRoute('Framework', 'Tabs', 'Tabs', (state: any) => new wxr.Components.TabsViewModel());
 
 export const Default = routingMap;

@@ -7,7 +7,7 @@ import { ICommandAction, IMenu } from '../Common/PageHeader/Actions';
 import { BaseRoutableViewModel } from '../React/BaseRoutableViewModel';
 import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
 import { Current as App } from '../Common/App/AppViewModel';
-import { Default as RoutingMap, IViewModelActivator } from './RoutingMap';
+import { Default as RoutingMap, ViewModelActivator } from './RoutingMap';
 
 interface IComponentDemoRoutingState {
   route: IRoute;
@@ -36,20 +36,20 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
   }
 
   private getViewModel(state: any) {
-    let activator: IViewModelActivator = null;
+    let activator: ViewModelActivator = null;
 
     if (this.componentRoute != null) {
       this.logger.debug(`Loading View Model for "${this.componentRoute}"...`);
-      activator = RoutingMap.map[this.componentRoute];
+      activator = RoutingMap.viewModelMap[this.componentRoute];
 
       if (activator == null) {
         let result = Ix.Enumerable
-          .fromArray(Object.keys(RoutingMap.map))
+          .fromArray(Object.keys(RoutingMap.viewModelMap))
           .where(x => x != null && x.length > 0 && x[0] === '^')
           .select(x => ({ path: x, regex: new RegExp(x, 'i') }))
           .select(x => ({ path: x.path, match: x.regex.exec(this.componentRoute) }))
           .where(x => x.match != null)
-          .select(x => ({ path: x.path, match: x.match, activator: RoutingMap.map[x.path] }))
+          .select(x => ({ path: x.path, match: x.match, activator: RoutingMap.viewModelMap[x.path] }))
           .firstOrDefault();
 
         if (result != null) {
@@ -101,10 +101,16 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
     // try and extract the component route from the routing state
     this.componentRoute = state.componentRoute || state.route.match[2];
 
-    if (this.componentRoute == null) {
+    if (String.isNullOrEmpty(this.componentRoute) === true) {
       // if we don't have any component to route to, then try and pick a default
-      if (RoutingMap.menuItems.length > 0) {
-        this.navTo(RoutingMap.menuItems[0].uri);
+      const uri = RoutingMap.menus
+        .asEnumerable()
+        .selectMany(x => x.items.asEnumerable(), (a, b) => b.uri)
+        .where(x => String.isNullOrEmpty(x) === false)
+        .firstOrDefault();
+
+      if (String.isNullOrEmpty(uri) === false) {
+        this.navTo(uri);
       }
     } else {
       // create the routed component
@@ -131,9 +137,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
   }
 
   getAppMenus() {
-    return <IMenu[]>[
-      { id: 'demos', header: 'Component Demos', items: RoutingMap.menuItems },
-    ];
+    return RoutingMap.menus;
   }
 
   getAppActions() {
@@ -148,6 +152,8 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
 
     if (component == null) {
       title = 'No Routed Component';
+    } else if (typeof component === 'string') {
+      title = component.toString();
     } else if (component.getTitle instanceof Function) {
       title = component.getTitle();
     } else {

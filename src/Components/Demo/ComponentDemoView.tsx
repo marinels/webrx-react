@@ -5,7 +5,7 @@ import { Grid, Row, Col, PageHeader, DropdownButton, MenuItem, Alert } from 'rea
 
 import { BaseView, IBaseViewProps } from '../React/BaseView';
 import { ComponentDemoViewModel } from './ComponentDemoViewModel';
-import { Default as ViewMap, IViewActivator } from './ViewMap';
+import { Default as ViewMap, ViewActivator } from './ViewMap';
 
 import './ComponentDemo.less';
 
@@ -24,7 +24,7 @@ export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDe
   }
 
   private getView(component: any) {
-    let activator: IViewActivator = null;
+    let activator: ViewActivator = null;
 
     if (component != null) {
       let type = this.getComponentName(component);

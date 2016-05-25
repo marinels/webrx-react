@@ -246,11 +246,8 @@ import * as ViewMapTypes from './Components/Common/App/ViewMap';
 import * as AppViewTypes from './Components/Common/App/AppView';
 
 export namespace Components {
-  export import IDemoViewModelActivator = DemoRoutingMapTypes.IViewModelActivator;
-  export import IDemoViewModelMap = DemoRoutingMapTypes.IViewModelMap;
   export import DemoRoutingMap = DemoRoutingMapTypes.Default;
-  export import IDemoViewMap = DemoViewMapTypes.IViewMap;
-  export import IDemoViewActivator = DemoViewMapTypes.IViewActivator;
+  export import DemoViewActivatorMap = DemoViewMapTypes.ViewActivatorMap;
   export import DemoViewMap = DemoViewMapTypes.Default;
   export import ComponentDemoViewModel = ComponentDemoViewModelTypes.ComponentDemoViewModel;
   export import ComponentDemoView = ComponentDemoViewTypes.ComponentDemoView;

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ListGroupItem, Button, MenuItem } from 'react-bootstrap';
+import { Button, MenuItem } from 'react-bootstrap';
 
 import * as wxr from '../../web.rx.react';
 
@@ -13,22 +13,22 @@ const {
   StandardListView,
   DataGridView,
   DataGridColumn,
-  DataGridListView,
+  DataGridListViewTemplate,
   ModalDialogView,
   TabsView,
 } = wxr.Components;
 
-export interface IViewActivator {
+export interface ViewActivator {
   (component: any, componentRoute: string): any;
 }
 
-export interface IViewMap {
-  [key: string]: IViewActivator;
+export interface ViewActivatorMap {
+  [key: string]: ViewActivator;
 }
 
 const logger = wxr.Logging.getLogger('Demo.ViewMap');
 
-const viewMap: IViewMap = {
+const viewMap: ViewActivatorMap = {
   Loading: () => <Loading fluid indeterminate text='Loading Text...' />,
   Splash: () => <Splash fluid indeterminate header='WebRx.React Demo' logo='http://placehold.it/100x100?text=Logo' />,
   Alert: () => (
@@ -79,18 +79,12 @@ const viewMap: IViewMap = {
     </ListView>
   ),
   DataGridViewModel: (viewModel: wxr.Components.DataGridViewModel<any>, componentRoute: string) => {
-    let view: wxr.Components.IDataGridView = undefined;
+    let view: wxr.Components.DataGridViewTemplate = undefined;
     let columns: any;
 
     if (componentRoute === 'DataGridList') {
-      view = new DataGridListView<{name: string, requiredBy: string}>(
-        (v, vm, x, i) => (
-          <ListGroupItem key={x.name} className='ItemRow' onClick={() => {
-            logger.info(`{x.name} clicked`);
-          }}>
-            {`Name: ${x.name}, Required By: ${x.requiredBy}`}
-          </ListGroupItem>
-        )
+      view = new DataGridListViewTemplate<{name: string, requiredBy: string}>(
+        x => `Name: ${x.name}, Required By: ${x.requiredBy}`
       );
     }
 
