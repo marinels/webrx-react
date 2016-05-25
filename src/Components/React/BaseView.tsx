@@ -136,11 +136,11 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   // -----------------------------------------
 
   protected renderLoadable(
-    isLoading: wx.IObservableProperty<boolean>,
+    isLoading: wx.IObservableProperty<boolean> | boolean,
     loadingContent: Function | any,
     content: Function | any
   ) {
-    return isLoading() ?
+    return (isLoading instanceof Function ? isLoading() : isLoading) === true ?
       (loadingContent instanceof Function ? loadingContent.apply() : loadingContent) :
       (content instanceof Function ? content.apply(this) : content);
   }
