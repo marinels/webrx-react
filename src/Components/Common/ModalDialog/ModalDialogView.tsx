@@ -28,7 +28,7 @@ export class ModalDialogView extends BaseView<IModalDialogProps, ModalDialogView
   }
 
   render() {
-    let content: any = null;
+    let dialog: any = null;
 
     // don't render any content if the modal is hidden
     if (this.state.isVisible()) {
@@ -44,31 +44,26 @@ export class ModalDialogView extends BaseView<IModalDialogProps, ModalDialogView
         body = body.apply(this, [this.state]);
       }
 
-      content = (
-        <div>
-          <Modal show={this.state.isVisible()} onHide={() => this.state.hide.execute(null)} autoFocus keyboard>
-            {header}
-            {body == null ? null : (
-              <Modal.Body>{body}</Modal.Body>
-            )}
-            <Modal.Footer>
-              <Button onClick={this.bindEventToCommand(x => x.cancel)}>
-                {this.props.cancelText || this.state.cancelText()}
-              </Button>
-              <Button
-                disabled={this.state.accept.canExecute(null) === false}
-                onClick={this.bindEventToCommand(x => x.accept)} bsStyle='primary'>
-                {this.props.acceptText || this.state.acceptText()}
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        </div>
+      dialog = (
+        <Modal className='ModalDialog' show={this.state.isVisible()} onHide={() => this.state.hide.execute(null)} autoFocus keyboard>
+          {header}
+          {body == null ? null : (
+            <Modal.Body>{body}</Modal.Body>
+          )}
+          <Modal.Footer>
+            <Button onClick={this.bindEventToCommand(x => x.cancel)}>
+              {this.props.cancelText || this.state.cancelText()}
+            </Button>
+            <Button
+              disabled={this.state.accept.canExecute(null) === false}
+              onClick={this.bindEventToCommand(x => x.accept)} bsStyle='primary'>
+              {this.props.acceptText || this.state.acceptText()}
+            </Button>
+          </Modal.Footer>
+        </Modal>
       );
     }
 
-    return (
-      <div className='ModalDialog'>{content}</div>
-    );
-
+    return dialog;
   }
 }
