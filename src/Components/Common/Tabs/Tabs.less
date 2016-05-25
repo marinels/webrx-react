@@ -1,8 +1,7 @@
 .Tabs {
-  .nav-tabs > .active {
-    & > a,
-    & > a:hover {
-      outline: 0;
-    }
+  .nav-tabs > .active > a {
+    // this prevents tab headers from retaining an outline after being clicked
+    // the outline is still present during the click but is simply not retained
+    outline: 0;
   }
 }
