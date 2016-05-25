@@ -5,6 +5,8 @@ import { BaseView, IBaseViewProps } from '../../React/BaseView';
 
 import { ModalDialogViewModel } from './ModalDialogViewModel';
 
+import './ModalDialog.less';
+
 interface IModalDialogProps extends IBaseViewProps {
   acceptText?: string;
   cancelText?: string;
@@ -43,7 +45,7 @@ export class ModalDialogView extends BaseView<IModalDialogProps, ModalDialogView
       }
 
       content = (
-        <div className='ModalDialogView'>
+        <div>
           <Modal show={this.state.isVisible()} onHide={() => this.state.hide.execute(null)} autoFocus keyboard>
             {header}
             {body == null ? null : (
@@ -65,7 +67,7 @@ export class ModalDialogView extends BaseView<IModalDialogProps, ModalDialogView
     }
 
     return (
-      <div className='ModalDialogView'>{content}</div>
+      <div className='ModalDialog'>{content}</div>
     );
 
   }
