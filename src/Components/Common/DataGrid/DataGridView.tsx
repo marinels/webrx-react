@@ -1,6 +1,7 @@
 import * as React from 'react';
+import * as classNames from 'classnames';
 
-import { Table, TableProps, Button, ListGroup } from 'react-bootstrap';
+import { Table, TableProps, Button, ListGroup, ListGroupItem } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import { SearchView } from '../Search/SearchView';
@@ -12,7 +13,7 @@ import { SortDirection } from '../../../Utils/Compare';
 
 import './DataGrid.less';
 
-interface IDataGridColumnProps {
+interface DataGridColumnProps {
   fieldName: string;
   header?: string;
   valueSelector?: (x: any) => any;
@@ -21,7 +22,7 @@ interface IDataGridColumnProps {
   width?: number | string;
 }
 
-export class DataGridColumn extends React.Component<IDataGridColumnProps, any> {
+export class DataGridColumn extends React.Component<DataGridColumnProps, any> {
   public static displayName = 'DataGridColumn';
 
   static defaultProps = {
@@ -29,36 +30,43 @@ export class DataGridColumn extends React.Component<IDataGridColumnProps, any> {
   };
 }
 
-export interface IDataGridView {
-  renderColumn: (view: DataGridView, grid: DataGridViewModel<any>, column: IDataGridColumnProps, index: number) => any;
-  renderCell: (view: DataGridView, grid: DataGridViewModel<any>, column: IDataGridColumnProps, index: number, value: any) => any;
-  renderRow: (view: DataGridView, grid: DataGridViewModel<any>, row: any, index: number, cells: any[]) => any;
-  renderTable: (view: DataGridView, grid: DataGridViewModel<any>, data: any[], columns: any[], rows: any[]) => any;
+export interface DataGridViewTemplate {
+  renderColumn: (column: DataGridColumnProps, index: number, grid: DataGridViewModel<any>, view: DataGridView) => any;
+  renderCell: (value: any, column: DataGridColumnProps, index: number, grid: DataGridViewModel<any>, view: DataGridView) => any;
+  renderRow: (row: any, cells: any[], index: number, grid: DataGridViewModel<any>, view: DataGridView) => any;
+  renderTable: (rows: any[], columns: any[], data: any[], grid: DataGridViewModel<any>, view: DataGridView) => any;
 }
 
-export class DataGridListView<T> implements IDataGridView {
-  public static displayName = 'DataGridListView';
+export class DataGridListViewTemplate<T> implements DataGridViewTemplate {
+  public static displayName = 'DataGridListViewTemplate';
 
   constructor(
-    protected renderItem: (view: DataGridView, grid: DataGridViewModel<T>, row: T, index: number) => any
+    protected renderItem: (row: T, index: number, grid: DataGridViewModel<T>, view: DataGridView) => any
   ) {
   }
 
-  renderColumn(view: DataGridView, grid: DataGridViewModel<any>, column: IDataGridColumnProps, index: number): any {
+  renderColumn(column: DataGridColumnProps, index: number, grid: DataGridViewModel<any>, view: DataGridView): any {
     return null;
   }
 
-  renderCell(view: DataGridView, grid: DataGridViewModel<any>, column: IDataGridColumnProps, index: number, value: any): any {
+  renderCell(value: any, column: DataGridColumnProps, index: number, grid: DataGridViewModel<any>, view: DataGridView): any {
     return null;
   }
 
-  renderRow(view: DataGridView, grid: DataGridViewModel<T>, row: T, index: number, cells: any[]) {
-    return this.renderItem(view, grid, row, index);
-  }
-
-  renderTable(view: DataGridView, grid: DataGridViewModel<T>, data: T[], columns: any[], rows: any[]) {
+  renderRow(row: any, cells: any[], index: number, grid: DataGridViewModel<any>, view: DataGridView) {
     return (
-      <div className='List'>
+      <ListGroupItem className='DataGrid-row' key={index}
+        active={grid.selectedItem() === row}
+        onClick={() => grid.selectItem.execute(row)}
+      >
+        { this.renderItem(row, index, grid, view) }
+      </ListGroupItem>
+    );
+  }
+
+  renderTable(rows: any[], columns: any[], data: any[], grid: DataGridViewModel<any>, view: DataGridView) {
+    return (
+      <div className='DataGrid-listView'>
         <ListGroup>
           {
             (rows || [])
@@ -74,23 +82,19 @@ export class DataGridListView<T> implements IDataGridView {
   }
 }
 
-export class DataGridTableView implements IDataGridView {
-  public static displayName = 'DataGridTableView';
+export class DataGridTableViewTemplate implements DataGridViewTemplate {
+  public static displayName = 'DataGridTableViewTemplate';
 
   private tableProps: TableProps;
 
   constructor(
-    private rowKeySelector: (row: any, index: number, cells: any[]) => any = null,
+    private rowKeySelector: (row: any, index: number, cells: any[]) => any = (r, i) => i,
     striped = false, bordered = true, condensed = true, hover = true, responsive = true) {
-
-    if (rowKeySelector == null) {
-      this.rowKeySelector = (row: any, index: number, cells: any[]) => index;
-    }
 
     this.tableProps = { striped, bordered, condensed, hover, responsive };
   }
 
-  private renderSortIcon(view: DataGridView, grid: DataGridViewModel<any>, column: IDataGridColumnProps, index: number) {
+  private renderSortIcon(column: DataGridColumnProps, index: number, grid: DataGridViewModel<any>, view: DataGridView) {
     let icon: any = null;
 
     if (grid.canSort() && column.sortable) {
@@ -103,7 +107,7 @@ export class DataGridTableView implements IDataGridView {
       }
 
       return (
-        <span className='Column-sortIcon'>
+        <span className='DataGrid-columnSortIcon'>
           { String.isNullOrEmpty(iconName) ? null : <Icon name={iconName} size='lg' /> }
         </span>
       );
@@ -112,55 +116,61 @@ export class DataGridTableView implements IDataGridView {
     return icon;
   }
 
-  public renderColumn(view: DataGridView, grid: DataGridViewModel<any>, column: IDataGridColumnProps, index: number) {
-    let sortIcon = this.renderSortIcon(view, grid, column, index);
+  public renderColumn(column: DataGridColumnProps, index: number, grid: DataGridViewModel<any>, view: DataGridView) {
+    let sortIcon = this.renderSortIcon(column, index, grid, view);
     let header = (
-      <span className='Column-header'>
+      <span className='DataGrid-columnHeader'>
         {column.header}
       </span>
     );
 
     let headerContainer = sortIcon == null ? (
-      <div className='Column'>
+      <div className='DataGrid-columnContainer'>
         {header}
       </div>
     ) : (
-      <Button className='Column' bsStyle='link' onClick={view.bindEventToCommand(x => x.toggleSortDirection, () => column.fieldName)}>
+      <Button className='DataGrid-columnContainer' bsStyle='link'
+        onClick={view.bindEventToCommand(x => x.toggleSortDirection, () => column.fieldName)}
+      >
         {header}
         {sortIcon}
       </Button>
     );
 
     return (
-      <th key={index} className={column.className} width={column.width}>
+      <th key={index} className={classNames('DataGrid-column', column.className)} width={column.width}>
         {headerContainer}
       </th>
     );
   }
 
-  public renderCell(view: DataGridView, grid: DataGridViewModel<any>, column: IDataGridColumnProps, index: number, value: any) {
+  public renderCell(value: any, column: DataGridColumnProps, index: number, grid: DataGridViewModel<any>, view: DataGridView) {
     return (
       <td className={column.className} key={index}>{value}</td>
     );
   }
 
-  public renderRow(view: DataGridView, grid: DataGridViewModel<any>, row: any, index: number, cells: any[]) {
+  public renderRow(row: any, cells: any[], index: number, grid: DataGridViewModel<any>, view: DataGridView) {
+    const rowClasses = classNames('DataGrid-row', {
+      'DataGrid-row--selected': grid.selectedItem() === row,
+    });
+
     return (
-      <tr className={grid.selectedItem() === row ? 'Row--selected' : null} key={this.rowKeySelector(row, index, cells)} onClick={() => grid.selectItem.execute(row)}>{cells}</tr>
+      <tr className={rowClasses} key={this.rowKeySelector(row, index, cells)} onClick={() => grid.selectItem.execute(row)}>{cells}</tr>
     );
   }
 
-  public renderTable(view: DataGridView, grid: DataGridViewModel<any>, data: any[], cols: any[], rows: any[]) {
+  public renderTable(rows: any[], columns: any[], data: any[], grid: DataGridViewModel<any>, view: DataGridView) {
     return (
-      <Table {...this.tableProps as any}>
+      <Table className='DataGrid-tableView' {...this.tableProps as any}>
         <thead>
           <tr>
             {
-              (cols || [])
+              (columns || [])
                 .asEnumerable()
                 .defaultIfEmpty(
                   <th key='empty'>
-                    <div className='DataGridView-empty text-muted'>No Columns Defined...</div>
+                    <div className='DataGrid-empty text-muted'>No Columns Defined...</div>
                   </th>
                 )
                 .toArray()
@@ -174,7 +184,7 @@ export class DataGridTableView implements IDataGridView {
               .defaultIfEmpty(
                 <tr key='empty'>
                   <td>
-                    <div className='DataGridView-empty text-muted'>No Rows to Display...</div>
+                    <div className='DataGrid-empty text-muted'>No Rows to Display...</div>
                   </td>
                 </tr>
               )
@@ -186,43 +196,43 @@ export class DataGridTableView implements IDataGridView {
   }
 }
 
-interface IDataGridProps extends IBaseViewProps {
-  view?: IDataGridView;
+interface DataGridProps extends IBaseViewProps {
+  view?: DataGridViewTemplate;
   hideSearch?: boolean;
   pagerLimits?: number[];
   children?: DataGridColumn[];
 }
 
-export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any>> {
+export class DataGridView extends BaseView<DataGridProps, DataGridViewModel<any>> {
   public static displayName = 'DataGridView';
 
   static defaultProps = {
-    view: new DataGridTableView(),
+    view: new DataGridTableViewTemplate(),
     hideSearch: false,
     pagerLimits: [10, 25, null],
   };
 
-  private columns: IDataGridColumnProps[];
+  private columns: DataGridColumnProps[];
 
-  private renderTable(items: any[]) {
-    let columns = this.columns.map((x, i) => this.props.view.renderColumn(this, this.state, x, i));
+  private renderGrid(items: any[]) {
+    let columns = this.columns.map((x, i) => this.props.view.renderColumn(x, i, this.state, this));
 
     let rows = items.map((row, rowIndex) => {
       let cells = this.columns.map((column, columnIndex) => {
-        return this.props.view.renderCell(this, this.state, column, columnIndex, column.valueSelector(row));
+        return this.props.view.renderCell(column.valueSelector(row), column, columnIndex, this.state, this);
       });
 
-      return this.props.view.renderRow(this, this.state, row, rowIndex, cells);
+      return this.props.view.renderRow(row, cells, rowIndex, this.state, this);
     });
 
-    let table = this.props.view.renderTable(this, this.state, items, columns, rows);
+    let table = this.props.view.renderTable(rows, columns, items, this.state, this);
 
     return table;
   }
 
   private createColumns(columns: DataGridColumn[]) {
-    this.columns = React.Children.map(columns, (col: React.ReactElement<IDataGridColumnProps>) => {
-      let column = Object.assign<IDataGridColumnProps>({}, col.props);
+    this.columns = React.Children.map(columns, (col: React.ReactElement<DataGridColumnProps>) => {
+      let column = Object.assign<DataGridColumnProps>({}, col.props);
 
       if (column.header == null) {
         column.header = column.fieldName;
@@ -245,7 +255,7 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
 
   render() {
     let search: any;
-    let table: any;
+    let grid: any;
     let pager: any;
 
     let items = this.state.projectedItems.toArray() || [];
@@ -277,7 +287,7 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
       search = (this.props.hideSearch === true || this.state.canFilter() === false) ? null : (
         <SearchView viewModel={this.state.search}/>
       );
-      table = this.renderTable(items);
+      grid = this.renderGrid(items);
       pager = (
         <PagerView viewModel={this.state.pager} limits={this.props.pagerLimits} />
       );
@@ -286,9 +296,17 @@ export class DataGridView extends BaseView<IDataGridProps, DataGridViewModel<any
     return (
       <div className='DataGrid'>
         {search}
-        {table}
+        {grid}
         {pager}
       </div>
     );
+  }
+
+  public selectItem(item: any, index?: number) {
+    if (index == null) {
+      this.state.selectItem.execute(item);
+    } else {
+      this.state.selectIndex.execute(index);
+    }
   }
 }

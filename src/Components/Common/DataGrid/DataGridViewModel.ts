@@ -5,14 +5,14 @@ import { ListViewModel, IListRoutingState } from '../List/ListViewModel';
 import { SearchViewModel, ISearchRoutingState } from '../Search/SearchViewModel';
 import { PagerViewModel, IPagerRoutingState } from '../Pager/PagerViewModel';
 
-export interface IDataGridRoutingState extends IListRoutingState {
+export interface DataGridRoutingState extends IListRoutingState {
   search: ISearchRoutingState;
   sortBy: string;
   sortDir: SortDirection;
   pager: IPagerRoutingState;
 }
 
-export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRoutingState> {
+export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRoutingState> {
   public static displayName = 'DataGridViewModel';
 
   public projectedItems = wx.list<TData>();
@@ -135,7 +135,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
     return this.search;
   }
 
-  saveRoutingState(state: IDataGridRoutingState) {
+  saveRoutingState(state: DataGridRoutingState) {
     state.search = this.search.getRoutingState();
 
     if (this.sortField() != null) {
@@ -149,7 +149,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, IDataGridRout
     state.pager = this.pager.getRoutingState();
   }
 
-  loadRoutingState(state: IDataGridRoutingState) {
+  loadRoutingState(state: DataGridRoutingState) {
     this.search.setRoutingState(state.search);
     this.pager.setRoutingState(state.pager);
   }

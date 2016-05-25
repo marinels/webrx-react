@@ -3,7 +3,7 @@ import * as Rx from 'rx';
 import { DataGridViewModel } from './DataGridViewModel';
 import { SortDirection } from '../../../Utils/Compare';
 
-export interface IAsyncDataSource<TData> {
+export interface AsyncDataSource<TData> {
   getCount(filter: string): Rx.Observable<number>;
   getResults(filter: string, offset: number, limit: number, sortField?: string, sortDirection?: SortDirection): Rx.Observable<TData[]>;
 }
@@ -12,7 +12,7 @@ export class AsyncDataGridViewModel<TData> extends DataGridViewModel<TData> {
   public static displayName = 'AsyncDataGridViewModel';
 
   constructor(
-    private dataSource: IAsyncDataSource<TData>,
+    private dataSource: AsyncDataSource<TData>,
     enableRouting = false) {
     super(null, null, enableRouting);
   }

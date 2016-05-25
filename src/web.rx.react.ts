@@ -226,12 +226,12 @@ export namespace Components {
   export import PageHeaderView = PageHeaderViewTypes.PageHeaderView;
 
   export import DataGridViewModel = DataGridViewModelTypes.DataGridViewModel;
-  export import IAsyncDataSource = AsyncDataGridViewModelTypes.IAsyncDataSource;
+  export import AsyncDataSource = AsyncDataGridViewModelTypes.AsyncDataSource;
   export import AsyncDataGridViewModel = AsyncDataGridViewModelTypes.AsyncDataGridViewModel;
   export import DataGridColumn = DataGridViewTypes.DataGridColumn;
-  export import IDataGridView = DataGridViewTypes.IDataGridView;
-  export import DataGridListView = DataGridViewTypes.DataGridListView;
-  export import DataGridTableView = DataGridViewTypes.DataGridTableView;
+  export import DataGridViewTemplate = DataGridViewTypes.DataGridViewTemplate;
+  export import DataGridListViewTemplate = DataGridViewTypes.DataGridListViewTemplate;
+  export import DataGridTableViewTemplate = DataGridViewTypes.DataGridTableViewTemplate;
   export import DataGridView = DataGridViewTypes.DataGridView;
 }
 
