@@ -2,7 +2,7 @@ import * as Ix from 'ix';
 import * as wx from 'webrx';
 
 import { IRoute } from '../../Routing/RouteManager';
-import { ICommandAction, IMenu } from '../Common/PageHeader/Actions';
+import { ICommandAction } from '../Common/PageHeader/Actions';
 
 import { BaseRoutableViewModel } from '../React/BaseRoutableViewModel';
 import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
