@@ -2,7 +2,7 @@ declare interface ObjectConstructor {
   assign<T>(target: any, ...sources: any[]): T;
   dispose<T>(disposable: T, returnNull?: boolean): T;
   getName(source: any, undefinedValue?: string): string;
-  getValueOrDefault<T>(value: T, defaultValue: T): T;
+  fallback<T>(...values: T[]): T;
 }
 
 declare interface StringConstructor {

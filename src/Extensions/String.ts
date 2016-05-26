@@ -29,5 +29,5 @@ function stringify(value: any, replacer?: any, space: string | number = 2) {
   return result;
 }
 
-String.isNullOrEmpty = Object.getValueOrDefault(String.isNullOrEmpty, isNullOrEmpty);
-String.stringify = Object.getValueOrDefault(String.stringify, stringify);
+String.isNullOrEmpty = Object.fallback(String.isNullOrEmpty, isNullOrEmpty);
+String.stringify = Object.fallback(String.stringify, stringify);

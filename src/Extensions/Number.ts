@@ -6,4 +6,4 @@ function isNumeric(value: any) {
   return (value - parseFloat(value) + 1) >= 0;
 }
 
-Number.isNumeric = Object.getValueOrDefault(Number.isNumeric, isNumeric);
+Number.isNumeric = Object.fallback(Number.isNumeric, isNumeric);

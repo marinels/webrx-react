@@ -1,5 +1,7 @@
 /// <reference path="./Extensions.d.ts"/>
 
+import * as Ix from 'ix';
+
 function assign<T>(target: any, ...sources: any[]) {
   if (target === undefined || target === null) {
     throw new TypeError('Cannot convert first argument to object');
@@ -92,11 +94,14 @@ function getName(source: any, undefinedValue = 'undefined', isStatic = false) {
   return name;
 }
 
-function getValueOrDefault<T>(value: T, defaultValue: T) {
-  return value ? value : defaultValue;
+function fallback<T>(...values: T[]) {
+  return Ix.Enumerable
+    .fromArray(values)
+    .where(x => x != null)
+    .firstOrDefault();
 }
 
-Object.assign = getValueOrDefault(Object.assign, assign);
-Object.dispose = getValueOrDefault(Object.dispose, dispose);
-Object.getName = getValueOrDefault(Object.getName, getName);
-Object.getValueOrDefault = getValueOrDefault(Object.getValueOrDefault, getValueOrDefault);
+Object.assign = fallback(Object.assign, assign);
+Object.dispose = fallback(Object.dispose, dispose);
+Object.getName = fallback(Object.getName, getName);
+Object.fallback = fallback(Object.fallback, fallback);
