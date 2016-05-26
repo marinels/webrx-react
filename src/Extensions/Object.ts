@@ -101,7 +101,16 @@ function fallback<T>(...values: T[]) {
     .firstOrDefault();
 }
 
+function fallbackAsync<T>(...actions: (T | (() => T))[]) {
+  return Ix.Enumerable
+    .fromArray(actions)
+    .select(x => x instanceof Function ? x.apply(this) : x)
+    .where(x => x != null)
+    .firstOrDefault();
+}
+
 Object.assign = fallback(Object.assign, assign);
 Object.dispose = fallback(Object.dispose, dispose);
 Object.getName = fallback(Object.getName, getName);
 Object.fallback = fallback(Object.fallback, fallback);
+Object.fallbackAsync = fallback(Object.fallbackAsync, fallbackAsync);

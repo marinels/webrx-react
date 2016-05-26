@@ -3,6 +3,7 @@ declare interface ObjectConstructor {
   dispose<T>(disposable: T, returnNull?: boolean): T;
   getName(source: any, undefinedValue?: string): string;
   fallback<T>(...values: T[]): T;
+  fallbackAsync<T>(...actions: (T | (() => T))[]): T;
 }
 
 declare interface StringConstructor {
