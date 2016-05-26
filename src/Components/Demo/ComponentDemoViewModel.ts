@@ -96,7 +96,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
 
   loadRoutingState(state: IComponentDemoRoutingState) {
     // try columns routing state first, then fall back onto view model columns state
-    state.columns = state.columns || this.columns() || 12;
+    state.columns = Object.fallback(state.columns, this.columns(), 12);
 
     // try and extract the component route from the routing state
     this.componentRoute = state.componentRoute || state.route.match[2];
