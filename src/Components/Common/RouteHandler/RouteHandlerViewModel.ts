@@ -146,7 +146,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
     this.routingStateChangedHandle = pubSub.subscribe<IRoutingStateChanged>(RoutingStateChangedKey, x => {
       if (this.currentViewModel() != null) {
-        let state = this.currentViewModel().getRoutingState(x.context);
+        let state = this.currentViewModel().getRoutingState(x);
 
         this.manager.navTo(this.currentPath, state);
       }
