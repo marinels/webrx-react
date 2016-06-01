@@ -74,6 +74,7 @@
     "./src/Components/Common/ModalDialog/ModalDialogView.tsx",
     "./src/Components/Common/PageFooter/PageFooterView.tsx",
     "./src/Components/Common/PageHeader/PageHeaderView.tsx",
+    "./src/Components/Common/PageHeader/Sidebar.tsx",
     "./src/Components/Common/Pager/PagerView.tsx",
     "./src/Components/Common/ProfilePicture/ProfilePicture.tsx",
     "./src/Components/Common/RouteHandler/RouteHandlerView.tsx",

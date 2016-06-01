@@ -1,0 +1,81 @@
+@import (reference) '../../../Style/Bootstrap.less';
+
+.Sidebar {
+  &.modal {
+    // this will ensure the content will wrap if the resolution is too small
+    max-width: 100%;
+
+    // choose some reasonable custom styles for the sidebar
+    background-color: @navbar-default-bg;
+    box-shadow: 5px 0 10px;
+
+    // automatic right bound when displaying on the left
+    &.left {
+      right: auto;
+    }
+
+    // automatic left bound when displaying on the right
+    &.right {
+      left: auto;
+    }
+
+    // all of these styles apply to the fade animations
+    // NOTE: exit transitions cannot be adjusted easily as react-bootstrap will
+    //       internally remove the DOM nodes after the transition timeouts below
+    &.fade {
+      // setup the custom transition
+      // we are simply relocating the transition to the root node instead of the dialog
+      transition: transform 0.3s ease-out, opacity 0.15s linear;
+
+      // these transforms are applied when the sidebar is being rendered
+      // the +/- 100% will position the side bar just outside of the viewport bounds
+      &:not(.in) {
+        &.left {
+          transform: translate3d(-100%, 0, 0);
+        }
+
+        &.right {
+          transform: translate3d(100%, 0, 0);
+        }
+      }
+
+      & .modal-dialog {
+        // disable original transition
+        transition: none;
+      }
+    }
+
+    & .modal-dialog {
+      // ensure dialog wraps its contents
+      width: auto;
+      margin: 0;
+
+      & .modal-content {
+        // disable original dialog content styles
+        background-color: transparent;
+        border: 0;
+        box-shadow: none;
+
+        .modal-body {
+          // disable the original body padding
+          padding: 0;
+        }
+      }
+    }
+  }
+}
+
+// stylelint-disable selector-no-qualifying-type, declaration-no-important
+
+// this is a special style override to prevent fixed elements from looking offset
+// due to the modal dialog adding scrollbar padding to the backdrop (in an effort
+// to not shift the entire page over to the right). Since fixed page elements are
+// not affected by the body padding, we end up with offset elements. This style
+// override corrects this visual inconsistency.
+
+body.modal-open {
+  overflow: auto !important;
+  padding: 0 !important;
+}
+
+// stylelint-enable selector-no-qualifying-type, declaration-no-important
