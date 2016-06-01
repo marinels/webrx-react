@@ -1,11 +1,13 @@
 import * as React from 'react';
 
-import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Button } from 'react-bootstrap';
+import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Button, Collapse } from 'react-bootstrap';
 import { Icon } from 'react-fa';
+import * as classNames from 'classnames';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import { SearchView } from '../Search/SearchView';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
+import { Sidebar } from './Sidebar';
 import { PageHeaderViewModel } from './PageHeaderViewModel';
 import { IMenuItem } from './Actions';
 
@@ -30,6 +32,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
       this.state.helpMenuItems.listChanged,
       this.state.adminMenuItems.listChanged,
       this.state.userMenuItems.listChanged,
+      this.state.isSidebarVisible.changed,
     ];
   }
 
@@ -45,107 +48,149 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
     return isDisabled;
   }
 
-  private createMenu(items: wx.IObservableList<IMenuItem> | IMenuItem[], icon: any, propsCreator: () => any, defaultValue?: any) {
-    let length = items == null ? null : items.length;
-    if (length instanceof Function) {
-      length = (length as wx.IObservableProperty<number>)();
-    }
-    let title = (
-      <div className='PageHeader-menuTitle'>
-        {icon}
-      </div>
-    );
-    return length == null || length === 0 ? defaultValue : (
-      // title as any: the typings for NavDropdownProps incorrectly define title as a string
-      <NavDropdown title={title as any} {...propsCreator()}>
+  private createHeaderMenu(id: any, header: any, items: IMenuItem[], noCaret = false, className?: string) {
+    return items.length === 0 ? null : (
+      <NavDropdown id={id} key={id} title={header} noCaret={noCaret} className={classNames(`PageHeader-${id}`, className)}>
         {
-          items.map(item => {
-            let itemIcon = String.isNullOrEmpty(item.iconName) ? null : <Icon name={item.iconName} fixedWidth />;
-            let onSelect = item.uri == null ? this.bindEventToCommand(x => x.menuItemSelected, () => item) : null;
-            return (
-              <MenuItem key={item.id} disabled={this.isMenuItemDisabled(item)} href={item.uri} onSelect={onSelect}>
-                {itemIcon}
-                <span className='MenuItem-text'>{item.header}</span>
+          items
+            .asEnumerable()
+            .select(x => (
+              <MenuItem key={x.id} disabled={this.isMenuItemDisabled(x)} href={x.uri}
+                onSelect={x.uri == null ? this.bindEventToCommand(vm => vm.menuItemSelected, () => x) : null}
+              >
+                { String.isNullOrEmpty(x.iconName) ? null : <Icon name={x.iconName} fixedWidth /> }
+                { x.header }
               </MenuItem>
-            );
-          })
+            ))
+            .toArray()
         }
       </NavDropdown>
     );
   }
 
   render() {
-    let eventKey = 1;
-
-    let appMenus = (this.state.appMenus == null || this.state.appMenus.length() === 0) ? null : (
-      this.state.appMenus.map(x => this.createMenu(x.items.sort((a, b) => (a.order || 0) - (b.order || 0)), x.header, () => ({
-        id: x.id,
-        key: x.id,
-        eventKey: eventKey++,
-      })))
-    );
-
-    let appActions = (this.state.appActions == null || this.state.appActions.length() === 0) ? null : (
-      this.state.appActions
-        .filter(x => x.command.canExecute(x.commandParameter) === true)
-        .map(x => (
-          <Button key={x.id} className='PageHeader-actionButton' bsStyle={x.bsStyle}
-            disabled={x.command == null}
-            onClick={() => { if (x.command != null) { x.command.execute(x); } }}>
-            <div className='PageHeader-actionHeader'>
-              { String.isNullOrEmpty(x.iconName) ? null : <Icon className='PageHeader-actionHeaderIcon' name={x.iconName} /> }
-              <span className='PageHeader-actionHeaderText'>{x.header}</span>
-            </div>
-          </Button>
-        ))
-    );
-
-    let search = (this.state.search == null) ? null : (
-      <form className='PageHeader-navSearch navbar-form navbar-right' role='search'>
-        <SearchView viewModel={this.state.search} />
-      </form>
-    );
-
     return (
       <div className='PageHeader'>
-        <Navbar fluid fixedTop>
-          <Nav className='PageHeader-navBrand'>
-            {this.createMenu(this.state.appSwitcherMenuItems, (<Icon name='bars' size='lg' />), () => ({
-              id: 'app-switcher',
-              eventKey: 0,
-              noCaret: true,
-            }))}
-            <NavItem className='PageHeader-brand' href={this.state.homeLink}>{this.props.brand}</NavItem>
-          </Nav>
-          <Nav className='PageHeader-navMenus'>
-            {appMenus}
-          </Nav>
-          <Nav className='PageHeader-navSite' pullRight>
-            {this.createMenu(this.state.helpMenuItems, (<Icon name='question-circle' size='lg' />), () => ({
-              id: 'help-menu',
-              className: 'PageHeader-iconNavItem PageHeader-navHelp',
-              eventKey: eventKey++,
-              noCaret: true,
-            }))}
-            {this.createMenu(this.state.adminMenuItems, (<Icon className='hover-tilt' name='cog' size='lg' />), () => ({
-              id: 'admin-menu',
-              className: 'PageHeader-iconNavItem PageHeader-navAdmin hover-tilt-host',
-              eventKey: eventKey++,
-              noCaret: true,
-            }))}
-            {this.createMenu(this.state.userMenuItems, (<ProfilePicture src={this.state.userImage} title={this.state.userDisplayName} iconSize='lg' block />), () => ({
-              id: 'user-menu',
-              className: 'PageHeader-iconNavItem PageHeader-navUser',
-              eventKey: eventKey++,
-              noCaret: true,
-            }))}
-          </Nav>
-          {search}
-          <form className='PageHeader-navActions navbar-form navbar-right'>
-            {appActions}
-          </form>
-      </Navbar>
-    </div>
+        <Navbar fixedTop fluid>
+          <Navbar.Header>
+            <Navbar.Brand>
+              <Button className='PageHeader-brand' ref='brand' bsStyle='link' active={this.state.isSidebarVisible()}
+                onClick={this.bindEventToCommand(x => x.toggleSideBar, () => null)}
+              >
+                {this.props.brand}
+              </Button>
+            </Navbar.Brand>
+            <Navbar.Toggle />
+          </Navbar.Header>
+          <Navbar.Collapse>
+            <Nav className='PageHeader-routedMenus'>
+              {
+                this.renderLoadable(
+                  this.state.navbarMenus == null || this.state.navbarMenus.length() === 0, null,
+                  this.state.navbarMenus
+                    .toArray()
+                    .asEnumerable()
+                    .select((x, i) =>
+                      this.createHeaderMenu(
+                        x.id,
+                        x.header,
+                        x.items
+                          .sort((a, b) => (a.order || 0) - (b.order || 0))
+                      )
+                    )
+                    .toArray()
+                )
+              }
+            </Nav>
+            <Nav className='PageHeader-siteMenus' pullRight>
+              {
+                this.createHeaderMenu(
+                  'helpMenu',
+                  (<Icon name='question-circle' size='2x' />),
+                  this.state.helpMenuItems.toArray(),
+                  true
+                )
+              }
+              {
+                this.createHeaderMenu(
+                  'adminMenu',
+                  (<Icon className='hover-tilt' name='cog' size='2x' />),
+                  this.state.adminMenuItems.toArray(),
+                  true,
+                  'hover-tilt-host'
+                )
+              }
+              {
+                this.createHeaderMenu(
+                  'userMenu',
+                  (<ProfilePicture src={this.state.userImage} title={this.state.userDisplayName} iconSize='2x' />),
+                  this.state.userMenuItems.toArray(),
+                  true
+                )
+              }
+            </Nav>
+              {
+                this.renderLoadable(this.state.search == null, null, (
+                  <Navbar.Form pullRight>
+                    <SearchView viewModel={this.state.search} />
+                  </Navbar.Form>
+                ))
+              }
+            <Navbar.Form className='PageHeader-routedActions' pullRight>
+              {
+                this.renderLoadable(
+                  this.state.navbarActions == null || this.state.navbarActions.length() === 0, null,
+                  this.state.navbarActions
+                    .toArray()
+                    .asEnumerable()
+                    .where(x => x.command != null && x.command.canExecute(x.commandParameter) === true)
+                    .select(x => (
+                      <Button key={x.id} className='PageHeader-actionButton' bsStyle={x.bsStyle}
+                        disabled={x.command == null}
+                        onClick={() => x.command.execute(x) }
+                      >
+                        { String.isNullOrEmpty(x.iconName) ? null : <Icon className='PageHeader-actionHeaderIcon' name={x.iconName} /> }
+                        <span className='PageHeader-actionHeaderText'>{x.header}</span>
+                      </Button>
+                    ))
+                    .toArray()
+                )
+              }
+            </Navbar.Form>
+          </Navbar.Collapse>
+        </Navbar>
+        <Sidebar isVisible={this.state.isSidebarVisible()}
+          header={this.props.brand}
+          onHide={this.bindEventToCommand(x => x.toggleSideBar, () => false)}
+        >
+          {
+            this.state.sidebarMenus
+              .toArray()
+              .asEnumerable()
+              .orderBy(x => x.order)
+              .select(menu => (
+                <Nav key={menu.id}>
+                  <NavItem disabled>{menu.header}</NavItem>
+                  {
+                    menu.items
+                      .asEnumerable()
+                      .orderBy(x => x.order)
+                      .select(x => (
+                        <NavItem key={x.id} disabled={this.isMenuItemDisabled(x)} href={x.uri}
+                          onClick={x.uri == null ? this.bindEventToCommand(vm => vm.menuItemSelected, () => x) : this.bindEventToCommand(vm => vm.toggleSideBar, () => false)}
+                        >
+                          { String.isNullOrEmpty(x.iconName) ? null : <Icon name={x.iconName} fixedWidth /> }
+                          { x.header }
+                        </NavItem>
+                      ))
+                      .toArray()
+                  }
+                </Nav>
+              ))
+              .toArray()
+          }
+        </Sidebar>
+      </div>
     );
   }
 }

@@ -1,95 +1,109 @@
 @import (reference) '../../../Style/Bootstrap.less';
 
 .PageHeader {
-  font-size: 1.25em;
   // 51 px corresponds to the height of the navbar (50px) plus its border (1px)
   padding-bottom: 51px;
 
+  // remove the bottom margin on the navbar
   .navbar {
-    margin: 0;
-    height: 51px;
+    margin-bottom: 0;
   }
 
-  .PageHeader-navBrand {
-    .PageHeader-brand {
-      font-weight: bold;
+  .navbar-brand {
+    font-weight: bold;
+
+    // make the brand button appear like a toggle button for the sidebar
+    &.btn {
+      &:hover,
+      &.active {
+        background-color: #ddd;
+      }
+
+      &:focus {
+        outline: 0;
+      }
     }
   }
 
-  .PageHeader-navMenus {
-    .PageHeader-menuTitle {
-      display: inline-block;
-    }
+  // ensure icons have an appropriate margin against the associated text
+  .dropdown-menu li > a > .fa,
+  .PageHeader-actionButton > .PageHeader-actionHeaderIcon {
+    margin-right: 8px;
   }
 
-  .PageHeader-navActions {
+  // give action buttons 10px of margin between one another
+  .PageHeader-actions {
     .PageHeader-actionButton {
       margin-left: 10px;
-
-      .PageHeader-actionHeaderIcon {
-        margin-right: 8px;
-      }
     }
   }
 
-  .PageHeader-navSite {
-    margin: 0;
+  // add admin menu tilt animation
+  .PageHeader-adminMenu {
+    .tilt-animation(tilt-180 200ms 0ms ease-in, tilt-reverse-45 500ms 0ms ease);
+  }
 
-    .PageHeader-navAdmin {
-      .dropdown-toggle {
-        .tilt-animation(tilt-180 200ms 0ms ease-in, tilt-reverse-45 500ms 0ms ease);
-
-        // this is magic to fix the rotation origin in older browsers
-        // might need to test this out a bit to see where it is needed
-        // latest chrome doesn't appear to need it.
-        // .fa {
-        //   transform-origin: 50% calc(50% - 5px);
-        // }
-      }
+  // this prevents icons or images from over-extending this block's height
+  .PageHeader-appSwitcherMenu,
+  .PageHeader-helpMenu,
+  .PageHeader-adminMenu,
+  .PageHeader-userMenu {
+    .dropdown-toggle {
+      line-height: 0;
     }
+  }
 
-    .PageHeader-navUser {
-      .PageHeader-menuTitle {
-        border-radius: 50%;
-        background-color: #dfdfdf;
-        overflow: hidden;
+  // fix navbar centering of the icons
+  .PageHeader-appSwitcherMenu,
+  .PageHeader-helpMenu,
+  .PageHeader-adminMenu {
+    .dropdown-toggle {
+      // this padding fixes the vertical centering of the cog icon
+      padding: 11px 13px;
+    }
+  }
 
-        &:hover {
-          background-color: #ccc;
-        }
-
+  // fix navbar centering of the profile image or default user icon
+  .PageHeader-userMenu {
+    .dropdown-toggle {
+      &:hover {
         .ProfilePicture {
-          .fa {
-            background-color: transparent;
-          }
+          background-color: darken(@navbar-default-link-active-bg, 12%);
         }
       }
-    }
 
-    .PageHeader-iconNavItem {
-      .dropdown-toggle {
-        padding: 10px;
-        width: 50px;
-        height: 50px;
+      // this padding fixes the vertical padding of the profile image
+      padding: 10px;
 
-        .PageHeader-menuTitle {
-          display: table;
+      .ProfilePicture {
+        // don't display any content outside fo our border radius
+        overflow: hidden;
+        // set the dimensions so that our parent's padding makes sense
+        width: 30px;
+        height: 30px;
 
-          span,
-          img {
-            width: 30px;
-            height: 30px;
-            display: table-cell;
-            text-align: center;
-            vertical-align: middle;
-          }
+        // these ensure the background makes a circular frame
+        background-color: @navbar-default-link-active-bg;
+        border-radius: 50%;
+
+        // this ensures our icon or image is square
+        & > img, .fa {
+          width: 100%;
+          height: 100%;
         }
       }
     }
   }
+}
 
-  // this style affects all menus so it must reside on the root style node
-  .MenuItem-text {
-    margin-left: 5px;
+.Sidebar {
+  .nav {
+    width: 320px;
+    // margin navs between one another
+    margin: 0 0 20px;
+
+    & > li > a > .fa {
+      margin-right: 8px;
+    }
   }
 }

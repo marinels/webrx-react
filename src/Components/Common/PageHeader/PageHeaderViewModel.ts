@@ -32,7 +32,19 @@ export class PageHeaderViewModel extends BaseViewModel {
         }
       }
     }
+
+    this.toggleSideBar.execute(false);
   });
+
+  public toggleSideBar = wx.asyncCommand((isVisible: boolean) => {
+    const visibility: boolean = Object.fallback(isVisible, !this.isSidebarVisible());
+
+    return Rx.Observable.return(visibility);
+  });
+
+  public isSidebarVisible = this.toggleSideBar.results
+    .startWith(false)
+    .toProperty();
 
   constructor(
     public routeHandler?: RouteHandlerViewModel,
