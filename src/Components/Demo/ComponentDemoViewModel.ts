@@ -136,11 +136,11 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
     return (viewModel != null && viewModel.getSearch != null) ? viewModel.getSearch() : null;
   }
 
-  getAppMenus() {
+  getNavbarMenus() {
     return RoutingMap.menus;
   }
 
-  getAppActions() {
+  getNavbarActions() {
     return <ICommandAction[]>[
       { id: 'reRender', header: 'Re-Render', command: this.reRender, bsStyle: 'primary' },
     ];

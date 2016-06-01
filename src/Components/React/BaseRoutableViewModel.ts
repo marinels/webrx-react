@@ -114,15 +114,15 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
     return <any>null;
   }
 
-  public getAppSwitcherMenuItems() {
-    return <IMenuItem[]>[];
-  }
-
-  public getAppMenus() {
+  public getSidebarMenus() {
     return <IMenu[]>[];
   }
 
-  public getAppActions() {
+  public getNavbarMenus() {
+    return <IMenu[]>[];
+  }
+
+  public getNavbarActions() {
     return <ICommandAction[]>[];
   }
 

@@ -24,9 +24,9 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
 
   updateOn() {
     return [
-      this.state.appSwitcherMenuItems.listChanged,
-      this.state.appMenus.listChanged,
-      this.state.appActions.listChanged,
+      this.state.sidebarMenus.listChanged,
+      this.state.navbarMenus.listChanged,
+      this.state.navbarActions.listChanged,
       this.state.helpMenuItems.listChanged,
       this.state.adminMenuItems.listChanged,
       this.state.userMenuItems.listChanged,

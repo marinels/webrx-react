@@ -13,9 +13,9 @@ export class PageHeaderViewModel extends BaseViewModel {
   private dynamicSubs = new SubMan();
 
   public search: SearchViewModel = null;
-  public appSwitcherMenuItems = wx.list<IMenuItem>();
-  public appMenus = wx.list<IMenu>();
-  public appActions = wx.list<ICommandAction>();
+  public sidebarMenus = wx.list<IMenu>();
+  public navbarMenus = wx.list<IMenu>();
+  public navbarActions = wx.list<ICommandAction>();
   public helpMenuItems = wx.list<IMenuItem>();
   public adminMenuItems = wx.list<IMenuItem>();
   public userMenuItems = wx.list<IMenuItem>();
@@ -36,9 +36,9 @@ export class PageHeaderViewModel extends BaseViewModel {
 
   constructor(
     public routeHandler?: RouteHandlerViewModel,
-    public staticAppSwitcherMenuItems: IMenuItem[] = [],
-    public staticAppMenus: IMenu[] = [],
-    public staticAppActions: ICommandAction[] = [],
+    public staticSidebarMenus: IMenu[] = [],
+    public staticNavbarMenus: IMenu[] = [],
+    public staticNavbarActions: ICommandAction[] = [],
     public staticHelpMenuItems: IMenuItem[] = [],
     public staticAdminMenuItems: IMenuItem[] = [],
     public staticUserMenuItems: IMenuItem[] = [],
@@ -69,9 +69,9 @@ export class PageHeaderViewModel extends BaseViewModel {
 
     this.dynamicSubs.dispose();
 
-    this.addItems(this.appSwitcherMenuItems, this.staticAppSwitcherMenuItems, viewModel, x => x.getAppSwitcherMenuItems);
-    this.addItems(this.appMenus, this.staticAppMenus, viewModel, x => x.getAppMenus);
-    this.addItems(this.appActions, this.staticAppActions, viewModel, x => x.getAppActions);
+    this.addItems(this.sidebarMenus, this.staticSidebarMenus, viewModel, x => x.getSidebarMenus);
+    this.addItems(this.navbarMenus, this.staticNavbarMenus, viewModel, x => x.getNavbarMenus);
+    this.addItems(this.navbarActions, this.staticNavbarActions, viewModel, x => x.getNavbarActions);
     this.addItems(this.helpMenuItems, this.staticHelpMenuItems, viewModel, x => x.getHelpMenuItems);
     this.addItems(this.adminMenuItems, this.staticAdminMenuItems, viewModel, x => x.getAdminMenuItems);
     this.addItems(this.userMenuItems, this.staticUserMenuItems, viewModel, x => x.getUserMenuItems);
