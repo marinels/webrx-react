@@ -86,4 +86,41 @@ declare module 'react-bootstrap' {
     height?: number;
   }
   class Image extends React.Component<ImageProps, any> { }
+
+  interface NavbarWrapperProps extends React.HTMLAttributes {
+    componentClass?: any;
+    pullRight?: boolean;
+  }
+
+  class NavbarForm extends React.Component<NavbarWrapperProps, {}> {
+  }
+
+  class NavbarText extends React.Component<NavbarWrapperProps, {}> {
+  }
+
+  class NavbarLink extends React.Component<NavbarWrapperProps, {}> {
+  }
+
+  interface NavbarClass {
+    Form: typeof NavbarForm;
+    Text: typeof NavbarText;
+    Link: typeof NavbarLink;
+  }
+
+  interface CollapseProps extends React.HTMLAttributes {
+    dimension?: string;
+    getDimensionValue?: Function;
+    in?: boolean;
+    onEnter?: Function;
+    onEntered?: Function;
+    onEntering?: Function;
+    onExit?: Function;
+    onExited?: Function;
+    onExiting?: Function;
+    role?: string;
+    timeout?: number;
+    transitionAppear?: boolean;
+    unmountOnExit?: boolean;
+  }
+  class Collapse extends React.Component<CollapseProps, any> { }
 }
