@@ -4,6 +4,7 @@ import * as wx from 'webrx';
 
 import { getLogger } from '../../Utils/Logging/LogManager';
 import { BaseViewModel, LifecycleComponentViewModel } from './BaseViewModel';
+import { Loading } from '../Common/Loading/Loading';
 
 export interface IBaseViewProps extends React.HTMLAttributes {
   viewModel: BaseViewModel;
@@ -135,14 +136,55 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   protected renderView() { this.forceUpdate(); }
   // -----------------------------------------
 
+  // -----------------------------------------
+  // these are render helper methods
+  // -----------------------------------------
+  protected renderSizedLoadable(
+    isLoading: wx.IObservableProperty<boolean> | boolean,
+    text: string,
+    fontSize: number | string,
+    loadedComponent?: any
+  ) {
+    return this.renderLoadable(isLoading, {
+      text,
+      fontSize,
+    }, loadedComponent);
+  }
+
   protected renderLoadable(
     isLoading: wx.IObservableProperty<boolean> | boolean,
-    loadingContent: Function | any,
-    content: Function | any
+    loadingComponent: any,
+    loadedComponent?: any
   ) {
-    return (isLoading instanceof Function ? isLoading() : isLoading) === true ?
-      (loadingContent instanceof Function ? loadingContent.apply() : loadingContent) :
-      (content instanceof Function ? content.apply(this) : content);
+    const defaultProps = {
+      fluid: true,
+      indeterminate: true,
+    };
+    const loadingComponentType = typeof loadingComponent;
+
+    if (loadingComponentType === 'string') {
+      loadingComponent = (
+        <Loading {...defaultProps} text={loadingComponent} />
+      );
+    } else if (loadingComponentType === 'object') {
+      if (React.isValidElement(loadingComponent) === false) {
+        loadingComponent = (
+          <Loading {...defaultProps} {...loadingComponent} />
+        );
+      }
+    }
+
+    return this.renderConditional(isLoading, loadingComponent, loadedComponent);
+  }
+
+  protected renderConditional(
+    condition: wx.IObservableProperty<boolean> | boolean,
+    trueContent: any,
+    falseContent?: any
+  ) {
+    return (condition instanceof Function ? condition() : condition) === true ?
+      (trueContent instanceof Function ? trueContent.apply(this) : trueContent) :
+      (falseContent instanceof Function ? falseContent.apply(this) : falseContent);
   }
 
   protected renderEnumerable<T, TResult>(
@@ -154,6 +196,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
 
     return array.length > 0 ? selector(array) : defaultSelector();
   }
+  // -----------------------------------------
 
   /**
    * Binds an observable to a command on the view model

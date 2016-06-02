@@ -85,20 +85,20 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
           <Navbar.Collapse>
             <Nav className='PageHeader-routedMenus'>
               {
-                this.renderLoadable(
-                  this.state.navbarMenus == null || this.state.navbarMenus.length() === 0, null,
-                  this.state.navbarMenus
-                    .toArray()
-                    .asEnumerable()
-                    .select((x, i) =>
-                      this.createHeaderMenu(
-                        x.id,
-                        x.header,
-                        x.items
-                          .sort((a, b) => (a.order || 0) - (b.order || 0))
+                this.renderConditional(
+                  this.state.navbarMenus != null && this.state.navbarMenus.length() > 0, () =>
+                    this.state.navbarMenus
+                      .toArray()
+                      .asEnumerable()
+                      .select((x, i) =>
+                        this.createHeaderMenu(
+                          x.id,
+                          x.header,
+                          x.items
+                            .sort((a, b) => (a.order || 0) - (b.order || 0))
+                        )
                       )
-                    )
-                    .toArray()
+                      .toArray()
                 )
               }
             </Nav>
@@ -130,30 +130,30 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
               }
             </Nav>
               {
-                this.renderLoadable(this.state.search == null, null, (
+                this.renderConditional(this.state.search != null, () =>
                   <Navbar.Form pullRight>
                     <SearchView viewModel={this.state.search} />
                   </Navbar.Form>
-                ))
+                )
               }
             <Navbar.Form className='PageHeader-routedActions' pullRight>
               {
-                this.renderLoadable(
-                  this.state.navbarActions == null || this.state.navbarActions.length() === 0, null,
-                  this.state.navbarActions
-                    .toArray()
-                    .asEnumerable()
-                    .where(x => x.command != null && x.command.canExecute(x.commandParameter) === true)
-                    .select(x => (
-                      <Button key={x.id} className='PageHeader-actionButton' bsStyle={x.bsStyle}
-                        disabled={x.command == null}
-                        onClick={() => x.command.execute(x) }
-                      >
-                        { String.isNullOrEmpty(x.iconName) ? null : <Icon className='PageHeader-actionHeaderIcon' name={x.iconName} /> }
-                        <span className='PageHeader-actionHeaderText'>{x.header}</span>
-                      </Button>
-                    ))
-                    .toArray()
+                this.renderConditional(
+                  this.state.navbarActions != null && this.state.navbarActions.length() > 0, () =>
+                    this.state.navbarActions
+                      .toArray()
+                      .asEnumerable()
+                      .where(x => x.command != null && x.command.canExecute(x.commandParameter) === true)
+                      .select(x => (
+                        <Button key={x.id} className='PageHeader-actionButton' bsStyle={x.bsStyle}
+                          disabled={x.command == null}
+                          onClick={() => x.command.execute(x) }
+                        >
+                          { String.isNullOrEmpty(x.iconName) ? null : <Icon className='PageHeader-actionHeaderIcon' name={x.iconName} /> }
+                          <span className='PageHeader-actionHeaderText'>{x.header}</span>
+                        </Button>
+                      ))
+                      .toArray()
                 )
               }
             </Navbar.Form>
