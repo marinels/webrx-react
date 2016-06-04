@@ -44,6 +44,9 @@ export class ObservableApi {
       // if an API call throws an uncaught error, that means you are not subscribing to the observable's error
       Rx.Observable
         .fromPromise(method === HttpRequestMethod.POST ? this.client.post<T>(uri, params, options) : this.client.get<T>(uri, params, options))
+        .do(x => {
+          this.logger.info(`API Result: ${action} (${uri})`, x);
+        })
         .catch(x => {
           this.logger.error(`API ERROR: ${action} (${uri})`, x);
 
