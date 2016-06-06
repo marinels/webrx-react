@@ -25,6 +25,8 @@
 }
 
 // create some default keyframes
+// stylelint-disable no-extra-semicolons
+// this rule does not work properly here
 .tilt-frames(tilt-45, 0deg, 45deg);
 .tilt-frames(tilt-reverse-45, 45deg, 0deg);
 
@@ -36,3 +38,4 @@
 
 .tilt-frames(tilt-360, 0deg, 360deg);
 .tilt-frames(tilt-reverse-360, 360deg, 0deg);
+// stylelint-enable no-extra-semicolons
