@@ -6,6 +6,15 @@
   color: @text-muted;
 }
 
+// stylelint-disable declaration-block-no-ignored-properties, declaration-no-important
+// helper styles to simplify creating grid columns that are vertically centered
+.col-va-middle {
+  float: none !important;
+  display: inline-block;
+  vertical-align: middle;
+}
+// stylelint-enable declaration-block-no-ignored-properties, declaration-no-important
+
 // this fixes a bug where focused buttons in input groups have cut-off outlines
 .input-group-btn > .btn:focus {
   z-index: 3;
