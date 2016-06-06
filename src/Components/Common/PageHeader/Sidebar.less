@@ -5,6 +5,14 @@
     // this will ensure the content will wrap if the resolution is too small
     max-width: 100%;
 
+    // stylelint-disable declaration-no-important
+    // the modal that we use for the sidebar supplies inline styles for padding.
+    // we don't want this padding (see the main bootstrap style file for details
+    // on why). This style override will prevent the inline style from taking
+    // effect.
+    padding: 0 !important;
+    // stylelint-enable declaration-no-important
+
     // choose some reasonable custom styles for the sidebar
     background-color: @navbar-default-bg;
     box-shadow: 5px 0 10px;
@@ -64,18 +72,3 @@
     }
   }
 }
-
-// stylelint-disable selector-no-qualifying-type, declaration-no-important
-
-// this is a special style override to prevent fixed elements from looking offset
-// due to the modal dialog adding scrollbar padding to the backdrop (in an effort
-// to not shift the entire page over to the right). Since fixed page elements are
-// not affected by the body padding, we end up with offset elements. This style
-// override corrects this visual inconsistency.
-
-body.modal-open {
-  overflow: auto !important;
-  padding: 0 !important;
-}
-
-// stylelint-enable selector-no-qualifying-type, declaration-no-important

@@ -15,6 +15,21 @@
 }
 // stylelint-enable declaration-block-no-ignored-properties, declaration-no-important
 
+// stylelint-disable selector-no-qualifying-type, declaration-no-important
+
+// this is a special style override to prevent fixed elements from looking offset
+// due to the modal dialog adding scrollbar padding to the backdrop (in an effort
+// to not shift the entire page over to the right). Since fixed page elements are
+// not affected by the body padding, we end up with offset elements. This style
+// override corrects this visual inconsistency.
+
+body.modal-open {
+  overflow: auto !important;
+  padding: 0 !important;
+}
+
+// stylelint-enable selector-no-qualifying-type, declaration-no-important
+
 // this fixes a bug where focused buttons in input groups have cut-off outlines
 .input-group-btn > .btn:focus {
   z-index: 3;
