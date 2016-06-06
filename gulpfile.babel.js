@@ -347,7 +347,7 @@ function logWebpackIssues(jsonStats) {
 
   if (warnings.length) {
     log(`${ util.colors.yellow('Warnings') }:
-${ errors.map((x) => x.replace(/[\r\n]/g, '').trim()).join('\r\n') }`);
+${ warnings.map((x) => x.replace(/[\r\n]/g, '').trim()).join('\r\n') }`);
   }
 
   if (errors.length) {
