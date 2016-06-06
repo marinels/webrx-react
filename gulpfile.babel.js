@@ -254,8 +254,7 @@ gulp.task('lint:ts', () => {
       path.resolve(config.dirs.src, '**', '*.tsx'),
       path.resolve(config.dirs.test, '**', '*.ts'),
     ])
-    // eslint-disable-next-line global-require
-    .pipe(tslint({ configuration: require('tslint').findConfiguration() }))
+    .pipe(tslint())
     .pipe(tslint.report('verbose', { emitError: true, summarizeFailureOutput: true }));
 });
 
