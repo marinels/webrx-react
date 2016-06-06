@@ -118,11 +118,9 @@ export class TreeListView<T> extends StandardListView<T> {
             }
           };
           expander = (
-            <span className='TreeItem-button'>
-              <Button className='fa' bsStyle='link' bsSize='xsmall' componentClass='span' onClick={onExpanderClick}>
-                <Icon name={isExpanded === true ? 'minus-square-o' : 'plus-square-o'} size='lg' fixedWidth />
-              </Button>
-            </span>
+            <Button className='TreeItem-button' bsStyle='link' onClick={onExpanderClick} onMouseDown={e => e.preventDefault()}>
+              <Icon name={isExpanded === true ? 'minus-square-o' : 'plus-square-o'} size='lg' />
+            </Button>
           );
         } else {
           expander = (

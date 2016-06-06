@@ -9,12 +9,20 @@
     cursor: pointer;
   }
 
-  .list-group-item.active .TreeItem-button .btn {
+  .list-group-item.active .btn {
     color: @list-group-active-color;
   }
 
-  .TreeItem-button > .btn:hover {
-    background-color: transparent;
+  .TreeItem-button {
+    padding: 5px;
+  }
+
+  .TreeItem-buttonIndent {
+    margin: 0 12px;
+  }
+
+  .TreeItem-levelIndent {
+    margin: 0 10px;
   }
 
   .list-group-item-selectionIcon,
@@ -29,21 +37,13 @@
   }
 
   .list-group-item-content {
-    padding-left: 5px;
     width: 100%;
+    padding-left: 5px;
   }
 
   .List-empty {
-    text-align: center;
     margin: 20px;
     font-size: 1.25em;
-  }
-
-  .TreeItem-buttonIndent {
-    margin: 0 12px;
-  }
-
-  .TreeItem-levelIndent {
-    margin: 0 10px;
+    text-align: center;
   }
 }
