@@ -8,6 +8,7 @@ import clean from 'gulp-rimraf';
 import eslint from 'gulp-eslint';
 // eslint-disable-next-line id-length
 import fs from 'fs';
+import mkdirp from 'mkdirp';
 import gulp from 'gulp';
 import minimist from 'minimist';
 import mocha from 'gulp-mocha';
@@ -381,7 +382,7 @@ function onWebpackComplete(build, err, stats, omitAssets) {
       log('Writing Webpack Profile Stats to', util.colors.magenta(statsPath));
 
       if (fs.existsSync(path.dirname(statsPath)) === false) {
-        fs.mkdirSync(path.dirname(statsPath));
+        mkdirp.sync(path.dirname(statsPath));
       }
 
       fs.writeFileSync(statsPath, JSON.stringify(jsonStats, null, 2));
