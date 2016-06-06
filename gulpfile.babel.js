@@ -346,12 +346,12 @@ function logWebpackIssues(jsonStats) {
   const errors = jsonStats.errors || [];
 
   if (warnings.length) {
-    log(`${ util.colors.yellow('Warnings') }:
+    log(`${ util.colors.yellow(`${warnings.length} Warnings`) }:
 ${ warnings.map((x) => x.replace(/[\r\n]/g, '').trim()).join('\r\n') }`);
   }
 
   if (errors.length) {
-    log(`${ util.colors.red('Errors') }:
+    log(`${ util.colors.red(`${errors.length} Errors`) }:
 ${ errors.map((x) => x.replace(/[\r\n]/g, '').trim()).join('\r\n') }`);
   }
 }
