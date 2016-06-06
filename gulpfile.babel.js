@@ -1,5 +1,3 @@
-/* global __dirname */
-
 // we can use sync safely here because it's just the gulp file
 // gulp tasks prefer unregulated arrow-body-style
 /* eslint-disable no-sync,arrow-body-style */
@@ -26,7 +24,6 @@ import util from 'gulp-util';
 import webpack from 'webpack';
 import webpackStream from 'webpack-stream';
 
-
 const args = minimist(process.argv);
 
 const webpackAnalyzeUri = 'http://webpack.github.io/analyse/';
@@ -51,11 +48,11 @@ const config = {
     index: 'index.html',
   },
   dirs: {
-    typings: path.join(__dirname, 'typings'),
-    src: path.join(__dirname, 'src'),
-    test: path.join(__dirname, 'test'),
-    build: path.join(__dirname, 'build'),
-    dist: args.dist || path.join(__dirname, 'dist'),
+    typings: path.resolve('typings'),
+    src: path.resolve('src'),
+    test: path.resolve('test'),
+    build: path.resolve('build'),
+    dist: args.dist || path.resolve('dist'),
   },
   test: {
     reporter: args.reporter || 'spec',
@@ -189,7 +186,7 @@ gulp.task('clean:dist', () => {
 gulp.task('typings', [ 'typings:install' ]);
 
 gulp.task('typings:install', () => {
-  const target = path.join(__dirname, config.files.typings);
+  const target = path.resolve(config.files.typings);
 
   log('Installing Typings from', util.colors.magenta(target));
 
@@ -206,7 +203,7 @@ gulp.task('typings:ensure', (done) => {
   let count = 0;
 
   return gulp
-    .src(path.join(config.dirs.typings, '**', '*.d.ts'), { read: false })
+    .src(path.resolve(config.dirs.typings, '**', '*.d.ts'), { read: false })
     .pipe(through(() => {
       ++count;
     }, () => {
@@ -223,10 +220,10 @@ gulp.task('typings:ensure', (done) => {
 });
 
 gulp.task('tsconfig:glob', [ 'typings:ensure' ], () => {
-  log('Globbing', util.colors.magenta(path.join(__dirname, 'tsconfig.json')));
+  log('Globbing', util.colors.magenta(path.resolve('tsconfig.json')));
 
   // eslint-disable-next-line id-match
-  return tsconfigGlob({ configPath: __dirname, indent: 2 });
+  return tsconfigGlob({ configPath: path.resolve('.'), indent: 2 });
 });
 
 gulp.task('lint', [ 'lint:all' ]);
@@ -238,9 +235,9 @@ gulp.task('lint:es', () => {
 
   return gulp
     .src([
-      path.join(config.dirs.src, '**', '*.js'),
-      path.join(config.dirs.test, '**', '*.js'),
-      path.join(__dirname, '*.js'),
+      path.resolve(config.dirs.src, '**', '*.js'),
+      path.resolve(config.dirs.test, '**', '*.js'),
+      path.resolve('*.js'),
     ])
     .pipe(eslint())
     .pipe(eslint.format())
@@ -252,9 +249,9 @@ gulp.task('lint:ts', () => {
 
   return gulp
     .src([
-      path.join(config.dirs.src, '**', '*.ts'),
-      path.join(config.dirs.src, '**', '*.tsx'),
-      path.join(config.dirs.test, '**', '*.ts'),
+      path.resolve(config.dirs.src, '**', '*.ts'),
+      path.resolve(config.dirs.src, '**', '*.tsx'),
+      path.resolve(config.dirs.test, '**', '*.ts'),
     ])
     // eslint-disable-next-line global-require
     .pipe(tslint({ configuration: require('tslint').findConfiguration() }))
@@ -267,7 +264,7 @@ gulp.task('lint:style:less', () => {
   log('Linting with Stylelint:Less...');
 
   return gulp
-    .src(path.join(config.dirs.src, '**', '*.less'))
+    .src(path.resolve(config.dirs.src, '**', '*.less'))
     .pipe(stylelint({
       syntax: 'less',
       failAfterError: true,
@@ -281,7 +278,7 @@ gulp.task('lint:style:css', () => {
   log('Linting with Stylelint:CSS...');
 
   return gulp
-    .src(path.join(config.dirs.src, '**', '*.css'))
+    .src(path.resolve(config.dirs.src, '**', '*.css'))
     .pipe(stylelint({
       failAfterError: true,
       reporters: [
@@ -293,7 +290,7 @@ gulp.task('lint:style:css', () => {
 function getWebpackConfig(build, uglify) {
   // dynamic loading of the webpack config
   // eslint-disable-next-line global-require
-  const webpackConfig = require(path.join(__dirname, build === config.builds.test ? build : '', config.files.webpack));
+  const webpackConfig = require(path.resolve(build === config.builds.test ? build : '', config.files.webpack));
 
   if (build === config.builds.debug) {
     webpackConfig.plugins[0].definitions.DEBUG = true;
@@ -325,7 +322,7 @@ function getWebpackConfig(build, uglify) {
 }
 
 function printAssets(jsonStats, build) {
-  const outputPath = path.join(config.dirs.build, build);
+  const outputPath = path.resolve(config.dirs.build, build);
   const assets = jsonStats.assetsByChunkName;
 
   for (const chunk in assets) {
@@ -333,10 +330,10 @@ function printAssets(jsonStats, build) {
 
     if (Array.isArray(asset)) {
       for (const i in asset) {
-        log(util.colors.magenta(path.join(outputPath, asset[i])));
+        log(util.colors.magenta(path.resolve(outputPath, asset[i])));
       }
     } else {
-      log(util.colors.magenta(path.join(outputPath, asset)));
+      log(util.colors.magenta(path.resolve(outputPath, asset)));
     }
   }
 }
@@ -379,7 +376,7 @@ function onWebpackComplete(build, err, stats, omitAssets) {
     }
 
     if (config.profile) {
-      const statsPath = path.join(config.dirs.build, build, config.files.stats);
+      const statsPath = path.resolve(config.dirs.build, build, config.files.stats);
 
       log('Writing Webpack Profile Stats to', util.colors.magenta(statsPath));
 
@@ -393,7 +390,7 @@ function onWebpackComplete(build, err, stats, omitAssets) {
 }
 
 function webpackBuild(build, webpackConfig, callback) {
-  const target = path.join(config.dirs.build, build);
+  const target = path.resolve(config.dirs.build, build);
 
   webpackConfig.output.path = target;
   webpackConfig.output.publicPath = config.publicPath;
@@ -417,7 +414,7 @@ function webpackBuild(build, webpackConfig, callback) {
 }
 
 function webpackWatcherStream(webpackConfig, build) {
-  const target = path.join(config.dirs.build, build);
+  const target = path.resolve(config.dirs.build, build);
 
   webpackConfig.output.path = target;
   webpackConfig.output.publicPath = config.publicPath;
@@ -441,7 +438,7 @@ function webpackWatcherStream(webpackConfig, build) {
     compiler.plugin('after-emit', (compilation, callback) => {
       Object.keys(compilation.assets).forEach((outname) => {
         if (compilation.assets[outname].emitted) {
-          const filePath = path.join(compiler.outputPath, outname);
+          const filePath = path.resolve(compiler.outputPath, outname);
           const file = new File({
             base: compiler.outputPath,
             path: filePath,
@@ -500,7 +497,7 @@ gulp.task('mocha', (done) => {
 
 gulp.task('mocha:run', () => {
   const webpackConfig = getWebpackConfig(config.builds.test);
-  const target = path.join(config.dirs.build, config.builds.test, webpackConfig.output.filename);
+  const target = path.resolve(config.dirs.build, config.builds.test, webpackConfig.output.filename);
 
   log('Testing with Mocha:', util.colors.magenta(target));
 
@@ -516,7 +513,7 @@ gulp.task('watch:webpack', [ 'clean:build', 'tsconfig:glob', 'index:watch' ], (d
   const uri = `http://${ config.host === '0.0.0.0' ? 'localhost' : config.host }:${ config.port }`;
 
   webpackConfig.entry.app.unshift(`webpack-dev-server/client?${ uri }`, 'webpack/hot/only-dev-server');
-  webpackConfig.output.path = path.join(config.dirs.build, config.builds.watch);
+  webpackConfig.output.path = path.resolve(config.dirs.build, config.builds.watch);
   webpackConfig.output.publicPath = config.publicPath;
   // remove ExtractTextPlugin
   webpackConfig.plugins.pop();
@@ -569,7 +566,7 @@ gulp.task('watch:webpack', [ 'clean:build', 'tsconfig:glob', 'index:watch' ], (d
 
   new WebpackDevServer(compiler, {
     publicPath: webpackConfig.output.publicPath,
-    contentBase: path.join(config.dirs.build, config.builds.watch),
+    contentBase: path.resolve(config.dirs.build, config.builds.watch),
     hot: true,
     historyApiFallback: true,
     quiet: true,
@@ -616,21 +613,21 @@ gulp.task('watch:lint', () => {
 
   gulp
     .watch([
-      path.join(config.dirs.src, '**', '*.ts'),
-      path.join(config.dirs.src, '**', '*.tsx'),
-      path.join(config.dirs.test, '**', '*.ts'),
-      path.join(config.dirs.src, '**', '*.js'),
-      path.join(config.dirs.test, '**', '*.js'),
-      path.join(config.dirs.src, '**', '*.css'),
-      path.join(config.dirs.src, '**', '*.less'),
-      path.join(__dirname, '*.js'),
+      path.resolve(config.dirs.src, '**', '*.ts'),
+      path.resolve(config.dirs.src, '**', '*.tsx'),
+      path.resolve(config.dirs.test, '**', '*.ts'),
+      path.resolve(config.dirs.src, '**', '*.js'),
+      path.resolve(config.dirs.test, '**', '*.js'),
+      path.resolve(config.dirs.src, '**', '*.css'),
+      path.resolve(config.dirs.src, '**', '*.less'),
+      path.resolve('*.js'),
     ], [ 'lint' ]);
 });
 
 gulp.task('watch:dist', [ 'watch:dist:debug' ]);
 
 gulp.task('watch:dist:debug', [ 'clean:build', 'clean:dist', 'tsconfig:glob' ], () => {
-  const target = path.join(config.dirs.dist, config.builds.debug);
+  const target = path.resolve(config.dirs.dist, config.builds.debug);
   const webpackConfig = getWebpackConfig(config.builds.debug);
 
   log('Deploying', util.colors.yellow(config.builds.debug), 'Build to', util.colors.magenta(target));
@@ -648,7 +645,7 @@ gulp.task('watch:dist:debug', [ 'clean:build', 'clean:dist', 'tsconfig:glob' ], 
 });
 
 gulp.task('watch:dist:release', [ 'clean:build', 'clean:dist', 'tsconfig:glob' ], () => {
-  const target = path.join(config.dirs.dist, config.builds.release);
+  const target = path.resolve(config.dirs.dist, config.builds.release);
   const webpackConfig = getWebpackConfig(config.builds.release);
 
   log('Deploying', util.colors.yellow(config.builds.release), 'Build to', util.colors.magenta(target));
@@ -667,9 +664,9 @@ gulp.task('index', [ 'index:all' ]);
 gulp.task('index:all', [ 'index:debug', 'index:release', 'index:watch' ]);
 
 gulp.task('index:debug', [ 'clean:build' ], () => {
-  const target = path.join(config.dirs.build, config.builds.debug);
+  const target = path.resolve(config.dirs.build, config.builds.debug);
 
-  log('Transforming', util.colors.magenta(path.join(target, config.files.index)));
+  log('Transforming', util.colors.magenta(path.resolve(target, config.files.index)));
 
   gulp
     .src(config.files.index)
@@ -677,9 +674,9 @@ gulp.task('index:debug', [ 'clean:build' ], () => {
 });
 
 gulp.task('index:release', [ 'clean:build' ], () => {
-  const target = path.join(config.dirs.build, config.builds.release);
+  const target = path.resolve(config.dirs.build, config.builds.release);
 
-  log('Transforming', util.colors.magenta(path.join(target, config.files.index)));
+  log('Transforming', util.colors.magenta(path.resolve(target, config.files.index)));
 
   gulp
     .src(config.files.index)
@@ -687,9 +684,9 @@ gulp.task('index:release', [ 'clean:build' ], () => {
 });
 
 gulp.task('index:watch', [ 'clean:build' ], () => {
-  const target = path.join(config.dirs.build, config.builds.watch);
+  const target = path.resolve(config.dirs.build, config.builds.watch);
 
-  log('Transforming', util.colors.magenta(path.join(target, config.files.index)));
+  log('Transforming', util.colors.magenta(path.resolve(target, config.files.index)));
 
   gulp
     .src(config.files.index)
@@ -702,13 +699,13 @@ gulp.task('browser', [ 'browser:watch' ]);
 gulp.task('browser:debug', [ 'webpack:debug', 'index:debug' ], () => {
   gulp
     .src('')
-    .pipe(open({ uri: path.join(config.dirs.build, config.builds.debug, config.files.index) }));
+    .pipe(open({ uri: path.resolve(config.dirs.build, config.builds.debug, config.files.index) }));
 });
 
 gulp.task('browser:release', [ 'webpack:release', 'index:release' ], () => {
   gulp
     .src('')
-    .pipe(open({ uri: path.join(config.dirs.build, config.builds.release, config.files.index) }));
+    .pipe(open({ uri: path.resolve(config.dirs.build, config.builds.release, config.files.index) }));
 });
 
 gulp.task('browser:watch', [ 'watch:webpack', 'index:watch' ], () => {
@@ -729,12 +726,12 @@ gulp.task('dist:all', (done) => {
 });
 
 gulp.task('dist:debug', [ 'clean:dist' ], () => {
-  const target = path.join(config.dirs.dist, config.builds.debug);
+  const target = path.resolve(config.dirs.dist, config.builds.debug);
 
   log('Deploying', util.colors.yellow(config.builds.debug), 'Build to', util.colors.magenta(target));
 
   return gulp
-    .src(path.join(config.dirs.build, config.builds.debug, '**', '*'))
+    .src(path.resolve(config.dirs.build, config.builds.debug, '**', '*'))
     .pipe(gulp.dest(target))
     .pipe(through((file) => {
       util.log('Deploying', util.colors.magenta(file.path));
@@ -742,12 +739,12 @@ gulp.task('dist:debug', [ 'clean:dist' ], () => {
 });
 
 gulp.task('dist:release', [ 'clean:dist' ], () => {
-  const target = path.join(config.dirs.dist, config.builds.release);
+  const target = path.resolve(config.dirs.dist, config.builds.release);
 
   log('Deploying', util.colors.yellow(config.builds.release), 'Build to', util.colors.magenta(target));
 
   return gulp
-    .src(path.join(config.dirs.build, config.builds.release, '**', '*'))
+    .src(path.resolve(config.dirs.build, config.builds.release, '**', '*'))
     .pipe(gulp.dest(target))
     .pipe(through((file) => {
       util.log('Deploying', util.colors.magenta(file.path));

@@ -6,7 +6,7 @@ const webpackCommon = require('./webpack.common');
 module.exports = Object.assign({}, webpackCommon, {
   entry: {
     app: [
-      path.join(__dirname, 'src/app.tsx'),
+      path.resolve('src', 'app.tsx'),
     ],
     vendor: [
       'rx',
@@ -25,7 +25,7 @@ module.exports = Object.assign({}, webpackCommon, {
     ],
   },
   output: {
-    path: path.join(__dirname, 'build'),
+    path: path.resolve('build'),
     filename: 'app.js',
   },
   plugins: [

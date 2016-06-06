@@ -3,10 +3,10 @@ const webpackCommon = require('../webpack.common');
 
 const webpackConfig = Object.assign({}, webpackCommon, {
   entry: [
-    './test/app.ts',
+    path.resolve('test', 'app.ts')
   ],
   output: {
-    path: path.join(__dirname, '..', 'build', 'test'),
+    path: path.resolve('..', 'build', 'test'),
     filename: 'app.js',
   },
   module: {
