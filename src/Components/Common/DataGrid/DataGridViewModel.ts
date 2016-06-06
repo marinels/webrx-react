@@ -132,7 +132,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
   }
 
   getSearch() {
-    return this.search;
+    return this.canFilter() ? this.search : null;
   }
 
   saveRoutingState(state: DataGridRoutingState) {
