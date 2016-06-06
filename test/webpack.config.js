@@ -3,7 +3,7 @@ const webpackCommon = require('../webpack.common');
 
 const webpackConfig = Object.assign({}, webpackCommon, {
   entry: [
-    path.resolve('test', 'app.ts')
+    path.resolve('test', 'app.ts'),
   ],
   output: {
     path: path.resolve('..', 'build', 'test'),
