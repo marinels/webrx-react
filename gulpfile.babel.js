@@ -381,6 +381,8 @@ function onWebpackComplete(build, err, stats, omitAssets) {
     if (config.profile) {
       const statsPath = path.join(config.dirs.build, build, config.files.stats);
 
+      log('Writing Webpack Profile Stats to', util.colors.magenta(statsPath));
+
       if (fs.existsSync(path.dirname(statsPath)) === false) {
         fs.mkdirSync(path.dirname(statsPath));
       }
