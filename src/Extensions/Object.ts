@@ -33,6 +33,27 @@ function assign<T>(target: any, ...sources: any[]) {
   return to as T;
 }
 
+// this extension solves the Unknown Prop Warning that is experienced in
+// typescript when using Rest and Spread Properties
+// see: https://facebook.github.io/react/warnings/unknown-prop.html
+// see: https://facebook.github.io/react/docs/transferring-props.html
+function destruct<T extends Object>(data: T, ...removals: string[]) {
+  const rest = <T>{};
+
+  const keys = removals.length === 1 && typeof removals[0] === 'object' ?
+    Object.getOwnPropertyNames(removals[0]) :
+    <string[]>removals;
+
+  Object
+    .getOwnPropertyNames(data)
+    .filter(x => keys.indexOf(x) < 0)
+    .forEach(x => {
+      (<any>rest)[x] = (<any>data)[x];
+    });
+
+  return rest;
+}
+
 function dispose<T>(disposable: T, returnNull = true) {
   if (disposable) {
     let dispose = (disposable as any).dispose as Function;
@@ -110,6 +131,7 @@ function fallbackAsync<T>(...actions: (T | (() => T))[]) {
 }
 
 Object.assign = fallback(Object.assign, assign);
+Object.destruct = fallback(Object.destruct, destruct);
 Object.dispose = fallback(Object.dispose, dispose);
 Object.getName = fallback(Object.getName, getName);
 Object.fallback = fallback(Object.fallback, fallback);
