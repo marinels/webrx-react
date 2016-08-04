@@ -256,8 +256,13 @@ gulp.task('lint:ts', () => {
       path.resolve(config.dirs.src, '**', '*.tsx'),
       path.resolve(config.dirs.test, '**', '*.ts'),
     ])
-    .pipe(tslint())
-    .pipe(tslint.report('verbose', { emitError: true, summarizeFailureOutput: true }));
+    .pipe(tslint({
+      formatter: 'verbose',
+    }))
+    .pipe(tslint.report({
+      emitError: true,
+      summarizeFailureOutput: true,
+    }));
 });
 
 gulp.task('lint:style', [ 'lint:style:less', 'lint:style:css' ]);
