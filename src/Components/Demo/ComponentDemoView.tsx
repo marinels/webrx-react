@@ -56,7 +56,8 @@ export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDe
       view = (
         <Alert bsStyle='danger'>{component == null ? 'No Component for This Route' : `No View Mapped for ${componentName}`}</Alert>
       );
-    } else {
+    }
+    else {
       this.logger.debug(`Rendering View...`, view);
     }
 

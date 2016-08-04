@@ -37,7 +37,8 @@ export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> 
     if (String.isNullOrEmpty(filter) === false) {
       try {
         regex = new RegExp(filter, this.isCaseInsensitive ? 'i' : null);
-      } catch (e) {
+      }
+      catch (e) {
         filter = filter.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
         regex = new RegExp(filter, this.isCaseInsensitive ? 'i' : null);
       }

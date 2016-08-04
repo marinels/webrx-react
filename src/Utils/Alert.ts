@@ -24,7 +24,8 @@ export class Alert {
 
       if (formatter != null) {
         text = formatter(error);
-      } else {
+      }
+      else {
         let anyError = error as any;
         let childError = anyError.error;
 

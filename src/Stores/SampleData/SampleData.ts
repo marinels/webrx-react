@@ -27,7 +27,8 @@ export class SampleData {
     if (sampleDataAction != null) {
       result = sampleDataAction(params)
         .delay(this.delay);
-    } else {
+    }
+    else {
       result = Rx.Observable.throw<T>(`Sample DataStore Action Not Found: ${action}`);
     }
 

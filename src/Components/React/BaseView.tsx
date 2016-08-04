@@ -166,7 +166,8 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
       loadingComponent = (
         <Loading {...defaultProps} text={loadingComponent} />
       );
-    } else if (loadingComponentType === 'object') {
+    }
+    else if (loadingComponentType === 'object') {
       if (React.isValidElement(loadingComponent) === false) {
         loadingComponent = (
           <Loading {...defaultProps} {...loadingComponent} />

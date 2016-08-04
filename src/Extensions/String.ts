@@ -18,7 +18,8 @@ function stringify(value: any, replacer?: any, space: string | number = 2) {
       if (result === 'Object') {
         try {
           result = JSON.stringify(value, replacer, space);
-        } catch (e) {
+        }
+        catch (e) {
           // console.warn('Attempt to stringify failed');
           // console.log(e);
         }

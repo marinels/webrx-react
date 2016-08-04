@@ -43,7 +43,8 @@ export class TabsView extends BaseView<ITabsProps, TabsViewModel<any>> {
 
       if (content.type === Tab) {
         tab = React.cloneElement(content, props, isVisible ? content.props.children : null);
-      } else {
+      }
+      else {
         tab = (
           <Tab {...props}>
             { isVisible ? content : null }
@@ -69,7 +70,8 @@ export class TabsView extends BaseView<ITabsProps, TabsViewModel<any>> {
           tabs.push(tab);
         }
       });
-    } else {
+    }
+    else {
       // dynamic tabs
       this.state.items.forEach((x, i) => {
         const isVisible = selectedIndex === i;

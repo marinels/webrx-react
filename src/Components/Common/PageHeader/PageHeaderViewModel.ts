@@ -24,10 +24,12 @@ export class PageHeaderViewModel extends BaseViewModel {
     if (x != null) {
       if (x.command != null) {
         x.command.execute(x);
-      } else if (x.uri != null && x.uri.length > 0) {
+      }
+      else if (x.uri != null && x.uri.length > 0) {
         if (x.uri[0] === '#') {
           this.navTo(x.uri);
-        } else {
+        }
+        else {
           window.location.href = x.uri;
         }
       }

@@ -18,15 +18,20 @@ export class ConsoleLogManager extends DelegateLogManager {
 
     if (level >= LogLevel.Fatal) {
       // do nothing
-    } else if (level >= LogLevel.Error) {
+    }
+    else if (level >= LogLevel.Error) {
       // do nothing
-    } else if (level >= LogLevel.Warn) {
+    }
+    else if (level >= LogLevel.Warn) {
       // do nothing
-    } else if (level >= LogLevel.Info) {
+    }
+    else if (level >= LogLevel.Info) {
       styles.push(this.getColorStyle('lightblue'));
-    } else if (level >= LogLevel.Debug) {
+    }
+    else if (level >= LogLevel.Debug) {
       styles.push(this.getColorStyle('lightcyan'));
-    } else {
+    }
+    else {
       styles.push(this.getColorStyle());
     }
 
@@ -53,13 +58,17 @@ export class ConsoleLogManager extends DelegateLogManager {
   private logToConsole(level: LogLevel, message: any, ...formatting: string[]) {
     if (level >= LogLevel.Error) {
       console.error(message, ...formatting);
-    } else if (level >= LogLevel.Warn) {
+    }
+    else if (level >= LogLevel.Warn) {
       console.warn(message, ...formatting);
-    } else if (level >= LogLevel.Info) {
+    }
+    else if (level >= LogLevel.Info) {
       console.info(message, ...formatting);
-    } else if (level >= LogLevel.Debug) {
+    }
+    else if (level >= LogLevel.Debug) {
       console.debug(message, ...formatting);
-    } else {
+    }
+    else {
       console.log(message, ...formatting);
     }
   }
@@ -70,9 +79,11 @@ let defaultLevel: LogLevel = null;
 
 if (TEST) {
   defaultLevel = LogLevel.Off;
-} else if (DEBUG) {
+}
+else if (DEBUG) {
   defaultLevel = LogLevel.Debug;
-} else {
+}
+else {
   defaultLevel = LogLevel.Info;
 }
 

@@ -14,17 +14,23 @@ export function getLevelName(level: LogLevel | number) {
 
   if (level >= LogLevel.Fatal) {
     name = 'Fatal';
-  } else if (level >= LogLevel.Error) {
+  }
+  else if (level >= LogLevel.Error) {
     name = 'Error';
-  } else if (level >= LogLevel.Warn) {
+  }
+  else if (level >= LogLevel.Warn) {
     name = 'Warn ';
-  } else if (level >= LogLevel.Info) {
+  }
+  else if (level >= LogLevel.Info) {
     name = 'Info ';
-  } else if (level >= LogLevel.Debug) {
+  }
+  else if (level >= LogLevel.Debug) {
     name = 'Debug';
-  } else if (level >= LogLevel.Trace) {
+  }
+  else if (level >= LogLevel.Trace) {
     name = 'Trace';
-  } else {
+  }
+  else {
     name = 'All  ';
   }
 

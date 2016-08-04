@@ -88,16 +88,20 @@ function getName(source: any, undefinedValue = 'undefined', isStatic = false) {
   if (source) {
     if (source.hasOwnProperty(typeNameProperty)) {
       name = (source as ITypeName).typeName;
-    } else if (source.hasOwnProperty(displayNameProperty)) {
+    }
+    else if (source.hasOwnProperty(displayNameProperty)) {
       name = (source as IDisplayName).displayName;
-    } else if (source.hasOwnProperty(nameProperty)) {
+    }
+    else if (source.hasOwnProperty(nameProperty)) {
       name = (source as IName).name;
-    } else if (source.constructor != null) {
+    }
+    else if (source.constructor != null) {
       // this allows us to inspect the static properties of the source object
       // but we don't want to go beyond the the static properties
       if (isStatic === false) {
         name = getName(source.constructor, undefinedValue, true);
-      } else {
+      }
+      else {
         // IE is pretty dumb and doesn't expose any useful naming properties
         // so we can try and extract it from the toString()
         let match = /function (.+)\(/.exec(source.toString());

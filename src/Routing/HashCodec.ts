@@ -20,7 +20,8 @@ export class HashCodec {
     if (matches) {
       path = matches[1];
       params = matches[2];
-    } else {
+    }
+    else {
       path = hash;
 
       if (path.length > 0 && path[0] === '#') {

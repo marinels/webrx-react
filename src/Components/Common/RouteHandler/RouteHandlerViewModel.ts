@@ -52,14 +52,16 @@ export class RouteHandlerViewModel extends BaseViewModel {
     if (activator == null) {
       // if the activator is null then we just return null for the routed view model
       viewModel = null;
-    } else {
+    }
+    else {
       if (activator.path != null && activator.creator == null) {
         // this is a simple redirect route
         this.logger.debug(`Redirecting from ${route.path} to ${activator.path}`);
 
         // only redirect to a different path
         this.manager.navTo(activator.path);
-      } else {
+      }
+      else {
         // this is a routed view model path
         if ((activator.path || route.path) === this.currentPath) {
           // we're on the same path (or virtual path)
@@ -67,7 +69,8 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
           // we can just update the current routed component's state
           this.updateRoutingState(route);
-        } else {
+        }
+        else {
           // a new routing path is requested
           this.logger.debug(`Routing to Path: ${route.path}`);
 

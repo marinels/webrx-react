@@ -8,6 +8,7 @@
 
 // stylelint-disable declaration-block-no-ignored-properties, declaration-no-important
 // helper styles to simplify creating grid columns that are vertically centered
+
 .col-va-middle {
   float: none !important;
   display: inline-block;
@@ -31,12 +32,14 @@ body.modal-open {
 // stylelint-enable selector-no-qualifying-type, declaration-no-important
 
 // this fixes a bug where focused buttons in input groups have cut-off outlines
+
 .input-group-btn > .btn:focus {
   z-index: 3;
 }
 
 // this fixes a bug where feedback form controls in input groups don't have a
 // right error border due to negative margining from the input-group buttons.
+
 .form-group.has-feedback {
   &.has-success,
   &.has-warning,
@@ -52,6 +55,7 @@ body.modal-open {
 }
 
 // default hover background color
+
 .btn-default:hover,
 .table-hover > tbody > tr:hover,
 .list-group > .list-group-item:hover,
@@ -60,6 +64,7 @@ body.modal-open {
 }
 
 // default hover background color for active list items
+
 .list-group > .list-group-item.active:hover {
   background-color: darken(@brand-primary, 10%);
 }
@@ -67,6 +72,7 @@ body.modal-open {
 // un-bold labels and badges by default
 // additionally add some space between letters
 // these elements are much more readable using these styles
+
 .label,
 .badge {
   font-weight: normal;

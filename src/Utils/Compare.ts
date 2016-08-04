@@ -14,15 +14,20 @@ export class Comparer<T> implements IComparer<T> {
   public static DefaultComparison: IComparison<any> = (a: any, b: any) => {
     if (a == null && b == null) {
       return 0;
-    } else if (a == null || b == null) {
+    }
+    else if (a == null || b == null) {
       return a == null ? -1 : 1;
-    } else if (a.compareTo != null && b.compareTo != null) {
+    }
+    else if (a.compareTo != null && b.compareTo != null) {
       return a.compareTo(b);
-    } else if (typeof a === 'number' && typeof b === 'number') {
+    }
+    else if (typeof a === 'number' && typeof b === 'number') {
       return a - b;
-    } else if (typeof a === 'string' && typeof b === 'string') {
+    }
+    else if (typeof a === 'string' && typeof b === 'string') {
       return a.localeCompare(b);
-    } else {
+    }
+    else {
       return 0;
     }
   };

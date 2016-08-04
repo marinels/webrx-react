@@ -112,7 +112,8 @@ export abstract class BaseViewModel {
 
         if (prop.changed != null && prop.changed.subscribe instanceof Function) {
           this.logObservable(prop.changed, keys[i]);
-        } else if (cmd.results != null && cmd.results.subscribe instanceof Function) {
+        }
+        else if (cmd.results != null && cmd.results.subscribe instanceof Function) {
           this.logObservable(cmd.results, `<${keys[i]}>`);
         }
       }
@@ -129,7 +130,8 @@ export abstract class BaseViewModel {
         }
 
         this.logger.debug(`${name} = ${value}`, x);
-      } else {
+      }
+      else {
         this.logger.debug(`${name} = ${x}`);
       }
     }));

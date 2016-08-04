@@ -46,7 +46,8 @@ export abstract class BaseLogger implements ILogger {
   trace(textOrFn: string | IMessageDelegate, ...args: any[]) {
     if (textOrFn instanceof Function) {
       this.log(LogLevel.Trace, textOrFn, ...args);
-    } else {
+    }
+    else {
       this.log(LogLevel.Trace, textOrFn.toString(), ...args);
     }
   }
@@ -54,7 +55,8 @@ export abstract class BaseLogger implements ILogger {
   debug(textOrFn: string | IMessageDelegate, ...args: any[]) {
     if (textOrFn instanceof Function) {
       this.log(LogLevel.Debug, textOrFn, ...args);
-    } else {
+    }
+    else {
       this.log(LogLevel.Debug, textOrFn.toString(), ...args);
     }
   }
@@ -62,7 +64,8 @@ export abstract class BaseLogger implements ILogger {
   info(textOrFn: string | IMessageDelegate, ...args: any[]) {
     if (textOrFn instanceof Function) {
       this.log(LogLevel.Info, textOrFn, ...args);
-    } else {
+    }
+    else {
       this.log(LogLevel.Info, textOrFn.toString(), ...args);
     }
   }
@@ -70,7 +73,8 @@ export abstract class BaseLogger implements ILogger {
   warn(textOrFn: string | IMessageDelegate, ...args: any[]) {
     if (textOrFn instanceof Function) {
       this.log(LogLevel.Warn, textOrFn, ...args);
-    } else {
+    }
+    else {
       this.log(LogLevel.Warn, textOrFn.toString(), ...args);
     }
   }
@@ -78,7 +82,8 @@ export abstract class BaseLogger implements ILogger {
   error(textOrFn: string | IMessageDelegate, ...args: any[]) {
     if (textOrFn instanceof Function) {
       this.log(LogLevel.Error, textOrFn, ...args);
-    } else {
+    }
+    else {
       this.log(LogLevel.Error, textOrFn.toString(), ...args);
     }
   }
@@ -86,7 +91,8 @@ export abstract class BaseLogger implements ILogger {
   fatal(textOrFn: string | IMessageDelegate, ...args: any[]) {
     if (textOrFn instanceof Function) {
       this.log(LogLevel.Fatal, textOrFn, ...args);
-    } else {
+    }
+    else {
       this.log(LogLevel.Fatal, textOrFn.toString(), ...args);
     }
   }

@@ -11,7 +11,8 @@ class DelegateLogger extends BaseLogger {
     if (this.isEnabledFor(level)) {
       if (textOrFn instanceof Function) {
         this.action(this, level, textOrFn(), args);
-      } else {
+      }
+      else {
         this.action(this, level, textOrFn.toString(), args);
       }
     }

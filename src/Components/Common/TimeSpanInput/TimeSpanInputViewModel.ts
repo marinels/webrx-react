@@ -58,7 +58,8 @@ export class TimeSpanInputViewModel extends BaseViewModel {
           if (this.required === true) {
             error = 'This field is required';
           }
-        } else {
+        }
+        else {
           error = 'Unable to Understand Time Span Formatting';
         }
       }
@@ -107,7 +108,8 @@ export class TimeSpanInputViewModel extends BaseViewModel {
         .fromArray(TimeSpanUnits)
         .where(x => x.type >= minUnit && x.type <= maxUnit)
         .toArray();
-    } else {
+    }
+    else {
       this.units = Ix.Enumerable
         .fromArray(units)
         .select(x => TimeSpanUnits[x])
@@ -161,7 +163,8 @@ export class TimeSpanInputViewModel extends BaseViewModel {
           // single arg
           // just assume we're using the currently selected units
           value = moment.duration(Number(args[0]), this.unit().shortKey);
-        } else if (args.length === 2) {
+        }
+        else if (args.length === 2) {
           // two args
           // first determine the units used
           let unitName = moment.normalizeUnits(args[1]);

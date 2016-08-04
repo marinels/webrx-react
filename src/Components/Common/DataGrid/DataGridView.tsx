@@ -108,7 +108,8 @@ export class DataGridTableViewTemplate implements DataGridViewTemplate {
 
       if (grid.isSortedBy(column.fieldName, SortDirection.Ascending) === true) {
         iconName = 'sort-asc';
-      } else if (grid.isSortedBy(column.fieldName, SortDirection.Descending) === true) {
+      }
+      else if (grid.isSortedBy(column.fieldName, SortDirection.Descending) === true) {
         iconName = 'sort-desc';
       }
 
@@ -279,7 +280,8 @@ export class DataGridView extends BaseView<DataGridProps, DataGridViewModel<any>
             )) as any;
         }
 
-      } else {
+      }
+      else {
         // columns were provided declaratively
         columns = this.props.children;
       }
@@ -311,7 +313,8 @@ export class DataGridView extends BaseView<DataGridProps, DataGridViewModel<any>
   public selectItem(item: any, index?: number) {
     if (index == null) {
       this.state.selectItem.execute(item);
-    } else {
+    }
+    else {
       this.state.selectIndex.execute(index);
     }
   }

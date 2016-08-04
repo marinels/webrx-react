@@ -112,7 +112,8 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
       if (String.isNullOrEmpty(uri) === false) {
         this.navTo(uri);
       }
-    } else {
+    }
+    else {
       // create the routed component
       let proposedComponent = this.getViewModel(state) as BaseRoutableViewModel<any>;
 
@@ -152,11 +153,14 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
 
     if (component == null) {
       title = 'No Routed Component';
-    } else if (typeof component === 'string') {
+    }
+    else if (typeof component === 'string') {
       title = component.toString();
-    } else if (component.getTitle instanceof Function) {
+    }
+    else if (component.getTitle instanceof Function) {
       title = component.getTitle();
-    } else {
+    }
+    else {
       title = Object.getName(component);
     }
 

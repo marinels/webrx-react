@@ -41,7 +41,8 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
 
     if (item.command == null && String.isNullOrEmpty(item.uri) === false) {
       isDisabled = false;
-    } else if (item.command != null && item.command.canExecute(item.commandParameter) === true) {
+    }
+    else if (item.command != null && item.command.canExecute(item.commandParameter) === true) {
       isDisabled = false;
     }
 

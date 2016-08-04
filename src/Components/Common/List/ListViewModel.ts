@@ -73,7 +73,8 @@ export class ListViewModel<TData, TRoutingState extends IListRoutingState> exten
   public reset(...items: TData[]) {
     if (items.length === 0) {
       this.items.reset();
-    } else {
+    }
+    else {
       wx.using(this.items.suppressChangeNotifications(), disp => {
         this.items.clear();
         this.items.addRange(items);

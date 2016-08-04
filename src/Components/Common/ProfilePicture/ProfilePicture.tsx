@@ -38,7 +38,8 @@ export class ProfilePicture extends React.Component<IProfilePictureProps, any> {
 
     if (src == null) {
       image = <Icon className={classNames({'fa-border': this.props.thumbnail, 'fa-rounded': this.props.rounded})} name={this.props.defaultIcon} size={this.props.iconSize} />;
-    } else {
+    }
+    else {
       image = <Image src={src} responsive={this.props.responsive}
         rounded={this.props.rounded} circle={this.props.circle} thumbnail={this.props.thumbnail} />;
     }

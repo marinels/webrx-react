@@ -1,23 +1,26 @@
 @import '../../../Style/Bootstrap.less';
 
+// stylelint-disable selector-no-universal
 // this style needs to be outside of the App scope so that we don't clobber other
 // transition styles
+
 * {
   transition: color 500ms ease-in -200ms, background-color 500ms ease-in -200ms;
 }
+// stylelint-enable selector-no-universal
 
 .App {
   color: @body-color;
   font-family: @body-font-family;
 
   .float-container {
-    margin: 0 auto;
     position: fixed;
     top: 0;
     width: 100%;
+    margin: 0 auto;
     text-align: center;
-    z-index: @zindex-navbar-fixed + 1;
     background: none;
+    z-index: @zindex-navbar-fixed + 1;
     pointer-events: none;
   }
 }

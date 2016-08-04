@@ -122,7 +122,8 @@ export class TreeListView<T> extends StandardListView<T> {
               <Icon name={isExpanded === true ? 'minus-square-o' : 'plus-square-o'} size='lg' />
             </Button>
           );
-        } else {
+        }
+        else {
           expander = (
             <span className='TreeItem-buttonIndent' />
           );
@@ -211,7 +212,8 @@ export class ListView extends BaseView<IListProps, ListViewModel<any, any>> {
 
     if (this.props.multiSelect === true) {
       isSelected = (item as ISelectableItem).isSelected === true;
-    } else {
+    }
+    else {
       isSelected = index == null ? this.state.selectedItem() === item : this.state.selectedIndex() === index;
     }
 
@@ -221,7 +223,8 @@ export class ListView extends BaseView<IListProps, ListViewModel<any, any>> {
   public selectItem(item: any, index?: number) {
     if (index == null) {
       this.state.selectItem.execute(item);
-    } else {
+    }
+    else {
       this.state.selectIndex.execute(index);
     }
   }
