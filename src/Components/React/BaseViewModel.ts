@@ -10,6 +10,7 @@ import { Default as routeManager } from '../../Routing/RouteManager';
 export interface LifecycleComponentViewModel {
   initializeViewModel(): void;
   loadedViewModel(): void;
+  updatedViewModel(): void;
   cleanupViewModel(): void;
 }
 
@@ -38,6 +39,10 @@ export abstract class BaseViewModel {
     this.loaded();
   }
 
+  private updatedViewModel() {
+    this.updated();
+  }
+
   private cleanupViewModel() {
     this.cleanup();
 
@@ -51,6 +56,10 @@ export abstract class BaseViewModel {
   }
 
   protected loaded() {
+    // do nothing by default
+  }
+
+  protected updated() {
     // do nothing by default
   }
 
@@ -135,6 +144,32 @@ export abstract class BaseViewModel {
         this.logger.debug(`${name} = ${x}`);
       }
     }));
+  }
+
+  protected subscribeOrAlert<T, TError>(
+    observableFactory: () => Rx.Observable<T>,
+    header: string,
+    onNext: (value: T) => void,
+    style?: string,
+    timeout?: number,
+    errorFormatter?: (e: TError) => string) {
+
+    return this.subscribe(
+      this.getObservableOrAlert(
+        observableFactory,
+        header,
+        style,
+        timeout,
+        errorFormatter
+      ).subscribe(x => {
+        try {
+          onNext(x);
+        }
+        catch (err) {
+          this.alertForError(err, header, style, timeout, errorFormatter);
+        }
+      })
+    );
   }
 
   protected subscribe(subscription: Rx.IDisposable) {

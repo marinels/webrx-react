@@ -104,6 +104,10 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
     return Object.getName(this);
   }
 
+  public updateDocumentTitle() {
+    document.title = this.getTitle();
+  }
+
   public getTitle() {
     this.logger.warn(`${Object.getName(this)} does not provide a custom routed browser title`);
 

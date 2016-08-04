@@ -83,6 +83,10 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
     this.logRender(false);
   }
 
+  componentDidUpdate(prevProps: TViewProps, nextstate: TViewModel) {
+    this.updatedView();
+  }
+
   componentWillUnmount() {
     this.cleanupView();
 
@@ -103,6 +107,11 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
     (this.state as any as LifecycleComponentViewModel).loadedViewModel();
   }
 
+  private updatedView() {
+    this.updated();
+    (this.state as any as LifecycleComponentViewModel).updatedViewModel();
+  }
+
   private cleanupView() {
     this.cleanup();
     (this.state as any as LifecycleComponentViewModel).cleanupViewModel();
@@ -117,6 +126,10 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   }
 
   protected loaded() {
+    // do nothing by default
+  }
+
+  protected updated() {
     // do nothing by default
   }
 
