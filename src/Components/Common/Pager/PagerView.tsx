@@ -32,20 +32,21 @@ export class PagerView extends BaseView<IPagerProps, PagerViewModel> {
   }
 
   render() {
+    const [ props, childProps ] = this.destruct('info', 'limits');
     let info: string;
 
-    if (this.props.info && this.state.hasValidLimit()) {
+    if (props.info && this.state.hasValidLimit()) {
       info = (this.state.itemCount() == null || this.state.itemCount() === 0) ? 'No Items to Show' :
         `Showing Items ${this.state.offset() + 1} through ${Math.min(this.state.itemCount(), this.state.offset() + this.state.limit())} of ${this.state.itemCount()}`;
     }
 
-    let pager = (this.props.limits == null || this.state.itemCount() === 0 || this.state.limit() == null) ? null : (
-      <Pagination items={this.state.pageCount()} activePage={this.state.selectedPage()} onSelect={this.bindEventToCommand(x => x.selectPage)} {...this.props as any} />
+    let pager = (props.limits == null || this.state.itemCount() === 0 || this.state.limit() == null) ? null : (
+      <Pagination items={this.state.pageCount()} activePage={this.state.selectedPage()} onSelect={this.bindEventToCommand(x => x.selectPage)} {...childProps} />
     );
 
-    let limit = (this.props.limits == null || this.state.itemCount() === 0) ? null : (
+    let limit = (props.limits == null || this.state.itemCount() === 0) ? null : (
       <DropdownButton id='pager-limit-selector' title={`Items per Page (${this.state.limit() || 'All'})`} onSelect={this.bindEventToProperty(x => x.limit)}>
-        {this.props.limits.map((x, i) => (
+        {props.limits.map((x, i) => (
           <MenuItem key={i} eventKey={x}>{x || 'All'}</MenuItem>
         ))}
       </DropdownButton>

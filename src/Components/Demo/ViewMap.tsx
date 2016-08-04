@@ -37,7 +37,7 @@ const viewMap: ViewActivatorMap = {
       <Button onClick={() => wxr.Alert.createForError(new Error(`Error Message: ${new Date()}`), 'Error Alert')}>Error Alert</Button>
     </div>
   ),
-  TimeSpanInputViewModel: (viewModel: wxr.Components.TimeSpanInputViewModel) => <TimeSpanInputView viewModel={viewModel} id='demo' placeholder='Type in a timespan, or use the controls on the right...' standalone />,
+  TimeSpanInputViewModel: (viewModel: wxr.Components.TimeSpanInputViewModel) => <TimeSpanInputView viewModel={viewModel} id='demo' placeholder='Type in a timespan, or use the controls on the right...' />,
   ContextMenu: () => (
     <div>
       <ContextMenu id='demo' header='Optional Header' onSelect={(item) => {

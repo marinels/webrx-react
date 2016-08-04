@@ -28,7 +28,12 @@ export class ProfilePicture extends React.Component<IProfilePictureProps, any> {
   };
 
   render() {
-    let src = this.props.src || this.props.defaultSrc;
+    const [ props, childProps ] = Object.destruct(
+      Object.omit(this.props, 'key', 'ref'),
+      'src', 'responsive', 'rounded', 'circle', 'thumbnail', 'defaultSrc', 'defaultIcon', 'iconSize', 'block'
+    );
+
+    let src = props.src || props.defaultSrc;
 
     if (String.isNullOrEmpty(src) === false && src.indexOf(dataUriPrefix) < 0) {
       src = `${dataUriPrefix}${src}`;
@@ -37,21 +42,21 @@ export class ProfilePicture extends React.Component<IProfilePictureProps, any> {
     let image: JSX.Element = null;
 
     if (src == null) {
-      image = <Icon className={classNames({'fa-border': this.props.thumbnail, 'fa-rounded': this.props.rounded})} name={this.props.defaultIcon} size={this.props.iconSize} />;
+      image = <Icon className={classNames({'fa-border': props.thumbnail, 'fa-rounded': props.rounded})} name={props.defaultIcon} size={props.iconSize} />;
     }
     else {
-      image = <Image src={src} responsive={this.props.responsive}
-        rounded={this.props.rounded} circle={this.props.circle} thumbnail={this.props.thumbnail} />;
+      image = <Image src={src} responsive={props.responsive}
+        rounded={props.rounded} circle={props.circle} thumbnail={props.thumbnail} />;
     }
 
     let blockStyle = Object.assign({
-      width: this.props.width,
-      height: this.props.height,
-      display: this.props.block ? 'block' : 'inline-block',
+      width: childProps.width,
+      height: childProps.height,
+      display: props.block ? 'block' : 'inline-block',
     }, this.props.style);
 
     return (
-      <div className='ProfilePicture' {...this.props} style={blockStyle}>
+      <div className='ProfilePicture' {...childProps} style={blockStyle}>
         {image}
       </div>
     );

@@ -19,7 +19,6 @@ export class TimeSpanInputView extends BaseView<ITimeSpanInputProps, TimeSpanInp
   public static displayName = 'TimeSpanInputView';
 
   static defaultProps = {
-    standalone: false,
   };
 
   updateOn() {
@@ -32,20 +31,20 @@ export class TimeSpanInputView extends BaseView<ITimeSpanInputProps, TimeSpanInp
   }
 
   render() {
+    const [ props, childProps ] = this.destruct('id', 'bsSize');
     const isValid = this.state.isValid();
     const validationError = this.state.validationError();
 
     return (
       <div className='TimeSpanInput'>
-        <FormGroup controlId={this.props.id} validationState={isValid ? null : 'error'}>
+        <FormGroup controlId={props.id} validationState={isValid ? null : 'error'}>
           <InputGroup>
             <BindableInput property={this.state.text}>
-              <FormControl type='text' {...this.props}>
-              </FormControl>
+              <FormControl type='text' {...childProps}></FormControl>
             </BindableInput>
             <InputGroup.Button>
-              <DropdownButton id={`TimeSpan-units-${this.props.id}`} className='TimeSpan-units' key='units'
-                title={this.state.unit().name} bsSize={this.props.bsSize}
+              <DropdownButton id={`TimeSpan-units-${props.id}`} className='TimeSpan-units' key='units'
+                title={this.state.unit().name} bsSize={props.bsSize}
                 onSelect={this.bindEventToCommand(x => x.setUnit)}>
                 {
                   Ix.Enumerable
