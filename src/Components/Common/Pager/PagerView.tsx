@@ -32,7 +32,10 @@ export class PagerView extends BaseView<IPagerProps, PagerViewModel> {
   }
 
   render() {
-    const [ props, childProps ] = this.destruct('info', 'limits');
+    const { rest, props } = this.restProps(x => {
+      const { info, limits } = x;
+      return { info, limits };
+    });
     let info: string;
 
     if (props.info && this.state.hasValidLimit()) {
@@ -41,7 +44,7 @@ export class PagerView extends BaseView<IPagerProps, PagerViewModel> {
     }
 
     let pager = (props.limits == null || this.state.itemCount() === 0 || this.state.limit() == null) ? null : (
-      <Pagination items={this.state.pageCount()} activePage={this.state.selectedPage()} onSelect={this.bindEventToCommand(x => x.selectPage)} {...childProps} />
+      <Pagination items={this.state.pageCount()} activePage={this.state.selectedPage()} onSelect={this.bindEventToCommand(x => x.selectPage)} {...rest} />
     );
 
     let limit = (props.limits == null || this.state.itemCount() === 0) ? null : (

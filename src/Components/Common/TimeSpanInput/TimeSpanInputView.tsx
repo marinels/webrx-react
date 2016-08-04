@@ -31,7 +31,11 @@ export class TimeSpanInputView extends BaseView<ITimeSpanInputProps, TimeSpanInp
   }
 
   render() {
-    const [ props, childProps ] = this.destruct('id', 'bsSize');
+    const { rest, props } = this.restProps(x => {
+      const { id, bsSize } = x;
+      return { id, bsSize };
+    });
+
     const isValid = this.state.isValid();
     const validationError = this.state.validationError();
 
@@ -40,7 +44,7 @@ export class TimeSpanInputView extends BaseView<ITimeSpanInputProps, TimeSpanInp
         <FormGroup controlId={props.id} validationState={isValid ? null : 'error'}>
           <InputGroup>
             <BindableInput property={this.state.text}>
-              <FormControl type='text' {...childProps}></FormControl>
+              <FormControl type='text' {...rest}></FormControl>
             </BindableInput>
             <InputGroup.Button>
               <DropdownButton id={`TimeSpan-units-${props.id}`} className='TimeSpan-units' key='units'

@@ -28,10 +28,10 @@ export class ProfilePicture extends React.Component<IProfilePictureProps, any> {
   };
 
   render() {
-    const [ props, childProps ] = Object.destruct(
-      Object.omit(this.props, 'key', 'ref'),
-      'src', 'responsive', 'rounded', 'circle', 'thumbnail', 'defaultSrc', 'defaultIcon', 'iconSize', 'block'
-    );
+    const { rest, props } = this.restProps(x => {
+      const { src, responsive, rounded, circle, thumbnail, defaultSrc, defaultIcon, iconSize, block } = x;
+      return { src, responsive, rounded, circle, thumbnail, defaultSrc, defaultIcon, iconSize, block };
+    });
 
     let src = props.src || props.defaultSrc;
 
@@ -50,13 +50,13 @@ export class ProfilePicture extends React.Component<IProfilePictureProps, any> {
     }
 
     let blockStyle = Object.assign({
-      width: childProps.width,
-      height: childProps.height,
+      width: rest.width,
+      height: rest.height,
       display: props.block ? 'block' : 'inline-block',
     }, this.props.style);
 
     return (
-      <div className='ProfilePicture' {...childProps} style={blockStyle}>
+      <div className='ProfilePicture' {...rest} style={blockStyle}>
         {image}
       </div>
     );

@@ -42,6 +42,7 @@
     "./src/Extensions/index.ts",
     "./src/Extensions/Number.ts",
     "./src/Extensions/Object.ts",
+    "./src/Extensions/React.ts",
     "./src/Extensions/String.ts",
     "./src/Extensions/WebRx.ts",
     "./src/Routing/HashCodec.ts",

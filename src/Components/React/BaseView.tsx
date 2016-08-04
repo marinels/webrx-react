@@ -139,20 +139,12 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   // -----------------------------------------
 
   // -----------------------------------------
-  // these are the property destruction helpers
-  // these functions will remove key, ref, and viewModel props automatically
+  // this is the property destruction helper
+  // this functions will remove key, ref, and viewModel props automatically
   // -----------------------------------------
 
-  // this helper breaks up the props into two groups, included and excluded
-  // i.e., const [ props, childProps ] = this.destruct('someProp', 'anotherProp');
-  protected destruct(...propNames: string[]) {
-    return Object.destruct(Object.omit(this.props, 'key', 'ref', 'viewModel'), ...propNames);
-  }
-
-  // this helper breaks up the props into individual values, along with a rest prop
-  // i.e., const [ someProp, anotherProp, childProps ] = this.destructProps('someProp', 'anotherProp');
-  protected destructProps(...propNames: string[]) {
-    return Object.destructProps(Object.omit(this.props, 'key', 'ref', 'viewModel'), ...propNames);
+  public restProps<T>(propsCreator: (x: TViewProps) => T, ...omits: string[]) {
+    return super.restProps(propsCreator, ...omits.concat('viewModel'));
   }
   // -----------------------------------------
 

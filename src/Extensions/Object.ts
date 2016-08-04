@@ -33,64 +33,25 @@ function assign<T>(target: any, ...sources: any[]) {
   return to as T;
 }
 
-// these extensions solve the Unknown Prop Warning that is experienced in
+// this extension solves the Unknown Prop Warning that is experienced in
 // typescript when using Rest and Spread Properties
 // see: https://facebook.github.io/react/warnings/unknown-prop.html
 // see: https://facebook.github.io/react/docs/transferring-props.html
-function deconstruct<TResult, TData>(
-  result: TResult,
-  data: TData,
-  onHit: (result: TResult, data: TData, x: string) => void,
-  onMiss: (result: TResult, data: TData, x: string) => void,
-  propNames: string[]
-  ) {
+function rest<TData, TProps>(data: TData, propsCreator: (x: TData) => TProps, ...omits: string[]) {
+  const rest = <TData>{};
+  const props = <TProps>propsCreator.apply(this, [ data ]);
 
   Object
     .getOwnPropertyNames(data)
+    .filter(x => props.hasOwnProperty(x) === false && omits.indexOf(x) < 0)
     .forEach(x => {
-      if (propNames.indexOf(x) < 0) {
-        if (onMiss != null) {
-          onMiss(result, data, x);
-        }
-      }
-      else {
-        if (onHit != null) {
-          onHit(result, data, x);
-        }
-      }
+      (<any>rest)[x] = (<any>data)[x];
     });
 
-  return result;
-}
-
-function destruct<T>(data: T, ...propNames: string[]) {
-  return deconstruct(
-    [ <T>{}, <T>{} ],
-    data,
-    (r, d, x) => (<any>r[0])[x] = (<any>d)[x],
-    (r, d, x) => (<any>r[1])[x] = (<any>d)[x],
-    propNames
-  );
-}
-
-function destructProps(data: any, ...propNames: string[]) {
-  return deconstruct(
-    [ <any>{} ],
-    data,
-    (r, d, x) => r.splice(r.length - 1, 0, d[x]),
-    (r, d, x) => r[r.length - 1][x] = d[x],
-    propNames
-  );
-}
-
-function omit<T>(data: T, ...propNames: string[]) {
-  return deconstruct(
-    <T>{},
-    data,
-    null,
-    (r, d, x) => (<any>r)[x] = (<any>d)[x],
-    propNames
-  );
+  return {
+    rest,
+    props,
+  };
 }
 
 function dispose<T>(disposable: T, returnNull = true) {
@@ -174,9 +135,7 @@ function fallbackAsync<T>(...actions: (T | (() => T))[]) {
 }
 
 Object.assign = fallback(Object.assign, assign);
-Object.destruct = fallback(Object.destruct, destruct);
-Object.destructProps = fallback(Object.destructProps, destructProps);
-Object.omit = fallback(Object.omit, omit);
+Object.rest = fallback(Object.rest, rest);
 Object.dispose = fallback(Object.dispose, dispose);
 Object.getName = fallback(Object.getName, getName);
 Object.fallback = fallback(Object.fallback, fallback);

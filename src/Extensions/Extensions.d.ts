@@ -1,8 +1,6 @@
 declare interface ObjectConstructor {
   assign<T>(target: any, ...sources: any[]): T;
-  destruct<T>(data: T, ...propNames: string[]): T[];
-  destructProps(data: any, ...propNames: string[]): any[];
-  omit<T>(data: T, ...propNames: string[]): T;
+  rest<TData, TProps>(data: TData, propsCreator: (x: TData) => TProps, ...omits: string[]): { rest: TData, props: TProps };
   dispose<T>(disposable: T, returnNull?: boolean): T;
   getName(source: any, undefinedValue?: string): string;
   fallback<T>(...values: T[]): T;
