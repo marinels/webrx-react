@@ -143,7 +143,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   // this functions will remove key, ref, and viewModel props automatically
   // -----------------------------------------
 
-  public restProps<T>(propsCreator: (x: TViewProps) => T, ...omits: string[]) {
+  public restProps<T>(propsCreator?: (x: TViewProps) => T, ...omits: string[]) {
     return super.restProps(propsCreator, ...omits.concat('viewModel'));
   }
   // -----------------------------------------

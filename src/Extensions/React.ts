@@ -1,6 +1,6 @@
 declare module 'react' {
   interface Component<P, S> {
-    restProps<T>(propsCreator: (x: P) => T, ...omits: string[]): { rest: P, props: T };
+    restProps<T>(propsCreator?: (x: P) => T, ...omits: string[]): { rest: P, props: T };
   }
 }
 
@@ -14,7 +14,7 @@ import * as React from 'react';
 // }, 'exclude1', 'exclude2');
 // you can additionally choose to omit any properties by name from the rest
 // object that is returned (like 'children' for example).
-function restProps<P, S, T>(propsCreator: (x: P) => T, ...omits: string[]) {
+function restProps<P, S, T>(propsCreator?: (x: P) => T, ...omits: string[]) {
   return Object.rest((<React.Component<P, S>>this).props, propsCreator, ...omits.concat('key', 'ref'));
 }
 

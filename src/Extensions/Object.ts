@@ -37,9 +37,9 @@ function assign<T>(target: any, ...sources: any[]) {
 // typescript when using Rest and Spread Properties
 // see: https://facebook.github.io/react/warnings/unknown-prop.html
 // see: https://facebook.github.io/react/docs/transferring-props.html
-function rest<TData, TProps>(data: TData, propsCreator: (x: TData) => TProps, ...omits: string[]) {
+function rest<TData, TProps>(data: TData, propsCreator?: (x: TData) => TProps, ...omits: string[]) {
   const rest = <TData>{};
-  const props = <TProps>propsCreator.apply(this, [ data ]);
+  const props = propsCreator == null ? <TProps>{} : <TProps>propsCreator.apply(this, [ data ]);
 
   Object
     .getOwnPropertyNames(data)
