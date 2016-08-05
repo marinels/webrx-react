@@ -1,4 +1,10 @@
-/// <reference path="./Extensions.d.ts"/>
+declare global {
+  interface NumberConstructor {
+    isNumeric(value: any): boolean;
+  }
+}
+
+import './Object';
 
 // jQuery implementation
 // see: https://github.com/jquery/jquery/blob/bf48c21d225c31f0f9b5441d95f73615ca3dcfdb/src/core.js#L206

@@ -1,4 +1,13 @@
-/// <reference path="./Extensions.d.ts"/>
+declare global {
+  interface ObjectConstructor {
+    assign<T>(target: any, ...sources: any[]): T;
+    rest<TData, TProps>(data: TData, propsCreator?: (x: TData) => TProps, ...omits: string[]): { rest: TData, props: TProps };
+    dispose<T>(disposable: T, returnNull?: boolean): T;
+    getName(source: any, undefinedValue?: string): string;
+    fallback<T>(...values: T[]): T;
+    fallbackAsync<T>(...actions: (T | (() => T))[]): T;
+  }
+}
 
 import * as Ix from 'ix';
 

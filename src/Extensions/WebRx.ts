@@ -1,4 +1,8 @@
-/// <reference path="./Extensions.d.ts"/>
+declare module 'webrx' {
+  interface ICommand<T> {
+    catchExceptions(onError: (error: Error) => void): ICommand<T>;
+  }
+}
 
 import * as wx from 'webrx';
 
@@ -14,7 +18,7 @@ function catchExceptions<T>(onError: (error: Error) => void) {
 
 function wrapCommand<T extends Function>(func: T, thisArg?: any) {
   return <T><Function>function() {
-    const cmd = func.apply(thisArg, arguments);
+    const cmd = <wx.ICommand<T>>func.apply(thisArg, arguments);
     cmd.catchExceptions = catchExceptions;
     return cmd;
   };

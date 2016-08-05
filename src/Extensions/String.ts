@@ -1,4 +1,9 @@
-/// <reference path="./Extensions.d.ts"/>
+declare global {
+  interface StringConstructor {
+    isNullOrEmpty(value: string): boolean;
+    stringify(value: any, replacer?: any, space?: string | number): string;
+  }
+}
 
 import './Object';
 

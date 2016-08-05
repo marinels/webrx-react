@@ -5,6 +5,7 @@ declare module 'react' {
 }
 
 import * as React from 'react';
+import './Object';
 
 // this extension makes 'resting' react props much easier
 // i.e.,
