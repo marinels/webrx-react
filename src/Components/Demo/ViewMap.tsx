@@ -11,6 +11,7 @@ const {
   ProfilePicture,
   ListView,
   StandardListView,
+  TreeListView,
   DataGridView,
   DataGridColumn,
   DataGridListViewTemplate,
@@ -72,12 +73,21 @@ const viewMap: ViewActivatorMap = {
       </span>
     );
   },
-  ListViewModel: (viewModel: wxr.Components.ListViewModel<any, any>) => (
-    <ListView viewModel={viewModel} checkmarkSelected view={new StandardListView<any>(undefined, (v, x) => {
-      return `${x.name} (Required By ${x.requiredBy})`;
-    })}>
-    </ListView>
-  ),
+  ListViewModel: (viewModel: wxr.Components.ListViewModel<any, any>, componentRoute: string) => {
+    return (componentRoute === 'List') ? (
+      <ListView viewModel={viewModel} checkmarkSelected view={new StandardListView<any>(undefined, (v, x) => {
+        return `${x.name} (Required By ${x.requiredBy})`;
+      })}>
+      </ListView>
+    ) : (
+      <ListView viewModel={viewModel} checkmarkSelected view={
+        new TreeListView<any>(x => x.expanded, (x, i, e) => x.expanded = e, x => x.items, true, true, () => true, (v, x) => {
+          return `${x.name} (Required By ${x.requiredBy})`;
+        })
+      }>
+      </ListView>
+    );
+  },
   DataGridViewModel: (viewModel: wxr.Components.DataGridViewModel<any>, componentRoute: string) => {
     let view: wxr.Components.DataGridViewTemplate = undefined;
     let columns: any;
