@@ -48,7 +48,7 @@ export class StandardListView<T> implements IListView {
         if (view.props.checkmarkSelected === true) {
           selectionIcon = (
             <div className='list-group-item-selectionIcon'>
-              { isSelected ? <Icon name='check-circle' size='lg' fixedWidth /> : null }
+              <Icon name={ isSelected ? 'check-circle' : 'circle-o' } size='lg' fixedWidth />
             </div>
           );
         }
@@ -162,7 +162,7 @@ export class TreeListView<T> extends StandardListView<T> {
         if (view.props.checkmarkSelected === true) {
           selectionIcon = (
             <div className='list-group-item-selectionIcon'>
-              { isSelected ? <Icon name='check-circle' size='lg' fixedWidth /> : null }
+              <Icon name={ isSelected ? 'check-circle' : 'circle-o' } size='lg' fixedWidth />
             </div>
           );
         }
@@ -195,6 +195,7 @@ interface IListProps extends IBaseViewProps {
   highlightSelected?: boolean;
   checkmarkSelected?: boolean;
   multiSelect?: boolean;
+  fill?: boolean;
 }
 
 export class ListView extends BaseView<IListProps, ListViewModel<any, any>> {
@@ -240,18 +241,16 @@ export class ListView extends BaseView<IListProps, ListViewModel<any, any>> {
     let rows = this.props.view.getRows(this, this.state.items.toArray());
 
     return (
-      <div className='List'>
-        <ListGroup>
-          {
-            (rows || [])
-              .asEnumerable()
-              .defaultIfEmpty(
-                <div key='empty' className='List-empty'>Nothing to Display...</div>
-              )
-              .toArray()
-          }
-        </ListGroup>
-      </div>
+      <ListGroup className='List' fill={ this.props.fill }>
+        {
+          (rows || [])
+            .asEnumerable()
+            .defaultIfEmpty(
+              <div key='empty' className='List-empty'>Nothing to Display...</div>
+            )
+            .toArray()
+        }
+      </ListGroup>
     );
   }
 }
