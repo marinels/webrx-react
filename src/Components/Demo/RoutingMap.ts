@@ -62,6 +62,11 @@ routingMap.addRoute('Framework', 'Tree', 'Tree', (state: any) => new wxr.Compone
     { name: 'test 3', requiredBy: 'yesterday' },
   ]}
 ));
+routingMap.addRoute('Framework', 'PanelList', 'Panel List', (state: any) => new wxr.Components.ListViewModel(true, false,
+  { name: 'test 1', requiredBy: 'now' },
+  { name: 'test 2', requiredBy: 'tomorrow' },
+  { name: 'test 3', requiredBy: 'yesterday' }
+));
 routingMap.addRoute('Framework', 'DataGrid', 'Data Grid', (state: any) => {
   let viewModel = new wxr.Components.DataGridViewModel(undefined, undefined, false,
     { name: 'test 1', requiredBy: 'now' },

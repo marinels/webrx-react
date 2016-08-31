@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, MenuItem } from 'react-bootstrap';
+import { Button, MenuItem, Panel } from 'react-bootstrap';
 
 import * as wxr from '../../web.rx.react';
 
@@ -74,19 +74,35 @@ const viewMap: ViewActivatorMap = {
     );
   },
   ListViewModel: (viewModel: wxr.Components.ListViewModel<any, any>, componentRoute: string) => {
-    return (componentRoute === 'List') ? (
-      <ListView viewModel={viewModel} checkmarkSelected view={new StandardListView<any>(undefined, (v, x) => {
-        return `${x.name} (Required By ${x.requiredBy})`;
-      })}>
-      </ListView>
-    ) : (
-      <ListView viewModel={viewModel} checkmarkSelected view={
-        new TreeListView<any>(x => x.expanded, (x, i, e) => x.expanded = e, x => x.items, true, true, () => true, (v, x) => {
-          return `${x.name} (Required By ${x.requiredBy})`;
-        })
-      }>
-      </ListView>
-    );
+    switch (componentRoute) {
+      case 'List':
+        return (
+          <ListView viewModel={viewModel} checkmarkSelected view={new StandardListView<any>(undefined, (v, x) => {
+            return `${x.name} (Required By ${x.requiredBy})`;
+          })}>
+          </ListView>
+        );
+      case 'Tree':
+        return (
+          <ListView viewModel={viewModel} checkmarkSelected view={
+            new TreeListView<any>(x => x.expanded, (x, i, e) => x.expanded = e, x => x.items, true, true, () => true, (v, x) => {
+              return `${x.name} (Required By ${x.requiredBy})`;
+            })
+          }>
+          </ListView>
+        );
+      case 'PanelList':
+        return (
+          <Panel header='List View Embedded Within a Panel' style={({ margin: 0 })}>
+            <ListView viewModel={viewModel} checkmarkSelected fill view={new StandardListView<any>(undefined, (v, x) => {
+              return `${x.name} (Required By ${x.requiredBy})`;
+            })}>
+            </ListView>
+          </Panel>
+        );
+      default:
+        return null;
+    }
   },
   DataGridViewModel: (viewModel: wxr.Components.DataGridViewModel<any>, componentRoute: string) => {
     let view: wxr.Components.DataGridViewTemplate = undefined;
