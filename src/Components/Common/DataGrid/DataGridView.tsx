@@ -296,9 +296,12 @@ export class DataGridView extends BaseView<DataGridProps, DataGridViewModel<any>
         <SearchView viewModel={this.state.search}/>
       );
       grid = this.renderGrid(items);
-      pager = (
-        <PagerView viewModel={this.state.pager} limits={this.props.pagerLimits} />
-      );
+
+      if (this.props.pagerLimits != null && this.props.pagerLimits.length > 0) {
+        pager = (
+          <PagerView viewModel={this.state.pager} limits={this.props.pagerLimits} />
+        );
+      }
     }
 
     return (
