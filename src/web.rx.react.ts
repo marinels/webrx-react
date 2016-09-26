@@ -213,6 +213,7 @@ export namespace Components {
   export import ListView = ListViewTypes.ListView;
 
   export import PagerViewModel = PagerViewModelTypes.PagerViewModel;
+  export import StandardPagerLimits = PagerViewTypes.StandardLimits;
   export import PagerView = PagerViewTypes.PagerView;
 
   export import TabsViewModel = TabsViewModelTypes.TabsViewModel;
