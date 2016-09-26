@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Button, Collapse } from 'react-bootstrap';
+import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Button } from 'react-bootstrap';
 import { Icon } from 'react-fa';
 import * as classNames from 'classnames';
 
