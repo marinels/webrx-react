@@ -8,6 +8,7 @@
     background-color: #fff;
 
     .DataGrid-column {
+      vertical-align: middle;
       padding: 0;
 
       .DataGrid-columnContainer {
@@ -25,8 +26,14 @@
       }
     }
 
-    .DataGrid-row--selected {
-      font-weight: bold;
+    .DataGrid-row {
+      &.DataGrid-row--selected {
+        font-weight: bold;
+      }
+
+      & td {
+        vertical-align: middle;
+      }
     }
   }
 
