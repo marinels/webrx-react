@@ -5,7 +5,7 @@ import { Table, TableProps, Button, ListGroup, ListGroupItem } from 'react-boots
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import { SearchView } from '../Search/SearchView';
-import { PagerView } from '../Pager/PagerView';
+import { PagerView, StandardLimits } from '../Pager/PagerView';
 import { Icon } from 'react-fa';
 
 import { DataGridViewModel } from './DataGridViewModel';
@@ -216,7 +216,7 @@ export class DataGridView extends BaseView<DataGridProps, DataGridViewModel<any>
   static defaultProps = {
     view: new DataGridTableViewTemplate(),
     hideSearch: false,
-    pagerLimits: [10, 25, null],
+    pagerLimits: StandardLimits,
   };
 
   private columns: DataGridColumnProps[];
