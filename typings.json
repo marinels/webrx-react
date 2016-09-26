@@ -1,14 +1,10 @@
 {
   "name": "webrx.react",
-  "dependencies": {},
-  "devDependencies": {},
-  "ambientDevDependencies": {
+  "globalDevDependencies": {
     "chai": "registry:dt/chai#3.4.0+20160317120654",
-    "mocha": "registry:dt/mocha#2.2.5+20160317120654",
-    "typemoq": "npm:typemoq/typemoq.d.ts",
-    "typemoq-node": "npm:typemoq/typemoq.node.d.ts"
+    "mocha": "registry:dt/mocha#2.2.5+20160317120654"
   },
-  "ambientDependencies": {
+  "globalDependencies": {
     "classnames": "registry:dt/classnames#0.0.0+20160316155526",
     "ix": "registry:dt/ix#1.0.6+20160317120654",
     "ix.js/l2o": "registry:dt/ix.js/l2o#1.0.6+20160317120654",
