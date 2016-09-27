@@ -50,7 +50,11 @@ export class RouteHandlerViewModel extends BaseViewModel {
     let activator = this.getActivator(route);
 
     if (activator == null) {
-      // if the activator is null then we just return null for the routed view model
+      // if the activator is null then we don't have a valid path or view model
+      // we need to clear the currentPath so that back nav works properly
+      this.currentPath = null;
+
+      // then just return null for the routed view model
       viewModel = null;
     }
     else {
