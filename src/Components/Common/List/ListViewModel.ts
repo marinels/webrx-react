@@ -16,6 +16,19 @@ export class ListViewModel<TData, TRoutingState extends IListRoutingState> exten
   public items = wx.list<TData>();
   public selectIndex = wx.asyncCommand((x: number) => Rx.Observable.return(x));
   public selectItem = wx.asyncCommand((x: TData) => Rx.Observable.return(x));
+  public toggleMultiSelectionState = wx.asyncCommand((x: TData) => {
+    const selectable = x as any as ISelectableItem;
+
+    if (selectable.isSelected != null) {
+      selectable.isSelected = !selectable.isSelected;
+
+      // because the isSelected is not necessarily a reactive property
+      // we need to force a change notification here
+      this.notifyChanged();
+    }
+
+    return Rx.Observable.return(x);
+  });
   public selectedIndex = this.selectIndex.results.toProperty();
   public selectedItem = Rx.Observable
     .merge(
@@ -26,15 +39,7 @@ export class ListViewModel<TData, TRoutingState extends IListRoutingState> exten
     )
     .do(x => {
       if (this.isMultiSelectEnabled === true) {
-        const selectable = x as any as ISelectableItem;
-
-        if (selectable.isSelected != null) {
-          selectable.isSelected = !selectable.isSelected;
-
-          // because the isSelected is not necessarily a reactive property
-          // we need to force a change notification here
-          this.notifyChanged();
-        }
+        this.toggleMultiSelectionState.execute(x);
       }
     })
     .toProperty();
