@@ -54,7 +54,7 @@ export class StandardListView<T> implements IListView {
         }
 
         return (
-          <div className={classNames('list-group-item', { active: isSelected })} {...props as any}>
+          <div className={classNames('list-group-item', { active: view.props.highlightSelected && isSelected })} {...props as any}>
             {selectionIcon}
             <div className='list-group-item-content' onClick={() => view.selectItem(x, i)}>
               {this.renderItem(view, x, i)}
@@ -168,7 +168,7 @@ export class TreeListView<T> extends StandardListView<T> {
         }
 
         let item = (
-          <div className={classNames('list-group-item', { active: isSelected })} {...props as any}>
+          <div className={classNames('list-group-item', { active: view.props.highlightSelected && isSelected })} {...props as any}>
             {selectionIcon}
             <div className='list-group-item-expander'>
               {nodeIndents}
