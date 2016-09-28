@@ -26,6 +26,11 @@ export class RouteHandlerViewModel extends BaseViewModel {
       if (x != null) {
         document.title = x.getTitle();
       }
+
+      const vm = this.currentViewModel();
+      if (vm != null && vm !== x && vm.dispose instanceof Function) {
+        vm.dispose();
+      }
     })
     .toProperty();
 
