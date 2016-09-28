@@ -14,7 +14,7 @@ export interface LifecycleComponentViewModel {
   cleanupViewModel(): void;
 }
 
-export abstract class BaseViewModel {
+export abstract class BaseViewModel implements Rx.IDisposable {
   public static displayName = 'BaseViewModel';
 
   protected subs = new SubMan();
@@ -45,8 +45,6 @@ export abstract class BaseViewModel {
 
   private cleanupViewModel() {
     this.cleanup();
-
-    this.subs.dispose();
   }
   // tslint:enable:no-unused-variable
   // -----------------------------------------
@@ -65,6 +63,10 @@ export abstract class BaseViewModel {
 
   protected cleanup() {
     // do nothing by default
+  }
+
+  public dispose() {
+    this.subs.dispose();
   }
 
   public getDisplayName() { return Object.getName(this); }
