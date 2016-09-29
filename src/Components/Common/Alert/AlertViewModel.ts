@@ -29,9 +29,7 @@ export class AlertViewModel extends BaseViewModel {
 
   constructor(private owner: wx.IObservableList<AlertViewModel>, public key: any, public content: any, public header?: string, public style = DefaultStyle, private timeout = DefaultTimeout) {
     super();
-  }
 
-  initialize() {
     this.subscribe(Rx.Observable
       .return(false)
       .delay(this.timeout)
