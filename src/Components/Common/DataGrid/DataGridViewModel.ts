@@ -45,9 +45,10 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
   constructor(
     protected filterer?: (item: TData, regex: RegExp) => boolean,
     protected comparer = new ObjectComparer<TData>(),
-    isRoutingEnabled = false,
+    isMultiSelectEnabled?: boolean,
+    isRoutingEnabled?: boolean,
     ...items: TData[]) {
-    super(false, isRoutingEnabled, ...items);
+    super(isMultiSelectEnabled, isRoutingEnabled, ...items);
   }
 
   initialize() {

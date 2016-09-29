@@ -68,7 +68,7 @@ routingMap.addRoute('Framework', 'PanelList', 'Panel List', (state: any) => new 
   { name: 'test 3', requiredBy: 'yesterday' }
 ));
 routingMap.addRoute('Framework', 'DataGrid', 'Data Grid', (state: any) => {
-  let viewModel = new wxr.Components.DataGridViewModel(undefined, undefined, false,
+  let viewModel = new wxr.Components.DataGridViewModel(undefined, undefined, undefined, undefined,
     { name: 'test 1', requiredBy: 'now' },
     { name: 'test 2', requiredBy: 'tomorrow' },
     { name: 'test 3', requiredBy: 'yesterday' },
@@ -85,7 +85,7 @@ routingMap.addRoute('Framework', 'DataGrid', 'Data Grid', (state: any) => {
   return viewModel;
 });
 routingMap.addRoute('Framework', 'DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: any) => {
-  let viewModel = new wxr.Components.DataGridViewModel(undefined, undefined, false,
+  let viewModel = new wxr.Components.DataGridViewModel(undefined, undefined, undefined, undefined,
     { name: 'test 1', requiredBy: 'now' },
     { name: 'test 2', requiredBy: 'tomorrow' },
     { name: 'test 3', requiredBy: 'yesterday' },
@@ -104,7 +104,7 @@ routingMap.addRoute('Framework', 'DataGridAutoCol', 'Data Grid (Automatic Column
 routingMap.addRoute('Framework', 'DataGridList', 'DataGrid (List View)', (state: any) => {
   let viewModel = new wxr.Components.DataGridViewModel<{name: string, requiredBy: string}>(
     (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0,
-    undefined, false,
+    undefined, undefined, undefined,
     { name: 'test 1', requiredBy: 'now' },
     { name: 'test 2', requiredBy: 'tomorrow' },
     { name: 'test 3', requiredBy: 'yesterday' },

@@ -44,7 +44,7 @@ export class ListViewModel<TData, TRoutingState extends IListRoutingState> exten
     })
     .toProperty();
 
-  constructor(public isMultiSelectEnabled = false, isRoutingEnabled = false, ...items: TData[]) {
+  constructor(public isMultiSelectEnabled = false, isRoutingEnabled?: boolean, ...items: TData[]) {
     super(isRoutingEnabled);
 
     if (items.length > 0) {
