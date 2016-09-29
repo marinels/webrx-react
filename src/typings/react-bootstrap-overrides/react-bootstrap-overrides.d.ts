@@ -123,4 +123,13 @@ declare module 'react-bootstrap' {
     unmountOnExit?: boolean;
   }
   class Collapse extends React.Component<CollapseProps, any> { }
+
+  interface ClearfixProps extends React.HTMLAttributes {
+    componentClass?: string;
+    visibleLgBlock?: boolean;
+    visibleMdBlock?: boolean;
+    visibleSmBlock?: boolean;
+    visibleXsBlock?: boolean;
+  }
+  class Clearfix extends React.Component<ClearfixProps, any> { }
 }
