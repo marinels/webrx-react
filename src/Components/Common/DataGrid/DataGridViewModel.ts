@@ -49,9 +49,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
     isRoutingEnabled?: boolean,
     ...items: TData[]) {
     super(isMultiSelectEnabled, isRoutingEnabled, ...items);
-  }
 
-  initialize() {
     this.subscribe(
       this.project.results
         .debounce(100)

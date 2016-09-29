@@ -21,17 +21,15 @@ export class TabsViewModel<T> extends BaseRoutableViewModel<ITabsRoutingState> {
   constructor(isRoutingEnabled = false, ...items: T[]) {
     super(isRoutingEnabled);
 
+    this.subscribe(this.selectedIndex
+      .changed
+      .invokeCommand(this.routingStateChanged));
+
     if (this.items.length() > 0) {
       this.items.addRange(items);
 
       this.selectIndex.execute(0);
     }
-  }
-
-  initialize() {
-    this.subscribe(this.selectedIndex
-      .changed
-      .invokeCommand(this.routingStateChanged));
   }
 
   saveRoutingState(state: ITabsRoutingState) {

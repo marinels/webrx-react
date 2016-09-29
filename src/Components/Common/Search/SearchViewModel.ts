@@ -25,6 +25,15 @@ export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> 
 
   constructor(public isLiveSearchEnabled = false, private liveSearchTimeout = 250, private isCaseInsensitive = true, isRoutingEnabled = false) {
     super(isRoutingEnabled);
+
+    this.subscribe(this.results
+      .invokeCommand(this.routingStateChanged));
+
+    if (this.isLiveSearchEnabled) {
+      this.subscribe(this.regex.changed
+        .invokeCommand(this.search)
+      );
+    }
   }
 
   public get results() {
@@ -45,17 +54,6 @@ export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> 
     }
 
     return regex;
-  }
-
-  initialize() {
-    this.subscribe(this.results
-      .invokeCommand(this.routingStateChanged));
-
-    if (this.isLiveSearchEnabled) {
-      this.subscribe(this.regex.changed
-        .invokeCommand(this.search)
-      );
-    }
   }
 
   saveRoutingState(state: ISearchRoutingState) {

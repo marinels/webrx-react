@@ -115,9 +115,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
         .select(x => TimeSpanUnits[x])
         .toArray();
     }
-  }
 
-  initialize() {
     if (this.parseDelay > 0) {
       this.subscribe(this.text.changed
         .debounce(this.parseDelay)

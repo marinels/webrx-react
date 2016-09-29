@@ -33,6 +33,20 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
 
   constructor() {
     super(true);
+
+    this.subscribe(wx
+      .whenAny(this.columns.changed, x => null)
+      .invokeCommand(this.routingStateChanged)
+    );
+
+    this.subscribe(wx
+      .whenAny(this.component, x => x)
+      .subscribe(x => {
+        if (this.pageHeader != null) {
+          this.pageHeader.updateDynamicContent();
+        }
+      })
+    );
   }
 
   private getViewModel(state: any) {
@@ -62,22 +76,6 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
     }
 
     return activator == null ? null : activator(state);
-  }
-
-  initialize() {
-    this.subscribe(wx
-      .whenAny(this.columns.changed, x => null)
-      .invokeCommand(this.routingStateChanged)
-    );
-
-    this.subscribe(wx
-      .whenAny(this.component, x => x)
-      .subscribe(x => {
-        if (this.pageHeader != null) {
-          this.pageHeader.updateDynamicContent();
-        }
-      })
-    );
   }
 
   routed() {

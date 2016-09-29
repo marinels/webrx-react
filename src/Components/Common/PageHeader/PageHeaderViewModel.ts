@@ -60,9 +60,7 @@ export class PageHeaderViewModel extends BaseViewModel {
     public userDisplayName?: string,
     public homeLink = '#/') {
     super();
-  }
 
-  initialize() {
     if (this.routeHandler != null) {
       this.subscribe(
         wx

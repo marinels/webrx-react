@@ -45,17 +45,7 @@ export class PagerViewModel extends BaseRoutableViewModel<IPagerRoutingState> {
     super(isRoutingEnabled);
 
     this.limit(limit);
-  }
 
-  private isValidLimit(limit: number) {
-    return limit != null && limit > 0;
-  }
-
-  public hasValidLimit() {
-    return this.isValidLimit(this.limit());
-  }
-
-  initialize() {
     this.subscribe(this.pageCount.changed
       .select(x => this.selectedPage() || 1)
       .invokeCommand(this.selectPage));
@@ -70,6 +60,14 @@ export class PagerViewModel extends BaseRoutableViewModel<IPagerRoutingState> {
       .invokeCommand(this.routingStateChanged));
 
     this.selectPage.execute(this.selectedPage() || 1);
+  }
+
+  private isValidLimit(limit: number) {
+    return limit != null && limit > 0;
+  }
+
+  public hasValidLimit() {
+    return this.isValidLimit(this.limit());
   }
 
   saveRoutingState(state: IPagerRoutingState) {
