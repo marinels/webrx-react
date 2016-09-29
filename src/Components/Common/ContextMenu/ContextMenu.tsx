@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Overlay, Popover, MenuItemProps } from 'react-bootstrap';
+import { Overlay, Popover, MenuItemProps, PopoverProps } from 'react-bootstrap';
 
 import './ContextMenu.less';
 
@@ -16,6 +16,15 @@ interface IContextMenuState {
   isVisible: boolean;
   left: number;
   top: number;
+}
+
+// this is necessary to prevent a js error due to the Overlay trying to position the Popup
+class DummyWrapper extends React.Component<PopoverProps, any> {
+  render() {
+    return (
+      <div className={ this.props.className }>{ this.props.children }</div>
+    );
+  }
 }
 
 export class ContextMenu extends React.Component<IContextMenuProps, IContextMenuState> {
@@ -73,11 +82,9 @@ export class ContextMenu extends React.Component<IContextMenuProps, IContextMenu
         <Popover id={this.props.id} placement='right' title={this.props.header}
           arrowOffsetTop={ContextMenu.ArrowOffset}
           positionLeft={this.state.left} positionTop={this.state.top}>
-          <div className='open'>
-            <ul className='dropdown-menu'>
-              {menuItems}
-            </ul>
-          </div>
+          <ul className='dropdown-menu'>
+            {menuItems}
+          </ul>
         </Popover>
       );
     }
@@ -88,9 +95,9 @@ export class ContextMenu extends React.Component<IContextMenuProps, IContextMenu
           {target}
         </div>
         <Overlay show={this.state.isVisible} rootClose onHide={() => this.hide()}>
-          <div className='ContextMenu-menu'>
+          <DummyWrapper className='ContextMenu-menu'>
             {menu}
-          </div>
+          </DummyWrapper>
         </Overlay>
       </div>
     );
