@@ -1,6 +1,6 @@
 {
   "name": "webrx-react",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "WebRx with React",
   "scripts": {
     "start": "gulp",
