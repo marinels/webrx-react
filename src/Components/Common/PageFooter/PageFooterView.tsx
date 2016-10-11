@@ -12,6 +12,19 @@ interface IPageFooterProps extends IBaseViewProps {
 export class PageFooterView extends BaseView<IPageFooterProps, PageFooterViewModel> {
   public static displayName = 'PageFooterView';
 
+  constructor(props?: IPageFooterProps, context?: any) {
+    super(props, context);
+
+    this.bindObservableToCommand(x => x.viewportDimensionsChanged,
+      Rx.Observable
+        .merge(
+          Rx.Observable.fromEvent<UIEvent>(window, 'resize'),
+          Rx.Observable.fromEvent<Event>(window, 'orientationchange'))
+        .select(_ => this.getDimensions())
+        .startWith(this.getDimensions())
+    );
+  }
+
   private getDimensions(): IViewportDimension {
     return {
       width: window.innerWidth,
@@ -23,17 +36,6 @@ export class PageFooterView extends BaseView<IPageFooterProps, PageFooterViewMod
     return [
       this.state.viewportDimensions.changed,
     ];
-  }
-
-  initialize() {
-    this.bindObservableToCommand(x => x.viewportDimensionsChanged,
-      Rx.Observable
-        .merge(
-          Rx.Observable.fromEvent<UIEvent>(window, 'resize'),
-          Rx.Observable.fromEvent<Event>(window, 'orientationchange'))
-        .select(_ => this.getDimensions())
-        .startWith(this.getDimensions())
-    );
   }
 
   render() {

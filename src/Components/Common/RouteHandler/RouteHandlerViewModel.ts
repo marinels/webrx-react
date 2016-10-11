@@ -3,7 +3,7 @@ import * as Ix from 'ix';
 import { BaseViewModel } from '../../React/BaseViewModel';
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 import { RouteManager, IRoute } from '../../../Routing/RouteManager';
-import { Default as pubSub, ISubscriptionHandle } from '../../../Utils/PubSub';
+import { Default as pubSub } from '../../../Utils/PubSub';
 import { RoutingStateChangedKey, IRoutingStateChanged } from '../../../Events/RoutingStateChanged';
 
 export interface IViewModelActivator {
@@ -40,10 +40,26 @@ export class RouteHandlerViewModel extends BaseViewModel {
     .startWith(true)
     .toProperty();
 
-  private routingStateChangedHandle: ISubscriptionHandle;
-
   constructor(public manager: RouteManager, public routingMap: IRoutingMap) {
     super();
+
+    this.subscribe(this.currentViewModel.thrownExceptions
+      .subscribe(x => {
+        this.alertForError(x);
+      })
+    );
+
+    const handle = pubSub.subscribe<IRoutingStateChanged>(RoutingStateChangedKey, x => {
+      if (this.currentViewModel() != null) {
+        let state = this.currentViewModel().getRoutingState(x);
+
+        this.manager.navTo(this.currentPath, state);
+      }
+    });
+
+    this.subscribe(Rx.Disposable.create(() => {
+      pubSub.unsubscribe(handle);
+    }));
   }
 
   private getRoutedViewModel(route: IRoute) {
@@ -147,25 +163,5 @@ export class RouteHandlerViewModel extends BaseViewModel {
     }
 
     return activator;
-  }
-
-  initialize() {
-    this.subscribe(this.currentViewModel.thrownExceptions
-      .subscribe(x => {
-        this.alertForError(x);
-      })
-    );
-
-    this.routingStateChangedHandle = pubSub.subscribe<IRoutingStateChanged>(RoutingStateChangedKey, x => {
-      if (this.currentViewModel() != null) {
-        let state = this.currentViewModel().getRoutingState(x);
-
-        this.manager.navTo(this.currentPath, state);
-      }
-    });
-  }
-
-  cleanup() {
-    this.routingStateChangedHandle = pubSub.unsubscribe(this.routingStateChangedHandle);
   }
 }
