@@ -17,6 +17,8 @@ export interface LifecycleComponentViewModel {
 export abstract class BaseViewModel implements Rx.IDisposable {
   public static displayName = 'BaseViewModel';
 
+  private isLoggingMemberObservables = false;
+
   protected subs = new SubMan();
   public stateChanged = wx.command();
 
@@ -30,7 +32,9 @@ export abstract class BaseViewModel implements Rx.IDisposable {
   private initializeViewModel() {
     this.initialize();
 
-    if (this.logger.level <= LogLevel.Debug) {
+    if (this.logger.level <= LogLevel.Debug && this.isLoggingMemberObservables === false) {
+      this.isLoggingMemberObservables = true;
+
       this.logMemberObservables();
     }
   }
