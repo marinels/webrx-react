@@ -301,6 +301,10 @@ export class DataGridView extends BaseView<DataGridProps, DataGridViewModel<any>
       grid = this.renderGrid(items);
 
       if (this.props.hidePager === false && this.props.pagerLimits.length > 0) {
+        if (this.state.pager.limit() == null) {
+          this.state.pager.limit(this.props.pagerLimits[0]);
+        }
+
         pager = (
           <PagerView viewModel={this.state.pager} limits={this.props.pagerLimits} />
         );
