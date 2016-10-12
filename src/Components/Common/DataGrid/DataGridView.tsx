@@ -205,8 +205,9 @@ export class DataGridTableViewTemplate implements DataGridViewTemplate {
 
 interface DataGridProps extends IBaseViewProps {
   view?: DataGridViewTemplate;
-  hideSearch?: boolean;
   pagerLimits?: number[];
+  hideSearch?: boolean;
+  hidePager?: boolean;
   children?: DataGridColumn[];
 }
 
@@ -215,8 +216,9 @@ export class DataGridView extends BaseView<DataGridProps, DataGridViewModel<any>
 
   static defaultProps = {
     view: new DataGridTableViewTemplate(),
-    hideSearch: false,
     pagerLimits: StandardLimits,
+    hideSearch: false,
+    hidePager: false,
   };
 
   private columns: DataGridColumnProps[];
@@ -295,9 +297,10 @@ export class DataGridView extends BaseView<DataGridProps, DataGridViewModel<any>
       search = (this.props.hideSearch === true || this.state.canFilter() === false) ? null : (
         <SearchView viewModel={this.state.search}/>
       );
+
       grid = this.renderGrid(items);
 
-      if (this.props.pagerLimits != null && this.props.pagerLimits.length > 0) {
+      if (this.props.hidePager === false && this.props.pagerLimits.length > 0) {
         pager = (
           <PagerView viewModel={this.state.pager} limits={this.props.pagerLimits} />
         );
