@@ -67,8 +67,8 @@ routingMap.addRoute('Framework', 'PanelList', 'Panel List', (state: any) => new 
   { name: 'test 2', requiredBy: 'tomorrow' },
   { name: 'test 3', requiredBy: 'yesterday' }
 ));
-routingMap.addRoute('Framework', 'DataGrid', 'Data Grid', (state: any) => {
-  let viewModel = new wxr.Components.DataGridViewModel(undefined, undefined, undefined, undefined,
+routingMap.addRoute('Framework', 'DataGrid', 'Data Grid', (state: any) =>
+  new wxr.Components.DataGridViewModel(undefined, undefined, undefined, undefined,
     { name: 'test 1', requiredBy: 'now' },
     { name: 'test 2', requiredBy: 'tomorrow' },
     { name: 'test 3', requiredBy: 'yesterday' },
@@ -80,12 +80,10 @@ routingMap.addRoute('Framework', 'DataGrid', 'Data Grid', (state: any) => {
     { name: 'test 9', requiredBy: 'test9' },
     { name: 'test 10', requiredBy: 'test10' },
     { name: 'test 11', requiredBy: 'test11' }
-  );
-  viewModel.pager.limit(10);
-  return viewModel;
-});
-routingMap.addRoute('Framework', 'DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: any) => {
-  let viewModel = new wxr.Components.DataGridViewModel(undefined, undefined, undefined, undefined,
+  )
+);
+routingMap.addRoute('Framework', 'DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: any) =>
+  new wxr.Components.DataGridViewModel(undefined, undefined, undefined, undefined,
     { name: 'test 1', requiredBy: 'now' },
     { name: 'test 2', requiredBy: 'tomorrow' },
     { name: 'test 3', requiredBy: 'yesterday' },
@@ -97,12 +95,10 @@ routingMap.addRoute('Framework', 'DataGridAutoCol', 'Data Grid (Automatic Column
     { name: 'test 9', requiredBy: 'test9' },
     { name: 'test 10', requiredBy: 'test10' },
     { name: 'test 11', requiredBy: 'test11' }
-  );
-  viewModel.pager.limit(10);
-  return viewModel;
-});
-routingMap.addRoute('Framework', 'DataGridList', 'DataGrid (List View)', (state: any) => {
-  let viewModel = new wxr.Components.DataGridViewModel<{name: string, requiredBy: string}>(
+  )
+);
+routingMap.addRoute('Framework', 'DataGridList', 'DataGrid (List View)', (state: any) =>
+  new wxr.Components.DataGridViewModel<{name: string, requiredBy: string}>(
     (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0,
     undefined, undefined, undefined,
     { name: 'test 1', requiredBy: 'now' },
@@ -116,10 +112,8 @@ routingMap.addRoute('Framework', 'DataGridList', 'DataGrid (List View)', (state:
     { name: 'test 9', requiredBy: 'test9' },
     { name: 'test 10', requiredBy: 'test10' },
     { name: 'test 11', requiredBy: 'test11' }
-  );
-  viewModel.pager.limit(10);
-  return viewModel;
-});
+  )
+);
 routingMap.addRoute('Framework', 'ModalDialog', 'Modal Dialog', (state: any) => new wxr.Components.ModalDialogViewModel('Modal Dialog Demo', 'Content...'));
 routingMap.addRoute('Framework', 'Tabs', 'Tabs', (state: any) => new wxr.Components.TabsViewModel());
 
