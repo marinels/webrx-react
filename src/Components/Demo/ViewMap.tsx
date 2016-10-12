@@ -107,8 +107,11 @@ const viewMap: ViewActivatorMap = {
   DataGridViewModel: (viewModel: wxr.Components.DataGridViewModel<any>, componentRoute: string) => {
     let view: wxr.Components.DataGridViewTemplate = undefined;
     let columns: any;
+    let hidePager = false;
 
     if (componentRoute === 'DataGridList') {
+      hidePager = true;
+
       view = new DataGridListViewTemplate<{name: string, requiredBy: string}>(
         x => `Name: ${x.name}, Required By: ${x.requiredBy}`
       );
@@ -122,7 +125,7 @@ const viewMap: ViewActivatorMap = {
     }
 
     return (
-      <DataGridView key={componentRoute} viewModel={viewModel} view={view} hideSearch>
+      <DataGridView key={componentRoute} viewModel={viewModel} view={view} hideSearch hidePager={ hidePager }>
         { columns }
       </DataGridView>
     );
