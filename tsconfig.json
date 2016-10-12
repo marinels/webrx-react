@@ -67,6 +67,7 @@
     "./src/Components/Common/App/AppView.tsx",
     "./src/Components/Common/App/ViewMap.tsx",
     "./src/Components/Common/BindableInput/BindableInput.tsx",
+    "./src/Components/Common/CommandButton/CommandButton.tsx",
     "./src/Components/Common/ContextMenu/ContextMenu.tsx",
     "./src/Components/Common/DataGrid/DataGridView.tsx",
     "./src/Components/Common/List/ListView.tsx",

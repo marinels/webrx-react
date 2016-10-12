@@ -121,6 +121,8 @@ import * as AlertHostViewTypes from './Components/Common/Alert/AlertHostView';
 
 import * as BindableInputTypes from './Components/Common/BindableInput/BindableInput';
 
+import * as CommandButtonTypes from './Components/Common/CommandButton/CommandButton';
+
 import * as ContextMenuTypes from './Components/Common/ContextMenu/ContextMenu';
 
 import * as LoadingTypes from './Components/Common/Loading/Loading';
@@ -174,6 +176,9 @@ export namespace Components {
   export import AlertHostView = AlertHostViewTypes.AlertHostView;
 
   export import BindableInput = BindableInputTypes.BindableInput;
+
+  export import CommandButton = CommandButtonTypes.CommandButton;
+  export import CommandButtonProps = CommandButtonTypes.CommandButtonProps;
 
   export import ContextMenu = ContextMenuTypes.ContextMenu;
 
