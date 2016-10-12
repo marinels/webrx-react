@@ -47,6 +47,7 @@ const routingMap = new RoutingMap();
 
 routingMap.addRoute('Framework', 'Loading', 'Loading', (state: any) => 'Loading');
 routingMap.addRoute('Framework', 'Splash', 'Splash', (state: any) => 'Splash');
+routingMap.addRoute('Framework', 'CommandButton', 'Command Button', (state: any) => 'CommandButton');
 routingMap.addRoute('Framework', 'Alert', 'Alert', (state: any) => 'Alert');
 routingMap.addRoute('Framework', 'TimeSpanInput', 'Time Span Input', (state: any) => new wxr.Components.TimeSpanInputViewModel(undefined, undefined, true));
 routingMap.addRoute('Framework', 'ContextMenu', 'Context Menu', (state: any) => 'ContextMenu');

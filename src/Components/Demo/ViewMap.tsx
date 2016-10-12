@@ -1,9 +1,11 @@
 import * as React from 'react';
-import { Button, MenuItem, Panel } from 'react-bootstrap';
+import { FormGroup, InputGroup, FormControl, Button, MenuItem, Panel } from 'react-bootstrap';
 
+import * as wx from 'webrx';
 import * as wxr from '../../web.rx.react';
 
 const {
+  CommandButton,
   Loading,
   Splash,
   TimeSpanInputView,
@@ -32,6 +34,19 @@ const logger = wxr.Logging.getLogger('Demo.ViewMap');
 const viewMap: ViewActivatorMap = {
   Loading: () => <Loading fluid indeterminate text='Loading Text...' />,
   Splash: () => <Splash fluid indeterminate header='WebRx.React Demo' logo='http://placehold.it/100x100?text=Logo' />,
+  CommandButton: () => (
+    <div>
+      <FormGroup bsSize='large'>
+        <InputGroup>
+          <FormControl id='CommandButtonParamInput' type='text' placeholder='Enter Command Parameter Text Here...' />
+          <InputGroup.Button>
+            <CommandButton bsSize='large' commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
+              command={wx.command(x => wxr.Alert.create(x, 'CommandButton Pressed'))}>Execute Command</CommandButton>
+          </InputGroup.Button>
+        </InputGroup>
+      </FormGroup>
+    </div>
+  ),
   Alert: () => (
     <div>
       <Button onClick={() => wxr.Alert.create(`Alert Content: ${new Date()}`, 'Info Alert', 'info')}>Info Alert</Button>
