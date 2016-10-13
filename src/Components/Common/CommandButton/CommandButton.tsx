@@ -4,7 +4,7 @@ import * as wx from 'webrx';
 import { Button, ButtonProps } from 'react-bootstrap';
 
 export interface CommandButtonProps extends ButtonProps {
-  command: () => wx.ICommand<any> | wx.ICommand<any>;
+  command: wx.ICommand<any> | { (): wx.ICommand<any> };
   commandParameter?: any;
 }
 
@@ -14,15 +14,15 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
   private canExecuteSubscription: Rx.IDisposable;
 
   private getCommand(): wx.ICommand<any> {
-    return (this.props.command instanceof Function) ?
-      this.props.command.apply(null) :
-      this.props.command;
+    const cmd = this.props.command;
+
+    return (cmd instanceof Function) ? cmd.apply(null) : cmd;
   }
 
   private getParam() {
-    return (this.props.commandParameter instanceof Function) ?
-      this.props.commandParameter.apply(null) :
-      this.props.commandParameter;
+    const param = this.props.commandParameter;
+
+    return (param instanceof Function) ? param.apply(null) : param;
   }
 
   componentWillMount() {
