@@ -42,13 +42,18 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
     )
     .toProperty();
 
+  public static create<TData>(...items: TData[]) {
+    return new DataGridViewModel(items);
+  }
+
   constructor(
+    items: TData[] = [],
     protected filterer?: (item: TData, regex: RegExp) => boolean,
     protected comparer = new ObjectComparer<TData>(),
     isMultiSelectEnabled?: boolean,
-    isRoutingEnabled?: boolean,
-    ...items: TData[]) {
-    super(isMultiSelectEnabled, isRoutingEnabled, ...items);
+    isRoutingEnabled?: boolean
+  ) {
+    super(items, isMultiSelectEnabled, isRoutingEnabled);
 
     this.subscribe(
       this.project.results

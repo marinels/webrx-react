@@ -13,8 +13,18 @@ export class AsyncDataGridViewModel<TData> extends DataGridViewModel<TData> {
 
   constructor(
     private dataSource: AsyncDataSource<TData>,
-    enableRouting = false) {
-    super(null, null, enableRouting);
+    isMultiSelectEnabled?: boolean,
+    isRoutingEnabled?: boolean
+  ) {
+    super(null, null, null, isMultiSelectEnabled, isRoutingEnabled);
+  }
+
+  canFilter() {
+    return true;
+  }
+
+  canSort() {
+    return true;
   }
 
   projectItems() {
