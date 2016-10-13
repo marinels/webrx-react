@@ -14,6 +14,7 @@ export interface IPagerProps extends IBaseViewProps, PaginationProps {
 }
 
 export const StandardLimits = [ 10, 25, null ];
+export const AlwaysPagedLimits = StandardLimits.filter(x => x != null);
 
 export class PagerView extends BaseView<IPagerProps, PagerViewModel> {
   public static displayName = 'PagerView';

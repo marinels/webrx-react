@@ -219,6 +219,7 @@ export namespace Components {
 
   export import PagerViewModel = PagerViewModelTypes.PagerViewModel;
   export import StandardPagerLimits = PagerViewTypes.StandardLimits;
+  export import AlwaysPagedPagerLimits = PagerViewTypes.AlwaysPagedLimits;
   export import PagerView = PagerViewTypes.PagerView;
 
   export import TabsViewModel = TabsViewModelTypes.TabsViewModel;
