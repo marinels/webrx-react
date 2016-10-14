@@ -72,7 +72,7 @@ routingMap.addRoute('Framework', 'ProfilePicture', 'Profile Picture', (state: an
 routingMap.addRoute('Framework', 'List', 'List', (state: any) => new wxr.Components.ListViewModel(sampleListData, true, false));
 routingMap.addRoute('Framework', 'Tree', 'Tree', (state: any) => new wxr.Components.ListViewModel(sampleTreeData, true, false));
 routingMap.addRoute('Framework', 'PanelList', 'Panel List', (state: any) => new wxr.Components.ListViewModel(sampleListData, true, false));
-routingMap.addRoute('Framework', 'DataGrid', 'Data Grid', (state: any) => wxr.Components.DataGridViewModel.create(sampleListData));
+routingMap.addRoute('Framework', 'DataGrid', 'Data Grid', (state: any) => wxr.Components.DataGridViewModel.create(...sampleListData));
 routingMap.addRoute('Framework', 'DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: any) => wxr.Components.DataGridViewModel.create(...sampleListData));
 routingMap.addRoute('Framework', 'DataGridList', 'DataGrid (List View)', (state: any) =>
   new wxr.Components.DataGridViewModel(sampleListData, (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0)
