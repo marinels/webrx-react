@@ -60,7 +60,7 @@ const sampleListData = [
 ];
 
 const sampleTreeData = sampleListData
-  .map(x => <{ name: string, requiredBy: string, items: { name: string, requiredBy: string }[] }>Object.assign({ items: sampleListData }, x));
+  .map(x => Object.assign({ items: sampleListData.slice(0, 3) }, x));
 
 routingMap.addRoute('Framework', 'Loading', 'Loading', (state: any) => 'Loading');
 routingMap.addRoute('Framework', 'Splash', 'Splash', (state: any) => 'Splash');

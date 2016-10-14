@@ -99,8 +99,8 @@ const viewMap: ViewActivatorMap = {
         );
       case 'Tree':
         return (
-          <ListView viewModel={viewModel} checkmarkSelected view={
-            new TreeListView<any>(x => x.expanded, (x, i, e) => x.expanded = e, x => x.items, true, true, () => true, (v, x) => {
+          <ListView viewModel={viewModel} checkmarkSelected multiSelect view={
+            new TreeListView<any>(x => x.expanded, (x, i, e) => x.expanded = e, x => x.items, false, false, () => true, (v, x) => {
               return `${x.name} (Required By ${x.requiredBy})`;
             })
           }>
