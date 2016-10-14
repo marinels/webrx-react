@@ -171,7 +171,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
               .orderBy(x => x.order)
               .select(menu => (
                 <Nav key={menu.id}>
-                  <NavItem disabled>{menu.header}</NavItem>
+                  <NavItem className='PageHeader-sidebarSection' disabled>{menu.header}</NavItem>
                   {
                     menu.items
                       .asEnumerable()
