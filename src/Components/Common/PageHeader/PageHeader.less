@@ -7,13 +7,9 @@
   // remove the bottom margin on the navbar
   .navbar {
     margin-bottom: 0;
-  }
 
-  .navbar-brand {
-    font-weight: bold;
-
-    // make the brand button appear like a toggle button for the sidebar
-    &.btn {
+    & .btn.navbar-brand,
+    & .dropdown-toggle {
       &:hover,
       &.active {
         background-color: #ddd;
@@ -23,6 +19,10 @@
         outline: 0;
       }
     }
+  }
+
+  .navbar-brand {
+    font-weight: bold;
   }
 
   // ensure icons have an appropriate margin against the associated text
