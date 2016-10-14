@@ -77,7 +77,15 @@ routingMap.addRoute('Framework', 'DataGridAutoCol', 'Data Grid (Automatic Column
 routingMap.addRoute('Framework', 'DataGridList', 'DataGrid (List View)', (state: any) =>
   new wxr.Components.DataGridViewModel(sampleListData, (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0)
 );
-routingMap.addRoute('Framework', 'ModalDialog', 'Modal Dialog', (state: any) => new wxr.Components.ModalDialogViewModel('Modal Dialog Demo', 'Content...'));
+routingMap.addRoute('Framework', 'ModalDialog', 'Modal Dialog', (state: any) => {
+  const vm = new wxr.Components.ModalDialogViewModel('Modal Dialog Demo', 'Content...');
+
+  Rx.Observable
+    .merge(vm.accept.results.map(x => true), vm.cancel.results.map(x => false))
+    .subscribe(x => wxr.Alert.create(`Modal ${x ? 'Accepted' : 'Cancelled'}`, 'Modal Closed...'));
+
+  return vm;
+});
 routingMap.addRoute('Framework', 'Tabs', 'Tabs', (state: any) => new wxr.Components.TabsViewModel());
 
 export const Default = routingMap;
