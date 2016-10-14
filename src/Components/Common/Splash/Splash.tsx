@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Grid, Image } from 'react-bootstrap';
+import { Grid, Row, Image } from 'react-bootstrap';
 
 import { Loading } from '../Loading/Loading';
 
@@ -25,12 +25,14 @@ export class Splash extends React.Component<ISplashProps, any> {
     return (
       <div className='Splash'>
         <Grid fluid={this.props.fluid}>
-          <div className='Splash-header'>
-            { this.props.logo == null ? null : <Image src={this.props.logo}/> }
-            <span className='Splash-headerText'>{this.props.header}</span>
-          </div>
+          <Row>
+            <div className='Splash-header'>
+              { this.props.logo == null ? null : <Image className='pull-left' src={this.props.logo}/> }
+              <span className='Splash-headerText'>{this.props.header}</span>
+            </div>
 
-          <Loading fluid indeterminate={this.props.indeterminate} text={this.props.text} />
+            <Loading fluid indeterminate={this.props.indeterminate} text={this.props.text} />
+          </Row>
         </Grid>
       </div>
     );

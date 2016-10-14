@@ -1,6 +1,6 @@
 import * as Rx from 'rx';
 import * as React from 'react';
-import { Grid } from 'react-bootstrap';
+import { Grid, Row } from 'react-bootstrap';
 
 import { SubMan } from '../../../Utils/SubMan';
 
@@ -67,23 +67,25 @@ export class Loading extends React.Component<ILoadingProps, ILoadingState> {
     return (
       <div className='Loading' style={({fontSize: this.props.fontSize, lineHeight: `${this.props.fontSize * 1.35}px`})}>
         <Grid fluid={this.props.fluid}>
-          <div className='Loading-wrapper' style={({height: `${this.props.fontSize * 1.4}px`})}>
-            <div
-              className='Loading-progress progress-bar progress-bar-striped active'
-              role='progressbar'
-              aria-valuemin={0} aria-valuemax={100}
-              style={({
-                width: `${this.state.width}%`,
-                left: `${this.state.left}%`,
-                transition: this.state.left === -IndeterminateWidth ? 'none' : null,
-              })}
-            />
-            <div className='Loading-textContainer'>
-              <span className='Loading-text'>
-                {this.props.text}
-              </span>
+          <Row>
+            <div className='Loading-wrapper' style={({height: `${this.props.fontSize * 1.4}px`})}>
+              <div
+                className='Loading-progress progress-bar progress-bar-striped active'
+                role='progressbar'
+                aria-valuemin={0} aria-valuemax={100}
+                style={({
+                  width: `${this.state.width}%`,
+                  left: `${this.state.left}%`,
+                  transition: this.state.left === -IndeterminateWidth ? 'none' : null,
+                })}
+              />
+              <div className='Loading-textContainer'>
+                <span className='Loading-text'>
+                  {this.props.text}
+                </span>
+              </div>
             </div>
-          </div>
+          </Row>
         </Grid>
       </div>
     );
