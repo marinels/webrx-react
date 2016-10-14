@@ -43,7 +43,7 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
     const { rest, props } = Object.rest(this.props, x => {
       const { command, commandParameter } = x;
       return { command, commandParameter };
-    });
+    }, 'key', 'ref');
 
     const canExecute = props.command == null ? null : this.getCommand().canExecute(this.getParam());
     const onClick = props.command == null ? null : () => this.getCommand().execute(this.getParam());
