@@ -2,7 +2,7 @@ import * as Ix from 'ix';
 import * as wx from 'webrx';
 
 import { IRoute } from '../../Routing/RouteManager';
-import { ICommandAction } from '../Common/PageHeader/Actions';
+import { ICommandAction, IMenu, IMenuItem } from '../Common/PageHeader/Actions';
 
 import { BaseRoutableViewModel } from '../React/BaseRoutableViewModel';
 import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
@@ -30,6 +30,14 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
     state.componentRoute = this.componentRoute;
     this.setRoutingState(state);
   });
+
+  private demoAlert = wx.command(x => this.createAlert(x, 'Demo Alert'));
+  private demoAlertItem = {
+    id: 'demo-alert-item',
+    header: 'Generate Alert',
+    command: this.demoAlert,
+    iconName: 'flask',
+  };
 
   constructor() {
     super(true);
@@ -135,6 +143,26 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
     return (viewModel != null && viewModel.getSearch != null) ? viewModel.getSearch() : null;
   }
 
+  getSidebarMenus() {
+    return <IMenu[]>[
+      {
+        id: 'sidebar-1',
+        header: 'Section 1',
+        items: [
+          Object.assign<IMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-1`, commandParameter: 'Sidebar Section 1 Menu Item' }),
+        ],
+      },
+      {
+        id: 'sidebar-2',
+        header: 'Section 2',
+        items: [
+          Object.assign<IMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-2-1`, commandParameter: 'Sidebar Section 2 Menu Item 1' }),
+          Object.assign<IMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-2-2`, commandParameter: 'Sidebar Section 2 Menu Item 2' }),
+        ],
+      },
+    ];
+  }
+
   getNavbarMenus() {
     return RoutingMap.menus;
   }
@@ -142,6 +170,25 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
   getNavbarActions() {
     return <ICommandAction[]>[
       { id: 'reRender', header: 'Re-Render', command: this.reRender, bsStyle: 'primary' },
+      Object.assign<ICommandAction>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-navbar`, commandParameter: 'Navbar Action' }),
+    ];
+  }
+
+  getHelpMenuItems() {
+    return <IMenuItem[]>[
+      Object.assign<IMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-help`, commandParameter: 'Help Menu Item' }),
+    ];
+  }
+
+  getAdminMenuItems() {
+    return <IMenuItem[]>[
+      Object.assign<IMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-admin`, commandParameter: 'Admin Menu Item' }),
+    ];
+  }
+
+  getUserMenuItems() {
+    return <IMenuItem[]>[
+      Object.assign<IMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-user`, commandParameter: 'User Menu Item' }),
     ];
   }
 
