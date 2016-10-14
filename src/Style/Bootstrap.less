@@ -59,6 +59,7 @@ body.modal-open {
 .btn-default:hover,
 .table-hover > tbody > tr:hover,
 .list-group > .list-group-item:hover,
+.nav > li > a:hover,
 .dropdown-menu > li > a:hover {
   background-color: @default-hover-background;
 }
@@ -67,6 +68,22 @@ body.modal-open {
 
 .list-group > .list-group-item.active:hover {
   background-color: darken(@brand-primary, 10%);
+}
+
+// this removes the top and bottom padding for dropdowns
+// this padding looks strange with a hover background highlight
+
+.dropdown-menu {
+  padding: 0;
+}
+
+// make list items appear consistently sized across the app
+
+.Sidebar .nav,
+.dropdown-menu {
+  & > li > a {
+    padding: 10px 15px;
+  }
 }
 
 // un-bold labels and badges by default
