@@ -19,13 +19,11 @@ export class ListViewModel<TData, TRoutingState extends IListRoutingState> exten
   public toggleMultiSelectionState = wx.asyncCommand((x: TData) => {
     const selectable = x as any as ISelectableItem;
 
-    if (selectable.isSelected != null) {
-      selectable.isSelected = !selectable.isSelected;
+    selectable.isSelected = !(selectable.isSelected || false);
 
-      // because the isSelected is not necessarily a reactive property
-      // we need to force a change notification here
-      this.notifyChanged();
-    }
+    // because the isSelected is not a reactive property
+    // we need to force a change notification here
+    this.notifyChanged();
 
     return Rx.Observable.return(x);
   });
