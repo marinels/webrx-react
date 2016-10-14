@@ -16,8 +16,8 @@ export interface IMenu extends IBaseAction {
 }
 
 export interface IMenuItem extends IBaseAction {
-  iconName?: string;
-  uri?: string;
   command?: wx.ICommand<any>;
   commandParameter?: any;
+  iconName?: string;
+  uri?: string;
 }

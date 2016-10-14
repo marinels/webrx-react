@@ -147,8 +147,8 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
                       .where(x => x.command != null && x.command.canExecute(x.commandParameter) === true)
                       .select(x => (
                         <Button key={x.id} className='PageHeader-actionButton' bsStyle={x.bsStyle}
-                          disabled={x.command == null}
-                          onClick={() => x.command.execute(x) }
+                          disabled={x.command == null || x.command.canExecute(x.commandParameter) === false}
+                          onClick={() => x.command.execute(x.commandParameter) }
                         >
                           { String.isNullOrEmpty(x.iconName) ? null : <Icon className='PageHeader-actionHeaderIcon' name={x.iconName} /> }
                           <span className='PageHeader-actionHeaderText'>{x.header}</span>

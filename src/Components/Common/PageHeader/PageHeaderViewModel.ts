@@ -23,7 +23,7 @@ export class PageHeaderViewModel extends BaseViewModel {
   public menuItemSelected = wx.command((x: IMenuItem) => {
     if (x != null) {
       if (x.command != null) {
-        x.command.execute(x);
+        x.command.execute(x.commandParameter);
       }
       else if (x.uri != null && x.uri.length > 0) {
         if (x.uri[0] === '#') {
