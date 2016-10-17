@@ -124,7 +124,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
               {
                 this.createHeaderMenu(
                   'userMenu',
-                  (<ProfilePicture src={this.state.userImage} title={this.state.userDisplayName} iconSize='2x' />),
+                  (<ProfilePicture src={this.state.userImage} title={this.state.userDisplayName} iconSize='2x' size={ 30 } />),
                   this.state.userMenuItems.toArray(),
                   true
                 )
