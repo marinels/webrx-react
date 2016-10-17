@@ -1,6 +1,6 @@
 declare module 'react' {
   interface Component<P, S> {
-    restProps<T>(propsCreator?: (x: P) => T, ...omits: string[]): { rest: P, props: T };
+    restProps<T>(propsCreator?: (x: P) => T, ...omits: string[]): { rest: any, props: T };
   }
 }
 
