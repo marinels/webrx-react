@@ -75,17 +75,22 @@ const viewMap: ViewActivatorMap = {
     let imageData = 'iVBORw0KGgoAAAANSUhEUgAAAEAAAAA8CAYAAADWibxkAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA+5JREFUeNrkm0tIVFEYx8+dhzajNGZqOjqZj9TULJkwe1CL0DQpI4yoaBVCQbZw06IHTLSqoNrMoiKIQiNqyLAs2gypEBUY0cwqe4gERkHhlJTp9P/yDIQ6mcw513vn/uGHgnruPf8533e+81Bxu91sDmQF28FmUAlc4Bu4A06Bz6IeNDo6ylwuF+vs7Jz25xaVO54GtoG9oBzMA4n8PRaAZrAYnAGvQEj2C6llgAJ2AA8om+F96Pe2gucgCLpBF/go48VMKnSePuHz4OYMnZ8cImvAfnAF9ICdejTABi6BwzE8i/5uKWgDLXoz4CTYJzBcKTfU6MWAWnBIQji16MEAiuFWnuVFaz3I0roBy/kcLyuppmvdgAaJoWXiyVXTBpRLriksWjcgi8mVpg1I5iWvYUeAQ2SM6jEHUJY2Sx7+2Vo2QOHIVCM3WpMGhFVYYOWKqgVkGDAGxiUbQPsEw1o1gHZ2fko24DX4qlUDPnFk6oHWC6EuiZ1/J7J9WQZcAH2S2j4rcoTJMoDi87SEdm+Bi3rYDyDdBfcEtvcFnAOjejHgOzjCxO3xvwFPZdTVMhUAzwS19Qj80psBJL+ANkbANVkrK9nqFtDGE1786NKAPgHzNp0S/dCrATR8fTG28Vbm5oIa+hDjJ5iqdwPyY1y/14ha/6ttAJ3pednEqXAs2giOgxQ9GUAHIw/BQUFD+CigWw6FejBgN7gB8gS3uw60A6dWDSgFl8FVGcOVaxV/RpoWDKDd3xw2caujjRcsdKnBKjm31PNwqI81vGZ7wEC7vYvACkC3q+gQlG5y5DL1tRrcBy95uU3fP+Z1hzADaOqhY65qUMG/0pSWweQefsxGFZwD4AW4zemPxYCVoAls4nE9n2lfCaCKc4zvRfj4Evp91Bh2Oqck1EK+mdHI4zuR6U/0znRC3aQoSmMoFMrNzMwMlJSUDP9PEqTEUsDiQ4rJZMofGxtr9Xg8PXV1dbuCweA/DaCQaGBxJovlT6QvGRgYuN7c3LwnEAhENSCHFxtxJ4wElpSUZBkcHDzh9/vToxlA01syi1OFw2FmtVpdNputMpoBFSz+ZWcT95KnNWBtvPfe4XAwr9e7ob+/f4oBjjmq6NSdFhSFjYyMNHV0dBRNNoBKW5cBQoDyQIbP56udbEB1PCfAyaMACXELTYemv+Z/NzOIzGYzGxoaKm5vb7dFDFgIljEDCXVBBqbDvIgBaRJ2b/QwHRZHDIj8/46hBgHIjhhQZLDO00zAUBY7IwaUGs0Au93Oent7C0w8AZYZzQBaFyQkJKSSASVM3g6u5itjMqDKgAkwohQLXwHSbi/dvRk3UOep77bfAgwAst2xTAPm/mIAAAAASUVORK5CYII=';
 
     return (
-      <span>
-        <ProfilePicture style={style} src={null} title='Basic Icon' />
-        <ProfilePicture style={style} src={null} iconSize='4x' title='4x Size Icon' />
-        <ProfilePicture style={style} src={null} iconSize='4x' thumbnail title='Thumbnail Icon' />
-        <ProfilePicture style={style} src={null} iconSize='4x' thumbnail width={60} height={60} title='Fixed Width/Height Icon' />
-        <ProfilePicture style={style} src={null} iconSize='4x' thumbnail rounded width={60} height={60} title='Rounded Icon' />
-        <ProfilePicture style={style} src={imageData} title='Basic Image' />
-        <ProfilePicture style={style} src={imageData} rounded title='Rounded Image' />
-        <ProfilePicture style={style} src={imageData} thumbnail title='Thumbnail Image' />
-        <ProfilePicture style={style} src={imageData} thumbnail width={60} height={60} title='Fixed Width/Height Image' />
-      </span>
+      <div>
+        <div>
+          <ProfilePicture style={style} src={null} title='Basic Icon' />
+          <ProfilePicture style={style} src={null} iconSize='2x' title='2x Size Icon' />
+          <ProfilePicture style={style} src={null} thumbnail title='Thumbnail Icon' />
+          <ProfilePicture style={style} src={null} iconSize='2x' thumbnail size={40} title='Fixed Width/Height Icon' />
+          <ProfilePicture style={style} src={null} iconSize='2x' thumbnail rounded size={40} title='Rounded Icon' />
+          <ProfilePicture style={style} src={imageData} title='Basic Image' />
+          <ProfilePicture style={style} src={imageData} rounded title='Rounded Image' />
+          <ProfilePicture style={style} src={imageData} thumbnail title='Thumbnail Image' />
+          <ProfilePicture style={style} src={imageData} thumbnail size={40} title='Fixed Width/Height Image' />
+        </div>
+        <div style={({ height: 250 })}>
+          <ProfilePicture style={style} src={imageData} thumbnail responsive title='Responsive Image' />
+        </div>
+      </div>
     );
   },
   ListViewModel: (viewModel: wxr.Components.ListViewModel<any, any>, componentRoute: string) => {

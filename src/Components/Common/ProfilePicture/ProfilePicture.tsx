@@ -7,14 +7,15 @@ import './ProfilePicture.less';
 
 interface IProfilePictureProps extends React.HTMLProps<HTMLDivElement> {
   src: string;
+  size?: number;
   responsive?: boolean;
   rounded?: boolean;
   circle?: boolean;
   thumbnail?: boolean;
+  block?: boolean;
   defaultSrc?: string;
   defaultIcon?: string;
   iconSize?: string;
-  block?: boolean;
 }
 
 const dataUriPrefix = 'data:image;base64,';
@@ -23,42 +24,61 @@ export class ProfilePicture extends React.Component<IProfilePictureProps, any> {
   public static displayName = 'ProfilePicture';
 
   static defaultProps = {
+    size: 65,
+    responsive: false,
+    rounded: false,
+    circle: false,
+    thumbnail: false,
     defaultIcon: 'user',
-    block: false,
+    iconSize: '4x',
   };
 
   render() {
     const { rest, props } = this.restProps(x => {
-      const { src, responsive, rounded, circle, thumbnail, defaultSrc, defaultIcon, iconSize, block } = x;
-      return { src, responsive, rounded, circle, thumbnail, defaultSrc, defaultIcon, iconSize, block };
-    });
+      const { src, size, responsive, rounded, circle, thumbnail, defaultSrc, defaultIcon, iconSize, block } = x;
+      return { src, size, responsive, rounded, circle, thumbnail, defaultSrc, defaultIcon, iconSize, block };
+    }, 'classNames', 'style');
 
     let src = props.src || props.defaultSrc;
 
+    // if we're using a src URI, ensure it contains a data URI prefix
     if (String.isNullOrEmpty(src) === false && src.indexOf(dataUriPrefix) < 0) {
       src = `${dataUriPrefix}${src}`;
     }
 
-    let image: JSX.Element = null;
+    let image: any = null;
 
     if (src == null) {
-      image = <Icon className={classNames({'fa-border': props.thumbnail, 'fa-rounded': props.rounded})} name={props.defaultIcon} size={props.iconSize} />;
+      const iconClassNames = classNames(
+        this.props.className,
+        'ProfilePicture',
+        'ProfilePicture-icon',
+        { 'ProfilePicture-iconThumbnail': props.thumbnail, 'ProfilePicture-iconRounded': props.rounded }
+      );
+      const blockStyle = Object.assign({  }, this.props.style, {
+        width: props.size,
+        height: props.size,
+      });
+
+      image = (
+        <div { ...rest } className={ iconClassNames } style={ blockStyle }>
+          <Icon name={ props.defaultIcon } size={ props.iconSize } />
+        </div>
+      );
     }
     else {
-      image = <Image src={src} responsive={props.responsive}
-        rounded={props.rounded} circle={props.circle} thumbnail={props.thumbnail} />;
+      const imageClassNames = classNames(this.props.className, 'ProfilePicture');
+      const imageStyle = Object.assign({
+        width: props.responsive === true ? null : props.size,
+        height: props.responsive === true ? null : props.size,
+      }, this.props.style);
+
+      image = (
+        <Image { ...rest } className={ imageClassNames } style={ imageStyle } src={ src } width={ props.size } height={ props.size }
+          responsive={ props.responsive } rounded={ props.rounded } circle={ props.circle } thumbnail={ props.thumbnail } />
+      );
     }
 
-    let blockStyle = Object.assign({
-      width: rest.width,
-      height: rest.height,
-      display: props.block ? 'block' : 'inline-block',
-    }, this.props.style);
-
-    return (
-      <div className='ProfilePicture' {...rest} style={blockStyle}>
-        {image}
-      </div>
-    );
+    return image;
   }
 }
