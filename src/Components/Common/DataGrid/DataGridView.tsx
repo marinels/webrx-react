@@ -50,7 +50,7 @@ export class DataGridListViewTemplate<T> implements DataGridViewTemplate {
 
   protected defaultRenderItemContainer(contents: any, row: T, index: number, grid: DataGridViewModel<T>, view: DataGridView) {
     return (
-      <ListGroupItem className='DataGrid-row' key={ this.keySelector(row, index, grid, view) } active={grid.selectedItem() === row}>
+      <ListGroupItem className='DataGrid-row' key={ this.keySelector(row, index, grid, view) } active={view.props.highlightSelected === true && grid.selectedItem() === row}>
         <div className='DataGrid-rowContainer' onClick={() => grid.selectItem.execute(row)}>
           { contents }
         </div>
@@ -159,7 +159,7 @@ export class DataGridTableViewTemplate implements DataGridViewTemplate {
 
   public renderRow(row: any, cells: any[], index: number, grid: DataGridViewModel<any>, view: DataGridView) {
     const rowClasses = classNames('DataGrid-row', {
-      'DataGrid-row--selected': grid.selectedItem() === row,
+      'DataGrid-row--selected': view.props.highlightSelected === true && grid.selectedItem() === row,
     });
 
     return (
@@ -208,6 +208,7 @@ interface DataGridProps extends IBaseViewProps {
   pagerLimits?: number[];
   hideSearch?: boolean;
   hidePager?: boolean;
+  highlightSelected?: boolean;
   children?: DataGridColumn[];
 }
 
@@ -219,6 +220,7 @@ export class DataGridView extends BaseView<DataGridProps, DataGridViewModel<any>
     pagerLimits: StandardLimits,
     hideSearch: false,
     hidePager: false,
+    highlightSelected: false,
   };
 
   private columns: DataGridColumnProps[];
