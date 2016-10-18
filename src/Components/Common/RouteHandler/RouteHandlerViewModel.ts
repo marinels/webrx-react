@@ -45,7 +45,8 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
     this.subscribe(this.currentViewModel.thrownExceptions
       .subscribe(x => {
-        this.alertForError(x);
+        const name = x == null ? '' : ` ${ Object.getName(x) }`;
+        this.alertForError(x, `Error Routing to ViewModel ${ name }`);
       })
     );
 
