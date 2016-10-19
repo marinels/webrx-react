@@ -7,6 +7,7 @@ import { BaseView, IBaseViewProps } from '../../React/BaseView';
 import { SearchView } from '../Search/SearchView';
 import { PagerView, StandardLimits } from '../Pager/PagerView';
 import { Icon } from 'react-fa';
+import * as bindingHelpers from '../../React/BindingHelpers';
 
 import { DataGridViewModel } from './DataGridViewModel';
 import { SortDirection } from '../../../Utils/Compare';
@@ -137,7 +138,7 @@ export class DataGridTableViewTemplate implements DataGridViewTemplate {
       </div>
     ) : (
       <Button className='DataGrid-columnContainer' bsStyle='link'
-        onClick={view.bindEventToCommand(x => x.toggleSortDirection, () => column.fieldName)}
+        onClick={bindingHelpers.bindEventToCommand(this, view.state, x => x.toggleSortDirection, () => column.fieldName)}
       >
         {header}
         {sortIcon}
