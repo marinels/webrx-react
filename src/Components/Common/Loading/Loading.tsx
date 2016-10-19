@@ -10,6 +10,7 @@ export interface ILoadingProps {
   value?: wx.IObservableProperty<number> | number;
   text?: string;
   fontSize?: string;
+  componentClass?: any;
 }
 
 export interface ILoadingState {
@@ -22,6 +23,7 @@ export class Loading extends React.Component<ILoadingProps, ILoadingState> {
   static defaultProps = {
     value: 100,
     text: 'Loading...',
+    componentClass: 'div',
   };
 
   private changedSubscription: Rx.IDisposable;
@@ -51,10 +53,12 @@ export class Loading extends React.Component<ILoadingProps, ILoadingState> {
   }
 
   render() {
+    const Component = this.props.componentClass;
+
     return (
-      <div className='Loading'>
+      <Component className='Loading'>
         <ProgressBar style={({ fontSize: this.props.fontSize })} active now={ this.state.value } label={ this.props.text } />
-      </div>
+      </Component>
     );
   }
 }
