@@ -1,26 +1,20 @@
-import * as Rx from 'rx';
 import * as React from 'react';
-import { Grid, Row } from 'react-bootstrap';
+import * as Rx from 'rx';
+import * as wx from 'webrx';
 
-import { SubMan } from '../../../Utils/SubMan';
+import { ProgressBar } from 'react-bootstrap';
 
 import './Loading.less';
 
 export interface ILoadingProps {
-  value?: number;
+  value?: wx.IObservableProperty<number> | number;
   text?: string;
-  indeterminate?: boolean;
-  fluid?: boolean;
-  fontSize?: number;
+  fontSize?: string;
 }
 
 export interface ILoadingState {
-  width: number;
-  left: number;
+  value: number;
 }
-
-const IndeterminateWidth = 10;
-const IndeterminateAnimationPeriod = 50;
 
 export class Loading extends React.Component<ILoadingProps, ILoadingState> {
   public static displayName = 'Loading';
@@ -28,65 +22,38 @@ export class Loading extends React.Component<ILoadingProps, ILoadingState> {
   static defaultProps = {
     value: 100,
     text: 'Loading...',
-    indeterminate: false,
-    fluid: false,
-    fontSize: 50,
   };
 
-  private subs = new SubMan();
+  private changedSubscription: Rx.IDisposable;
 
   constructor(props?: ILoadingProps, context?: any) {
     super(props, context);
 
+    let value = this.props.value as number;
+    if (wx.isProperty(this.props.value) === true) {
+      value = (this.props.value as wx.IObservableProperty<number>).apply(null) as number;
+    }
+
     this.state = {
-      width: this.props.indeterminate === true ? IndeterminateWidth : this.props.value,
-      left: this.props.indeterminate === true ? -IndeterminateWidth : 0,
+      value,
     };
   }
 
   componentDidMount() {
-    if (this.props.indeterminate === true) {
-      this.subs.add(Rx.Observable
-        .timer(IndeterminateAnimationPeriod, IndeterminateAnimationPeriod)
-        .subscribe(x => {
-          if (++this.state.left > 100) {
-            this.state.left = -IndeterminateWidth;
-          }
-
-          this.forceUpdate();
-        })
-      );
+    if (wx.isProperty(this.props.value) === true) {
+      this.changedSubscription = (this.props.value as wx.IObservableProperty<number>).changed
+        .subscribe(x => { this.forceUpdate(); });
     }
   }
 
   componentWillUnmount() {
-    this.subs.dispose();
+    this.changedSubscription = Object.dispose(this.changedSubscription);
   }
 
   render() {
     return (
-      <div className='Loading' style={({fontSize: this.props.fontSize, lineHeight: `${this.props.fontSize * 1.35}px`})}>
-        <Grid fluid={this.props.fluid}>
-          <Row>
-            <div className='Loading-wrapper' style={({height: `${this.props.fontSize * 1.4}px`})}>
-              <div
-                className='Loading-progress progress-bar progress-bar-striped active'
-                role='progressbar'
-                aria-valuemin={0} aria-valuemax={100}
-                style={({
-                  width: `${this.state.width}%`,
-                  left: `${this.state.left}%`,
-                  transition: this.state.left === -IndeterminateWidth ? 'none' : null,
-                })}
-              />
-              <div className='Loading-textContainer'>
-                <span className='Loading-text'>
-                  {this.props.text}
-                </span>
-              </div>
-            </div>
-          </Row>
-        </Grid>
+      <div className='Loading'>
+        <ProgressBar style={({ fontSize: this.props.fontSize })} active now={ this.state.value } label={ this.props.text } />
       </div>
     );
   }
