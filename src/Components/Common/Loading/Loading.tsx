@@ -9,7 +9,7 @@ import './Loading.less';
 export interface ILoadingProps {
   value?: wx.IObservableProperty<number> | number;
   text?: string;
-  fontSize?: string;
+  fontSize?: number | string;
   componentClass?: any;
 }
 
