@@ -32,8 +32,8 @@ export interface ViewActivatorMap {
 const logger = wxr.Logging.getLogger('Demo.ViewMap');
 
 const viewMap: ViewActivatorMap = {
-  Loading: () => <Loading fluid indeterminate text='Loading Text...' />,
-  Splash: () => <Splash fluid indeterminate header='WebRx.React Demo' logo='http://placehold.it/100x100?text=Logo' />,
+  Loading: () => <Loading text='Loading Text...' />,
+  Splash: () => <Splash fluid header='WebRx.React Demo' logo='http://placehold.it/100x100?text=Logo' />,
   CommandButton: () => (
     <div>
       <FormGroup bsSize='large'>

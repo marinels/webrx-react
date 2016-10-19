@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as wx from 'webrx';
 import { Grid, Row, Image } from 'react-bootstrap';
 
 import { Loading } from '../Loading/Loading';
@@ -9,7 +10,7 @@ interface ISplashProps {
   header: any;
   logo?: string;
   text?: string;
-  indeterminate?: boolean;
+  value?: wx.IObservableProperty<number> | number;
   fluid?: boolean;
 }
 
@@ -24,14 +25,14 @@ export class Splash extends React.Component<ISplashProps, any> {
   render() {
     return (
       <div className='Splash'>
-        <Grid fluid={this.props.fluid}>
+        <Grid fluid={ this.props.fluid }>
           <Row>
             <div className='Splash-header'>
               { this.props.logo == null ? null : <Image className='pull-left' src={this.props.logo}/> }
               <span className='Splash-headerText'>{this.props.header}</span>
             </div>
 
-            <Loading fluid indeterminate={this.props.indeterminate} text={this.props.text} />
+            <Loading value={ this.props.value } text={ this.props.text } fontSize='24pt' />
           </Row>
         </Grid>
       </div>
