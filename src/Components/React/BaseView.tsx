@@ -4,7 +4,8 @@ import * as wx from 'webrx';
 
 import { getLogger } from '../../Utils/Logging/LogManager';
 import { BaseViewModel, LifecycleComponentViewModel } from './BaseViewModel';
-import { Loading } from '../Common/Loading/Loading';
+import * as bindingHelpers from './BindingHelpers';
+import * as renderHelpers from './RenderHelpers';
 
 export interface IBaseViewProps extends React.HTMLAttributes {
   viewModel: BaseViewModel;
@@ -14,6 +15,14 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   public static displayName = 'BaseView';
 
   private updateSubscription: Rx.IDisposable;
+
+  // -----------------------------------------
+  // these are render helper methods
+  // -----------------------------------------
+  protected renderEnumerable = renderHelpers.renderEnumerable;
+  protected renderConditional = renderHelpers.renderConditional;
+  protected renderLoadable = renderHelpers.renderLoadable;
+  protected renderSizedLoadable = renderHelpers.renderSizedLoadable;
 
   protected logger = getLogger(this.getDisplayName());
 
@@ -160,117 +169,34 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   // -----------------------------------------
 
   // -----------------------------------------
-  // these are render helper methods
+  // these are binding helper methods
   // -----------------------------------------
-  protected renderSizedLoadable(
-    isLoading: wx.IObservableProperty<boolean> | boolean,
-    text: string,
-    fontSize: number | string,
-    loadedComponent?: any
-  ) {
-    return this.renderLoadable(isLoading, {
-      text,
-      fontSize,
-    }, loadedComponent);
-  }
-
-  protected renderLoadable(
-    isLoading: wx.IObservableProperty<boolean> | boolean,
-    loadingComponent: any,
-    loadedComponent?: any
-  ) {
-    const defaultProps = {
-      fluid: true,
-      indeterminate: true,
-    };
-    const loadingComponentType = typeof loadingComponent;
-
-    if (loadingComponentType === 'string') {
-      loadingComponent = (
-        <Loading {...defaultProps} text={loadingComponent} />
-      );
-    }
-    else if (loadingComponentType === 'object') {
-      if (React.isValidElement(loadingComponent) === false) {
-        loadingComponent = (
-          <Loading {...defaultProps} {...loadingComponent} />
-        );
-      }
-    }
-
-    return this.renderConditional(isLoading, loadingComponent, loadedComponent);
-  }
-
-  protected renderConditional(
-    condition: wx.IObservableProperty<boolean> | boolean,
-    trueContent: any,
-    falseContent?: any
-  ) {
-    return (condition instanceof Function ? condition() : condition) === true ?
-      (trueContent instanceof Function ? trueContent.apply(this) : trueContent) :
-      (falseContent instanceof Function ? falseContent.apply(this) : falseContent);
-  }
-
-  protected renderEnumerable<T, TResult>(
-    source: T[] | Ix.Enumerable<T>,
-    selector: (data: T[]) => TResult = (data) => data as any as TResult,
-    defaultSelector: () => TResult = () => null as TResult
-  ) {
-    const array = (source instanceof Array) ? source : source.toArray();
-
-    return array.length > 0 ? selector(array) : defaultSelector();
-  }
-  // -----------------------------------------
-
   /**
    * Binds an observable to a command on the view model
    */
-  public bindObservableToCommand<TResult>(commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>, observable: Rx.Observable<TResult>) {
-    return this.state.bind(observable, commandSelector(this.state));
+  protected bindObservableToCommand<TResult>(commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>, observable: Rx.Observable<TResult>) {
+    return bindingHelpers.bindObservableToCommand(this.state, commandSelector, observable);
   }
 
   /**
    * Binds a DOM event to an observable property on the view model
    */
-  public bindEventToProperty<TValue, TEvent extends Event | React.SyntheticEvent>(
+  protected bindEventToProperty<TValue, TEvent extends Event | React.SyntheticEvent>(
     targetSelector: (viewModel: TViewModel) => wx.IObservableProperty<TValue>,
     valueSelector?: (eventKey: any, event: TEvent) => TValue
   ) {
-    return (eventKey: any, event: TEvent) => {
-      if (event == null) {
-        // this ensures that we can still use this function for basic HTML events
-        event = eventKey;
-      }
-
-      const prop = targetSelector.apply(this, [ this.state ]) as wx.IObservableProperty<TValue>;
-      const value = (valueSelector == null ? eventKey : valueSelector.apply(this, [ eventKey, event ])) as TValue;
-
-      prop(value);
-    };
+    return bindingHelpers.bindEventToProperty(this, this.state, targetSelector, valueSelector);
   }
 
   /**
    * Binds a DOM event to an observable command on the view model
    */
-  public bindEventToCommand<TParameter, TEvent extends Event | React.SyntheticEvent>(
+  protected bindEventToCommand<TParameter, TEvent extends Event | React.SyntheticEvent>(
     commandSelector: (viewModel: TViewModel) => wx.ICommand<any>,
     paramSelector?: (eventKey: any, event: TEvent) => TParameter,
     conditionSelector?: (event: TEvent, eventKey: any) => boolean
   ) {
-    return (eventKey: any, event: Event) => {
-      if (event == null) {
-        // this ensures that we can still use this function for basic HTML events
-        event = eventKey;
-      }
-
-      const param = (paramSelector == null ? eventKey : paramSelector.apply(this, [ eventKey, event ])) as TParameter;
-      const canExecute = conditionSelector == null || (conditionSelector.apply(this, [ event, eventKey ]) as boolean);
-
-      if (canExecute) {
-        const cmd = commandSelector.apply(this, [ this.state ]) as wx.ICommand<any>;
-
-        cmd.execute(param);
-      }
-    };
+    return bindingHelpers.bindEventToCommand(this, this.state, commandSelector, paramSelector, conditionSelector);
   }
+  // -----------------------------------------
 }
