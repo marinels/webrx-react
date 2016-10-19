@@ -113,6 +113,8 @@ export namespace Stores {
 import * as BaseViewModelTypes from './Components/React/BaseViewModel';
 import * as BaseRoutableViewModelTypes from './Components/React/BaseRoutableViewModel';
 import * as BaseViewTypes from './Components/React/BaseView';
+import * as RenderHelpers from './Components/React/RenderHelpers';
+import * as BindingHelpers from './Components/React/BindingHelpers';
 
 import * as AlertViewModelTypes from './Components/Common/Alert/AlertViewModel';
 import * as AlertHostViewModelTypes from './Components/Common/Alert/AlertHostViewModel';
@@ -168,6 +170,13 @@ export namespace Components {
   export import BaseRoutableViewModel = BaseRoutableViewModelTypes.BaseRoutableViewModel;
   export import IBaseViewProps = BaseViewTypes.IBaseViewProps;
   export import BaseView = BaseViewTypes.BaseView;
+  export import renderEnumerable = RenderHelpers.renderEnumerable;
+  export import renderConditional = RenderHelpers.renderConditional;
+  export import renderLoadable = RenderHelpers.renderLoadable;
+  export import renderSizedLoadable = RenderHelpers.renderSizedLoadable;
+  export import bindObservableToCommand = BindingHelpers.bindObservableToCommand;
+  export import bindEventToProperty = BindingHelpers.bindEventToProperty;
+  export import bindEventToCommand = BindingHelpers.bindEventToCommand;
 
   export import IAlert = AlertViewModelTypes.IAlert;
   export import AlertViewModel = AlertViewModelTypes.AlertViewModel;
