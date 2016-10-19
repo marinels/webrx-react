@@ -63,6 +63,7 @@ const sampleTreeData = sampleListData
   .map(x => Object.assign({ items: sampleListData.slice(0, 3) }, x));
 
 routingMap.addRoute('Framework', 'Loading', 'Loading', (state: any) => 'Loading');
+routingMap.addRoute('Framework', 'SizedLoading', 'Sized Loading', (state: any) => 'SizedLoading');
 routingMap.addRoute('Framework', 'Splash', 'Splash', (state: any) => 'Splash');
 routingMap.addRoute('Framework', 'CommandButton', 'Command Button', (state: any) => 'CommandButton');
 routingMap.addRoute('Framework', 'Alert', 'Alert', (state: any) => 'Alert');

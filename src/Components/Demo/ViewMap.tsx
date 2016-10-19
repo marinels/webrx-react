@@ -3,6 +3,7 @@ import { FormGroup, InputGroup, FormControl, Button, MenuItem, Panel } from 'rea
 
 import * as wx from 'webrx';
 import * as wxr from '../../web.rx.react';
+import * as renderHelpers from '../React/RenderHelpers';
 
 const {
   CommandButton,
@@ -32,7 +33,8 @@ export interface ViewActivatorMap {
 const logger = wxr.Logging.getLogger('Demo.ViewMap');
 
 const viewMap: ViewActivatorMap = {
-  Loading: () => <Loading text='Loading Text...' />,
+  Loading: () => <Loading text='Standard Loader...' />,
+  SizedLoading: (c, cr) => renderHelpers.renderSizedLoadable(true, '50px Loader...', 50),
   Splash: () => <Splash fluid header='WebRx.React Demo' logo='http://placehold.it/100x100?text=Logo' />,
   CommandButton: () => (
     <div>
