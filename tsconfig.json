@@ -7,14 +7,14 @@
     "noImplicitAny": true
   },
   "filesGlob": [
-    "./typings/main.d.ts",
+    "./typings/index.d.ts",
     "!./src/typings/**/*",
     "./src/**/*.ts",
     "./src/**/*.tsx",
     "./test/**/*.ts"
   ],
   "files": [
-    "./typings/main.d.ts",
+    "./typings/index.d.ts",
     "./src/Components/Common/Alert/AlertHostViewModel.ts",
     "./src/Components/Common/Alert/AlertViewModel.ts",
     "./src/Components/Common/App/AppViewModel.ts",
