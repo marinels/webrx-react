@@ -4,6 +4,7 @@ import { FormGroup, InputGroup, FormControl, Button, MenuItem, Panel } from 'rea
 import * as wx from 'webrx';
 import * as wxr from '../../web.rx.react';
 import * as renderHelpers from '../React/RenderHelpers';
+import * as bindingHelpers from '../React/BindingHelpers';
 
 const {
   CommandButton,
@@ -152,13 +153,14 @@ const viewMap: ViewActivatorMap = {
       </DataGridView>
     );
   },
-  ModalDialogViewModel: (viewModel: wxr.Components.ModalDialogViewModel<any>) => (
+  ModalDialogViewModel: (data: { viewModel: wxr.Components.ModalDialogViewModel, accept: wx.ICommand<any>, reject: wx.ICommand<any> }) => (
     <div>
-      <Button style={({ width: '100%' })}
-        onClick={() => viewModel.show.execute(null)}>
-        Show Dialog
-      </Button>
-      <ModalDialogView viewModel={viewModel} />
+      <Button onClick={ bindingHelpers.bindEventToCommand(this, data.viewModel, x => x.show) }>Show Confirmation Dialog</Button>
+      <ModalDialogView viewModel={ data.viewModel } title='Demo Modal Confirmation Dialog' body='You can put custom content here'>
+        <CommandButton bsStyle='primary' command={ data.viewModel.hideOnExecute(data.accept) }>Accept</CommandButton>
+        <CommandButton bsStyle='danger' command={ data.viewModel.hideOnExecute(data.reject) }>Reject</CommandButton>
+        <CommandButton bsStyle='default' command={ data.viewModel.hide }>Cancel</CommandButton>
+      </ModalDialogView>
     </div>
   ),
   TabsViewModel: (viewModel: wxr.Components.TabsViewModel<any>) => {

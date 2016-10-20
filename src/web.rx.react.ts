@@ -200,8 +200,6 @@ export namespace Components {
   export import PageFooterViewModel = PageFooterViewModelTypes.PageFooterViewModel;
   export import PageFooterView = PageFooterViewTypes.PageFooterView;
 
-  export import DialogResult = ModalDialogViewModelTypes.DialogResult;
-  export import IValidatable = ModalDialogViewModelTypes.IValidatable;
   export import ModalDialogViewModel = ModalDialogViewModelTypes.ModalDialogViewModel;
   export import ModalDialogView = ModalDialogViewTypes.ModalDialogView;
 

@@ -1,3 +1,4 @@
+import * as wx from 'webrx';
 import * as wxr from '../../web.rx.react';
 
 export interface ViewModelActivator {
@@ -79,13 +80,13 @@ routingMap.addRoute('Framework', 'DataGridList', 'DataGrid (List View)', (state:
   new wxr.Components.DataGridViewModel(sampleListData, (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0)
 );
 routingMap.addRoute('Framework', 'ModalDialog', 'Modal Dialog', (state: any) => {
-  const vm = new wxr.Components.ModalDialogViewModel('Modal Dialog Demo', 'Content...');
-
-  Rx.Observable
-    .merge(vm.accept.results.map(x => true), vm.cancel.results.map(x => false))
-    .subscribe(x => wxr.Alert.create(`Modal ${x ? 'Accepted' : 'Cancelled'}`, 'Modal Closed...'));
-
-  return vm;
+  // we are simulating a modal being contained within another view model
+  return {
+    displayName: 'ModalDialogViewModel',
+    viewModel: new wxr.Components.ModalDialogViewModel(),
+    accept: wx.command(x => wxr.Alert.create('Modal Accepted', 'Modal Closed...', 'success')),
+    reject: wx.command(x => wxr.Alert.create('Modal Rejected', 'Modal Closed...', 'danger')),
+  };
 });
 routingMap.addRoute('Framework', 'Tabs', 'Tabs', (state: any) => new wxr.Components.TabsViewModel());
 
