@@ -15,12 +15,14 @@ interface IComponentDemoProps extends IBaseViewProps {
 export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDemoViewModel> {
   public static displayName = 'ComponentDemoView';
 
-  private getComponentName(component: { getDisplayName(): string }) {
+  private getComponentName(component: { getDisplayName(): string, displayName: string }) {
     if (component == null) {
       return 'Invalid Component';
     }
 
-    return component.getDisplayName == null ? component.toString() : component.getDisplayName();
+    return (component.getDisplayName instanceof Function) ?
+      component.getDisplayName() :
+      (component.displayName || component.toString());
   }
 
   private getView(component: any) {
