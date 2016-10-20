@@ -16,8 +16,18 @@ export function renderEnumerable<T, TResult>(
 export function renderConditional(
   condition: wx.IObservableProperty<boolean> | boolean,
   trueContent: any,
-  falseContent?: any
+  falseContent: any = null
 ) {
+  if (DEBUG) {
+    if (trueContent != null && (trueContent instanceof Function) === false) {
+      console.warn('renderConditional using static trueContent');
+    }
+
+    if (falseContent != null && (falseContent instanceof Function) === false) {
+      console.warn('renderConditional using static falseContent');
+    }
+  }
+
   return (condition instanceof Function ? condition() : condition) === true ?
     (trueContent instanceof Function ? trueContent.apply(this) : trueContent) :
     (falseContent instanceof Function ? falseContent.apply(this) : falseContent);
