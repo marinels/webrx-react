@@ -1,69 +1,51 @@
 import * as React from 'react';
-import { Modal, Button } from 'react-bootstrap';
-
+import { Modal } from 'react-bootstrap';
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 
 import { ModalDialogViewModel } from './ModalDialogViewModel';
 
 import './ModalDialog.less';
 
-interface IModalDialogProps extends IBaseViewProps {
-  acceptText?: string;
-  cancelText?: string;
+interface ModalDialogProps extends IBaseViewProps {
+  title: any;
+  body?: any;
+  noClose?: boolean;
   children?: any;
-  content?: any;
 }
 
-export class ModalDialogView extends BaseView<IModalDialogProps, ModalDialogViewModel<any>> {
+export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewModel> {
   public static displayName = 'ModalDialogView';
+
+  static defaultProps = {
+    noClose: false,
+  };
 
   updateOn() {
     return [
-      this.state.title.changed,
-      this.state.cancelText.changed,
-      this.state.acceptText.changed,
       this.state.isVisible.changed,
-      this.state.accept.canExecuteObservable,
     ];
   }
 
   render() {
-    let dialog: any = null;
-
-    // don't render any content if the modal is hidden
-    if (this.state.isVisible()) {
-      let header = String.isNullOrEmpty(this.state.title()) ? null : (
-        <Modal.Header closeButton>
-          <Modal.Title>{this.state.title()}</Modal.Title>
+    return this.renderConditional(this.state.isVisible, () => (
+      <Modal className='ModalDialog' show={ this.state.isVisible() } onHide={ this.bindEventToCommand(x => x.hide) } autoFocus
+        keyboard={ this.props.noClose === false } enforceFocus={ this.props.noClose === true }
+        backdrop={ this.props.noClose === true ? 'static' : true }
+      >
+        <Modal.Header closeButton={ this.props.noClose === false }>
+          <Modal.Title>{ (this.props.title instanceof Function) ? this.props.title.apply(null) : this.props.title }</Modal.Title>
         </Modal.Header>
-      );
-
-      let body = this.props.content || this.props.children || this.state.content;
-
-      if (body instanceof Function) {
-        body = body.apply(this, [this.state]);
-      }
-
-      dialog = (
-        <Modal className='ModalDialog' show={this.state.isVisible()} onHide={() => this.state.hide.execute(null)} autoFocus keyboard>
-          {header}
-          {body == null ? null : (
-            <Modal.Body>{body}</Modal.Body>
-          )}
-          <Modal.Footer>
-            <Button onClick={this.bindEventToCommand(x => x.cancel)}>
-              {this.props.cancelText || this.state.cancelText()}
-            </Button>
-            <Button
-              disabled={this.state.accept.canExecute(null) === false}
-              onClick={this.bindEventToCommand(x => x.accept)} bsStyle='primary'>
-              {this.props.acceptText || this.state.acceptText()}
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      );
-    }
-
-    return dialog;
+        {
+          this.renderConditional(this.props.body != null, () => (
+            <Modal.Body>{ (this.props.body instanceof Function) ? this.props.body.apply(null) : this.props.body }</Modal.Body>
+          ))
+        }
+        {
+          this.renderConditional(this.props.children != null, () => (
+            <Modal.Footer>{ this.props.children }</Modal.Footer>
+          ))
+        }
+      </Modal>
+    ));
   }
 }
