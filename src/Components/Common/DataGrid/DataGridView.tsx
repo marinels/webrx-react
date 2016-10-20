@@ -259,10 +259,15 @@ export class DataGridView extends BaseView<DataGridProps, DataGridViewModel<any>
   }
 
   updateOn() {
-    return [
+    const watches = [
       this.state.projectedItems.listChanged,
-      this.state.selectedItem.changed,
     ];
+
+    if (this.props.highlightSelected === true) {
+      watches.push(this.state.selectedItem.changed);
+    }
+
+    return watches;
   }
 
   render() {
