@@ -41,13 +41,13 @@ export function renderLoadable(
   const loadingComponentType = typeof loadingComponent;
 
   if (loadingComponentType === 'string') {
-    loadingComponent = (
-      <Loading text={loadingComponent} />
+    loadingComponent = () => (
+      <Loading text={ loadingComponent } />
     );
   }
   else if (loadingComponentType === 'object' && React.isValidElement(loadingComponent) === false) {
-    loadingComponent = (
-      <Loading {...loadingComponent} />
+    loadingComponent = () => (
+      <Loading { ...loadingComponent } />
     );
   }
 
