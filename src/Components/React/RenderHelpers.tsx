@@ -19,11 +19,11 @@ export function renderConditional(
   falseContent: any = null
 ) {
   if (DEBUG) {
-    if (trueContent != null && (trueContent instanceof Function) === false) {
+    if (trueContent != null && (typeof trueContent === 'object')  && (trueContent instanceof Function) === false) {
       console.warn('renderConditional using static trueContent');
     }
 
-    if (falseContent != null && (falseContent instanceof Function) === false) {
+    if (falseContent != null && (typeof falseContent === 'object') && (falseContent instanceof Function) === false) {
       console.warn('renderConditional using static falseContent');
     }
   }
