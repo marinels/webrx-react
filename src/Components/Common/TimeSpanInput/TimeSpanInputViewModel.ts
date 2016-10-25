@@ -131,8 +131,8 @@ export class TimeSpanInputViewModel extends BaseViewModel {
       .where(x => x != null)
       .subscribe(x => {
         let value = x.as(this.unit().key);
-        let units = this.unit().name;
-        let text = `${Number(value.toFixed(this.precision))} ${value === 1 ? units.replace(/s$/, '') : units}`;
+        let unitName = this.unit().name;
+        let text = `${Number(value.toFixed(this.precision))} ${value === 1 ? unitName.replace(/s$/, '') : unitName}`;
 
         this.text(text);
       })

@@ -19,6 +19,7 @@ export function renderConditional(
   falseContent: any = null
 ) {
   if (DEBUG) {
+    // tslint:disable no-console
     if (trueContent != null && (typeof trueContent === 'object')  && (trueContent instanceof Function) === false) {
       console.warn('renderConditional using static trueContent');
     }
@@ -26,6 +27,7 @@ export function renderConditional(
     if (falseContent != null && (typeof falseContent === 'object') && (falseContent instanceof Function) === false) {
       console.warn('renderConditional using static falseContent');
     }
+    // tslint:enable no-console
   }
 
   return (condition instanceof Function ? condition() : condition) === true ?
