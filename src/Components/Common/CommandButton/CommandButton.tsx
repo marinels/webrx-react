@@ -46,15 +46,22 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
     }, 'key', 'ref');
 
     let canExecute = false;
-    let onClick: Function = null;
+    let onClick: React.MouseEventHandler = null;
 
     if (props.command == null) {
       // if props.command is null, try to fall back onto href
       canExecute = String.isNullOrEmpty(rest.href) === false;
+      onClick = e => {
+        e.stopPropagation();
+      };
     }
     else {
       canExecute = this.getCommand().canExecute(this.getParam());
-      onClick = () => this.getCommand().execute(this.getParam());
+      onClick = e => {
+        e.stopPropagation();
+
+        this.getCommand().execute(this.getParam());
+      };
     }
 
     return (
