@@ -128,7 +128,7 @@ const viewMap: ViewActivatorMap = {
     }
   },
   DataGridViewModel: (viewModel: wxr.Components.DataGridViewModel<any>, componentRoute: string) => {
-    let view: wxr.Components.DataGridViewTemplate = undefined;
+    let view: wxr.Components.DataGridViewTemplate<{name: string, requiredBy: string}> = undefined;
     let columns: any;
     let hidePager = false;
 
