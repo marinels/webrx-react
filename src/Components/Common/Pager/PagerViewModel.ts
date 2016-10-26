@@ -3,6 +3,9 @@ import * as wx from 'webrx';
 
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 
+export const StandardLimits = [ 10, 25, null ];
+export const AlwaysPagedLimits = StandardLimits.filter(x => x != null);
+
 export interface IPagerRoutingState {
   limit: number;
   page: number;
@@ -41,7 +44,7 @@ export class PagerViewModel extends BaseRoutableViewModel<IPagerRoutingState> {
     .select(x => (x.selectedPage - 1) * (x.limit || 0))
     .toProperty();
 
-  constructor(limit?: number, isRoutingEnabled = false) {
+  constructor(limit = StandardLimits[0], isRoutingEnabled = false) {
     super(isRoutingEnabled);
 
     this.limit(limit);

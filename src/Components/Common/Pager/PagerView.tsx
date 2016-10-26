@@ -4,7 +4,7 @@ import { Pagination, PaginationProps, DropdownButton, MenuItem } from 'react-boo
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
 
-import { PagerViewModel } from './PagerViewModel';
+import { PagerViewModel, StandardLimits } from './PagerViewModel';
 
 import './Pager.less';
 
@@ -13,18 +13,16 @@ export interface IPagerProps extends IBaseViewProps, PaginationProps {
   limits?: number[];
 }
 
-export const StandardLimits = [ 10, 25, null ];
-export const AlwaysPagedLimits = StandardLimits.filter(x => x != null);
-
 export class PagerView extends BaseView<IPagerProps, PagerViewModel> {
   public static displayName = 'PagerView';
 
   static defaultProps = {
-    info: true,
     first: true,
     prev: true,
     next: true,
     last: true,
+    info: true,
+    pagerLimits: StandardLimits,
   };
 
   updateOn() {

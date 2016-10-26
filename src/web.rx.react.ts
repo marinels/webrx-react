@@ -225,8 +225,8 @@ export namespace Components {
   export import ListView = ListViewTypes.ListView;
 
   export import PagerViewModel = PagerViewModelTypes.PagerViewModel;
-  export import StandardPagerLimits = PagerViewTypes.StandardLimits;
-  export import AlwaysPagedPagerLimits = PagerViewTypes.AlwaysPagedLimits;
+  export import StandardPagerLimits = PagerViewModelTypes.StandardLimits;
+  export import AlwaysPagedPagerLimits = PagerViewModelTypes.AlwaysPagedLimits;
   export import PagerView = PagerViewTypes.PagerView;
 
   export import TabsViewModel = TabsViewModelTypes.TabsViewModel;
