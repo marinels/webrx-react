@@ -1,9 +1,15 @@
 import * as wx from 'webrx';
+import { Observable } from 'rx';
 
 import { ObjectComparer, SortDirection } from '../../../Utils/Compare';
 import { ListViewModel, IListRoutingState } from '../List/ListViewModel';
 import { SearchViewModel, ISearchRoutingState } from '../Search/SearchViewModel';
 import { PagerViewModel, IPagerRoutingState } from '../Pager/PagerViewModel';
+
+export interface SortArgs {
+  field: string;
+  direction: SortDirection;
+}
 
 export interface DataGridRoutingState extends IListRoutingState {
   search: ISearchRoutingState;
@@ -15,32 +21,15 @@ export interface DataGridRoutingState extends IListRoutingState {
 export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRoutingState> {
   public static displayName = 'DataGridViewModel';
 
-  public projectedItems = wx.list<TData>();
+  public search: SearchViewModel;
+  public pager: PagerViewModel;
 
-  protected project = wx.command();
+  public projectedItems: wx.IObservableReadOnlyProperty<TData[]>;
+  public sortField: wx.IObservableReadOnlyProperty<string>;
+  public sortDirection: wx.IObservableReadOnlyProperty<SortDirection>;
 
-  public search = new SearchViewModel(true, undefined, undefined, this.isRoutingEnabled);
-  public pager = new PagerViewModel(null, this.isRoutingEnabled);
-
-  public sortAscending = wx.command();
-  public sortDescending = wx.command();
-  public toggleSortDirection = wx.command();
-
-  public sortField = Rx.Observable
-    .merge(
-      this.sortAscending.results,
-      this.sortDescending.results)
-    .select(x => x as string)
-    .toProperty();
-
-  public sortDirection = Rx.Observable
-    .merge(
-      this.sortAscending.results
-        .select(x => SortDirection.Ascending),
-      this.sortDescending.results
-        .select(x => SortDirection.Descending)
-    )
-    .toProperty();
+  public sort: wx.ICommand<SortArgs>;
+  public toggleSortDirection: wx.ICommand<string>;
 
   public static create<TData>(...items: TData[]) {
     return new DataGridViewModel(items);
@@ -51,76 +40,87 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
     protected filterer?: (item: TData, regex: RegExp) => boolean,
     protected comparer = new ObjectComparer<TData>(),
     isMultiSelectEnabled?: boolean,
+    rateLimit = 100,
     isRoutingEnabled?: boolean
   ) {
     super(items, isMultiSelectEnabled, isRoutingEnabled);
 
-    this.subscribe(
-      this.project.results
-        .debounce(100)
-        .selectMany(x => this.projectItems())
-        .subscribe(x => {
-          wx.using(this.projectedItems.suppressChangeNotifications(), disp => {
-            this.projectedItems.clear();
-            this.projectedItems.addRange(x);
-          });
-        })
-    );
+    this.search = new SearchViewModel(true, undefined, undefined, this.isRoutingEnabled);
+    this.pager = new PagerViewModel(undefined, this.isRoutingEnabled);
 
-    this.subscribe(this.toggleSortDirection.results
-      .invokeCommand(x => {
-        let sortDirection = this.sortDirection();
+    this.sort = wx.asyncCommand((x: SortArgs) => Observable.of(x));
+    this.toggleSortDirection = wx.asyncCommand((x: string) => Observable.of(x));
 
-        if (x != null && x !== this.sortField()) {
-          sortDirection = null;
-        }
+    const sortChanged = wx
+      .whenAny(this.sort.results, x => x);
 
-        return sortDirection === SortDirection.Descending ? this.sortAscending : this.sortDescending;
-      })
-    );
+    this.sortField = sortChanged
+      .map(x => x == null ? null : x.field)
+      .toProperty();
 
-    this.subscribe(
-      wx.whenAny(
+    this.sortDirection = sortChanged
+      .map(x => x == null ? null : x.direction)
+      .toProperty();
+
+    this.projectedItems = wx
+      .whenAny(
         this.pager.offset,
         this.pager.limit,
         this.sortField,
         this.sortDirection,
-        this.items.listChanged.startWith(false),
+        this.items.listChanged.startWith(true),
         this.search.results.startWith(null),
-        () => null)
-      .invokeCommand(this.project)
+        () => null
+      )
+      .debounce(rateLimit)
+      .flatMap(x => this.projectItems())
+      .toProperty();
+
+    this.subscribe(
+      this.toggleSortDirection.results
+        .map(x => (<SortArgs>{
+          field: x || this.sortField(),
+          direction: (x === this.sortField()) ?
+            (this.sortDirection() === SortDirection.Descending ? SortDirection.Ascending : SortDirection.Descending) :
+            SortDirection.Ascending,
+        }))
+        .invokeCommand(x => this.sort)
     );
 
     this.subscribe(wx
-      .whenAny(
-        this.items.length,
-        x => x)
-      .invokeCommand(this.pager.updateItemCount)
+      .whenAny(this.items.length, x => x)
+      .subscribe(x => {
+        this.pager.itemCount(x);
+      })
     );
   }
 
   protected projectItems() {
     let items = this.items.toArray();
-    let regex = this.search.regex();
+    const regex = this.search.regex();
 
     if (this.filterer != null && regex != null) {
       items = items.filter(x => this.filterer(x, regex));
     }
 
-    this.pager.updateItemCount.execute(items.length);
+    this.pager.itemCount(items.length);
 
-    if (this.comparer != null && this.sortField() != null && this.sortDirection() != null) {
-      items = items.sort((a, b) => this.comparer.compare(a, b, this.sortField(), this.sortDirection()));
+    if (this.comparer != null && String.isNullOrEmpty(this.sortField()) === false && this.sortDirection() != null) {
+      items = items.sort((a, b) => {
+        return this.comparer.compare(a, b, this.sortField(), this.sortDirection());
+      });
     }
 
-    let offset = this.pager.offset() || 0;
+    const offset = this.pager.offset() || 0;
+
     if (offset > 0 || this.pager.limit() != null) {
-      let end = this.pager.limit() == null ? items.length : offset + this.pager.limit();
+      const end = this.pager.limit() == null ? items.length : offset + this.pager.limit();
 
       items = items.slice(offset, end);
     }
 
-    return Rx.Observable.return(items);
+    return Observable
+      .of(items);
   }
 
   public canFilter() {
@@ -141,6 +141,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
 
   saveRoutingState(state: DataGridRoutingState) {
     state.search = this.search.getRoutingState();
+    state.pager = this.pager.getRoutingState();
 
     if (this.sortField() != null) {
       state.sortBy = this.sortField();
@@ -149,12 +150,13 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
     if (this.sortDirection() != null) {
       state.sortDir = this.sortDirection();
     }
-
-    state.pager = this.pager.getRoutingState();
   }
 
   loadRoutingState(state: DataGridRoutingState) {
     this.search.setRoutingState(state.search);
     this.pager.setRoutingState(state.pager);
+
+    this.sortField(state.sortBy);
+    this.sortDirection(state.sortDir);
   }
 }

@@ -51,8 +51,7 @@ export class DataGridListViewTemplate<T> implements DataGridViewTemplate<T> {
       <div className='DataGrid-listView'>
         <ListGroup>
           {
-            viewModel.projectedItems
-              .toArray()
+            (viewModel.projectedItems() || [])
               .asEnumerable()
               .map((x, i) =>
                 this.renderItemContainer(
@@ -88,14 +87,13 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
   public static displayName = 'DataGridTableViewTemplate';
 
   private tableProps: any;
-  private columns: DataGridColumnProps[];
 
   constructor(
     protected renderItem: (item: T, column: DataGridColumnProps, index: number, viewModel: DataGridViewModel<T>, view: DataGridView) => any = x => x,
     protected rowKeySelector: (item: T, index: number, viewModel: DataGridViewModel<T>, view: DataGridView) => any = (r, i) => i,
-    striped = false, bordered = true, condensed = true, hover = true, responsive = true) {
+    bordered = true, hover = true, striped = false, condensed = true, responsive = true) {
 
-    this.tableProps = { striped, bordered, condensed, hover, responsive };
+    this.tableProps = { bordered, hover, striped, condensed, responsive };
   }
 
   protected getColumnDefinitions(viewModel: DataGridViewModel<T>, view: DataGridView) {
@@ -143,23 +141,21 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
   }
 
   render(viewModel: DataGridViewModel<T>, view: DataGridView) {
-    if (this.columns == null) {
-      this.columns = this.createColumns(viewModel, view);
-    }
+    const columns = this.createColumns(viewModel, view);
 
     return (
       <Table className='DataGrid-tableView' { ...this.tableProps }>
-        <thead>{ this.renderColumns(viewModel, view) }</thead>
-        <tbody>{ this.renderRows(viewModel, view) }</tbody>
+        <thead>{ this.renderColumns(columns, viewModel, view) }</thead>
+        <tbody>{ this.renderRows(columns, viewModel, view) }</tbody>
       </Table>
     );
   }
 
-  protected renderColumns(viewModel: DataGridViewModel<T>, view: DataGridView) {
+  protected renderColumns(columns: DataGridColumnProps[], viewModel: DataGridViewModel<T>, view: DataGridView) {
     return (
       <tr>
         {
-          (this.columns || [])
+          (columns || [])
             .asEnumerable()
             .map((x, i) => this.renderColumnHeader(x, i, viewModel, view))
             .defaultIfEmpty(
@@ -221,14 +217,13 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
     return icon;
   }
 
-  protected renderRows(viewModel: DataGridViewModel<T>, view: DataGridView) {
-    return viewModel.projectedItems
-      .toArray()
+  protected renderRows(columns: DataGridColumnProps[], viewModel: DataGridViewModel<T>, view: DataGridView) {
+    return (viewModel.projectedItems() || [])
       .asEnumerable()
-      .map((x, i) => this.renderRow(x, i, viewModel, view))
+      .map((x, i) => this.renderRow(x, i, columns, viewModel, view))
       .defaultIfEmpty(
         <tr key='empty'>
-          <td colSpan={ (this.columns || []).length + 1 }>
+          <td colSpan={ (columns || []).length + 1 }>
             <div className='DataGrid-empty text-muted'>No Data to Display...</div>
           </td>
         </tr>
@@ -236,7 +231,7 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
       .toArray();
   }
 
-  protected renderRow(item: T, index: number, viewModel: DataGridViewModel<T>, view: DataGridView) {
+  protected renderRow(item: T, index: number, columns: DataGridColumnProps[], viewModel: DataGridViewModel<T>, view: DataGridView) {
     const rowClasses = classNames('DataGrid-row', {
       'DataGrid-row--selected': view.props.highlightSelected === true && viewModel.selectedItem() === item,
     });
@@ -244,7 +239,7 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
     return (
       <tr className={ rowClasses } key={ this.rowKeySelector(item, index, viewModel, view) } onClick={ bindEventToCommand(this, viewModel, x => x.selectItem, x => item) }>
         {
-          (this.columns || [])
+          (columns || [])
             .asEnumerable()
             .map((x, i) => this.renderCell(x.valueSelector(item), x, i, viewModel, view))
             .defaultIfEmpty(
@@ -270,8 +265,8 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
 interface DataGridProps extends IBaseViewProps {
   view?: DataGridViewTemplate<any>;
   pagerLimits?: number[];
-  hideSearch?: boolean;
-  hidePager?: boolean;
+  search?: boolean;
+  pager?: boolean;
   highlightSelected?: boolean;
   children?: DataGridColumn[];
 }
@@ -281,14 +276,14 @@ export class DataGridView extends BaseView<DataGridProps, DataGridViewModel<any>
 
   static defaultProps = {
     view: new DataGridTableViewTemplate<any>(),
-    hideSearch: false,
-    hidePager: false,
+    search: false,
+    pager: false,
     highlightSelected: false,
   };
 
   updateOn() {
     const watches = [
-      this.state.projectedItems.listChanged,
+      this.state.projectedItems.changed,
     ];
 
     if (this.props.highlightSelected === true) {
@@ -302,14 +297,14 @@ export class DataGridView extends BaseView<DataGridProps, DataGridViewModel<any>
     return (
       <div className='DataGrid'>
         {
-          this.renderConditional(this.props.hideSearch === false && this.state.canFilter() === true, () => (
+          this.renderConditional(this.props.search === true && this.state.canFilter() === true, () => (
             <SearchView viewModel={ this.state.search }/>
           ))
         }
         { this.props.view.render(this.state, this) }
         {
-          this.renderConditional(this.props.hidePager === false, () => (
-            <PagerView viewModel={ this.state.pager } limits={ this.props.pagerLimits } />
+          this.renderConditional(this.props.pager === true, () => (
+            <PagerView viewModel={ this.state.pager } limits={ this.props.pagerLimits } info  />
           ))
         }
       </div>
