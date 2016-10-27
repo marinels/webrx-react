@@ -1,19 +1,18 @@
 import * as React from 'react';
-
+import * as classNames from 'classnames';
 import { Pagination, PaginationProps, DropdownButton, MenuItem } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
-
 import { PagerViewModel, StandardLimits } from './PagerViewModel';
 
 import './Pager.less';
 
-export interface IPagerProps extends IBaseViewProps, PaginationProps {
+export interface PagerProps extends IBaseViewProps, PaginationProps {
   info?: boolean;
   limits?: number[];
 }
 
-export class PagerView extends BaseView<IPagerProps, PagerViewModel> {
+export class PagerView extends BaseView<PagerProps, PagerViewModel> {
   public static displayName = 'PagerView';
 
   static defaultProps = {
@@ -22,7 +21,7 @@ export class PagerView extends BaseView<IPagerProps, PagerViewModel> {
     next: true,
     last: true,
     info: true,
-    pagerLimits: StandardLimits,
+    limits: StandardLimits,
   };
 
   updateOn() {
@@ -34,34 +33,63 @@ export class PagerView extends BaseView<IPagerProps, PagerViewModel> {
 
   render() {
     const { rest, props } = this.restProps(x => {
-      const { info, limits } = x;
-      return { info, limits };
+      const { info, limits, className } = x;
+      return { info, limits, className };
     });
-    let info: string;
 
-    if (props.info && this.state.hasValidLimit()) {
-      info = (this.state.itemCount() == null || this.state.itemCount() === 0) ? 'No Items to Show' :
-        `Showing Items ${this.state.offset() + 1} through ${Math.min(this.state.itemCount(), this.state.offset() + this.state.limit())} of ${this.state.itemCount()}`;
-    }
-
-    let pager = (props.limits == null || this.state.itemCount() === 0 || this.state.limit() == null) ? null : (
-      <Pagination items={this.state.pageCount()} activePage={this.state.selectedPage()} onSelect={this.bindEventToCommand(x => x.selectPage)} {...rest} />
-    );
-
-    let limit = (props.limits == null || props.limits.length === 0 || this.state.itemCount() === 0) ? null : (
-      <DropdownButton id='pager-limit-selector' title={`Items per Page (${this.state.limit() || 'All'})`} onSelect={this.bindEventToProperty(x => x.limit)}>
-        {props.limits.map((x, i) => (
-          <MenuItem key={i} eventKey={x}>{x || 'All'}</MenuItem>
-        ))}
-      </DropdownButton>
-    );
+    const pagerProps = Object.rest(rest, x => {
+      const { activePage, bsSize, bsStyle, buttonComponentClass, ellipsis, first, items, last, maxButtons, next, prev } = x;
+      return { activePage, bsSize, bsStyle, buttonComponentClass, ellipsis, first, items, last, maxButtons, next, prev };
+    });
 
     return (
-      <div className='Pager'>
-        <div className='Pager-info'>{info}</div>
-        <div className='Pager-controls'>{pager}</div>
-        <div className='Pager-limit'>{limit}</div>
+      <div { ...pagerProps.rest } className={ classNames('Pager', props.className) }>
+        { this.renderInfo(props.info) }
+        { this.renderControls(props.limits, pagerProps.props) }
+        { this.renderLimit(props.limits, rest) }
       </div>
     );
+  }
+
+  private renderInfo(info: boolean) {
+    return this.renderConditional(info === true, () => (
+      <div className='Pager-info'>
+        {
+          this.renderConditional((this.state.itemCount() || 0) === 0,
+            'No Items to Display',
+            `Showing Items ${ this.state.offset() + 1 } through ${ Math.min(this.state.itemCount(), this.state.offset() + this.state.limit()) } of ${ this.state.itemCount() }`
+          )
+        }
+      </div>
+    ));
+  }
+
+  private renderControls(limits: number[], props: PaginationProps) {
+    return this.renderConditional(this.state.pageCount() > 1 && this.state.selectedPage() != null, () => (
+      <div className='Pager-controls'>
+        <Pagination items={ this.state.pageCount() } activePage={ this.state.selectedPage() } onSelect={ this.bindEventToCommand(x => x.selectPage) }
+          { ...(Object.assign(props, { items: this.state.pageCount(), activePage: this.state.selectedPage() })) }
+        />
+      </div>
+    ));
+  }
+
+  private renderLimit(limits: number[], rest: any) {
+    return this.renderConditional(limits != null && limits.length > 0 && this.state.itemCount() > 0, () => (
+      <div className='Pager-limit'>
+        <DropdownButton id={ rest.id || 'pager-limit-selector' } title={ this.renderLimitTitle() } onSelect={ this.bindEventToProperty(x => x.limit) }>
+          {
+            limits
+              .map((x, i) => (
+                <MenuItem key={ i } eventKey={ x } selected={ this.state.limit() === x }>{x || 'All'}</MenuItem>
+              ))
+          }
+        </DropdownButton>
+      </div>
+    ));
+  }
+
+  private renderLimitTitle() {
+    return `Items per Page (${ this.state.limit() || 'All' })`;
   }
 }

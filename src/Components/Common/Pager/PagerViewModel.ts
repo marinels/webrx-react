@@ -1,4 +1,4 @@
-import * as Rx from 'rx';
+import { Observable } from 'rx';
 import * as wx from 'webrx';
 
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
@@ -14,68 +14,56 @@ export interface IPagerRoutingState {
 export class PagerViewModel extends BaseRoutableViewModel<IPagerRoutingState> {
   public static displayName = 'PagerViewModel';
 
-  public updateItemCount = wx.command();
-  public selectPage = wx.command();
+  public itemCount: wx.IObservableProperty<number>;
+  public limit: wx.IObservableProperty<number>;
+  public selectedPage: wx.IObservableReadOnlyProperty<number>;
+  public pageCount: wx.IObservableReadOnlyProperty<number>;
+  public offset: wx.IObservableReadOnlyProperty<number>;
 
-  public limit = wx.property<number>();
-  public itemCount = this.updateItemCount.results
-    .select(x => x as number)
-    .toProperty();
-  public selectedPage = this.selectPage.results
-    .select(x => x as number)
-    .toProperty();
-  public pageCount = Rx.Observable
-    .combineLatest(
-      this.itemCount.changed,
-      this.limit.changed,
-      (itemCount, limit) => ({ itemCount, limit })
-    )
-    .where(x => x.itemCount != null && x.limit != null && x.limit > 0)
-    .select(x => Math.ceil(x.itemCount / x.limit))
-    .toProperty();
-  public offset = wx
-    .whenAny(
-      this.selectedPage,
-      this.limit,
-      (selectedPage, limit) => ({ selectedPage, limit })
-    )
-    .skip(1)
-    .where(x => x.selectedPage != null)
-    .select(x => (x.selectedPage - 1) * (x.limit || 0))
-    .toProperty();
+  public selectPage: wx.ICommand<number>;
 
   constructor(limit = StandardLimits[0], isRoutingEnabled = false) {
     super(isRoutingEnabled);
 
-    this.limit(limit);
+    this.itemCount = wx.property<number>(0);
+    this.limit = wx.property<number>(limit);
+    this.selectPage = wx.asyncCommand((x: number) => Observable.of(x));
 
-    this.subscribe(this.pageCount.changed
-      .select(x => this.selectedPage() || 1)
-      .invokeCommand(this.selectPage));
+    this.pageCount = wx
+      .whenAny(this.itemCount, this.limit, (ic, l) => ({ ic, l }))
+      .map(x => (x.ic != null && x.l != null && x.ic > 0 && x.l > 0) ? Math.ceil(x.ic / x.l) : 0)
+      .toProperty(0);
 
-    this.subscribe(wx
-      .whenAny(
-        this.selectedPage,
-        this.limit,
-        () => null
-      )
-      .skip(1)
-      .invokeCommand(this.routingStateChanged));
+    this.selectedPage = wx
+      .whenAny(this.selectPage.results, this.pageCount, (sp, pc) => ({ sp, pc }))
+      .map(x => (x.sp != null && x.pc != null) ? x.sp : 0)
+      .toProperty(0);
 
-    this.selectPage.execute(this.selectedPage() || 1);
-  }
+    this.offset = wx
+      .whenAny(this.selectedPage, this.limit, (sp, l) => ({ sp, l }))
+      .map(x => (x.sp != null && x.sp > 0) ? (x.sp - 1) * (x.l || 0) : 0)
+      .toProperty();
 
-  private isValidLimit(limit: number) {
-    return limit != null && limit > 0;
-  }
+    this.subscribe(
+      wx
+        .whenAny(this.pageCount, x => x > 0 ? 1 : 0)
+        .invokeCommand(this.selectPage)
+    );
 
-  public hasValidLimit() {
-    return this.isValidLimit(this.limit());
+    this.subscribe(
+      wx
+        .whenAny(this.selectedPage, this.limit, (sp, l) => ({ sp, l }))
+        .filter(x => x.sp != null && x.l != null)
+        .invokeCommand(this.routingStateChanged)
+    );
   }
 
   saveRoutingState(state: IPagerRoutingState) {
-    if (this.hasValidLimit()) {
+    if (this.limit() != null) {
       state.limit = this.limit();
+    }
+
+    if (this.selectedPage() != null && this.selectedPage() !== 1) {
       state.page = this.selectedPage();
     }
   }
