@@ -63,7 +63,7 @@ export class DataGridListViewTemplate<T> implements DataGridViewTemplate<T> {
                 )
               )
               .defaultIfEmpty(
-                <div key='empty' className='DataGrid-empty text-muted'>Nothing to Display...</div>
+                <div key='empty' className='DataGrid-empty text-muted'>List is Empty...</div>
               )
               .toArray()
           }
@@ -100,7 +100,7 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
     let children = view.props.children;
 
     if (React.Children.count(children) === 0) {
-      const items = viewModel.items.toArray();
+      const items = (viewModel.items() || []);
 
       if (items.length > 0 && items[0] != null) {
         // auto-generate columns
@@ -224,7 +224,7 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
       .defaultIfEmpty(
         <tr key='empty'>
           <td colSpan={ (columns || []).length + 1 }>
-            <div className='DataGrid-empty text-muted'>No Data to Display...</div>
+            <div className='DataGrid-empty text-muted'>List is Empty...</div>
           </td>
         </tr>
       )

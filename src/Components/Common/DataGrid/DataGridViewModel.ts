@@ -32,11 +32,11 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
   public toggleSortDirection: wx.ICommand<string>;
 
   public static create<TData>(...items: TData[]) {
-    return new DataGridViewModel(items);
+    return new DataGridViewModel(wx.property<TData[]>(items));
   }
 
   constructor(
-    items: TData[] = [],
+    public items: wx.IObservableProperty<TData[]> = wx.property<TData[]>(),
     protected filterer?: (item: TData, regex: RegExp) => boolean,
     protected comparer = new ObjectComparer<TData>(),
     isMultiSelectEnabled?: boolean,
@@ -68,7 +68,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
         this.pager.limit,
         this.sortField,
         this.sortDirection,
-        this.items.listChanged.startWith(true),
+        this.items.changed.startWith([]),
         this.search.results.startWith(null),
         () => null
       )
@@ -88,7 +88,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
     );
 
     this.subscribe(wx
-      .whenAny(this.items.length, x => x)
+      .whenAny(this.items, x => (x || []).length)
       .subscribe(x => {
         this.pager.itemCount(x);
       })
@@ -96,7 +96,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
   }
 
   protected projectItems() {
-    let items = this.items.toArray();
+    let items = this.items();
     const regex = this.search.regex();
 
     if (this.filterer != null && regex != null) {
