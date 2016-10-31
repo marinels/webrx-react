@@ -1,14 +1,11 @@
 import * as React from 'react';
 import * as wx from 'webrx';
 
-interface IBindableInputProps {
-  key?: string | number;
+interface IBindableInputProps extends React.HTMLAttributes {
   property: any;
   converter?: (x: any) => any;
-  children?: React.ReactNode;
   valueProperty?: string;
   onChangeProperty?: string;
-  propSelector?: () => any;
   valueGetter?: (property: any) => any;
   valueSetter?: (property: any, value: any) => void;
 }
@@ -24,28 +21,31 @@ export class BindableInput extends React.Component<IBindableInputProps, any> {
   };
 
   render() {
-    let onChange = (x: any) => {
-      let value = x.target[this.props.valueProperty];
+    const { rest, props } = this.restProps(x => {
+      const { property, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, children } = x;
+      return { property, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, children };
+    });
 
-      if (this.props.converter != null) {
-        value = this.props.converter(value);
-      }
+    const bindProps: any = {};
+    bindProps[props.valueProperty] = props.valueGetter(props.property);
+    bindProps[props.onChangeProperty] = (e: React.FormEvent) => this.onChange(e);
 
-      this.props.valueSetter(this.props.property, value);
-      this.forceUpdate();
-    };
+    return React.cloneElement(
+      React.Children.only(props.children),
+      Object.assign({}, rest, bindProps)
+    );
+  }
 
-    let props: { [key: string]: any} = {};
+  protected onChange(e: React.FormEvent) {
+    const target: any = e.target;
+    let value: any = target[this.props.valueProperty];
 
-    props[this.props.valueProperty] = this.props.valueGetter(this.props.property) || '';
-    props[this.props.onChangeProperty] = onChange;
-
-    if (this.props.propSelector != null) {
-      props = Object.assign(props, this.props.propSelector());
+    if (this.props.converter != null) {
+      value = this.props.converter(value);
     }
 
-    let inputComponent = React.Children.only(this.props.children);
+    this.props.valueSetter(this.props.property, value);
 
-    return React.cloneElement(inputComponent, props);
+    this.forceUpdate();
   }
 }
