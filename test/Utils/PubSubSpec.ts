@@ -8,13 +8,17 @@ describe('PubSub', () => {
     let called = false;
     let handle = pubsub.subscribe('test', x => called = true);
     expect(handle).to.exist;
-    expect(handle.id).to.equal(1);
-    expect(handle.key).to.equal('test');
+    expect(handle.dispose).to.exist;
     pubsub.publish('test');
     expect(called).to.equal(true);
   });
 
   it('Can publish with no subscribers', () => {
+    let pubsub = new PubSub();
+    pubsub.publish('test2');
+  });
+
+  it('Can publish on a different key with no subscribers', () => {
     let pubsub = new PubSub();
     let called = false;
     let handle = pubsub.subscribe('test', x => called = true);
@@ -63,7 +67,7 @@ describe('PubSub', () => {
     let pubsub = new PubSub();
     let called = false;
     let handle = pubsub.subscribe('test', x => called = true);
-    pubsub.unsubscribe(handle);
+    handle.dispose();
     pubsub.publish('test');
     expect(called).to.equal(false);
   });
@@ -87,7 +91,7 @@ describe('PubSub', () => {
     let handle2 = pubsub.subscribe('test', x => called2 = true);
     expect(handle1).to.exist;
     expect(handle2).to.exist;
-    pubsub.unsubscribe(handle1);
+    handle1.dispose();
     pubsub.publish('test');
     expect(called1).to.equal(false);
     expect(called2).to.equal(true);
