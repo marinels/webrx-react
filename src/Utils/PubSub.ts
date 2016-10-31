@@ -1,87 +1,58 @@
-export interface SubscriptionAction<T> {
-  (arg: T): void;
-}
-
-export interface SubscriptionCallback<T> {
-  action: SubscriptionAction<T>;
-  thisArg?: any;
-}
-
-export interface SubscriptionHandle {
-  id: number;
-  key: string;
-}
-
-export interface Subscription<T> {
-  callback: SubscriptionCallback<T>;
-  handle: SubscriptionHandle;
-}
-
-class SubscriptionList<T> {
-  public static displayName = 'SubscriptionList';
-  private currentHandle = 0;
-  private list: Subscription<T>[] = [];
-
-  public add(key: string, callback: SubscriptionCallback<T>) {
-    let handle = <SubscriptionHandle>{ id: ++this.currentHandle, key };
-
-    this.list.push(<Subscription<T>>{ callback, handle });
-
-    return handle;
-  }
-
-  public remove(handle: SubscriptionHandle) {
-    let index = -1;
-    this.list.some((x, i) => x.handle.id === handle.id ? ((index = i), true) : false );
-    if (index >= 0) {
-      this.list.splice(index, 1);
-    }
-  }
-
-  public invoke<T>(arg: T) {
-    if (this.list.length > 0) {
-      this.list.forEach(x => x.callback.action.apply(x.callback.thisArg, [arg]));
-    }
-  }
-}
+import { Subject, IDisposable } from 'rx';
 
 interface PubSubMap {
-  [key: string]: SubscriptionList<any>;
+  [key: string]: Subject<any>;
 }
 
-export class PubSub {
+export class PubSub implements IDisposable {
   public static displayName = 'PubSub';
-  private map = <PubSubMap>{};
 
-  private getList<T>(key: string, action: (list: SubscriptionList<T>) => void, createMissing = false) {
-    let list = this.map[key];
+  private map: PubSubMap;
 
-    if (list == null && createMissing) {
-      list = new SubscriptionList<T>();
-      this.map[key] = list;
+  private getSubject<T>(key: string) {
+    if (this.map == null) {
+      this.map = {};
     }
 
-    if (list != null) {
-      action(list);
+    let subject: Subject<T> = this.map[key];
+
+    if (subject == null) {
+      subject = new Subject<T>();
+      this.map[key] = subject;
     }
+
+    return subject;
   }
 
-  public subscribe<T>(key: string, action: SubscriptionAction<T>, thisArg?: any) {
-    let handle: SubscriptionHandle;
-
-    this.getList<T>(key, x => { handle = x.add(key, <SubscriptionCallback<T>>{action, thisArg}); }, true);
-
-    return handle;
+  public observe<T>(key: string) {
+    return this.getSubject<T>(key)
+      .asObservable();
   }
 
-  public unsubscribe(handle: SubscriptionHandle): SubscriptionHandle {
-    this.getList<any>(handle.key, x => x.remove(handle));
+  public subscribe<T>(key: string, onNext?: (value: T) => void, onError?: (exception: any) => void, onCompleted?: () => void) {
+    if (onError == null) {
+      onError = e => {
+        // tslint:disable-next-line:no-console
+        console.error('PubSub Error', e);
+      };
+    }
 
-    return null;
+    return this.observe<T>(key)
+      .subscribe(onNext, onError, onCompleted);
   }
 
   public publish<T>(key: string, arg?: T) {
-    this.getList<T>(key, x => x.invoke(arg));
+    this.getSubject<T>(key).onNext(arg);
+  }
+
+  dispose() {
+    if (this.map != null) {
+      Object.getOwnPropertyNames(this.map)
+        .map(x => this.map[x])
+        .forEach(x => x.dispose());
+
+      this.map = null;
+    }
   }
 }
 

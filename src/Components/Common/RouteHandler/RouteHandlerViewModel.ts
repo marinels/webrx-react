@@ -1,4 +1,3 @@
-import { Disposable } from 'rx';
 import { Enumerable } from 'ix';
 
 import { BaseViewModel } from '../../React/BaseViewModel';
@@ -51,17 +50,13 @@ export class RouteHandlerViewModel extends BaseViewModel {
       })
     );
 
-    const handle = pubSub.subscribe<RoutingStateChanged>(RoutingStateChangedKey, x => {
-      if (this.currentViewModel() != null) {
-        let state = this.currentViewModel().getRoutingState(x);
-
-        this.manager.navTo(this.currentPath, state);
-      }
-    });
-
-    this.subscribe(Disposable.create(() => {
-      pubSub.unsubscribe(handle);
-    }));
+    this.subscribe(
+      pubSub.subscribe<RoutingStateChanged>(RoutingStateChangedKey, x => {
+        if (this.currentViewModel() != null) {
+          this.manager.navTo(this.currentPath, this.currentViewModel().getRoutingState(x));
+        }
+      })
+    );
   }
 
   private getRoutedViewModel(route: Route) {

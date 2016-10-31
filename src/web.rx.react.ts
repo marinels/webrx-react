@@ -32,15 +32,11 @@ export namespace Logging {
 import * as PubSubTypes from './Utils/PubSub';
 
 export namespace PubSub {
-  export import SubscriptionAction = PubSubTypes.SubscriptionAction;
-  export import SubscriptionCallback = PubSubTypes.SubscriptionCallback;
-  export import SubscriptionHandle = PubSubTypes.SubscriptionHandle;
-  export import Subscription = PubSubTypes.Subscription;
   export import PubSub = PubSubTypes.PubSub;
 
   export const publish = exportFunction(PubSubTypes.Default.publish, PubSubTypes.Default);
+  export const observe = exportFunction(PubSubTypes.Default.observe, PubSubTypes.Default);
   export const subscribe = exportFunction(PubSubTypes.Default.subscribe, PubSubTypes.Default);
-  export const unsubscribe = exportFunction(PubSubTypes.Default.unsubscribe, PubSubTypes.Default);
 }
 
 import * as AlertTypes from './Utils/Alert';

@@ -1,9 +1,8 @@
-import { Observable, IDisposable } from  'rx';
+import { Observable } from  'rx';
 import * as wx from 'webrx';
 
 import { getLogger } from '../Utils/Logging/LogManager';
 import { HashCodec } from './HashCodec';
-import { Default as pubSub, SubscriptionHandle } from '../Utils/PubSub';
 
 export interface Route {
   path: string;
@@ -12,10 +11,9 @@ export interface Route {
   match: RegExpMatchArray;
 }
 
-export class RouteManager implements IDisposable {
+export class RouteManager {
   public static displayName = 'RouteManager';
 
-  private routeChangedHandle: SubscriptionHandle;
   private logger = getLogger(RouteManager.displayName);
   public currentRoute: wx.IObservableProperty<Route>;
 
@@ -121,10 +119,6 @@ export class RouteManager implements IDisposable {
 
       window.location.hash = hash;
     }
-  }
-
-  public dispose() {
-    this.routeChangedHandle = pubSub.unsubscribe(this.routeChangedHandle);
   }
 }
 
