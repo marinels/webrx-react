@@ -1,13 +1,13 @@
-import * as Rx from 'rx';
+import { Observable } from  'rx';
 import * as wx from 'webrx';
 
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 
-export interface ISearchRoutingState {
+export interface SearchRoutingState {
   filter: string;
 }
 
-export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> {
+export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
   public static displayName = 'SearchViewModel';
 
   public filter = wx.property('');
@@ -20,7 +20,7 @@ export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> 
   public search = wx.asyncCommand((x: RegExp) => {
     this.notifyChanged();
 
-    return Rx.Observable.return(x);
+    return Observable.of(x);
   });
 
   constructor(public isLiveSearchEnabled = false, private liveSearchTimeout = 250, private isCaseInsensitive = true, isRoutingEnabled = false) {
@@ -56,13 +56,13 @@ export class SearchViewModel extends BaseRoutableViewModel<ISearchRoutingState> 
     return regex;
   }
 
-  saveRoutingState(state: ISearchRoutingState) {
+  saveRoutingState(state: SearchRoutingState) {
     if (String.isNullOrEmpty(this.filter()) === false) {
       state.filter = this.filter();
     }
   }
 
-  loadRoutingState(state: ISearchRoutingState) {
+  loadRoutingState(state: SearchRoutingState) {
     this.filter(state.filter || '');
   }
 }

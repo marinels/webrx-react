@@ -2,7 +2,7 @@ import * as wx from 'webrx';
 
 import { getLogger } from './Logging/LogManager';
 import { PubSub, Default as PubSubInstance } from './PubSub';
-import { AlertCreatedKey, IAlertCreated } from '../Events/AlertCreated';
+import { AlertCreatedKey, AlertCreated } from '../Events/AlertCreated';
 
 export class Alert {
   private static displayName = 'Alert';
@@ -14,7 +14,7 @@ export class Alert {
 
   public create(content: any, header?: string, style?: string, timeout?: number) {
     if (String.isNullOrEmpty(content) === false || String.isNullOrEmpty(header) === false) {
-      this.pubSub.publish<IAlertCreated>(AlertCreatedKey, { content, header, style, timeout });
+      this.pubSub.publish<AlertCreated>(AlertCreatedKey, { content, header, style, timeout });
     }
   }
 

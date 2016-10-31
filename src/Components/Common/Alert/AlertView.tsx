@@ -1,18 +1,16 @@
 import * as React from 'react';
-
 import { Alert } from 'react-bootstrap';
 
-import { BaseView, IBaseViewProps } from '../../React/BaseView';
-
+import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { AlertViewModel } from './AlertViewModel';
 
 import './Alert.less';
 
-interface IAlertProps extends IBaseViewProps {
+export interface AlertProps extends BaseViewProps {
   key?: any;
 }
 
-export class AlertView extends BaseView<IAlertProps, AlertViewModel> {
+export class AlertView extends BaseView<AlertProps, AlertViewModel> {
   public static displayName = 'AlertView';
 
   render() {

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Rx from 'rx';
+import { IDisposable } from  'rx';
 import * as wx from 'webrx';
 import { Button, ButtonProps } from 'react-bootstrap';
 
@@ -11,7 +11,7 @@ export interface CommandButtonProps extends ButtonProps {
 export class CommandButton extends React.Component<CommandButtonProps, any> {
   public static displayName = 'CommandButton';
 
-  private canExecuteSubscription: Rx.IDisposable;
+  private canExecuteSubscription: IDisposable;
 
   private getCommand(): wx.ICommand<any> {
     const cmd = this.props.command;
@@ -40,10 +40,10 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
   }
 
   render() {
-    const { rest, props } = Object.rest(this.props, x => {
+    const { rest, props } = this.restProps(x => {
       const { command, commandParameter } = x;
       return { command, commandParameter };
-    }, 'key', 'ref');
+    });
 
     let canExecute = false;
     let onClick: React.MouseEventHandler = null;

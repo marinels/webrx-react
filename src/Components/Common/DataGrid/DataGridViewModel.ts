@@ -2,20 +2,20 @@ import * as wx from 'webrx';
 import { Observable } from 'rx';
 
 import { ObjectComparer, SortDirection } from '../../../Utils/Compare';
-import { ListViewModel, IListRoutingState } from '../List/ListViewModel';
-import { SearchViewModel, ISearchRoutingState } from '../Search/SearchViewModel';
-import { PagerViewModel, IPagerRoutingState } from '../Pager/PagerViewModel';
+import { ListViewModel } from '../List/ListViewModel';
+import { SearchViewModel, SearchRoutingState } from '../Search/SearchViewModel';
+import { PagerViewModel, PagerRoutingState } from '../Pager/PagerViewModel';
 
 export interface SortArgs {
   field: string;
   direction: SortDirection;
 }
 
-export interface DataGridRoutingState extends IListRoutingState {
-  search: ISearchRoutingState;
+export interface DataGridRoutingState {
+  search: SearchRoutingState;
   sortBy: string;
   sortDir: SortDirection;
-  pager: IPagerRoutingState;
+  pager: PagerRoutingState;
 }
 
 export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRoutingState> {

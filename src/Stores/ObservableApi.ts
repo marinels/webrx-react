@@ -1,4 +1,4 @@
-import * as Rx from 'rx';
+import { Observable } from  'rx';
 import * as wx from 'webrx';
 
 import { getLogger } from '../Utils/Logging/LogManager';
@@ -42,7 +42,7 @@ export class ObservableApi {
 
     return this.sampleData == null ?
       // if an API call throws an uncaught error, that means you are not subscribing to the observable's error
-      Rx.Observable
+      Observable
         .fromPromise(method === HttpRequestMethod.POST ? this.client.post<T>(uri, params, options) : this.client.get<T>(uri, params, options))
         .do(x => {
           this.logger.info(`API Result: ${action} (${uri})`, x);
@@ -61,7 +61,7 @@ export class ObservableApi {
             error = 'Unknown Error: Invalid Response from API Host';
           }
 
-          return Rx.Observable.throw<T>(error);
+          return Observable.throw<T>(error);
         }) :
         // if sample data has been created just use that instead (opt-in)
         this.sampleData.getObservable<T>(action, params);

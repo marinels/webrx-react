@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as wx from 'webrx';
 
-interface IBindableInputProps extends React.HTMLAttributes {
+export interface BindableInputProps extends React.HTMLAttributes {
   property: any;
   converter?: (x: any) => any;
   valueProperty?: string;
@@ -10,7 +10,7 @@ interface IBindableInputProps extends React.HTMLAttributes {
   valueSetter?: (property: any, value: any) => void;
 }
 
-export class BindableInput extends React.Component<IBindableInputProps, any> {
+export class BindableInput extends React.Component<BindableInputProps, any> {
   public static displayName = 'BindableInput';
 
   static defaultProps = {

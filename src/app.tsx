@@ -5,7 +5,7 @@ import * as ReactDOM from 'react-dom';
 import * as wxr from './web.rx.react';
 
 // import routing map
-import { RoutingMap as routingMap } from './Components/Common/App/RoutingMap';
+import { AppRoutingMap } from './Components/Common/App/RoutingMap';
 
 let container = document.getElementById('app');
 
@@ -13,7 +13,7 @@ if (container) {
   let { AppView } = wxr.Components;
 
   ReactDOM.render(
-    <AppView viewModel={new wxr.Components.AppViewModel({ routingMap })} />,
+    <AppView viewModel={new wxr.Components.AppViewModel({ routingMap: AppRoutingMap })} />,
     container
   );
 }

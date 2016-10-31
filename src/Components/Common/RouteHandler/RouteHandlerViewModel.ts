@@ -1,18 +1,19 @@
-import * as Ix from 'ix';
+import { Disposable } from 'rx';
+import { Enumerable } from 'ix';
 
 import { BaseViewModel } from '../../React/BaseViewModel';
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
-import { RouteManager, IRoute } from '../../../Routing/RouteManager';
+import { RouteManager, Route } from '../../../Routing/RouteManager';
 import { Default as pubSub } from '../../../Utils/PubSub';
-import { RoutingStateChangedKey, IRoutingStateChanged } from '../../../Events/RoutingStateChanged';
+import { RoutingStateChangedKey, RoutingStateChanged } from '../../../Events/RoutingStateChanged';
 
-export interface IViewModelActivator {
+export interface ViewModelActivator {
   path?: string;
-  creator?: (route: IRoute) => BaseRoutableViewModel<any>;
+  creator?: (route: Route) => BaseRoutableViewModel<any>;
 }
 
-export interface IRoutingMap {
-  [path: string]: IViewModelActivator;
+export interface RoutingMap {
+  [path: string]: ViewModelActivator;
 }
 
 export class RouteHandlerViewModel extends BaseViewModel {
@@ -40,7 +41,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
     .startWith(true)
     .toProperty();
 
-  constructor(public manager: RouteManager, public routingMap: IRoutingMap) {
+  constructor(public manager: RouteManager, public routingMap: RoutingMap) {
     super();
 
     this.subscribe(this.currentViewModel.thrownExceptions
@@ -50,7 +51,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
       })
     );
 
-    const handle = pubSub.subscribe<IRoutingStateChanged>(RoutingStateChangedKey, x => {
+    const handle = pubSub.subscribe<RoutingStateChanged>(RoutingStateChangedKey, x => {
       if (this.currentViewModel() != null) {
         let state = this.currentViewModel().getRoutingState(x);
 
@@ -58,12 +59,12 @@ export class RouteHandlerViewModel extends BaseViewModel {
       }
     });
 
-    this.subscribe(Rx.Disposable.create(() => {
+    this.subscribe(Disposable.create(() => {
       pubSub.unsubscribe(handle);
     }));
   }
 
-  private getRoutedViewModel(route: IRoute) {
+  private getRoutedViewModel(route: Route) {
     // by default we set the view model to the current routed view model
     // if our route is for a new view model we will override it there
     let viewModel: BaseRoutableViewModel<any> = this.currentViewModel();
@@ -115,7 +116,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
     return viewModel;
   }
 
-  private updateRoutingState(route: IRoute, viewModel?: BaseRoutableViewModel<any>) {
+  private updateRoutingState(route: Route, viewModel?: BaseRoutableViewModel<any>) {
     viewModel = viewModel || this.currentViewModel();
 
     if (viewModel != null) {
@@ -135,13 +136,13 @@ export class RouteHandlerViewModel extends BaseViewModel {
     }
   }
 
-  private getActivator(route: IRoute) {
+  private getActivator(route: Route) {
     // default by just fetching the mapped route directly
     let activator = this.routingMap[route.path];
 
     // if there is no directly mapped route, check for a parameterized route
     if (activator == null) {
-      let result = Ix.Enumerable
+      let result = Enumerable
         .fromArray(Object.keys(this.routingMap))
         .where(x => x != null && x.length > 0 && x[0] === '^')
         .select(x => ({ key: x, regex: new RegExp(x, 'i') }))

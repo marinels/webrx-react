@@ -1,21 +1,20 @@
-import * as Ix from 'ix';
 import * as React from 'react';
+import { Enumerable } from 'ix';
 import { FormGroup, InputGroup, FormControl, Button, DropdownButton, MenuItem, HelpBlock } from 'react-bootstrap';
 import { Icon } from 'react-fa';
 
-import { BaseView, IBaseViewProps } from '../../React/BaseView';
+import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { BindableInput } from '../BindableInput/BindableInput';
-
 import { TimeSpanInputViewModel } from './TimeSpanInputViewModel';
 
 import './TimeSpanInput.less';
 
-interface ITimeSpanInputProps extends IBaseViewProps {
+export interface TimeSpanInputProps extends BaseViewProps {
   id: string;
   bsSize?: string;
 }
 
-export class TimeSpanInputView extends BaseView<ITimeSpanInputProps, TimeSpanInputViewModel> {
+export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInputViewModel> {
   public static displayName = 'TimeSpanInputView';
 
   static defaultProps = {
@@ -51,7 +50,7 @@ export class TimeSpanInputView extends BaseView<ITimeSpanInputProps, TimeSpanInp
                 title={this.state.unit().name} bsSize={props.bsSize}
                 onSelect={this.bindEventToCommand(x => x.setUnit)}>
                 {
-                  Ix.Enumerable
+                  Enumerable
                     .fromArray(this.state.units)
                     .select(x => <MenuItem key={x.type} eventKey={x} active={x.type === this.state.unit().type}>{x.name}</MenuItem>)
                     .toArray()

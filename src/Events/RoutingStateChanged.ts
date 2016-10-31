@@ -1,5 +1,5 @@
 export const RoutingStateChangedKey = 'RoutingStateChanged';
 
-export interface IRoutingStateChanged {
+export interface RoutingStateChanged {
   context?: any;
 }

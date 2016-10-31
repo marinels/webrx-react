@@ -1,4 +1,4 @@
-import * as Rx from 'rx';
+import { Observable, IDisposable } from 'rx';
 import * as wx from 'webrx';
 
 import { LogLevel } from '../../Utils/Logging/LogLevel';
@@ -14,15 +14,14 @@ export interface LifecycleComponentViewModel {
   cleanupViewModel(): void;
 }
 
-export abstract class BaseViewModel implements Rx.IDisposable {
+export abstract class BaseViewModel implements IDisposable {
   public static displayName = 'BaseViewModel';
 
+  private viewModelLogger = new wx.Lazy(() => getLogger(this.getDisplayName()));
   private isLoggingMemberObservables = false;
 
   protected subs = new SubMan();
   public stateChanged = wx.command();
-
-  protected logger = getLogger(this.getDisplayName());
 
   // -----------------------------------------
   // These are special methods that handle the
@@ -69,6 +68,10 @@ export abstract class BaseViewModel implements Rx.IDisposable {
     // do nothing by default
   }
 
+  protected get logger() {
+    return this.viewModelLogger.value;
+  }
+
   public dispose() {
     this.subs.dispose();
   }
@@ -84,13 +87,13 @@ export abstract class BaseViewModel implements Rx.IDisposable {
   }
 
   public getObservableOrAlert<T, TError>(
-    observableFactory: () => Rx.Observable<T>,
+    observableFactory: () => Observable<T>,
     header: string,
     style?: string,
     timeout?: number,
     errorFormatter?: (e: TError) => string) {
 
-    return Rx.Observable
+    return Observable
       .defer(observableFactory)
       .doOnError(err => {
         this.alertForError(err, header, style, timeout, errorFormatter);
@@ -104,8 +107,8 @@ export abstract class BaseViewModel implements Rx.IDisposable {
     timeout?: number,
     errorFormatter?: (e: TError) => string) {
 
-    return Rx.Observable
-      .defer(() => Rx.Observable.return(<TResult>resultFactory.call(this)))
+    return Observable
+      .defer(() => Observable.of(<TResult>resultFactory.call(this)))
       .doOnError(err => {
         this.alertForError(err, header, style, timeout, errorFormatter);
       });
@@ -122,8 +125,8 @@ export abstract class BaseViewModel implements Rx.IDisposable {
       let member = obj[keys[i]];
 
       if (member != null) {
-        let prop: { changed: Rx.Observable<any> } = member;
-        let cmd: { results: Rx.Observable<any> } = member;
+        let prop: { changed: Observable<any> } = member;
+        let cmd: { results: Observable<any> } = member;
 
         if (prop.changed != null && prop.changed.subscribe instanceof Function) {
           this.logObservable(prop.changed, keys[i]);
@@ -135,7 +138,7 @@ export abstract class BaseViewModel implements Rx.IDisposable {
     }
   }
 
-  protected logObservable(observable: Rx.Observable<any>, name: string) {
+  protected logObservable(observable: Observable<any>, name: string) {
     this.subscribe(observable.subscribe(x => {
       if (x instanceof Object) {
         let value = Object.getName(x);
@@ -153,7 +156,7 @@ export abstract class BaseViewModel implements Rx.IDisposable {
   }
 
   protected subscribeOrAlert<T, TError>(
-    observableFactory: () => Rx.Observable<T>,
+    observableFactory: () => Observable<T>,
     header: string,
     onNext: (value: T) => void,
     style?: string,
@@ -178,7 +181,7 @@ export abstract class BaseViewModel implements Rx.IDisposable {
     );
   }
 
-  protected subscribe(subscription: Rx.IDisposable) {
+  protected subscribe(subscription: IDisposable) {
     this.subs.add(subscription);
     return subscription;
   }
@@ -187,7 +190,7 @@ export abstract class BaseViewModel implements Rx.IDisposable {
     routeManager.navTo(path, state, uriEncode);
   }
 
-  public bind<T>(observable: Rx.Observable<T>, command: wx.ICommand<T>) {
+  public bind<T>(observable: Observable<T>, command: wx.ICommand<T>) {
     return this.subscribe(observable.invokeCommand(command));
   }
 }

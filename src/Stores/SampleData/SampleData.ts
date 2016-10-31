@@ -1,9 +1,9 @@
-import * as Rx from 'rx';
+import { Observable } from  'rx';
 
-import { BaseSampleDataStore, ISampleDataActionSet, ISampleDataAction } from './BaseSampleDataStore';
+import { BaseSampleDataStore, SampleDataActionSet, SampleDataAction } from './BaseSampleDataStore';
 
 export class SampleData {
-  protected actions: ISampleDataActionSet = {};
+  protected actions: SampleDataActionSet = {};
 
   constructor(protected delay = 0) {
   }
@@ -16,12 +16,12 @@ export class SampleData {
     }
   }
 
-  public addAction(action: string, dataAction: ISampleDataAction) {
+  public addAction(action: string, dataAction: SampleDataAction) {
     this.actions[action] = dataAction;
   }
 
   getObservable<T>(action: string, params?: any) {
-    let result: Rx.Observable<T> = null;
+    let result: Observable<T> = null;
     let sampleDataAction = this.actions[action];
 
     if (sampleDataAction != null) {
@@ -29,7 +29,7 @@ export class SampleData {
         .delay(this.delay);
     }
     else {
-      result = Rx.Observable.throw<T>(`Sample DataStore Action Not Found: ${action}`);
+      result = Observable.throw<T>(`Sample DataStore Action Not Found: ${action}`);
     }
 
     return result;

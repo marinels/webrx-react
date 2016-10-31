@@ -1,10 +1,9 @@
 import * as React from 'react';
-
 import { Modal } from 'react-bootstrap';
 
 import './Sidebar.less';
 
-interface SidebarProps {
+export interface SidebarProps {
   onHide: Function;
   isVisible?: boolean;
   side?: string;
@@ -12,7 +11,7 @@ interface SidebarProps {
   children?: any;
 }
 
-export class Sidebar extends React.Component<SidebarProps, {}> {
+export class Sidebar extends React.Component<SidebarProps, any> {
   public static displayName = 'Sidebar';
 
   static defaultProps = {

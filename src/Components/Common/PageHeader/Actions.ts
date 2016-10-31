@@ -1,21 +1,21 @@
-export interface IBaseAction {
+export interface HeaderAction {
   id: any;
   header: any;
   order?: number;
 }
 
-export interface ICommandAction extends IBaseAction {
+export interface HeaderCommandAction extends HeaderAction {
   command: wx.ICommand<any>;
   commandParameter?: any;
   iconName?: string;
   bsStyle?: string;
 }
 
-export interface IMenu extends IBaseAction {
-  items: IMenuItem[];
+export interface HeaderMenu extends HeaderAction {
+  items: HeaderMenuItem[];
 }
 
-export interface IMenuItem extends IBaseAction {
+export interface HeaderMenuItem extends HeaderAction {
   command?: wx.ICommand<any>;
   commandParameter?: any;
   iconName?: string;

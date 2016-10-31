@@ -1,9 +1,10 @@
+import { Observable, IDisposable } from 'rx';
 import * as wx from 'webrx';
 
 import { BaseViewModel } from './BaseViewModel';
 import { Default as pubSub } from '../../Utils/PubSub';
-import { RoutingStateChangedKey, IRoutingStateChanged } from '../../Events/RoutingStateChanged';
-import { ICommandAction, IMenu, IMenuItem } from '../Common/PageHeader/Actions';
+import { RoutingStateChangedKey, RoutingStateChanged } from '../../Events/RoutingStateChanged';
+import { HeaderCommandAction, HeaderMenu, HeaderMenuItem } from '../Common/PageHeader/Actions';
 
 export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel {
   public static displayName = 'BaseRoutableViewModel';
@@ -20,7 +21,7 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
 
   protected notifyRoutingStateChanged(context?: any) {
     if (this.isRoutingEnabled) {
-      pubSub.publish<IRoutingStateChanged>(RoutingStateChangedKey, context);
+      pubSub.publish<RoutingStateChanged>(RoutingStateChangedKey, context);
     }
   }
 
@@ -32,15 +33,15 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
     return initialState;
   }
 
-  private handleRoutingState(state = {} as TRoutingState, handler: (state: TRoutingState) => void, ...observables: Rx.Observable<any>[]) {
+  private handleRoutingState(state = {} as TRoutingState, handler: (state: TRoutingState) => void, ...observables: Observable<any>[]) {
     if (this.isRoutingEnabled && handler != null) {
-      let sub: Rx.IDisposable;
+      let sub: IDisposable;
 
       // if any observables are passed in then we watch them for any changes
       // if any changes are detected we invoke a stateChanged (i.e. force a render)
       // this allows an observable that doesn't normally drive rendering to invoke a render
       if (observables.length > 0) {
-        sub = Rx.Observable
+        sub = Observable
           .combineLatest(observables, () => null)
           .take(1)
           .invokeCommand(this.stateChanged);
@@ -85,7 +86,7 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
   /**
    * Apply a new routing state
    */
-  public setRoutingState(state: TRoutingState, ...observables: Rx.Observable<any>[]) {
+  public setRoutingState(state: TRoutingState, ...observables: Observable<any>[]) {
     this.routingState(null);
 
     this.handleRoutingState(state, x => {
@@ -119,27 +120,27 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
   }
 
   public getSidebarMenus() {
-    return <IMenu[]>[];
+    return <HeaderMenu[]>[];
   }
 
   public getNavbarMenus() {
-    return <IMenu[]>[];
+    return <HeaderMenu[]>[];
   }
 
   public getNavbarActions() {
-    return <ICommandAction[]>[];
+    return <HeaderCommandAction[]>[];
   }
 
   public getHelpMenuItems() {
-    return <IMenuItem[]>[];
+    return <HeaderMenuItem[]>[];
   }
 
   public getAdminMenuItems() {
-    return <IMenuItem[]>[];
+    return <HeaderMenuItem[]>[];
   }
 
   public getUserMenuItems() {
-    return <IMenuItem[]>[];
+    return <HeaderMenuItem[]>[];
   }
   // -------------------------------------------------------
 }

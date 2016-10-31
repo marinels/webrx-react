@@ -1,14 +1,14 @@
 import { LogLevel } from './LogLevel';
-import { ILogger } from './Logger';
+import { Logger } from './Logger';
 import { Default as defaultLogManager } from './Adapters/Console';
 
-export interface ILogManager {
-  getLogger(name: string, level?: LogLevel): ILogger;
+export interface LogManager {
+  getLogger(name: string, level?: LogLevel): Logger;
 }
 
-let manager: ILogManager;
+let manager: LogManager;
 
-export function initialize(logManager?: ILogManager) {
+export function initialize(logManager?: LogManager) {
   manager = logManager || defaultLogManager;
 
   manager.getLogger('Logging').debug('Logging Active');

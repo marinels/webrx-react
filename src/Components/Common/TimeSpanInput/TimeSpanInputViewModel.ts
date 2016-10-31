@@ -1,4 +1,4 @@
-import * as Ix from 'ix';
+import { Enumerable } from 'ix';
 import * as wx from 'webrx';
 import * as moment from 'moment';
 
@@ -17,7 +17,7 @@ export enum TimeSpanUnitType {
   Years = 9
 }
 
-export interface ITimeSpanUnit {
+export interface TimeSpanUnit {
   type: TimeSpanUnitType;
   name: string;
   key?: string;
@@ -35,14 +35,14 @@ export const TimeSpanUnits = [
   { type: TimeSpanUnitType.Months, name: 'Months', key: 'month', shortKey: 'M' },
   { type: TimeSpanUnitType.Quarters, name: 'Quarters', key: 'quarter', shortKey: 'Q' },
   { type: TimeSpanUnitType.Years, name: 'Years', key: 'year', shortKey: 'y' },
-] as ITimeSpanUnit[];
+] as TimeSpanUnit[];
 
 export class TimeSpanInputViewModel extends BaseViewModel {
   public static displayName = 'TimeSpanInputViewModel';
 
-  public units: ITimeSpanUnit[];
+  public units: TimeSpanUnit[];
   public text = wx.property('');
-  public unit = wx.property<ITimeSpanUnit>();
+  public unit = wx.property<TimeSpanUnit>();
   public value = wx.property<moment.Duration>();
 
   public validate = wx.command();
@@ -72,7 +72,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
     .select(x => String.isNullOrEmpty(x) === true)
     .toProperty();
 
-  public setUnit = wx.command((unit: ITimeSpanUnit) => {
+  public setUnit = wx.command((unit: TimeSpanUnit) => {
     this.unit(unit);
   });
 
@@ -104,13 +104,13 @@ export class TimeSpanInputViewModel extends BaseViewModel {
     this.minValue = this.minValue || moment.duration(1, this.unit().key);
 
     if (units == null) {
-      this.units = Ix.Enumerable
+      this.units = Enumerable
         .fromArray(TimeSpanUnits)
         .where(x => x.type >= minUnit && x.type <= maxUnit)
         .toArray();
     }
     else {
-      this.units = Ix.Enumerable
+      this.units = Enumerable
         .fromArray(units)
         .select(x => TimeSpanUnits[x])
         .toArray();
@@ -168,7 +168,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
           let unitName = moment.normalizeUnits(args[1]);
 
           if (String.isNullOrEmpty(unitName) === false) {
-            let unit = Ix.Enumerable
+            let unit = Enumerable
               .fromArray(TimeSpanUnits)
               .where(x => x.key === unitName)
               .firstOrDefault();

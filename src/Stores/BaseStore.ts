@@ -3,12 +3,6 @@ import * as wx from 'webrx';
 import { getLogger } from '../Utils/Logging/LogManager';
 import { HttpRequestMethod, ObservableApi } from './ObservableApi';
 
-export class BaseModel<T> {
-  constructor(model: T) {
-    Object.assign(this, model);
-  }
-}
-
 export abstract class BaseStore<T extends ObservableApi> {
   public static displayName = 'BaseStore';
 

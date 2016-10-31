@@ -1,17 +1,16 @@
 import * as React from 'react';
 import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
-import { BaseView, IBaseViewProps } from '../../React/BaseView';
+import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { AlertView } from './AlertView';
-
 import { AlertHostViewModel } from './AlertHostViewModel';
 
 import './AlertHost.less';
 
-interface IAlertHostProps extends IBaseViewProps {
+export interface AlertHostProps extends BaseViewProps {
 }
 
-export class AlertHostView extends BaseView<IAlertHostProps, AlertHostViewModel> {
+export class AlertHostView extends BaseView<AlertHostProps, AlertHostViewModel> {
   public static displayName = 'AlertHostView';
 
   updateOn() {

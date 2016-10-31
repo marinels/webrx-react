@@ -1,36 +1,36 @@
-export interface ISubscriptionAction<T> {
+export interface SubscriptionAction<T> {
   (arg: T): void;
 }
 
-interface ISubscriptionCallback<T> {
-  action: ISubscriptionAction<T>;
+export interface SubscriptionCallback<T> {
+  action: SubscriptionAction<T>;
   thisArg?: any;
 }
 
-export interface ISubscriptionHandle {
+export interface SubscriptionHandle {
   id: number;
   key: string;
 }
 
-interface ISubscription<T> {
-  callback: ISubscriptionCallback<T>;
-  handle: ISubscriptionHandle;
+export interface Subscription<T> {
+  callback: SubscriptionCallback<T>;
+  handle: SubscriptionHandle;
 }
 
 class SubscriptionList<T> {
   public static displayName = 'SubscriptionList';
   private currentHandle = 0;
-  private list: ISubscription<T>[] = [];
+  private list: Subscription<T>[] = [];
 
-  public add(key: string, callback: ISubscriptionCallback<T>) {
-    let handle = <ISubscriptionHandle>{ id: ++this.currentHandle, key };
+  public add(key: string, callback: SubscriptionCallback<T>) {
+    let handle = <SubscriptionHandle>{ id: ++this.currentHandle, key };
 
-    this.list.push(<ISubscription<T>>{ callback, handle });
+    this.list.push(<Subscription<T>>{ callback, handle });
 
     return handle;
   }
 
-  public remove(handle: ISubscriptionHandle) {
+  public remove(handle: SubscriptionHandle) {
     let index = -1;
     this.list.some((x, i) => x.handle.id === handle.id ? ((index = i), true) : false );
     if (index >= 0) {
@@ -45,13 +45,13 @@ class SubscriptionList<T> {
   }
 }
 
-interface IPubSubMap {
+interface PubSubMap {
   [key: string]: SubscriptionList<any>;
 }
 
 export class PubSub {
   public static displayName = 'PubSub';
-  private map = <IPubSubMap>{};
+  private map = <PubSubMap>{};
 
   private getList<T>(key: string, action: (list: SubscriptionList<T>) => void, createMissing = false) {
     let list = this.map[key];
@@ -66,15 +66,15 @@ export class PubSub {
     }
   }
 
-  public subscribe<T>(key: string, action: ISubscriptionAction<T>, thisArg?: any) {
-    let handle: ISubscriptionHandle;
+  public subscribe<T>(key: string, action: SubscriptionAction<T>, thisArg?: any) {
+    let handle: SubscriptionHandle;
 
-    this.getList<T>(key, x => { handle = x.add(key, <ISubscriptionCallback<T>>{action, thisArg}); }, true);
+    this.getList<T>(key, x => { handle = x.add(key, <SubscriptionCallback<T>>{action, thisArg}); }, true);
 
     return handle;
   }
 
-  public unsubscribe(handle: ISubscriptionHandle): ISubscriptionHandle {
+  public unsubscribe(handle: SubscriptionHandle): SubscriptionHandle {
     this.getList<any>(handle.key, x => x.remove(handle));
 
     return null;

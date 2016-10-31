@@ -1,6 +1,6 @@
 export const AlertCreatedKey = 'AlertCreated';
 
-export interface IAlertCreated {
+export interface AlertCreated {
   content: any;
   header?: string;
   style?: string;

@@ -1,3 +1,5 @@
+import { Enumerable } from 'ix';
+
 declare global {
   interface ObjectConstructor {
     assign<T>(target: any, ...sources: any[]): T;
@@ -8,8 +10,6 @@ declare global {
     fallbackAsync<T>(...actions: (T | (() => T))[]): T;
   }
 }
-
-import * as Ix from 'ix';
 
 function assign<T>(target: any, ...sources: any[]) {
   if (target === undefined || target === null) {
@@ -129,14 +129,14 @@ function getName(source: any, undefinedValue = 'undefined', isStatic = false) {
 }
 
 function fallback<T>(...values: T[]) {
-  return Ix.Enumerable
+  return Enumerable
     .fromArray(values)
     .where(x => x != null)
     .firstOrDefault();
 }
 
 function fallbackAsync<T>(...actions: (T | (() => T))[]) {
-  return Ix.Enumerable
+  return Enumerable
     .fromArray(actions)
     .select(x => x instanceof Function ? x.apply(this) : x)
     .where(x => x != null)

@@ -1,18 +1,17 @@
-import * as Ix from 'ix';
 import * as React from 'react';
-
+import { Enumerable } from 'ix';
 import { Grid, Row, Col, PageHeader, DropdownButton, MenuItem, Alert } from 'react-bootstrap';
 
-import { BaseView, IBaseViewProps } from '../React/BaseView';
+import { BaseView, BaseViewProps } from '../React/BaseView';
 import { ComponentDemoViewModel } from './ComponentDemoViewModel';
 import { Default as ViewMap, ViewActivator } from './ViewMap';
 
 import './ComponentDemo.less';
 
-interface IComponentDemoProps extends IBaseViewProps {
+export interface ComponentDemoProps extends BaseViewProps {
 }
 
-export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDemoViewModel> {
+export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDemoViewModel> {
   public static displayName = 'ComponentDemoView';
 
   private getComponentName(component: { getDisplayName(): string, displayName: string }) {
@@ -88,7 +87,7 @@ export class ComponentDemoView extends BaseView<IComponentDemoProps, ComponentDe
                 <DropdownButton id='col-width' bsStyle='info' title={`Column Width (${widthName})`}
                   onSelect={this.bindEventToProperty(x => x.columns)}>
                   {
-                    Ix.Enumerable
+                    Enumerable
                       .range(1, 13)
                       .reverse()
                       .select(x => x % 13)

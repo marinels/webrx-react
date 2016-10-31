@@ -1,21 +1,19 @@
 import * as React from 'react';
-
+import { Icon } from 'react-fa';
 import { InputGroup, FormControl, Button } from 'react-bootstrap';
 
-import { BaseView, IBaseViewProps } from '../../React/BaseView';
+import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { BindableInput } from '../BindableInput/BindableInput';
-import { Icon } from 'react-fa';
-
 import { SearchViewModel } from './SearchViewModel';
 
 const EnterKey = 13;
 
-export interface ISearchProps extends IBaseViewProps {
+export interface SearchProps extends BaseViewProps {
   searchButton?: any;
   placeholder?: string;
 }
 
-export class SearchView extends BaseView<ISearchProps, SearchViewModel> {
+export class SearchView extends BaseView<SearchProps, SearchViewModel> {
   public static displayName = 'SearchView';
 
   static defaultProps = {

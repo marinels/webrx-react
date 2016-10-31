@@ -1,9 +1,9 @@
-import * as Rx from 'rx';
+import { Observable } from  'rx';
 import * as wx from 'webrx';
 
 import { BaseViewModel } from '../../React/BaseViewModel';
 
-export interface IAlert {
+export interface Alert {
   key: string;
   content: any;
   header?: string;
@@ -17,10 +17,10 @@ export const DefaultTimeout = 5000;
 export class AlertViewModel extends BaseViewModel {
   public static displayName = 'AlertViewModel';
 
-  public show = wx.asyncCommand(x => Rx.Observable.return(true));
-  public dismiss = wx.asyncCommand(x => Rx.Observable.return(false));
+  public show = wx.asyncCommand(x => Observable.of(true));
+  public dismiss = wx.asyncCommand(x => Observable.of(false));
 
-  public isVisible = Rx.Observable
+  public isVisible = Observable
     .merge(
       this.show.results,
       this.dismiss.results.take(1)
@@ -30,7 +30,7 @@ export class AlertViewModel extends BaseViewModel {
   constructor(private owner: wx.IObservableList<AlertViewModel>, public key: any, public content: any, public header?: string, public style = DefaultStyle, private timeout = DefaultTimeout) {
     super();
 
-    this.subscribe(Rx.Observable
+    this.subscribe(Observable
       .return(false)
       .delay(this.timeout)
       .invokeCommand(this.dismiss));

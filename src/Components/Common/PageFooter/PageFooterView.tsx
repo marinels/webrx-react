@@ -1,31 +1,32 @@
 import * as React from 'react';
+import { Observable } from 'rx';
 import { Grid, Row, Col } from 'react-bootstrap';
 
-import { BaseView, IBaseViewProps } from '../../React/BaseView';
-import { PageFooterViewModel, IViewportDimension } from './PageFooterViewModel';
+import { BaseView, BaseViewProps } from '../../React/BaseView';
+import { PageFooterViewModel, ViewportDimensions } from './PageFooterViewModel';
 
 import './PageFooter.less';
 
-interface IPageFooterProps extends IBaseViewProps {
+export interface PageFooterProps extends BaseViewProps {
 }
 
-export class PageFooterView extends BaseView<IPageFooterProps, PageFooterViewModel> {
+export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewModel> {
   public static displayName = 'PageFooterView';
 
-  constructor(props?: IPageFooterProps, context?: any) {
+  constructor(props?: PageFooterProps, context?: any) {
     super(props, context);
 
     this.bindObservableToCommand(x => x.viewportDimensionsChanged,
-      Rx.Observable
+      Observable
         .merge(
-          Rx.Observable.fromEvent<UIEvent>(window, 'resize'),
-          Rx.Observable.fromEvent<Event>(window, 'orientationchange'))
+          Observable.fromEvent<UIEvent>(window, 'resize'),
+          Observable.fromEvent<Event>(window, 'orientationchange'))
         .select(_ => this.getDimensions())
         .startWith(this.getDimensions())
     );
   }
 
-  private getDimensions(): IViewportDimension {
+  private getDimensions(): ViewportDimensions {
     return {
       width: window.innerWidth,
       height: window.innerHeight,

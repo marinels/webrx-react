@@ -1,11 +1,11 @@
+import './Object';
+
 declare global {
   interface StringConstructor {
     isNullOrEmpty(value: string): boolean;
     stringify(value: any, replacer?: any, space?: string | number): string;
   }
 }
-
-import './Object';
 
 function isNullOrEmpty(value: string) {
   return value == null || value === '';

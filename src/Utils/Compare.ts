@@ -1,42 +1,49 @@
-export interface IComparable<T> {
+export interface Comparable<T> {
   compareTo(other: T): number;
 }
 
-export interface IComparer<T> {
-  compare: IComparison<T>;
-}
-
-export interface IComparison<T> {
+export interface ValueComparison<T> {
   (a: T, b: T): number;
 }
 
-export class Comparer<T> implements IComparer<T> {
-  public static DefaultComparison: IComparison<any> = (a: any, b: any) => {
+export interface Comparer<T> {
+  compare: ValueComparison<T>;
+}
+
+export class ValueComparer<T> implements Comparer<T> {
+  public static displayName = 'ValueComparer';
+
+  public static DefaultComparison<T>(a: T, b: T) {
     if (a == null && b == null) {
+      // both are null, so equality is zero
       return 0;
     }
     else if (a == null || b == null) {
+      // only one is null, non-null takes higher value
       return a == null ? -1 : 1;
     }
-    else if (a.compareTo != null && b.compareTo != null) {
-      return a.compareTo(b);
+    else if ((<Comparable<T>><any>a).compareTo != null) {
+      // implements Comparable
+      return (<Comparable<T>><any>a).compareTo(b);
     }
     else if (typeof a === 'number' && typeof b === 'number') {
-      return a - b;
+      // simple subtraction
+      return (<number><any>a) - (<number><any>b);
     }
     else if (typeof a === 'string' && typeof b === 'string') {
-      return a.localeCompare(b);
+      // native string comparison
+      return (<string><any>a).localeCompare(<string><any>b);
     }
     else {
+      // fallback on equality
       return 0;
     }
   };
 
-  public static create<T>(comparison?: IComparison<T>) {
-    return new Comparer(comparison || Comparer.DefaultComparison);
-  }
-
-  constructor(public comparison: IComparison<T>) {
+  constructor(public comparison?: ValueComparison<T>) {
+    if (this.comparison == null) {
+      this.comparison = ValueComparer.DefaultComparison;
+    }
   }
 
   compare(a: T, b: T) {
@@ -49,32 +56,33 @@ export enum SortDirection {
   Descending
 }
 
-export interface IFieldComparer<T> extends IComparer<T> {
+export interface FieldComparer<T> extends Comparer<T> {
   field: string;
   valueSelector?: (source: any, field: string) => T;
 }
 
 export class ObjectComparer<T> {
+  public static displayName = 'ObjectComparer';
   public static DefaultComparerKey = '';
 
-  private comparers: { [key: string]: IFieldComparer<any> } = {};
+  private comparers: { [key: string]: FieldComparer<any> } = {};
 
-  public static createFieldComparer<T>(field: string, compare: IComparison<T>, valueSelector?: (source: any, field: string) => T) {
+  public static createFieldComparer<T>(field: string, compare: ValueComparison<T>, valueSelector?: (source: any, field: string) => T) {
     return {
       field,
       compare: compare,
       valueSelector,
-    } as IFieldComparer<T>;
+    } as FieldComparer<T>;
   }
 
-  constructor(...comparers: IFieldComparer<any>[]) {
+  constructor(...comparers: FieldComparer<any>[]) {
     for (let i = 0; i < comparers.length; ++i) {
       let comparer = comparers[i];
       this.comparers[comparer.field] = comparer;
     }
 
     if (this.getComparer() == null) {
-      this.comparers[ObjectComparer.DefaultComparerKey] = ObjectComparer.createFieldComparer(ObjectComparer.DefaultComparerKey, Comparer.DefaultComparison);
+      this.comparers[ObjectComparer.DefaultComparerKey] = ObjectComparer.createFieldComparer(ObjectComparer.DefaultComparerKey, ValueComparer.DefaultComparison);
     }
   }
 
@@ -82,7 +90,7 @@ export class ObjectComparer<T> {
     return this.comparers[field || ObjectComparer.DefaultComparerKey] || this.comparers[ObjectComparer.DefaultComparerKey];
   }
 
-  private getValue(source: any, field: string, comparer: IFieldComparer<any>) {
+  private getValue(source: any, field: string, comparer: FieldComparer<any>) {
     return comparer.valueSelector == null ? source[field] : comparer.valueSelector(source, field);
   }
 

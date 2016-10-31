@@ -1,10 +1,9 @@
 import * as React from 'react';
-
 import { Overlay, Popover, MenuItemProps, PopoverProps } from 'react-bootstrap';
 
 import './ContextMenu.less';
 
-interface IContextMenuProps {
+export interface ContextMenuProps {
   key?: string | number;
   id: string;
   header?: string;
@@ -12,7 +11,7 @@ interface IContextMenuProps {
   children?: any;
 }
 
-interface IContextMenuState {
+export interface ContextMenuState {
   isVisible: boolean;
   left: number;
   top: number;
@@ -27,7 +26,7 @@ class DummyWrapper extends React.Component<PopoverProps, any> {
   }
 }
 
-export class ContextMenu extends React.Component<IContextMenuProps, IContextMenuState> {
+export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuState> {
   public static displayName = 'ContextMenu';
 
   private static ArrowOffset = 20;
@@ -37,10 +36,10 @@ export class ContextMenu extends React.Component<IContextMenuProps, IContextMenu
     offsetY: 0,
   };
 
-  constructor(props?: IContextMenuProps, context?: any) {
+  constructor(props?: ContextMenuProps, context?: any) {
     super(props, context);
 
-    this.state = { isVisible: false } as IContextMenuState;
+    this.state = { isVisible: false } as ContextMenuState;
   }
 
   private handleClick(e: React.MouseEvent) {

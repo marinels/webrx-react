@@ -1,8 +1,9 @@
+import { Observable } from 'rx';
 import * as wx from 'webrx';
 
 import { BaseViewModel } from '../../React/BaseViewModel';
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
-import { IBaseAction, ICommandAction, IMenu, IMenuItem } from './Actions';
+import { HeaderAction, HeaderCommandAction, HeaderMenu, HeaderMenuItem } from './Actions';
 import { RouteHandlerViewModel } from '../RouteHandler/RouteHandlerViewModel';
 import { SearchViewModel } from '../Search/SearchViewModel';
 import { SubMan } from '../../../Utils/SubMan';
@@ -13,14 +14,14 @@ export class PageHeaderViewModel extends BaseViewModel {
   private dynamicSubs = new SubMan();
 
   public search: SearchViewModel = null;
-  public sidebarMenus = wx.list<IMenu>();
-  public navbarMenus = wx.list<IMenu>();
-  public navbarActions = wx.list<ICommandAction>();
-  public helpMenuItems = wx.list<IMenuItem>();
-  public adminMenuItems = wx.list<IMenuItem>();
-  public userMenuItems = wx.list<IMenuItem>();
+  public sidebarMenus = wx.list<HeaderMenu>();
+  public navbarMenus = wx.list<HeaderMenu>();
+  public navbarActions = wx.list<HeaderCommandAction>();
+  public helpMenuItems = wx.list<HeaderMenuItem>();
+  public adminMenuItems = wx.list<HeaderMenuItem>();
+  public userMenuItems = wx.list<HeaderMenuItem>();
 
-  public menuItemSelected = wx.command((x: IMenuItem) => {
+  public menuItemSelected = wx.command((x: HeaderMenuItem) => {
     if (x != null) {
       if (x.command != null) {
         x.command.execute(x.commandParameter);
@@ -41,7 +42,7 @@ export class PageHeaderViewModel extends BaseViewModel {
   public toggleSideBar = wx.asyncCommand((isVisible: boolean) => {
     const visibility: boolean = Object.fallback(isVisible, !this.isSidebarVisible());
 
-    return Rx.Observable.return(visibility);
+    return Observable.of(visibility);
   });
 
   public isSidebarVisible = this.toggleSideBar.results
@@ -50,12 +51,12 @@ export class PageHeaderViewModel extends BaseViewModel {
 
   constructor(
     public routeHandler?: RouteHandlerViewModel,
-    public staticSidebarMenus: IMenu[] = [],
-    public staticNavbarMenus: IMenu[] = [],
-    public staticNavbarActions: ICommandAction[] = [],
-    public staticHelpMenuItems: IMenuItem[] = [],
-    public staticAdminMenuItems: IMenuItem[] = [],
-    public staticUserMenuItems: IMenuItem[] = [],
+    public staticSidebarMenus: HeaderMenu[] = [],
+    public staticNavbarMenus: HeaderMenu[] = [],
+    public staticNavbarActions: HeaderCommandAction[] = [],
+    public staticHelpMenuItems: HeaderMenuItem[] = [],
+    public staticAdminMenuItems: HeaderMenuItem[] = [],
+    public staticUserMenuItems: HeaderMenuItem[] = [],
     public userImage?: string,
     public userDisplayName?: string,
     public homeLink = '#/') {
@@ -89,7 +90,7 @@ export class PageHeaderViewModel extends BaseViewModel {
     this.addItems(this.userMenuItems, this.staticUserMenuItems, viewModel, x => x.getUserMenuItems);
   }
 
-  private addItems<T extends IBaseAction>(list: wx.IObservableList<T>, staticItems: T[], viewModel?: BaseRoutableViewModel<any>, delegateSelector?: (viewModel: BaseRoutableViewModel<any>) => (() => T[])) {
+  private addItems<T extends HeaderAction>(list: wx.IObservableList<T>, staticItems: T[], viewModel?: BaseRoutableViewModel<any>, delegateSelector?: (viewModel: BaseRoutableViewModel<any>) => (() => T[])) {
     wx.using(list.suppressChangeNotifications(), () => {
       list.clear();
       list.addRange(staticItems);
@@ -106,7 +107,7 @@ export class PageHeaderViewModel extends BaseViewModel {
 
     list.forEach((x: any) => {
       if (x.command != null && x.command.canExecuteObservable) {
-        const canExecute = <Rx.Observable<boolean>>x.command.canExecuteObservable;
+        const canExecute = <Observable<boolean>>x.command.canExecuteObservable;
 
         this.dynamicSubs.add(canExecute
           .distinctUntilChanged()

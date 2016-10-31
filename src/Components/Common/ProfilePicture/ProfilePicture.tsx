@@ -5,7 +5,7 @@ import * as classNames from 'classnames';
 
 import './ProfilePicture.less';
 
-interface IProfilePictureProps extends React.HTMLProps<HTMLDivElement> {
+export interface ProfilePictureProps extends React.HTMLProps<HTMLDivElement> {
   src: string;
   size?: number;
   responsive?: boolean;
@@ -20,7 +20,7 @@ interface IProfilePictureProps extends React.HTMLProps<HTMLDivElement> {
 
 const dataUriPrefix = 'data:image;base64,';
 
-export class ProfilePicture extends React.Component<IProfilePictureProps, any> {
+export class ProfilePicture extends React.Component<ProfilePictureProps, any> {
   public static displayName = 'ProfilePicture';
 
   static defaultProps = {

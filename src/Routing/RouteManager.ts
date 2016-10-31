@@ -1,27 +1,27 @@
-import * as Rx from 'rx';
+import { Observable, IDisposable } from  'rx';
 import * as wx from 'webrx';
 
 import { getLogger } from '../Utils/Logging/LogManager';
 import { HashCodec } from './HashCodec';
-import { Default as pubSub, ISubscriptionHandle } from '../Utils/PubSub';
+import { Default as pubSub, SubscriptionHandle } from '../Utils/PubSub';
 
-export interface IRoute {
+export interface Route {
   path: string;
   params: string;
   state: any;
   match: RegExpMatchArray;
 }
 
-export class RouteManager implements Rx.IDisposable {
+export class RouteManager implements IDisposable {
   public static displayName = 'RouteManager';
 
-  private routeChangedHandle: ISubscriptionHandle;
+  private routeChangedHandle: SubscriptionHandle;
   private logger = getLogger(RouteManager.displayName);
-  public currentRoute: wx.IObservableProperty<IRoute>;
+  public currentRoute: wx.IObservableProperty<Route>;
 
-  constructor(hashChanged?: Rx.Observable<string>, public hashCodec = new HashCodec()) {
+  constructor(hashChanged?: Observable<string>, public hashCodec = new HashCodec()) {
     if (hashChanged == null) {
-      hashChanged = Rx.Observable
+      hashChanged = Observable
         .fromEvent<HashChangeEvent>(window, 'hashchange')
         .select(x => window.location.hash)
         .startWith(window.location.hash);
@@ -30,7 +30,7 @@ export class RouteManager implements Rx.IDisposable {
     this.currentRoute = hashChanged
       .debounce(100)
       .select(x => {
-        let route = hashCodec.decode(x, (path, params, state) => <IRoute>{path, params, state});
+        let route = hashCodec.decode(x, (path, params, state) => <Route>{path, params, state});
 
         let hash = '#' + route.path;
         if (route.params && route.params.length > 0) {
@@ -48,7 +48,7 @@ export class RouteManager implements Rx.IDisposable {
       .toProperty();
   }
 
-  private getPath(state: {route: IRoute}) {
+  private getPath(state: {route: Route}) {
     let path: string = null;
 
     if (state != null && state.route != null && String.isNullOrEmpty(state.route.path) === false) {

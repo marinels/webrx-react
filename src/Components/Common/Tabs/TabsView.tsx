@@ -1,24 +1,22 @@
 import * as React from 'react';
-
 import { Tabs, Tab, TabProps } from 'react-bootstrap';
 
-import { BaseView, IBaseViewProps } from '../../React/BaseView';
-
+import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { TabsViewModel } from './TabsViewModel';
 
 import './Tabs.less';
 
-interface ITabsProps extends IBaseViewProps {
+export interface TabsProps extends BaseViewProps {
   id: string;
   selectedIndex?: number;
   dataTemplate?: (x: any, i: number, isVisible: boolean) => React.HTMLProps<TabProps>;
   children?: any;
 }
 
-export class TabsView extends BaseView<ITabsProps, TabsViewModel<any>> {
+export class TabsView extends BaseView<TabsProps, TabsViewModel<any>> {
   public static displayName = 'TabsView';
 
-  constructor(props?: ITabsProps, context?: any) {
+  constructor(props?: TabsProps, context?: any) {
     super(props, context);
 
     if (this.props.selectedIndex != null && this.state.selectedIndex() == null) {

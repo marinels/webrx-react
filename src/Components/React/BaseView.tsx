@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Rx from 'rx';
+import { Observable, IDisposable } from 'rx';
 import * as wx from 'webrx';
 
 import { getLogger } from '../../Utils/Logging/LogManager';
@@ -7,14 +7,14 @@ import { BaseViewModel, LifecycleComponentViewModel } from './BaseViewModel';
 import * as bindingHelpers from './BindingHelpers';
 import * as renderHelpers from './RenderHelpers';
 
-export interface IBaseViewProps extends React.HTMLAttributes {
+export interface BaseViewProps extends React.HTMLAttributes {
   viewModel: BaseViewModel;
 }
 
-export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel extends BaseViewModel> extends React.Component<TViewProps, TViewModel> {
+export abstract class BaseView<TViewProps extends BaseViewProps, TViewModel extends BaseViewModel> extends React.Component<TViewProps, TViewModel> {
   public static displayName = 'BaseView';
 
-  private updateSubscription: Rx.IDisposable;
+  private updateSubscription: IDisposable;
 
   // -----------------------------------------
   // these are render helper methods
@@ -40,7 +40,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
     let updateProps = this.updateOn();
     updateProps.push(this.state.stateChanged.results);
 
-    this.updateSubscription = Rx.Observable
+    this.updateSubscription = Observable
       .fromArray(updateProps)
       .selectMany(x => x)
       .debounce(this.getRateLimit())
@@ -160,7 +160,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   // -----------------------------------------
   // these overridable view functions
   // -----------------------------------------
-  protected updateOn(): Rx.Observable<any>[] { return []; }
+  protected updateOn(): Observable<any>[] { return []; }
 
   protected getDisplayName() { return Object.getName(this); }
   protected getRateLimit() { return 100; }
@@ -174,7 +174,7 @@ export abstract class BaseView<TViewProps extends IBaseViewProps, TViewModel ext
   /**
    * Binds an observable to a command on the view model
    */
-  protected bindObservableToCommand<TResult>(commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>, observable: Rx.Observable<TResult>) {
+  protected bindObservableToCommand<TResult>(commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>, observable: Observable<TResult>) {
     return bindingHelpers.bindObservableToCommand(this.state, commandSelector, observable);
   }
 

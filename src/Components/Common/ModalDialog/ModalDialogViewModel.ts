@@ -1,3 +1,4 @@
+import { Observable } from 'rx';
 import * as wx from 'webrx';
 
 import { BaseViewModel } from '../../React/BaseViewModel';
@@ -16,7 +17,7 @@ export class ModalDialogViewModel extends BaseViewModel {
     this.show = wx.command();
     this.hide = wx.command();
 
-    this.isVisible = Rx.Observable
+    this.isVisible = Observable
       .merge(this.show.results.map(x => true), this.hide.results.map(x => false))
       .startWith(isVisible)
       .toProperty();

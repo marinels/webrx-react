@@ -10,7 +10,7 @@ export interface ViewModelActivatorMap {
 }
 
 export interface MenuMap {
-  [key: string]: wxr.Components.IMenu;
+  [key: string]: wxr.Components.HeaderMenu;
 }
 
 export class RoutingMap {
@@ -24,12 +24,12 @@ export class RoutingMap {
 
   public addRoute(menuName: string, path: string, name: string, activator: ViewModelActivator, uri?: string, iconName?: string) {
     this.viewModelMap[path] = activator;
-    const menu = this.menuMap[menuName] = this.menuMap[menuName] || <wxr.Components.IMenu>{
+    const menu = this.menuMap[menuName] = this.menuMap[menuName] || <wxr.Components.HeaderMenu>{
       id: menuName,
       header: `${menuName} Demos`,
       items: [],
     };
-    menu.items.push(<wxr.Components.IMenuItem>{ id: path, header: name, uri: this.getUri(path, uri), iconName: iconName || this.defaultIconName, order: menu.items.length });
+    menu.items.push(<wxr.Components.HeaderMenuItem>{ id: path, header: name, uri: this.getUri(path, uri), iconName: iconName || this.defaultIconName, order: menu.items.length });
   }
 
   public getUri(path: string, uri: string) {

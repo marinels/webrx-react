@@ -1,7 +1,7 @@
 import * as React from 'react';
+import * as wx from 'webrx';
 import { FormGroup, InputGroup, FormControl, Button, MenuItem, Panel } from 'react-bootstrap';
 
-import * as wx from 'webrx';
 import * as wxr from '../../web.rx.react';
 import * as renderHelpers from '../React/RenderHelpers';
 import * as bindingHelpers from '../React/BindingHelpers';
@@ -14,8 +14,8 @@ const {
   ContextMenu,
   ProfilePicture,
   ListView,
-  StandardListView,
-  TreeListView,
+  ListViewTemplate,
+  TreeViewTemplate,
   DataGridView,
   DataGridColumn,
   DataGridListViewTemplate,
@@ -100,7 +100,7 @@ const viewMap: ViewActivatorMap = {
     switch (componentRoute) {
       case 'List':
         return (
-          <ListView viewModel={ viewModel } view={ new StandardListView<any>((x, i, vm, v) => {
+          <ListView viewModel={ viewModel } view={ new ListViewTemplate<any>((x, i, vm, v) => {
             return `${ x.name } (Required By ${ x.requiredBy })`;
           }) }>
           </ListView>
@@ -108,7 +108,7 @@ const viewMap: ViewActivatorMap = {
       case 'Tree':
         return (
           <ListView viewModel={ viewModel } selectable checkmarkSelected view={
-            new TreeListView<any>(
+            new TreeViewTemplate<any>(
               x => x.items,
               x => {
                 return `${ x.name } (Required By ${ x.requiredBy })`;
@@ -121,7 +121,7 @@ const viewMap: ViewActivatorMap = {
       case 'PanelList':
         return (
           <Panel header='List View Embedded Within a Panel' style={({ margin: 0 })}>
-            <ListView viewModel={ viewModel } selectable checkmarkSelected fill view={ new StandardListView<any>((x, i, vm, v) => {
+            <ListView viewModel={ viewModel } selectable checkmarkSelected fill view={ new ListViewTemplate<any>((x, i, vm, v) => {
               return `${ x.name } (Required By ${ x.requiredBy })`;
             }) }>
             </ListView>

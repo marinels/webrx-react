@@ -1,23 +1,22 @@
 import * as React from 'react';
-
-import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Button } from 'react-bootstrap';
 import { Icon } from 'react-fa';
 import * as classNames from 'classnames';
+import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Button } from 'react-bootstrap';
 
-import { BaseView, IBaseViewProps } from '../../React/BaseView';
+import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { SearchView } from '../Search/SearchView';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import { Sidebar } from './Sidebar';
 import { PageHeaderViewModel } from './PageHeaderViewModel';
-import { IMenuItem } from './Actions';
+import { HeaderMenuItem } from './Actions';
 
 import './PageHeader.less';
 
-interface IPageHeaderProps extends IBaseViewProps {
+export interface PageHeaderProps extends BaseViewProps {
   brand?: any;
 }
 
-export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewModel> {
+export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewModel> {
   public static displayName = 'PageHeaderView';
 
   static defaultProps = {
@@ -36,7 +35,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
     ];
   }
 
-  private isMenuItemDisabled(item: IMenuItem) {
+  private isMenuItemDisabled(item: HeaderMenuItem) {
     let isDisabled = true;
 
     if (item.command == null && String.isNullOrEmpty(item.uri) === false) {
@@ -49,7 +48,7 @@ export class PageHeaderView extends BaseView<IPageHeaderProps, PageHeaderViewMod
     return isDisabled;
   }
 
-  private createHeaderMenu(id: any, header: any, items: IMenuItem[], noCaret = false, className?: string) {
+  private createHeaderMenu(id: any, header: any, items: HeaderMenuItem[], noCaret = false, className?: string) {
     return items.length === 0 ? null : (
       <NavDropdown id={id} key={id} title={header} noCaret={noCaret} className={classNames(`PageHeader-${id}`, className)}>
         {

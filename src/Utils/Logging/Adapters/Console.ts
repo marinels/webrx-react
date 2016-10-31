@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 
 import { LogLevel, getLevelName } from '../LogLevel';
-import { ILogger } from '../Logger';
+import { Logger } from '../Logger';
 import { DelegateLogManager } from './Delegate';
 
 export class ConsoleLogManager extends DelegateLogManager {
@@ -38,7 +38,7 @@ export class ConsoleLogManager extends DelegateLogManager {
     return styles;
   }
 
-  private logAction(logger: ILogger, level: LogLevel, text: string, args: any[]) {
+  private logAction(logger: Logger, level: LogLevel, text: string, args: any[]) {
     let styles = this.getStyles(level);
 
     this.logToConsole(

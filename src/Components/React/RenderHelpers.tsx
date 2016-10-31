@@ -1,10 +1,11 @@
 import * as React from 'react';
-
+import { Enumerable } from 'ix';
 import * as wx from 'webrx';
+
 import { Loading } from '../Common/Loading/Loading';
 
 export function renderEnumerable<T, TResult>(
-  source: T[] | Ix.Enumerable<T>,
+  source: T[] | Enumerable<T>,
   selector: (data: T[]) => TResult = (data) => data as any as TResult,
   defaultSelector: () => TResult = () => null as TResult
 ) {

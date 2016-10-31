@@ -16,11 +16,12 @@ import * as LoggerTypes from './Utils/Logging/Logger';
 
 export namespace Logging {
   export import LogLevel = LogLevelTypes.LogLevel;
-  export import ILogManager = LogManagerTypes.ILogManager;
-  export import ILogger = LoggerTypes.ILogger;
-  export import IMessageDelegate = LoggerTypes.IMessageDelegate;
+  export import LogManager = LogManagerTypes.LogManager;
+  export import Logger = LoggerTypes.Logger;
+  export import MessageDelegate = LoggerTypes.MessageDelegate;
   export import ConsoleLogManager = ConsoleLogManagerTypes.ConsoleLogManager;
   export import DelegateLogManager = DelegateLogManagerTypes.DelegateLogManager;
+  export import DelegateLogger = DelegateLogManagerTypes.DelegateLogger;
   export import BaseLogger = LoggerTypes.BaseLogger;
 
   export const initialize = LogManagerTypes.initialize;
@@ -31,8 +32,10 @@ export namespace Logging {
 import * as PubSubTypes from './Utils/PubSub';
 
 export namespace PubSub {
-  export import ISubscriptionAction = PubSubTypes.ISubscriptionAction;
-  export import ISubscriptionHandle = PubSubTypes.ISubscriptionHandle;
+  export import SubscriptionAction = PubSubTypes.SubscriptionAction;
+  export import SubscriptionCallback = PubSubTypes.SubscriptionCallback;
+  export import SubscriptionHandle = PubSubTypes.SubscriptionHandle;
+  export import Subscription = PubSubTypes.Subscription;
   export import PubSub = PubSubTypes.PubSub;
 
   export const publish = exportFunction(PubSubTypes.Default.publish, PubSubTypes.Default);
@@ -51,12 +54,12 @@ export namespace Alert {
 import * as CompareTypes from './Utils/Compare';
 
 export namespace Compare {
-  export import IComparable = CompareTypes.IComparable;
-  export import IComparer = CompareTypes.IComparer;
-  export import IComparison = CompareTypes.IComparison;
+  export import Comparable = CompareTypes.Comparable;
   export import Comparer = CompareTypes.Comparer;
+  export import ValueComparison = CompareTypes.ValueComparison;
+  export import ValueComparer = CompareTypes.ValueComparer;
   export import SortDirection = CompareTypes.SortDirection;
-  export import IFieldComparer = CompareTypes.IFieldComparer;
+  export import FieldComparer = CompareTypes.FieldComparer;
   export import ObjectComparer = CompareTypes.ObjectComparer;
 }
 
@@ -78,7 +81,7 @@ import * as RouteManagerTypes from './Routing/RouteManager';
 
 export namespace Routing {
   export import HashCodec = HashCodecTypes.HashCodec;
-  export import IRoute = RouteManagerTypes.IRoute;
+  export import Route = RouteManagerTypes.Route;
   export import RouteManager = RouteManagerTypes.RouteManager;
   export import Manager = RouteManagerTypes.Default;
 }
@@ -87,11 +90,11 @@ import * as AlertCreatedTypes from './Events/AlertCreated';
 import * as RoutingStateChangedTypes from './Events/RoutingStateChanged';
 
 export namespace Events {
-  export import IAlertCreated = AlertCreatedTypes.IAlertCreated;
-  export import IRoutingStateChanged =  RoutingStateChangedTypes.IRoutingStateChanged;
+  export import AlertCreatedKey = AlertCreatedTypes.AlertCreatedKey;
+  export import AlertCreated = AlertCreatedTypes.AlertCreated;
 
-  export const AlertCreatedKey = AlertCreatedTypes.AlertCreatedKey;
-  export const RoutingStateChangedKey = RoutingStateChangedTypes.RoutingStateChangedKey;
+  export import RoutingStateChangedKey = RoutingStateChangedTypes.RoutingStateChangedKey;
+  export import RoutingStateChanged = RoutingStateChangedTypes.RoutingStateChanged;
 }
 
 import * as BaseStoreTypes from './Stores/BaseStore';
@@ -100,12 +103,11 @@ import * as BaseSampleDataStoreTypes from './Stores/SampleData/BaseSampleDataSto
 import * as SampleDataTypes from './Stores/SampleData/SampleData';
 
 export namespace Stores {
-  export import BaseModel = BaseStoreTypes.BaseModel;
   export import BaseStore = BaseStoreTypes.BaseStore;
   export import HttpRequestMethod = ObservableApiTypes.HttpRequestMethod;
   export import ObservableApi = ObservableApiTypes.ObservableApi;
-  export import ISampleDataAction = BaseSampleDataStoreTypes.ISampleDataAction;
-  export import ISampleDataActionSet = BaseSampleDataStoreTypes.ISampleDataActionSet;
+  export import SampleDataAction = BaseSampleDataStoreTypes.SampleDataAction;
+  export import SampleDataActionSet = BaseSampleDataStoreTypes.SampleDataActionSet;
   export import BaseSampleDataStore = BaseSampleDataStoreTypes.BaseSampleDataStore;
   export import SampleData = SampleDataTypes.SampleData;
 }
@@ -158,6 +160,7 @@ import * as TabsViewModelTypes from './Components/Common/Tabs/TabsViewModel';
 import * as TabsViewTypes from './Components/Common/Tabs/TabsView';
 
 import * as ActionTypes from './Components/Common/PageHeader/Actions';
+import * as SidebarTypes from './Components/Common/PageHeader/Sidebar';
 import * as PageHeaderViewModelTypes from './Components/Common/PageHeader/PageHeaderViewModel';
 import * as PageHeaderViewTypes from './Components/Common/PageHeader/PageHeaderView';
 
@@ -166,9 +169,10 @@ import * as AsyncDataGridViewModelTypes from './Components/Common/DataGrid/Async
 import * as DataGridViewTypes from './Components/Common/DataGrid/DataGridView';
 
 export namespace Components {
+  export import LifecycleComponentViewModel = BaseViewModelTypes.LifecycleComponentViewModel;
   export import BaseViewModel = BaseViewModelTypes.BaseViewModel;
   export import BaseRoutableViewModel = BaseRoutableViewModelTypes.BaseRoutableViewModel;
-  export import IBaseViewProps = BaseViewTypes.IBaseViewProps;
+  export import BaseViewProps = BaseViewTypes.BaseViewProps;
   export import BaseView = BaseViewTypes.BaseView;
   export import renderEnumerable = RenderHelpers.renderEnumerable;
   export import renderConditional = RenderHelpers.renderConditional;
@@ -178,74 +182,105 @@ export namespace Components {
   export import bindEventToProperty = BindingHelpers.bindEventToProperty;
   export import bindEventToCommand = BindingHelpers.bindEventToCommand;
 
-  export import IAlert = AlertViewModelTypes.IAlert;
+  export import Alert = AlertViewModelTypes.Alert;
+  export import DefaultAlertStyle = AlertViewModelTypes.DefaultStyle;
+  export import DefaultAlertTimeout = AlertViewModelTypes.DefaultTimeout;
   export import AlertViewModel = AlertViewModelTypes.AlertViewModel;
   export import AlertHostViewModel = AlertHostViewModelTypes.AlertHostViewModel;
+  export import AlertProps = AlertViewTypes.AlertProps;
   export import AlertView = AlertViewTypes.AlertView;
+  export import AlertHostProps = AlertHostViewTypes.AlertHostProps;
   export import AlertHostView = AlertHostViewTypes.AlertHostView;
 
+  export import BindableInputProps = BindableInputTypes.BindableInputProps;
   export import BindableInput = BindableInputTypes.BindableInput;
 
-  export import CommandButton = CommandButtonTypes.CommandButton;
   export import CommandButtonProps = CommandButtonTypes.CommandButtonProps;
+  export import CommandButton = CommandButtonTypes.CommandButton;
 
+  export import ContextMenuProps = ContextMenuTypes.ContextMenuProps;
+  export import ContextMenuState = ContextMenuTypes.ContextMenuState;
   export import ContextMenu = ContextMenuTypes.ContextMenu;
 
+  export import LoadingProps = LoadingTypes.LoadingProps;
   export import Loading = LoadingTypes.Loading;
 
+  export import SplashProps = SplashTypes.SplashProps;
   export import Splash = SplashTypes.Splash;
 
+  export import ProfilePictureProps = ProfilePictureTypes.ProfilePictureProps;
   export import ProfilePicture = ProfilePictureTypes.ProfilePicture;
 
+  export import ViewportDimensions = PageFooterViewModelTypes.ViewportDimensions;
   export import PageFooterViewModel = PageFooterViewModelTypes.PageFooterViewModel;
+  export import PageFooterProps = PageFooterViewTypes.PageFooterProps;
   export import PageFooterView = PageFooterViewTypes.PageFooterView;
 
   export import ModalDialogViewModel = ModalDialogViewModelTypes.ModalDialogViewModel;
+  export import ModalDialogProps = ModalDialogViewTypes.ModalDialogProps;
   export import ModalDialogView = ModalDialogViewTypes.ModalDialogView;
 
-  export import IViewModelActivator = RouteHandlerViewModelTypes.IViewModelActivator;
-  export import IRoutingMap = RouteHandlerViewModelTypes.IRoutingMap;
+  export import ViewModelActivator = RouteHandlerViewModelTypes.ViewModelActivator;
+  export import RoutingMap = RouteHandlerViewModelTypes.RoutingMap;
   export import RouteHandlerViewModel = RouteHandlerViewModelTypes.RouteHandlerViewModel;
-  export import IViewMap = RouteHandlerViewTypes.IViewMap;
+  export import ViewMap = RouteHandlerViewTypes.ViewMap;
+  export import RouteHandlerProps = RouteHandlerViewTypes.RouteHandlerProps;
   export import RouteHandlerView = RouteHandlerViewTypes.RouteHandlerView;
 
-  export import ITimeSpanUnit = TimeSpanInputViewModelTypes.ITimeSpanUnit;
   export import TimeSpanUnitType = TimeSpanInputViewModelTypes.TimeSpanUnitType;
+  export import TimeSpanUnit = TimeSpanInputViewModelTypes.TimeSpanUnit;
+  export import TimeSpanUnits = TimeSpanInputViewModelTypes.TimeSpanUnits;
   export import TimeSpanInputViewModel = TimeSpanInputViewModelTypes.TimeSpanInputViewModel;
+  export import TimeSpanInputProps = TimeSpanInputViewTypes.TimeSpanInputProps;
   export import TimeSpanInputView = TimeSpanInputViewTypes.TimeSpanInputView;
 
+  export import SearchRoutingState = SearchViewModelTypes.SearchRoutingState;
   export import SearchViewModel = SearchViewModelTypes.SearchViewModel;
+  export import SearchProps = SearchViewTypes.SearchProps;
   export import SearchView = SearchViewTypes.SearchView;
 
-  export import ISelectableItem = ListViewModelTypes.ISelectableItem;
+  export import SelectableItem = ListViewModelTypes.SelectableItem;
   export import ListViewModel = ListViewModelTypes.ListViewModel;
-  export import IListView = ListViewTypes.ListViewRenderTemplate;
-  export import StandardListView = ListViewTypes.ListViewTemplate;
-  export import TreeListView = ListViewTypes.TreeViewTemplate;
+  export import ListViewRenderTemplate = ListViewTypes.ListViewRenderTemplate;
+  export import ListViewTemplate = ListViewTypes.ListViewTemplate;
+  export import TreeNode = ListViewTypes.TreeNode;
+  export import TreeViewTemplate = ListViewTypes.TreeViewTemplate;
+  export import ListProps = ListViewTypes.ListProps;
   export import ListView = ListViewTypes.ListView;
 
-  export import PagerViewModel = PagerViewModelTypes.PagerViewModel;
   export import StandardPagerLimits = PagerViewModelTypes.StandardLimits;
-  export import AlwaysPagedPagerLimits = PagerViewModelTypes.AlwaysPagedLimits;
+  export import AlwaysPagedLimits = PagerViewModelTypes.AlwaysPagedLimits;
+  export import PagerRoutingState = PagerViewModelTypes.PagerRoutingState;
+  export import PagerViewModel = PagerViewModelTypes.PagerViewModel;
+  export import PagerProps = PagerViewTypes.PagerProps;
   export import PagerView = PagerViewTypes.PagerView;
 
+  export import TabsRoutingState = TabsViewModelTypes.TabsRoutingState;
   export import TabsViewModel = TabsViewModelTypes.TabsViewModel;
+  export import TabsProps = TabsViewTypes.TabsProps;
   export import TabsView = TabsViewTypes.TabsView;
 
-  export import IBaseAction = ActionTypes.IBaseAction;
-  export import ICommandAction = ActionTypes.ICommandAction;
-  export import IMenu = ActionTypes.IMenu;
-  export import IMenuItem = ActionTypes.IMenuItem;
+  export import HeaderAction = ActionTypes.HeaderAction;
+  export import HeaderCommandAction = ActionTypes.HeaderCommandAction;
+  export import HeaderMenu = ActionTypes.HeaderMenu;
+  export import HeaderMenuItem = ActionTypes.HeaderMenuItem;
+  export import SidebarProps = SidebarTypes.SidebarProps;
+  export import Sidebar = SidebarTypes.Sidebar;
   export import PageHeaderViewModel = PageHeaderViewModelTypes.PageHeaderViewModel;
+  export import PageHeaderProps = PageHeaderViewTypes.PageHeaderProps;
   export import PageHeaderView = PageHeaderViewTypes.PageHeaderView;
 
+  export import SortArgs = DataGridViewModelTypes.SortArgs;
+  export import DataGridRoutingState = DataGridViewModelTypes.DataGridRoutingState;
   export import DataGridViewModel = DataGridViewModelTypes.DataGridViewModel;
   export import AsyncDataSource = AsyncDataGridViewModelTypes.AsyncDataSource;
   export import AsyncDataGridViewModel = AsyncDataGridViewModelTypes.AsyncDataGridViewModel;
+  export import DataGridColumnProps = DataGridViewTypes.DataGridColumnProps;
   export import DataGridColumn = DataGridViewTypes.DataGridColumn;
   export import DataGridViewTemplate = DataGridViewTypes.DataGridViewTemplate;
   export import DataGridListViewTemplate = DataGridViewTypes.DataGridListViewTemplate;
   export import DataGridTableViewTemplate = DataGridViewTypes.DataGridTableViewTemplate;
+  export import DataGridProps = DataGridViewTypes.DataGridProps;
   export import DataGridView = DataGridViewTypes.DataGridView;
 }
 
@@ -260,16 +295,23 @@ import * as ViewMapTypes from './Components/Common/App/ViewMap';
 import * as AppViewTypes from './Components/Common/App/AppView';
 
 export namespace Components {
+  export import DemoViewModelActivator = DemoRoutingMapTypes.ViewModelActivator;
+  export import DemoViewModelActivatorMap = DemoRoutingMapTypes.ViewModelActivatorMap;
+  export import MenuMap = DemoRoutingMapTypes.MenuMap;
   export import DemoRoutingMap = DemoRoutingMapTypes.Default;
+  export import DemoViewActivator = DemoViewMapTypes.ViewActivator;
   export import DemoViewActivatorMap = DemoViewMapTypes.ViewActivatorMap;
   export import DemoViewMap = DemoViewMapTypes.Default;
+  export import ComponentDemoRoutingState = ComponentDemoViewModelTypes.ComponentDemoRoutingState;
   export import ComponentDemoViewModel = ComponentDemoViewModelTypes.ComponentDemoViewModel;
+  export import ComponentDemoProps = ComponentDemoViewTypes.ComponentDemoProps;
   export import ComponentDemoView = ComponentDemoViewTypes.ComponentDemoView;
 
-  export import RoutingMap = RoutingMapTypes.RoutingMap;
-  export import IAppConfig = AppViewModelTypes.IAppConfig;
+  export import AppRoutingMap = RoutingMapTypes.AppRoutingMap;
+  export import AppConfig = AppViewModelTypes.AppConfig;
   export import AppViewModel = AppViewModelTypes.AppViewModel;
   export import CurrentApp = AppViewModelTypes.Current;
-  export import ViewMap = ViewMapTypes.ViewMap;
+  export import AppViewMap = ViewMapTypes.AppViewMap;
+  export import AppProps = AppViewTypes.AppProps;
   export import AppView = AppViewTypes.AppView;
 }

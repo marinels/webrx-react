@@ -1,12 +1,11 @@
 import * as React from 'react';
-import * as Rx from 'rx';
+import { IDisposable } from  'rx';
 import * as wx from 'webrx';
-
 import { ProgressBar } from 'react-bootstrap';
 
 import './Loading.less';
 
-export interface ILoadingProps {
+export interface LoadingProps {
   value?: wx.IObservableProperty<number> | number;
   text?: string;
   fontSize?: number | string;
@@ -22,7 +21,7 @@ export class Loading extends React.Component<LoadingProps, any> {
     componentClass: 'div',
   };
 
-  private changedSubscription: Rx.IDisposable;
+  private changedSubscription: IDisposable;
 
   componentDidMount() {
     if (wx.isProperty(this.props.value) === true) {

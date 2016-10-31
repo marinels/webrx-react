@@ -1,21 +1,21 @@
-import * as Rx from 'rx';
+import { Observable } from  'rx';
 
 import { Default as alert } from '../../Utils/Alert';
 
-export interface ISampleDataAction {
-  (params: any): Rx.Observable<any>;
+export interface SampleDataAction {
+  (params: any): Observable<any>;
 }
 
-export interface ISampleDataActionSet {
-  [ action: string ]: ISampleDataAction;
+export interface SampleDataActionSet {
+  [ action: string ]: SampleDataAction;
 }
 
 const EnableAlerts = false;
 
 export abstract class BaseSampleDataStore {
-  public abstract getActions(): ISampleDataActionSet;
+  public abstract getActions(): SampleDataActionSet;
 
-  protected connect(actions: ISampleDataActionSet, action: string, api: ISampleDataAction, thisArg: any = this) {
+  protected connect(actions: SampleDataActionSet, action: string, api: SampleDataAction, thisArg: any = this) {
     actions[action] = function () {
       return api.apply(thisArg, arguments);
     };

@@ -1,15 +1,15 @@
-import * as Rx from 'rx';
+import { IDisposable } from  'rx';
 
-export class SubMan implements Rx.IDisposable {
+export class SubMan implements IDisposable {
   public static displayName = 'SubMan';
 
-  private subscriptions: Rx.IDisposable[] = null;
+  private subscriptions: IDisposable[] = null;
 
-  constructor(...subscriptions: Rx.IDisposable[]) {
+  constructor(...subscriptions: IDisposable[]) {
     this.subscriptions = subscriptions;
   }
 
-  public add(...subscriptions: Rx.IDisposable[]) {
+  public add(...subscriptions: IDisposable[]) {
     this.subscriptions.push(...subscriptions);
   }
 

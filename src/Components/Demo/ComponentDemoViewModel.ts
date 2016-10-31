@@ -1,21 +1,20 @@
-import * as Ix from 'ix';
 import * as wx from 'webrx';
+import { Enumerable } from 'ix';
 
-import { IRoute } from '../../Routing/RouteManager';
-import { ICommandAction, IMenu, IMenuItem } from '../Common/PageHeader/Actions';
-
+import { Route } from '../../Routing/RouteManager';
+import { HeaderCommandAction, HeaderMenu, HeaderMenuItem } from '../Common/PageHeader/Actions';
 import { BaseRoutableViewModel } from '../React/BaseRoutableViewModel';
 import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
 import { Current as App } from '../Common/App/AppViewModel';
 import { Default as RoutingMap, ViewModelActivator } from './RoutingMap';
 
-interface IComponentDemoRoutingState {
-  route: IRoute;
+export interface ComponentDemoRoutingState {
+  route: Route;
   componentRoute: string;
   columns: number;
 }
 
-export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemoRoutingState> {
+export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoRoutingState> {
   public static displayName = 'ComponentDemoViewModel';
 
   private pageHeader: PageHeaderViewModel = null;
@@ -26,7 +25,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
   public component = wx.property<any>(null);
 
   public reRender = wx.command(x => {
-    const state = this.routingState() || <IComponentDemoRoutingState>{};
+    const state = this.routingState() || <ComponentDemoRoutingState>{};
     state.componentRoute = this.componentRoute;
     this.setRoutingState(state);
   });
@@ -65,7 +64,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
       activator = RoutingMap.viewModelMap[this.componentRoute];
 
       if (activator == null) {
-        let result = Ix.Enumerable
+        let result = Enumerable
           .fromArray(Object.keys(RoutingMap.viewModelMap))
           .where(x => x != null && x.length > 0 && x[0] === '^')
           .select(x => ({ path: x, regex: new RegExp(x, 'i') }))
@@ -90,8 +89,8 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
     this.pageHeader = App.header;
   }
 
-  saveRoutingState(state: IComponentDemoRoutingState): any {
-    state.route = <IRoute>{
+  saveRoutingState(state: ComponentDemoRoutingState): any {
+    state.route = <Route>{
       path: `/demo/${this.componentRoute}`,
     };
 
@@ -100,7 +99,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
     }
   }
 
-  loadRoutingState(state: IComponentDemoRoutingState) {
+  loadRoutingState(state: ComponentDemoRoutingState) {
     // try columns routing state first, then fall back onto view model columns state
     state.columns = Object.fallback(state.columns, this.columns(), 12);
 
@@ -144,20 +143,20 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
   }
 
   getSidebarMenus() {
-    return <IMenu[]>[
+    return <HeaderMenu[]>[
       {
         id: 'sidebar-1',
         header: 'Section 1',
         items: [
-          Object.assign<IMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-1`, commandParameter: 'Sidebar Section 1 Menu Item' }),
+          Object.assign<HeaderMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-1`, commandParameter: 'Sidebar Section 1 Menu Item' }),
         ],
       },
       {
         id: 'sidebar-2',
         header: 'Section 2',
         items: [
-          Object.assign<IMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-2-1`, commandParameter: 'Sidebar Section 2 Menu Item 1' }),
-          Object.assign<IMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-2-2`, commandParameter: 'Sidebar Section 2 Menu Item 2' }),
+          Object.assign<HeaderMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-2-1`, commandParameter: 'Sidebar Section 2 Menu Item 1' }),
+          Object.assign<HeaderMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-2-2`, commandParameter: 'Sidebar Section 2 Menu Item 2' }),
         ],
       },
     ];
@@ -168,27 +167,27 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<IComponentDemo
   }
 
   getNavbarActions() {
-    return <ICommandAction[]>[
+    return <HeaderCommandAction[]>[
       { id: 'reRender', header: 'Re-Render', command: this.reRender, bsStyle: 'primary' },
-      Object.assign<ICommandAction>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-navbar`, commandParameter: 'Navbar Action' }),
+      Object.assign<HeaderCommandAction>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-navbar`, commandParameter: 'Navbar Action' }),
     ];
   }
 
   getHelpMenuItems() {
-    return <IMenuItem[]>[
-      Object.assign<IMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-help`, commandParameter: 'Help Menu Item' }),
+    return <HeaderMenuItem[]>[
+      Object.assign<HeaderMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-help`, commandParameter: 'Help Menu Item' }),
     ];
   }
 
   getAdminMenuItems() {
-    return <IMenuItem[]>[
-      Object.assign<IMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-admin`, commandParameter: 'Admin Menu Item' }),
+    return <HeaderMenuItem[]>[
+      Object.assign<HeaderMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-admin`, commandParameter: 'Admin Menu Item' }),
     ];
   }
 
   getUserMenuItems() {
-    return <IMenuItem[]>[
-      Object.assign<IMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-user`, commandParameter: 'User Menu Item' }),
+    return <HeaderMenuItem[]>[
+      Object.assign<HeaderMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-user`, commandParameter: 'User Menu Item' }),
     ];
   }
 

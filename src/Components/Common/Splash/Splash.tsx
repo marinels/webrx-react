@@ -6,7 +6,7 @@ import { Loading } from '../Loading/Loading';
 
 import './Splash.less';
 
-interface ISplashProps {
+export interface SplashProps {
   header: any;
   logo?: string;
   text?: string;
@@ -14,7 +14,7 @@ interface ISplashProps {
   fluid?: boolean;
 }
 
-export class Splash extends React.Component<ISplashProps, any> {
+export class Splash extends React.Component<SplashProps, any> {
   public static displayName = 'SplashView';
 
   static defaultProps = {

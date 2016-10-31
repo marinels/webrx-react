@@ -2,12 +2,12 @@ import * as React from 'react';
 import * as classNames from 'classnames';
 import { Pagination, PaginationProps, DropdownButton, MenuItem } from 'react-bootstrap';
 
-import { BaseView, IBaseViewProps } from '../../React/BaseView';
+import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { PagerViewModel, StandardLimits } from './PagerViewModel';
 
 import './Pager.less';
 
-export interface PagerProps extends IBaseViewProps, PaginationProps {
+export interface PagerProps extends BaseViewProps, PaginationProps {
   info?: boolean;
   limits?: number[];
 }

@@ -3,7 +3,7 @@ import * as classNames from 'classnames';
 import { Icon } from 'react-fa';
 import { Table, ListGroup, ListGroupItem } from 'react-bootstrap';
 
-import { BaseView, IBaseViewProps } from '../../React/BaseView';
+import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { SearchView } from '../Search/SearchView';
 import { PagerView } from '../Pager/PagerView';
 import { CommandButton } from '../CommandButton/CommandButton';
@@ -14,7 +14,7 @@ import { SortDirection } from '../../../Utils/Compare';
 
 import './DataGrid.less';
 
-interface DataGridColumnProps {
+export interface DataGridColumnProps {
   fieldName: string;
   header?: string;
   valueSelector?: (x: any) => any;
@@ -262,7 +262,7 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
   }
 }
 
-interface DataGridProps extends IBaseViewProps {
+export interface DataGridProps extends BaseViewProps {
   view?: DataGridViewTemplate<any>;
   pagerLimits?: number[];
   search?: boolean;

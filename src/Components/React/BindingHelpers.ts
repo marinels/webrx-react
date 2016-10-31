@@ -1,6 +1,7 @@
 import * as React from 'react';
-import * as Rx from 'rx';
+import { Observable } from 'rx';
 import * as wx from 'webrx';
+
 import { BaseViewModel } from './BaseViewModel';
 
 /**
@@ -9,7 +10,7 @@ import { BaseViewModel } from './BaseViewModel';
 export function bindObservableToCommand<TViewModel extends BaseViewModel, TResult>(
   viewModel: TViewModel,
   commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>,
-  observable: Rx.Observable<TResult>
+  observable: Observable<TResult>
 ) {
   return viewModel.bind(observable, commandSelector(viewModel));
 }

@@ -2,26 +2,25 @@ import * as React from 'react';
 import { Grid, Alert } from 'react-bootstrap';
 import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
-import { BaseView, IBaseViewProps } from '../../React/BaseView';
-
+import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { RouteHandlerViewModel } from './RouteHandlerViewModel';
 
 import './RouteHandler.less';
 
 export const SplashKey = 'Splash';
 
-export interface IViewMap {
+export interface ViewMap {
   [key: string]: any;
 }
 
-interface IRouteHandlerProps extends IBaseViewProps {
-  viewMap: IViewMap;
+export interface RouteHandlerProps extends BaseViewProps {
+  viewMap: ViewMap;
 }
 
-export class RouteHandlerView extends BaseView<IRouteHandlerProps, RouteHandlerViewModel> {
+export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerViewModel> {
   public static displayName = 'RouteHandlerView';
 
-  constructor(props?: IRouteHandlerProps, context?: any) {
+  constructor(props?: RouteHandlerProps, context?: any) {
     super(props, context);
 
     if (this.props.viewMap['*'] == null) {

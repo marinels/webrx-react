@@ -6,12 +6,12 @@ import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 export const StandardLimits = [ 10, 25, null ];
 export const AlwaysPagedLimits = StandardLimits.filter(x => x != null);
 
-export interface IPagerRoutingState {
+export interface PagerRoutingState {
   limit: number;
   page: number;
 }
 
-export class PagerViewModel extends BaseRoutableViewModel<IPagerRoutingState> {
+export class PagerViewModel extends BaseRoutableViewModel<PagerRoutingState> {
   public static displayName = 'PagerViewModel';
 
   public itemCount: wx.IObservableProperty<number>;
@@ -58,7 +58,7 @@ export class PagerViewModel extends BaseRoutableViewModel<IPagerRoutingState> {
     );
   }
 
-  saveRoutingState(state: IPagerRoutingState) {
+  saveRoutingState(state: PagerRoutingState) {
     if (this.limit() != null) {
       state.limit = this.limit();
     }
@@ -68,7 +68,7 @@ export class PagerViewModel extends BaseRoutableViewModel<IPagerRoutingState> {
     }
   }
 
-  loadRoutingState(state: IPagerRoutingState) {
+  loadRoutingState(state: PagerRoutingState) {
     this.limit(state.limit || null);
     this.selectedPage(state.page || 1);
   }

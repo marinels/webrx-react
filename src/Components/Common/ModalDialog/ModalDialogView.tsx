@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Modal } from 'react-bootstrap';
-import { BaseView, IBaseViewProps } from '../../React/BaseView';
+import { BaseView, BaseViewProps } from '../../React/BaseView';
 
 import { ModalDialogViewModel } from './ModalDialogViewModel';
 
 import './ModalDialog.less';
 
-interface ModalDialogProps extends IBaseViewProps {
+export interface ModalDialogProps extends BaseViewProps {
   title: any;
   body?: any;
   noClose?: boolean;

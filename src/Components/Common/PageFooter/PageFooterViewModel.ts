@@ -1,9 +1,10 @@
+import { Observable } from 'rx';
 import * as wx from 'webrx';
 import * as moment from 'moment';
 
 import { BaseViewModel } from '../../React/BaseViewModel';
 
-export interface IViewportDimension {
+export interface ViewportDimensions {
   width: number;
   height: number;
 }
@@ -13,7 +14,7 @@ export class PageFooterViewModel extends BaseViewModel {
 
   public copyright: string;
 
-  public viewportDimensionsChanged = wx.asyncCommand((x: IViewportDimension) => Rx.Observable.return(x));
+  public viewportDimensionsChanged = wx.asyncCommand((x: ViewportDimensions) => Observable.of(x));
   public viewportDimensions = this.viewportDimensionsChanged.results
     .debounce(100)
     .where(x => x != null && x.width != null && x.height != null)

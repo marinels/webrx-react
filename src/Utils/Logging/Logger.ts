@@ -1,38 +1,38 @@
 import { LogLevel } from './LogLevel';
 
-export interface IMessageDelegate {
+export interface MessageDelegate {
   (): string;
 }
 
-export interface ILogger {
+export interface Logger {
   name: string;
   level: LogLevel;
 
   isEnabledFor(level: LogLevel | number): boolean;
 
   log(level: LogLevel | number, text: string, ...args: any[]): void;
-  log(level: LogLevel | number, fn: IMessageDelegate, ...args: any[]): void;
+  log(level: LogLevel | number, fn: MessageDelegate, ...args: any[]): void;
 
   trace(text: string, ...args: any[]): void;
-  trace(fn: IMessageDelegate, ...args: any[]): void;
+  trace(fn: MessageDelegate, ...args: any[]): void;
 
   debug(text: string, ...args: any[]): void;
-  debug(fn: IMessageDelegate, ...args: any[]): void;
+  debug(fn: MessageDelegate, ...args: any[]): void;
 
   info(text: string, ...args: any[]): void;
-  info(fn: IMessageDelegate, ...args: any[]): void;
+  info(fn: MessageDelegate, ...args: any[]): void;
 
   warn(text: string, ...args: any[]): void;
-  warn(fn: IMessageDelegate, ...args: any[]): void;
+  warn(fn: MessageDelegate, ...args: any[]): void;
 
   error(text: string, ...args: any[]): void;
-  error(fn: IMessageDelegate, ...args: any[]): void;
+  error(fn: MessageDelegate, ...args: any[]): void;
 
   fatal(text: string, ...args: any[]): void;
-  fatal(fn: IMessageDelegate, ...args: any[]): void;
+  fatal(fn: MessageDelegate, ...args: any[]): void;
 }
 
-export abstract class BaseLogger implements ILogger {
+export abstract class BaseLogger implements Logger {
   constructor(public name: string, public level: LogLevel | number) {
   }
 
@@ -43,7 +43,7 @@ export abstract class BaseLogger implements ILogger {
   abstract log(level: LogLevel | number, text: string, ...args: any[]): void;
   abstract log(level: LogLevel | number, fn: () => string, ...args: any[]): void;
 
-  trace(textOrFn: string | IMessageDelegate, ...args: any[]) {
+  trace(textOrFn: string | MessageDelegate, ...args: any[]) {
     if (textOrFn instanceof Function) {
       this.log(LogLevel.Trace, textOrFn, ...args);
     }
@@ -52,7 +52,7 @@ export abstract class BaseLogger implements ILogger {
     }
   }
 
-  debug(textOrFn: string | IMessageDelegate, ...args: any[]) {
+  debug(textOrFn: string | MessageDelegate, ...args: any[]) {
     if (textOrFn instanceof Function) {
       this.log(LogLevel.Debug, textOrFn, ...args);
     }
@@ -61,7 +61,7 @@ export abstract class BaseLogger implements ILogger {
     }
   }
 
-  info(textOrFn: string | IMessageDelegate, ...args: any[]) {
+  info(textOrFn: string | MessageDelegate, ...args: any[]) {
     if (textOrFn instanceof Function) {
       this.log(LogLevel.Info, textOrFn, ...args);
     }
@@ -70,7 +70,7 @@ export abstract class BaseLogger implements ILogger {
     }
   }
 
-  warn(textOrFn: string | IMessageDelegate, ...args: any[]) {
+  warn(textOrFn: string | MessageDelegate, ...args: any[]) {
     if (textOrFn instanceof Function) {
       this.log(LogLevel.Warn, textOrFn, ...args);
     }
@@ -79,7 +79,7 @@ export abstract class BaseLogger implements ILogger {
     }
   }
 
-  error(textOrFn: string | IMessageDelegate, ...args: any[]) {
+  error(textOrFn: string | MessageDelegate, ...args: any[]) {
     if (textOrFn instanceof Function) {
       this.log(LogLevel.Error, textOrFn, ...args);
     }
@@ -88,7 +88,7 @@ export abstract class BaseLogger implements ILogger {
     }
   }
 
-  fatal(textOrFn: string | IMessageDelegate, ...args: any[]) {
+  fatal(textOrFn: string | MessageDelegate, ...args: any[]) {
     if (textOrFn instanceof Function) {
       this.log(LogLevel.Fatal, textOrFn, ...args);
     }

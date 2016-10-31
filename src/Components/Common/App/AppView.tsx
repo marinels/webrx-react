@@ -1,30 +1,27 @@
 import * as React from 'react';
-
 import { Grid } from 'react-bootstrap';
 
-import { BaseView, IBaseViewProps } from '../../React/BaseView';
-import { IViewMap } from '../RouteHandler/RouteHandlerView';
+import { BaseView, BaseViewProps } from '../../React/BaseView';
+import { ViewMap } from '../RouteHandler/RouteHandlerView';
 import { AlertHostView } from '../Alert/AlertHostView';
 import { RouteHandlerView } from '../RouteHandler/RouteHandlerView';
 import { PageHeaderView } from '../PageHeader/PageHeaderView';
 import { PageFooterView } from '../PageFooter/PageFooterView';
-
-import { ViewMap } from './ViewMap';
-
+import { AppViewMap } from './ViewMap';
 import { AppViewModel } from './AppViewModel';
 
 import './App.less';
 
-interface IAppProps extends IBaseViewProps {
-  viewMap?: IViewMap;
+export interface AppProps extends BaseViewProps {
+  viewMap?: ViewMap;
   brand?: any;
 }
 
-export class AppView extends BaseView<IAppProps, AppViewModel> {
+export class AppView extends BaseView<AppProps, AppViewModel> {
   public static displayName = 'AppView';
 
   static defaultProps = {
-    viewMap: ViewMap,
+    viewMap: AppViewMap,
   };
 
   render() {

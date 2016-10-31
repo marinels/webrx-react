@@ -3,15 +3,11 @@ import * as wx from 'webrx';
 
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 
-export interface IListRoutingState {
-  selectedIndex: number;
-}
-
-export interface ISelectableItem {
+export interface SelectableItem {
   isSelected: boolean;
 }
 
-export class ListViewModel<TData, TRoutingState extends IListRoutingState> extends BaseRoutableViewModel<TRoutingState> {
+export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<TRoutingState> {
   public static displayName = 'ListViewModel';
 
   public selectedItem: wx.IObservableReadOnlyProperty<TData>;
@@ -38,7 +34,7 @@ export class ListViewModel<TData, TRoutingState extends IListRoutingState> exten
         wx
           .whenAny(this.toggleSelection.results, x => x)
           .subscribe(x => {
-            const selectable = <ISelectableItem><any>x;
+            const selectable = <SelectableItem><any>x;
 
             selectable.isSelected = !(selectable.isSelected || false);
 
@@ -59,12 +55,12 @@ export class ListViewModel<TData, TRoutingState extends IListRoutingState> exten
 
   public isItemSelected(item: TData) {
     return (this.isMultiSelectEnabled === true) ?
-      (<ISelectableItem><any>item).isSelected === true :
+      (<SelectableItem><any>item).isSelected === true :
       this.selectedItem() === item;
   }
 
   public getSelectedItems() {
     return (this.items() || [])
-      .filter(x => (<ISelectableItem><any>x).isSelected === true);
+      .filter(x => (<SelectableItem><any>x).isSelected === true);
   }
 }

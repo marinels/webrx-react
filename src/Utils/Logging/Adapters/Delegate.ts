@@ -1,13 +1,13 @@
 import { LogLevel } from '../LogLevel';
-import { ILogger, BaseLogger, IMessageDelegate } from '../Logger';
-import { ILogManager } from '../LogManager';
+import { Logger, BaseLogger, MessageDelegate } from '../Logger';
+import { LogManager } from '../LogManager';
 
-class DelegateLogger extends BaseLogger {
-  constructor(private action: (logger: ILogger, level: LogLevel, text: string, args: any[]) => void, name: string, level: LogLevel) {
+export class DelegateLogger extends BaseLogger {
+  constructor(private action: (logger: Logger, level: LogLevel, text: string, args: any[]) => void, name: string, level: LogLevel) {
     super(name, level);
   }
 
-  log(level: LogLevel | number, textOrFn: string | IMessageDelegate, ...args: any[]) {
+  log(level: LogLevel | number, textOrFn: string | MessageDelegate, ...args: any[]) {
     if (this.isEnabledFor(level)) {
       if (textOrFn instanceof Function) {
         this.action(this, level, textOrFn(), args);
@@ -19,8 +19,8 @@ class DelegateLogger extends BaseLogger {
   }
 }
 
-export class DelegateLogManager implements ILogManager {
-  constructor(private action: (logger: ILogger, level: LogLevel, text: string, args: any[]) => void, public defaultLevel: LogLevel) {
+export class DelegateLogManager implements LogManager {
+  constructor(private action: (logger: Logger, level: LogLevel, text: string, args: any[]) => void, public defaultLevel: LogLevel) {
   }
 
   getLogger(name: string, level?: LogLevel) {

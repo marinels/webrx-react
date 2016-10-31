@@ -1,10 +1,10 @@
+import * as wx from 'webrx';
+
 declare module 'webrx' {
   interface ICommand<T> {
     catchExceptions(onError: (error: Error) => void): ICommand<T>;
   }
 }
-
-import * as wx from 'webrx';
 
 function catchExceptions<T>(onError: (error: Error) => void) {
   const command = this as wx.ICommand<T>;

@@ -1,11 +1,12 @@
+import * as React from 'react';
+
+import './Object';
+
 declare module 'react' {
   interface Component<P, S> {
     restProps<T>(propsCreator?: (x: P) => T, ...omits: string[]): { rest: any, props: T };
   }
 }
-
-import * as React from 'react';
-import './Object';
 
 // this extension makes 'resting' react props much easier
 // i.e.,
