@@ -219,9 +219,9 @@ export namespace Components {
 
   export import ISelectableItem = ListViewModelTypes.ISelectableItem;
   export import ListViewModel = ListViewModelTypes.ListViewModel;
-  export import IListView = ListViewTypes.IListView;
-  export import StandardListView = ListViewTypes.StandardListView;
-  export import TreeListView = ListViewTypes.TreeListView;
+  export import IListView = ListViewTypes.ListViewRenderTemplate;
+  export import StandardListView = ListViewTypes.ListViewTemplate;
+  export import TreeListView = ListViewTypes.TreeViewTemplate;
   export import ListView = ListViewTypes.ListView;
 
   export import PagerViewModel = PagerViewModelTypes.PagerViewModel;

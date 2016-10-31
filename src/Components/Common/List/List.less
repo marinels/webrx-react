@@ -3,45 +3,37 @@
 .List.list-group {
   margin: 0;
 
-  .list-group-item {
-    cursor: pointer;
+  // margin to the right of the checkmark icon
+  .list-group-item > .fa {
+    margin-right: 5px;
   }
 
-  .list-group-item.active .TreeItem-button {
-    color: @list-group-active-color;
+  // fix focus border issue
+  .list-group-item:focus {
+    margin: 0;
   }
 
-  .TreeItem-button {
-    padding: 0 5px;
+  // make sure all parts are rendered on the same line
+  .List-itemContent,
+  .TreeNode-indent,
+  .TreeNode-expander,
+  .TreeNode-content {
+    display: inline-block;
   }
 
-  .TreeItem-buttonIndent {
-    margin: 0 12px;
-  }
-
-  .TreeItem-levelIndent {
-    margin: 0 10px;
-  }
-
-  .list-group-item-selectionIcon,
-  .list-group-item-expander,
-  .list-group-item-content {
-    display: table-cell;
-    vertical-align: middle;
-  }
-
-  .list-group-item-selectionIcon {
-    width: 24px;
-  }
-
-  .list-group-item-content {
-    width: 100%;
-    padding-left: 5px;
+  // make the expander button look consistent
+  // we remove padding because we set a fixed width instead
+  // margin puts space between the button and content
+  .TreeNode-expander {
+    width: 20px;
+    margin-right: 5px;
+    padding: 0;
+    text-align: center;
   }
 
   .List-empty {
-    margin: 20px;
-    font-size: 1.25em;
+    // margin: 20px;
+    // font-size: 1.25em;
     text-align: center;
   }
 }

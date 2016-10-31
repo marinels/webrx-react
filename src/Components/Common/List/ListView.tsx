@@ -1,252 +1,277 @@
 import * as React from 'react';
-import * as classNames from 'classnames';
+import { Observable } from 'rx';
+import { Enumerable } from 'ix';
 import * as wx from 'webrx';
-
-import { ListGroup, ListGroupItemProps, Button } from 'react-bootstrap';
-
-import { getLogger } from '../../../Utils/Logging/LogManager';
+import * as classNames from 'classnames';
+import { Icon } from 'react-fa';
+import { ListGroup, ListGroupProps, ListGroupItem } from 'react-bootstrap';
 
 import { BaseView, IBaseViewProps } from '../../React/BaseView';
-import { Icon } from 'react-fa';
-
-import { ListViewModel, ISelectableItem } from './ListViewModel';
+import { CommandButton } from '../CommandButton/CommandButton';
+import { ListViewModel } from './ListViewModel';
+import { bindEventToCommand } from '../../React/BindingHelpers';
+import { renderConditional } from '../../React/RenderHelpers';
 
 import './List.less';
 
-export interface IListView {
-  getRows(view: ListView, items: any[]): any[];
+export interface ListViewRenderTemplate<TData> {
+  initialize(viewModel: ListViewModel<TData, any>, view: ListView): void;
+  cleanup(viewModel: ListViewModel<TData, any>, view: ListView): void;
+  render(viewModel: ListViewModel<TData, any>, view: ListView): any[];
 }
 
-export class StandardListView<T> implements IListView {
-  public static displayName = 'StandardView';
+export abstract class BaseListViewTemplate<TItem, TData> implements ListViewRenderTemplate<TData> {
+  public static displayName = 'BaseListViewTemplate';
 
   constructor(
-    protected getIsVisible: (x: T, i: number) => boolean = x => true,
-    protected renderItem: (view: ListView, x: T, i: number) => any = (v, x) => x.toString(),
-    protected getProps?: (view: ListView, x: T, i: number) => ListGroupItemProps) {
+    protected itemDataSelector: (x: TItem) => TData,
+    protected renderItem: (x: TData, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => any = (v, x) => x.toString(),
+    protected getIsVisible: (x: TData, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => boolean = x => true,
+    protected keySelector: (x: TItem, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => any = (x, i) => i,
+    protected renderItemContainer?: (value: () => any, x: TItem, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => any
+  ) {
+    if (this.renderItemContainer == null) {
+      this.renderItemContainer = this.renderDefaultItemContainer;
+    }
   }
 
-  createListItemProps(view: ListView, item: T, index: number) {
-    return this.getProps == null ? {} as ListGroupItemProps : this.getProps(view, item, index);
+  protected renderDefaultItemContainer(value: () => any, item: TItem, index: number, viewModel: ListViewModel<TData, any>, view: ListView) {
+    return renderConditional(this.getIsVisible(this.itemDataSelector(item), index, viewModel, view) === true, () => (
+      <ListGroupItem
+        key={ this.keySelector(item, index, viewModel, view) }
+        active={ view.props.highlightSelected === true && viewModel.isItemSelected(this.itemDataSelector(item)) === true }
+        onClick={ view.props.selectable ? bindEventToCommand(this, viewModel, x => x.selectItem, x => this.itemDataSelector(item)) : null }
+      >
+        { this.renderCheckmark(item, index, viewModel, view) }
+        <div className='List-itemContent'>{ value() }</div>
+      </ListGroupItem>
+    ));
   }
 
-  getRows(view: ListView, items: T[]) {
-    return items.map((x, i) => {
-      if (this.getIsVisible(x, i) === true) {
-        let props = this.createListItemProps(view, x, i);
-        let isSelected = view.isSelected(x, i);
-
-        if (props.key == null) {
-          props.key = i;
-        }
-
-        if (props.onClick == null) {
-          props.onClick = () => view.selectItem(x, i);
-        }
-
-        let selectionIcon: any = null;
-        if (view.props.checkmarkSelected === true) {
-          selectionIcon = (
-            <div className='list-group-item-selectionIcon'>
-              <Icon name={ isSelected ? 'check-circle' : 'circle-o' } size='lg' fixedWidth />
-            </div>
-          );
-        }
-
-        return (
-          <div className={classNames('list-group-item', { active: view.props.highlightSelected && isSelected })} {...props as any}>
-            {selectionIcon}
-            <div className='list-group-item-content' onClick={() => view.selectItem(x, i)}>
-              {this.renderItem(view, x, i)}
-            </div>
-          </div>
-        );
-      }
-    });
+  protected renderCheckmark(item: TItem, index: number, viewModel: ListViewModel<TData, any>, view: ListView) {
+    return renderConditional(view.props.checkmarkSelected === true, () => (
+      <Icon name={ (viewModel.isItemSelected(this.itemDataSelector(item)) === true) ? 'check-circle' : 'circle-o' } size='lg' fixedWidth />
+    ));
   }
+
+  public initialize(viewModel: ListViewModel<TData, any>, view: ListView) {
+    // do nothing
+  }
+
+  public cleanup(viewModel: ListViewModel<TData, any>, view: ListView) {
+    // do nothing
+  }
+
+  abstract render(viewModel: ListViewModel<TData, any>, view: ListView): any[];
 }
 
-export class TreeListView<T> extends StandardListView<T> {
-  public static displayName = 'TreeView';
-
-  private static logger = new wx.Lazy(() => getLogger(TreeListView.displayName));
+export class ListViewTemplate<TData> extends BaseListViewTemplate<TData, TData> {
+  public static displayName = 'ListViewTemplate';
 
   constructor(
-    private getIsExpanded: (x: T, i: number) => boolean,
-    private setIsExpanded: (x: T, i: number, isExpanded: boolean) => void,
-    private getItems: (x: T, i: number) => T[],
-    private selectOnExpand = false,
-    private expandOnSelect = false,
-    getIsVisible?: (x: T, i: number) => boolean,
-    renderItem?: (view: ListView, x: T, i: number) => any,
-    getProps?: (view: ListView, x: T, i: number) => ListGroupItemProps) {
-    super(getIsVisible, renderItem, getProps);
+    renderItem?: (x: TData, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
+    getIsVisible?: (x: TData, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => boolean,
+    keySelector?: (x: TData, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
+    renderItemContainer?: (value: () => any, x: TData, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => any
+  ) {
+    super(x => x, renderItem, getIsVisible, keySelector, renderItemContainer);
   }
 
-  getRows(view: ListView, items: T[]) {
-    let result: JSX.Element[] = [];
-
-    this.getNodes(view, result, items);
-
-    return result;
-  }
-
-  private toggleExpanded(view: ListView, node: T, i: number) {
-    let isExpanded = !this.getIsExpanded(node, i);
-    TreeListView.logger.value.debug(`${isExpanded ? 'Expanding' : 'Collapsing'} Node`);
-    this.setIsExpanded(node, i, isExpanded);
-    view.state.notifyChanged();
-  }
-
-  private getNodes(view: ListView, result: any[], items: T[], level = 0, key = '') {
-    items.forEach((x, i) => {
-      if (this.getIsVisible(x, i) === true) {
-        let subItems = this.getItems(x, i);
-        let isExpanded = this.getIsExpanded(x, i);
-        let expander: any;
-
-        if (subItems != null && subItems.length > 0) {
-          // this click handler deals with the expander
-          let onExpanderClick = (e: React.MouseEvent) => {
-            // we must call this so that the row click handler is ignored for this click
-            e.preventDefault();
-
-            this.toggleExpanded(view, x, i);
-
-            if (this.selectOnExpand === true && view.isSelected(x) === false) {
-              view.selectItem(x);
-            }
-          };
-          expander = (
-            <Button className='TreeItem-button' bsStyle='link' onClick={onExpanderClick} onMouseDown={e => e.preventDefault()}>
-              <Icon name={isExpanded === true ? 'minus-square-o' : 'plus-square-o'} size='lg' />
-            </Button>
-          );
-        }
-        else {
-          expander = (
-            <span className='TreeItem-buttonIndent' />
-          );
-        }
-
-        let nodeIndents: any[] = [];
-        if (level > 0) {
-          for (let l = 0; l < level; ++l) {
-            nodeIndents.push(<span key={l} className='TreeItem-levelIndent' />);
-          }
-        }
-
-        let props = this.createListItemProps(view, x, i);
-        let isSelected = view.isSelected(x);
-
-        if (props.key == null) {
-          props.key = `${key}.${i}`;
-        }
-
-        if (props.onClick == null) {
-          // this click handler deals with selection of the entire row
-          props.onClick = (e: React.SyntheticEvent) => {
-            if (e.defaultPrevented === false) {
-              if (this.expandOnSelect === true && subItems != null && subItems.length > 0) {
-                this.toggleExpanded(view, x, i);
-              }
-
-              view.selectItem(x);
-
-              view.state.notifyChanged();
-            }
-          };
-        }
-
-        let selectionIcon: any = null;
-        if (view.props.checkmarkSelected === true) {
-          selectionIcon = (
-            <div className='list-group-item-selectionIcon'>
-              <Icon name={ isSelected ? 'check-circle' : 'circle-o' } size='lg' fixedWidth />
-            </div>
-          );
-        }
-
-        let item = (
-          <div className={classNames('list-group-item', { active: view.props.highlightSelected && isSelected })} {...props as any}>
-            {selectionIcon}
-            <div className='list-group-item-expander'>
-              {nodeIndents}
-              {expander}
-            </div>
-            <div className='list-group-item-content'>
-              {this.renderItem(view, x, i)}
-            </div>
-          </div>
-        );
-
-        result.push(item);
-
-        if (isExpanded === true) {
-          this.getNodes(view, result, subItems, level + 1, props.key as string);
-        }
-      }
-    });
+  render(viewModel: ListViewModel<TData, any>, view: ListView) {
+    return (viewModel.items() || [])
+      .map((x, i) => this.renderItemContainer(() => this.renderItem(x, i, viewModel, view), x, i, viewModel, view));
   }
 }
 
-interface IListProps extends IBaseViewProps {
-  view?: IListView;
+export interface TreeNode<TData> {
+  item: TData;
+  index: number;
+  level: number;
+  nodes: TreeNode<TData>[];
+  key: any;
+  isExpanded: boolean;
+}
+
+export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData>, TData> {
+  public static displayName = 'TreeViewTemplate';
+
+  private nodes: wx.IObservableReadOnlyProperty<TreeNode<TData>[]>;
+  private items: wx.IObservableReadOnlyProperty<TreeNode<TData>[]>;
+  private toggleNode: wx.ICommand<TreeNode<TData>>;
+  private lastKey = 0;
+
+  constructor(
+    protected getItems: (x: TData, viewModel: ListViewModel<TData, any>, view: ListView) => TData[],
+    renderItem?: (x: TData, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
+    getIsVisible?: (x: TData, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => boolean,
+    keySelector: (x: TreeNode<TData>, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => any = x => x.key,
+    renderItemContainer?: (value: () => any, x: TreeNode<TData>, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => any
+  ) {
+    super(x => x.item, renderItem, getIsVisible, keySelector, renderItemContainer);
+
+    this.toggleNode = wx.asyncCommand((x: TreeNode<TData>) => {
+      if (x != null) {
+        x.isExpanded = !x.isExpanded;
+      }
+
+      return Observable.of(x);
+    });
+  }
+
+  initialize(viewModel: ListViewModel<TData, any>, view: ListView) {
+    this.nodes = wx
+      .whenAny(viewModel.items, x => x || [])
+      .map(nodes => {
+        return nodes
+          .map((x, i) => this.getNode(x, i, 0, viewModel, view));
+      })
+      .toProperty();
+
+    this.items = wx
+      .whenAny(this.nodes, this.toggleNode.results.startWith(null), x => x || [])
+      .map(x => this.getExpandedNodes(x))
+      .do(x => {
+        if (x != null) {
+          viewModel.notifyChanged();
+        }
+      })
+      .toProperty([]);
+  }
+
+  cleanup(viewModel: ListViewModel<TData, any>, view: ListView) {
+    this.nodes.dispose();
+    this.nodes = null;
+
+    this.items.dispose();
+    this.items = null;
+  }
+
+  render(viewModel: ListViewModel<TData, any>, view: ListView) {
+    return renderConditional(this.items != null, () => {
+      return (this.items() || [])
+        .map((x, i) => {
+          x.key = this.keySelector(x, i, viewModel, view) || `${ x.level }.${ x.index }`;
+
+          return this.renderItemContainer(() => this.renderTreeNode(x, viewModel, view), x, i, viewModel, view);
+        });
+    });
+  }
+
+  protected renderTreeNode(node: TreeNode<TData>, viewModel: ListViewModel<TData, any>, view: ListView) {
+    return (
+      <div>
+        { this.renderIndent(node, viewModel, view) }
+        { this.renderExpander(node, viewModel, view) }
+        <div className='TreeNode-content'>
+          { this.renderItem(node.item, node.level, viewModel, view) }
+        </div>
+      </div>
+    );
+  }
+
+  protected renderIndent(node: TreeNode<TData>, viewModel: ListViewModel<TData, any>, view: ListView) {
+    return (
+      <div className='TreeNode-indent' style={({ width: node.level * 10 })}>&nbsp;</div>
+    );
+  }
+
+  protected renderExpander(node: TreeNode<TData>, viewModel: ListViewModel<TData, any>, view: ListView) {
+    const emptyExpander = (
+      <div className='TreeNode-expander'></div>
+    );
+
+    return renderConditional(node.nodes.length > 0, () => (
+      <CommandButton className='TreeNode-expander' componentClass='div' bsStyle='link' command={ this.toggleNode } commandParameter={ node }>
+        <Icon name={node.isExpanded === true ? 'minus-square-o' : 'plus-square-o'} size='lg' />
+      </CommandButton>
+    ), () => emptyExpander);
+  }
+
+  protected getNode(item: TData, index: number, level: number, viewModel: ListViewModel<TData, any>, view: ListView): TreeNode<TData> {
+    const node = {
+      item,
+      index,
+      level,
+      nodes: (this.getItems(item, viewModel, view) || [])
+        .map((x, i) => this.getNode(x, i, level + 1, viewModel, view)),
+      key: ++this.lastKey,
+      isExpanded: false,
+    } as TreeNode<TData>;
+
+    node.key = this.keySelector(node, index, viewModel, view) || node.key;
+
+    return node;
+  }
+
+  protected getExpandedNodes(nodes: TreeNode<TData>[], expandedNodes: TreeNode<TData>[] = []): TreeNode<TData>[] {
+    nodes
+      .forEach(x => {
+        expandedNodes.push(x);
+
+        if (x.isExpanded) {
+          this.getExpandedNodes(x.nodes, expandedNodes);
+        }
+      });
+
+    return expandedNodes;
+  }
+
+  protected flattenNodes(nodes: Enumerable<TreeNode<TData>>): Enumerable<TreeNode<TData>> {
+    return nodes
+      .selectMany(x => this.flattenNodes(x.nodes.asEnumerable()))
+      .concat(nodes);
+  }
+}
+
+interface IListProps extends ListGroupProps, IBaseViewProps {
+  view?: ListViewRenderTemplate<any>;
+  selectable?: boolean;
   highlightSelected?: boolean;
   checkmarkSelected?: boolean;
-  multiSelect?: boolean;
-  fill?: boolean;
 }
 
 export class ListView extends BaseView<IListProps, ListViewModel<any, any>> {
   public static displayName = 'ListView';
 
   static defaultProps = {
-    view: new StandardListView(),
+    view: new ListViewTemplate<any>(),
+    selectable: false,
     highlightSelected: false,
     checkmarkSelected: false,
-    multiSelect: false,
   };
 
-  public isSelected(item: any, index?: number) {
-    let isSelected = false;
+  initialize() {
+    super.initialize();
 
-    if (this.props.multiSelect === true) {
-      isSelected = (item as ISelectableItem).isSelected === true;
-    }
-    else {
-      isSelected = index == null ? this.state.selectedItem() === item : this.state.selectedIndex() === index;
-    }
-
-    return isSelected;
+    this.props.view.initialize(this.state, this);
   }
 
-  public selectItem(item: any, index?: number) {
-    if (index == null) {
-      this.state.selectItem.execute(item);
-    }
-    else {
-      this.state.selectIndex.execute(index);
-    }
+  cleanup() {
+    super.cleanup();
+
+    this.props.view.cleanup(this.state, this);
   }
 
   updateOn() {
     return [
-      this.state.items.listChanged,
+      this.state.items.changed,
       this.state.selectedItem.changed,
     ];
   }
 
   render() {
-    let rows = this.props.view.getRows(this, this.state.items.toArray());
+    const { rest, props } = this.restProps(x => {
+      const { view, selectable, highlightSelected, checkmarkSelected, className } = x;
+      return { view, selectable, highlightSelected, checkmarkSelected, className };
+    });
 
     return (
-      <ListGroup className='List' fill={ this.props.fill }>
+      <ListGroup { ...rest } className={ classNames('List', props.className) }>
         {
-          (rows || [])
+          (this.props.view.render(this.state, this) || [])
             .asEnumerable()
             .defaultIfEmpty(
-              <div key='empty' className='List-empty'>Nothing to Display...</div>
+              <div key='empty' className='List-empty text-muted'>Nothing to Display...</div>
             )
             .toArray()
         }
