@@ -53,12 +53,14 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
       canExecute = String.isNullOrEmpty(rest.href) === false;
       onClick = e => {
         e.stopPropagation();
+        e.preventDefault();
       };
     }
     else {
       canExecute = this.getCommand().canExecute(this.getParam());
       onClick = e => {
         e.stopPropagation();
+        e.preventDefault();
 
         this.getCommand().execute(this.getParam());
       };
