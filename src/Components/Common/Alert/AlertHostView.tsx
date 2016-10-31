@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as classNames from 'classnames';
 import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';
@@ -20,14 +21,24 @@ export class AlertHostView extends BaseView<AlertHostProps, AlertHostViewModel> 
   }
 
   render() {
-    let alerts = this.state.alerts == null ? null : this.state.alerts.map(x => <AlertView viewModel={x} key={x.key}/>);
+    const { rest, props } = this.restProps(x => {
+      const { className } = x;
+      return { className };
+    });
 
     return (
-      <div className='AlertHost'>
-        <ReactCSSTransitionGroup transitionName='alert' transitionEnterTimeout={500} transitionLeaveTimeout={300}>
-          { alerts }
+      <div { ...rest } className={ classNames('AlertHost', props.className) }>
+        <ReactCSSTransitionGroup transitionName='alert' transitionEnterTimeout={ 500 } transitionLeaveTimeout={ 300 }>
+          { this.renderAlerts() }
         </ReactCSSTransitionGroup>
       </div>
     );
+  }
+
+  private renderAlerts() {
+    return this.state.alerts
+      .map(x => (
+        <AlertView viewModel={ x } key={ x.key } />
+      ));
   }
 }

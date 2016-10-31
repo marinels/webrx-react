@@ -17,29 +17,22 @@ export const DefaultTimeout = 5000;
 export class AlertViewModel extends BaseViewModel {
   public static displayName = 'AlertViewModel';
 
-  public show = wx.asyncCommand(x => Observable.of(true));
-  public dismiss = wx.asyncCommand(x => Observable.of(false));
+  public isVisible: wx.IObservableReadOnlyProperty<boolean>;
 
-  public isVisible = Observable
-    .merge(
-      this.show.results,
-      this.dismiss.results.take(1)
-    )
-    .toProperty();
+  public dismiss: wx.ICommand<any>;
 
-  constructor(private owner: wx.IObservableList<AlertViewModel>, public key: any, public content: any, public header?: string, public style = DefaultStyle, private timeout = DefaultTimeout) {
+  constructor(public key: any, public content: any, public header?: string, public style = DefaultStyle, private timeout = DefaultTimeout) {
     super();
 
-    this.subscribe(Observable
-      .return(false)
-      .delay(this.timeout)
-      .invokeCommand(this.dismiss));
+    this.dismiss = wx.command();
 
-    this.subscribe(this.dismiss.results
-      .take(1)
-      .delay(100)
-      .subscribe(x => {
-        this.owner.remove(this);
-      }));
+    this.isVisible = this.dismiss.results
+      .map(x => false)
+      .toProperty(true);
+
+    Observable
+      .of(null)
+      .delay(this.timeout)
+      .invokeCommand(this.dismiss);
   }
 }
