@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as wx from 'webrx';
-import { FormGroup, InputGroup, FormControl, Button, MenuItem, Panel } from 'react-bootstrap';
+import { Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel } from 'react-bootstrap';
 
 import * as wxr from '../../web.rx.react';
 import * as renderHelpers from '../React/RenderHelpers';
@@ -38,8 +38,8 @@ const viewMap: ViewActivatorMap = {
   SizedLoading: (c, cr) => renderHelpers.renderSizedLoadable(true, '50px Loader...', 50),
   Splash: () => <Splash fluid header='WebRx.React Demo' logo='http://placehold.it/100x100?text=Logo' />,
   CommandButton: () => (
-    <div>
-      <FormGroup bsSize='large'>
+    <Form>
+      <FormGroup bsSize='large' style={({ marginBottom: 0 })}>
         <InputGroup>
           <FormControl id='CommandButtonParamInput' type='text' placeholder='Enter Command Parameter Text Here...' />
           <InputGroup.Button>
@@ -48,7 +48,7 @@ const viewMap: ViewActivatorMap = {
           </InputGroup.Button>
         </InputGroup>
       </FormGroup>
-    </div>
+    </Form>
   ),
   Alert: () => (
     <div>
