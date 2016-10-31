@@ -13,11 +13,7 @@ export interface ILoadingProps {
   componentClass?: any;
 }
 
-export interface ILoadingState {
-  value: number;
-}
-
-export class Loading extends React.Component<ILoadingProps, ILoadingState> {
+export class Loading extends React.Component<LoadingProps, any> {
   public static displayName = 'Loading';
 
   static defaultProps = {
@@ -27,19 +23,6 @@ export class Loading extends React.Component<ILoadingProps, ILoadingState> {
   };
 
   private changedSubscription: Rx.IDisposable;
-
-  constructor(props?: ILoadingProps, context?: any) {
-    super(props, context);
-
-    let value = this.props.value as number;
-    if (wx.isProperty(this.props.value) === true) {
-      value = (this.props.value as wx.IObservableProperty<number>).apply(null) as number;
-    }
-
-    this.state = {
-      value,
-    };
-  }
 
   componentDidMount() {
     if (wx.isProperty(this.props.value) === true) {
@@ -57,8 +40,14 @@ export class Loading extends React.Component<ILoadingProps, ILoadingState> {
 
     return (
       <Component className='Loading'>
-        <ProgressBar style={({ fontSize: this.props.fontSize })} active now={ this.state.value } label={ this.props.text } />
+        <ProgressBar style={({ fontSize: this.props.fontSize })} active now={ this.getProgressValue() } label={ this.props.text } />
       </Component>
     );
+  }
+
+  private getProgressValue() {
+    return wx.isProperty(this.props.value) === true ?
+      (this.props.value as wx.IObservableProperty<number>).apply(null) as number :
+      this.props.value as number;
   }
 }
