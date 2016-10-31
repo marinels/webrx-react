@@ -100,26 +100,30 @@ const viewMap: ViewActivatorMap = {
     switch (componentRoute) {
       case 'List':
         return (
-          <ListView viewModel={viewModel} checkmarkSelected view={new StandardListView<any>(undefined, (v, x) => {
-            return `${x.name} (Required By ${x.requiredBy})`;
-          })}>
+          <ListView viewModel={ viewModel } view={ new StandardListView<any>((x, i, vm, v) => {
+            return `${ x.name } (Required By ${ x.requiredBy })`;
+          }) }>
           </ListView>
         );
       case 'Tree':
         return (
-          <ListView viewModel={viewModel} checkmarkSelected multiSelect view={
-            new TreeListView<any>(x => x.expanded, (x, i, e) => x.expanded = e, x => x.items, false, false, () => true, (v, x) => {
-              return `${x.name} (Required By ${x.requiredBy})`;
-            })
+          <ListView viewModel={ viewModel } selectable checkmarkSelected view={
+            new TreeListView<any>(
+              x => x.items,
+              x => {
+                return `${ x.name } (Required By ${ x.requiredBy })`;
+              },
+              () => true
+            )
           }>
           </ListView>
         );
       case 'PanelList':
         return (
           <Panel header='List View Embedded Within a Panel' style={({ margin: 0 })}>
-            <ListView viewModel={viewModel} checkmarkSelected fill view={new StandardListView<any>(undefined, (v, x) => {
-              return `${x.name} (Required By ${x.requiredBy})`;
-            })}>
+            <ListView viewModel={ viewModel } selectable checkmarkSelected fill view={ new StandardListView<any>((x, i, vm, v) => {
+              return `${ x.name } (Required By ${ x.requiredBy })`;
+            }) }>
             </ListView>
           </Panel>
         );
@@ -130,11 +134,10 @@ const viewMap: ViewActivatorMap = {
   DataGridViewModel: (viewModel: wxr.Components.DataGridViewModel<any>, componentRoute: string) => {
     let view: wxr.Components.DataGridViewTemplate<{name: string, requiredBy: string}> = undefined;
     let columns: any;
-    let hidePager = false;
+    let pager = true;
 
     if (componentRoute === 'DataGridList') {
-      hidePager = true;
-
+      pager = false;
       view = new DataGridListViewTemplate<{name: string, requiredBy: string}>(
         x => `Name: ${x.name}, Required By: ${x.requiredBy}`
       );
@@ -142,13 +145,13 @@ const viewMap: ViewActivatorMap = {
 
     if (componentRoute === 'DataGrid') {
       columns = [
-        <DataGridColumn key='name' fieldName='name' sortable />,
-        <DataGridColumn key='requiredBy' fieldName='requiredBy' sortable width={250} />,
+        <DataGridColumn key='name' fieldName='name' header='Name' sortable />,
+        <DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 } />,
       ];
     }
 
     return (
-      <DataGridView key={componentRoute} viewModel={viewModel} view={view} hideSearch hidePager={ hidePager }>
+      <DataGridView key={ componentRoute } viewModel={ viewModel } view={view} pager={ pager }>
         { columns }
       </DataGridView>
     );

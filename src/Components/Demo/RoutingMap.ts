@@ -61,7 +61,7 @@ const sampleListData = [
 ];
 
 const sampleTreeData = sampleListData
-  .map(x => Object.assign({ items: sampleListData.slice(0, 3) }, x));
+  .map(x => Object.assign({ items: sampleListData.slice(0, 3).map(y => Object.assign({ items: sampleListData.slice(0, 3) }, y)) }, x));
 
 routingMap.addRoute('Framework', 'Loading', 'Loading', (state: any) => 'Loading');
 routingMap.addRoute('Framework', 'SizedLoading', 'Sized Loading', (state: any) => 'SizedLoading');
@@ -71,13 +71,13 @@ routingMap.addRoute('Framework', 'Alert', 'Alert', (state: any) => 'Alert');
 routingMap.addRoute('Framework', 'TimeSpanInput', 'Time Span Input', (state: any) => new wxr.Components.TimeSpanInputViewModel(undefined, undefined, true));
 routingMap.addRoute('Framework', 'ContextMenu', 'Context Menu', (state: any) => 'ContextMenu');
 routingMap.addRoute('Framework', 'ProfilePicture', 'Profile Picture', (state: any) => 'ProfilePicture');
-routingMap.addRoute('Framework', 'List', 'List', (state: any) => new wxr.Components.ListViewModel(sampleListData, true, false));
-routingMap.addRoute('Framework', 'Tree', 'Tree', (state: any) => new wxr.Components.ListViewModel(sampleTreeData, true, false));
-routingMap.addRoute('Framework', 'PanelList', 'Panel List', (state: any) => new wxr.Components.ListViewModel(sampleListData, true, false));
+routingMap.addRoute('Framework', 'List', 'List', (state: any) => new wxr.Components.ListViewModel(wx.property(sampleListData), false, false));
+routingMap.addRoute('Framework', 'Tree', 'Tree', (state: any) => new wxr.Components.ListViewModel(wx.property(sampleTreeData), true, false));
+routingMap.addRoute('Framework', 'PanelList', 'Panel List', (state: any) => new wxr.Components.ListViewModel(wx.property(sampleListData), true, false));
 routingMap.addRoute('Framework', 'DataGrid', 'Data Grid', (state: any) => wxr.Components.DataGridViewModel.create(...sampleListData));
 routingMap.addRoute('Framework', 'DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: any) => wxr.Components.DataGridViewModel.create(...sampleListData));
 routingMap.addRoute('Framework', 'DataGridList', 'DataGrid (List View)', (state: any) =>
-  new wxr.Components.DataGridViewModel(sampleListData, (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0)
+  new wxr.Components.DataGridViewModel(wx.property(sampleListData), (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0)
 );
 routingMap.addRoute('Framework', 'ModalDialog', 'Modal Dialog', (state: any) => {
   // we are simulating a modal being contained within another view model
