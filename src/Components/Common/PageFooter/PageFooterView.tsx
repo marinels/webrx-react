@@ -21,7 +21,7 @@ export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewMode
         .merge(
           Observable.fromEvent<UIEvent>(window, 'resize'),
           Observable.fromEvent<Event>(window, 'orientationchange'))
-        .select(_ => this.getDimensions())
+        .map(_ => this.getDimensions())
         .startWith(this.getDimensions())
     );
   }

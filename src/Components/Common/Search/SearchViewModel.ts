@@ -14,7 +14,7 @@ export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
   public regex = this.filter.changed
     .debounce(this.isLiveSearchEnabled ? this.liveSearchTimeout : 0)
     .distinctUntilChanged()
-    .select(x => this.createRegex(x))
+    .map(x => this.createRegex(x))
     .toProperty();
 
   public search = wx.asyncCommand((x: RegExp) => {

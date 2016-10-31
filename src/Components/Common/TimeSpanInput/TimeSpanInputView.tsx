@@ -52,7 +52,7 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInpu
                 {
                   Enumerable
                     .fromArray(this.state.units)
-                    .select(x => <MenuItem key={x.type} eventKey={x} active={x.type === this.state.unit().type}>{x.name}</MenuItem>)
+                    .map(x => <MenuItem key={x.type} eventKey={x} active={x.type === this.state.unit().type}>{x.name}</MenuItem>)
                     .toArray()
                 }
               </DropdownButton>

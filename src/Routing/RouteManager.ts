@@ -23,13 +23,13 @@ export class RouteManager implements IDisposable {
     if (hashChanged == null) {
       hashChanged = Observable
         .fromEvent<HashChangeEvent>(window, 'hashchange')
-        .select(x => window.location.hash)
+        .map(x => window.location.hash)
         .startWith(window.location.hash);
     }
 
     this.currentRoute = hashChanged
       .debounce(100)
-      .select(x => {
+      .map(x => {
         let route = hashCodec.decode(x, (path, params, state) => <Route>{path, params, state});
 
         let hash = '#' + route.path;
@@ -44,7 +44,7 @@ export class RouteManager implements IDisposable {
 
         return route;
       })
-      .where(x => x != null)
+      .filter(x => x != null)
       .toProperty();
   }
 

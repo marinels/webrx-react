@@ -54,7 +54,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
         {
           items
             .asEnumerable()
-            .select(x => (
+            .map(x => (
               <MenuItem key={x.id} disabled={this.isMenuItemDisabled(x)} href={x.uri}
                 onSelect={x.uri == null ? this.bindEventToCommand(vm => vm.menuItemSelected, () => x) : null}
               >
@@ -90,7 +90,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
                     this.state.navbarMenus
                       .toArray()
                       .asEnumerable()
-                      .select((x, i) =>
+                      .map((x, i) =>
                         this.createHeaderMenu(
                           x.id,
                           x.header,
@@ -143,8 +143,8 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
                     this.state.navbarActions
                       .toArray()
                       .asEnumerable()
-                      .where(x => x.command != null && x.command.canExecute(x.commandParameter) === true)
-                      .select(x => (
+                      .filter(x => x.command != null && x.command.canExecute(x.commandParameter) === true)
+                      .map(x => (
                         <Button key={x.id} className='PageHeader-actionButton' bsStyle={x.bsStyle}
                           disabled={x.command == null || x.command.canExecute(x.commandParameter) === false}
                           onClick={() => x.command.execute(x.commandParameter) }
@@ -168,14 +168,14 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
               .toArray()
               .asEnumerable()
               .orderBy(x => x.order)
-              .select(menu => (
+              .map(menu => (
                 <Nav key={menu.id}>
                   <NavItem className='PageHeader-sidebarSection' disabled>{menu.header}</NavItem>
                   {
                     menu.items
                       .asEnumerable()
                       .orderBy(x => x.order)
-                      .select(x => (
+                      .map(x => (
                         <NavItem key={x.id} disabled={this.isMenuItemDisabled(x)} href={x.uri}
                           onClick={x.uri == null ? this.bindEventToCommand(vm => vm.menuItemSelected, () => x) : this.bindEventToCommand(vm => vm.toggleSideBar, () => false)}
                         >

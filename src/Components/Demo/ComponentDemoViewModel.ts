@@ -66,11 +66,11 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
       if (activator == null) {
         let result = Enumerable
           .fromArray(Object.keys(RoutingMap.viewModelMap))
-          .where(x => x != null && x.length > 0 && x[0] === '^')
-          .select(x => ({ path: x, regex: new RegExp(x, 'i') }))
-          .select(x => ({ path: x.path, match: x.regex.exec(this.componentRoute) }))
-          .where(x => x.match != null)
-          .select(x => ({ path: x.path, match: x.match, activator: RoutingMap.viewModelMap[x.path] }))
+          .filter(x => x != null && x.length > 0 && x[0] === '^')
+          .map(x => ({ path: x, regex: new RegExp(x, 'i') }))
+          .map(x => ({ path: x.path, match: x.regex.exec(this.componentRoute) }))
+          .filter(x => x.match != null)
+          .map(x => ({ path: x.path, match: x.match, activator: RoutingMap.viewModelMap[x.path] }))
           .firstOrDefault();
 
         if (result != null) {
@@ -111,7 +111,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
       const uri = RoutingMap.menus
         .asEnumerable()
         .selectMany(x => x.items.asEnumerable(), (a, b) => b.uri)
-        .where(x => String.isNullOrEmpty(x) === false)
+        .filter(x => String.isNullOrEmpty(x) === false)
         .firstOrDefault();
 
       if (String.isNullOrEmpty(uri) === false) {

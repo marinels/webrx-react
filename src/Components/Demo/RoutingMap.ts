@@ -39,7 +39,7 @@ export class RoutingMap {
   public get menus() {
     return Object.getOwnPropertyNames(this.menuMap)
       .asEnumerable()
-      .select(x => this.menuMap[x])
+      .map(x => this.menuMap[x])
       .toArray();
   }
 }

@@ -17,8 +17,8 @@ export class PageFooterViewModel extends BaseViewModel {
   public viewportDimensionsChanged = wx.asyncCommand((x: ViewportDimensions) => Observable.of(x));
   public viewportDimensions = this.viewportDimensionsChanged.results
     .debounce(100)
-    .where(x => x != null && x.width != null && x.height != null)
-    .select(x => `${x.width}x${x.height}`)
+    .filter(x => x != null && x.width != null && x.height != null)
+    .map(x => `${x.width}x${x.height}`)
     .toProperty();
 
   constructor(copyright?: string) {

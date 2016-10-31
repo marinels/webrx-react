@@ -90,8 +90,8 @@ export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDem
                     Enumerable
                       .range(1, 13)
                       .reverse()
-                      .select(x => x % 13)
-                      .select(x =>
+                      .map(x => x % 13)
+                      .map(x =>
                         <MenuItem key={x} eventKey={x} active={cols === x}>{x === 0 ? 'Full Width' : x}</MenuItem>
                       )
                       .toArray()

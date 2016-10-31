@@ -48,8 +48,8 @@ export class TimeSpanInputViewModel extends BaseViewModel {
   public validate = wx.command();
 
   public validationError = this.validate.results
-    .select(x => ({ value: this.value(), text: this.text() }))
-    .select(x => {
+    .map(x => ({ value: this.value(), text: this.text() }))
+    .map(x => {
       let error: string;
 
       if (x.value == null || x.value.asMilliseconds() === 0) {
@@ -69,7 +69,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
     .toProperty();
 
   public isValid = this.validationError.changed
-    .select(x => String.isNullOrEmpty(x) === true)
+    .map(x => String.isNullOrEmpty(x) === true)
     .toProperty();
 
   public setUnit = wx.command((unit: TimeSpanUnit) => {
@@ -106,13 +106,13 @@ export class TimeSpanInputViewModel extends BaseViewModel {
     if (units == null) {
       this.units = Enumerable
         .fromArray(TimeSpanUnits)
-        .where(x => x.type >= minUnit && x.type <= maxUnit)
+        .filter(x => x.type >= minUnit && x.type <= maxUnit)
         .toArray();
     }
     else {
       this.units = Enumerable
         .fromArray(units)
-        .select(x => TimeSpanUnits[x])
+        .map(x => TimeSpanUnits[x])
         .toArray();
     }
 
@@ -128,7 +128,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
     );
 
     this.subscribe(this.value.changed
-      .where(x => x != null)
+      .filter(x => x != null)
       .subscribe(x => {
         let value = x.as(this.unit().key);
         let unitName = this.unit().name;
@@ -170,7 +170,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
           if (String.isNullOrEmpty(unitName) === false) {
             let unit = Enumerable
               .fromArray(TimeSpanUnits)
-              .where(x => x.key === unitName)
+              .filter(x => x.key === unitName)
               .firstOrDefault();
 
             if (unit != null) {

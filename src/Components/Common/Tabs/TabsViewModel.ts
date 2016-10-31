@@ -15,8 +15,8 @@ export class TabsViewModel<T> extends BaseRoutableViewModel<TabsRoutingState> {
   public selectedIndex = this.selectIndex.results
     .toProperty();
   public selectedItem = this.selectedIndex.changed
-    .where(x => x >= 0 && x < this.items.length())
-    .select(x => this.items.get(x))
+    .filter(x => x >= 0 && x < this.items.length())
+    .map(x => this.items.get(x))
     .toProperty();
 
   constructor(isRoutingEnabled = false, ...items: T[]) {

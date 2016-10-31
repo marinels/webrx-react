@@ -131,15 +131,15 @@ function getName(source: any, undefinedValue = 'undefined', isStatic = false) {
 function fallback<T>(...values: T[]) {
   return Enumerable
     .fromArray(values)
-    .where(x => x != null)
+    .filter(x => x != null)
     .firstOrDefault();
 }
 
 function fallbackAsync<T>(...actions: (T | (() => T))[]) {
   return Enumerable
     .fromArray(actions)
-    .select(x => x instanceof Function ? x.apply(this) : x)
-    .where(x => x != null)
+    .map(x => x instanceof Function ? x.apply(this) : x)
+    .filter(x => x != null)
     .firstOrDefault();
 }
 

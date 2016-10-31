@@ -22,7 +22,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
   private currentPath: string;
 
   public currentViewModel = this.manager.currentRoute.changed
-    .select(x => this.getRoutedViewModel(x))
+    .map(x => this.getRoutedViewModel(x))
     .doOnNext(x => {
       if (x != null) {
         document.title = x.getTitle();
@@ -36,7 +36,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
     .toProperty();
 
   public isLoading = this.currentViewModel.changed
-    .select(x => false)
+    .map(x => false)
     .take(1)
     .startWith(true)
     .toProperty();
@@ -144,11 +144,11 @@ export class RouteHandlerViewModel extends BaseViewModel {
     if (activator == null) {
       let result = Enumerable
         .fromArray(Object.keys(this.routingMap))
-        .where(x => x != null && x.length > 0 && x[0] === '^')
-        .select(x => ({ key: x, regex: new RegExp(x, 'i') }))
-        .select(x => ({ key: x.key, match: x.regex.exec(route.path) }))
-        .where(x => x.match != null)
-        .select(x => ({ match: x.match, activator: this.routingMap[x.key] }))
+        .filter(x => x != null && x.length > 0 && x[0] === '^')
+        .map(x => ({ key: x, regex: new RegExp(x, 'i') }))
+        .map(x => ({ key: x.key, match: x.regex.exec(route.path) }))
+        .filter(x => x.match != null)
+        .map(x => ({ match: x.match, activator: this.routingMap[x.key] }))
         .firstOrDefault();
 
       if (result != null) {
