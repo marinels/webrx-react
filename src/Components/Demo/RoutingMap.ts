@@ -61,7 +61,19 @@ const sampleListData = [
 ];
 
 const sampleTreeData = sampleListData
-  .map(x => Object.assign({ items: sampleListData.slice(0, 3).map(y => Object.assign({ items: sampleListData.slice(0, 3) }, y)) }, x));
+  .map(x => Object
+    .assign({
+      items: sampleListData
+        .slice(0, 3)
+        .map(y => Object
+          .assign({
+            items: sampleListData
+              .slice(0, 3)
+              .map(z => Object.assign({}, z)),
+          }, y)
+        ),
+    }, x)
+  );
 
 routingMap.addRoute('Framework', 'Loading', 'Loading', (state: any) => 'Loading');
 routingMap.addRoute('Framework', 'SizedLoading', 'Sized Loading', (state: any) => 'SizedLoading');
