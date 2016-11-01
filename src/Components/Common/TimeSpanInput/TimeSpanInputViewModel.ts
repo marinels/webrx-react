@@ -1,4 +1,4 @@
-import { Enumerable } from 'ix';
+import { Observable } from 'rx';
 import * as wx from 'webrx';
 import * as moment from 'moment';
 
@@ -24,166 +24,163 @@ export interface TimeSpanUnit {
   shortKey?: string;
 }
 
-export const TimeSpanUnits = [
-  { type: TimeSpanUnitType.Ticks, name: 'Ticks' },
-  { type: TimeSpanUnitType.Milliseconds, name: 'Milliseconds', key: 'millisecond', shortKey: 'ms' },
-  { type: TimeSpanUnitType.Seconds, name: 'Seconds', key: 'second', shortKey: 's' },
-  { type: TimeSpanUnitType.Minutes, name: 'Minutes', key: 'minute', shortKey: 'm' },
-  { type: TimeSpanUnitType.Hours, name: 'Hours', key: 'hour', shortKey: 'h' },
-  { type: TimeSpanUnitType.Days, name: 'Days', key: 'day', shortKey: 'd' },
-  { type: TimeSpanUnitType.Weeks, name: 'Weeks', key: 'week', shortKey: 'w' },
-  { type: TimeSpanUnitType.Months, name: 'Months', key: 'month', shortKey: 'M' },
-  { type: TimeSpanUnitType.Quarters, name: 'Quarters', key: 'quarter', shortKey: 'Q' },
-  { type: TimeSpanUnitType.Years, name: 'Years', key: 'year', shortKey: 'y' },
-] as TimeSpanUnit[];
+function createTimeSpanUnits() {
+  const units: { [ type: number ]: TimeSpanUnit } = {
+  };
+
+  units[TimeSpanUnitType.Ticks]         = { type: TimeSpanUnitType.Ticks, name: 'Ticks' };
+  units[TimeSpanUnitType.Milliseconds]  = { type: TimeSpanUnitType.Milliseconds, name: 'Milliseconds', key: 'millisecond', shortKey: 'ms' };
+  units[TimeSpanUnitType.Seconds]       = { type: TimeSpanUnitType.Seconds, name: 'Seconds', key: 'second', shortKey: 's' };
+  units[TimeSpanUnitType.Minutes]       = { type: TimeSpanUnitType.Minutes, name: 'Minutes', key: 'minute', shortKey: 'm' };
+  units[TimeSpanUnitType.Hours]         = { type: TimeSpanUnitType.Hours, name: 'Hours', key: 'hour', shortKey: 'h' };
+  units[TimeSpanUnitType.Days]          = { type: TimeSpanUnitType.Days, name: 'Days', key: 'day', shortKey: 'd' };
+  units[TimeSpanUnitType.Weeks]         = { type: TimeSpanUnitType.Weeks, name: 'Weeks', key: 'week', shortKey: 'w' };
+  units[TimeSpanUnitType.Months]        = { type: TimeSpanUnitType.Months, name: 'Months', key: 'month', shortKey: 'M' };
+  units[TimeSpanUnitType.Quarters]      = { type: TimeSpanUnitType.Quarters, name: 'Quarters', key: 'quarter', shortKey: 'Q' };
+  units[TimeSpanUnitType.Years]         = { type: TimeSpanUnitType.Years, name: 'Years', key: 'year', shortKey: 'y' };
+
+  return units;
+}
+
+export const TimeSpanUnits = createTimeSpanUnits();
+
+export const DefaultPrecision = 2;
+export const DefaultParseDelay = 1000;
 
 export class TimeSpanInputViewModel extends BaseViewModel {
   public static displayName = 'TimeSpanInputViewModel';
 
   public units: TimeSpanUnit[];
-  public text = wx.property('');
-  public unit = wx.property<TimeSpanUnit>();
-  public value = wx.property<moment.Duration>();
+  public text: wx.IObservableProperty<string>;
+  public unit: wx.IObservableReadOnlyProperty<TimeSpanUnit>;
+  public duration: wx.IObservableReadOnlyProperty<moment.Duration>;
+  public isValid: wx.IObservableReadOnlyProperty<boolean>;
+  public hasError: wx.IObservableReadOnlyProperty<boolean>;
 
-  public validate = wx.command();
-
-  public validationError = this.validate.results
-    .map(x => ({ value: this.value(), text: this.text() }))
-    .map(x => {
-      let error: string;
-
-      if (x.value == null || x.value.asMilliseconds() === 0) {
-        // invalid value
-        if (String.isNullOrEmpty(x.text) === true) {
-          if (this.required === true) {
-            error = 'This field is required';
-          }
-        }
-        else {
-          error = 'Unable to Understand Time Span Formatting';
-        }
-      }
-
-      return error;
-    })
-    .toProperty();
-
-  public isValid = this.validationError.changed
-    .map(x => String.isNullOrEmpty(x) === true)
-    .toProperty();
-
-  public setUnit = wx.command((unit: TimeSpanUnit) => {
-    this.unit(unit);
-  });
-
-  public adjustValue = wx.command((amount: number) => {
-    // we have to clone the duration because moment objects are mutable
-    let value = this.value() == null ? moment.duration(0) : moment.duration(this.value());
-    this.setValue(value.add(amount, this.unit().key));
-  });
-
-  public parse = wx.command((text: string) => {
-    this.parseText(text);
-  });
+  public adjust: wx.ICommand<number>;
+  public setUnit: wx.ICommand<TimeSpanUnit>;
 
   constructor(
-    private initialValue?: moment.Duration,
-    unit = TimeSpanUnits[TimeSpanUnitType.Seconds],
-    public required = false,
+    required = false,
+    minUnit = TimeSpanUnitType.Days,
+    maxUnit = TimeSpanUnitType.Years,
+    initialValue?: moment.Duration,
+    initialUnit = TimeSpanUnitType.Seconds,
     units?: TimeSpanUnitType[],
-    public minValue?: moment.Duration,
-    public maxValue?: moment.Duration,
-    public minUnit = TimeSpanUnitType.Days,
-    public maxUnit = TimeSpanUnitType.Years,
-    public precision = 2,
-    public parseDelay = 500
-    ) {
+    minValue?: moment.Duration,
+    maxValue?: moment.Duration,
+    precision = DefaultPrecision,
+    parseDelay = DefaultParseDelay
+  ) {
     super();
 
-    this.unit(unit.type < minUnit ? TimeSpanUnits[minUnit] : unit);
-    this.minValue = this.minValue || moment.duration(1, this.unit().key);
+    this.units = (units || Object.getEnumValues<TimeSpanUnitType>(TimeSpanUnitType))
+      .filter(x => x >= minUnit && x <= maxUnit)
+      .map(x => TimeSpanUnits[x]);
 
-    if (units == null) {
-      this.units = Enumerable
-        .fromArray(TimeSpanUnits)
-        .filter(x => x.type >= minUnit && x.type <= maxUnit)
-        .toArray();
+    this.adjust = wx.asyncCommand((x: number) => Observable.of(x));
+    this.setUnit = wx.asyncCommand((x: TimeSpanUnit) => Observable.of(x));
+
+    this.unit = wx
+      .whenAny(this.setUnit.results, x => x)
+      .toProperty(TimeSpanUnits[(initialUnit < minUnit || initialUnit > maxUnit) ? minUnit : initialUnit]);
+
+    this.text = wx.property(this.getText(initialValue, precision));
+
+    this.duration = wx
+      .whenAny(this.text, this.unit, (text, unit) => ({ text, unit }))
+      .where(x => x.unit != null)
+      .debounce(parseDelay)
+      .map(x => this.parse(x.text, x.unit))
+      .doOnNext(x => {
+        // if we have a valid duration then check to see if we need to update the text
+        if (x != null) {
+          const text = this.getText(x, precision);
+
+          // if we have new text update and queue a re-rendering
+          if (text.localeCompare(this.text()) !== 0) {
+            this.text(text);
+
+            this.notifyChanged();
+          }
+        }
+      })
+      .toProperty();
+
+    this.isValid = wx
+      .whenAny(this.duration, x => x != null)
+      .toProperty();
+
+    this.hasError = wx
+      .whenAny(this.isValid, this.text, (isValid, text) => this.validate(isValid, text, required))
+      .toProperty();
+  }
+
+  private getText(duration: moment.Duration, precision: number) {
+    let text = '';
+
+    if (duration != null) {
+      const value = duration.as(this.unit().key);
+      let unitName = this.unit().name;
+
+      if (value === 1) {
+        // trim the trailing 's' from the unit name
+        unitName = unitName.replace(/s$/, '');
+      }
+
+      text = `${ Number(value.toFixed(precision)) } ${ unitName }`;
+    }
+
+    return text;
+  }
+
+  private validate(isValid: boolean, text: string, required: boolean) {
+    if (required === true) {
+      return isValid === false;
     }
     else {
-      this.units = Enumerable
-        .fromArray(units)
-        .map(x => TimeSpanUnits[x])
-        .toArray();
-    }
-
-    if (this.parseDelay > 0) {
-      this.subscribe(this.text.changed
-        .debounce(this.parseDelay)
-        .invokeCommand(this.parse)
-      );
-    }
-
-    this.subscribe(this.parse.results
-      .invokeCommand(this.validate)
-    );
-
-    this.subscribe(this.value.changed
-      .filter(x => x != null)
-      .subscribe(x => {
-        let value = x.as(this.unit().key);
-        let unitName = this.unit().name;
-        let text = `${Number(value.toFixed(this.precision))} ${value === 1 ? unitName.replace(/s$/, '') : unitName}`;
-
-        this.text(text);
-      })
-    );
-
-    this.setValue(this.initialValue);
-
-    this.validate.execute(null);
-  }
-
-  private setValue(value: moment.Duration) {
-    if (value == null || (this.minValue == null || value >= this.minValue) && (this.maxValue == null || value <= this.maxValue)) {
-      this.value(value);
+      return String.isNullOrEmpty(text) === false && (isValid === false);
     }
   }
 
-  private parseText(text: string) {
-    let value: moment.Duration = null;
+  private parse(text: string, unit: TimeSpanUnit) {
+    let duration: moment.Duration = null;
 
     if (String.isNullOrEmpty(text) === false) {
-      let args = text.split(' ', 2);
+      // we don't need the other placeholder matches
+      // tslint:disable-next-line:no-unused-variable
+      let [ _1, value, _2, unitName ] = (text.match(/\s*([\d\.]+)(\s+(\w+))?\s*$/) || <RegExpMatchArray>[]);
 
-      if (Number.isNumeric(args[0])) {
+      if (Number.isNumeric(value)) {
         // only process if it's numeric
-        if (args.length === 1) {
+        if (String.isNullOrEmpty(unitName) === true) {
           // single arg
           // just assume we're using the currently selected units
-          value = moment.duration(Number(args[0]), this.unit().shortKey);
+          duration = moment.duration(Number(value), unit.shortKey);
         }
-        else if (args.length === 2) {
+        else {
           // two args
           // first determine the units used
-          let unitName = moment.normalizeUnits(args[1]);
+          unitName = moment.normalizeUnits(unitName);
 
           if (String.isNullOrEmpty(unitName) === false) {
-            let unit = Enumerable
-              .fromArray(TimeSpanUnits)
-              .filter(x => x.key === unitName)
-              .firstOrDefault();
+            const parsedUnit = this.units
+              .filter(x => x.key.localeCompare(unitName) === 0)
+              .asEnumerable()
+              .singleOrDefault();
 
-            if (unit != null) {
+            if (parsedUnit != null) {
               // if the unit type is valid process the value
-              value = moment.duration(Number(args[0]), unitName);
+              duration = moment.duration(Number(value), unitName);
+
               // only update the currently selected units if they are parsed
-              this.unit(unit);
+              this.setUnit.execute(parsedUnit);
             }
           }
         }
       }
     }
 
-    this.setValue(value);
+    return duration;
   }
 };

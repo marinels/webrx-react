@@ -1,6 +1,6 @@
 import { Observable } from 'rx';
 import * as wx from 'webrx';
-import * as moment from 'moment';
+// import * as moment from 'moment';
 
 import { BaseViewModel } from '../../React/BaseViewModel';
 
@@ -12,19 +12,23 @@ export interface ViewportDimensions {
 export class PageFooterViewModel extends BaseViewModel {
   public static displayName = 'PageFooterViewModel';
 
-  public copyright: string;
+  public viewportDimensions: wx.IObservableReadOnlyProperty<ViewportDimensions>;
 
-  public viewportDimensionsChanged = wx.asyncCommand((x: ViewportDimensions) => Observable.of(x));
-  public viewportDimensions = this.viewportDimensionsChanged.results
-    .debounce(100)
-    .filter(x => x != null && x.width != null && x.height != null)
-    .map(x => `${x.width}x${x.height}`)
-    .toProperty();
+  public viewportDimensionsChanged: wx.ICommand<ViewportDimensions>;
 
-  constructor(copyright?: string) {
+  constructor() {
     super();
 
-    this.copyright = copyright ? copyright : moment().format('YYYY');
+    this.viewportDimensionsChanged = wx.asyncCommand((x: ViewportDimensions) => Observable.of(x));
+
+    this.viewportDimensions = wx
+      .whenAny(this.viewportDimensionsChanged.results, x => x)
+      .filter(x => x != null)
+      .debounce(100)
+      // .map(x => `${ x.width || 0 }x${ x.height || 0 }`)
+      .toProperty();
+
+    // this.copyright = copyright ? copyright : moment().format('YYYY');
   }
 }
 

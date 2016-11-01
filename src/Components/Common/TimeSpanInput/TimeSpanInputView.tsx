@@ -1,17 +1,36 @@
 import * as React from 'react';
-import { Enumerable } from 'ix';
-import { FormGroup, InputGroup, FormControl, Button, DropdownButton, MenuItem, HelpBlock } from 'react-bootstrap';
+import { FormGroup, FormGroupProps, InputGroup, FormControl, FormControlProps, Button, DropdownButton, MenuItem, HelpBlock } from 'react-bootstrap';
 import { Icon } from 'react-fa';
+import * as classNames from 'classnames';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { BindableInput } from '../BindableInput/BindableInput';
 import { TimeSpanInputViewModel } from './TimeSpanInputViewModel';
+import { CommandButton } from '../CommandButton/CommandButton';
 
 import './TimeSpanInput.less';
 
-export interface TimeSpanInputProps extends BaseViewProps {
-  id: string;
-  bsSize?: string;
+export interface TimeSpanControlProps extends FormControlProps {
+  viewModel: TimeSpanInputViewModel;
+}
+
+export class TimeSpanControl extends React.Component<any, any> {
+  render() {
+    const { className, props, rest } = this.restProps(x => {
+      const { viewModel } = x;
+      return { viewModel };
+    });
+
+    return (
+      <BindableInput property={ props.viewModel.text }>
+        <FormControl { ...rest } className={ classNames('TimeSpanControl', className) } type='text' />
+      </BindableInput>
+    );
+  }
+}
+
+export interface TimeSpanInputProps extends BaseViewProps, FormGroupProps, FormControlProps {
+  children?: TimeSpanControl;
 }
 
 export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInputViewModel> {
@@ -22,48 +41,75 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInpu
 
   updateOn() {
     return [
-      this.state.value.changed,
       this.state.unit.changed,
-      this.state.isValid.changed,
-      this.state.validationError.changed,
+      this.state.hasError.changed,
     ];
   }
 
   render() {
-    const { rest, props } = this.restProps(x => {
-      const { id, bsSize } = x;
-      return { id, bsSize };
-    });
+    const { className, rest } = this.restProps();
 
-    const isValid = this.state.isValid();
-    const validationError = this.state.validationError();
+    rest.validationState = rest.validationState || (this.state.hasError() ? 'error' : null);
 
     return (
-      <div className='TimeSpanInput'>
-        <FormGroup controlId={props.id} validationState={isValid ? null : 'error'}>
-          <InputGroup>
-            <BindableInput property={this.state.text}>
-              <FormControl type='text' {...rest}></FormControl>
-            </BindableInput>
-            <InputGroup.Button>
-              <DropdownButton id={`TimeSpan-units-${props.id}`} className='TimeSpan-units' key='units'
-                title={this.state.unit().name} bsSize={props.bsSize}
-                onSelect={this.bindEventToCommand(x => x.setUnit)}>
-                {
-                  Enumerable
-                    .fromArray(this.state.units)
-                    .map(x => <MenuItem key={x.type} eventKey={x} active={x.type === this.state.unit().type}>{x.name}</MenuItem>)
-                    .toArray()
-                }
-              </DropdownButton>
-              <Button key='up' onClick={this.bindEventToCommand(x => x.adjustValue, () => 1)}><Icon name='chevron-up'/></Button>
-              <Button key='down' onClick={this.bindEventToCommand(x => x.adjustValue, () => -1)}><Icon name='chevron-down'/></Button>
-            </InputGroup.Button>
-          </InputGroup>
-          <FormControl.Feedback />
-          <HelpBlock className={({hidden: isValid})}>{ validationError }</HelpBlock>
-        </FormGroup>
-      </div>
+      <FormGroup { ...rest } className={ classNames('TimeSpanInput', className) }>
+        <InputGroup>
+          { this.renderControl() }
+          <InputGroup.Button>
+            { this.renderDropdown() }
+            <CommandButton className='TimeSpanInput-adjustButton' command={ this.state.adjust } commandParameter={ 1 }>
+              <Icon name='chevron-up'/>
+            </CommandButton>
+            <CommandButton className='TimeSpanInput-adjustButton' command={ this.state.adjust } commandParameter={ -1 }>
+              <Icon name='chevron-down'/>
+            </CommandButton>
+          </InputGroup.Button>
+        </InputGroup>
+        <FormControl.Feedback  />
+        { this.renderHelp() }
+      </FormGroup>
     );
+  }
+
+  private renderControl() {
+    return this.renderConditional(
+      this.props.children != null,
+      () => this.props.children,
+      () => (
+        <TimeSpanControl viewModel={ this.state } placeholder='Type in a timespan, or use the controls on the right...' />
+      )
+    );
+  }
+
+  private renderDropdown() {
+    return (
+      <DropdownButton id={ `TimeSpanInput-units-${ this.props.id }` } className='TimeSpanInput-unitDropdown'
+        title={ this.state.unit().name } bsSize={ this.props.bsSize }
+        onSelect={ this.bindEventToCommand(x => x.setUnit) }
+      >
+        {
+          this.state.units
+            .map(x => (
+              <MenuItem key={ x.type } eventKey={ x } active={ x.type === this.state.unit().type }>
+                { x.name }
+              </MenuItem>
+            ))
+        }
+      </DropdownButton>
+    );
+  }
+
+  private renderHelp() {
+    return this.renderConditional(this.state.hasError, () => (
+      <HelpBlock>
+        {
+          this.renderConditional(
+            String.isNullOrEmpty(this.state.text()) === true,
+            () => 'Duration is required.',
+            () => 'Invalid Duration Format.'
+          )
+        }
+      </HelpBlock>
+    ));
   }
 }

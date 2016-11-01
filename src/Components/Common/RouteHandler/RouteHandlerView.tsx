@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Grid, Alert } from 'react-bootstrap';
 import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import * as classNames from 'classnames';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { RouteHandlerViewModel } from './RouteHandlerViewModel';
@@ -24,26 +25,16 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
     super(props, context);
 
     if (this.props.viewMap['*'] == null) {
-      this.props.viewMap['*'] = this.createError('View Not Found');
+      this.props.viewMap['*'] = () => this.renderError('View Not Found');
     }
 
     if (this.props.viewMap[''] == null) {
-      this.props.viewMap[''] = this.createError('Route Not Found');
+      this.props.viewMap[''] = () => this.renderError('Route Not Found');
     }
 
     if (this.props.viewMap[SplashKey] == null) {
       this.props.viewMap[SplashKey] = null;
     }
-  }
-
-  private createError(text: string) {
-    return (
-      <Grid className='RouteHandler-error'>
-        <Alert bsStyle='danger'>
-          <h4>{text}</h4>
-        </Alert>
-      </Grid>
-    );
   }
 
   private getViewKey() {
@@ -52,7 +43,32 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
       this.state.currentViewModel().getRoutingKey();
   }
 
-  private getView(key: string): any {
+  updateOn() {
+    return [
+      this.state.currentViewModel.changed,
+    ];
+  }
+
+  render() {
+    const { className, rest } = this.restProps(x => {
+      const { viewMap } = x;
+      return { viewMap };
+    });
+
+    const key = this.getViewKey();
+
+    return (
+      <div { ...rest } className={ classNames('RouteHandler', className) }>
+        <ReactCSSTransitionGroup transitionName='view' transitionLeave={ false } transitionEnterTimeout={ 250 }>
+          <div className='RouteHandler-viewContainer' key={ key }>
+            { this.renderRoutedView(key) }
+          </div>
+        </ReactCSSTransitionGroup>
+      </div>
+    );
+  }
+
+  private renderRoutedView(key: string): any {
     let viewModel = this.state.currentViewModel();
 
     let activator = this.props.viewMap[key];
@@ -66,27 +82,16 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
       view = activator(viewModel);
     }
 
-    return view;
+    return view || 'Catastrophic Failure';
   }
 
-  updateOn() {
-    return [
-      this.state.currentViewModel.changed,
-    ];
-  }
-
-  render() {
-    let key = this.getViewKey();
-    let view = this.getView(key) || 'Catastrophic Failure';
-
+  private renderError(text: string) {
     return (
-      <div className='RouteHandler'>
-        <ReactCSSTransitionGroup transitionName='view' transitionLeave={false} transitionEnterTimeout={250}>
-          <div className='RouteHandler-viewContainer' key={key}>
-            { view }
-          </div>
-        </ReactCSSTransitionGroup>
-      </div>
+      <Grid className='RouteHandler-error'>
+        <Alert bsStyle='danger'>
+          <h4>{ text }</h4>
+        </Alert>
+      </Grid>
     );
   }
 }

@@ -38,9 +38,7 @@ export class RoutingMap {
 
   public get menus() {
     return Object.getOwnPropertyNames(this.menuMap)
-      .asEnumerable()
-      .map(x => this.menuMap[x])
-      .toArray();
+      .map(x => this.menuMap[x]);
   }
 }
 
@@ -101,5 +99,6 @@ routingMap.addRoute('Framework', 'ModalDialog', 'Modal Dialog', (state: any) => 
   };
 });
 routingMap.addRoute('Framework', 'Tabs', 'Tabs', (state: any) => new wxr.Components.TabsViewModel());
+routingMap.addRoute('Framework', 'StaticTabs', 'Static Tabs', (state: any) => new wxr.Components.TabsViewModel());
 
 export const Default = routingMap;

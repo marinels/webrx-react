@@ -227,6 +227,8 @@ export namespace Components {
   export import TimeSpanUnit = TimeSpanInputViewModelTypes.TimeSpanUnit;
   export import TimeSpanUnits = TimeSpanInputViewModelTypes.TimeSpanUnits;
   export import TimeSpanInputViewModel = TimeSpanInputViewModelTypes.TimeSpanInputViewModel;
+  export import TimeSpanControlProps = TimeSpanInputViewTypes.TimeSpanControlProps;
+  export import TimeSpanControl = TimeSpanInputViewTypes.TimeSpanControl;
   export import TimeSpanInputProps = TimeSpanInputViewTypes.TimeSpanInputProps;
   export import TimeSpanInputView = TimeSpanInputViewTypes.TimeSpanInputView;
 
@@ -253,6 +255,7 @@ export namespace Components {
 
   export import TabsRoutingState = TabsViewModelTypes.TabsRoutingState;
   export import TabsViewModel = TabsViewModelTypes.TabsViewModel;
+  export import TabRenderTemplate = TabsViewTypes.TabRenderTemplate;
   export import TabsProps = TabsViewTypes.TabsProps;
   export import TabsView = TabsViewTypes.TabsView;
 

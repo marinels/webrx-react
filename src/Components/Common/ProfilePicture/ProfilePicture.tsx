@@ -3,16 +3,17 @@ import { Image } from 'react-bootstrap';
 import { Icon } from 'react-fa';
 import * as classNames from 'classnames';
 
+import { renderConditional } from '../../React/RenderHelpers';
+
 import './ProfilePicture.less';
 
-export interface ProfilePictureProps extends React.HTMLProps<HTMLDivElement> {
+export interface ProfilePictureProps extends React.HTMLAttributes {
   src: string;
   size?: number;
   responsive?: boolean;
   rounded?: boolean;
   circle?: boolean;
   thumbnail?: boolean;
-  block?: boolean;
   defaultSrc?: string;
   defaultIcon?: string;
   iconSize?: string;
@@ -33,52 +34,62 @@ export class ProfilePicture extends React.Component<ProfilePictureProps, any> {
     iconSize: '4x',
   };
 
-  render() {
-    const { rest, props } = this.restProps(x => {
-      const { src, size, responsive, rounded, circle, thumbnail, defaultSrc, defaultIcon, iconSize, block } = x;
-      return { src, size, responsive, rounded, circle, thumbnail, defaultSrc, defaultIcon, iconSize, block };
-    }, 'classNames', 'style');
-
-    let src = props.src || props.defaultSrc;
+  private getImageSource() {
+    let src = this.props.src || this.props.defaultSrc;
 
     // if we're using a src URI, ensure it contains a data URI prefix
     if (String.isNullOrEmpty(src) === false && src.indexOf(dataUriPrefix) < 0) {
       src = `${dataUriPrefix}${src}`;
     }
 
-    let image: any = null;
+    return src;
+  }
 
-    if (src == null) {
-      const iconClassNames = classNames(
-        this.props.className,
-        'ProfilePicture',
-        'ProfilePicture-icon',
-        { 'ProfilePicture-iconThumbnail': props.thumbnail, 'ProfilePicture-iconRounded': props.rounded }
-      );
-      const blockStyle = Object.assign({  }, this.props.style, {
-        width: props.size,
-        height: props.size,
-      });
+  render() {
+    const src = this.getImageSource();
 
-      image = (
-        <div { ...rest } className={ iconClassNames } style={ blockStyle }>
-          <Icon name={ props.defaultIcon } size={ props.iconSize } />
-        </div>
-      );
-    }
-    else {
-      const imageClassNames = classNames(this.props.className, 'ProfilePicture');
-      const imageStyle = Object.assign({
-        width: props.responsive === true ? null : props.size,
-        height: props.responsive === true ? null : props.size,
-      }, this.props.style);
+    return renderConditional(src == null, () => this.renderIcon(), () => this.renderImage(src));
+  }
 
-      image = (
-        <Image { ...rest } className={ imageClassNames } style={ imageStyle } src={ src } width={ props.size } height={ props.size }
-          responsive={ props.responsive } rounded={ props.rounded } circle={ props.circle } thumbnail={ props.thumbnail } />
-      );
-    }
+  private renderIcon() {
+    const { className, props, rest } = this.restProps(x => {
+      const { src, size, responsive, rounded, circle, thumbnail, defaultSrc, defaultIcon, iconSize, style } = x;
+      return { src, size, responsive, rounded, circle, thumbnail, defaultSrc, defaultIcon, iconSize, style };
+    });
 
-    return image;
+    const iconClassNames: ClassDictionary = {
+      'ProfilePicture-iconThumbnail': props.thumbnail,
+      'ProfilePicture-iconRounded': props.rounded,
+    };
+
+    const style = Object.assign({}, props.style, {
+      width: props.size,
+      height: props.size,
+      lineHeight: `${ props.size }px`,
+    });
+
+    return (
+      <div { ...rest } className={ classNames('ProfilePicture', 'ProfilePicture-icon', iconClassNames, className) } style={ style }>
+        <Icon name={ props.defaultIcon } size={ props.iconSize } />
+      </div>
+    );
+  }
+
+  private renderImage(src: string) {
+    const { className, props, rest } = this.restProps(x => {
+      const { size, defaultSrc, defaultIcon, iconSize, style } = x;
+      return { size, defaultSrc, defaultIcon, iconSize, style };
+    });
+
+    const style = Object.assign({}, props.style, {
+      width: this.props.responsive === true ? null : props.size,
+      height: this.props.responsive === true ? null : props.size,
+    });
+
+    return (
+      <Image { ...rest } className={ classNames('ProfilePicture', className) } style={ style }
+        src={ src } width={ props.size } height={ props.size }
+      />
+    );
   }
 }

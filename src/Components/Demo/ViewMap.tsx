@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as wx from 'webrx';
-import { Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel } from 'react-bootstrap';
+import { Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab, Well } from 'react-bootstrap';
 
 import * as wxr from '../../web.rx.react';
 import * as renderHelpers from '../React/RenderHelpers';
@@ -20,6 +20,7 @@ const {
   DataGridColumn,
   DataGridListViewTemplate,
   ModalDialogView,
+  TabRenderTemplate,
   TabsView,
 } = wxr.Components;
 
@@ -166,22 +167,33 @@ const viewMap: ViewActivatorMap = {
       </ModalDialogView>
     </div>
   ),
-  TabsViewModel: (viewModel: wxr.Components.TabsViewModel<any>) => {
-    let c = 0;
-    return (
-      <div>
-        <Button style={({ width: '100%', marginBottom: 10 })}
-          onClick={() => { viewModel.items.add(++c); viewModel.selectIndex.execute(viewModel.items.length() - 1); } }>
-          Create Tab
+  TabsViewModel: (viewModel: wxr.Components.TabsViewModel<any>, componentRoute: string) => {
+    if (componentRoute === 'StaticTabs') {
+      return (
+        <TabsView viewModel={viewModel} id='demo-tabs'>
+          <Tab title='First Static Tab'><Well style={({ margin: 0 })}>Content 1</Well></Tab>
+          <Tab title='Second Static Tab'><Well style={({ margin: 0 })}>Content 2</Well></Tab>
+        </TabsView>
+      );
+    }
+    else {
+      let c = 0;
+
+      const template = new TabRenderTemplate<any>((x, i) => `Tab ${ i + 1 }`, (x, i, vm) => (
+        <Button style={({ width: '100%', marginTop: 10 })} onClick={ () => { vm.tabs.removeAt(i); } }>
+          { `Close Tab ${ i + 1 }` }
         </Button>
-        <TabsView viewModel={viewModel} id='demo-tabs' dataTemplate={(x, i) => (
-          <Button style={({ width: '100%', marginTop: 10 })}
-            onClick={() => { viewModel.items.removeAt(i); viewModel.selectIndex.execute(i - 1); } }>
-            Close Tab{i}
+      ));
+
+      return (
+        <div>
+          <Button style={({ width: '100%', marginBottom: 10 })} onClick={() => { viewModel.tabs.add(++c); } }>
+            Create Tab
           </Button>
-        )} />
-      </div>
-    );
+          <TabsView viewModel={ viewModel } id='demo-tabs' template={ template } />
+        </div>
+      );
+    }
   },
 };
 

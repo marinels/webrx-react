@@ -14,13 +14,10 @@ export class AlertView extends BaseView<AlertProps, AlertViewModel> {
   public static displayName = 'AlertView';
 
   render() {
-    const { rest, props } = this.restProps(x => {
-      const { className } = x;
-      return { className };
-    });
+    const { className, rest } = this.restProps();
 
     return (
-      <div { ...rest } className={ classNames('Alert', props.className) }>
+      <div { ...rest } className={ classNames('Alert', className) }>
         <Alert bsStyle={ this.state.style } onDismiss={ this.bindEventToCommand(x => x.dismiss) }>
           <h4>{ this.state.header }</h4>
           <span className='Alert-text' dangerouslySetInnerHTML={ { __html: this.state.content } }></span>

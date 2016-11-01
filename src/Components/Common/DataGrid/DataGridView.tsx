@@ -48,27 +48,25 @@ export class DataGridListViewTemplate<T> implements DataGridViewTemplate<T> {
 
   render(viewModel: DataGridViewModel<T>, view: DataGridView) {
     return (
-      <div className='DataGrid-listView'>
-        <ListGroup>
-          {
-            (viewModel.projectedItems() || [])
-              .asEnumerable()
-              .map((x, i) =>
-                this.renderItemContainer(
-                  this.renderItem(x, i, viewModel, view),
-                  x,
-                  i,
-                  viewModel,
-                  view
-                )
+      <ListGroup className='DataGrid-listView' fill={ view.props.fill }>
+        {
+          (viewModel.projectedItems() || [])
+            .asEnumerable()
+            .map((x, i) =>
+              this.renderItemContainer(
+                this.renderItem(x, i, viewModel, view),
+                x,
+                i,
+                viewModel,
+                view
               )
-              .defaultIfEmpty(
-                <div key='empty' className='DataGrid-empty text-muted'>List is Empty...</div>
-              )
-              .toArray()
-          }
-        </ListGroup>
-      </div>
+            )
+            .defaultIfEmpty(
+              <div key='empty' className='DataGrid-empty text-muted'>List is Empty...</div>
+            )
+            .toArray()
+        }
+      </ListGroup>
     );
   }
 
@@ -107,7 +105,7 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
         children = Object
           .keys(items[0])
           .map(x => (
-            <DataGridColumn fieldName={x} />
+            <DataGridColumn fieldName={ x } />
           )) as any;
       }
     }
@@ -144,7 +142,7 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
     const columns = this.createColumns(viewModel, view);
 
     return (
-      <Table className='DataGrid-tableView' { ...this.tableProps }>
+      <Table className='DataGrid-tableView' fill={ view.props.fill } { ...this.tableProps }>
         <thead>{ this.renderColumns(columns, viewModel, view) }</thead>
         <tbody>{ this.renderRows(columns, viewModel, view) }</tbody>
       </Table>
@@ -263,10 +261,11 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
 }
 
 export interface DataGridProps extends BaseViewProps {
+  fill?: boolean;
   view?: DataGridViewTemplate<any>;
-  pagerLimits?: number[];
   search?: boolean;
   pager?: boolean;
+  pagerLimits?: number[];
   highlightSelected?: boolean;
   children?: DataGridColumn[];
 }
@@ -275,6 +274,7 @@ export class DataGridView extends BaseView<DataGridProps, DataGridViewModel<any>
   public static displayName = 'DataGridView';
 
   static defaultProps = {
+    fill: false,
     view: new DataGridTableViewTemplate<any>(),
     search: false,
     pager: false,
@@ -294,20 +294,29 @@ export class DataGridView extends BaseView<DataGridProps, DataGridViewModel<any>
   }
 
   render() {
+    const { className, rest } = this.restProps(x => {
+      const { fill, view, search, pager, pagerLimits, highlightSelected } = x;
+      return { fill, view, search, pager, pagerLimits, highlightSelected };
+    });
+
     return (
-      <div className='DataGrid'>
-        {
-          this.renderConditional(this.props.search === true && this.state.canFilter() === true, () => (
-            <SearchView viewModel={ this.state.search }/>
-          ))
-        }
+      <div { ...rest } className={ classNames('DataGrid', className) }>
+        { this.renderSearch() }
         { this.props.view.render(this.state, this) }
-        {
-          this.renderConditional(this.props.pager === true, () => (
-            <PagerView viewModel={ this.state.pager } limits={ this.props.pagerLimits } info  />
-          ))
-        }
+        { this.renderPager() }
       </div>
     );
+  }
+
+  private renderSearch() {
+    return this.renderConditional(this.props.search === true && this.state.canFilter() === true, () => (
+      <SearchView viewModel={ this.state.search } />
+    ));
+  }
+
+  private renderPager() {
+    return this.renderConditional(this.props.pager === true, () => (
+      <PagerView viewModel={ this.state.pager } limits={ this.props.pagerLimits } info  />
+    ));
   }
 }

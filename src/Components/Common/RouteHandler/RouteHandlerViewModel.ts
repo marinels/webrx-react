@@ -1,4 +1,5 @@
 import { Enumerable } from 'ix';
+import * as wx from 'webrx';
 
 import { BaseViewModel } from '../../React/BaseViewModel';
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
@@ -20,32 +21,38 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
   private currentPath: string;
 
-  public currentViewModel = this.manager.currentRoute.changed
-    .map(x => this.getRoutedViewModel(x))
-    .doOnNext(x => {
-      if (x != null) {
-        document.title = x.getTitle();
-      }
-
-      const vm = this.currentViewModel();
-      if (vm != null && vm !== x && vm.dispose instanceof Function) {
-        vm.dispose();
-      }
-    })
-    .toProperty();
-
-  public isLoading = this.currentViewModel.changed
-    .map(x => false)
-    .take(1)
-    .startWith(true)
-    .toProperty();
+  public currentViewModel: wx.IObservableReadOnlyProperty<any>;
+  public isLoading: wx.IObservableReadOnlyProperty<boolean>;
 
   constructor(public manager: RouteManager, public routingMap: RoutingMap) {
     super();
 
+    this.currentViewModel = wx
+      .whenAny(this.manager.currentRoute, x => x)
+      .filter(x => x != null)
+      .map(x => this.getRoutedViewModel(x))
+      .doOnNext(x => {
+        if (x != null) {
+          document.title = x.getTitle();
+        }
+
+        const vm = this.currentViewModel();
+        if (vm != null && vm !== x && vm.dispose instanceof Function) {
+          vm.dispose();
+        }
+      })
+      .toProperty();
+
+    this.isLoading = wx
+      .whenAny(this.currentViewModel, x => x == null)
+      .filter(x => x === false)
+      .take(1)
+      .toProperty(true);
+
     this.subscribe(this.currentViewModel.thrownExceptions
       .subscribe(x => {
         const name = x == null ? '' : ` ${ Object.getName(x) }`;
+
         this.alertForError(x, `Error Routing to ViewModel ${ name }`);
       })
     );
@@ -78,7 +85,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
     else {
       if (activator.path != null && activator.creator == null) {
         // this is a simple redirect route
-        this.logger.debug(`Redirecting from ${route.path} to ${activator.path}`);
+        this.logger.debug(`Redirecting from ${ route.path } to ${ activator.path }`);
 
         // only redirect to a different path
         this.manager.navTo(activator.path);
@@ -87,14 +94,14 @@ export class RouteHandlerViewModel extends BaseViewModel {
         // this is a routed view model path
         if ((activator.path || route.path) === this.currentPath) {
           // we're on the same path (or virtual path)
-          this.logger.debug(`Routing to Same Path: (${activator.path} || ${route.path}) == ${this.currentPath}`);
+          this.logger.debug(`Routing to Same Path: (${ activator.path } || ${ route.path }) == ${ this.currentPath }`);
 
           // we can just update the current routed component's state
           this.updateRoutingState(route);
         }
         else {
           // a new routing path is requested
-          this.logger.debug(`Routing to Path: ${route.path}`);
+          this.logger.debug(`Routing to Path: ${ route.path }`);
 
           // update the current path (use the virtual path if specified, otherwise the routing path)
           this.currentPath = activator.path == null ? route.path : activator.path;
@@ -115,7 +122,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
     viewModel = viewModel || this.currentViewModel();
 
     if (viewModel != null) {
-      this.logger.debug(`Updating Routing State: ${route.path}`);
+      this.logger.debug(`Updating Routing State: ${ route.path }`);
 
       if (route.state != null) {
         this.logger.debug(JSON.stringify(route.state, null, 2));

@@ -10,26 +10,33 @@ export interface SearchRoutingState {
 export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
   public static displayName = 'SearchViewModel';
 
-  public filter = wx.property('');
-  public regex = this.filter.changed
-    .debounce(this.isLiveSearchEnabled ? this.liveSearchTimeout : 0)
-    .distinctUntilChanged()
-    .map(x => this.createRegex(x))
-    .toProperty();
+  public filter: wx.IObservableProperty<string>;
+  public regex: wx.IObservableReadOnlyProperty<RegExp>;
 
-  public search = wx.asyncCommand((x: RegExp) => {
-    this.notifyChanged();
-
-    return Observable.of(x);
-  });
+  public search: wx.ICommand<RegExp>;
 
   constructor(public isLiveSearchEnabled = false, private liveSearchTimeout = 250, private isCaseInsensitive = true, isRoutingEnabled = false) {
     super(isRoutingEnabled);
 
-    this.subscribe(this.results
-      .invokeCommand(this.routingStateChanged));
+    this.filter = wx.property('');
 
-    if (this.isLiveSearchEnabled) {
+    this.regex = wx
+      .whenAny(this.filter, x => x)
+      .debounce(this.isLiveSearchEnabled ? this.liveSearchTimeout : 0)
+      .map(x => this.createRegex(x))
+      .toProperty();
+
+    this.search = wx.asyncCommand((x: RegExp) => {
+      this.notifyChanged();
+
+      return Observable.of(x);
+    });
+
+    this.subscribe(this.results
+      .invokeCommand(this.routingStateChanged)
+    );
+
+    if (this.isLiveSearchEnabled === true) {
       this.subscribe(this.regex.changed
         .invokeCommand(this.search)
       );

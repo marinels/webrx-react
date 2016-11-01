@@ -32,9 +32,9 @@ export class PagerView extends BaseView<PagerProps, PagerViewModel> {
   }
 
   render() {
-    const { rest, props } = this.restProps(x => {
-      const { info, limits, className } = x;
-      return { info, limits, className };
+    const { className, rest, props } = this.restProps(x => {
+      const { info, limits } = x;
+      return { info, limits };
     });
 
     const pagerProps = Object.rest(rest, x => {
@@ -43,7 +43,7 @@ export class PagerView extends BaseView<PagerProps, PagerViewModel> {
     });
 
     return (
-      <div { ...pagerProps.rest } className={ classNames('Pager', props.className) }>
+      <div { ...pagerProps.rest } className={ classNames('Pager', className) }>
         { this.renderInfo(props.info) }
         { this.renderControls(props.limits, pagerProps.props) }
         { this.renderLimit(props.limits, rest) }

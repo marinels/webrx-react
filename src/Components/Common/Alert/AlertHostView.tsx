@@ -21,13 +21,10 @@ export class AlertHostView extends BaseView<AlertHostProps, AlertHostViewModel> 
   }
 
   render() {
-    const { rest, props } = this.restProps(x => {
-      const { className } = x;
-      return { className };
-    });
+    const { className, rest } = this.restProps();
 
     return (
-      <div { ...rest } className={ classNames('AlertHost', props.className) }>
+      <div { ...rest } className={ classNames('AlertHost', className) }>
         <ReactCSSTransitionGroup transitionName='alert' transitionEnterTimeout={ 500 } transitionLeaveTimeout={ 300 }>
           { this.renderAlerts() }
         </ReactCSSTransitionGroup>

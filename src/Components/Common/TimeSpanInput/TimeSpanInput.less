@@ -1,28 +1,22 @@
-.TimeSpanInput {
-  .form-group {
-    margin: 0;
+@import (reference) '../../../Style/Bootstrap.less';
 
-    .input-group-btn {
-      // WARNING: these static widths are required so we can position the
-      //          feedback icon below
+@upDownButtonWidth: 40px;
+@unitDropdownWidth: 100px;
 
-      & > .dropdown {
-        width: 97px;
+.TimeSpanInput.form-group {
+  // set static button width for up/down buttons
+  .TimeSpanInput-adjustButton {
+    width: @upDownButtonWidth;
+  }
 
-        & > .btn {
-          width: 100%;
-        }
-      }
+  // set static button width for dropdown button
+  .TimeSpanInput-unitDropdown {
+    width: @unitDropdownWidth;
+  }
 
-      & > .btn {
-        width: 40px;
-      }
-    }
-
-    .form-control-feedback {
-      // 97 + 40 + 40 - 3 = 180
-      //                ^------- the 3 input group buttons are margined with -1
-      right: 180px;
-    }
+  // fix location of the feedback icon to account for the buttons on the right
+  .form-control-feedback {
+    // -3 to account for the 3 1px borders
+    right: @upDownButtonWidth * 2 + @unitDropdownWidth - 3;
   }
 }

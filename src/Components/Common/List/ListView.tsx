@@ -182,7 +182,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
 
     return renderConditional(node.nodes.length > 0, () => (
       <CommandButton className='TreeNode-expander' componentClass='div' bsStyle='link' command={ this.toggleNode } commandParameter={ node }>
-        <Icon name={node.isExpanded === true ? 'minus-square-o' : 'plus-square-o'} size='lg' />
+        <Icon name={ node.isExpanded === true ? 'minus-square-o' : 'plus-square-o' } size='lg' />
       </CommandButton>
     ), () => emptyExpander);
   }
@@ -260,7 +260,7 @@ export class ListView extends BaseView<ListProps, ListViewModel<any, any>> {
   }
 
   render() {
-    const { rest, props } = this.restProps(x => {
+    const { props, rest } = this.restProps(x => {
       const { view, selectable, highlightSelected, checkmarkSelected, className } = x;
       return { view, selectable, highlightSelected, checkmarkSelected, className };
     });

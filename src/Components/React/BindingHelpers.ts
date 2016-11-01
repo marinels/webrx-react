@@ -12,7 +12,7 @@ export function bindObservableToCommand<TViewModel extends BaseViewModel, TResul
   commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>,
   observable: Observable<TResult>
 ) {
-  return viewModel.bind(observable, commandSelector(viewModel));
+  return viewModel.bind(commandSelector, observable);
 }
 
 /**

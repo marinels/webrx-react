@@ -21,9 +21,9 @@ export class BindableInput extends React.Component<BindableInputProps, any> {
   };
 
   render() {
-    const { rest, props } = this.restProps(x => {
-      const { property, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, children } = x;
-      return { property, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, children };
+    const { className, children, props, rest } = this.restProps(x => {
+      const { property, converter, valueProperty, onChangeProperty, valueGetter, valueSetter } = x;
+      return { property, converter, valueProperty, onChangeProperty, valueGetter, valueSetter };
     });
 
     const bindProps: any = {};
@@ -31,8 +31,8 @@ export class BindableInput extends React.Component<BindableInputProps, any> {
     bindProps[props.onChangeProperty] = (e: React.FormEvent) => this.onChange(e);
 
     return React.cloneElement(
-      React.Children.only(props.children),
-      Object.assign({}, rest, bindProps)
+      React.Children.only(children),
+      Object.assign({ className }, rest, bindProps)
     );
   }
 

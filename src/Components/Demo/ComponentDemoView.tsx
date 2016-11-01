@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Enumerable } from 'ix';
 import { Grid, Row, Col, PageHeader, DropdownButton, MenuItem, Alert } from 'react-bootstrap';
+import * as classNames from 'classnames';
 
 import { BaseView, BaseViewProps } from '../React/BaseView';
 import { ComponentDemoViewModel } from './ComponentDemoViewModel';

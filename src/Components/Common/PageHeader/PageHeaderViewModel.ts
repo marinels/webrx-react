@@ -11,43 +11,19 @@ import { SubMan } from '../../../Utils/SubMan';
 export class PageHeaderViewModel extends BaseViewModel {
   public static displayName = 'PageHeaderViewModel';
 
-  private dynamicSubs = new SubMan();
+  private dynamicSubs: SubMan;
 
   public search: SearchViewModel = null;
-  public sidebarMenus = wx.list<HeaderMenu>();
-  public navbarMenus = wx.list<HeaderMenu>();
-  public navbarActions = wx.list<HeaderCommandAction>();
-  public helpMenuItems = wx.list<HeaderMenuItem>();
-  public adminMenuItems = wx.list<HeaderMenuItem>();
-  public userMenuItems = wx.list<HeaderMenuItem>();
+  public sidebarMenus: wx.IObservableList<HeaderMenu>;
+  public navbarMenus: wx.IObservableList<HeaderMenu>;
+  public navbarActions: wx.IObservableList<HeaderCommandAction>;
+  public helpMenuItems: wx.IObservableList<HeaderMenuItem>;
+  public adminMenuItems: wx.IObservableList<HeaderMenuItem>;
+  public userMenuItems: wx.IObservableList<HeaderMenuItem>;
+  public isSidebarVisible: wx.IObservableReadOnlyProperty<boolean>;
 
-  public menuItemSelected = wx.command((x: HeaderMenuItem) => {
-    if (x != null) {
-      if (x.command != null) {
-        x.command.execute(x.commandParameter);
-      }
-      else if (x.uri != null && x.uri.length > 0) {
-        if (x.uri[0] === '#') {
-          this.navTo(x.uri);
-        }
-        else {
-          window.location.href = x.uri;
-        }
-      }
-    }
-
-    this.toggleSideBar.execute(false);
-  });
-
-  public toggleSideBar = wx.asyncCommand((isVisible: boolean) => {
-    const visibility: boolean = Object.fallback(isVisible, !this.isSidebarVisible());
-
-    return Observable.of(visibility);
-  });
-
-  public isSidebarVisible = this.toggleSideBar.results
-    .startWith(false)
-    .toProperty();
+  public menuItemSelected: wx.ICommand<HeaderMenuItem>;
+  public toggleSideBar: wx.ICommand<boolean>;
 
   constructor(
     public routeHandler?: RouteHandlerViewModel,
@@ -59,8 +35,56 @@ export class PageHeaderViewModel extends BaseViewModel {
     public staticUserMenuItems: HeaderMenuItem[] = [],
     public userImage?: string,
     public userDisplayName?: string,
-    public homeLink = '#/') {
+    public homeLink = '#/'
+  ) {
     super();
+
+    this.dynamicSubs = new SubMan();
+
+    this.sidebarMenus = wx.list<HeaderMenu>();
+    this.navbarMenus = wx.list<HeaderMenu>();
+    this.navbarActions = wx.list<HeaderCommandAction>();
+    this.helpMenuItems = wx.list<HeaderMenuItem>();
+    this.adminMenuItems = wx.list<HeaderMenuItem>();
+    this.userMenuItems = wx.list<HeaderMenuItem>();
+
+    this.toggleSideBar = wx.asyncCommand((isVisible: boolean) =>
+      Observable.of(Object.fallback(isVisible, !this.isSidebarVisible()))
+    );
+
+    this.isSidebarVisible = wx
+      .whenAny(this.toggleSideBar.results, x => x)
+      .toProperty(false);
+
+    this.menuItemSelected = wx.asyncCommand((x: HeaderMenuItem) => Observable.of(x));
+
+    this.subscribe(
+      wx
+        .whenAny(this.menuItemSelected.results, x => x)
+        .filter(x => x != null)
+        .map(x => false)
+        .invokeCommand(this.toggleSideBar)
+    );
+
+    this.subscribeOrAlert(
+      () => wx
+        .whenAny(this.menuItemSelected.results, x => x)
+        .filter(x => x != null),
+      'Page Header Menu Item Error',
+      x => {
+        if (x.command != null) {
+          x.command.execute(x.commandParameter);
+        }
+        else if (x.uri != null && x.uri.length > 0) {
+          if (x.uri[0] === '#') {
+            this.navTo(x.uri);
+          }
+          else {
+            window.location.href = x.uri;
+          }
+        }
+      }
+    );
 
     if (this.routeHandler != null) {
       this.subscribe(

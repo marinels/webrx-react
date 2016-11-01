@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as classNames from 'classnames';
 import { IDisposable } from  'rx';
 import * as wx from 'webrx';
 import { Button, ButtonProps } from 'react-bootstrap';
@@ -40,7 +41,7 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
   }
 
   render() {
-    const { rest, props } = this.restProps(x => {
+    const { className, children, rest, props } = this.restProps(x => {
       const { command, commandParameter } = x;
       return { command, commandParameter };
     });
@@ -67,7 +68,9 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
     }
 
     return (
-      <Button { ...rest } disabled={ canExecute !== true } onClick={ onClick } />
+      <Button { ...rest } className={ classNames('CommandButton', className) } disabled={ canExecute !== true } onClick={ onClick }>
+        { children }
+      </Button>
     );
   }
 }

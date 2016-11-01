@@ -190,7 +190,7 @@ export abstract class BaseViewModel implements IDisposable {
     routeManager.navTo(path, state, uriEncode);
   }
 
-  public bind<T>(observable: Observable<T>, command: wx.ICommand<T>) {
-    return this.subscribe(observable.invokeCommand(command));
+  public bind<T>(commandSelector: (viewModel: this) => wx.ICommand<T>, observable: Observable<T>) {
+    return this.subscribe(observable.invokeCommand(commandSelector.apply(this, [ this ])));
   }
 }

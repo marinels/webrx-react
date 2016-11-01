@@ -1,4 +1,6 @@
 import * as React from 'react';
+import * as classNames from 'classnames';
+import * as moment from 'moment';
 import { Observable } from 'rx';
 import { Grid, Row, Col } from 'react-bootstrap';
 
@@ -8,21 +10,28 @@ import { PageFooterViewModel, ViewportDimensions } from './PageFooterViewModel';
 import './PageFooter.less';
 
 export interface PageFooterProps extends BaseViewProps {
+  copyright?: string;
 }
 
 export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewModel> {
   public static displayName = 'PageFooterView';
 
+  static defaultProps = {
+    copyright: moment().format('YYYY'),
+  };
+
   constructor(props?: PageFooterProps, context?: any) {
     super(props, context);
 
-    this.bindObservableToCommand(x => x.viewportDimensionsChanged,
+    this.bindObservableToCommand(
+      x => x.viewportDimensionsChanged,
       Observable
         .merge(
           Observable.fromEvent<UIEvent>(window, 'resize'),
-          Observable.fromEvent<Event>(window, 'orientationchange'))
-        .map(_ => this.getDimensions())
-        .startWith(this.getDimensions())
+          Observable.fromEvent<Event>(window, 'orientationchange')
+        )
+        .startWith(null)
+        .map(() => this.getDimensions())
     );
   }
 
@@ -40,20 +49,37 @@ export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewMode
   }
 
   render() {
+    const { className, props, rest } = this.restProps(x => {
+      const { copyright } = x;
+      return { copyright };
+    });
+
     return (
-      <div className='PageFooter'>
+      <div { ...rest } className={ classNames('PageFooter', className) }>
         <Grid>
           <Row>
             <Col md={12}>
               <div className='PageFooter-container'>
-                <span className='PageFooter-text'>© {this.state.copyright}</span>
+                <span className='PageFooter-text'>© { props.copyright }</span>
                 <span className='PageFooter-spacer'> | </span>
-                <span ref='viewport' className='PageFooter-viewport PageFooter-text text-muted'>Viewport: {this.state.viewportDimensions()}</span>
+                <span ref='viewport' className='PageFooter-viewport PageFooter-text text-muted'>
+                  { this.renderDimensions() }
+                </span>
               </div>
             </Col>
           </Row>
         </Grid>
       </div>
+    );
+  }
+
+  private renderDimensions() {
+    const dim = this.state.viewportDimensions();
+
+    return this.renderConditional(
+      (dim == null || dim.width === 0 || dim.height === 0),
+      () => 'Measuring...',
+      () => `Viewport: ${ dim.width }x${ dim.height }`
     );
   }
 }

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as classNames from 'classnames';
 import { Modal } from 'react-bootstrap';
 
 import './Sidebar.less';
@@ -19,16 +20,20 @@ export class Sidebar extends React.Component<SidebarProps, any> {
   };
 
   render() {
+    const { className, children, props, rest } = this.restProps(x => {
+      const { onHide, isVisible, side, header } = x;
+      return { onHide, isVisible, side, header };
+    });
+
     return (
-      <Modal className={`Sidebar ${this.props.side}`}
-        onHide={this.props.onHide} show={this.props.isVisible}
-        autoFocus keyboard
+      <Modal { ...rest } className={ classNames('Sidebar', props.side, className) }
+        onHide={ this.props.onHide } show={ this.props.isVisible } autoFocus keyboard
       >
         <Modal.Header closeButton>
-          <Modal.Title>{this.props.header}</Modal.Title>
+          <Modal.Title>{ props.header }</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          { this.props.children }
+          { children }
         </Modal.Body>
       </Modal>
     );
