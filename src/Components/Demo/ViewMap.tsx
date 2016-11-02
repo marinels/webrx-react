@@ -35,6 +35,18 @@ export interface ViewActivatorMap {
 
 const logger = wxr.Logging.getLogger('Demo.ViewMap');
 
+const listTemplate = new ListViewTemplate<any>((x, i, vm, v) => {
+  return `${ x.name } (Required By ${ x.requiredBy })`;
+});
+
+const treeTemplate = new TreeViewTemplate<any>(
+  x => x.items,
+  x => {
+    return `${ x.name } (Required By ${ x.requiredBy })`;
+  },
+  () => true
+);
+
 const viewMap: ViewActivatorMap = {
   Loading: () => <Loading text='Standard Loader...' />,
   SizedLoading: (c, cr) => renderHelpers.renderSizedLoadable(true, '50px Loader...', 50),
@@ -109,31 +121,16 @@ const viewMap: ViewActivatorMap = {
     switch (componentRoute) {
       case 'List':
         return (
-          <ListView viewModel={ viewModel } view={ new ListViewTemplate<any>((x, i, vm, v) => {
-            return `${ x.name } (Required By ${ x.requiredBy })`;
-          }) }>
-          </ListView>
+          <ListView viewModel={ viewModel } view={ listTemplate } />
         );
       case 'Tree':
         return (
-          <ListView viewModel={ viewModel } selectable checkmarkSelected view={
-            new TreeViewTemplate<any>(
-              x => x.items,
-              x => {
-                return `${ x.name } (Required By ${ x.requiredBy })`;
-              },
-              () => true
-            )
-          }>
-          </ListView>
+          <ListView viewModel={ viewModel } selectable checkmarkSelected view={ treeTemplate } />
         );
       case 'PanelList':
         return (
           <Panel header='List View Embedded Within a Panel' style={({ margin: 0 })}>
-            <ListView viewModel={ viewModel } selectable checkmarkSelected fill view={ new ListViewTemplate<any>((x, i, vm, v) => {
-              return `${ x.name } (Required By ${ x.requiredBy })`;
-            }) }>
-            </ListView>
+            <ListView viewModel={ viewModel } selectable checkmarkSelected fill view={ listTemplate } />
           </Panel>
         );
       default:
