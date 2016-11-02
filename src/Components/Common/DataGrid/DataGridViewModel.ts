@@ -36,7 +36,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
   }
 
   constructor(
-    public items: wx.IObservableProperty<TData[]> = wx.property<TData[]>(),
+    public items: wx.IObservableProperty<TData[]> = wx.property<TData[]>([]),
     protected filterer?: (item: TData, regex: RegExp) => boolean,
     protected comparer = new ObjectComparer<TData>(),
     isMultiSelectEnabled?: boolean,
