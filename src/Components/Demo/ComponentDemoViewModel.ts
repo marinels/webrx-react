@@ -1,5 +1,4 @@
 import * as wx from 'webrx';
-import { Enumerable } from 'ix';
 
 import { Route } from '../../Routing/RouteManager';
 import { HeaderCommandAction, HeaderMenu, HeaderMenuItem } from '../Common/PageHeader/Actions';
@@ -17,29 +16,37 @@ export interface ComponentDemoRoutingState {
 export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoRoutingState> {
   public static displayName = 'ComponentDemoViewModel';
 
-  private pageHeader: PageHeaderViewModel = null;
+  private pageHeader: PageHeaderViewModel;
+  private demoAlertItem: HeaderMenuItem;
 
-  public componentRoute: string;
+  public componentRoute: wx.IObservableProperty<string>;
+  public columns: wx.IObservableProperty<number>;
+  public component: wx.IObservableReadOnlyProperty<any>;
 
-  public columns = wx.property(12);
-  public component = wx.property<any>(null);
-
-  public reRender = wx.command(x => {
-    const state = this.routingState() || <ComponentDemoRoutingState>{};
-    state.componentRoute = this.componentRoute;
-    this.setRoutingState(state);
-  });
-
-  private demoAlert = wx.command(x => this.createAlert(x, 'Demo Alert'));
-  private demoAlertItem = {
-    id: 'demo-alert-item',
-    header: 'Generate Alert',
-    command: this.demoAlert,
-    iconName: 'flask',
-  };
+  public setColumns: wx.ICommand<number>;
+  public reRender: wx.ICommand<any>;
+  private demoAlert: wx.ICommand<any>;
 
   constructor() {
     super(true);
+
+    this.componentRoute = wx.property<string>();
+    this.columns = wx.property(12);
+
+    this.reRender = wx.command();
+    this.demoAlert = wx.command((x: string) => this.createAlert(x, 'Demo Alert'));
+
+    this.demoAlertItem = {
+      id: 'demo-alert-item',
+      header: 'Generate Alert',
+      command: this.demoAlert,
+      iconName: 'flask',
+    };
+
+    this.component = wx
+      .whenAny(this.routingState, this.reRender.results.startWith(null), x => x)
+      .map(x => this.getViewModel(x))
+      .toProperty();
 
     this.subscribe(wx
       .whenAny(this.columns.changed, x => null)
@@ -56,21 +63,28 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     );
   }
 
-  private getViewModel(state: any) {
+  private getComponentRoute(state: ComponentDemoRoutingState) {
+    return state == null ? null : state.route.match[2];
+  }
+
+  private getViewModel(state: ComponentDemoRoutingState) {
     let activator: ViewModelActivator = null;
 
-    if (this.componentRoute != null) {
-      this.logger.debug(`Loading View Model for "${this.componentRoute}"...`);
-      activator = RoutingMap.viewModelMap[this.componentRoute];
+    const componentRoute = this.getComponentRoute(state);
+
+    if (componentRoute != null) {
+      this.logger.debug(`Loading View Model for "${ componentRoute }"...`);
+
+      activator = RoutingMap.viewModelMap[componentRoute];
 
       if (activator == null) {
-        let result = Enumerable
-          .fromArray(Object.keys(RoutingMap.viewModelMap))
+        let result = Object.keys(RoutingMap.viewModelMap)
           .filter(x => x != null && x.length > 0 && x[0] === '^')
           .map(x => ({ path: x, regex: new RegExp(x, 'i') }))
-          .map(x => ({ path: x.path, match: x.regex.exec(this.componentRoute) }))
+          .map(x => ({ path: x.path, match: x.regex.exec(componentRoute) }))
           .filter(x => x.match != null)
           .map(x => ({ path: x.path, match: x.match, activator: RoutingMap.viewModelMap[x.path] }))
+          .asEnumerable()
           .firstOrDefault();
 
         if (result != null) {
@@ -91,7 +105,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
 
   saveRoutingState(state: ComponentDemoRoutingState): any {
     state.route = <Route>{
-      path: `/demo/${this.componentRoute}`,
+      path: `/demo/${ this.componentRoute() }`,
     };
 
     if (this.columns() !== 12) {
@@ -100,17 +114,12 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   }
 
   loadRoutingState(state: ComponentDemoRoutingState) {
-    // try columns routing state first, then fall back onto view model columns state
-    state.columns = Object.fallback(state.columns, this.columns(), 12);
+    const componentRoute = this.getComponentRoute(state);
 
-    // try and extract the component route from the routing state
-    this.componentRoute = state.componentRoute || state.route.match[2];
-
-    if (String.isNullOrEmpty(this.componentRoute) === true) {
-      // if we don't have any component to route to, then try and pick a default
+    if (String.isNullOrEmpty(componentRoute) === true) {
       const uri = RoutingMap.menus
         .asEnumerable()
-        .selectMany(x => x.items.asEnumerable(), (a, b) => b.uri)
+        .selectMany(x => x.items.asEnumerable().map(y => y.uri))
         .filter(x => String.isNullOrEmpty(x) === false)
         .firstOrDefault();
 
@@ -119,20 +128,8 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
       }
     }
     else {
-      // create the routed component
-      let proposedComponent = this.getViewModel(state) as BaseRoutableViewModel<any>;
-
-      // update columns down here since the activator could adjust columns for us
-      this.columns(state.columns);
-
-      if (proposedComponent != null && proposedComponent.setRoutingState instanceof Function) {
-        // if our proposed component is a valid routable component, then update
-        // the component's routing state
-        proposedComponent.setRoutingState(state);
-      }
-
-      // if we have a new component then update our routed component property
-      this.component(proposedComponent);
+      this.componentRoute(componentRoute);
+      this.columns(state.columns || 12);
     }
   }
 
@@ -208,6 +205,6 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
       title = Object.getName(component);
     }
 
-    return `Demo: ${title}`;
+    return `Demo: ${ title }`;
   }
 }

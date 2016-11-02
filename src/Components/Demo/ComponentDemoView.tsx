@@ -5,7 +5,7 @@ import * as classNames from 'classnames';
 
 import { BaseView, BaseViewProps } from '../React/BaseView';
 import { ComponentDemoViewModel } from './ComponentDemoViewModel';
-import { Default as ViewMap, ViewActivator } from './ViewMap';
+import { Default as ViewMap } from './ViewMap';
 
 import './ComponentDemo.less';
 
@@ -15,28 +15,6 @@ export interface ComponentDemoProps extends BaseViewProps {
 export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDemoViewModel> {
   public static displayName = 'ComponentDemoView';
 
-  private getComponentName(component: { getDisplayName(): string, displayName: string }) {
-    if (component == null) {
-      return 'Invalid Component';
-    }
-
-    return (component.getDisplayName instanceof Function) ?
-      component.getDisplayName() :
-      (component.displayName || component.toString());
-  }
-
-  private getView(component: any) {
-    let activator: ViewActivator = null;
-
-    if (component != null) {
-      let type = this.getComponentName(component);
-      this.logger.debug(`Loading View for "${type}"...`);
-      activator = ViewMap[type];
-    }
-
-    return activator == null ? null : activator(component, this.state.componentRoute);
-  }
-
   updateOn() {
     return [
       this.state.columns.changed,
@@ -45,64 +23,97 @@ export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDem
   }
 
   render() {
-    let component = this.state.component();
-    let view = this.getView(component);
+    const { className, rest } = this.restProps();
 
-    let componentName = this.getComponentName(component);
-
-    let cols = view == null ? 12 : this.state.columns();
-    let widthVal = cols === 0 ? 12 : cols;
-    let widthName = cols === 0 ? 'Full Width' : widthVal;
-
-    if (view == null) {
-      view = (
-        <Alert bsStyle='danger'>{component == null ? 'No Component for This Route' : `No View Mapped for ${componentName}`}</Alert>
-      );
-    }
-    else {
-      this.logger.debug(`Rendering View...`, view);
-    }
+    const cols = this.state.columns() || 12;
 
     return (
-      <div className='ComponentDemo'>
-        <Grid fluid={cols === 0}>
+      <div { ...rest } className={ classNames('ComponentDemo', className) }>
+        <Grid fluid={ cols === 0 }>
           <Row>
-            <Col md={12}>
-              <PageHeader>
-                <span>{componentName} Demo</span>
-              </PageHeader>
+            <Col md={ 12 }>
+              { this.renderHeader() }
             </Col>
           </Row>
           <Row>
-            <Col md={widthVal}>
+            <Col md={ cols === 0 ? 12 : cols }>
               <div className='ComponentDemo-view'>
-                {view}
+                { this.renderComponentView() }
               </div>
             </Col>
           </Row>
         </Grid>
         <Grid className='ComponentDemo-footer'>
           <Row>
-            <Col md={12}>
-              <div className='pull-right'>
-                <DropdownButton id='col-width' bsStyle='info' title={`Column Width (${widthName})`}
-                  onSelect={this.bindEventToProperty(x => x.columns)}>
-                  {
-                    Enumerable
-                      .range(1, 13)
-                      .reverse()
-                      .map(x => x % 13)
-                      .map(x =>
-                        <MenuItem key={x} eventKey={x} active={cols === x}>{x === 0 ? 'Full Width' : x}</MenuItem>
-                      )
-                      .toArray()
-                  }
-                </DropdownButton>
-              </div>
+            <Col md={ 12 }>
+              { this.renderDropdown(cols) }
             </Col>
           </Row>
         </Grid>
       </div>
+    );
+  }
+
+  private getComponentName() {
+    return this.state.component() == null ?
+      'Invalid Component' :
+      Object.getName(this.state.component());
+  }
+
+  private renderHeader() {
+    return (
+      <PageHeader>
+        <span>{ `${ this.getComponentName() } Demo` }</span>
+      </PageHeader>
+    );
+  }
+
+  private renderComponentView() {
+    let view: any;
+    const componentName = this.getComponentName();
+    const component = this.state.component();
+
+    if (component != null) {
+      this.logger.debug(`Loading View for "${ componentName }"...`);
+
+      const activator = ViewMap[componentName];
+
+      if (activator != null) {
+        view = activator(component, this.state.componentRoute());
+      }
+    }
+
+    if (view == null) {
+      view = (
+        <Alert bsStyle='danger'>
+          { component == null ? `No Component for ${ this.state.componentRoute() }` : `No View Mapped for ${ componentName }`}
+        </Alert>
+      );
+    }
+    else {
+      this.logger.debug(`Rendering View...`, view);
+    }
+
+    return view;
+  }
+
+  private renderDropdown(cols: number) {
+    return (
+      <DropdownButton pullRight id='col-width' bsStyle='info'
+        title={ `Column Width (${ cols === 0 ? 'Full Width' : cols })` }
+        onSelect={ this.bindEventToProperty(x => x.columns) }
+      >
+        {
+          Enumerable
+            .range(1, 13)
+            .reverse()
+            .map(x => x % 13)
+            .map(x => (
+              <MenuItem key={ x } eventKey={ x } active={ cols === x }>{ x === 0 ? 'Full Width' : x }</MenuItem>
+            ))
+            .toArray()
+        }
+      </DropdownButton>
     );
   }
 }
