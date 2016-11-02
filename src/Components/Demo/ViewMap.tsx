@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as wx from 'webrx';
-import { Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab, Well } from 'react-bootstrap';
+import { Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab, Well, ListGroup, ListGroupItem, Table } from 'react-bootstrap';
 
 import * as wxr from '../../web.rx.react';
 import * as renderHelpers from '../React/RenderHelpers';
@@ -23,6 +23,10 @@ const {
   ModalDialogView,
   TabRenderTemplate,
   TabsView,
+  CommonPanel,
+  CountFooterContent,
+  ViewAllFooterAction,
+  ItemListPanelView,
 } = wxr.Components;
 
 export interface ViewActivator {
@@ -200,6 +204,49 @@ const viewMap: ViewActivatorMap = {
       );
     }
   },
+  CommonPanel: () => (
+    <CommonPanel headerContent='Common Panel Demo' footerContent='Add Status Content to the Footer' collapsible
+      headerActions={[ { id: 'header-action-1', children: 'Header Button 1' }, { id: 'header-action-2', children: 'Header Button 2' } ]}
+      footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' }, { id: 'footer-action-2', children: 'Footer Button 2' } ]}
+    >
+      Add any content to the panel body!
+      <Loading fontSize={ 24 } text='Such as a Loader...' />
+      <Button onClick={() => wxr.Alert.create('Button Clicked', 'Common Panel Demo')}>Or Even a Button</Button>
+    </CommonPanel>
+  ),
+  CommonPanelList: () => (
+    <CommonPanel headerContent='Common Panel Demo' footerContent='Add Status Content to the Footer' collapsible
+      headerActions={[ { id: 'header-action-1', children: 'Header Button 1' }, { id: 'header-action-2', children: 'Header Button 2' } ]}
+      footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' }, { id: 'footer-action-2', children: 'Footer Button 2' } ]}
+    >
+      <ListGroup fill>
+        <ListGroupItem>Item 1</ListGroupItem>
+        <ListGroupItem>Item 2</ListGroupItem>
+        <ListGroupItem>Item 3</ListGroupItem>
+      </ListGroup>
+    </CommonPanel>
+  ),
+  CommonPanelTable: () => (
+    <CommonPanel headerContent='Common Panel Demo' footerContent='Add Status Content to the Footer' collapsible
+      headerActions={[ { id: 'header-action-1', children: 'Header Button 1' }, { id: 'header-action-2', children: 'Header Button 2' } ]}
+      footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' }, { id: 'footer-action-2', children: 'Footer Button 2' } ]}
+    >
+      <Table fill>
+        <thead><tr><th>Some Column</th></tr></thead>
+        <tbody><tr><td>Row Data!</td></tr></tbody>
+      </Table>
+    </CommonPanel>
+  ),
+  ItemListPanelViewModel: (viewModel: wxr.Components.ItemListPanelViewModel<any>) => (
+    <ItemListPanelView viewModel={viewModel} headerContent='Sample Data' collapsible
+      headerActions={[ { id: 'header', children: 'Header Action' } ]}
+      footerContent={ (<CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
+      footerActions={[ { id: 'footer', bsStyle: 'primary', command: viewModel.navigate, children: (<ViewAllFooterAction suffix='Things' />) } ]}
+    >
+      <DataGridColumn fieldName='name' header='Name' sortable className='col-md-8' />
+      <DataGridColumn fieldName='requiredBy' header='Required By' sortable className='col-md-4' />
+    </ItemListPanelView>
+  ),
 };
 
 export const Default = viewMap;

@@ -100,5 +100,12 @@ routingMap.addRoute('Framework', 'ModalDialog', 'Modal Dialog', (state: any) => 
 });
 routingMap.addRoute('Framework', 'Tabs', 'Tabs', (state: any) => new wxr.Components.TabsViewModel());
 routingMap.addRoute('Framework', 'StaticTabs', 'Static Tabs', (state: any) => new wxr.Components.TabsViewModel());
+routingMap.addRoute('Framework', 'CommonPanel', 'Common Panel', (state: any) => 'CommonPanel');
+routingMap.addRoute('Framework', 'CommonPanelList', 'Common Panel (List)', (state: any) => 'CommonPanelList');
+routingMap.addRoute('Framework', 'ItemListPanel', 'Item List Panel', (state: any) => new wxr.Components.ItemListPanelViewModel(wx.property([
+  { name: 'test 1', requiredBy: 'now' },
+  { name: 'test 2', requiredBy: 'tomorrow' },
+  { name: 'test 3', requiredBy: 'yesterday' },
+]), (x, r) => r.test(x.name)));
 
 export const Default = routingMap;
