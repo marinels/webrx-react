@@ -2,20 +2,19 @@ import * as React from 'react';
 import * as classNames from 'classnames';
 import { Grid } from 'react-bootstrap';
 
-import { BaseView, BaseViewProps } from '../../React/BaseView';
+import { BaseView } from '../../React/BaseView';
 import { ViewMap } from '../RouteHandler/RouteHandlerView';
 import { AlertHostView } from '../Alert/AlertHostView';
 import { RouteHandlerView } from '../RouteHandler/RouteHandlerView';
-import { PageHeaderView } from '../PageHeader/PageHeaderView';
-import { PageFooterView } from '../PageFooter/PageFooterView';
+import { PageHeaderView, PageHeaderProps } from '../PageHeader/PageHeaderView';
+import { PageFooterView, PageFooterProps } from '../PageFooter/PageFooterView';
 import { AppViewMap } from './ViewMap';
 import { AppViewModel } from './AppViewModel';
 
 import './App.less';
 
-export interface AppProps extends BaseViewProps {
+export interface AppProps extends PageHeaderProps, PageFooterProps {
   viewMap?: ViewMap;
-  brand?: any;
 }
 
 export class AppView extends BaseView<AppProps, AppViewModel> {
@@ -27,8 +26,8 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { viewMap, brand } = x;
-      return { viewMap, brand };
+      const { viewMap, brand, copyright } = x;
+      return { viewMap, brand, copyright };
     });
 
     return (
@@ -40,7 +39,7 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
         </div>
         <PageHeaderView viewModel={ this.state.header } brand={ props.brand } />
         <RouteHandlerView viewModel={ this.state.routeHandler } viewMap={ props.viewMap } />
-        <PageFooterView viewModel={ this.state.footer } />
+        <PageFooterView viewModel={ this.state.footer } copyright={ props.copyright } />
       </div>
     );
   }

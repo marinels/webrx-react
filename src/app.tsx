@@ -16,7 +16,7 @@ if (container) {
   let { AppView } = wxr.Components;
 
   ReactDOM.render(
-    <AppView viewModel={new wxr.Components.AppViewModel({ routingMap: AppRoutingMap })} />,
+    <AppView viewModel={new wxr.Components.AppViewModel({ routingMap: AppRoutingMap })} copyright='webrx-react' />,
     container
   );
 }
