@@ -140,14 +140,14 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
 
   cleanup(viewModel: ListViewModel<TData, any>, view: ListView) {
     if (this.nodes != null) {
-    this.nodes.dispose();
-    this.nodes = null;
+      this.nodes.dispose();
+      this.nodes = null;
     }
 
     if (this.items != null) {
-    this.items.dispose();
-    this.items = null;
-  }
+      this.items.dispose();
+      this.items = null;
+    }
   }
 
   render(viewModel: ListViewModel<TData, any>, view: ListView) {
@@ -248,6 +248,17 @@ export class ListView extends BaseView<ListProps, ListViewModel<any, any>> {
     super.initialize();
 
     this.props.view.initialize(this.state, this);
+  }
+
+  updated(prevProps: ListProps) {
+    // if the view was changed then we need to re-init
+    if (prevProps.view !== this.props.view) {
+      // cleanup old view
+      prevProps.view.cleanup(this.state, this);
+
+      // initialize new view
+      this.props.view.initialize(this.state, this);
+    }
   }
 
   cleanup() {
