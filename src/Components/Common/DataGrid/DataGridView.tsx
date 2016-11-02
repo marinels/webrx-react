@@ -274,7 +274,6 @@ export class DataGridView extends BaseView<DataGridProps, DataGridViewModel<any>
   public static displayName = 'DataGridView';
 
   static defaultProps = {
-    fill: false,
     view: new DataGridTableViewTemplate<any>(),
     search: false,
     pager: false,
