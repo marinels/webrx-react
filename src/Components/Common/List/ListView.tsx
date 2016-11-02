@@ -139,11 +139,15 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
   }
 
   cleanup(viewModel: ListViewModel<TData, any>, view: ListView) {
+    if (this.nodes != null) {
     this.nodes.dispose();
     this.nodes = null;
+    }
 
+    if (this.items != null) {
     this.items.dispose();
     this.items = null;
+  }
   }
 
   render(viewModel: ListViewModel<TData, any>, view: ListView) {
