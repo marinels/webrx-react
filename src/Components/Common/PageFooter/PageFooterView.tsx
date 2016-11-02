@@ -17,7 +17,6 @@ export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewMode
   public static displayName = 'PageFooterView';
 
   static defaultProps = {
-    copyright: moment().format('YYYY'),
   };
 
   constructor(props?: PageFooterProps, context?: any) {
@@ -60,7 +59,9 @@ export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewMode
           <Row>
             <Col md={12}>
               <div className='PageFooter-container'>
-                <span className='PageFooter-text'>© { props.copyright }</span>
+                <span className='PageFooter-text'>
+                  { `© ${ moment().format('YYYY') }${ String.isNullOrEmpty(props.copyright) ? '' : ` ${ props.copyright }` }` }
+                </span>
                 <span className='PageFooter-spacer'> | </span>
                 <span ref='viewport' className='PageFooter-viewport PageFooter-text text-muted'>
                   { this.renderDimensions() }
