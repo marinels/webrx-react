@@ -10,6 +10,7 @@ const {
   CommandButton,
   Loading,
   Splash,
+  TimeSpanControl,
   TimeSpanInputView,
   ContextMenu,
   ProfilePicture,
@@ -57,7 +58,14 @@ const viewMap: ViewActivatorMap = {
       <Button onClick={() => wxr.Alert.createForError(new Error(`Error Message: ${new Date()}`), 'Error Alert')}>Error Alert</Button>
     </div>
   ),
-  TimeSpanInputViewModel: (viewModel: wxr.Components.TimeSpanInputViewModel) => <TimeSpanInputView viewModel={viewModel} id='demo' placeholder='Type in a timespan, or use the controls on the right...' />,
+  TimeSpanInputViewModel: (viewModel: wxr.Components.TimeSpanInputViewModel) => (
+    <div>
+      <TimeSpanInputView viewModel={ viewModel } />
+      <TimeSpanInputView viewModel={ viewModel } >
+        <TimeSpanControl viewModel={ viewModel } id='custom' placeholder='You can also use your own custom control component' />
+      </TimeSpanInputView>
+    </div>
+  ),
   ContextMenu: () => (
     <div>
       <ContextMenu id='demo' header='Optional Header' onSelect={(item) => {
