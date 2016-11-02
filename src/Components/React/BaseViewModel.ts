@@ -10,7 +10,6 @@ import { Default as routeManager } from '../../Routing/RouteManager';
 export interface LifecycleComponentViewModel {
   initializeViewModel(): void;
   loadedViewModel(): void;
-  updatedViewModel(): void;
   cleanupViewModel(): void;
 }
 

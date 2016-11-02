@@ -67,33 +67,38 @@ export abstract class BaseView<TViewProps extends BaseViewProps, TViewModel exte
   }
 
   componentWillReceiveProps(nextProps: TViewProps, nextContext: any) {
-    let state = nextProps.viewModel;
+    let state = nextProps.viewModel as TViewModel;
 
-    // TODO: need to find a better way to handle this case...
+    // if the view model changed we need to do some teardown and setup
     if (state !== this.state) {
-      this.logger.debug('ViewModel Change Detected');
+      this.logger.info('ViewModel Change Detected');
 
       // cleanup old view model
       (this.state as any as LifecycleComponentViewModel).cleanupViewModel();
       this.updateSubscription = Object.dispose(this.updateSubscription);
 
       // set our new view model as the current state and initialize it
-      this.state = state as TViewModel;
+      this.state = state;
       (this.state as any as LifecycleComponentViewModel).initializeViewModel();
+
+      // now sub to the view model observables
       this.subscribeToUpdates();
 
+      // this is effectively a state change so we want to force a re-render
       this.forceUpdate();
 
+      // finally inform the view model it has been loaded
       (this.state as any as LifecycleComponentViewModel).loadedViewModel();
     }
   }
 
   componentWillUpdate(nextProps: TViewProps, nextState: TViewModel, nextContext: any) {
+    this.updatingView(nextProps);
     this.logRender(false);
   }
 
-  componentDidUpdate(prevProps: TViewProps, nextstate: TViewModel) {
-    this.updatedView();
+  componentDidUpdate(prevProps: TViewProps, prevState: TViewModel) {
+    this.updatedView(prevProps);
   }
 
   componentWillUnmount() {
@@ -116,9 +121,12 @@ export abstract class BaseView<TViewProps extends BaseViewProps, TViewModel exte
     (this.state as any as LifecycleComponentViewModel).loadedViewModel();
   }
 
-  private updatedView() {
-    this.updated();
-    (this.state as any as LifecycleComponentViewModel).updatedViewModel();
+  private updatingView(nextProps: TViewProps) {
+    this.updating(nextProps);
+  }
+
+  private updatedView(prevProps: TViewProps) {
+    this.updated(prevProps);
   }
 
   private cleanupView() {
@@ -138,7 +146,11 @@ export abstract class BaseView<TViewProps extends BaseViewProps, TViewModel exte
     // do nothing by default
   }
 
-  protected updated() {
+  protected updating(nextProps: TViewProps) {
+    // do nothing by default
+  }
+
+  protected updated(prevProps: TViewProps) {
     // do nothing by default
   }
 
