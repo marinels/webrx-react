@@ -129,7 +129,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     }
     else {
       this.componentRoute(componentRoute);
-      this.columns(state.columns || 12);
+      this.columns(state.columns == null ? 12 : state.columns);
     }
   }
 

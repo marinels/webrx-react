@@ -25,7 +25,7 @@ export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDem
   render() {
     const { className, rest } = this.restProps();
 
-    const cols = this.state.columns() || 12;
+    const cols = this.state.columns();
 
     return (
       <div { ...rest } className={ classNames('ComponentDemo', className) }>
