@@ -1,0 +1,38 @@
+@import (reference) '../../../Style/Bootstrap.less';
+
+.CommonPanel {
+  &.panel {
+    margin: 0;
+  }
+
+  &.shadow {
+    .drop-shadow(1px, 3px, 7px, 0, 0.2);
+  }
+
+  &.collapsible > .panel-heading {
+    // disable the default padding (it is too high up the style chain)
+    padding: 0;
+
+    // style the header so that it is fully clickable
+    & > .panel-title > a {
+      display: block;
+      padding: @panel-heading-padding;
+      cursor: pointer;
+    }
+  }
+
+  .CommonPanel-headerContent {
+    font-size: 1.25em;
+  }
+
+  .CommonPanel-headerContent,
+  .CommonPanel-footerContent {
+    float: left;
+    line-height: @button-height;
+  }
+
+  .CommonPanel-headerActions,
+  .CommonPanel-footerActions {
+    float: right;
+  }
+}

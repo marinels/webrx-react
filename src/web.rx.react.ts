@@ -164,6 +164,11 @@ import * as DataGridViewModelTypes from './Components/Common/DataGrid/DataGridVi
 import * as AsyncDataGridViewModelTypes from './Components/Common/DataGrid/AsyncDataGridViewModel';
 import * as DataGridViewTypes from './Components/Common/DataGrid/DataGridView';
 
+import * as CommonPanelTypes from './Components/Common/CommonPanel/CommonPanel';
+
+import * as ItemListPanelViewModelTypes from './Components/Common/ItemListPanel/ItemListPanelViewModel';
+import * as ItemListPanelViewTypes from './Components/Common/ItemListPanel/ItemListPanelView';
+
 export namespace Components {
   export import LifecycleComponentViewModel = BaseViewModelTypes.LifecycleComponentViewModel;
   export import BaseViewModel = BaseViewModelTypes.BaseViewModel;
@@ -281,6 +286,17 @@ export namespace Components {
   export import DataGridTableViewTemplate = DataGridViewTypes.DataGridTableViewTemplate;
   export import DataGridProps = DataGridViewTypes.DataGridProps;
   export import DataGridView = DataGridViewTypes.DataGridView;
+
+  export import CommonPanelProps = CommonPanelTypes.CommonPanelProps;
+  export import CommonPanel = CommonPanelTypes.CommonPanel;
+
+  export import ItemListPanelViewModel = ItemListPanelViewModelTypes.ItemListPanelViewModel;
+  export import CountFooterContentProps = ItemListPanelViewTypes.CountFooterContentProps;
+  export import CountFooterContent = ItemListPanelViewTypes.CountFooterContent;
+  export import ViewAllFooterActionProps = ItemListPanelViewTypes.ViewAllFooterActionProps;
+  export import ViewAllFooterAction = ItemListPanelViewTypes.ViewAllFooterAction;
+  export import ItemListPanelProps = ItemListPanelViewTypes.ItemListPanelProps;
+  export import ItemListPanelView = ItemListPanelViewTypes.ItemListPanelView;
 }
 
 import * as DemoRoutingMapTypes from './Components/Demo/RoutingMap';
