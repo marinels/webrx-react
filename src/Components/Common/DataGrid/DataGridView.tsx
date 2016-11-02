@@ -293,7 +293,7 @@ export class DataGridView extends BaseView<DataGridProps, DataGridViewModel<any>
   }
 
   render() {
-    const { className, rest } = this.restProps(x => {
+    const { className, props, rest } = this.restProps(x => {
       const { fill, view, search, pager, pagerLimits, highlightSelected } = x;
       return { fill, view, search, pager, pagerLimits, highlightSelected };
     });
@@ -301,7 +301,7 @@ export class DataGridView extends BaseView<DataGridProps, DataGridViewModel<any>
     return (
       <div { ...rest } className={ classNames('DataGrid', className) }>
         { this.renderSearch() }
-        { this.props.view.render(this.state, this) }
+        { props.view.render(this.state, this) }
         { this.renderPager() }
       </div>
     );
