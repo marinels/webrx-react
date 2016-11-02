@@ -97,8 +97,11 @@ function getName(source: any, undefinedValue = 'undefined', isStatic = false) {
 
   let name: string = null;
 
-  if (source) {
-    if (source.hasOwnProperty(typeNameProperty)) {
+  if (source != null) {
+    if (typeof source === 'string') {
+      name = source;
+    }
+    else if (source.hasOwnProperty(typeNameProperty)) {
       name = (source as ITypeName).typeName;
     }
     else if (source.hasOwnProperty(displayNameProperty)) {
