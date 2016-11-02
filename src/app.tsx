@@ -1,6 +1,9 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
+// import all custom styles
+import './Style/App.less';
+
 // import framework API surface
 import * as wxr from './web.rx.react';
 
