@@ -8,6 +8,9 @@ declare global {
     getName(source: any, undefinedValue?: string): string;
     fallback<T>(...values: T[]): T;
     fallbackAsync<T>(...actions: (T | (() => T))[]): T;
+    getEnumPropertyDescriptors<T>(type: any): EnumPropertyDescriptor<T>[];
+    getEnumNames(type: any): string[];
+    getEnumValues<T>(type: any): T[];
   }
 }
 
@@ -143,9 +146,39 @@ function fallbackAsync<T>(...actions: (T | (() => T))[]) {
     .firstOrDefault();
 }
 
+interface EnumPropertyDescriptor<T> {
+  name: string;
+  value: number;
+  type: T;
+}
+
+function getEnumPropertyDescriptors<T>(type: any) {
+  return Object.keys(type)
+    .map(x => parseInt(x))
+    .filter(x => x >= 0)
+    .map(value => <EnumPropertyDescriptor<T>>{
+      name: type[value],
+      value,
+      type: <T><any>value,
+    });
+}
+
+function getEnumNames(type: any) {
+  return getEnumPropertyDescriptors<any>(type)
+    .map(x => x.name);
+}
+
+function getEnumValues<T>(type: T) {
+  return getEnumPropertyDescriptors<T>(type)
+    .map(x => x.type);
+}
+
 Object.assign = fallback(Object.assign, assign);
 Object.rest = fallback(Object.rest, rest);
 Object.dispose = fallback(Object.dispose, dispose);
 Object.getName = fallback(Object.getName, getName);
 Object.fallback = fallback(Object.fallback, fallback);
 Object.fallbackAsync = fallback(Object.fallbackAsync, fallbackAsync);
+Object.getEnumPropertyDescriptors = fallback(Object.getEnumPropertyDescriptors, getEnumPropertyDescriptors);
+Object.getEnumNames = fallback(Object.getEnumNames, getEnumNames);
+Object.getEnumValues = fallback(Object.getEnumValues, getEnumValues);
