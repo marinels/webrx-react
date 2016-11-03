@@ -24,5 +24,5 @@ function wrapCommand<T extends Function>(func: T, thisArg?: any) {
   };
 }
 
-wx.command = wrapCommand(wx.command);
-wx.asyncCommand = wrapCommand(wx.asyncCommand);
+(<any>wx).command = wrapCommand(wx.command);
+(<any>wx).asyncCommand = wrapCommand(wx.asyncCommand);
