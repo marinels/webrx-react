@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Icon } from 'react-fa';
-import { InputGroup, FormControl, Button } from 'react-bootstrap';
+import { InputGroup, FormControl } from 'react-bootstrap';
 import * as classNames from 'classnames';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';

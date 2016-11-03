@@ -1,7 +1,7 @@
 import { Observable, IDisposable } from 'rx';
 import * as wx from 'webrx';
 
-import { Logging, PubSub, Alert, SubMan } from '../../Utils';
+import { Logging, Alert, SubMan } from '../../Utils';
 import { Manager } from '../../Routing/RouteManager';
 
 export interface LifecycleComponentViewModel {

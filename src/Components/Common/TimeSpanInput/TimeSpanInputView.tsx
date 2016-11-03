@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FormGroup, FormGroupProps, InputGroup, FormControl, FormControlProps, Button, DropdownButton, MenuItem, HelpBlock } from 'react-bootstrap';
+import { FormGroup, FormGroupProps, InputGroup, FormControl, FormControlProps, DropdownButton, MenuItem, HelpBlock } from 'react-bootstrap';
 import { Icon } from 'react-fa';
 import * as classNames from 'classnames';
 
