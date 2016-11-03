@@ -10,6 +10,7 @@ module.exports = Object.assign({}, webpackCommon, {
     ],
     vendor: [
       'rx',
+      'classnames',
       'ix',
       'moment',
       'webrx',
