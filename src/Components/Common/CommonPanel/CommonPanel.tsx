@@ -73,6 +73,8 @@ export class CommonPanel extends React.Component<CommonPanelProps, any> {
       <ButtonToolbar className={ `CommonPanel-${ section }Actions` }>
         {
           actions
+            // strip off the ref prop if it exists
+            .map(x => Object.rest(x, null, 'ref').rest as any)
             .map(x => (<CommandButton key={ x.id } { ...x } />))
         }
       </ButtonToolbar>
