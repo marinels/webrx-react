@@ -1,8 +1,7 @@
 import { Observable } from  'rx';
 import * as wx from 'webrx';
 
-import { Logging, PubSub } from '../Utils';
-import { Navigation, NavigationKey } from '../Events';
+import { Logging } from '../Utils';
 import { HashCodec } from './HashCodec';
 
 export interface Route {
@@ -45,8 +44,6 @@ export class RouteManager {
       })
       .filter(x => x != null)
       .toProperty();
-
-    PubSub.subscribe<Navigation>(NavigationKey, x => this.navTo(x.path, x.state, x.uriEncode));
   }
 
   private getPath(state: {route: Route}) {
@@ -125,4 +122,4 @@ export class RouteManager {
   }
 }
 
-export const DefaultRouteManager = new RouteManager();
+export const Manager = new RouteManager();

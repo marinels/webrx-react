@@ -3,7 +3,7 @@ import * as wx from 'webrx';
 
 import { BaseViewModel } from '../../React/BaseViewModel';
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
-import { RouteManager, Route } from '../../../Routing/RouteManager';
+import { Manager, Route } from '../../../Routing/RouteManager';
 import { RouteMapper } from '../../../Routing/RoutingMap';
 import { PubSub } from '../../../Utils';
 import { RoutingStateChangedKey, RoutingStateChanged } from '../../../Events/RoutingStateChanged';
@@ -16,11 +16,11 @@ export class RouteHandlerViewModel extends BaseViewModel {
   public currentViewModel: wx.IObservableReadOnlyProperty<any>;
   public isLoading: wx.IObservableReadOnlyProperty<boolean>;
 
-  constructor(public manager: RouteManager, public routingMap: RouteMapper) {
+  constructor(public routingMap: RouteMapper) {
     super();
 
     this.currentViewModel = wx
-      .whenAny(this.manager.currentRoute, x => x)
+      .whenAny(Manager.currentRoute, x => x)
       .filter(x => x != null)
       .map(x => this.getRoutedViewModel(x))
       .doOnNext(x => {
@@ -52,7 +52,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
     this.subscribe(
       PubSub.subscribe<RoutingStateChanged>(RoutingStateChangedKey, x => {
         if (this.currentViewModel() != null) {
-          this.manager.navTo(this.currentPath, this.currentViewModel().getRoutingState(x));
+          Manager.navTo(this.currentPath, this.currentViewModel().getRoutingState(x));
         }
       })
     );
@@ -80,7 +80,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
         this.logger.debug(`Redirecting from ${ route.path } to ${ activator.path }`);
 
         // only redirect to a different path
-        this.manager.navTo(activator.path);
+        Manager.navTo(activator.path);
       }
       else {
         // this is a routed view model path

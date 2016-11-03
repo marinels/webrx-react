@@ -2,10 +2,10 @@ import { Observable, IDisposable } from 'rx';
 import * as wx from 'webrx';
 
 import { Logging, PubSub, Alert, SubMan } from '../../Utils';
-import { Navigation, NavigationKey } from '../../Events';
 // import { SubMan } from '../../Utils/SubMan';
 // import { Default as alert } from '../../Utils/Alert';
 // import { Default as routeManager } from '../../Routing/RouteManager';
+import { Manager } from '../../Routing/RouteManager';
 
 export interface LifecycleComponentViewModel {
   initializeViewModel(): void;
@@ -186,11 +186,7 @@ export abstract class BaseViewModel implements IDisposable {
   }
 
   protected navTo(path: string, state?: any, uriEncode = false) {
-    PubSub.publish(NavigationKey, <Navigation>{
-      path,
-      state,
-      uriEncode,
-    });
+    Manager.navTo(path, state, uriEncode);
   }
 
   public bind<T>(commandSelector: (viewModel: this) => wx.ICommand<T>, observable: Observable<T>) {

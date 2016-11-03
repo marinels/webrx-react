@@ -3,7 +3,6 @@ import { AlertHostViewModel } from '../Alert/AlertHostViewModel';
 import { PageHeaderViewModel } from '../PageHeader/PageHeaderViewModel';
 import { PageFooterViewModel } from '../PageFooter/PageFooterViewModel';
 import { RouteHandlerViewModel } from '../RouteHandler/RouteHandlerViewModel';
-import { DefaultRouteManager } from '../../../Routing/RouteManager';
 import { RouteMap } from '../../../Routing/RoutingMap';
 
 // inject a default route
@@ -17,10 +16,10 @@ export class AppViewModel extends BaseViewModel {
   public header: PageHeaderViewModel;
   public footer = new PageFooterViewModel();
 
-  constructor(routingMap = RouteMap, routeManager = DefaultRouteManager) {
+  constructor(routingMap = RouteMap) {
     super();
 
-    this.routeHandler = new RouteHandlerViewModel(routeManager, routingMap);
+    this.routeHandler = new RouteHandlerViewModel(routingMap);
 
     this.header = new PageHeaderViewModel(this.routeHandler);
 
