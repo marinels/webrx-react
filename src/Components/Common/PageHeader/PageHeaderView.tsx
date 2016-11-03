@@ -133,10 +133,10 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
   private renderAdminMenu() {
     return this.renderHeaderMenu(
       'adminMenu',
-      (<Icon className='hover-tilt' name='cog' size='2x' />),
+      (<Icon name='cog' size='2x' />),
       this.state.adminMenuItems.toArray(),
       true,
-      'hover-tilt-host'
+      'hover-spin'
     );
   }
 

@@ -1,44 +1,36 @@
-// stylelint-disable
-// disable all stylelint rules here, the rules are not capable of parsing this file very well
+@keyframes spin-in {
+  from {
+    transform: rotate(0deg);
+  }
 
-// create a custom keyframe
-.tilt-frames(@name, @from: 0deg, @to: 180deg) {
-  @keyframes @name {
-    from {
-      transform: rotate(@from);
-    }
-    to {
-      transform: rotate(@to);
-    }
+  to {
+    transform: rotate(360deg);
   }
 }
 
-// apply tilt animation to current tilt host
-// ex: .tilt-animation(tilt-90 150ms 0ms ease-in, tilt-reverse-45 500ms 0ms ease);
-.tilt-animation(@in, @out) {
-  .hover-tilt {
-    animation: @out;
+@keyframes spin-out {
+  from {
+    transform: rotate(180deg);
   }
 
-  &:hover {
-    .hover-tilt {
-      animation: @in;
-    }
+  to {
+    transform: rotate(0deg);
   }
 }
 
-// create some default keyframes
-// stylelint-disable no-extra-semicolons
-// this rule does not work properly here
-.tilt-frames(tilt-45, 0deg, 45deg);
-.tilt-frames(tilt-reverse-45, 45deg, 0deg);
+.dropdown.hover-spin > .dropdown-toggle {
+  & > .fa {
+    // spin back, -100ms to skip the first 1/3 of the ease-in curve
+    // stylelint-disable time-no-imperceptible
+    // the -100ms is very perceptible
+    animation: spin-out 300ms -100ms ease-in 1 normal forwards;
+    // stylelint-enable time-no-imperceptible
+  }
 
-.tilt-frames(tilt-90, 0deg, 90deg);
-.tilt-frames(tilt-reverse-90, 90deg, 0deg);
-
-.tilt-frames(tilt-180, 0deg, 180deg);
-.tilt-frames(tilt-reverse-180, 180deg, 0deg);
-
-.tilt-frames(tilt-360, 0deg, 360deg);
-.tilt-frames(tilt-reverse-360, 360deg, 0deg);
-// stylelint-enable no-extra-semicolons
+  &:hover > .fa {
+    // spin, first with ease-in once then linear until hover ends
+    animation:
+      spin-in 1s ease-in 1 normal forwards,
+      spin-in 1s linear infinite normal forwards;
+  }
+}
