@@ -41,6 +41,7 @@
     "./src/Components/React/index.ts",
     "./src/Events/AlertCreated.ts",
     "./src/Events/index.ts",
+    "./src/Events/Navigation.ts",
     "./src/Events/RoutingStateChanged.ts",
     "./src/Extensions/Array.ts",
     "./src/Extensions/index.ts",
