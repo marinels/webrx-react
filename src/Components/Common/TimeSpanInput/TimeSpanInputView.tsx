@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FormGroup, FormGroupProps, InputGroup, FormControl, FormControlProps, DropdownButton, MenuItem, HelpBlock } from 'react-bootstrap';
+import { FormGroup, InputGroup, Sizes, FormControl, FormControlProps, DropdownButton, MenuItem, HelpBlock } from 'react-bootstrap';
 import { Icon } from 'react-fa';
 import * as classNames from 'classnames';
 
@@ -29,7 +29,16 @@ export class TimeSpanControl extends React.Component<any, any> {
   }
 }
 
-export interface TimeSpanInputProps extends BaseViewProps, FormGroupProps, FormControlProps {
+export interface TimeSpanInputProps extends BaseViewProps {
+  // FormGroupProps
+  bsClass?: string;
+  bsSize?: Sizes;
+  controlId?: string;
+  validationState?: 'success' | 'warning' | 'error';
+
+  // FormControlProps
+  componentClass?: React.ReactType;
+
   children?: TimeSpanControl;
 }
 
@@ -47,12 +56,15 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInpu
   }
 
   render() {
-    const { className, rest } = this.restProps();
+    const { className, props, rest } = this.restProps(x => {
+      const { bsClass, bsSize, controlId, validationState } = x;
+      return { bsClass, bsSize, controlId, validationState };
+    });
 
-    rest.validationState = rest.validationState || (this.state.hasError() ? 'error' : null);
+    props.validationState = props.validationState || (this.state.hasError() ? 'error' : null);
 
     return (
-      <FormGroup { ...rest } className={ classNames('TimeSpanInput', className) }>
+      <FormGroup { ...rest } { ...props } className={ classNames('TimeSpanInput', className) }>
         <InputGroup>
           { this.renderControl() }
           <InputGroup.Button>
@@ -76,7 +88,7 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInpu
       this.props.children != null,
       () => this.props.children,
       () => (
-        <TimeSpanControl viewModel={ this.state } placeholder='Type in a timespan, or use the controls on the right...' />
+        <TimeSpanControl viewModel={ this.state } componentClass={ this.props.componentClass } placeholder='Type in a timespan, or use the controls on the right...' />
       )
     );
   }
