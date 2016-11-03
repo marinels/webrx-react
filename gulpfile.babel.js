@@ -467,7 +467,7 @@ function webpackWatcherStream(webpackConfig, build) {
 
 gulp.task('webpack', [ 'webpack:debug' ]);
 gulp.task('webpack:all', (done) => {
-  runSequence('webpack:debug', 'webpack:release', 'webpack:test', done);
+  runSequence('webpack:debug', 'webpack:release:min', 'webpack:test', done);
 });
 
 gulp.task('webpack:debug', [ 'clean:build', 'tsconfig:glob' ], () => {
@@ -768,5 +768,5 @@ gulp.task('deploy:debug', (done) => {
 });
 
 gulp.task('deploy:release', (done) => {
-  runSequence('clean:build', 'webpack:release', 'dist:release', done);
+  runSequence('clean:build', 'webpack:release:min', 'dist:release', done);
 });
