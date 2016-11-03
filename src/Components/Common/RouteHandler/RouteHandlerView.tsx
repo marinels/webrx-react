@@ -5,14 +5,11 @@ import * as classNames from 'classnames';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { RouteHandlerViewModel } from './RouteHandlerViewModel';
+import { ViewMapper } from '../../../Routing/ViewMap';
 
 import './RouteHandler.less';
 
 export const SplashKey = 'Splash';
-
-export interface ViewMapper {
-  [key: string]: any;
-}
 
 export interface RouteHandlerProps extends BaseViewProps {
   viewMap: ViewMapper;

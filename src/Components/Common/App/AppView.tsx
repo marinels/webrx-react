@@ -3,15 +3,19 @@ import * as classNames from 'classnames';
 import { Grid } from 'react-bootstrap';
 
 import { BaseView } from '../../React/BaseView';
-import { ViewMapper } from '../RouteHandler/RouteHandlerView';
+import { Splash } from '../Splash/Splash';
 import { AlertHostView } from '../Alert/AlertHostView';
 import { RouteHandlerView } from '../RouteHandler/RouteHandlerView';
 import { PageHeaderView, PageHeaderProps } from '../PageHeader/PageHeaderView';
 import { PageFooterView, PageFooterProps } from '../PageFooter/PageFooterView';
 import { AppViewModel } from './AppViewModel';
-import { ViewMap } from './ViewMap';
+import { ViewMap, ViewMapper } from '../../../Routing/ViewMap';
 
 import './App.less';
+
+ViewMap['Splash'] = () => (
+  <Splash header='WebRx.React' />
+);
 
 export interface AppProps extends PageHeaderProps, PageFooterProps {
   viewMap?: ViewMapper;

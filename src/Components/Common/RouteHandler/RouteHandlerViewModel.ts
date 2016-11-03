@@ -4,17 +4,9 @@ import * as wx from 'webrx';
 import { BaseViewModel } from '../../React/BaseViewModel';
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 import { RouteManager, Route } from '../../../Routing/RouteManager';
+import { RouteMapper } from '../../../Routing/RoutingMap';
 import { PubSub } from '../../../Utils';
 import { RoutingStateChangedKey, RoutingStateChanged } from '../../../Events/RoutingStateChanged';
-
-export interface ViewModelActivator {
-  path?: string;
-  creator?: (route: Route) => BaseRoutableViewModel<any>;
-}
-
-export interface RoutingMap {
-  [path: string]: ViewModelActivator;
-}
 
 export class RouteHandlerViewModel extends BaseViewModel {
   public static displayName = 'RouteHandlerViewModel';
@@ -24,7 +16,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
   public currentViewModel: wx.IObservableReadOnlyProperty<any>;
   public isLoading: wx.IObservableReadOnlyProperty<boolean>;
 
-  constructor(public manager: RouteManager, public routingMap: RoutingMap) {
+  constructor(public manager: RouteManager, public routingMap: RouteMapper) {
     super();
 
     this.currentViewModel = wx
@@ -107,7 +99,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
           this.currentPath = activator.path == null ? route.path : activator.path;
 
           // create the routed view model
-          viewModel = activator.creator(route);
+          viewModel = activator.creator<BaseRoutableViewModel<any>>(route);
 
           // now set the routing state on the new routed view model
           this.updateRoutingState(route, viewModel);

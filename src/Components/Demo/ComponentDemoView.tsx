@@ -6,8 +6,8 @@ import * as classNames from 'classnames';
 import { BaseView, BaseViewProps } from '../React/BaseView';
 import { ComponentDemoViewModel } from './ComponentDemoViewModel';
 import { ViewMap } from './ViewMap';
-import { RouteMap as AppRouteMap } from '../Common/App/RoutingMap';
-import { ViewMap as AppViewMap } from '../Common/App/ViewMap';
+import { RouteMap as AppRouteMap } from '../../Routing/RoutingMap';
+import { ViewMap as AppViewMap } from '../../Routing/ViewMap';
 
 import './ComponentDemo.less';
 

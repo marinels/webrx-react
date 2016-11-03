@@ -1,10 +1,11 @@
 import { Observable, IDisposable } from 'rx';
 import * as wx from 'webrx';
 
-import { Logging } from '../../Utils';
-import { SubMan } from '../../Utils/SubMan';
-import { Default as alert } from '../../Utils/Alert';
-import { Default as routeManager } from '../../Routing/RouteManager';
+import { Logging, PubSub, Alert, SubMan } from '../../Utils';
+import { Navigation, NavigationKey } from '../../Events';
+// import { SubMan } from '../../Utils/SubMan';
+// import { Default as alert } from '../../Utils/Alert';
+// import { Default as routeManager } from '../../Routing/RouteManager';
 
 export interface LifecycleComponentViewModel {
   initializeViewModel(): void;
@@ -77,11 +78,11 @@ export abstract class BaseViewModel implements IDisposable {
   public getDisplayName() { return Object.getName(this); }
 
   public createAlert(content: any, header?: string, style?: string, timeout?: number) {
-    alert.create(content, header, style, timeout);
+    Alert.create(content, header, style, timeout);
   }
 
   public alertForError<TError>(error: TError, header?: string, style?: string, timeout?: number, formatter?: (e: TError) => string) {
-    alert.createForError(error, header, style, timeout, formatter);
+    Alert.createForError(error, header, style, timeout, formatter);
   }
 
   public getObservableOrAlert<T, TError>(
@@ -185,7 +186,11 @@ export abstract class BaseViewModel implements IDisposable {
   }
 
   protected navTo(path: string, state?: any, uriEncode = false) {
-    routeManager.navTo(path, state, uriEncode);
+    PubSub.publish(NavigationKey, <Navigation>{
+      path,
+      state,
+      uriEncode,
+    });
   }
 
   public bind<T>(commandSelector: (viewModel: this) => wx.ICommand<T>, observable: Observable<T>) {
