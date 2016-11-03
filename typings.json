@@ -11,7 +11,6 @@
     "jquery-deparam": "file:./src/typings/jquery-deparam/jquery-deparam.d.ts",
     "jquery-param": "file:./src/typings/jquery-param/jquery-param.d.ts",
     "moment-node": "registry:dt/moment-node#2.11.1+20160417135035",
-    "node": "registry:dt/node#4.0.0+20160505172921",
     "react": "registry:dt/react#0.14.0+20160423065914",
     "react-addons-css-transition-group": "registry:dt/react-addons-css-transition-group#0.14.0+20160316155526",
     "react-addons-transition-group": "registry:dt/react-addons-transition-group#0.14.0+20160417134118",
