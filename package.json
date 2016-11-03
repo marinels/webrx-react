@@ -75,7 +75,7 @@
     "tsconfig-glob": "^0.4.3",
     "tslint": "^3.15.1",
     "tslint-config-unional": "^0.5.0",
-    "typescript": "^1.8.10",
+    "typescript": "^2.0.6",
     "typings": "^1.5.0",
     "url-loader": "^0.5.7",
     "vinyl": "^2.0.0",
