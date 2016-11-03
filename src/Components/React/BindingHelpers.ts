@@ -23,7 +23,7 @@ export function bindEventToProperty<TViewModel extends BaseViewModel, TValue, TE
   viewModel: TViewModel,
   targetSelector: (viewModel: TViewModel) => wx.IObservableProperty<TValue>,
   valueSelector?: (eventKey: any, event: TEvent) => TValue
-) {
+): any {
   return (eventKey: any, event: TEvent) => {
     // this ensures that we can still use this function for basic HTML events
     event = event || eventKey;
@@ -44,7 +44,7 @@ export function bindEventToCommand<TViewModel extends BaseViewModel, TParameter,
   commandSelector: (viewModel: TViewModel) => wx.ICommand<any>,
   paramSelector?: (eventKey: any, event: TEvent) => TParameter,
   conditionSelector?: (event: TEvent, eventKey: any) => boolean
-) {
+): any {
   return (eventKey: any, event: Event) => {
     // this ensures that we can still use this function for basic HTML events
     event = event || eventKey;
