@@ -65,7 +65,7 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInpu
             </CommandButton>
           </InputGroup.Button>
         </InputGroup>
-        <FormControl.Feedback  />
+        <FormControl.Feedback />
         { this.renderHelp() }
       </FormGroup>
     );

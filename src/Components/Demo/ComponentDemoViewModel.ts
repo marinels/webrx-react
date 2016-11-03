@@ -196,7 +196,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
       title = 'No Routed Component';
     }
     else if (typeof component === 'string') {
-      title = component.toString();
+      title = (<string>component).toString();
     }
     else if (component.getTitle instanceof Function) {
       title = component.getTitle();
