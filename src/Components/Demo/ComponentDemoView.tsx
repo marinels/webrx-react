@@ -5,9 +5,18 @@ import * as classNames from 'classnames';
 
 import { BaseView, BaseViewProps } from '../React/BaseView';
 import { ComponentDemoViewModel } from './ComponentDemoViewModel';
-import { Default as ViewMap } from './ViewMap';
+import { ViewMap } from './ViewMap';
+import { RouteMap as AppRouteMap } from '../Common/App/RoutingMap';
+import { ViewMap as AppViewMap } from '../Common/App/ViewMap';
 
 import './ComponentDemo.less';
+
+// inject the demo infrastructure into the app routing and view maps
+AppRouteMap['/'] = { path: '/demo' };
+AppRouteMap['^/demo(/(.*))?'] = { path: '/demo', creator: () => new ComponentDemoViewModel() };
+AppViewMap['ComponentDemoViewModel'] = (viewModel: ComponentDemoViewModel) => (
+  <ComponentDemoView viewModel={ viewModel } />
+);
 
 export interface ComponentDemoProps extends BaseViewProps {
 }

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Observable, IDisposable } from 'rx';
 import * as wx from 'webrx';
 
-import { getLogger } from '../../Utils/Logging/LogManager';
+import { Logging } from '../../Utils';
 import { BaseViewModel, LifecycleComponentViewModel } from './BaseViewModel';
 import * as bindingHelpers from './BindingHelpers';
 import * as renderHelpers from './RenderHelpers';
@@ -24,7 +24,7 @@ export abstract class BaseView<TViewProps extends BaseViewProps, TViewModel exte
   protected renderLoadable = renderHelpers.renderLoadable;
   protected renderSizedLoadable = renderHelpers.renderSizedLoadable;
 
-  protected logger = getLogger(this.getDisplayName());
+  protected logger = Logging.getLogger(this.getDisplayName());
 
   constructor(props?: TViewProps, context?: any) {
     super(props, context);

@@ -3,25 +3,25 @@ import * as classNames from 'classnames';
 import { Grid } from 'react-bootstrap';
 
 import { BaseView } from '../../React/BaseView';
-import { ViewMap } from '../RouteHandler/RouteHandlerView';
+import { ViewMapper } from '../RouteHandler/RouteHandlerView';
 import { AlertHostView } from '../Alert/AlertHostView';
 import { RouteHandlerView } from '../RouteHandler/RouteHandlerView';
 import { PageHeaderView, PageHeaderProps } from '../PageHeader/PageHeaderView';
 import { PageFooterView, PageFooterProps } from '../PageFooter/PageFooterView';
-import { AppViewMap } from './ViewMap';
 import { AppViewModel } from './AppViewModel';
+import { ViewMap } from './ViewMap';
 
 import './App.less';
 
 export interface AppProps extends PageHeaderProps, PageFooterProps {
-  viewMap?: ViewMap;
+  viewMap?: ViewMapper;
 }
 
 export class AppView extends BaseView<AppProps, AppViewModel> {
   public static displayName = 'AppView';
 
   static defaultProps = {
-    viewMap: AppViewMap,
+    viewMap: ViewMap,
   };
 
   render() {

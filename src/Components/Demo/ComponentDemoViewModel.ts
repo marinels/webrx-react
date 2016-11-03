@@ -1,11 +1,11 @@
 import * as wx from 'webrx';
 
 import { Route } from '../../Routing/RouteManager';
-import { HeaderCommandAction, HeaderMenu, HeaderMenuItem } from '../Common/PageHeader/Actions';
+import { HeaderCommandAction, HeaderMenu, HeaderMenuItem } from '../React/Actions';
 import { BaseRoutableViewModel } from '../React/BaseRoutableViewModel';
 import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
 import { Current as App } from '../Common/App/AppViewModel';
-import { Default as RoutingMap, ViewModelActivator } from './RoutingMap';
+import { RouteMap, ViewModelActivator } from './RoutingMap';
 
 export interface ComponentDemoRoutingState {
   route: Route;
@@ -75,15 +75,15 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     if (componentRoute != null) {
       this.logger.debug(`Loading View Model for "${ componentRoute }"...`);
 
-      activator = RoutingMap.viewModelMap[componentRoute];
+      activator = RouteMap.viewModelMap[componentRoute];
 
       if (activator == null) {
-        let result = Object.keys(RoutingMap.viewModelMap)
+        let result = Object.keys(RouteMap.viewModelMap)
           .filter(x => x != null && x.length > 0 && x[0] === '^')
           .map(x => ({ path: x, regex: new RegExp(x, 'i') }))
           .map(x => ({ path: x.path, match: x.regex.exec(componentRoute) }))
           .filter(x => x.match != null)
-          .map(x => ({ path: x.path, match: x.match, activator: RoutingMap.viewModelMap[x.path] }))
+          .map(x => ({ path: x.path, match: x.match, activator: RouteMap.viewModelMap[x.path] }))
           .asEnumerable()
           .firstOrDefault();
 
@@ -117,7 +117,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     const componentRoute = this.getComponentRoute(state);
 
     if (String.isNullOrEmpty(componentRoute) === true) {
-      const uri = RoutingMap.menus
+      const uri = RouteMap.menus
         .asEnumerable()
         .selectMany(x => x.items.asEnumerable().map(y => y.uri))
         .filter(x => String.isNullOrEmpty(x) === false)
@@ -160,7 +160,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   }
 
   getNavbarMenus() {
-    return RoutingMap.menus;
+    return RouteMap.menus;
   }
 
   getNavbarActions() {

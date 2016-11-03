@@ -3,7 +3,7 @@ import * as wx from 'webrx';
 
 import { BaseViewModel } from '../../React/BaseViewModel';
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
-import { HeaderAction, HeaderCommandAction, HeaderMenu, HeaderMenuItem } from './Actions';
+import { HeaderAction, HeaderCommandAction, HeaderMenu, HeaderMenuItem } from '../../React/Actions';
 import { RouteHandlerViewModel } from '../RouteHandler/RouteHandlerViewModel';
 import { SearchViewModel } from '../Search/SearchViewModel';
 import { SubMan } from '../../../Utils/SubMan';

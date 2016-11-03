@@ -8,7 +8,7 @@ import { SearchView } from '../Search/SearchView';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import { Sidebar } from './Sidebar';
 import { PageHeaderViewModel } from './PageHeaderViewModel';
-import { HeaderMenuItem } from './Actions';
+import { HeaderMenuItem } from '../../React/Actions';
 
 import './PageHeader.less';
 

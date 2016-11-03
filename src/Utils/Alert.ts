@@ -1,6 +1,6 @@
 import * as wx from 'webrx';
 
-import { getLogger } from './Logging/LogManager';
+import { getLogger } from './Logging';
 import { PubSub, Default as PubSubInstance } from './PubSub';
 import { AlertCreatedKey, AlertCreated } from '../Events/AlertCreated';
 
@@ -59,3 +59,11 @@ export class Alert {
 }
 
 export const Default = new Alert(PubSubInstance);
+
+export function create(content: any, header?: string, style?: string, timeout?: number) {
+  Default.create(content, header, style, timeout);
+}
+
+export function createForError<TError>(error: TError, header = 'Unknown Error', style = 'danger', timeout?: number, formatter?: (e: TError) => string) {
+  Default.createForError(error, header, style, timeout, formatter);
+}

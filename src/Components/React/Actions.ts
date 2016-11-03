@@ -1,3 +1,5 @@
+import * as wx from 'webrx';
+
 export interface HeaderAction {
   id: any;
   header: any;

@@ -1,7 +1,7 @@
 import { Observable } from  'rx';
 import * as wx from 'webrx';
 
-import { getLogger } from '../Utils/Logging/LogManager';
+import { Logging } from '../Utils';
 import { SampleData } from './SampleData/SampleData';
 
 export enum HttpRequestMethod {
@@ -12,7 +12,7 @@ export enum HttpRequestMethod {
 export class ObservableApi {
   public static displayName = 'ObservableApi';
 
-  private logger = getLogger(ObservableApi.displayName);
+  private logger = Logging.getLogger(ObservableApi.displayName);
   private client = wx.injector.get<wx.IHttpClient>(wx.res.httpClient);
   protected sampleData: SampleData = null;
 

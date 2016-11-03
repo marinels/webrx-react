@@ -4,7 +4,7 @@ import * as wx from 'webrx';
 import { BaseViewModel } from '../../React/BaseViewModel';
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 import { RouteManager, Route } from '../../../Routing/RouteManager';
-import { Default as pubSub } from '../../../Utils/PubSub';
+import { PubSub } from '../../../Utils';
 import { RoutingStateChangedKey, RoutingStateChanged } from '../../../Events/RoutingStateChanged';
 
 export interface ViewModelActivator {
@@ -58,7 +58,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
     );
 
     this.subscribe(
-      pubSub.subscribe<RoutingStateChanged>(RoutingStateChangedKey, x => {
+      PubSub.subscribe<RoutingStateChanged>(RoutingStateChangedKey, x => {
         if (this.currentViewModel() != null) {
           this.manager.navTo(this.currentPath, this.currentViewModel().getRoutingState(x));
         }

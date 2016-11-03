@@ -1,4 +1,7 @@
 import { Subject, IDisposable } from 'rx';
+import * as wx from 'webrx';
+
+import { Logger, getLogger } from './Logging';
 
 interface PubSubMap {
   [key: string]: Subject<any>;
@@ -7,13 +10,15 @@ interface PubSubMap {
 export class PubSub implements IDisposable {
   public static displayName = 'PubSub';
 
+  private logger: wx.Lazy<Logger>;
   private map: PubSubMap;
 
-  private getSubject<T>(key: string) {
-    if (this.map == null) {
-      this.map = {};
-    }
+  constructor() {
+    this.logger = new wx.Lazy(() => getLogger(PubSub.displayName));
+    this.map = {};
+  }
 
+  private getSubject<T>(key: string) {
     let subject: Subject<T> = this.map[key];
 
     if (subject == null) {
@@ -32,8 +37,7 @@ export class PubSub implements IDisposable {
   public subscribe<T>(key: string, onNext?: (value: T) => void, onError?: (exception: any) => void, onCompleted?: () => void) {
     if (onError == null) {
       onError = e => {
-        // tslint:disable-next-line:no-console
-        console.error('PubSub Error', e);
+        this.logger.value.error('PubSub Error', e);
       };
     }
 
@@ -57,3 +61,15 @@ export class PubSub implements IDisposable {
 }
 
 export const Default = new PubSub();
+
+export function observe<T>(key: string) {
+  return Default.observe<T>(key);
+}
+
+export function subscribe<T>(key: string, onNext?: (value: T) => void, onError?: (exception: any) => void, onCompleted?: () => void) {
+  return Default.subscribe(key, onNext, onerror, onCompleted);
+}
+
+export function publish<T>(key: string, arg?: T) {
+  Default.publish(key, arg);
+}

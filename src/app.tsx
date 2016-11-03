@@ -7,16 +7,14 @@ import './Style/App.less';
 // import framework API surface
 import * as wxr from './web.rx.react';
 
-// import routing map
-import { AppRoutingMap } from './Components/Common/App/RoutingMap';
-
-let container = document.getElementById('app');
+// grab the DOM entry point
+const container = document.getElementById('app');
 
 if (container) {
-  let { AppView } = wxr.Components;
+  const { AppView } = wxr.Components;
 
   ReactDOM.render(
-    <AppView viewModel={new wxr.Components.AppViewModel({ routingMap: AppRoutingMap })} copyright='webrx-react' />,
+    <AppView viewModel={ new wxr.Components.AppViewModel() } copyright='webrx-react' />,
     container
   );
 }

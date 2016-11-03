@@ -10,12 +10,12 @@ import './RouteHandler.less';
 
 export const SplashKey = 'Splash';
 
-export interface ViewMap {
+export interface ViewMapper {
   [key: string]: any;
 }
 
 export interface RouteHandlerProps extends BaseViewProps {
-  viewMap: ViewMap;
+  viewMap: ViewMapper;
 }
 
 export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerViewModel> {

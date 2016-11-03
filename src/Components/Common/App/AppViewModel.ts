@@ -2,12 +2,9 @@ import { BaseViewModel } from '../../React/BaseViewModel';
 import { AlertHostViewModel } from '../Alert/AlertHostViewModel';
 import { PageHeaderViewModel } from '../PageHeader/PageHeaderViewModel';
 import { PageFooterViewModel } from '../PageFooter/PageFooterViewModel';
-import { RouteHandlerViewModel, RoutingMap } from '../RouteHandler/RouteHandlerViewModel';
+import { RouteHandlerViewModel } from '../RouteHandler/RouteHandlerViewModel';
 import { Default as routeManager } from '../../../Routing/RouteManager';
-
-export interface AppConfig {
-  routingMap: RoutingMap;
-}
+import { RouteMap } from './RoutingMap';
 
 export class AppViewModel extends BaseViewModel {
   public static displayName = 'AppViewModel';
@@ -17,12 +14,10 @@ export class AppViewModel extends BaseViewModel {
   public header: PageHeaderViewModel;
   public footer = new PageFooterViewModel();
 
-  constructor(public config = <AppConfig>{}) {
+  constructor(routingMap = RouteMap) {
     super();
 
-    this.config = config;
-
-    this.routeHandler = new RouteHandlerViewModel(routeManager, config.routingMap);
+    this.routeHandler = new RouteHandlerViewModel(routeManager, routingMap);
 
     this.header = new PageHeaderViewModel(this.routeHandler);
 

@@ -2,9 +2,9 @@ import { Observable, IDisposable } from 'rx';
 import * as wx from 'webrx';
 
 import { BaseViewModel } from './BaseViewModel';
+import { HeaderCommandAction, HeaderMenu, HeaderMenuItem } from './Actions';
 import { Default as pubSub } from '../../Utils/PubSub';
 import { RoutingStateChangedKey, RoutingStateChanged } from '../../Events/RoutingStateChanged';
-import { HeaderCommandAction, HeaderMenu, HeaderMenuItem } from '../Common/PageHeader/Actions';
 
 export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel {
   public static displayName = 'BaseRoutableViewModel';

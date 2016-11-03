@@ -2,11 +2,11 @@ import * as React from 'react';
 import * as wx from 'webrx';
 import { Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab, Well, ListGroup, ListGroupItem, Table } from 'react-bootstrap';
 
-import * as wxr from '../../web.rx.react';
-import * as renderHelpers from '../React/RenderHelpers';
-import * as bindingHelpers from '../React/BindingHelpers';
+import { Logging, Alert } from '../../Utils';
+import { renderSizedLoadable, bindEventToCommand } from '../React';
+import * as Components from '../Common';
 
-const {
+import {
   CommandButton,
   Loading,
   Splash,
@@ -27,7 +27,7 @@ const {
   CountFooterContent,
   ViewAllFooterAction,
   ItemListPanelView,
-} = wxr.Components;
+} from '../Common';
 
 export interface ViewActivator {
   (component: any, componentRoute: string): any;
@@ -37,7 +37,7 @@ export interface ViewActivatorMap {
   [key: string]: ViewActivator;
 }
 
-const logger = wxr.Logging.getLogger('Demo.ViewMap');
+const logger = Logging.getLogger('Demo.ViewMap');
 
 const listTemplate = new ListViewTemplate<any>((x, i, vm, v) => {
   return `${ x.name } (Required By ${ x.requiredBy })`;
@@ -53,7 +53,7 @@ const treeTemplate = new TreeViewTemplate<any>(
 
 const viewMap: ViewActivatorMap = {
   Loading: () => <Loading text='Standard Loader...' />,
-  SizedLoading: (c, cr) => renderHelpers.renderSizedLoadable(true, '50px Loader...', 50),
+  SizedLoading: (c, cr) => renderSizedLoadable(true, '50px Loader...', 50),
   Splash: () => <Splash fluid header='WebRx.React Demo' logo='http://placehold.it/100x100?text=Logo' />,
   CommandButton: () => (
     <Form>
@@ -62,7 +62,7 @@ const viewMap: ViewActivatorMap = {
           <FormControl id='CommandButtonParamInput' type='text' placeholder='Enter Command Parameter Text Here...' />
           <InputGroup.Button>
             <CommandButton bsSize='large' commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
-              command={wx.command(x => wxr.Alert.create(x, 'CommandButton Pressed'))}>Execute Command</CommandButton>
+              command={wx.command(x => Alert.create(x, 'CommandButton Pressed'))}>Execute Command</CommandButton>
           </InputGroup.Button>
         </InputGroup>
       </FormGroup>
@@ -70,11 +70,11 @@ const viewMap: ViewActivatorMap = {
   ),
   Alert: () => (
     <div>
-      <Button onClick={() => wxr.Alert.create(`Alert Content: ${new Date()}`, 'Info Alert', 'info')}>Info Alert</Button>
-      <Button onClick={() => wxr.Alert.createForError(new Error(`Error Message: ${new Date()}`), 'Error Alert')}>Error Alert</Button>
+      <Button onClick={() => Alert.create(`Alert Content: ${new Date()}`, 'Info Alert', 'info')}>Info Alert</Button>
+      <Button onClick={() => Alert.createForError(new Error(`Error Message: ${new Date()}`), 'Error Alert')}>Error Alert</Button>
     </div>
   ),
-  TimeSpanInputViewModel: (viewModel: wxr.Components.TimeSpanInputViewModel) => (
+  TimeSpanInputViewModel: (viewModel: Components.TimeSpanInputViewModel) => (
     <div>
       <TimeSpanInputView viewModel={ viewModel } />
       <TimeSpanInputView viewModel={ viewModel } >
@@ -121,7 +121,7 @@ const viewMap: ViewActivatorMap = {
       </div>
     );
   },
-  ListViewModel: (viewModel: wxr.Components.ListViewModel<any, any>, componentRoute: string) => {
+  ListViewModel: (viewModel: Components.ListViewModel<any, any>, componentRoute: string) => {
     switch (componentRoute) {
       case 'List':
         return (
@@ -141,8 +141,8 @@ const viewMap: ViewActivatorMap = {
         return null;
     }
   },
-  DataGridViewModel: (viewModel: wxr.Components.DataGridViewModel<any>, componentRoute: string) => {
-    let view: wxr.Components.DataGridViewTemplate<{name: string, requiredBy: string}> = undefined;
+  DataGridViewModel: (viewModel: Components.DataGridViewModel<any>, componentRoute: string) => {
+    let view: Components.DataGridViewTemplate<{name: string, requiredBy: string}> = undefined;
     let columns: any;
     let pager = true;
 
@@ -166,9 +166,9 @@ const viewMap: ViewActivatorMap = {
       </DataGridView>
     );
   },
-  ModalDialogViewModel: (data: { viewModel: wxr.Components.ModalDialogViewModel, accept: wx.ICommand<any>, reject: wx.ICommand<any> }) => (
+  ModalDialogViewModel: (data: { viewModel: Components.ModalDialogViewModel, accept: wx.ICommand<any>, reject: wx.ICommand<any> }) => (
     <div>
-      <Button onClick={ bindingHelpers.bindEventToCommand(this, data.viewModel, x => x.show) }>Show Confirmation Dialog</Button>
+      <Button onClick={ bindEventToCommand(this, data.viewModel, x => x.show) }>Show Confirmation Dialog</Button>
       <ModalDialogView viewModel={ data.viewModel } title='Demo Modal Confirmation Dialog' body='You can put custom content here'>
         <CommandButton bsStyle='primary' command={ data.viewModel.hideOnExecute(data.accept) }>Accept</CommandButton>
         <CommandButton bsStyle='danger' command={ data.viewModel.hideOnExecute(data.reject) }>Reject</CommandButton>
@@ -176,7 +176,7 @@ const viewMap: ViewActivatorMap = {
       </ModalDialogView>
     </div>
   ),
-  TabsViewModel: (viewModel: wxr.Components.TabsViewModel<any>, componentRoute: string) => {
+  TabsViewModel: (viewModel: Components.TabsViewModel<any>, componentRoute: string) => {
     if (componentRoute === 'StaticTabs') {
       return (
         <TabsView viewModel={viewModel} id='demo-tabs'>
@@ -211,7 +211,7 @@ const viewMap: ViewActivatorMap = {
     >
       Add any content to the panel body!
       <Loading fontSize={ 24 } text='Such as a Loader...' />
-      <Button onClick={() => wxr.Alert.create('Button Clicked', 'Common Panel Demo')}>Or Even a Button</Button>
+      <Button onClick={() => Alert.create('Button Clicked', 'Common Panel Demo')}>Or Even a Button</Button>
     </CommonPanel>
   ),
   CommonPanelList: () => (
@@ -237,7 +237,7 @@ const viewMap: ViewActivatorMap = {
       </Table>
     </CommonPanel>
   ),
-  ItemListPanelViewModel: (viewModel: wxr.Components.ItemListPanelViewModel<any>) => (
+  ItemListPanelViewModel: (viewModel: Components.ItemListPanelViewModel<any>) => (
     <ItemListPanelView viewModel={viewModel} headerContent='Sample Data' collapsible
       headerActions={[ { id: 'header', children: 'Header Action' } ]}
       footerContent={ (<CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
@@ -249,4 +249,4 @@ const viewMap: ViewActivatorMap = {
   ),
 };
 
-export const Default = viewMap;
+export const ViewMap = viewMap;

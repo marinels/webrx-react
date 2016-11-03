@@ -1,7 +1,7 @@
 import { Observable } from  'rx';
 import * as wx from 'webrx';
 
-import { getLogger } from '../Utils/Logging/LogManager';
+import { Logging } from '../Utils';
 import { HashCodec } from './HashCodec';
 
 export interface Route {
@@ -14,7 +14,7 @@ export interface Route {
 export class RouteManager {
   public static displayName = 'RouteManager';
 
-  private logger = getLogger(RouteManager.displayName);
+  private logger = Logging.getLogger(RouteManager.displayName);
   public currentRoute: wx.IObservableProperty<Route>;
 
   constructor(hashChanged?: Observable<string>, public hashCodec = new HashCodec()) {

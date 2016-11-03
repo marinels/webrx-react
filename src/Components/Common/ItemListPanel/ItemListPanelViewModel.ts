@@ -35,12 +35,13 @@ export class ItemListPanelViewModel<TData> extends BaseRoutableViewModel<any> {
   }
 
   public get itemsChanged() {
-    return this.grid.items.changed;
+    return wx
+      .whenAny(this.grid.items, x => x);
   }
 
   public get lengthChanged() {
-    return this.itemsChanged
-      .map(x => (x || []).length)
+    return wx
+      .whenAny(this.itemsChanged, x => (x || []).length)
       .distinctUntilChanged();
   }
 

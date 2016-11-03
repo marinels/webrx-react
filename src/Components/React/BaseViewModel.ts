@@ -1,8 +1,7 @@
 import { Observable, IDisposable } from 'rx';
 import * as wx from 'webrx';
 
-import { LogLevel } from '../../Utils/Logging/LogLevel';
-import { getLogger } from '../../Utils/Logging/LogManager';
+import { Logging } from '../../Utils';
 import { SubMan } from '../../Utils/SubMan';
 import { Default as alert } from '../../Utils/Alert';
 import { Default as routeManager } from '../../Routing/RouteManager';
@@ -16,7 +15,7 @@ export interface LifecycleComponentViewModel {
 export abstract class BaseViewModel implements IDisposable {
   public static displayName = 'BaseViewModel';
 
-  private viewModelLogger = new wx.Lazy(() => getLogger(this.getDisplayName()));
+  private viewModelLogger = new wx.Lazy(() => Logging.getLogger(this.getDisplayName()));
   private isLoggingMemberObservables = false;
 
   protected subs = new SubMan();
@@ -30,7 +29,7 @@ export abstract class BaseViewModel implements IDisposable {
   private initializeViewModel() {
     this.initialize();
 
-    if (this.logger.level <= LogLevel.Debug && this.isLoggingMemberObservables === false) {
+    if (this.logger.level <= Logging.LogLevel.Debug && this.isLoggingMemberObservables === false) {
       this.isLoggingMemberObservables = true;
 
       this.logMemberObservables();
