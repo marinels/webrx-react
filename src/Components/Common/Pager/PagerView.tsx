@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
-import { Pagination, PaginationProps, DropdownButton, MenuItem } from 'react-bootstrap';
+import { Pagination, PaginationProps, SelectCallback, DropdownButton, MenuItem } from 'react-bootstrap';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { PagerViewModel, StandardLimits } from './PagerViewModel';
@@ -10,6 +10,9 @@ import './Pager.less';
 export interface PagerProps extends BaseViewProps, PaginationProps {
   info?: boolean;
   limits?: number[];
+
+  // we need to explicitly define this as it overrides a default onSelect
+  onSelect?: SelectCallback;
 }
 
 export class PagerView extends BaseView<PagerProps, PagerViewModel> {
