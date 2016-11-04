@@ -76,23 +76,26 @@ const sampleTreeData = sampleListData
     }, x)
   );
 
-routeMap.addRoute('Framework', 'Loading', 'Loading', (state: any) => 'Loading');
-routeMap.addRoute('Framework', 'SizedLoading', 'Sized Loading', (state: any) => 'SizedLoading');
-routeMap.addRoute('Framework', 'Splash', 'Splash', (state: any) => 'Splash');
-routeMap.addRoute('Framework', 'CommandButton', 'Command Button', (state: any) => 'CommandButton');
-routeMap.addRoute('Framework', 'Alert', 'Alert', (state: any) => 'Alert');
-routeMap.addRoute('Framework', 'TimeSpanInput', 'Time Span Input', (state: any) => new Components.TimeSpanInputViewModel(true, Components.TimeSpanUnitType.Seconds));
-routeMap.addRoute('Framework', 'ContextMenu', 'Context Menu', (state: any) => 'ContextMenu');
-routeMap.addRoute('Framework', 'ProfilePicture', 'Profile Picture', (state: any) => 'ProfilePicture');
-routeMap.addRoute('Framework', 'List', 'List', (state: any) => new Components.ListViewModel(wx.property(sampleListData), false, false));
-routeMap.addRoute('Framework', 'Tree', 'Tree', (state: any) => new Components.ListViewModel(wx.property(sampleTreeData), true, false));
-routeMap.addRoute('Framework', 'PanelList', 'Panel List', (state: any) => new Components.ListViewModel(wx.property(sampleListData), true, false));
-routeMap.addRoute('Framework', 'DataGrid', 'Data Grid', (state: any) => Components.DataGridViewModel.create(...sampleListData));
-routeMap.addRoute('Framework', 'DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: any) => Components.DataGridViewModel.create(...sampleListData));
-routeMap.addRoute('Framework', 'DataGridList', 'DataGrid (List View)', (state: any) =>
+routeMap.addRoute('React', 'Loading', 'Loading', (state: any) => 'Loading');
+routeMap.addRoute('React', 'SizedLoading', 'Sized Loading', (state: any) => 'SizedLoading');
+routeMap.addRoute('React', 'Splash', 'Splash', (state: any) => 'Splash');
+routeMap.addRoute('React', 'CommandButton', 'Command Button', (state: any) => 'CommandButton');
+routeMap.addRoute('React', 'Alert', 'Alert', (state: any) => 'Alert');
+routeMap.addRoute('React', 'ContextMenu', 'Context Menu', (state: any) => 'ContextMenu');
+routeMap.addRoute('React', 'ProfilePicture', 'Profile Picture', (state: any) => 'ProfilePicture');
+routeMap.addRoute('React', 'CommonPanel', 'Common Panel', (state: any) => 'CommonPanel');
+routeMap.addRoute('React', 'CommonPanelList', 'Common Panel (List)', (state: any) => 'CommonPanelList');
+
+routeMap.addRoute('WebRx-React', 'TimeSpanInput', 'Time Span Input', (state: any) => new Components.TimeSpanInputViewModel(true, Components.TimeSpanUnitType.Seconds));
+routeMap.addRoute('WebRx-React', 'List', 'List', (state: any) => new Components.ListViewModel(wx.property(sampleListData), false, false));
+routeMap.addRoute('WebRx-React', 'Tree', 'Tree', (state: any) => new Components.ListViewModel(wx.property(sampleTreeData), true, false));
+routeMap.addRoute('WebRx-React', 'PanelList', 'Panel List', (state: any) => new Components.ListViewModel(wx.property(sampleListData), true, false));
+routeMap.addRoute('WebRx-React', 'DataGrid', 'Data Grid', (state: any) => Components.DataGridViewModel.create(...sampleListData));
+routeMap.addRoute('WebRx-React', 'DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: any) => Components.DataGridViewModel.create(...sampleListData));
+routeMap.addRoute('WebRx-React', 'DataGridList', 'DataGrid (List View)', (state: any) =>
   new Components.DataGridViewModel(wx.property(sampleListData), (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0)
 );
-routeMap.addRoute('Framework', 'ModalDialog', 'Modal Dialog', (state: any) => {
+routeMap.addRoute('WebRx-React', 'ModalDialog', 'Modal Dialog', (state: any) => {
   // we are simulating a modal being contained within another view model
   return {
     displayName: 'ModalDialogViewModel',
@@ -101,11 +104,9 @@ routeMap.addRoute('Framework', 'ModalDialog', 'Modal Dialog', (state: any) => {
     reject: wx.command(x => Alert.create('Modal Rejected', 'Modal Closed...', 'danger')),
   };
 });
-routeMap.addRoute('Framework', 'Tabs', 'Tabs', (state: any) => new Components.TabsViewModel());
-routeMap.addRoute('Framework', 'StaticTabs', 'Static Tabs', (state: any) => new Components.TabsViewModel());
-routeMap.addRoute('Framework', 'CommonPanel', 'Common Panel', (state: any) => 'CommonPanel');
-routeMap.addRoute('Framework', 'CommonPanelList', 'Common Panel (List)', (state: any) => 'CommonPanelList');
-routeMap.addRoute('Framework', 'ItemListPanel', 'Item List Panel', (state: any) => new Components.ItemListPanelViewModel(wx.property([
+routeMap.addRoute('WebRx-React', 'Tabs', 'Tabs', (state: any) => new Components.TabsViewModel());
+routeMap.addRoute('WebRx-React', 'StaticTabs', 'Static Tabs', (state: any) => new Components.TabsViewModel());
+routeMap.addRoute('WebRx-React', 'ItemListPanel', 'Item List Panel', (state: any) => new Components.ItemListPanelViewModel(wx.property([
   { name: 'test 1', requiredBy: 'now' },
   { name: 'test 2', requiredBy: 'tomorrow' },
   { name: 'test 3', requiredBy: 'yesterday' },
