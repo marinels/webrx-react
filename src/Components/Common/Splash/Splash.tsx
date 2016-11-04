@@ -47,7 +47,7 @@ export class Splash extends React.Component<SplashProps, any> {
 
   private renderLogo() {
     return renderConditional(this.props.logo != null, () => (
-      <Image className='pull-left' src={this.props.logo}/>
+      <Image className='Splash-logo' src={this.props.logo} rounded />
     ));
   }
 }
