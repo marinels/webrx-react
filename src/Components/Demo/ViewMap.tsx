@@ -166,6 +166,12 @@ const viewMap: ViewActivatorMap = {
       </DataGridView>
     );
   },
+  AsyncDataGridViewModel: (viewModel: Components.AsyncDataGridViewModel<any>) => (
+    <DataGridView viewModel={ viewModel } pager pagerLimits={ [ 1, 5, 10, null ] }>
+      <DataGridColumn key='name' fieldName='name' header='Name' sortable />
+      <DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 } />
+    </DataGridView>
+  ),
   ModalDialogViewModel: (data: { viewModel: Components.ModalDialogViewModel, accept: wx.ICommand<any>, reject: wx.ICommand<any> }) => (
     <div>
       <Button onClick={ bindEventToCommand(this, data.viewModel, x => x.show) }>Show Confirmation Dialog</Button>

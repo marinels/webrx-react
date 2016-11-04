@@ -1,6 +1,7 @@
+import { Observable } from 'rx';
 import * as wx from 'webrx';
 
-import { Alert } from '../../Utils';
+import { Alert, Compare } from '../../Utils';
 import { HeaderMenu, HeaderMenuItem } from '../React';
 import * as Components from '../Common';
 
@@ -47,7 +48,12 @@ export class RoutingMap {
 
 const routeMap = new RoutingMap();
 
-const sampleListData = [
+interface SampleData {
+  name: string;
+  requiredBy: string;
+}
+
+const sampleListData = <SampleData[]>[
   { name: 'test 1', requiredBy: 'now' },
   { name: 'test 2', requiredBy: 'tomorrow' },
   { name: 'test 3', requiredBy: 'yesterday' },
@@ -95,6 +101,74 @@ routeMap.addRoute('WebRx-React', 'DataGridAutoCol', 'Data Grid (Automatic Column
 routeMap.addRoute('WebRx-React', 'DataGridList', 'DataGrid (List View)', (state: any) =>
   new Components.DataGridViewModel(wx.property(sampleListData), (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0)
 );
+routeMap.addRoute('WebRx-React', 'AsyncDataGrid', 'DataGrid (Async)', (state: any) => {
+  const dataSource = <Components.AsyncDataSource<SampleData>>{
+    getResultAsync: (request) => {
+      return Observable
+        .of(sampleListData)
+        .doOnNext(x => {
+          const msg = [
+            'Simulating Async Data Request...',
+            `filter = ${ request.filter }`,
+            `offset = ${ request.offset }`,
+            `limit = ${ request.limit }`,
+            `sortField = ${ request.sortField }`,
+            `sortDirection = ${ Compare.SortDirection[request.sortDirection] }`,
+          ].join('<br/>');
+          Alert.create(msg, 'Async DataGrid Demo', undefined, 1000);
+        })
+        .delay(1000)
+        .map(x => {
+          let query = x
+            .asEnumerable();
+
+          if (String.isNullOrEmpty(request.filter) === false) {
+            if (request.filter === 'error') {
+              throw new Error('Simulated Async DataSource Error');
+            }
+
+            query = query
+              .filter(y => {
+                return (
+                  y.name.indexOf(request.filter || '') >= 0 ||
+                  y.requiredBy.indexOf(request.filter || '') >= 0
+                );
+              });
+          }
+
+          const count = query.count();
+
+          if (String.isNullOrEmpty(request.sortField) === false) {
+            if (request.sortDirection === Compare.SortDirection.Descending) {
+              query = query
+                .orderByDescending(y => request.sortField === 'name' ? y.name : y.requiredBy);
+            }
+            else {
+              query = query
+                .orderBy(y => request.sortField === 'name' ? y.name : y.requiredBy);
+            }
+          }
+
+          if ((request.offset || 0) > 0) {
+            query = query.skip(request.offset);
+          }
+
+          if ((request.limit || 0) > 0) {
+            query = query.take(request.limit);
+          }
+
+          const data = query.toArray();
+
+          return <Components.AsyncDataResult<SampleData>>{
+            data,
+            count,
+          };
+        });
+    },
+  };
+
+  return new Components.AsyncDataGridViewModel(dataSource, true, true);
+});
 routeMap.addRoute('WebRx-React', 'ModalDialog', 'Modal Dialog', (state: any) => {
   // we are simulating a modal being contained within another view model
   return {
