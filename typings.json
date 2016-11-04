@@ -5,15 +5,17 @@
     "mocha": "registry:dt/mocha#2.2.5+20160317120654"
   },
   "globalDependencies": {
+    "chai": "registry:dt/chai#3.4.0+20160601211834",
     "classnames": "registry:dt/classnames#0.0.0+20160316155526",
     "ix": "registry:dt/ix#1.0.6+20160317120654",
     "ix.js/l2o": "registry:dt/ix.js/l2o#1.0.6+20160317120654",
     "jquery-deparam": "file:./src/typings/jquery-deparam/jquery-deparam.d.ts",
     "jquery-param": "file:./src/typings/jquery-param/jquery-param.d.ts",
+    "mocha": "registry:dt/mocha#2.2.5+20160720003353",
     "moment": "registry:dt/moment#2.11.1+20161010105546",
     "react": "registry:dt/react#0.14.0+20161008064207",
     "react-addons-css-transition-group": "registry:dt/react-addons-css-transition-group#0.14.0+20160316155526",
-    "react-addons-transition-group": "registry:dt/react-addons-transition-group#0.14.0+20160417134118",
+    "react-addons-transition-group": "registry:dt/react-addons-transition-group#0.14.0+20160701001352",
     "react-bootstrap": "registry:dt/react-bootstrap#0.0.0+20160806072414",
     "react-bootstrap-datetimepicker": "file:./src/typings/react-bootstrap-datetimepicker/react-bootstrap-datetimepicker.d.ts",
     "react-bootstrap-overrides": "file:./src/typings/react-bootstrap-overrides/react-bootstrap-overrides.d.ts",
