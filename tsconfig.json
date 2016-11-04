@@ -73,7 +73,7 @@
     "./src/Utils/Moment.ts",
     "./src/Utils/PubSub.ts",
     "./src/Utils/SubMan.ts",
-    "./src/web.rx.react.ts",
+    "./src/webrx-react.ts",
     "./src/app.tsx",
     "./src/Components/Common/Alert/AlertHostView.tsx",
     "./src/Components/Common/Alert/AlertView.tsx",

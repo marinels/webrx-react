@@ -5,7 +5,7 @@ import * as ReactDOM from 'react-dom';
 import './Style/App.less';
 
 // import framework API surface
-import * as wxr from './web.rx.react';
+import * as wxr from './webrx-react';
 
 // grab the DOM entry point
 const container = document.getElementById('app');
