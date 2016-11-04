@@ -8,11 +8,10 @@
     "webpack": "webpack",
     "gulp": "gulp",
     "mocha": "mocha",
-    "tsc": "tsc",
     "tslint": "tslint",
     "typings": "typings"
   },
-  "author": "Pat Sissons <psissons@acrotech.io> (http://github.com/patsissons)",
+  "author": "Pat Sissons <patricksissons@gmail.com> (http://github.com/patsissons)",
   "license": "MIT",
   "repository": {
     "type": "git",
