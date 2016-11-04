@@ -13,7 +13,9 @@ export * from './PageHeader/PageHeaderViewModel';
 export * from './List/ListViewModel';
 export * from './DataGrid/DataGridViewModel';
 export * from './DataGrid/AsyncDataGridViewModel';
+export * from './ItemListPanel/BaseItemListPanelViewModel';
 export * from './ItemListPanel/ItemListPanelViewModel';
+export * from './ItemListPanel/AsyncItemListPanelViewModel';
 export * from './App/AppViewModel';
 
 // Simple Components

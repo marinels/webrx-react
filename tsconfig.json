@@ -21,6 +21,8 @@
     "./src/Components/Common/DataGrid/AsyncDataGridViewModel.ts",
     "./src/Components/Common/DataGrid/DataGridViewModel.ts",
     "./src/Components/Common/index.ts",
+    "./src/Components/Common/ItemListPanel/AsyncItemListPanelViewModel.ts",
+    "./src/Components/Common/ItemListPanel/BaseItemListPanelViewModel.ts",
     "./src/Components/Common/ItemListPanel/ItemListPanelViewModel.ts",
     "./src/Components/Common/List/ListViewModel.ts",
     "./src/Components/Common/ModalDialog/ModalDialogViewModel.ts",
