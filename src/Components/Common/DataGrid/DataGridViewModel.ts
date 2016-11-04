@@ -68,8 +68,8 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
         this.pager.limit,
         this.sortField,
         this.sortDirection,
-        this.items.changed.startWith([]),
-        this.search.results.startWith(null),
+        this.items,
+        this.search.results,
         () => null
       )
       .debounce(rateLimit)
