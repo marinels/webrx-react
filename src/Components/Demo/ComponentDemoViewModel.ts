@@ -96,7 +96,13 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
       }
     }
 
-    return activator == null ? null : activator(state);
+    const viewModel = activator == null ? null : activator(state);
+
+    if (viewModel != null) {
+      this.logger.debug(`Loaded View Model "${ Object.getName(viewModel) }"`, viewModel);
+    }
+
+    return viewModel;
   }
 
   routed() {
