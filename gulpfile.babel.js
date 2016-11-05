@@ -79,7 +79,7 @@ gulp.task('test', (done) => {
 });
 // Default npm test task
 gulp.task('npm:test', (done) => {
-  runSequence('lint', 'webpack:test', 'mocha:run', 'deploy:all', done);
+  runSequence('lint', 'webpack:test', 'mocha:run', 'deploy:release', done);
 });
 
 gulp.task('config', () => {
