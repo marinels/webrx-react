@@ -8,7 +8,7 @@ const lessLoader = ExtractTextPlugin.extract('style-loader', 'css-loader?sourceM
 
 module.exports = Object.assign({}, webpackCommon, {
   entry: {
-    app: [
+    'webrx-react': [
       path.resolve('src', 'app.tsx'),
     ],
     vendor: [
@@ -30,7 +30,7 @@ module.exports = Object.assign({}, webpackCommon, {
   },
   output: {
     path: path.resolve('build'),
-    filename: 'app.js',
+    filename: '[name].js',
   },
   plugins: [
     webpackCommon.plugins[0],
