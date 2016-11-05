@@ -83,7 +83,7 @@ gulp.task('test', (done) => {
 });
 // Default npm test task
 gulp.task('npm:test', (done) => {
-  runSequence('lint', 'webpack:test', 'mocha:run', 'deploy:release', done);
+  runSequence('lint', 'webpack:test', 'mocha:run', 'deploy', done);
 });
 
 gulp.task('config', () => {
@@ -124,7 +124,7 @@ Tasks:
        ${ [ 'es', 'ts', 'style', 'all' ].map((x) => util.colors.cyan(`lint:${ x }`)).join(', ') }
 
   ${ util.colors.cyan('gulp webpack') } will build the ${ util.colors.yellow('debug') } bundle using webpack (alias for ${ util.colors.cyan('gulp webpack:debug') })
-       ${ [ 'debug', 'release', 'test', 'all' ].map((x) => util.colors.cyan(`webpack:${ x }`)).join(', ') }
+       ${ [ 'debug', 'release', 'release:dist', 'release:dist:min', 'test', 'all' ].map((x) => util.colors.cyan(`webpack:${ x }`)).join(', ') }
 
   ${ util.colors.cyan('gulp mocha') } will build the ${ util.colors.yellow('test') } bundle and run mocha against the tests
   ${ util.colors.cyan('gulp mocha:run') } will run mocha against the current ${ util.colors.yellow('test') } bundle
@@ -133,7 +133,6 @@ Tasks:
   ${ util.colors.cyan('gulp watch:mocha') } will start webpack in ${ util.colors.magenta('watch') } mode, and run all tests after any detected change
   ${ util.colors.cyan('gulp watch:lint') } will watch source files for changes and run ${ util.colors.cyan('lint') } after any detected change
   ${ util.colors.cyan('gulp watch:dist') } will watch source files for changes and run ${ util.colors.cyan('dist') } after any detected change
-       ${ [ 'debug', 'release' ].map((x) => util.colors.cyan(`watch:dist:${ x }`)).join(', ') }
 
   ${ util.colors.cyan('gulp index') } will copy (and transform) the ${ util.colors.magenta(config.files.index) } file for builds
        ${ [ 'debug', 'release', 'watch', 'all' ].map((x) => util.colors.cyan(`index:${ x }`)).join(', ') }
@@ -143,10 +142,8 @@ Tasks:
   ${ util.colors.cyan('gulp browser:stats') } will open a browser window to ${ util.colors.underline.blue(webpackAnalyzeUri) }
 
   ${ util.colors.cyan('gulp dist') } will deploy release bundles to ${ util.colors.magenta(config.dirs.dist) }
-       ${ [ 'debug', 'release', 'all' ].map((x) => util.colors.cyan(`dist:${ x }`)).join(', ') }
 
   ${ util.colors.cyan('gulp deploy') } will bundle and deploy release bundles to ${ util.colors.magenta(config.dirs.dist) }
-       ${ [ 'debug', 'release', 'all' ].map((x) => util.colors.cyan(`deploy:${ x }`)).join(', ') }
 `);
   /* eslint-enable max-len */
 });
@@ -300,7 +297,7 @@ gulp.task('lint:style:css', () => {
     }));
 });
 
-function getWebpackConfig(build, uglify) {
+function getWebpackConfig(build, uglify, dist) {
   // dynamic loading of the webpack config
   const webpackConfig = clone(build === config.builds.test ? webpackConfigTestTemplate : webpackConfigTemplate);
 
@@ -310,7 +307,24 @@ function getWebpackConfig(build, uglify) {
   } else if (build === config.builds.release) {
     if (uglify === true) {
       webpackConfig.output.filename = util.replaceExtension(webpackConfig.output.filename, '.min.js');
+      webpackConfig.plugins[2].filename = util.replaceExtension(webpackConfig.plugins[2].filename, '.min.css');
     }
+
+    if (dist === true) {
+      // copy vendor modules to externals
+      webpackConfig.entry.vendor.forEach((x) => {
+        webpackConfig.externals[x] = true;
+      });
+
+      // remove vendor chunk entry and common chunk plugin
+      Reflect.deleteProperty(webpackConfig.entry, 'vendor');
+      webpackConfig.plugins.splice(1, 1);
+
+      // configure library output
+      webpackConfig.output.library = 'webrx-react';
+      webpackConfig.output.libraryTarget = 'commonjs2';
+    }
+
     webpackConfig.plugins[0].definitions.RELEASE = true;
     webpackConfig.plugins[0].definitions['process.env'] = {
       'NODE_ENV': JSON.stringify('production'),
@@ -472,7 +486,7 @@ function webpackWatcherStream(webpackConfig, build) {
 
 gulp.task('webpack', [ 'webpack:debug' ]);
 gulp.task('webpack:all', (done) => {
-  runSequence('webpack:debug', 'webpack:release:min', 'webpack:test', done);
+  runSequence('webpack:debug', 'webpack:release', 'webpack:test', done);
 });
 
 gulp.task('webpack:debug', [ 'clean:build', 'tsconfig:glob' ], () => {
@@ -489,8 +503,15 @@ gulp.task('webpack:release', [ 'clean:build', 'tsconfig:glob' ], () => {
     .pipe(gulp.dest(webpackConfig.output.path));
 });
 
-gulp.task('webpack:release:min', [ 'clean:build', 'tsconfig:glob' ], () => {
-  const webpackConfig = getWebpackConfig(config.builds.release, true);
+gulp.task('webpack:release:dist', [ 'clean:build', 'tsconfig:glob' ], () => {
+  const webpackConfig = getWebpackConfig(config.builds.release, false, true);
+
+  return webpackBuild(config.builds.release, webpackConfig)
+    .pipe(gulp.dest(webpackConfig.output.path));
+});
+
+gulp.task('webpack:release:dist:min', [ 'clean:build', 'tsconfig:glob' ], () => {
+  const webpackConfig = getWebpackConfig(config.builds.release, true, true);
 
   return webpackBuild(config.builds.release, webpackConfig)
     .pipe(gulp.dest(webpackConfig.output.path));
@@ -636,28 +657,8 @@ gulp.task('watch:lint', () => {
     ], [ 'lint' ]);
 });
 
-gulp.task('watch:dist', [ 'watch:dist:debug' ]);
-
-gulp.task('watch:dist:debug', [ 'clean:build', 'clean:dist', 'tsconfig:glob' ], () => {
-  const target = path.resolve(config.dirs.dist, config.builds.debug);
-  const webpackConfig = getWebpackConfig(config.builds.debug);
-
-  log('Deploying', util.colors.yellow(config.builds.debug), 'Build to', util.colors.magenta(target));
-
-  webpackConfig.devtool = 'eval';
-  webpackConfig.watch = true;
-  webpackConfig.failOnError = false;
-  webpackConfig.debug = true;
-
-  return webpackWatcherStream(webpackConfig, config.builds.watch)
-    .pipe(gulp.dest(target))
-    .pipe(through((file) => {
-      util.log('Deployed', util.colors.magenta(file.path));
-    }));
-});
-
-gulp.task('watch:dist:release', [ 'clean:build', 'clean:dist', 'tsconfig:glob' ], () => {
-  const target = path.resolve(config.dirs.dist, config.builds.release);
+gulp.task('watch:dist', [ 'clean:build', 'clean:dist', 'tsconfig:glob' ], () => {
+  const target = path.resolve(config.dirs.dist);
   const webpackConfig = getWebpackConfig(config.builds.release);
 
   log('Deploying', util.colors.yellow(config.builds.release), 'Build to', util.colors.magenta(target));
@@ -732,26 +733,8 @@ gulp.task('browser:stats', () => {
     .pipe(open({ uri: webpackAnalyzeUri }));
 });
 
-gulp.task('dist', [ 'dist:all' ]);
-gulp.task('dist:all', (done) => {
-  runSequence('dist:debug', 'dist:release', done);
-});
-
-gulp.task('dist:debug', [ 'clean:dist' ], () => {
-  const target = path.resolve(config.dirs.dist, config.builds.debug);
-
-  log('Deploying', util.colors.yellow(config.builds.debug), 'Build to', util.colors.magenta(target));
-
-  return gulp
-    .src(path.resolve(config.dirs.build, config.builds.debug, '**', '*'))
-    .pipe(gulp.dest(target))
-    .pipe(through((file) => {
-      util.log('Deploying', util.colors.magenta(file.path));
-    }));
-});
-
-gulp.task('dist:release', [ 'clean:dist' ], () => {
-  const target = path.resolve(config.dirs.dist, config.builds.release);
+gulp.task('dist', () => {
+  const target = path.resolve(config.dirs.dist);
 
   log('Deploying', util.colors.yellow(config.builds.release), 'Build to', util.colors.magenta(target));
 
@@ -763,15 +746,6 @@ gulp.task('dist:release', [ 'clean:dist' ], () => {
     }));
 });
 
-gulp.task('deploy', [ 'deploy:all' ]);
-gulp.task('deploy:all', (done) => {
-  runSequence('deploy:debug', 'deploy:release', done);
-});
-
-gulp.task('deploy:debug', (done) => {
-  runSequence('clean:build', 'webpack:debug', 'dist:debug', done);
-});
-
-gulp.task('deploy:release', (done) => {
-  runSequence('clean:build', 'webpack:release:min', 'dist:release', done);
+gulp.task('deploy', (done) => {
+  runSequence('clean:dist', 'webpack:release:dist', 'dist', 'webpack:release:dist:min', 'dist', done);
 });
