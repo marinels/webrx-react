@@ -20,7 +20,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
   public static displayName = 'PageHeaderView';
 
   static defaultProps = {
-    brand: 'WebRx.React Rocks!!!',
+    brand: 'WebRx-React Rocks!!!',
   };
 
   updateOn() {

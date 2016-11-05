@@ -14,7 +14,7 @@ import { ViewMap, ViewMapper } from '../../../Routing/ViewMap';
 import './App.less';
 
 ViewMap['Splash'] = () => (
-  <Splash header='WebRx.React' />
+  <Splash header='WebRx-React' />
 );
 
 export interface AppProps extends PageHeaderProps, PageFooterProps {

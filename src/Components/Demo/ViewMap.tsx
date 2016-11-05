@@ -54,7 +54,7 @@ const treeTemplate = new TreeViewTemplate<any>(
 const viewMap: ViewActivatorMap = {
   Loading: () => <Loading text='Standard Loader...' />,
   SizedLoading: (c, cr) => renderSizedLoadable(true, '50px Loader...', 50),
-  Splash: () => <Splash fluid header='WebRx.React Demo' logo='http://placehold.it/100x100?text=Logo' />,
+  Splash: () => <Splash fluid header='WebRx-React Demo' logo='http://placehold.it/100x100?text=Logo' />,
   CommandButton: () => (
     <Form>
       <FormGroup bsSize='large' style={({ marginBottom: 0 })}>
