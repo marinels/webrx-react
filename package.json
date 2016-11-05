@@ -29,6 +29,7 @@
     "bootstrap": "^3.3.7",
     "chai": "^3.4.1",
     "classnames": "^2.2.5",
+    "clone": "^2.0.0",
     "css-loader": "^0.25.0",
     "es6-shim": "^0.35.1",
     "eslint": "^3.9.1",

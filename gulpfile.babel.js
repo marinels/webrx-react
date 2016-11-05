@@ -5,6 +5,7 @@
 import File from 'vinyl';
 import WebpackDevServer from 'webpack-dev-server';
 import clean from 'gulp-rimraf';
+import clone from 'clone';
 import eslint from 'gulp-eslint';
 // eslint-disable-next-line id-length
 import fs from 'fs';
@@ -24,6 +25,9 @@ import typings from 'gulp-typings';
 import util from 'gulp-util';
 import webpack from 'webpack';
 import webpackStream from 'webpack-stream';
+
+import webpackConfigTemplate from './webpack.config';
+import webpackConfigTestTemplate from './test/webpack.config';
 
 const args = minimist(process.argv);
 
@@ -298,8 +302,7 @@ gulp.task('lint:style:css', () => {
 
 function getWebpackConfig(build, uglify) {
   // dynamic loading of the webpack config
-  // eslint-disable-next-line global-require
-  const webpackConfig = require(path.resolve(build === config.builds.test ? build : '', config.files.webpack));
+  const webpackConfig = clone(build === config.builds.test ? webpackConfigTestTemplate : webpackConfigTemplate);
 
   if (build === config.builds.debug) {
     webpackConfig.plugins[0].definitions.DEBUG = true;
