@@ -15,12 +15,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/patsissons/WebRx.React.git"
+    "url": "https://github.com/patsissons/WebRx-React.git"
   },
   "bugs": {
-    "url": "https://github.com/patsissons/WebRx.React/issues"
+    "url": "https://github.com/patsissons/WebRx-React/issues"
   },
-  "homepage": "https://github.com/patsissons/WebRx.React",
+  "homepage": "https://github.com/patsissons/WebRx-React",
   "dependencies": {},
   "devDependencies": {
     "babel-core": "^6.18.2",
