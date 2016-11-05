@@ -5,16 +5,17 @@ import * as ReactDOM from 'react-dom';
 import './Style/App.less';
 
 // import framework API surface
-import * as wxr from './webrx-react';
+import './webrx-react';
+
+// import the App view and view model
+import { AppViewModel, AppView } from './Components';
 
 // grab the DOM entry point
 const container = document.getElementById('app');
 
 if (container) {
-  const { AppView } = wxr.Components;
-
   ReactDOM.render(
-    <AppView viewModel={ new wxr.Components.AppViewModel() } copyright='webrx-react' />,
+    <AppView viewModel={ new AppViewModel() } copyright='webrx-react' />,
     container
   );
 }
