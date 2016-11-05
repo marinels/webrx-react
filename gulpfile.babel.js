@@ -113,7 +113,8 @@ Tasks:
   ${ util.colors.cyan('gulp typings') } will install typescript definition files via the typings utility (alias for ${ util.colors.cyan('gulp typings:install') })
   ${ util.colors.cyan('gulp typings:ensure') } will run ${ util.colors.cyan('typings:install') } if ${ util.colors.magenta(config.dirs.typings) } is missing
 
-  ${ util.colors.cyan('gulp tsconfig:glob') } will expand ${ util.colors.yellow('filesGlob') } in ${ util.colors.magenta('tsconfig.json') }
+  ${ util.colors.cyan('gulp tsconfig') } will expand ${ util.colors.yellow('filesGlob') } in ${ util.colors.magenta('tsconfig.json') }
+       ${ [ 'glob' ].map((x) => util.colors.cyan(`tsconfig:${ x }`)).join(', ') }
 
   ${ util.colors.cyan('gulp lint') } will lint the source files with ${ util.colors.yellow('eslint') }, ${ util.colors.yellow('tslint') }, and ${ util.colors.yellow('stylelint') }
        ${ [ 'es', 'ts', 'style', 'all' ].map((x) => util.colors.cyan(`lint:${ x }`)).join(', ') }
@@ -220,6 +221,7 @@ gulp.task('typings:ensure', (done) => {
     }));
 });
 
+gulp.task('tsconfig', [ 'tsconfig:glob' ]);
 gulp.task('tsconfig:glob', [ 'typings:ensure' ], () => {
   log('Globbing', util.colors.magenta(path.resolve('tsconfig.json')));
 
