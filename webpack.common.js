@@ -4,7 +4,7 @@ module.exports = {
   externals: {
     jquery: 'var null',
   },
-  devtool: 'sourcemap',
+  devtool: 'source-map',
   plugins: [
     // eslint-disable-next-line id-match
     new webpack.DefinePlugin({ DEBUG: false, PRODUCTION: false, TEST: false, WEBPACK_DEV_SERVER: false }),
