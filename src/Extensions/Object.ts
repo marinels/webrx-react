@@ -83,18 +83,6 @@ function getName(source: any, undefinedValue = 'undefined', isStatic = false) {
   const displayNameProperty = 'displayName';
   const nameProperty = 'name';
 
-  interface ITypeName {
-    typeName: string;
-  }
-
-  interface IDisplayName {
-    displayName: string;
-  }
-
-  interface IName {
-    name: string;
-  }
-
   let name: string = null;
 
   if (source != null) {
@@ -102,13 +90,13 @@ function getName(source: any, undefinedValue = 'undefined', isStatic = false) {
       name = source;
     }
     else if (source.hasOwnProperty(typeNameProperty)) {
-      name = (source as ITypeName).typeName;
+      name = source[typeNameProperty];
     }
     else if (source.hasOwnProperty(displayNameProperty)) {
-      name = (source as IDisplayName).displayName;
+      name = source[displayNameProperty];
     }
     else if (source.hasOwnProperty(nameProperty)) {
-      name = (source as IName).name;
+      name = source[nameProperty];
     }
     else if (source.constructor != null) {
       // this allows us to inspect the static properties of the source object

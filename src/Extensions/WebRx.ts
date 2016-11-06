@@ -1,6 +1,8 @@
 import * as wx from 'webrx';
 
 declare module 'webrx' {
+  // we don't have control over the interface name for this augmentation
+  // tslint:disable-next-line:interface-name
   interface ICommand<T> {
     catchExceptions(onError: (error: Error) => void): ICommand<T>;
   }

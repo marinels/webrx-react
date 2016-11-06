@@ -65,8 +65,6 @@ export class ObjectComparer<T> {
   public static displayName = 'ObjectComparer';
   public static DefaultComparerKey = '';
 
-  private comparers: { [key: string]: FieldComparer<any> } = {};
-
   public static createFieldComparer<T>(field: string, compare: ValueComparison<T>, valueSelector?: (source: any, field: string) => T) {
     return {
       field,
@@ -74,6 +72,8 @@ export class ObjectComparer<T> {
       valueSelector,
     } as FieldComparer<T>;
   }
+
+  private comparers: { [key: string]: FieldComparer<any> } = {};
 
   constructor(...comparers: FieldComparer<any>[]) {
     for (let i = 0; i < comparers.length; ++i) {

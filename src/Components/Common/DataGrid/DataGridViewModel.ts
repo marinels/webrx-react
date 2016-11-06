@@ -21,6 +21,10 @@ export interface DataGridRoutingState {
 export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRoutingState> {
   public static displayName = 'DataGridViewModel';
 
+  public static create<TData>(...items: TData[]) {
+    return new DataGridViewModel(wx.property<TData[]>(items));
+  }
+
   public search: SearchViewModel;
   public pager: PagerViewModel;
 
@@ -30,10 +34,6 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
 
   public sort: wx.ICommand<SortArgs>;
   public toggleSortDirection: wx.ICommand<string>;
-
-  public static create<TData>(...items: TData[]) {
-    return new DataGridViewModel(wx.property<TData[]>(items));
-  }
 
   constructor(
     public items: wx.IObservableProperty<TData[]> = wx.property<TData[]>([]),

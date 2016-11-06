@@ -10,14 +10,14 @@ export interface SelectableItem {
 export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<TRoutingState> {
   public static displayName = 'ListViewModel';
 
+  public static create<TData>(...items: TData[]) {
+    return new ListViewModel(wx.property<TData[]>(items));
+  }
+
   public selectedItem: wx.IObservableReadOnlyProperty<TData>;
 
   public selectItem: wx.ICommand<TData>;
   protected toggleSelection: wx.ICommand<TData>;
-
-  public static create<TData>(...items: TData[]) {
-    return new ListViewModel(wx.property<TData[]>(items));
-  }
 
   constructor(
     public items: wx.IObservableProperty<TData[]> = wx.property<TData[]>(),
