@@ -17,16 +17,23 @@ export function renderEnumerable<T, TResult>(
 export function renderConditional(
   condition: wx.IObservableProperty<boolean> | boolean,
   trueContent: any,
-  falseContent: any = null
+  falseContent: any = null,
+  warnStaticContent = false,
 ) {
+  // allow build to override default value
   if (DEBUG) {
+    warnStaticContent = true;
+  }
+
+  // if either provided content is static warn that
+  if (warnStaticContent) {
     // tslint:disable no-console
     if (trueContent != null && (typeof trueContent === 'object')  && (trueContent instanceof Function) === false) {
-      console.warn('renderConditional using static trueContent');
+      console.warn('renderConditional using static trueContent, use a lambda instead');
     }
 
     if (falseContent != null && (typeof falseContent === 'object') && (falseContent instanceof Function) === false) {
-      console.warn('renderConditional using static falseContent');
+      console.warn('renderConditional using static falseContent, use a lambda instead');
     }
     // tslint:enable no-console
   }

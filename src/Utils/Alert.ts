@@ -18,17 +18,16 @@ export class Alert {
     }
   }
 
-  public createForError<TError>(error: TError, header = 'Unknown Error', style = 'danger', timeout?: number, formatter?: (e: TError) => string) {
+  public createForError<TError>(error: TError, header = 'Unknown Error', style = 'danger', timeout?: number, formatter?: (e: TError) => string, logStackTrace = false) {
     if (error != null) {
       let text: string;
+      const anyError = error as any;
+      const childError = anyError.error;
 
       if (formatter != null) {
         text = formatter(error);
       }
       else {
-        let anyError = error as any;
-        let childError = anyError.error;
-
         let code = anyError.status || anyError.Status || anyError.code || anyError.Code;
         if (code == null && childError != null) {
           code = childError.status || childError.Status || childError.code || childError.Code;
@@ -39,17 +38,22 @@ export class Alert {
           message = childError.message || childError.Message;
         }
 
-        text = `Error ${code || ''}: ${message || String.stringify(error, null, 2)}`;
+        text = `Error ${ code || '' }: ${ message || String.stringify(error, null, 2) }`;
+      }
 
-        if (DEBUG) {
-          let stack = anyError.stack || anyError.stacktrace || anyError.stackTrace || anyError.StackTrace;
-          if (stack == null && childError != null) {
-            stack = childError.stack || childError.stacktrace || childError.stackTrace || childError.StackTrace;
-          }
+      // allow build to override default value
+      if (DEBUG) {
+        logStackTrace = true;
+      }
 
-          if (stack != null) {
-            this.logger.value.error(`${header}: ${message}`, error);
-          }
+      if (logStackTrace === true) {
+        let stack = anyError.stack || anyError.stacktrace || anyError.stackTrace || anyError.StackTrace;
+        if (stack == null && childError != null) {
+          stack = childError.stack || childError.stacktrace || childError.stackTrace || childError.StackTrace;
+        }
+
+        if (stack != null) {
+          this.logger.value.error(`${ header }: ${ text }`, error);
         }
       }
 

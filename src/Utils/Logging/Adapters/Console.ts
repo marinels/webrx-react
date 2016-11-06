@@ -4,6 +4,29 @@ import { LogLevel, getLevelName } from '../LogLevel';
 import { Logger } from '../Logger';
 import { DelegateLogManager } from './Delegate';
 
+export function getDefaultLogLevel(isTest = false, isDebug = false) {
+  let defaultLevel = LogLevel.Info;
+
+  // allow build to override default value
+  if (TEST) {
+    isTest = true;
+  }
+
+  // allow build to override default value
+  if (DEBUG) {
+    isDebug = true;
+  }
+
+  if (isTest) {
+    defaultLevel = LogLevel.Off;
+  }
+  else if (isDebug) {
+    defaultLevel = LogLevel.Debug;
+  }
+
+  return defaultLevel;
+}
+
 export class ConsoleLogManager extends DelegateLogManager {
   constructor(defaultLevel: LogLevel) {
     super((action, level, text, args) => this.logAction(action, level, text, args), defaultLevel);
@@ -75,16 +98,4 @@ export class ConsoleLogManager extends DelegateLogManager {
   // tslint:enable:no-console
 }
 
-let defaultLevel: LogLevel = null;
-
-if (TEST) {
-  defaultLevel = LogLevel.Off;
-}
-else if (DEBUG) {
-  defaultLevel = LogLevel.Debug;
-}
-else {
-  defaultLevel = LogLevel.Info;
-}
-
-export const Default = new ConsoleLogManager(defaultLevel);
+export const Default = new ConsoleLogManager(getDefaultLogLevel());

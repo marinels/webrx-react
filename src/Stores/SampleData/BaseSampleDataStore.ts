@@ -10,10 +10,11 @@ export interface SampleDataActionSet {
   [ action: string ]: SampleDataAction;
 }
 
-const EnableAlerts = false;
-
 export abstract class BaseSampleDataStore {
   public abstract getActions(): SampleDataActionSet;
+
+  constructor(protected enableAlerts = false) {
+  }
 
   protected connect(actions: SampleDataActionSet, action: string, api: SampleDataAction, thisArg: any = this) {
     actions[action] = function () {
@@ -22,7 +23,7 @@ export abstract class BaseSampleDataStore {
   }
 
   protected createAlert(action: string, params: any = {}) {
-    if (EnableAlerts === true) {
+    if (this.enableAlerts === true) {
       alert.create(JSON.stringify(params, null, 2), `SampleData API Call: ${action}`);
     }
   }
