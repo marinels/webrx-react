@@ -317,7 +317,8 @@ function getWebpackConfig(build, uglify, dist) {
       });
 
       // remove vendor chunk entry and common chunk plugin
-      Reflect.deleteProperty(webpackConfig.entry, 'vendor');
+      // eslint-disable-next-line prefer-reflect
+      delete webpackConfig.entry.vendor;
       webpackConfig.plugins.splice(1, 1);
 
       // configure library output
