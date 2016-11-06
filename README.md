@@ -1,40 +1,44 @@
-## Getting Started
+# WebRx-React Framework
 
-* `npm install` -- _installs all required development packages_
-* `typings install` -- _installs all required typings files_
-    * you may need to run `npm install -g typings` first
+> This project is not stable and is in development. If you'd like to contribute, please submit a Pull Request.
 
-### Gulp Commands
+WebRx-React is a reactive web UI framework that leverages Observables from [RxJS 4](https://github.com/Reactive-Extensions/RxJS), properties and commands from [WebRx](https://github.com/WebRxJS/WebRx), performant rendering from [Facebook's React](https://github.com/facebook/react), and consistent styling from [Twitter's Bootstrap](https://github.com/twbs/bootstrap) (as well as [react-boostrap](https://github.com/react-bootstrap/react-bootstrap) to bridge the gap with React).
 
-* `gulp help` -- _displays a full listing of all commands and overrides available_
-* `gulp` -- _runs the webpack development server with hot module reload_
-* `gulp webpack` -- _runs the webpack and builds a debug app bundle_
-* `gulp test` -- _builds and runs the unit tests and reports out to the console_
-* `gulp watch:mocha` -- _runs the unit tests **watch** mode_
+This framework can be imported into another typescript project (recommended approach), imported into a JavaScript project, or you can alternatively just choose to work directly on a fork of this repository.
 
-### Basic npm Commands
+WebRx-React is designed to be a single page web app framework that uses observables to drive rendering React components. This framework comes with a number of foundation components that allow you to compose more complex but consistent looking web apps.
 
-* `npm start` -- `gulp`
-* `npm test` -- `gulp test`
+[![Build Status](https://img.shields.io/travis/patsissons/webrx-react.svg?branch=develop)](https://travis-ci.org/patsissons/webrx-react)
+[![npm Version](https://img.shields.io/npm/v/webrx-react.svg)](https://www.npmjs.com/package/webrx-react)
+[![npm Downloads](https://img.shields.io/npm/dt/webrx-react.svg)](https://www.npmjs.com/package/webrx-react)
+[![npm License](https://img.shields.io/npm/l/webrx-react.svg)](https://www.npmjs.com/package/webrx-react)
+[![Dependency Status](https://img.shields.io/versioneye/d/nodejs/webrx-react.svg)](https://www.versioneye.com/nodejs/webrx-react)
+[![tslint](https://img.shields.io/badge/tslint-strict-117D6B.svg)](https://github.com/unional/tslint-config-unional/blob/master/style-strict.md)
 
-### Visual Studio Code
+## Quick Start
 
-#### Setup
+This framework comes with a built-in demo that can be viewed in the browser. Simply run `npm install && npm run gulp` to play around with the components built into this framework.
 
-The following extensions are recommended to be installed:
+## Using WebRx-React
 
-* `ESLint` -- _provides style rules for javascript files_
-* `tslint` -- _provides style rules for TypeScript files_
-* `final-newline` -- _automatically inserts a trailing new line in files on save_
+To start building your own components using WebRx-React framework, you may want to start by looking at the included foundationary components (and component demos). These components and demos offer the best hands on introduction to how everything works together.
 
-Install extensions by hitting `F1` (or `Ctrl+Shift+P`) and typing `ext install`, then typing the extension name to install.
+### TypeScript
 
-#### Development
+When using typescript to import this framework you can either import the whole API or individual modules.
 
-This project is configured to allow Visual Studio Code to automatically build and test the project by using the predefined shortcut keys.
+Import the whole api by adding this line: `import * as wxr from 'webrx-react';`. Now you can access each namespace via the API surface using the `wxr` import alias (i.e., `new wxr.Components.BaseViewModel()`).
 
-* `Ctrl+Shift+B` -- _Build the debug bundle_
-* `Ctrl+Shift+T` -- _Run tests_
-* `F5` -- _Run tests with debugger attached_
+Import individual modules directly by supplying a path starting with `webrx-react/src/` (i.e. `import { BaseViewModel } from 'webrx-react/src/Components';`).
 
-All `gulp` tasks can be run from within Visual Studio by hitting `F1` (or `Ctrl+Shift+P`), hitting `backspace` once to clear the `>` and typing `task` (followed by a space). The available gulp tasks will be displayed and one can be selected using the arrow keys and `Enter`.
+### JavaScript
+
+_TBD_
+
+## Development
+
+If you are developing for WebRx-React, the best strategy is to run `gulp watch` and use the browser to test out your changes.
+
+You can also run `gulp watch:mocha` if you are working on tests, or `gulp watch:lint` if you want to clean up your source.
+
+You can additionally run `gulp help` to list all of the available gulp commands.
