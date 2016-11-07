@@ -36,3 +36,28 @@ export function getLevelName(level: LogLevel | number) {
 
   return name;
 }
+
+export function getDefaultLogLevel(isTest = false, isDebug = false) {
+  let defaultLevel = LogLevel.Info;
+
+  // allow build to override default value
+  if (TEST) {
+    isTest = true;
+  }
+
+  // allow build to override default value
+  if (DEBUG) {
+    isDebug = true;
+  }
+
+  if (isTest) {
+    defaultLevel = LogLevel.Off;
+  }
+  else if (isDebug) {
+    defaultLevel = LogLevel.Debug;
+  }
+
+  return defaultLevel;
+}
+
+export const DefaultLogLevel = getDefaultLogLevel();
