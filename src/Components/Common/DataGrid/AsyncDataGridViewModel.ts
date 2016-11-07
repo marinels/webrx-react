@@ -43,7 +43,7 @@ export class AsyncDataGridViewModel<TData, TResult extends AsyncDataResult<TData
         .catch(e => {
           this.alertForError(e, 'Async DataSource Error');
 
-          return Observable.empty<TResult>()
+          return Observable.empty<TResult>();
         });
     });
 
