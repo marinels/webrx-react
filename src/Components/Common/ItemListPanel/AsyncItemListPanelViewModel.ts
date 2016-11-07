@@ -1,13 +1,13 @@
 import * as wx from 'webrx';
 
 import { BaseItemListPanelViewModel } from './BaseItemListPanelViewModel';
-import { AsyncDataGridViewModel, AsyncDataSource } from '../DataGrid/AsyncDataGridViewModel';
+import { AsyncDataGridViewModel, AsyncDataSource, AsyncDataResult } from '../DataGrid/AsyncDataGridViewModel';
 
-export class AsyncItemListPanelViewModel<TData> extends BaseItemListPanelViewModel<TData> {
+export class AsyncItemListPanelViewModel<TData, TResult extends AsyncDataResult<TData>> extends BaseItemListPanelViewModel<TData> {
   public static displayName = 'AsyncItemListPanelViewModel';
 
   constructor(
-    dataSource: AsyncDataSource<TData>,
+    dataSource: AsyncDataSource<TData, TResult>,
     enableFilter?: boolean,
     enableSort?: boolean,
     isLoading?: boolean | wx.IObservableProperty<boolean>,

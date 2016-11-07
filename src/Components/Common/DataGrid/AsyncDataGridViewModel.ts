@@ -1,4 +1,5 @@
 import { Observable } from 'rx';
+import * as wx from 'webrx';
 
 import { DataGridViewModel } from './DataGridViewModel';
 import { SortDirection } from '../../../Utils/Compare';
@@ -16,15 +17,19 @@ export interface AsyncDataResult<TData> {
   count: number;
 }
 
-export interface AsyncDataSource<TData> {
-  getResultAsync(request: AsyncDataRequest): Observable<AsyncDataResult<TData>>;
+export interface AsyncDataSource<TData, TResult extends AsyncDataResult<TData>> {
+  getResultAsync(request: AsyncDataRequest): Observable<TResult>;
 }
 
-export class AsyncDataGridViewModel<TData> extends DataGridViewModel<TData> {
+export class AsyncDataGridViewModel<TData, TResult extends AsyncDataResult<TData>> extends DataGridViewModel<TData> {
   public static displayName = 'AsyncDataGridViewModel';
 
+  protected asyncResult: wx.IObservableReadOnlyProperty<TResult>;
+
+  protected requestData: wx.ICommand<TResult>;
+
   constructor(
-    protected dataSource: AsyncDataSource<TData>,
+    protected dataSource: AsyncDataSource<TData, TResult>,
     protected enableFilter = false,
     protected enableSort = false,
     isMultiSelectEnabled?: boolean,
@@ -32,6 +37,22 @@ export class AsyncDataGridViewModel<TData> extends DataGridViewModel<TData> {
     isRoutingEnabled?: boolean
   ) {
     super(undefined, undefined, undefined, isMultiSelectEnabled, rateLimit, isRoutingEnabled);
+
+    this.requestData = wx.asyncCommand((x: AsyncDataRequest) => {
+      return this.dataSource.getResultAsync(x)
+        .catch(e => {
+          this.alertForError(e, 'Async DataSource Error');
+
+          return Observable.empty<TResult>()
+        });
+    });
+
+    this.asyncResult = wx
+      .whenAny(this.requestData.results, x => x)
+      .doOnNext(x => {
+        this.pager.itemCount(x.count);
+      })
+      .toProperty();
   }
 
   canFilter() {
@@ -43,14 +64,8 @@ export class AsyncDataGridViewModel<TData> extends DataGridViewModel<TData> {
   }
 
   projectItems() {
-    return this.dataSource
-      .getResultAsync(this.getRequestParams())
-      .doOnNext(x => {
-        this.pager.itemCount(x.count);
-      })
-      .doOnError(e => {
-        this.alertForError(e, 'Async DataSource Error');
-      })
+    return this.requestData
+      .executeAsync(this.getRequestParams())
       .map(x => x.data);
   }
 

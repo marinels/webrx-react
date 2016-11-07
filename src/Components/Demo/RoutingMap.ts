@@ -102,7 +102,7 @@ routeMap.addRoute('WebRx-React', 'DataGridList', 'DataGrid (List View)', (state:
   new Components.DataGridViewModel(wx.property(sampleListData), (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0)
 );
 routeMap.addRoute('WebRx-React', 'AsyncDataGrid', 'DataGrid (Async)', (state: any) => {
-  const dataSource = <Components.AsyncDataSource<SampleData>>{
+  const dataSource = <Components.AsyncDataSource<SampleData, Components.AsyncDataResult<SampleData>>>{
     getResultAsync: (request) => {
       return Observable
         .of(sampleListData)
