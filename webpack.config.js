@@ -1,4 +1,5 @@
 const path = require('path');
+const clone = require('clone');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const webpackCommon = require('./webpack.common');
@@ -6,7 +7,7 @@ const webpackCommon = require('./webpack.common');
 const cssLoader = ExtractTextPlugin.extract('style-loader', 'css-loader?sourceMap');
 const lessLoader = ExtractTextPlugin.extract('style-loader', 'css-loader?sourceMap!less-loader?sourceMap');
 
-module.exports = Object.assign({}, webpackCommon, {
+module.exports = Object.assign(clone(webpackCommon), {
   entry: {
     'webrx-react': [
       path.resolve('src', 'app.tsx'),
