@@ -34,6 +34,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
 
   public sort: wx.ICommand<SortArgs>;
   public toggleSortDirection: wx.ICommand<string>;
+  public refresh: wx.ICommand<any>;
 
   constructor(
     public items: wx.IObservableProperty<TData[]> = wx.property<TData[]>([]),
@@ -50,6 +51,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
 
     this.sort = wx.asyncCommand((x: SortArgs) => Observable.of(x));
     this.toggleSortDirection = wx.asyncCommand((x: string) => Observable.of(x));
+    this.refresh = wx.command();
 
     const sortChanged = wx
       .whenAny(this.sort.results, x => x);
@@ -70,6 +72,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
         this.sortDirection,
         this.items,
         this.search.results,
+        this.refresh.results,
         () => null
       )
       .debounce(rateLimit)
@@ -93,6 +96,8 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
         this.pager.itemCount(x);
       })
     );
+
+    this.refresh.execute(null);
   }
 
   protected projectItems() {
