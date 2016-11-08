@@ -24,9 +24,9 @@ export interface AsyncDataSource<TData, TResult extends AsyncDataResult<TData>> 
 export class AsyncDataGridViewModel<TData, TResult extends AsyncDataResult<TData>> extends DataGridViewModel<TData> {
   public static displayName = 'AsyncDataGridViewModel';
 
-  protected asyncResult: wx.IObservableReadOnlyProperty<TResult>;
+  public asyncResult: wx.IObservableReadOnlyProperty<TResult>;
 
-  protected requestData: wx.ICommand<TResult>;
+  public requestData: wx.ICommand<TResult>;
 
   constructor(
     protected dataSource: AsyncDataSource<TData, TResult>,
