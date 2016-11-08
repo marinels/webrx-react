@@ -253,6 +253,16 @@ const viewMap: ViewActivatorMap = {
       <DataGridColumn fieldName='requiredBy' header='Required By' sortable className='col-md-4' />
     </ItemListPanelView>
   ),
+  AsyncItemListPanelViewModel: (viewModel: Components.AsyncItemListPanelViewModel<any, any>) => (
+    <ItemListPanelView viewModel={viewModel} headerContent='Sample Data' collapsible
+      headerActions={[ { id: 'header', children: 'Header Action' } ]}
+      footerContent={ (<CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
+      footerActions={[ { id: 'footer', bsStyle: 'primary', command: viewModel.navigate, children: (<ViewAllFooterAction suffix='Things' />) } ]}
+    >
+      <DataGridColumn fieldName='name' header='Name' sortable className='col-md-8' />
+      <DataGridColumn fieldName='requiredBy' header='Required By' sortable className='col-md-4' />
+    </ItemListPanelView>
+  ),
 };
 
 export const ViewMap = viewMap;
