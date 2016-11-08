@@ -4,13 +4,13 @@ import * as wx from 'webrx';
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 import { DataGridViewModel } from '../DataGrid/DataGridViewModel';
 
-export abstract class BaseItemListPanelViewModel<TData> extends BaseRoutableViewModel<any> {
+export abstract class BaseItemListPanelViewModel<TData, TGrid extends DataGridViewModel<TData>> extends BaseRoutableViewModel<any> {
   public static displayName = 'BaseItemListPanelViewModel';
 
   public navigate: wx.ICommand<TData>;
 
   constructor(
-    public grid: DataGridViewModel<TData>,
+    public grid: TGrid,
     public isLoading: boolean | wx.IObservableProperty<boolean> = false,
     isRoutingEnabled?: boolean
   ) {

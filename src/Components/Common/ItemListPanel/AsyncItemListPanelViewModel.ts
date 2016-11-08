@@ -3,7 +3,7 @@ import * as wx from 'webrx';
 import { BaseItemListPanelViewModel } from './BaseItemListPanelViewModel';
 import { AsyncDataGridViewModel, AsyncDataSource, AsyncDataResult } from '../DataGrid/AsyncDataGridViewModel';
 
-export class AsyncItemListPanelViewModel<TData, TResult extends AsyncDataResult<TData>> extends BaseItemListPanelViewModel<TData> {
+export class AsyncItemListPanelViewModel<TData, TResult extends AsyncDataResult<TData>> extends BaseItemListPanelViewModel<TData, AsyncDataGridViewModel<TData, TResult>> {
   public static displayName = 'AsyncItemListPanelViewModel';
 
   constructor(

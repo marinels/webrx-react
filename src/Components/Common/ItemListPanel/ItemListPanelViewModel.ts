@@ -4,7 +4,7 @@ import { BaseItemListPanelViewModel } from './BaseItemListPanelViewModel';
 import { DataGridViewModel } from '../DataGrid/DataGridViewModel';
 import { ObjectComparer } from '../../../Utils/Compare';
 
-export class ItemListPanelViewModel<TData> extends BaseItemListPanelViewModel<TData> {
+export class ItemListPanelViewModel<TData> extends BaseItemListPanelViewModel<TData, DataGridViewModel<TData>> {
   public static displayName = 'ItemListPanelViewModel';
 
   public static create<TData>(...items: TData[]) {
