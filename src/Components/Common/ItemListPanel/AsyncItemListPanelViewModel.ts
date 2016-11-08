@@ -7,7 +7,7 @@ export class AsyncItemListPanelViewModel<TData, TResult extends AsyncDataResult<
   public static displayName = 'AsyncItemListPanelViewModel';
 
   constructor(
-    dataSource: AsyncDataSource<TData, TResult>,
+    dataSourceOrViewModel: AsyncDataSource<TData, TResult> | AsyncDataGridViewModel<TData, TResult>,
     enableFilter?: boolean,
     enableSort?: boolean,
     isLoading?: boolean | wx.IObservableProperty<boolean>,
@@ -15,10 +15,14 @@ export class AsyncItemListPanelViewModel<TData, TResult extends AsyncDataResult<
     rateLimit?: number,
     isRoutingEnabled?: boolean
   ) {
-    super(
-      new AsyncDataGridViewModel(dataSource, enableFilter, enableSort, isMultiSelectEnabled, rateLimit, isRoutingEnabled),
-      isLoading, isRoutingEnabled
-    );
+    const dataSource = <AsyncDataSource<TData, TResult>>dataSourceOrViewModel;
+    let dataGridViewModel = <AsyncDataGridViewModel<TData, TResult>>dataSourceOrViewModel;
+
+    if (dataGridViewModel.asyncResult == null) {
+      dataGridViewModel = new AsyncDataGridViewModel(dataSource, enableFilter, enableSort, isMultiSelectEnabled, rateLimit, isRoutingEnabled);
+    }
+
+    super(dataGridViewModel, isLoading, isRoutingEnabled);
   }
 
   public get items() {
