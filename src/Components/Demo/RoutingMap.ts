@@ -184,7 +184,11 @@ routeMap.addRoute('WebRx-React', 'ItemListPanel', 'Item List Panel', (state: any
   new Components.ItemListPanelViewModel(wx.property(sampleListData), (x, r) => r.test(x.name))
 );
 routeMap.addRoute('WebRx-React', 'AsyncItemListPanel', 'ItemListPanel (Async)', (state: any) => {
-  return new Components.AsyncItemListPanelViewModel(sampleDataSource, true, true);
+  const canGetResult = Observable.of(true).delay(1000);
+  const dataSource = Object.assign<Components.AsyncDataSource<SampleData, Components.AsyncDataResult<SampleData>>>({ canGetResult }, sampleDataSource);
+  const vm = new Components.AsyncItemListPanelViewModel(dataSource, true, true);
+  vm.grid.requestData.canExecuteObservable.take(1).invokeCommand(vm.grid.refresh);
+  return vm;
 });
 
 export const RouteMap = routeMap;

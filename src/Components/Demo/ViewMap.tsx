@@ -255,9 +255,9 @@ const viewMap: ViewActivatorMap = {
   ),
   AsyncItemListPanelViewModel: (viewModel: Components.AsyncItemListPanelViewModel<any, any>) => (
     <ItemListPanelView viewModel={viewModel} headerContent='Sample Data' collapsible
-      headerActions={[ { id: 'header', children: 'Header Action' } ]}
+      headerActions={[ { id: 'footer', bsStyle: 'primary', command: viewModel.navigate, children: (<ViewAllFooterAction suffix='Things' />) } ]}
       footerContent={ (<CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
-      footerActions={[ { id: 'footer', bsStyle: 'primary', command: viewModel.navigate, children: (<ViewAllFooterAction suffix='Things' />) } ]}
+      footerActions={[ { id: 'refresh', command: viewModel.grid.refresh, children: 'Refresh' } ]}
     >
       <DataGridColumn fieldName='name' header='Name' sortable className='col-md-8' />
       <DataGridColumn fieldName='requiredBy' header='Required By' sortable className='col-md-4' />
