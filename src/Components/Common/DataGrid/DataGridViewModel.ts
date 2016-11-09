@@ -76,7 +76,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
         () => null
       )
       .debounce(rateLimit)
-      .flatMap(x => this.projectItems())
+      .flatMap(x => this.getProjectedItems())
       .toProperty();
 
     this.subscribe(
@@ -98,6 +98,22 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
     );
 
     this.refresh.execute(null);
+  }
+
+  protected getProjectedItems() {
+    try {
+      return this.projectItems()
+        .catch(e => this.handleProjectionError(e));
+    }
+    catch (e) {
+      return this.handleProjectionError(e);
+    }
+  }
+
+  protected handleProjectionError(e: Error) {
+    this.alertForError(e, 'Error Projecting Data');
+
+    return Observable.empty<TData[]>();
   }
 
   protected projectItems() {
