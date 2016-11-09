@@ -1,7 +1,7 @@
 {
   "name": "webrx-react",
-  "version": "0.3.9",
-  "description": "WebRx with React",
+  "version": "0.4.0",
+  "description": "ReactJS + WebRx + RxJS + Bootstrap: MVVM for Single Page Web Applications",
   "scripts": {
     "start": "gulp",
     "test": "gulp npm:test",
@@ -11,16 +11,16 @@
     "tslint": "tslint",
     "typings": "typings"
   },
-  "author": "Pat Sissons <patricksissons@gmail.com> (http://github.com/patsissons)",
+  "author": "Pat Sissons <pat@marinels.com> (http://github.com/patsissons)",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/patsissons/WebRx-React.git"
+    "url": "https://github.com/marinels/webrx-react.git"
   },
   "bugs": {
-    "url": "https://github.com/patsissons/WebRx-React/issues"
+    "url": "https://github.com/marinels/webrx-react/issues"
   },
-  "homepage": "https://github.com/patsissons/WebRx-React",
+  "homepage": "https://github.com/marinels/webrx-react",
   "dependencies": {
     "bootstrap": "^3.3.7",
     "classnames": "^2.2.5",
