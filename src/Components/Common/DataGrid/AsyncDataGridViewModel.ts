@@ -18,6 +18,7 @@ export interface AsyncDataResult<TData> {
 }
 
 export interface AsyncDataSource<TData, TResult extends AsyncDataResult<TData>> {
+  canGetResult?: Observable<boolean>;
   getResultAsync(request: AsyncDataRequest): Observable<TResult>;
 }
 
@@ -38,14 +39,17 @@ export class AsyncDataGridViewModel<TData, TResult extends AsyncDataResult<TData
   ) {
     super(undefined, undefined, undefined, isMultiSelectEnabled, rateLimit, isRoutingEnabled);
 
-    this.requestData = wx.asyncCommand((x: AsyncDataRequest) => {
-      return this.dataSource.getResultAsync(x)
-        .catch(e => {
-          this.alertForError(e, 'Async DataSource Error');
+    this.requestData = wx.asyncCommand(
+      this.dataSource.canGetResult || Observable.of(true),
+      (x: AsyncDataRequest) => {
+        return this.dataSource.getResultAsync(x)
+          .catch(e => {
+            this.alertForError(e, 'Async Data Result Error: getResultAsync');
 
-          return Observable.empty<TResult>();
-        });
-    });
+            return Observable.empty();
+          });
+      }
+    );
 
     this.asyncResult = wx
       .whenAny(this.requestData.results, x => x)
@@ -64,8 +68,18 @@ export class AsyncDataGridViewModel<TData, TResult extends AsyncDataResult<TData
   }
 
   projectItems() {
-    return this.requestData
-      .executeAsync(this.getRequestParams())
+    return Observable
+      .of(this.requestData)
+      .filter(x => x.canExecute(null) === true)
+      .flatMap(x => {
+        return x.executeAsync(this.getRequestParams())
+          .catch(e => {
+            this.alertForError(e, 'Async Data Request Error');
+
+            return Observable.empty();
+          });
+      })
+      .filter(x => x != null)
       .map(x => x.data);
   }
 
