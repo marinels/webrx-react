@@ -8,7 +8,7 @@ This framework can be imported into another typescript project (recommended appr
 
 WebRx-React is designed to be a single page web app framework that uses observables to drive rendering React components. This framework comes with a number of foundation components that allow you to compose more complex but consistent looking web apps.
 
-[![Build Status](https://img.shields.io/travis/patsissons/webrx-react.svg?branch=develop)](https://travis-ci.org/patsissons/webrx-react)
+[![Build Status](https://img.shields.io/travis/marinels/webrx-react.svg?branch=develop)](https://travis-ci.org/marinels/webrx-react)
 [![npm Version](https://img.shields.io/npm/v/webrx-react.svg)](https://www.npmjs.com/package/webrx-react)
 [![npm Downloads](https://img.shields.io/npm/dt/webrx-react.svg)](https://www.npmjs.com/package/webrx-react)
 [![npm License](https://img.shields.io/npm/l/webrx-react.svg)](https://www.npmjs.com/package/webrx-react)
