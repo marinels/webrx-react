@@ -1,3 +1,4 @@
+import { Observable } from 'rx';
 import { Enumerable } from 'ix';
 import * as wx from 'webrx';
 
@@ -23,6 +24,13 @@ export class RouteHandlerViewModel extends BaseViewModel {
       .whenAny(Manager.currentRoute, x => x)
       .filter(x => x != null)
       .map(x => this.getRoutedViewModel(x))
+      .catch(e => {
+        const name = e == null ? '' : ` ${ Object.getName(e) }`;
+
+        this.alertForError(e, `Error Routing to ViewModel ${ name }`);
+
+        return Observable.empty();
+      })
       .doOnNext(x => {
         if (x != null) {
           document.title = x.getTitle();
@@ -40,14 +48,6 @@ export class RouteHandlerViewModel extends BaseViewModel {
       .filter(x => x === false)
       .take(1)
       .toProperty(true);
-
-    this.subscribe(this.currentViewModel.thrownExceptions
-      .subscribe(x => {
-        const name = x == null ? '' : ` ${ Object.getName(x) }`;
-
-        this.alertForError(x, `Error Routing to ViewModel ${ name }`);
-      })
-    );
 
     this.subscribe(
       PubSub.subscribe<RoutingStateChanged>(RoutingStateChangedKey, x => {
