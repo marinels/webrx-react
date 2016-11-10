@@ -1,5 +1,5 @@
 // View Models
-export * from './RouteHandler/RouteHandlerViewModel';
+export * from './InlineEdit/InlineEditViewModel';
 export * from './Alert/AlertViewModel';
 export * from './Alert/AlertHostViewModel';
 export * from './ModalDialog/ModalDialogViewModel';
@@ -28,7 +28,7 @@ export * from './ProfilePicture/ProfilePicture';
 export * from './CommonPanel/CommonPanel';
 
 // Views
-export * from './RouteHandler/RouteHandlerView';
+export * from './InlineEdit/InlineEditView';
 export * from './Alert/AlertView';
 export * from './Alert/AlertHostView';
 export * from './ModalDialog/ModalDialogView';

@@ -190,5 +190,8 @@ routeMap.addRoute('WebRx-React', 'AsyncItemListPanel', 'ItemListPanel (Async)', 
   vm.grid.requestData.canExecuteObservable.take(1).invokeCommand(vm.grid.refresh);
   return vm;
 });
+routeMap.addRoute('WebRx-React', 'InlineEdit', 'InlineEdit', (state: any) => {
+  return new Components.InlineEditViewModel(wx.property(5));
+});
 
 export const RouteMap = routeMap;
