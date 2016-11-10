@@ -28,5 +28,3 @@ export class InlineEditViewModel extends BaseViewModel {
     });
   }
 }
-
-export default InlineEditViewModel;

@@ -27,6 +27,7 @@ import {
   CountFooterContent,
   ViewAllFooterAction,
   ItemListPanelView,
+  InlineEdit,
 } from '../Common';
 
 export interface ViewActivator {
@@ -262,6 +263,11 @@ const viewMap: ViewActivatorMap = {
       <DataGridColumn fieldName='name' header='Name' sortable className='col-md-8' />
       <DataGridColumn fieldName='requiredBy' header='Required By' sortable className='col-md-4' />
     </ItemListPanelView>
+  ),
+  InlineEditViewModel: (viewModel: Components.InlineEditViewModel) => (
+    <InlineEdit viewModel={viewModel} inputType={'number'} valueSelector={v => v + ' of 10'}
+      callBack={ newVal => { /* Updates local obj or DB call */ }}
+    />
   ),
 };
 
