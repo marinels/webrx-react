@@ -11,12 +11,12 @@ import { FormGroup, FormControl } from 'react-bootstrap';
 import InlineEditViewModel from './InlineEditViewModel';
 import './InlineEdit.less';
 
-interface IResultUpdaterProps extends BaseViewProps {
+interface InlineEditProps extends BaseViewProps {
   valueSelector?: (x: string) => string;
   callBack?: (x: string) => any;
 }
 
-export class InlineEdit extends BaseView<IResultUpdaterProps, InlineEditViewModel> {
+export class InlineEdit extends BaseView<InlineEditProps, InlineEditViewModel> {
   public static displayName = 'InlineEdit';
 
   updateOn() {
