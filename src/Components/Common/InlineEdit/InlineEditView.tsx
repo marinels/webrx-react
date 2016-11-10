@@ -1,14 +1,12 @@
-'use strict';
-
 import * as React from 'react';
-
-import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { Icon } from 'react-fa';
-import { BindableInput } from '../BindableInput/BindableInput';
-import { CommandButton } from '../CommandButton/CommandButton';
 import { FormGroup, FormControl } from 'react-bootstrap';
 
+import { BaseView, BaseViewProps } from '../../React/BaseView';
+import { BindableInput } from '../BindableInput/BindableInput';
+import { CommandButton } from '../CommandButton/CommandButton';
 import InlineEditViewModel from './InlineEditViewModel';
+
 import './InlineEdit.less';
 
 interface InlineEditProps extends BaseViewProps {

@@ -1,6 +1,5 @@
-'use strict';
-
 import * as wx from 'webrx';
+
 import { BaseViewModel } from '../../React/BaseViewModel';
 
 export class InlineEditViewModel extends BaseViewModel {
