@@ -12,6 +12,8 @@ import { InlineEditViewModel } from './InlineEditViewModel';
 import './InlineEdit.less';
 
 interface InlineEditProps<T> extends BaseViewProps {
+  inputType?: string;
+  keyboard?: boolean;
   template?: (x: T, view: InlineEditView) => any;
   editTemplate?: (x: T, view: InlineEditView) => any;
   bsSize?: Sizes;
@@ -22,11 +24,10 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
   public static displayName = 'InlineEditView';
 
   static defaultProps = {
+    inputType: 'text',
     template: (x: any, view: InlineEditView) => x.toString(),
     editTemplate: (x: any, view: InlineEditView) => (
-      <FormControl ref='control' type='text' placeholder='Enter New Value...'
-        onKeyDown={ e => view.handleKeyDown(e) }
-      />
+      <FormControl ref='control' type={ view.props.inputType } placeholder='Enter New Value...' />
     ),
   };
 
@@ -72,15 +73,17 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
   }
 
   private renderEditor() {
-    const { className, rest } = this.restProps(x => {
-      const { template, editTemplate } = x;
-      return { template, editTemplate };
+    const { className, props, rest } = this.restProps(x => {
+      const { controlId, inputType, keyboard, template, editTemplate } = x;
+      return { controlId, inputType, keyboard, template, editTemplate };
     });
+
+    const onKeyDown = props.keyboard === true ? (e: React.KeyboardEvent) => this.handleKeyDown(e) : null;
 
     return (
       <FormGroup { ...rest } className={ classNames('InlineEditView', className)}>
         <InputGroup>
-          <BindableInput property={ this.state.editValue } >
+          <BindableInput property={ this.state.editValue } onKeyDown={ onKeyDown } >
             { this.props.editTemplate(this.state.editValue(), this) }
           </BindableInput>
           <InputGroup.Button>
@@ -98,8 +101,8 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
 
   private renderValue() {
     const { className, rest } = this.restProps(x => {
-      const { template, editTemplate, controlId } = x;
-      return { template, editTemplate, controlId };
+      const { controlId, inputType, keyboard, template, editTemplate } = x;
+      return { controlId, inputType, keyboard, template, editTemplate };
     });
 
     return (
