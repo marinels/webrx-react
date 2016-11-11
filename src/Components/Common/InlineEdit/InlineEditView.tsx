@@ -12,12 +12,12 @@ import { InlineEditViewModel } from './InlineEditViewModel';
 import './InlineEdit.less';
 
 interface InlineEditProps<T> extends BaseViewProps {
+  controlId?: string;
   inputType?: string;
   keyboard?: boolean;
+  bsSize?: Sizes;
   template?: (x: T, view: InlineEditView) => any;
   editTemplate?: (x: T, view: InlineEditView) => any;
-  bsSize?: Sizes;
-  controlId?: string;
 }
 
 export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditViewModel<any>> {
