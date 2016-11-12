@@ -1,10 +1,15 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
     "jsx": "react",
-    "noImplicitAny": true
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": false,
+    "noImplicitUseStrict": true,
+    "preserveConstEnums": true,
+    "strictNullChecks": false,
+    "target": "es5"
   },
   "filesGlob": [
     "./typings/index.d.ts",
