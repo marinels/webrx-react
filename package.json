@@ -9,6 +9,7 @@
     "gulp": "gulp",
     "mocha": "mocha",
     "tsc": "tsc",
+    "tr": "tsc --traceResolution --noEmit > tsctr.log"
   },
   "author": "Pat Sissons <pat@marinels.com> (http://github.com/patsissons)",
   "license": "MIT",
