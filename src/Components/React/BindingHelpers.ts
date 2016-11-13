@@ -18,7 +18,7 @@ export function bindObservableToCommand<TViewModel extends BaseViewModel, TResul
 /**
  * Binds a DOM event to an observable property on the view model
  */
-export function bindEventToProperty<TViewModel extends BaseViewModel, TValue, TEvent extends Event | React.SyntheticEvent>(
+export function bindEventToProperty<TViewModel extends BaseViewModel, TValue, TEvent extends Event | React.SyntheticEvent<any>>(
   thisArg: any,
   viewModel: TViewModel,
   targetSelector: (viewModel: TViewModel) => wx.IObservableProperty<TValue>,
@@ -38,7 +38,7 @@ export function bindEventToProperty<TViewModel extends BaseViewModel, TValue, TE
 /**
  * Binds a DOM event to an observable command on the view model
  */
-export function bindEventToCommand<TViewModel extends BaseViewModel, TParameter, TEvent extends Event | React.SyntheticEvent>(
+export function bindEventToCommand<TViewModel extends BaseViewModel, TParameter, TEvent extends Event | React.SyntheticEvent<any>>(
   thisArg: any,
   viewModel: TViewModel,
   commandSelector: (viewModel: TViewModel) => wx.ICommand<any>,

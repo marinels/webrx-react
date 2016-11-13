@@ -3,7 +3,7 @@ import { Icon } from 'react-fa';
 
 import './ViewAllFooterAction.less';
 
-export interface ViewAllFooterActionProps extends React.HTMLAttributes {
+export interface ViewAllFooterActionProps extends React.HTMLAttributes<ViewAllFooterAction> {
   suffix?: string;
 }
 

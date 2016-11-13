@@ -50,7 +50,7 @@ export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuSt
     } as ContextMenuState;
   }
 
-  private handleClick(e: React.MouseEvent) {
+  private handleClick(e: React.MouseEvent<HTMLDivElement>) {
     // check if the right mouse button was clicked
     const isVisible = e.button === 2;
 

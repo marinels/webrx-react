@@ -7,7 +7,7 @@ import { renderConditional } from '../../React/RenderHelpers';
 
 import './ProfilePicture.less';
 
-export interface ProfilePictureProps extends React.HTMLAttributes {
+export interface ProfilePictureProps extends React.HTMLAttributes<ProfilePicture> {
   src: string;
   size?: number;
   responsive?: boolean;

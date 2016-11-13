@@ -6,7 +6,7 @@ import { renderConditional } from '../../React/RenderHelpers';
 
 import './CountFooterContent.less';
 
-export interface CountFooterContentProps extends React.HTMLAttributes {
+export interface CountFooterContentProps extends React.HTMLAttributes<CountFooterContent> {
   length: Rx.Observable<number>;
   suffix?: string;
 }
