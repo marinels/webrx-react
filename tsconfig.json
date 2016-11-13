@@ -1,12 +1,18 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "baseUrl": ".",
     "jsx": "react",
     "module": "commonjs",
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": false,
     "noImplicitUseStrict": true,
+    "paths": {
+      "webrx": [ "node_modules/webrx/dist/web.rx" ],
+      "rx": [ "node_modules/rx/ts/rx.all" ],
+      "*": [ "src/types/*" ]
+    },
     "preserveConstEnums": true,
     "strictNullChecks": false,
     "target": "es5"
@@ -17,6 +23,5 @@
     "test/**/*.ts"
   ],
   "exclude": [
-    "src/typings/**/*"
   ]
 }
