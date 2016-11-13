@@ -46,7 +46,7 @@ export class AsyncDataGridViewModel<TData, TResult extends AsyncDataResult<TData
           .catch(e => {
             this.alertForError(e, 'Async Data Result Error: getResultAsync');
 
-            return Observable.empty();
+            return Observable.empty<TResult>();
           });
       }
     );
@@ -76,7 +76,7 @@ export class AsyncDataGridViewModel<TData, TResult extends AsyncDataResult<TData
           .catch(e => {
             this.alertForError(e, 'Async Data Request Error');
 
-            return Observable.empty();
+            return Observable.empty<TResult>();
           });
       })
       .filter(x => x != null)
