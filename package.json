@@ -8,7 +8,7 @@
     "webpack": "webpack",
     "gulp": "gulp",
     "mocha": "mocha",
-    "tslint": "tslint",
+    "tsc": "tsc",
   },
   "author": "Pat Sissons <pat@marinels.com> (http://github.com/patsissons)",
   "license": "MIT",
