@@ -3,7 +3,7 @@ import * as classNames from 'classnames';
 import { Icon } from 'react-fa';
 import { Table, ListGroup, ListGroupItem } from 'react-bootstrap';
 
-import { BaseView, BaseViewProps } from '../../React/BaseView';
+import { BaseView, BaseViewProps, ViewModelProps } from '../../React/BaseView';
 import { SearchView } from '../Search/SearchView';
 import { PagerView } from '../Pager/PagerView';
 import { CommandButton } from '../CommandButton/CommandButton';
@@ -260,13 +260,17 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
   }
 }
 
-export interface DataGridProps extends BaseViewProps {
+export interface DataGridViewProps extends ViewModelProps {
   fill?: boolean;
   view?: DataGridViewTemplate<any>;
   search?: boolean;
   pager?: boolean;
   pagerLimits?: number[];
   highlightSelected?: boolean;
+  children?: DataGridColumn[];
+}
+
+export interface DataGridProps extends DataGridViewProps, BaseViewProps {
   children?: DataGridColumn[];
 }
 

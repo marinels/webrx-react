@@ -1,9 +1,8 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
-import { SelectCallback } from 'react-bootstrap';
 
 import { BaseView } from '../../React/BaseView';
-import { DataGridView, DataGridProps, DataGridColumn } from '../DataGrid/DataGridView';
+import { DataGridView, DataGridViewProps, DataGridColumn } from '../DataGrid/DataGridView';
 import { CommonPanel, CommonPanelProps } from '../CommonPanel/CommonPanel';
 import { ItemListPanelViewModel } from './ItemListPanelViewModel';
 
@@ -12,11 +11,8 @@ import './ItemListPanel.less';
 export * from './CountFooterContent';
 export * from './ViewAllFooterAction';
 
-export interface ItemListPanelProps extends DataGridProps, CommonPanelProps {
+export interface ItemListPanelProps extends CommonPanelProps, DataGridViewProps {
   children?: DataGridColumn[];
-
-  // we need to explicitly define this as it overrides a default onSelect
-  onSelect?: SelectCallback;
 }
 
 export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPanelViewModel<any>> {

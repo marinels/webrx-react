@@ -6,7 +6,7 @@ import * as classNames from 'classnames';
 import { Icon } from 'react-fa';
 import { ListGroup, ListGroupProps, ListGroupItem } from 'react-bootstrap';
 
-import { BaseView, BaseViewProps } from '../../React/BaseView';
+import { BaseView, ViewModelProps } from '../../React/BaseView';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { ListViewModel } from './ListViewModel';
 import { bindEventToCommand } from '../../React/BindingHelpers';
@@ -227,7 +227,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
   }
 }
 
-export interface ListProps extends ListGroupProps, BaseViewProps {
+export interface ListProps extends ListGroupProps, ViewModelProps {
   view?: ListViewRenderTemplate<any>;
   selectable?: boolean;
   highlightSelected?: boolean;

@@ -7,11 +7,14 @@ import { BaseViewModel, LifecycleComponentViewModel } from './BaseViewModel';
 import * as bindingHelpers from './BindingHelpers';
 import * as renderHelpers from './RenderHelpers';
 
-export interface BaseViewProps extends React.HTMLAttributes {
+export interface ViewModelProps {
   viewModel: BaseViewModel;
 }
 
-export abstract class BaseView<TViewProps extends BaseViewProps, TViewModel extends BaseViewModel> extends React.Component<TViewProps, TViewModel> {
+export interface BaseViewProps extends React.HTMLProps<any>, ViewModelProps {
+}
+
+export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel extends BaseViewModel> extends React.Component<TViewProps, TViewModel> {
   public static displayName = 'BaseView';
 
   private updateSubscription: IDisposable;
