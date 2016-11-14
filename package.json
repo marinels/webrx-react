@@ -27,7 +27,7 @@
     "ix": "^1.0.6",
     "jquery-deparam": "^0.5.2",
     "jquery-param": "^0.2.0",
-    "moment": "^2.15.2",
+    "moment": "^2.16.0",
     "react": "^15.3.2",
     "react-addons-css-transition-group": "^15.3.2",
     "react-addons-transition-group": "^15.3.2",
