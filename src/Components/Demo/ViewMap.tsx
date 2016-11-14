@@ -265,7 +265,7 @@ const viewMap: ViewActivatorMap = {
     </ItemListPanelView>
   ),
   InlineEditViewModel: (viewModel: Components.InlineEditViewModel<any>) => (
-    <InlineEditView style={({ margin: 0 })} viewModel={viewModel} inputType='number' template={ x => `${ x } of 10` } keyboard />
+    <InlineEditView style={({ margin: 0 })} viewModel={viewModel} inputType='number' template={ x => `${ x } of 10` } converter={ x => Number(x) } keyboard />
   ),
 };
 
