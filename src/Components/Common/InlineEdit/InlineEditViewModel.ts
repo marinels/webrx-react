@@ -14,7 +14,10 @@ export class InlineEditViewModel<T> extends BaseViewModel {
   public save: wx.ICommand<T>;
   public cancel: wx.ICommand<T>;
 
-  constructor(value?: wx.IObservableProperty<T> | T) {
+  constructor(
+    value?: wx.IObservableProperty<T> | T,
+    protected onSave: (value: T) => Observable<T> = x => Observable.of(x),
+  ) {
     super();
 
     if (wx.isProperty(value) === true) {
@@ -31,17 +34,27 @@ export class InlineEditViewModel<T> extends BaseViewModel {
 
       return Observable.of(this.editValue());
     });
+
     this.save = wx.asyncCommand(() => {
-      this.value(this.editValue());
-      this.editValue(null);
+      return this.onSave(this.editValue())
+        .catch(e => {
+          this.alertForError(e, 'Unable to Save');
 
-      return Observable.of(this.value());
+          return Observable.empty<T>();
+        })
+        .doOnNext(x => {
+          this.value(x);
+          this.editValue(null);
+        });
     });
-    this.cancel = wx.asyncCommand<T>(() => {
-      this.editValue(null);
 
-      return Observable.of(this.editValue());
-    });
+    this.cancel = wx.asyncCommand<T>(
+      this.save.isExecuting.map(x => x === false),
+      () => {
+        this.editValue(null);
+
+        return Observable.of(null);
+      });
 
     this.isEditing = wx
       .whenAny(this.editValue, x => x)

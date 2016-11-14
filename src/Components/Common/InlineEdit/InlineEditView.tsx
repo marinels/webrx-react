@@ -14,6 +14,12 @@ import './InlineEdit.less';
 interface InlineEditProps<T> extends BaseViewProps {
   controlId?: string;
   inputType?: string;
+  placeholder?: string;
+  converter?: (x: any) => any;
+  valueProperty?: string;
+  onChangeProperty?: string;
+  valueGetter?: (property: any) => any;
+  valueSetter?: (property: any, value: any) => void;
   keyboard?: boolean;
   bsSize?: Sizes;
   template?: (x: T, view: InlineEditView) => any;
@@ -25,9 +31,10 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
 
   static defaultProps = {
     inputType: 'text',
+    placeholder: 'Enter New Value...',
     template: (x: any, view: InlineEditView) => x.toString(),
     editTemplate: (x: any, view: InlineEditView) => (
-      <FormControl ref='control' type={ view.props.inputType } placeholder='Enter New Value...' />
+      <FormControl type={ view.props.inputType } placeholder={ view.props.placeholder } />
     ),
   };
 
@@ -73,19 +80,15 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
   }
 
   private renderEditor() {
-    const { className, props, rest } = this.restProps(x => {
-      const { controlId, inputType, keyboard, template, editTemplate } = x;
-      return { controlId, inputType, keyboard, template, editTemplate };
+    const { className, rest } = this.restProps(x => {
+      const { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate } = x;
+      return { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate };
     });
-
-    const onKeyDown = props.keyboard === true ? (e: React.KeyboardEvent<any>) => this.handleKeyDown(e) : null;
 
     return (
       <FormGroup { ...rest } className={ classNames('InlineEditView', className)}>
         <InputGroup>
-          <BindableInput property={ this.state.editValue } onKeyDown={ onKeyDown } >
-            { this.props.editTemplate(this.state.editValue(), this) }
-          </BindableInput>
+          { this.renderBindableInput() }
           <InputGroup.Button>
             <CommandButton bsSize={ this.props.bsSize } bsStyle='success' command={ this.state.save }>
               <Icon name='check' />
@@ -99,10 +102,30 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
     );
   }
 
+  private renderBindableInput() {
+    const { props } = this.restProps(x => {
+      const { converter, valueProperty, onChangeProperty, valueGetter, valueSetter } = x;
+      return { converter, valueProperty, onChangeProperty, valueGetter, valueSetter };
+    });
+
+    const onKeyDown = this.props.keyboard === true ? (e: React.KeyboardEvent<any>) => this.handleKeyDown(e) : null;
+
+    return (
+      <BindableInput { ...props } property={ this.state.editValue } onKeyDown={ onKeyDown } >
+        {
+          React.cloneElement(
+            this.props.editTemplate(this.state.editValue(), this),
+            { ref: 'control' }
+          )
+        }
+      </BindableInput>
+    );
+  }
+
   private renderValue() {
     const { className, rest } = this.restProps(x => {
-      const { controlId, inputType, keyboard, template, editTemplate } = x;
-      return { controlId, inputType, keyboard, template, editTemplate };
+      const { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate } = x;
+      return { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate };
     });
 
     return (
