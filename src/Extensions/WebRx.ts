@@ -1,13 +1,4 @@
-import { IDisposable } from 'rx';
 import * as wx from 'webrx';
-
-declare module 'rx' {
-  interface Observable<T> {
-    // the invokeCommand Rx extensions aren't currently published so we'll add them here for now
-    invokeCommand<TResult>(command: wx.ICommand<TResult>): IDisposable;
-    invokeCommand<TResult>(commandSelector: (x: T) => wx.ICommand<TResult>): IDisposable;
-  }
-}
 
 declare module 'webrx' {
   // we don't have control over the interface name for this augmentation
