@@ -8,7 +8,7 @@ import { renderConditional } from '../../React/RenderHelpers';
 
 import './Splash.less';
 
-export interface SplashProps extends React.HTMLAttributes {
+export interface SplashProps extends React.HTMLAttributes<Splash> {
   header: any;
   logo?: string;
   text?: string;

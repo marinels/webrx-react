@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as wx from 'webrx';
 
-export interface BindableInputProps extends React.HTMLAttributes {
+export interface BindableInputProps extends React.HTMLAttributes<BindableInput> {
   property: any;
   converter?: (x: any) => any;
   valueProperty?: string;
@@ -28,7 +28,7 @@ export class BindableInput extends React.Component<BindableInputProps, any> {
 
     const bindProps: any = {};
     bindProps[props.valueProperty] = props.valueGetter(props.property);
-    bindProps[props.onChangeProperty] = (e: React.FormEvent) => this.onChange(e);
+    bindProps[props.onChangeProperty] = (e: React.FormEvent<any>) => this.onChange(e);
 
     return React.cloneElement(
       React.Children.only(children),
@@ -36,7 +36,7 @@ export class BindableInput extends React.Component<BindableInputProps, any> {
     );
   }
 
-  protected onChange(e: React.FormEvent) {
+  protected onChange(e: React.FormEvent<any>) {
     const target: any = e.target;
     let value: any = target[this.props.valueProperty];
 

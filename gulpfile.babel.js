@@ -19,9 +19,7 @@ import replace from 'gulp-replace';
 import runSequence from 'run-sequence';
 import stylelint from 'gulp-stylelint';
 import through from 'through';
-import tsconfigGlob from 'tsconfig-glob';
 import tslint from 'gulp-tslint';
-import typings from 'gulp-typings';
 import util from 'gulp-util';
 import webpack from 'webpack';
 import webpackStream from 'webpack-stream';
@@ -47,13 +45,11 @@ const config = {
     watch: 'watch',
   },
   files: {
-    typings: 'typings.json',
     webpack: 'webpack.config.js',
     stats: 'stats.json',
     index: 'index.html',
   },
   dirs: {
-    typings: path.resolve('typings'),
     src: path.resolve('src'),
     test: path.resolve('test'),
     build: path.resolve('build'),
@@ -111,14 +107,8 @@ Tasks:
   ${ util.colors.cyan('gulp help') } will print this help text
   ${ util.colors.cyan('gulp config') } will print the gulp build configuration
 
-  ${ util.colors.cyan('gulp clean') } will delete all files in ${ util.colors.magenta(config.dirs.typings) }, ${ util.colors.magenta(config.dirs.build) }, ${ util.colors.magenta(config.dirs.dist) }
-       ${ [ 'typings', 'build', 'dist', 'all' ].map((x) => util.colors.cyan(`clean:${ x }`)).join(', ') }
-
-  ${ util.colors.cyan('gulp typings') } will install typescript definition files via the typings utility (alias for ${ util.colors.cyan('gulp typings:install') })
-  ${ util.colors.cyan('gulp typings:ensure') } will run ${ util.colors.cyan('typings:install') } if ${ util.colors.magenta(config.dirs.typings) } is missing
-
-  ${ util.colors.cyan('gulp tsconfig') } will expand ${ util.colors.yellow('filesGlob') } in ${ util.colors.magenta('tsconfig.json') }
-       ${ [ 'glob' ].map((x) => util.colors.cyan(`tsconfig:${ x }`)).join(', ') }
+  ${ util.colors.cyan('gulp clean') } will delete all files in ${ util.colors.magenta(config.dirs.build) }, ${ util.colors.magenta(config.dirs.dist) }
+       ${ [ 'build', 'dist', 'all' ].map((x) => util.colors.cyan(`clean:${ x }`)).join(', ') }
 
   ${ util.colors.cyan('gulp lint') } will lint the source files with ${ util.colors.yellow('eslint') }, ${ util.colors.yellow('tslint') }, and ${ util.colors.yellow('stylelint') }
        ${ [ 'es', 'ts', 'style', 'all' ].map((x) => util.colors.cyan(`lint:${ x }`)).join(', ') }
@@ -149,17 +139,7 @@ Tasks:
 });
 
 gulp.task('clean', [ 'clean:all' ]);
-gulp.task('clean:all', [ 'clean:typings', 'clean:build', 'clean:dist' ]);
-
-gulp.task('clean:typings', () => {
-  const target = config.dirs.typings;
-
-  log('Cleaning', util.colors.magenta(target));
-
-  return gulp
-    .src(target, { read: false })
-    .pipe(clean());
-});
+gulp.task('clean:all', [ 'clean:build', 'clean:dist' ]);
 
 gulp.task('clean:build', () => {
   const target = config.dirs.build;
@@ -184,50 +164,6 @@ gulp.task('clean:dist', () => {
   return gulp
     .src(target, { read: false })
     .pipe(clean({ force }));
-});
-
-gulp.task('typings', [ 'typings:install' ]);
-
-gulp.task('typings:install', () => {
-  const target = path.resolve(config.files.typings);
-
-  log('Installing Typings from', util.colors.magenta(target));
-
-  return gulp
-    .src(target)
-    .pipe(typings());
-});
-
-gulp.task('typings:reinstall', [ 'clean:typings' ], (done) => {
-  runSequence('typings:install', done);
-});
-
-gulp.task('typings:ensure', (done) => {
-  let count = 0;
-
-  return gulp
-    .src(path.resolve(config.dirs.typings, '**', '*.d.ts'), { read: false })
-    .pipe(through(() => {
-      ++count;
-    }, () => {
-      if (count === 0) {
-        runSequence('typings:install', done);
-
-        return;
-      }
-
-      log('Found', util.colors.magenta(count), 'typescript definitions');
-
-      done();
-    }));
-});
-
-gulp.task('tsconfig', [ 'tsconfig:glob' ]);
-gulp.task('tsconfig:glob', [ 'typings:ensure' ], () => {
-  log('Globbing', util.colors.magenta(path.resolve('tsconfig.json')));
-
-  // eslint-disable-next-line id-match
-  return tsconfigGlob({ configPath: path.resolve('.'), indent: 2 });
 });
 
 gulp.task('lint', [ 'lint:all' ]);
@@ -490,35 +426,35 @@ gulp.task('webpack:all', (done) => {
   runSequence('webpack:debug', 'webpack:release', 'webpack:test', done);
 });
 
-gulp.task('webpack:debug', [ 'clean:build', 'tsconfig:glob' ], () => {
+gulp.task('webpack:debug', [ 'clean:build' ], () => {
   const webpackConfig = getWebpackConfig(config.builds.debug);
 
   return webpackBuild(config.builds.debug, webpackConfig)
     .pipe(gulp.dest(webpackConfig.output.path));
 });
 
-gulp.task('webpack:release', [ 'clean:build', 'tsconfig:glob' ], () => {
+gulp.task('webpack:release', [ 'clean:build' ], () => {
   const webpackConfig = getWebpackConfig(config.builds.release);
 
   return webpackBuild(config.builds.release, webpackConfig)
     .pipe(gulp.dest(webpackConfig.output.path));
 });
 
-gulp.task('webpack:release:dist', [ 'clean:build', 'tsconfig:glob' ], () => {
+gulp.task('webpack:release:dist', [ 'clean:build' ], () => {
   const webpackConfig = getWebpackConfig(config.builds.release, false, true);
 
   return webpackBuild(config.builds.release, webpackConfig)
     .pipe(gulp.dest(webpackConfig.output.path));
 });
 
-gulp.task('webpack:release:dist:min', [ 'clean:build', 'tsconfig:glob' ], () => {
+gulp.task('webpack:release:dist:min', [ 'clean:build' ], () => {
   const webpackConfig = getWebpackConfig(config.builds.release, true, true);
 
   return webpackBuild(config.builds.release, webpackConfig)
     .pipe(gulp.dest(webpackConfig.output.path));
 });
 
-gulp.task('webpack:test', [ 'clean:build', 'tsconfig:glob' ], () => {
+gulp.task('webpack:test', [ 'clean:build' ], () => {
   const webpackConfig = getWebpackConfig(config.builds.test);
 
   return webpackBuild(config.builds.test, webpackConfig)
@@ -542,7 +478,7 @@ gulp.task('mocha:run', () => {
 
 gulp.task('watch', [ 'watch:webpack' ]);
 
-gulp.task('watch:webpack', [ 'clean:build', 'tsconfig:glob', 'index:watch' ], (done) => {
+gulp.task('watch:webpack', [ 'clean:build', 'index:watch' ], (done) => {
   const webpackConfig = getWebpackConfig(config.builds.debug);
   const uri = `http://${ config.host === '0.0.0.0' ? 'localhost' : config.host }:${ config.port }`;
 
@@ -615,7 +551,7 @@ gulp.task('watch:webpack', [ 'clean:build', 'tsconfig:glob', 'index:watch' ], (d
   });
 });
 
-gulp.task('watch:mocha', [ 'clean:build', 'tsconfig:glob' ], () => {
+gulp.task('watch:mocha', [ 'clean:build' ], () => {
   const webpackConfig = getWebpackConfig(config.builds.test);
 
   webpackConfig.devtool = 'eval';
@@ -658,7 +594,7 @@ gulp.task('watch:lint', () => {
     ], [ 'lint' ]);
 });
 
-gulp.task('watch:dist', [ 'clean:build', 'clean:dist', 'tsconfig:glob' ], () => {
+gulp.task('watch:dist', [ 'clean:build', 'clean:dist' ], () => {
   const target = path.resolve(config.dirs.dist);
   const webpackConfig = getWebpackConfig(config.builds.release);
 

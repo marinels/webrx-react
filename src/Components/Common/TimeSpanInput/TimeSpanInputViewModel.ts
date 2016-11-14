@@ -20,8 +20,8 @@ export enum TimeSpanUnitType {
 export interface TimeSpanUnit {
   type: TimeSpanUnitType;
   name: string;
-  key?: string;
-  shortKey?: string;
+  key?: moment.unitOfTime.Base;
+  shortKey?: moment.unitOfTime.Base;
 }
 
 function createTimeSpanUnits() {
@@ -36,7 +36,6 @@ function createTimeSpanUnits() {
   units[TimeSpanUnitType.Days]          = { type: TimeSpanUnitType.Days, name: 'Days', key: 'day', shortKey: 'd' };
   units[TimeSpanUnitType.Weeks]         = { type: TimeSpanUnitType.Weeks, name: 'Weeks', key: 'week', shortKey: 'w' };
   units[TimeSpanUnitType.Months]        = { type: TimeSpanUnitType.Months, name: 'Months', key: 'month', shortKey: 'M' };
-  units[TimeSpanUnitType.Quarters]      = { type: TimeSpanUnitType.Quarters, name: 'Quarters', key: 'quarter', shortKey: 'Q' };
   units[TimeSpanUnitType.Years]         = { type: TimeSpanUnitType.Years, name: 'Years', key: 'year', shortKey: 'y' };
 
   return units;
@@ -151,9 +150,11 @@ export class TimeSpanInputViewModel extends BaseViewModel {
       // tslint:disable-next-line:no-unused-variable
       let [ _1, value, _2, unitName ] = (text.match(/\s*([\d\.]+)(\s+(\w+))?\s*$/) || <RegExpMatchArray>[]);
 
+      const unitOfTime = <moment.unitOfTime.Base>unitName;
+
       if (Number.isNumeric(value)) {
         // only process if it's numeric
-        if (String.isNullOrEmpty(unitName) === true) {
+        if (String.isNullOrEmpty(unitOfTime) === true) {
           // single arg
           // just assume we're using the currently selected units
           duration = moment.duration(Number(value), unit.shortKey);
@@ -161,7 +162,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
         else {
           // two args
           // first determine the units used
-          unitName = moment.normalizeUnits(unitName);
+          unitName = moment.normalizeUnits(unitOfTime);
 
           if (String.isNullOrEmpty(unitName) === false) {
             const parsedUnit = this.units
@@ -171,7 +172,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
 
             if (parsedUnit != null) {
               // if the unit type is valid process the value
-              duration = moment.duration(Number(value), unitName);
+              duration = moment.duration(Number(value), unitOfTime);
 
               // only update the currently selected units if they are parsed
               this.setUnit.execute(parsedUnit);

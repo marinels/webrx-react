@@ -7,11 +7,14 @@ import { BaseViewModel, LifecycleComponentViewModel } from './BaseViewModel';
 import * as bindingHelpers from './BindingHelpers';
 import * as renderHelpers from './RenderHelpers';
 
-export interface BaseViewProps extends React.HTMLAttributes {
+export interface ViewModelProps {
   viewModel: BaseViewModel;
 }
 
-export abstract class BaseView<TViewProps extends BaseViewProps, TViewModel extends BaseViewModel> extends React.Component<TViewProps, TViewModel> {
+export interface BaseViewProps extends React.HTMLProps<any>, ViewModelProps {
+}
+
+export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel extends BaseViewModel> extends React.Component<TViewProps, TViewModel> {
   public static displayName = 'BaseView';
 
   private updateSubscription: IDisposable;
@@ -193,21 +196,21 @@ export abstract class BaseView<TViewProps extends BaseViewProps, TViewModel exte
   /**
    * Binds a DOM event to an observable property on the view model
    */
-  protected bindEventToProperty<TValue, TEvent extends Event | React.SyntheticEvent>(
+  protected bindEventToProperty<TValue, TEvent extends Event | React.SyntheticEvent<this>>(
     targetSelector: (viewModel: TViewModel) => wx.IObservableProperty<TValue>,
     valueSelector?: (eventKey: any, event: TEvent) => TValue
-  ) {
+  ): any {
     return bindingHelpers.bindEventToProperty(this, this.state, targetSelector, valueSelector);
   }
 
   /**
    * Binds a DOM event to an observable command on the view model
    */
-  protected bindEventToCommand<TParameter, TEvent extends Event | React.SyntheticEvent>(
+  protected bindEventToCommand<TParameter, TEvent extends Event | React.SyntheticEvent<this>>(
     commandSelector: (viewModel: TViewModel) => wx.ICommand<any>,
     paramSelector?: (eventKey: any, event: TEvent) => TParameter,
     conditionSelector?: (event: TEvent, eventKey: any) => boolean
-  ) {
+  ): any {
     return bindingHelpers.bindEventToCommand(this, this.state, commandSelector, paramSelector, conditionSelector);
   }
   // -----------------------------------------

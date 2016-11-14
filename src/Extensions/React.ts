@@ -29,7 +29,7 @@ function restProps<P, S, T>(propsCreator?: (x: P) => T, ...omits: string[]) {
   const result = Object.rest(props, propsCreator, ...omits.concat('key', 'ref', 'className', 'children'));
 
   return Object.assign<ReactSpreadResult<T>>(result, {
-    className: (<React.HTMLAttributes>props).className,
+    className: (<React.HTMLAttributes<P>>props).className,
     children: props.children,
   });
 }

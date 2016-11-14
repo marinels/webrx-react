@@ -11,7 +11,7 @@
 /.stylelintrc.js
 /gulpfile.babel.js
 /index.html
-/npm-debug.log
+/*.log
 /tsconfig.json
 /tslint.json
 /webpack.common.js

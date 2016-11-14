@@ -49,7 +49,7 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
     });
 
     let canExecute = false;
-    let onClick: React.MouseEventHandler = null;
+    let onClick: React.MouseEventHandler<Button> = null;
 
     if (props.command == null) {
       // if props.command is null, try to fall back onto href

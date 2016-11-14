@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { Image } from 'react-bootstrap';
-import { Icon } from 'react-fa';
+import { Icon, IconSize } from 'react-fa';
 import * as classNames from 'classnames';
 
 import { renderConditional } from '../../React/RenderHelpers';
 
 import './ProfilePicture.less';
 
-export interface ProfilePictureProps extends React.HTMLAttributes {
+export interface ProfilePictureProps extends React.HTMLAttributes<ProfilePicture> {
   src: string;
   size?: number;
   responsive?: boolean;
@@ -16,7 +16,7 @@ export interface ProfilePictureProps extends React.HTMLAttributes {
   thumbnail?: boolean;
   defaultSrc?: string;
   defaultIcon?: string;
-  iconSize?: string;
+  iconSize?: IconSize;
 }
 
 const dataUriPrefix = 'data:image;base64,';
