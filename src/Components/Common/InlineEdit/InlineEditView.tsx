@@ -31,7 +31,7 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
     ),
   };
 
-  private handleKeyDown(e: React.KeyboardEvent) {
+  private handleKeyDown(e: React.KeyboardEvent<any>) {
     switch (e.keyCode) {
       case 13: // ENTER key
         this.state.save.execute(null);
@@ -78,7 +78,7 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
       return { controlId, inputType, keyboard, template, editTemplate };
     });
 
-    const onKeyDown = props.keyboard === true ? (e: React.KeyboardEvent) => this.handleKeyDown(e) : null;
+    const onKeyDown = props.keyboard === true ? (e: React.KeyboardEvent<any>) => this.handleKeyDown(e) : null;
 
     return (
       <FormGroup { ...rest } className={ classNames('InlineEditView', className)}>
