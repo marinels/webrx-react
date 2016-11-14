@@ -1,12 +1,11 @@
 import * as moment from 'moment';
 
 import { LogLevel, getLevelName, DefaultLogLevel } from '../LogLevel';
-import { Logger } from '../Logger';
-import { DelegateLogManager } from './Delegate';
+import { DelegateLogManager, DelegateLogger } from './Delegate';
 
 export class ConsoleLogManager extends DelegateLogManager {
   constructor(defaultLevel: LogLevel) {
-    super((action, level, text, args) => this.logAction(action, level, text, args), defaultLevel);
+    super((logger, level, text, args) => { this.logAction(logger, level, text, args); }, defaultLevel);
   }
 
   private getColorStyle(bgColor = 'transparent', color = 'black') {
@@ -38,7 +37,7 @@ export class ConsoleLogManager extends DelegateLogManager {
     return styles;
   }
 
-  private logAction(logger: Logger, level: LogLevel, text: string, args: any[]) {
+  private logAction(logger: DelegateLogger, level: LogLevel, text: string, args: any[]) {
     let styles = this.getStyles(level);
 
     this.logToConsole(

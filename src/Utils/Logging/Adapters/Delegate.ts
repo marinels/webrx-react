@@ -1,9 +1,9 @@
 import { LogLevel } from '../LogLevel';
-import { Logger, BaseLogger, MessageDelegate } from '../Logger';
+import { BaseLogger, MessageDelegate } from '../Logger';
 import { LogManager } from '../LogManager';
 
 export class DelegateLogger extends BaseLogger {
-  constructor(private action: (logger: Logger, level: LogLevel, text: string, args: any[]) => void, name: string, level: LogLevel) {
+  constructor(private action: (logger: DelegateLogger, level: LogLevel, text: string, args: any[]) => void, name: string, level: LogLevel) {
     super(name, level);
   }
 
@@ -20,7 +20,7 @@ export class DelegateLogger extends BaseLogger {
 }
 
 export class DelegateLogManager implements LogManager {
-  constructor(private action: (logger: Logger, level: LogLevel, text: string, args: any[]) => void, public defaultLevel: LogLevel) {
+  constructor(private action: (logger: DelegateLogger, level: LogLevel, text: string, args: any[]) => void, public defaultLevel: LogLevel) {
   }
 
   getLogger(name: string, level?: LogLevel) {
