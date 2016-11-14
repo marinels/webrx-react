@@ -5,7 +5,9 @@ import { DelegateLogManager, DelegateLogger } from './Delegate';
 
 export class ConsoleLogManager extends DelegateLogManager {
   constructor(defaultLevel: LogLevel) {
-    super((logger, level, text, args) => { this.logAction(logger, level, text, args); }, defaultLevel);
+    super((manager: ConsoleLogManager) => {
+      return (logger, level, text, args) => manager.logAction(logger, level, text, args);
+    }, defaultLevel);
   }
 
   private getColorStyle(bgColor = 'transparent', color = 'black') {
