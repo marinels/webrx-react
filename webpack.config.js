@@ -22,7 +22,6 @@ module.exports = Object.assign(clone(webpackCommon), {
       'react',
       'react-addons-css-transition-group',
       'react-bootstrap',
-      'react-bootstrap-datetimepicker',
       'react-dom',
       'react-fa',
       'rx',
