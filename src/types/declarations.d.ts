@@ -1,3 +1,5 @@
+// tslint:disable:no-unused-variable
+
 // webpack defines
 declare global {
   const DEBUG: boolean;

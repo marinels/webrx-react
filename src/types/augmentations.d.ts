@@ -1,3 +1,5 @@
+// tslint:disable:no-unused-variable
+
 // react-bootstrap
 import { HTMLProps } from 'react';
 import 'react-bootstrap';
