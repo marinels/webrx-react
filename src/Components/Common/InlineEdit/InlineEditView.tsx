@@ -1,6 +1,8 @@
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import { Icon } from 'react-fa';
-import { FormGroup, InputGroup, FormControl } from 'react-bootstrap';
+import * as classNames from 'classnames';
+import { FormGroup, InputGroup, FormControl, Sizes } from 'react-bootstrap';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { BindableInput } from '../BindableInput/BindableInput';
@@ -9,63 +11,128 @@ import { InlineEditViewModel } from './InlineEditViewModel';
 
 import './InlineEdit.less';
 
-interface InlineEditProps extends BaseViewProps {
-  valueSelector?: (x: string) => string;
-  callBack?: (x: string) => any;
+interface InlineEditProps<T> extends BaseViewProps {
+  controlId?: string;
   inputType?: string;
+  placeholder?: string;
+  converter?: (x: any) => any;
+  valueProperty?: string;
+  onChangeProperty?: string;
+  valueGetter?: (property: any) => any;
+  valueSetter?: (property: any, value: any) => void;
+  keyboard?: boolean;
+  bsSize?: Sizes;
+  template?: (x: T, view: InlineEditView) => any;
+  editTemplate?: (x: T, view: InlineEditView) => any;
 }
 
-export class InlineEdit extends BaseView<InlineEditProps, InlineEditViewModel> {
-  public static displayName = 'InlineEdit';
+export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditViewModel<any>> {
+  public static displayName = 'InlineEditView';
+
+  static defaultProps = {
+    inputType: 'text',
+    placeholder: 'Enter New Value...',
+    template: (x: any, view: InlineEditView) => x.toString(),
+    editTemplate: (x: any, view: InlineEditView) => (
+      <FormControl type={ view.props.inputType } placeholder={ view.props.placeholder } />
+    ),
+  };
+
+  private handleKeyDown(e: React.KeyboardEvent<any>) {
+    switch (e.keyCode) {
+      case 13: // ENTER key
+        this.state.save.execute(null);
+        break;
+      case 27: // ESC key
+        this.state.cancel.execute(null);
+        break;
+      default:
+        break;
+    }
+  }
+
+  private focusAndSelectControlText() {
+    const control = ReactDOM.findDOMNode(this.refs['control']) as HTMLInputElement;
+
+    if (control != null) {
+      control.focus();
+
+      if (control.select != null) {
+        control.select();
+      }
+    }
+  }
 
   updateOn() {
     return [
-      this.state.isInEditMode.changed,
+      this.state.isEditing.changed,
+      this.state.save.canExecuteObservable,
     ];
   }
 
+  updated(prevProps: InlineEditProps<any>) {
+    super.updated(prevProps);
+
+    this.focusAndSelectControlText();
+  }
+
   render() {
+    return this.renderConditional(this.state.isEditing, () => this.renderEditor(), () => this.renderValue());
+  }
+
+  private renderEditor() {
+    const { className, rest } = this.restProps(x => {
+      const { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate } = x;
+      return { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate };
+    });
+
     return (
-      <div className='InlineEdit'>
-        {
-          this.renderConditional(this.state.isInEditMode,
-          () => (
-            <FormGroup>
-              <InputGroup>
-                <BindableInput property={ this.state.val } >
-                  <FormControl type={ this.getType() } placeholder='Enter new result...' />
-                </BindableInput>
-                <CommandButton className='UpdateButton' bsStyle='success' command={ this.state.update } commandParameter={ () => this.props.callBack }>
-                  <Icon name='check' size='lg' />
-                </CommandButton>
-                <CommandButton className='CancelButton' bsStyle='danger' command={ this.state.update }>
-                  <Icon name='times' size='lg' />
-                </CommandButton>
-              </InputGroup>
-            </FormGroup>
-          )
-          ,() => (
-            <p onClick={ this.bindEventToCommand(x => x.changeMode) }>
-              <span>{ this.loadStr(this.props.valueSelector, this.state.val) }</span>
-            </p>
-          )
-        )
-        }
-      </div>
+      <FormGroup { ...rest } className={ classNames('InlineEditView', className)}>
+        <InputGroup>
+          { this.renderBindableInput() }
+          <InputGroup.Button>
+            <CommandButton bsSize={ this.props.bsSize } bsStyle='success' command={ this.state.save }>
+              <Icon name='check' />
+            </CommandButton>
+            <CommandButton bsSize={ this.props.bsSize } bsStyle='danger' command={ this.state.cancel }>
+              <Icon name='times' />
+            </CommandButton>
+          </InputGroup.Button>
+        </InputGroup>
+      </FormGroup>
     );
   }
 
-  private getType(): string {
-    return (typeof this.props.inputType === 'string')
-      ? this.props.inputType
-      : 'text';
+  private renderBindableInput() {
+    const { props } = this.restProps(x => {
+      const { converter, valueProperty, onChangeProperty, valueGetter, valueSetter } = x;
+      return { converter, valueProperty, onChangeProperty, valueGetter, valueSetter };
+    });
+
+    const onKeyDown = this.props.keyboard === true ? (e: React.KeyboardEvent<any>) => this.handleKeyDown(e) : null;
+
+    return (
+      <BindableInput { ...props } property={ this.state.editValue } onKeyDown={ onKeyDown } disabled={ this.state.save.canExecute(null) === false } >
+        {
+          React.cloneElement(
+            this.props.editTemplate(this.state.editValue(), this),
+            { ref: 'control' }
+          )
+        }
+      </BindableInput>
+    );
   }
 
-  private loadStr(fn: Function, val: wx.IObservableProperty<any>) {
-    let strVal = String(val());
-    if (typeof fn !== 'function') {
-      return strVal;
-    }
-    return fn(strVal);
+  private renderValue() {
+    const { className, rest } = this.restProps(x => {
+      const { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate } = x;
+      return { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate };
+    });
+
+    return (
+      <CommandButton { ...rest } className={ classNames('InlineEditView', className)} bsStyle='link' command={ this.state.edit }>
+        <span>{ this.props.template(this.state.value(), this) }</span>
+      </CommandButton>
+    );
   }
 }

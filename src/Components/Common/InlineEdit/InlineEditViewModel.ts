@@ -1,30 +1,64 @@
+import { Observable } from 'rx';
 import * as wx from 'webrx';
 
 import { BaseViewModel } from '../../React/BaseViewModel';
 
-export class InlineEditViewModel extends BaseViewModel {
+export class InlineEditViewModel<T> extends BaseViewModel {
   public static displayName = 'InlineEditViewModel';
 
-  public val: wx.IObservableProperty<number>;
-  public changeMode: wx.ICommand<any>;
-  public update: wx.ICommand<any>;
-  public isInEditMode: wx.IObservableProperty<boolean>;
+  public value: wx.IObservableProperty<T>;
+  public editValue: wx.IObservableProperty<T>;
+  public isEditing: wx.IObservableReadOnlyProperty<boolean>;
 
-  constructor(val: wx.IObservableProperty<any>) {
+  public edit: wx.ICommand<T>;
+  public save: wx.ICommand<T>;
+  public cancel: wx.ICommand<T>;
+
+  constructor(
+    value?: wx.IObservableProperty<T> | T,
+    protected onSave: (value: T) => Observable<T> = x => Observable.of(x),
+  ) {
     super();
 
-    this.isInEditMode = wx.property(false);
-    this.val = val;
+    if (wx.isProperty(value) === true) {
+      this.value = <wx.IObservableProperty<T>>value;
+    }
+    else {
+      this.value = wx.property(<T>value);
+    }
 
-    this.changeMode = wx.command(() => {
-      this.isInEditMode(true);
+    this.editValue = wx.property<T>();
+
+    this.edit = wx.asyncCommand(() => {
+      this.editValue(this.value());
+
+      return Observable.of(this.editValue());
     });
 
-    this.update = wx.command((callBackFn) => {
-      if (callBackFn instanceof Function) {
-        callBackFn(this.val());
-      }
-      this.isInEditMode(false);
+    this.save = wx.asyncCommand(() => {
+      return this.onSave(this.editValue())
+        .catch(e => {
+          this.alertForError(e, 'Unable to Save');
+
+          return Observable.empty<T>();
+        })
+        .doOnNext(x => {
+          this.value(x);
+          this.editValue(null);
+        });
     });
+
+    this.cancel = wx.asyncCommand<T>(
+      this.save.isExecuting.map(x => x === false),
+      () => {
+        this.editValue(null);
+
+        return Observable.of(null);
+      });
+
+    this.isEditing = wx
+      .whenAny(this.editValue, x => x)
+      .map(x => x != null)
+      .toProperty();
   }
 }
