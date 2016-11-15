@@ -14,44 +14,6 @@ export interface IInjector {
     get<T>(key: string, args?: any): T;
     resolve<T>(iaa: Array<any>, args?: any): T;
 }
-/**
-/* The WeakMap object is a collection of key/value pairs in which the keys are objects and the values can be arbitrary values. The keys are held using weak references.
-/* @interface
-**/
-export interface IWeakMap<TKey extends Object, T> {
-    set(key: TKey, value: T): void;
-    get(key: TKey): T;
-    has(key: TKey): boolean;
-    delete(key: TKey): void;
-    isEmulated: boolean;
-}
-/**
-/* The Set object lets you store unique values of any type, whether primitive values or object references.
-/* @interface
-**/
-export interface ISet<T> {
-    add(value: T): ISet<T>;
-    has(key: T): boolean;
-    delete(key: T): boolean;
-    clear(): void;
-    forEach(callback: (item: T) => void, thisArg?: any): void;
-    size: number;
-    isEmulated: boolean;
-}
-/**
-/* The Map object is a simple key/value map. Any value (both objects and primitive values) may be used as either a key or a value.
-/* @interface
-**/
-export interface IMap<TKey extends Object, T> {
-    set(key: TKey, value: T): void;
-    get(key: TKey): T;
-    has(key: TKey): boolean;
-    delete(key: TKey): void;
-    clear(): void;
-    forEach(callback: (value: T, key: TKey, map: IMap<TKey, T>) => void, thisArg?: any): void;
-    size: number;
-    isEmulated: boolean;
-}
 
 /**
 /* IObservableProperty combines a function signature for value setting and getting with
@@ -90,6 +52,7 @@ export interface IPropertyChangedEventArgs {
     sender: any;
     propertyName: string;
 }
+
 /**
 /* Encapsulates change notifications published by various IObservableList members
 /* @interface
@@ -97,6 +60,7 @@ export interface IPropertyChangedEventArgs {
 export interface IListChangeInfo<T> extends IRangeInfo {
     items: T[];
 }
+
 /**
 /* INotifyListItemChanged provides notifications for collection item updates, ie when an object in
 /* a list changes.
@@ -123,6 +87,7 @@ export interface INotifyListItemChanged {
     **/
     changeTrackingEnabled: boolean;
 }
+
 /**
 /* INotifyListChanged of T provides notifications when the contents
 /* of a list are changed (items are added/removed/moved).
@@ -330,6 +295,7 @@ export interface IHandleObservableErrors {
     **/
     thrownExceptions: Observable<Error>;
 }
+
 /**
 /* ICommand represents an ICommand which also notifies when it is
 /* executed (i.e. when Execute is called) via IObservable. Conceptually,
@@ -370,446 +336,7 @@ export interface ICommand<T> extends IDisposable, IHandleObservableErrors {
     **/
     executeAsync(parameter?: any): Observable<T>;
 }
-/**
-/* Data context used in binding operations
-/* @interface
-**/
-export interface IDataContext {
-    $data: any;
-    $root: any;
-    $parent: any;
-    $parents: any[];
-}
-/**
-/* Extensible Node state
-/* @interface
-**/
-export interface INodeState {
-    cleanup: CompositeDisposable;
-    isBound: boolean;
-    model?: any;
-    module?: any;
-}
-export interface IObjectLiteralToken {
-    key?: string;
-    unknown?: string;
-    value?: string;
-}
-export interface IExpressionFilter {
-    (...args: Array<any>): any;
-}
-export interface IExpressionCompilerOptions {
-    disallowFunctionCalls?: boolean;
-    filters?: {
-        [filterName: string]: IExpressionFilter;
-    };
-}
-export interface ICompiledExpression {
-    (scope?: any, locals?: any): any;
-    literal?: boolean;
-    constant?: boolean;
-    assign?: (self: any, value: any, locals: any) => any;
-}
-export interface ICompiledExpressionRuntimeHooks {
-    readFieldHook?: (o: any, field: any) => any;
-    writeFieldHook?: (o: any, field: any, newValue: any) => any;
-    readIndexHook?: (o: any, field: any) => any;
-    writeIndexHook?: (o: any, field: any, newValue: any) => any;
-}
-export interface IExpressionCompiler {
-    compileExpression(src: string, options?: IExpressionCompilerOptions, cache?: {
-        [exp: string]: ICompiledExpression;
-    }): ICompiledExpression;
-    getRuntimeHooks(locals: any): ICompiledExpressionRuntimeHooks;
-    setRuntimeHooks(locals: any, hooks: ICompiledExpressionRuntimeHooks): void;
-    parseObjectLiteral(objectLiteralString: any): Array<IObjectLiteralToken>;
-}
-export interface IAnimation {
-    prepare(element: Node | Array<Node> | HTMLElement | Array<HTMLElement> | NodeList, params?: any): void;
-    run(element: Node | Array<Node> | HTMLElement | Array<HTMLElement> | NodeList, params?: any): Observable<any>;
-    complete(element: Node | Array<Node> | HTMLElement | Array<HTMLElement> | NodeList, params?: any): void;
-}
-export interface IAnimationCssClassInstruction {
-    css: string;
-    add: boolean;
-    remove: boolean;
-}
-/**
-/* The Dom Manager coordinates everything involving browser DOM-Manipulation
-/* @interface
-**/
-    interface IDomManager {
-    /**
-    /* Applies bindings to the specified node and all of its children using the specified data context
-    /* @param {IDataContext} ctx The data context
-    /* @param {Node} rootNode The node to be bound
-    **/
-    applyBindings(model: any, rootNode: Node): void;
-    /**
-    /* Applies bindings to all the children of the specified node but not the node itself using the specified data context.
-    /* You generally want to use this method if you are authoring a new binding handler that handles children.
-    /* @param {IDataContext} ctx The data context
-    /* @param {Node} rootNode The node to be bound
-    **/
-    applyBindingsToDescendants(ctx: IDataContext, rootNode: Node): void;
-    /**
-    /* Removes and cleans up any binding-related state from the specified node and its descendants.
-    /* @param {Node} rootNode The node to be cleaned
-    **/
-    cleanNode(rootNode: Node): void;
-    /**
-    /* Removes and cleans up any binding-related state from all the children of the specified node but not the node itself.
-    /* @param {Node} rootNode The node to be cleaned
-    **/
-    cleanDescendants(rootNode: Node): void;
-    /**
-    /* Stores updated state for the specified node
-    /* @param {Node} node The target node
-    /* @param {IBindingState} state The updated node state
-    **/
-    setNodeState(node: Node, state: INodeState): void;
-    /**
-    /* Computes the actual data context starting at the specified node
-    /* @param {Node} node The node to be bound
-    /* @return {IDataContext} The data context to evaluate the expression against
-    **/
-    getDataContext(node: Node): IDataContext;
-    /**
-    /* Retrieves the current node state for the specified node
-    /* @param {Node} node The target node
-    **/
-    getNodeState(node: Node): INodeState;
-    /**
-    /* Initializes a new node state
-    /* @param {any} model The model
-    **/
-    createNodeState(model?: any): INodeState;
-    /**
-    /* Returns true if the node is currently bound by one or more binding-handlers
-    /* @param {Node} node The node to check
-    **/
-    isNodeBound(node: Node): boolean;
-    /**
-    /* Removes any binding-related state from the specified node. Use with care! In most cases you would want to use cleanNode!
-    /* @param {Node} node The node to clear
-    **/
-    clearNodeState(node: Node): any;
-    /**
-    /* Compiles a simple string expression or multiple expressions within an object-literal recursively into an expression tree
-    /* @param {string} value The expression(s) to compile
-    **/
-    compileBindingOptions(value: string, module: IModule): any;
-    /**
-    /* Tokenizes an object-literal into an array of key-value pairs
-    /* @param {string} value The object literal tokenize
-    **/
-    getObjectLiteralTokens(value: string): Array<IObjectLiteralToken>;
-    /**
-    /* Returns data-binding expressions for a DOM-Node
-    /* @param {Node} node The node
-    **/
-    getBindingDefinitions(node: Node): Array<{
-        key: string;
-        value: string;
-    }>;
-    /**
-    /* Registers hook that gets invoked whenever a new data-context gets assembled
-    /* @param {Node} node The node for which the data-context gets assembled
-    /* @param {IDataContext} ctx The current data-context
-    **/
-    registerDataContextExtension(extension: (node: Node, ctx: IDataContext) => void): any;
-    /**
-    /* Evaluates an expression against a data-context and returns the result
-    /* @param {IExpressionFunc} exp The source expression
-    /* @param {IExpressionFunc} evalObs Allows monitoring of expression evaluation passes (for unit testing)
-    /* @param {IDataContext} The data context to evaluate the expression against
-    /* @return {any} A value representing the result of the expression-evaluation
-    **/
-    evaluateExpression(exp: ICompiledExpression, ctx: IDataContext): any;
-    /**
-    /* Creates an observable that produces values representing the result of the expression.
-    /* If any observable input of the expression changes, the expression gets re-evaluated
-    /* and the observable produces a new value.
-    /* @param {IExpressionFunc} exp The source expression
-    /* @param {IExpressionFunc} evalObs Allows monitoring of expression evaluation passes (for unit testing)
-    /* @param {IDataContext} The data context to evaluate the expression against
-    /* @return {Observable<any>} A sequence of values representing the result of the last evaluation of the expression
-    **/
-    expressionToObservable(exp: ICompiledExpression, ctx: IDataContext, evalObs?: Observer<any>): Observable<any>;
-}
-/**
-/* Bindings are markers on a DOM element (such as an attribute or comment) that tell
-/* Webs DOM compiler to attach a specified behavior to that DOM element or even
-/* transform the element and its children.
-/* @interface
-**/
-export interface IBindingHandler {
-    /**
-    /* Applies the binding to the specified element
-    /* @param {Node} node The target node
-    /* @param {any} options The options for the handler
-    /* @param {IDataContext} ctx The curent data context
-    /* @param {IDomElementState} state State of the target element
-    /* @param {IModule} module The module bound to the current binding scope
-    **/
-    applyBinding(node: Node, options: string, ctx: IDataContext, state: INodeState, module: IModule): void;
-    /**
-    /* Configures the handler using a handler-specific options object
-    /* @param {any} options The handler-specific options
-    **/
-    configure(options: any): void;
-    /**
-    /* When there are multiple bindings defined on a single DOM element,
-    /* sometimes it is necessary to specify the order in which the bindings are applied.
-    **/
-    priority: number;
-    /**
-    /* If set to true then bindings won't be applied to children
-    /* of the element such binding is encountered on. Instead
-    /* the handler will be responsible for that.
-    **/
-    controlsDescendants?: boolean;
-}
 
-/**
-* Simplified binding-handler
-* @interface
-**/
-export interface ISimpleBindingHandler {
-    init?(el: HTMLElement, value: any, ctx: IDataContext, domManager: IDomManager, state: any, cleanup: CompositeDisposable, module: IModule): void;
-    update(el: HTMLElement, value: any, ctx: IDataContext, domManager: IDomManager, state: any, cleanup: CompositeDisposable, module: IModule): void;
-    cleanup?(el: HTMLElement, domManager: IDomManager, state: any, cleanup: CompositeDisposable, module: IModule): void;
-}
-
-export interface IBindingRegistry {
-    binding(name: string, handler: IBindingHandler|ISimpleBindingHandler, controlsDescendants?: boolean): IBindingRegistry;
-    binding(name: string, handler: string): IBindingRegistry;
-    binding(names: string[], handler: IBindingHandler): IBindingRegistry;
-    binding(names: string[], handler: string): IBindingRegistry;
-    binding(name: string): IBindingHandler;
-}
-
-export interface IComponentTemplateDescriptor {
-    require?: string;
-    promise?: IPromise<Node[]>;
-    observable?: Observable<Node[]>;
-    resolve?: string;
-    element?: string | Node;
-}
-export interface IComponentViewModelDescriptor {
-    require?: string;
-    promise?: IPromise<any>;
-    observable?: Observable<any>;
-    resolve?: string;
-    instance?: any;
-}
-export interface IComponentDescriptor {
-    require?: string;
-    resolve?: string;
-    template?: string|Node[]|IComponentTemplateDescriptor|((params?: any)=> string|Node[]|Observable<Node[]>);
-    viewModel?: Array<any>|IComponentViewModelDescriptor|((params: any)=> any|Observable<any>);
-    preBindingInit?: string;
-    postBindingInit?: string;
-}
-export interface IComponent {
-    template?: Node[];
-    viewModel?: any;
-    preBindingInit?: string;
-    postBindingInit?: string;
-}
-export interface IComponentRegistry {
-    component(name: string, descriptor: IComponentDescriptor): IComponentRegistry;
-    hasComponent(name: string): boolean;
-    loadComponent(name: string, params?: Object): Observable<IComponent>;
-}
-export interface IExpressionFilterRegistry {
-    filter(name: string, filter: IExpressionFilter): IExpressionFilterRegistry;
-    filter(name: string): IExpressionFilter;
-    filters(): {
-        [filterName: string]: IExpressionFilter;
-    };
-}
-export interface IAnimationRegistry {
-    animation(name: string, animation: IAnimation): IAnimationRegistry;
-    animation(name: string): IAnimation;
-}
-export interface IModuleDescriptor {
-    (module: IModule): void;
-    require?: string;
-    promise?: IPromise<string>;
-    resolve?: string;
-    instance?: any;
-}
-export interface IModule extends IComponentRegistry, IBindingRegistry, IExpressionFilterRegistry, IAnimationRegistry {
-    name: string;
-    merge(other: IModule): IModule;
-}
-/**
-/* Represents an engine responsible for converting arbitrary text fragements into a collection of Dom Nodes
-/* @interface
-**/
-export interface ITemplateEngine {
-    parse(templateSource: string): Node[];
-}
-export interface IWebpp extends IModule {
-    defaultExceptionHandler: Observer<Error>;
-    mainThreadScheduler: IScheduler;
-    templateEngine: ITemplateEngine;
-    history: IHistory;
-    title: IObservableProperty<string>;
-    version: string;
-    devModeEnable(): void;
-}
-export interface IRoute {
-    parse(url: any): Object;
-    stringify(params?: Object): string;
-    concat(route: IRoute): IRoute;
-    isAbsolute: boolean;
-    params: Array<string>;
-}
-export interface IViewAnimationDescriptor {
-    enter?: string | IAnimation;
-    leave?: string | IAnimation;
-}
-export interface IRouterStateConfig {
-    name: string;
-    url?: string | IRoute;
-    views?: {
-        [view: string]: string | {
-            component: string;
-            params?: any;
-            animations?: IViewAnimationDescriptor;
-        };
-    };
-    params?: any;
-    onEnter?: (config: IRouterStateConfig, params?: any) => void;
-    onLeave?: (config: IRouterStateConfig, params?: any) => void;
-}
-export interface IRouterState {
-    name: string;
-    url: string;
-    params: any;
-    views: {
-        [view: string]: string | {
-            component: string;
-            params?: any;
-            animations?: IViewAnimationDescriptor;
-        };
-    };
-    onEnter?: (config: IRouterStateConfig, params?: any) => void;
-    onLeave?: (config: IRouterStateConfig, params?: any) => void;
-}
-export interface IViewConfig {
-    component: string;
-    params?: any;
-    animations?: IViewAnimationDescriptor;
-}
-export interface IViewTransition {
-    view: string;
-    fromComponent?: string;
-    toComponent: string;
-}
-declare const enum RouterLocationChangeMode {
-    add = 1,
-    replace = 2,
-}
-export interface IStateChangeOptions {
-/**
-/* If true will update the url in the location bar, if false will not.
-**/
-    location?: boolean | RouterLocationChangeMode;
-/**
-/* If true will force transition even if the state or params have not changed, aka a reload of the same state.
-**/
-    force?: boolean;
-}
-export interface IHistory {
-    onPopState: Observable<PopStateEvent>;
-    location: Location;
-    length: number;
-    state: any;
-    back(): void;
-    forward(): void;
-    replaceState(statedata: any, title: string, url?: string): void;
-    pushState(statedata: any, title: string, url?: string): void;
-    getSearchParameters(query?: string): Object;
-}
-export interface IRouter {
-    /**
-    /* Transitions to the state inferred from the specified url or the browser's current location
-    /* This method should be invoked once after registering application states.
-    /* @param {string} url If specified the router state will be synced to this value, otherwise to window.location.path
-    **/
-    sync(url?: string): void;
-    /**
-    /* Registers a state configuration under a given state name.
-    /* @param {IRouterStateConfig} config State configuration to register
-    **/
-    state(config: IRouterStateConfig): IRouter;
-    /**
-    /* Represents the configuration object for the router's
-    **/
-    current: IObservableProperty<IRouterState>;
-    /**
-    /* An observable that notifies of completed view transitions in response to router state changes
-    **/
-    viewTransitions: Observable<IViewTransition>;
-    /**
-    /* Invoke this method to programatically alter or extend IRouter.current.params.
-    /* Failure to modify params through this method will result in those modifications getting lost after state transitions.
-    **/
-    updateCurrentStateParams(withParamsAction: (params: any) => void): void;
-    /**
-    /* Method for transitioning to a new state.
-    /* @param {string} to Absolute or relative destination state path. 'contact.detail' - will go to the
-    /* contact.detail state. '^'  will go to a parent state. '^.sibling' - will go to a sibling state and
-    /* '.child.grandchild' will go to grandchild state
-    /* @param {Object} params A map of the parameters that will be sent to the state.
-    /* Any parameters that are not specified will be inherited from currently defined parameters.
-    /* @param {IStateChangeOptions} options Options controlling how the state transition will be performed
-    **/
-    go(to: string, params?: Object, options?: IStateChangeOptions): void;
-    /**
-    /* An URL generation method that returns the URL for the given state populated with the given params.
-    /* @param {string} state Absolute or relative destination state path. 'contact.detail' - will go to the
-    /* contact.detail state. '^'  will go to a parent state. '^.sibling' - will go to a sibling state and
-    /* '.child.grandchild' will go to grandchild state
-    /* @param {Object} params An object of parameter values to fill the state's required parameters.
-    **/
-    url(state: string, params?: {}): string;
-    /**
-    /* A method that force reloads the current state. All resolves are re-resolved, events are not re-fired,
-    /* and components reinstantiated.
-    **/
-    reload(): void;
-    /**
-    /* Returns the state configuration object for any specific state.
-    /* @param {string} state Absolute state path.
-    **/
-    get(state: string): IRouterStateConfig;
-    /**
-    /* Similar to IRouter.includes, but only checks for the full state name. If params is supplied then it will
-    /* be tested for strict equality against the current active params object, so all params must match with none
-    /* missing and no extras.
-    /* @param {string} state Absolute state path.
-    **/
-    is(state: string, params?: any, options?: any): any;
-    /**
-    /* A method to determine if the current active state is equal to or is the child of the state stateName.
-    /* If any params are passed then they will be tested for a match as well. Not all the parameters need
-    /* to be passed, just the ones you'd like to test for equality.
-    /* @param {string} state Absolute state path.
-    **/
-    includes(state: string, params?: any, options?: any): any;
-    /**
-    /* Resets internal state configuration to defaults (for unit-testing)
-    **/
-    reset(): void;
-    /**
-    /* Returns the view-configuration for the specified view at the current state
-    **/
-    getViewComponent(viewName: string): IViewConfig;
-}
 /**
 /* IMessageBus represents an object that can act as a "Message Bus", a
 /* simple way for ViewModels and other objects to communicate with each
@@ -868,126 +395,6 @@ export interface IMessageBus {
     **/
     sendMessage<T>(message: T, contract: string): void;
 }
-export interface ICommandBindingOptions {
-    command: ICommand<any>;
-    parameter?: any;
-}
-export interface IComponentBindingOptions {
-    name: string;
-    params?: Object;
-}
-export interface IEventBindingOptions {
-    [eventName: string]: (ctx: IDataContext, event: Event) => any | Observer<Event> | {
-        command: ICommand<any>;
-        parameter: any;
-    };
-}
-export interface IForeachAnimationDescriptor {
-    itemEnter?: string | IAnimation;
-    itemLeave?: string | IAnimation;
-}
-export interface IForEachBindingOptions extends IForeachAnimationDescriptor {
-    data: any;
-    hooks?: IForEachBindingHooks | string;
-}
-export interface IForEachBindingHooks {
-    /**
-    /* Is invoked each time the foreach block is duplicated and inserted into the document,
-    /* both when foreach first initializes, and when new entries are added to the associated
-    /* array later
-    **/
-    afterRender?(nodes: Node[], data: any): void;
-    /**
-    /* Is like afterRender, except it is invoked only when new entries are added to your array
-    /* (and not when foreach first iterates over your array’s initial contents).
-    /* A common use for afterAdd is to call a method such as jQuery’s $(domNode).fadeIn()
-    /* so that you get animated transitions whenever items are added
-    **/
-    afterAdd?(nodes: Node[], data: any, index: number): void;
-    /**
-    /* Is invoked when an array item has been removed, but before the corresponding
-    /* DOM nodes have been removed. If you specify a beforeRemove callback, then it
-    /* becomes your responsibility to remove the DOM nodes. The obvious use case here
-    /* is calling something like jQuery’s $(domNode).fadeOut() to animate the removal
-    /* of the corresponding DOM nodes — in this case, Webcannot know how soon
-    /* it is allowed to physically remove the DOM nodes (who knows how long your
-    /* animation will take?)
-    **/
-    beforeRemove?(nodes: Node[], data: any, index: number): void;
-    /**
-    /* Is invoked when an array item has changed position in the array, but before
-    /* the corresponding DOM nodes have been moved. You could use beforeMove
-    /* to store the original screen coordinates of the affected elements so that you
-    /* can animate their movements in the afterMove callback.
-    **/
-    beforeMove?(nodes: Node[], data: any, index: number): void;
-    /**
-    /* Is invoked after an array item has changed position in the array, and after
-    /* foreach has updated the DOM to match.
-    **/
-    afterMove?(nodes: Node[], data: any, index: number): void;
-}
-export interface IHasFocusBindingOptions {
-    property: any;
-    delay: number;
-}
-export interface IIfAnimationDescriptor {
-    enter?: string | IAnimation;
-    leave?: string | IAnimation;
-}
-export interface IIfBindingOptions extends IIfAnimationDescriptor {
-    condition: string;
-}
-export interface IKeyPressBindingOptions {
-    [key: string]: (ctx: IDataContext, event: Event) => any | ICommand<any> | {
-        command: ICommand<any>;
-        parameter: any;
-    };
-}
-export interface IVisibleBindingOptions {
-    useCssClass: boolean;
-    hiddenClass: string;
-}
-export interface IRadioGroupComponentParams {
-    items: any;
-    groupName?: string;
-    itemText?: string;
-    itemValue?: string;
-    itemClass?: string;
-    selectedValue?: any;
-    afterRender?(nodes: Node[], data: any): void;
-    noCache?: boolean;
-}
-export interface ISelectComponentParams {
-    name?: string;
-    items: any;
-    itemText?: string;
-    itemValue?: string;
-    itemClass?: string;
-    cssClass?: string;
-    multiple?: boolean;
-    required?: boolean;
-    autofocus?: boolean;
-    size?: number;
-    selectedValue?: any;
-    afterRender?(nodes: Node[], data: any): void;
-    noCache?: boolean;
-}
-export interface IBrowserProperties {
-    version: number;
-}
-export interface IIEBrowserProperties extends IBrowserProperties {
-    getSelectionChangeObservable(el: HTMLElement): Observable<Document>;
-}
-export interface IStateActiveBindingOptions {
-    name: string;
-    params?: Object;
-    cssClass?: string;
-}
-export interface IStateRefBindingOptions {
-    name: string;
-    params?: Object;
-}
 
 /**
 * .Net's Lazy<T>
@@ -1001,175 +408,20 @@ export class Lazy<T> {
     private createdValue;
 }
 
-/**
-* VirtualChildNodes implements consisent and predictable manipulation
-* of a DOM Node's childNodes collection regardless its the true contents
-* @class
-**/
-export class VirtualChildNodes {
-    constructor(targetNode: Node, initialSyncToTarget: boolean, insertCB?: (node: Node, callbackData: any) => void, removeCB?: (node: Node) => void);
-    appendChilds(nodes: Node[], callbackData?: any): void;
-    insertChilds(index: number, nodes: Node[], callbackData?: any): void;
-    removeChilds(index: number, count: number, keepDom: boolean): Node[];
-    clear(): void;
-    targetNode: Node;
-    childNodes: Array<Node>;
-    private insertCB;
-    private removeCB;
-}
-
-export interface IEnvironment {
-    ie: IIEBrowserProperties;
-    opera: IBrowserProperties;
-    safari: IBrowserProperties;
-    firefox: IBrowserProperties;
-    isSupported: boolean;
-}
-
 export interface IResources {
-    app: string;
     injector: string;
-    domManager: string;
-    router: string;
     messageBus: string;
     httpClient: string;
-    expressionCompiler: string;
-    templateEngine: string;
-    hasValueBindingValue: string;
-    valueBindingValue: string;
 }
 
-declare var app: IWebpp;
-declare var router: IRouter;
 declare var messageBus: IMessageBus;
 
-export class IID {
-    static IDisposable: string;
-    static IObservableProperty: string;
-    static IObservableReadOnlyProperty: string;
-    static IObservableList: string;
-    static ICommand: string;
-    static IHandleObservableErrors: string;
-}
-
-export class PropertyInfo<T> {
-    constructor(propertyName: string, property: T);
-    propertyName: string;
-    property: T;
-}
-
-declare var noop: () => void;
-/**
-/* Returns true if a ECMAScript5 strict-mode is active
-**/
-export function isStrictMode(): boolean;
-/**
-/* Returns true if target is a javascript primitive
-**/
-export function isPrimitive(target: any): boolean;
-/**
-/* Tests if the target supports the interface
-/* @param {any} target
-/* @param {string} iid
-**/
-export function queryInterface(target: any, iid: string): boolean;
-/**
-/* Returns all own properties of target implementing interface iid
-/* @param {any} target
-/* @param {string} iid
-**/
-export function getOwnPropertiesImplementingInterface<T>(target: any, iid: string): PropertyInfo<T>[];
 /**
 /* Determines if target is an instance of a IObservableProperty
 /* @param {any} target
 **/
 export function isProperty(target: any): boolean;
-/**
-/* Determines if target is an instance of a Scheduler
-/* @param {any} target
-**/
-export function ischeduler(target: any): boolean;
-/**
-/* Determines if target is an instance of a Observable
-/* @param {any} target
-**/
-export function isbservable(target: any): boolean;
-/**
-/* If the prop is an observable property return its value
-/* @param {any} prop
-**/
-export function unwrapProperty(prop: any): any;
-/**
-/* Returns true if a Unit-Testing environment is detected
-**/
-export function isInUnitTest(): boolean;
-/**
-/* Transforms the current method's arguments into an array
-**/
-export function args2Array(args: IArguments): Array<any>;
-/**
-/* Formats a string using .net style format string
-/* @param {string} fmt The format string
-/* @param {any[]} ...args Format arguments
-**/
-export function formatString(fmt: string, ...args: any[]): string;
-/**
-/* Copies own properties from src to dst
-**/
-export function extend(src: Object, dst: Object, inherited?: boolean): Object;
-/**
-* Determines if the specified DOM element has the specified CSS-Class
-* @param {Node} node The target element
-* @param {string} className The classe to check
-*/
-export function hasCssClass(node: HTMLElement, className: string): boolean;
-/**
-/* Toggles one ore more css classes on the specified DOM element
-/* @param {Node} node The target element
-/* @param {boolean} shouldHaveClass True if the classes should be added to the element, false if they should be removed
-/* @param {string[} classNames The list of classes to process
-**/
-export function toggleCssClass(node: HTMLElement, shouldHaveClass: boolean, ...classNames: string[]): void;
-/**
-/* Trigger a reflow on the target element
-/* @param {HTMLElement} el
-**/
-export function triggerReflow(el: HTMLElement): void;
-/**
-/* Returns true if the specified element may be disabled
-/* @param {HTMLElement} el
-**/
-export function elementCanBeDisabled(el: HTMLElement): boolean;
-/**
-/* Returns true if object is a Function.
-/* @param obj
-**/
-export function isFunction(obj: any): boolean;
-/**
-/* Returns true if object is a Disposable
-/* @param obj
-**/
-export function isDisposable(obj: any): boolean;
-/**
-/* Performs an optimized deep comparison between the two objects, to determine if they should be considered equal.
-/* @param a Object to compare
-/* @param b Object to compare to
-**/
-export function isEqual(a: any, b: any, aStack?: any, bStack?: any): boolean;
-/**
-/* Returns an array of clones of the nodes in the source array
-**/
-export function cloneNodeArray(nodes: Array<Node>): Array<Node>;
-/**
-/* Converts a NodeList into a javascript array
-/* @param {NodeList} nodes
-**/
-export function nodeListToArray(nodes: NodeList): Node[];
-/**
-/* Converts the node's children into a javascript array
-/* @param {Node} node
-**/
-export function nodeChildrenToArray<T>(node: Node): T[];
+
 /**
 /* Wraps an action in try/finally block and disposes the resource after the action has completed even if it throws an exception
 /* (mimics C# using statement)
@@ -1177,12 +429,14 @@ export function nodeChildrenToArray<T>(node: Node): T[];
 /* @param {() => void} action The action to wrap
 **/
 export function using<T extends IDisposable>(disp: T, action: (disp?: T) => void): void;
+
 /**
 /* Turns an AMD-Style require call into an observable
 /* @param {string} Module The module to load
 /* @return {Observable<any>} An observable that yields a value and completes as soon as the module has been loaded
 **/
 export function observableRequire<T>(module: string): Observable<T>;
+
 /**
 /* Returns an observable that notifes of any observable property changes on the target
 /* @param {any} target The object to observe
@@ -1253,49 +507,10 @@ export function whenAny<TRet, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
 export function whenAny(...args: Array<ObservableOrProperty<any>>): Observable<any>;
 
 /**
-/* FOR INTERNAL USE ONLY
-/* Throw an error containing the specified description
-**/
-export function throwError(fmt: string, ...args: any[]): void;
-
-/**
-/* Registers a CSS-Transition based animation
-/* @param {string} prepareTransitionClass The css class(es) to apply before the animation runs.
-/* Both prepareTransitionClass and startTransitionClass will be removed automatically from the
-/* elements targeted by the animation as soon as the transition has ended.
-/* @param {string} startTransitionClass The css class(es) to apply to trigger the transition.
-/* @param {string} completeTransitionClass The css class(es) to apply to trigger to the element
-/* as soon as the animation has ended.
-/* @returns {Observable<any>} An observable that signals that the animation is complete
-**/
-export function animation(prepareTransitionClass: string | Array<string> | Array<IAnimationCssClassInstruction>, startTransitionClass: string | Array<string> | Array<IAnimationCssClassInstruction>, completeTransitionClass?: string | Array<string> | Array<IAnimationCssClassInstruction>): IAnimation;
-/**
-/* Registers a scripted animation
-/* @param {(element: HTMLElement, params?: any)=> Observable<any>} run The function that carries out the animation
-/* @param {(element: HTMLElement, params?: any)=> void} prepare The function that prepares the targeted elements for the animation
-/* @param {(element: HTMLElement, params?: any)=> void} complete The function that performs and cleanup on the targeted elements
-/* after the animation has ended
-/* @returns {Observable<any>} An observable that signals that the animation is complete
-**/
-export function animation(run: (element: HTMLElement, params?: any) => Observable<any>, prepare?: (element: HTMLElement, params?: any) => void, complete?: (element: HTMLElement, params?: any) => void): IAnimation;
-
-/**
 /* Creates an observable property with an optional default value
 /* @param {T} initialValue?
 **/
 export function property<T>(initialValue?: T): IObservableProperty<T>;
-
-/**
-/* Applies bindings to the specified node and all of its children using the specified data context.
-/* @param {any} model The model to bind to
-/* @param {Node} rootNode The node to be bound
-**/
-export function applyBindings(model: any, node?: Node): void;
-/**
-/* Removes and cleans up any binding-related state from the specified node and its descendants.
-/* @param {Node} rootNode The node to be cleaned
-**/
-export function cleanNode(node: Node): void;
 
 /**
 /* Creates a default Command that has a synchronous action.
@@ -1306,6 +521,7 @@ export function cleanNode(node: Node): void;
 /* @return {Command<any>} A Command whose ExecuteAsync just returns the CommandParameter immediately. Which you should ignore!
 **/
 export function command(execute: (param: any) => void, canExecute?: Observable<boolean>, scheduler?: IScheduler, thisArg?: any): ICommand<any>;
+
 /**
 /* Creates a default Command that has a synchronous action.
 /* @param {(any) => void} execute The action to executed when the command gets invoked
@@ -1314,6 +530,7 @@ export function command(execute: (param: any) => void, canExecute?: Observable<b
 /* @return {Command<any>} A Command whose ExecuteAsync just returns the CommandParameter immediately. Which you should ignore!
 **/
 export function command(execute: (param: any) => void, canExecute?: Observable<boolean>, thisArg?: any): ICommand<any>;
+
 /**
 /* Creates a default Command that has a synchronous action.
 /* @param {(any) => void} execute The action to executed when the command gets invoked
@@ -1321,6 +538,7 @@ export function command(execute: (param: any) => void, canExecute?: Observable<b
 /* @return {Command<any>} A Command whose ExecuteAsync just returns the CommandParameter immediately. Which you should ignore!
 **/
 export function command(execute: (param: any) => void, thisArg?: any): ICommand<any>;
+
 /**
 /* Creates a default Command that has no background action.
 /* @param {Observable<boolean>} canExecute An Observable that determines when the Command can Execute. WhenAny is a great way to create this!
@@ -1329,6 +547,7 @@ export function command(execute: (param: any) => void, thisArg?: any): ICommand<
 /* @return {Command<any>} A Command whose ExecuteAsync just returns the CommandParameter immediately. Which you should ignore!
 **/
 export function command(canExecute?: Observable<boolean>, scheduler?: IScheduler): ICommand<any>;
+
 /**
 /* Creates a Command typed to the given executeAsync Observable method. Use this method if your background method returns IObservable
 /* @param {(any) => Observable<T>} executeAsync Method to call that creates an Observable representing an operation to execute in the background. The Command's canExecute will be false until this Observable completes. If this Observable terminates with OnError, the Exception is marshaled to ThrownExceptions
@@ -1338,6 +557,7 @@ export function command(canExecute?: Observable<boolean>, scheduler?: IScheduler
 /* @return {Command<T>} A Command which returns all items that are created via calling executeAsync as a single stream.
 **/
 export function asyncCommand<T>(canExecute: Observable<boolean>, executeAsync: (param: any) => Observable<T>, scheduler?: IScheduler, thisArg?: any): ICommand<T>;
+
 /**
 /* Creates a Command typed to the given executeAsync Observable method. Use this method if your background method returns IObservable
 /* @param {(any) => Observable<T>} executeAsync Method to call that creates an Observable representing an operation to execute in the background. The Command's canExecute will be false until this Observable completes. If this Observable terminates with OnError, the Exception is marshaled to ThrownExceptions
@@ -1346,6 +566,7 @@ export function asyncCommand<T>(canExecute: Observable<boolean>, executeAsync: (
 /* @return {Command<T>} A Command which returns all items that are created via calling executeAsync as a single stream.
 **/
 export function asyncCommand<T>(canExecute: Observable<boolean>, executeAsync: (param: any) => Observable<T>, thisArg?: any): ICommand<T>;
+
 /**
 /* Creates a Command typed to the given executeAsync Observable method. Use this method if your background method returns IObservable
 /* @param {(any) => Observable<T>} executeAsync Method to call that creates an Observable representing an operation to execute in the background. The Command's canExecute will be false until this Observable completes. If this Observable terminates with OnError, the Exception is marshaled to ThrownExceptions
@@ -1354,6 +575,7 @@ export function asyncCommand<T>(canExecute: Observable<boolean>, executeAsync: (
 /* @return {Command<T>} A Command which returns all items that are created via calling executeAsync as a single stream.
 **/
 export function asyncCommand<T>(executeAsync: (param: any) => Observable<T>, scheduler?: IScheduler, thisArg?: any): ICommand<T>;
+
 /**
 /* Creates a Command typed to the given executeAsync Observable method. Use this method if your background method returns IObservable
 /* @param {(any) => Observable<T>} executeAsync Method to call that creates an Observable representing an operation to execute in the background. The Command's canExecute will be false until this Observable completes. If this Observable terminates with OnError, the Exception is marshaled to ThrownExceptions
@@ -1361,51 +583,14 @@ export function asyncCommand<T>(executeAsync: (param: any) => Observable<T>, sch
 /* @return {Command<T>} A Command which returns all items that are created via calling executeAsync as a single stream.
 **/
 export function asyncCommand<T>(executeAsync: (param: any) => Observable<T>, thisArg?: any): ICommand<T>;
+
 /**
 /* Determines if target is an instance of a ICommand
 /* @param {any} target
 **/
 export function isCommand(target: any): boolean;
 
-declare var env: IEnvironment;
 declare var res: IResources;
-
-/**
-/* Strips any external data associated with the node from it
-/* @param {Node} node The node to clean
-**/
-declare var cleanExternalData: (node: Node) => void;
-/**
-/* Defines a module.
-/* @param {string} name The module name
-/* @return {IModule} The module handle
-**/
-export function module(name: string, descriptor: Array<any> | IModuleDescriptor): any;
-/**
-/* Instantiate a new module instance and configure it using the user supplied configuration
-/* @param {string} name The module name
-/* @return {IModule} The module handle
-**/
-export function loadModule(name: string): Observable<IModule>;
-
-export function route(route: any, rules?: any): IRoute;
-
-/**
-/* For certain elements such as select and input type=radio we store
-/* the real element value in NodeState if it is anything other than a
-/* string. This method returns that value.
-/* @param {Node} node
-/* @param {IDomManager} domManager
-**/
-export function getNodeValue(node: Node, domManager: IDomManager): any;
-/**
-/* Associate a value with an element. Either by using its value-attribute
-/* or storing it in NodeState
-/* @param {Node} node
-/* @param {any} value
-/* @param {IDomManager} domManager
-**/
-export function setNodeValue(node: Node, value: any, domManager: IDomManager): void;
 
 declare var injector: IInjector;
 
@@ -1415,72 +600,12 @@ declare var injector: IInjector;
 /* @param {number = 0.3} resetChangeThreshold
 **/
 export function list<T>(initialContents?: Array<T>, resetChangeThreshold?: number, scheduler?: IScheduler): IObservableList<T>;
+
 /**
 /* Determines if target is an instance of a IObservableList
 /* @param {any} target
 **/
 export function isList(target: any): boolean;
-
-/**
-/* Creates a new WeakMap instance
-/* @param {boolean} disableNativeSupport Force creation of an emulated implementation, regardless of browser native support.
-/* @return {IWeakMap<TKey, T>} A new instance of a suitable IWeakMap implementation
-**/
-export function createWeakMap<TKey, T>(disableNativeSupport?: boolean): IWeakMap<TKey, T>;
-
-/**
-/* Creates a new WeakMap instance
-/* @param {boolean} disableNativeSupport Force creation of an emulated implementation, regardless of browser native support.
-/* @return {IWeakMap<TKey, T>} A new instance of a suitable IWeakMap implementation
-**/
-export function createMap<TKey, T>(disableNativeSupport?: boolean): IMap<TKey, T>;
-
-/**
-/* Creates a new Set instance
-/* @param {boolean} disableNativeSupport Force creation of an emulated implementation, regardless of browser native support.
-/* @return {ISet<T>} A new instance of a suitable ISet implementation
-**/
-export function createSet<T>(disableNativeSupport?: boolean): ISet<T>;
-/**
-/* Extracts the values of a Set by invoking its forEach method and capturing the output
-**/
-export function setToArray<T>(src: ISet<T>): Array<T>;
-
-/**
-* Returns the objects unique id or assigns it if unassigned
-* @param {any} o
-*/
-export function getOid(o: any): string;
-
-/**
-* Base class for one-way bindings that take a single expression and apply the result to one or more target elements
-* @class
-*/
-export class SingleOneWayBindingBase implements IBindingHandler {
-    constructor(domManager: IDomManager, app: IWebpp);
-    applyBinding(node: Node, options: string, ctx: IDataContext, state: INodeState, module: IModule): void;
-    configure(options: any): void;
-    priority: number;
-    protected domManager: IDomManager;
-    protected app: IWebpp;
-    protected applyValue(el: HTMLElement, value: any): void;
-}
-
-/**
-* Base class for one-way bindings that take multiple expressions defined as object literal and apply the result to one or more target elements
-* @class
-*/
-export class MultiOneWayBindingBase implements IBindingHandler {
-    constructor(domManager: IDomManager, app: IWebpp, supportsDynamicValues?: boolean);
-    applyBinding(node: Node, options: string, ctx: IDataContext, state: INodeState, module: IModule): void;
-    configure(options: any): void;
-    priority: number;
-    protected supportsDynamicValues: boolean;
-    protected domManager: IDomManager;
-    protected app: IWebpp;
-    private subscribe(el, obs, key, state);
-    protected applyValue(el: HTMLElement, key: string, value: any): void;
-}
 
 export interface IHttpClientOptions {
     url?: string;
