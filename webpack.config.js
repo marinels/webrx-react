@@ -21,6 +21,7 @@ module.exports = Object.assign(clone(webpackCommon), {
       'moment',
       'react',
       'react-addons-css-transition-group',
+      'react-addons-transition-group',
       'react-bootstrap',
       'react-dom',
       'react-fa',
