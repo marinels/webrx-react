@@ -16,11 +16,7 @@
     "strictNullChecks": false,
     "target": "es5"
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "test/**/*.ts"
-  ],
-  "exclude": [
+  "files": [
+    "src/app.tsx"
   ]
 }
