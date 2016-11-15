@@ -9,6 +9,8 @@
   "rules": {
     // JUSTIFICATION: code cleanliness
     // separation of variable declarations and logic makes source code more readable
-    "newline-after-var": [ 2, "always" ]
+    "newline-after-var": [ 2, "always" ],
+
+    "linebreak-style": [ 2, "unix" ]
   }
 }
