@@ -2,17 +2,17 @@
 /build
 /node_modules
 /test
-/typings
 
 /.babelrc
 /.eslintignore
 /.eslintrc
+/.gitattributes
 /.gitignore
 /.stylelintrc.js
+/.travis.yml
 /gulpfile.babel.js
 /index.html
 /*.log
-/tsconfig.json
 /tslint.json
 /webpack.common.js
 /webpack.config.js
