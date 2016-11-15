@@ -66,6 +66,7 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
   updateOn() {
     return [
       this.state.isEditing.changed,
+      this.state.save.canExecuteObservable,
     ];
   }
 
@@ -111,7 +112,7 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
     const onKeyDown = this.props.keyboard === true ? (e: React.KeyboardEvent<any>) => this.handleKeyDown(e) : null;
 
     return (
-      <BindableInput { ...props } property={ this.state.editValue } onKeyDown={ onKeyDown } >
+      <BindableInput { ...props } property={ this.state.editValue } onKeyDown={ onKeyDown } disabled={ this.state.save.canExecute(null) === false } >
         {
           React.cloneElement(
             this.props.editTemplate(this.state.editValue(), this),
