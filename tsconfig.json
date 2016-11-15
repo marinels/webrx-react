@@ -9,7 +9,6 @@
     "noImplicitThis": false,
     "noImplicitUseStrict": true,
     "paths": {
-      "webrx": [ "node_modules/webrx/dist/web.rx" ],
       "rx": [ "node_modules/rx/ts/rx.all" ],
       "*": [ "src/types/*" ]
     },

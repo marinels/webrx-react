@@ -22,14 +22,3 @@ declare module 'react-bootstrap' {
     Form: typeof NavbarForm;
   }
 }
-
-// webrx RxJS augmentations
-import { IDisposable } from 'rx';
-
-declare module 'rx' {
-  interface Observable<T> {
-    // the invokeCommand Rx augmentations aren't currently published so we'll add them here for now
-    invokeCommand<TResult>(command: wx.ICommand<TResult>): IDisposable;
-    invokeCommand<TResult>(commandSelector: (x: T) => wx.ICommand<TResult>): IDisposable;
-  }
-}
