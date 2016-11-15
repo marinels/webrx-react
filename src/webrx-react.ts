@@ -1,3 +1,6 @@
+import './types/declarations';
+import './types/augmentations';
+
 import './Extensions';
 
 import { Logging, PubSub, Alert, Compare, Moment, SubMan } from './Utils';

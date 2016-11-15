@@ -1,8 +1,6 @@
 // tslint:disable:no-unused-variable
 
-// react-bootstrap
-import { HTMLProps } from 'react';
-import 'react-bootstrap';
+import { HTMLProps, ClassicComponent, ClassicComponentClass } from 'react';
 
 declare module 'react-bootstrap' {
   // injecting fill prop for <Table />
@@ -11,12 +9,12 @@ declare module 'react-bootstrap' {
   }
 
   // add missing <Navbar.Form />
-  interface NavbarFormProps extends React.HTMLProps<NavbarForm> {
+  interface NavbarFormProps extends HTMLProps<NavbarForm> {
     componentClass?: any;
     pullRight?: boolean;
   }
-  type NavbarForm = React.ClassicComponent<NavbarFormProps, {}>;
-  let NavbarForm: React.ClassicComponentClass<NavbarFormProps>;
+  type NavbarForm = ClassicComponent<NavbarFormProps, {}>;
+  let NavbarForm: ClassicComponentClass<NavbarFormProps>;
 
   interface NavbarClass {
     Form: typeof NavbarForm;
