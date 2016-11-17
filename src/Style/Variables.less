@@ -3,8 +3,8 @@
 
 @body-color: #333;
 @body-font-family: 'Lato', 'Verdana', 'Geneva', 'Tahoma', sans-serif;
-@text-muted: #bcbcbc;
-@default-hover-background: #ddd;
+@text-muted: lighten(@body-color, 40%);
+@default-hover-background: lighten(@body-color, 70%);
 
 // full computed height of a button: line height + padding + border
 @button-height: @line-height-computed + 2 * (@padding-base-vertical + 1px); // ~34px
