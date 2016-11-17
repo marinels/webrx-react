@@ -265,7 +265,10 @@ const viewMap: ViewActivatorMap = {
     </ItemListPanelView>
   ),
   InlineEditViewModel: (viewModel: Components.InlineEditViewModel<any>) => (
-    <InlineEditView style={({ margin: 0 })} viewModel={viewModel} inputType='number' template={ x => `${ x } of 10` } converter={ x => Number(x) } keyboard />
+    <InlineEditView style={({ margin: 0 })} viewModel={viewModel} inputType='number'
+      template={ x => `${ x.rank } of 10` } converter={ x => Number(x) } keyboard
+      valueGetter={ x => x().rank } valueSetter={ (x, v) => x().rank = v }
+    />
   ),
 };
 

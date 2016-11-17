@@ -191,24 +191,35 @@ routeMap.addRoute('WebRx-React', 'AsyncItemListPanel', 'ItemListPanel (Async)', 
   return vm;
 });
 routeMap.addRoute('WebRx-React', 'InlineEdit', 'InlineEdit', (state: any) => {
-  const onSave = (value: number) => Observable.of(value)
-    // simulate network delay
-    .delay(1000)
-    // simulate possible errors
-    .map(x => {
-      if (x === 6) {
-        throw new Error('Simulated API Error');
-      }
+  interface SampleUser {
+    name: string;
+    rank: number;
+  }
 
-      return x;
-    });
+  const onSave = (user: SampleUser) => {
+    if (user.rank === 7) {
+      throw new Error('Simulated Coding Error');
+    }
 
-  const editor = new Components.InlineEditViewModel(5, onSave);
+    return Observable.of(user)
+      // simulate network delay
+      .delay(1000)
+      // simulate an API error
+      .map(x => {
+        if (x.rank === 6) {
+          throw new Error('Simulated API Error');
+        }
+
+        return x;
+      });
+  };
+
+  const editor = new Components.InlineEditViewModel<SampleUser>({ name: 'Some Guy', rank: 5 }, onSave);
 
   editor.save.results
     // handle post-save results
     .subscribe(x => {
-      Alert.create(`Saving Value Change: ${ x }`, 'Inline Editor Demo');
+      Alert.create(`Saving SampleUser Change: ${ JSON.stringify(x, null, 2) }`, 'Inline Editor Demo');
     });
 
   return editor;
