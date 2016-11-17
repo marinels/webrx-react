@@ -36,7 +36,8 @@ export class InlineEditViewModel<T> extends BaseViewModel {
     });
 
     this.save = wx.asyncCommand(() => {
-      return this.onSave(this.editValue())
+      return Observable
+        .defer(() => this.onSave(this.editValue()))
         .catch(e => {
           this.alertForError(e, 'Unable to Save');
 
