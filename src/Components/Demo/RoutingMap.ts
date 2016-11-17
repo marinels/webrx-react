@@ -161,7 +161,9 @@ routeMap.addRoute('WebRx-React', 'TimeSpanInput', 'Time Span Input', (state: any
 routeMap.addRoute('WebRx-React', 'List', 'List', (state: any) => new Components.ListViewModel(wx.property(sampleListData), false, false));
 routeMap.addRoute('WebRx-React', 'Tree', 'Tree', (state: any) => new Components.ListViewModel(wx.property(sampleTreeData), true, false));
 routeMap.addRoute('WebRx-React', 'PanelList', 'Panel List', (state: any) => new Components.ListViewModel(wx.property(sampleListData), true, false));
-routeMap.addRoute('WebRx-React', 'DataGrid', 'Data Grid', (state: any) => Components.DataGridViewModel.create(...sampleListData));
+routeMap.addRoute('WebRx-React', 'DataGrid', 'Data Grid', (state: any) =>
+  new Components.DataGridViewModel(wx.property(sampleListData), (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0)
+);
 routeMap.addRoute('WebRx-React', 'DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: any) => Components.DataGridViewModel.create(...sampleListData));
 routeMap.addRoute('WebRx-React', 'DataGridList', 'DataGrid (List View)', (state: any) =>
   new Components.DataGridViewModel(wx.property(sampleListData), (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0)
@@ -181,6 +183,9 @@ routeMap.addRoute('WebRx-React', 'ModalDialog', 'Modal Dialog', (state: any) => 
 routeMap.addRoute('WebRx-React', 'Tabs', 'Tabs', (state: any) => new Components.TabsViewModel());
 routeMap.addRoute('WebRx-React', 'StaticTabs', 'Static Tabs', (state: any) => new Components.TabsViewModel());
 routeMap.addRoute('WebRx-React', 'ItemListPanel', 'Item List Panel', (state: any) =>
+  new Components.ItemListPanelViewModel(wx.property(sampleListData), (x, r) => r.test(x.name))
+);
+routeMap.addRoute('WebRx-React', 'ListItemListPanel', 'Item List Panel (List)', (state: any) =>
   new Components.ItemListPanelViewModel(wx.property(sampleListData), (x, r) => r.test(x.name))
 );
 routeMap.addRoute('WebRx-React', 'AsyncItemListPanel', 'ItemListPanel (Async)', (state: any) => {

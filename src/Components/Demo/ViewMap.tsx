@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as wx from 'webrx';
+import { Icon } from 'react-fa';
 import { Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab, Well, ListGroup, ListGroupItem, Table } from 'react-bootstrap';
 
 import { Logging, Alert } from '../../Utils';
@@ -146,23 +147,31 @@ const viewMap: ViewActivatorMap = {
     let view: Components.DataGridViewTemplate<{name: string, requiredBy: string}> = undefined;
     let columns: any;
     let pager = true;
+    let search = false;
 
     if (componentRoute === 'DataGridList') {
       pager = false;
+      search = true;
       view = new DataGridListViewTemplate<{name: string, requiredBy: string}>(
         x => `Name: ${x.name}, Required By: ${x.requiredBy}`
       );
     }
 
     if (componentRoute === 'DataGrid') {
+      search = true;
       columns = [
         <DataGridColumn key='name' fieldName='name' header='Name' sortable />,
         <DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 } />,
+        <DataGridColumn key='nav' fieldName='nav' header='' width={ 1 } valueSelector={
+          () => (
+            <Button style={ ({ margin: -5 }) } bsStyle='link'><Icon name='chevron-right' size='lg' /></Button>
+          ) }
+        />,
       ];
     }
 
     return (
-      <DataGridView key={ componentRoute } viewModel={ viewModel } view={view} pager={ pager }>
+      <DataGridView key={ componentRoute } viewModel={ viewModel } view={view} pager={ pager } search={ search }>
         { columns }
       </DataGridView>
     );
@@ -244,16 +253,32 @@ const viewMap: ViewActivatorMap = {
       </Table>
     </CommonPanel>
   ),
-  ItemListPanelViewModel: (viewModel: Components.ItemListPanelViewModel<any>) => (
-    <ItemListPanelView viewModel={viewModel} headerContent='Sample Data' collapsible
-      headerActions={[ { id: 'header', children: 'Header Action' } ]}
-      footerContent={ (<CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
-      footerActions={[ { id: 'footer', bsStyle: 'primary', command: viewModel.navigate, children: (<ViewAllFooterAction suffix='Things' />) } ]}
-    >
-      <DataGridColumn fieldName='name' header='Name' sortable className='col-md-8' />
-      <DataGridColumn fieldName='requiredBy' header='Required By' sortable className='col-md-4' />
-    </ItemListPanelView>
-  ),
+  ItemListPanelViewModel: (viewModel: Components.ItemListPanelViewModel<any>, componentRoute: string) => {
+    if (componentRoute === 'ItemListPanel') {
+      return (
+        <ItemListPanelView viewModel={viewModel} headerContent='Sample Grid Data' collapsible pager search
+          headerActions={[ { id: 'header', children: 'Header Action' } ]}
+          footerContent={ (<CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
+          footerActions={[ { id: 'footer', bsStyle: 'primary', command: viewModel.navigate, children: (<ViewAllFooterAction suffix='Things' />) } ]}
+        >
+          <DataGridColumn fieldName='name' header='Name' sortable className='col-md-8' />
+          <DataGridColumn fieldName='requiredBy' header='Required By' sortable className='col-md-4' />
+        </ItemListPanelView>
+      );
+    }
+    else {
+      return (
+        <ItemListPanelView viewModel={ viewModel } headerContent='Sample List Data' collapsible pager search
+          view={
+            new DataGridListViewTemplate<{ name: string, requiredBy: string }>(
+              x => `Name: ${ x.name }, Required By: ${ x.requiredBy }`
+            )
+          }
+        >
+        </ItemListPanelView>
+      );
+    }
+  },
   AsyncItemListPanelViewModel: (viewModel: Components.AsyncItemListPanelViewModel<any, any>) => (
     <ItemListPanelView viewModel={viewModel} headerContent='Sample Data' collapsible
       headerActions={[ { id: 'footer', bsStyle: 'primary', command: viewModel.navigate, children: (<ViewAllFooterAction suffix='Things' />) } ]}
