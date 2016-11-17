@@ -1,13 +1,36 @@
 import * as React from 'react';
 import * as wx from 'webrx';
 
-export interface BindableInputProps extends React.HTMLAttributes<BindableInput> {
-  property: any;
+export interface BindableProps {
+  /**
+   * Action to convert from the view element value to the property value (default is to coerce)
+   */
   converter?: (x: any) => any;
+  /**
+   * Name of the view element value property (default is "value")
+   */
   valueProperty?: string;
+  /**
+   * Name of the view element onChange event (defualt is "onChange")
+   */
   onChangeProperty?: string;
+  /**
+   * Action to perform when fetching the current property value.
+   * Default action is to assume an observable property and request the current value.
+   */
   valueGetter?: (property: any) => any;
+  /**
+   * Action to perform when updating the current property value.
+   * Default action is to assume an observable property and set the current value.
+   */
   valueSetter?: (property: any, value: any) => void;
+}
+
+export interface BindableInputProps extends React.HTMLAttributes<BindableInput>, BindableProps {
+  /**
+   * input property (or value)
+   */
+  property: any;
 }
 
 export class BindableInput extends React.Component<BindableInputProps, any> {

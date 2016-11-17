@@ -5,21 +5,16 @@ import * as classNames from 'classnames';
 import { FormGroup, InputGroup, FormControl, Sizes } from 'react-bootstrap';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';
-import { BindableInput } from '../BindableInput/BindableInput';
+import { BindableInput, BindableProps } from '../BindableInput/BindableInput';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { InlineEditViewModel } from './InlineEditViewModel';
 
 import './InlineEdit.less';
 
-interface InlineEditProps<T> extends BaseViewProps {
+interface InlineEditProps<T> extends BaseViewProps, BindableProps {
   controlId?: string;
   inputType?: string;
   placeholder?: string;
-  converter?: (x: any) => any;
-  valueProperty?: string;
-  onChangeProperty?: string;
-  valueGetter?: (property: any) => any;
-  valueSetter?: (property: any, value: any) => void;
   keyboard?: boolean;
   bsSize?: Sizes;
   template?: (x: T, view: InlineEditView) => any;
