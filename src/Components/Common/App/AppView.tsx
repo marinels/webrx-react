@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as classNames from 'classnames';
 import { Grid } from 'react-bootstrap';
 
+import { BootstrapGuide } from './BootstrapGuide';
 import { BaseView } from '../../React/BaseView';
 import { Splash } from '../Splash/Splash';
 import { AlertHostView } from '../Alert/AlertHostView';
@@ -19,6 +20,7 @@ ViewMap['Splash'] = () => (
 
 export interface AppProps extends PageHeaderProps, PageFooterProps {
   viewMap?: ViewMapper;
+  guide?: boolean;
 }
 
 export class AppView extends BaseView<AppProps, AppViewModel> {
@@ -26,16 +28,18 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
 
   static defaultProps = {
     viewMap: ViewMap,
+    guide: DEBUG,
   };
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { viewMap, brand, copyright } = x;
-      return { viewMap, brand, copyright };
+      const { viewMap, guide, brand, copyright } = x;
+      return { viewMap, guide, brand, copyright };
     });
 
     return (
       <div { ...rest } className={ classNames('App', className) }>
+        <BootstrapGuide visible={ props.guide } />
         <div className='float-container'>
           <Grid>
             <AlertHostView viewModel={ this.state.alerts } />
