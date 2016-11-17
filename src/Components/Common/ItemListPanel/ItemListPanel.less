@@ -1,10 +1,34 @@
 @import (reference) '../../../Style/App.less';
 
 .ItemListPanel {
-  &,
-  & > .panel-collapse {
-    & > .DataGrid {
-      margin: -1px;
+  // we need set the top/bottom border for a table since it isn't rendered when
+  // inside a panel
+  .table {
+    border: 0 solid #ddd;
+    border-width: 1px 0;
+  }
+
+  // remove the bottom margin and remove the border
+  // renable the border when focused though
+  .Search {
+    margin: 0;
+
+    & > input {
+      border-radius: 0;
+      border-width: 0;
+
+      &:focus {
+        border-width: 1px;
+      }
+    }
+  }
+
+  // add a bottom margin and shift the drop down to the left slightly
+  .Pager {
+    margin-bottom: 5px;
+
+    & > .Pager-limit {
+      padding-right: 5px;
     }
   }
 }

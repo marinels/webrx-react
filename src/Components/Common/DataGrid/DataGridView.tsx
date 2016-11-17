@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
 import { Icon } from 'react-fa';
-import { Table, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Table, TableProps, ListGroup, ListGroupItem } from 'react-bootstrap';
 
 import { BaseView, BaseViewProps, ViewModelProps } from '../../React/BaseView';
 import { SearchView } from '../Search/SearchView';
@@ -48,7 +48,7 @@ export class DataGridListViewTemplate<T> implements DataGridViewTemplate<T> {
 
   render(viewModel: DataGridViewModel<T>, view: DataGridView) {
     return (
-      <ListGroup className='DataGrid-listView' fill={ view.props.fill }>
+      <ListGroup className='DataGrid-listView'>
         {
           (viewModel.projectedItems() || [])
             .asEnumerable()
@@ -62,7 +62,7 @@ export class DataGridListViewTemplate<T> implements DataGridViewTemplate<T> {
               )
             )
             .defaultIfEmpty(
-              <div key='empty' className='DataGrid-empty text-muted'>List is Empty...</div>
+              <ListGroupItem key='rows-empty' className='DataGrid-empty text-muted'>List is Empty...</ListGroupItem>
             )
             .toArray()
         }
@@ -84,13 +84,13 @@ export class DataGridListViewTemplate<T> implements DataGridViewTemplate<T> {
 export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
   public static displayName = 'DataGridTableViewTemplate';
 
-  private tableProps: any;
+  private tableProps: TableProps;
 
   constructor(
     protected renderItem: (item: T, column: DataGridColumnProps, index: number, viewModel: DataGridViewModel<T>, view: DataGridView) => any = x => x,
     protected rowKeySelector: (item: T, index: number, viewModel: DataGridViewModel<T>, view: DataGridView) => any = (r, i) => i,
-    bordered = true, hover = true, striped = false, condensed = true, responsive = true) {
-
+    bordered = true, hover = true, striped = false, condensed = true, responsive = true
+  ) {
     this.tableProps = { bordered, hover, striped, condensed, responsive };
   }
 
@@ -141,8 +141,13 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
   render(viewModel: DataGridViewModel<T>, view: DataGridView) {
     const columns = this.createColumns(viewModel, view);
 
+    // const bordered = view.isOnlyView() === true ? false : this.tableProps.bordered;
+    const props = Object.assign({}, this.tableProps, {
+      bordered: view.isOnlyView() === true ? false : this.tableProps.bordered,
+    });
+
     return (
-      <Table className='DataGrid-tableView' fill={ view.props.fill } { ...this.tableProps }>
+      <Table className='DataGrid-tableView' { ...props }>
         <thead>{ this.renderColumns(columns, viewModel, view) }</thead>
         <tbody>{ this.renderRows(columns, viewModel, view) }</tbody>
       </Table>
@@ -158,7 +163,7 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
             .map((x, i) => this.renderColumnHeader(x, i, viewModel, view))
             .defaultIfEmpty(
               <th key='empty'>
-                <div className='DataGrid-empty text-muted'>No Columns Defined...</div>
+                <div key='columns-empty' className='DataGrid-empty text-muted'>No Columns Defined...</div>
               </th>
             )
             .toArray()
@@ -220,7 +225,7 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
       .asEnumerable()
       .map((x, i) => this.renderRow(x, i, columns, viewModel, view))
       .defaultIfEmpty(
-        <tr key='empty'>
+        <tr key='rows-empty'>
           <td colSpan={ (columns || []).length + 1 }>
             <div className='DataGrid-empty text-muted'>List is Empty...</div>
           </td>
@@ -274,15 +279,37 @@ export interface DataGridProps extends DataGridViewProps, BaseViewProps {
   children?: DataGridColumn[];
 }
 
+class DataGridSearch extends BaseView<DataGridViewProps, DataGridViewModel<any>> {
+  render() {
+    return this.renderConditional(this.props.search === true && this.state.canFilter() === true, () => (
+      <SearchView viewModel={ this.state.search }
+        className={ classNames('DataGrid', { Table: this.props.view instanceof DataGridTableViewTemplate }) }
+      />
+    ));
+  }
+}
+
+class DataGridPager extends BaseView<DataGridViewProps, DataGridViewModel<any>> {
+  render() {
+    return this.renderConditional(this.props.pager === true, () => (
+      <PagerView className='DataGrid' viewModel={ this.state.pager } limits={ this.props.pagerLimits } info />
+    ));
+  }
+}
+
 export class DataGridView extends BaseView<DataGridProps, DataGridViewModel<any>> {
   public static displayName = 'DataGridView';
 
+  public static Search = DataGridSearch;
+  public static Pager = DataGridPager;
+
   static defaultProps = {
     view: new DataGridTableViewTemplate<any>(),
-    search: false,
-    pager: false,
-    highlightSelected: false,
   };
+
+  public isOnlyView() {
+    return this.props != null && this.props.search !== true && this.props.pager !== true;
+  }
 
   updateOn() {
     const watches = [
@@ -302,24 +329,19 @@ export class DataGridView extends BaseView<DataGridProps, DataGridViewModel<any>
       return { fill, view, search, pager, pagerLimits, highlightSelected };
     });
 
-    return (
-      <div { ...rest } className={ classNames('DataGrid', className) }>
-        { this.renderSearch() }
-        { props.view.render(this.state, this) }
-        { this.renderPager() }
-      </div>
+    return this.renderConditional(
+      this.isOnlyView() === true,
+      () => React.cloneElement(
+        this.props.view.render(this.state, this),
+        Object.assign({ className: classNames('DataGrid', className) }, rest),
+      ),
+      () => (
+        <div { ...rest } className={ classNames('DataGrid', className) }>
+          <DataGridView.Search { ...props } viewModel={ this.state } />
+          { this.props.view.render(this.state, this) }
+          <DataGridView.Pager { ...props } viewModel={ this.state } />
+        </div>
+      ),
     );
-  }
-
-  private renderSearch() {
-    return this.renderConditional(this.props.search === true && this.state.canFilter() === true, () => (
-      <SearchView viewModel={ this.state.search } />
-    ));
-  }
-
-  private renderPager() {
-    return this.renderConditional(this.props.pager === true, () => (
-      <PagerView viewModel={ this.state.pager } limits={ this.props.pagerLimits } info  />
-    ));
   }
 }

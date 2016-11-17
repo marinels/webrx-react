@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as classNames from 'classnames';
 
 import { BaseView } from '../../React/BaseView';
-import { DataGridView, DataGridViewProps, DataGridColumn } from '../DataGrid/DataGridView';
+import { DataGridView, DataGridViewProps, DataGridColumn, DataGridTableViewTemplate } from '../DataGrid/DataGridView';
 import { CommonPanel, CommonPanelProps } from '../CommonPanel/CommonPanel';
 import { ItemListPanelViewModel } from './ItemListPanelViewModel';
 
@@ -31,11 +31,15 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
       return { fill, view, search, pager, pagerLimits, highlightSelected };
     });
 
+    const viewType = props.view instanceof DataGridTableViewTemplate ? 'Table' : 'List';
+
     return (
-      <CommonPanel { ...rest } className={ classNames('ItemListPanel', className) }>
-        <DataGridView { ...props } viewModel={ this.state.grid }>
+      <CommonPanel { ...rest } className={ classNames('ItemListPanel', viewType, className) }>
+        <DataGridView.Search { ...props } viewModel={ this.state.grid } />
+        <DataGridView { ...props } viewModel={ this.state.grid } search={ false } pager={ false }>
           { children }
         </DataGridView>
+        <DataGridView.Pager { ...props } viewModel={ this.state.grid } />
       </CommonPanel>
     );
   }
