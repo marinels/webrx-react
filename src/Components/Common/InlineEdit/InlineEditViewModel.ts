@@ -57,9 +57,12 @@ export class InlineEditViewModel<T> extends BaseViewModel {
         return Observable.of(null);
       });
 
-    this.isEditing = wx
-      .whenAny(this.editValue, x => x)
-      .map(x => x != null)
+    this.isEditing = Observable
+      .merge(
+        this.edit.results.map(x => true),
+        this.save.results.map(x => false),
+        this.cancel.results.map(x => false),
+      )
       .toProperty();
   }
 }
