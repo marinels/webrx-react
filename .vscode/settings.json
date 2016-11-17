@@ -2,6 +2,7 @@
 {
   "editor.tabSize": 2,
   "editor.insertSpaces": true,
+  "files.eol": "\n",
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
   "stylelint.enable": true,
