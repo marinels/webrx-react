@@ -497,8 +497,8 @@ gulp.task('watch:webpack', [ 'clean:build', 'index:watch' ], (done) => {
   webpackConfig.profile = config.profile;
 
   webpackConfig.module.loaders = [
-    { test: /\.css$/, loader: 'style!css' },
-    { test: /\.less$/, loader: 'style!css!less' },
+    { test: /\.css$/, loader: 'style!css?sourceMap' },
+    { test: /\.less$/, loader: 'style!css?sourceMap!less?sourceMap' },
     { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url?mimetype=application/font-woff' },
     { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url' },
     { test: /\.tsx?$/, loaders: [ 'react-hot', 'ts' ] },
