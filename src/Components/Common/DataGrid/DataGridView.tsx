@@ -89,6 +89,7 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
   constructor(
     protected renderItem: (item: T, column: DataGridColumnProps, index: number, viewModel: DataGridViewModel<T>, view: DataGridView) => any = x => x,
     protected rowKeySelector: (item: T, index: number, viewModel: DataGridViewModel<T>, view: DataGridView) => any = (r, i) => i,
+    protected enableAutomaticColumns = true,
     bordered = true, hover = true, striped = false, condensed = true, responsive = true
   ) {
     this.tableProps = { bordered, hover, striped, condensed, responsive };
@@ -97,7 +98,7 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
   protected getColumnDefinitions(viewModel: DataGridViewModel<T>, view: DataGridView) {
     let children = view.props.children;
 
-    if (React.Children.count(children) === 0) {
+    if (this.enableAutomaticColumns === true && React.Children.count(children) === 0) {
       const items = (viewModel.items() || []);
 
       if (items.length > 0 && items[0] != null) {
