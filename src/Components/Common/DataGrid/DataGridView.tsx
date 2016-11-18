@@ -120,7 +120,9 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
 
     if (React.Children.count(columnDefinitions) > 0) {
       columns = React.Children
-        .map(columnDefinitions, (x: React.ReactElement<DataGridColumnProps>) => {
+        .map(columnDefinitions, x => x)
+        .filter(x => x != null)
+        .map((x: React.ReactElement<DataGridColumnProps>) => {
           const column = Object.assign<DataGridColumnProps>({}, x.props);
 
           if (column.header == null) {
