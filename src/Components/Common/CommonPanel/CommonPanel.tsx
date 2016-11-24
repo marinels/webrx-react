@@ -82,7 +82,7 @@ export class CommonPanel extends React.Component<CommonPanelProps, any> {
   }
 
   private renderHeaderFooter(content: Content, actions: CommandButtonProps[], section: ContentSection) {
-    return renderConditional(content != null, () => (
+    return renderConditional(content != null || (actions != null && actions.length > 0), () => (
       <div className={ `CommonPanel-${ section }` }>
         { this.renderContent(content, section) }
         { this.renderActions(actions, section) }
