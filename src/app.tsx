@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { render } from 'react-dom';
 
 // import all custom styles
 import './Style/App.less';
@@ -14,7 +14,7 @@ import { AppViewModel, AppView } from './Components';
 const container = document.getElementById('app');
 
 if (container) {
-  ReactDOM.render(
+  render(
     <AppView viewModel={ new AppViewModel() } copyright='WebRx-React' />,
     container
   );
