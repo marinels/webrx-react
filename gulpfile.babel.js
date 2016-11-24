@@ -4,7 +4,7 @@
 
 import File from 'vinyl';
 import WebpackDevServer from 'webpack-dev-server';
-import clean from 'gulp-rimraf';
+import del from 'del';
 import clone from 'clone';
 import eslint from 'gulp-eslint';
 // eslint-disable-next-line id-length
@@ -15,6 +15,7 @@ import minimist from 'minimist';
 import mocha from 'gulp-mocha';
 import open from 'gulp-open';
 import path from 'path';
+import plumber from 'gulp-plumber';
 import replace from 'gulp-replace';
 import runSequence from 'run-sequence';
 import stylelint from 'gulp-stylelint';
@@ -27,17 +28,57 @@ import webpackStream from 'webpack-stream';
 import webpackConfigTemplate from './webpack.config';
 import webpackConfigTestTemplate from './test/webpack.config';
 
-const args = minimist(process.argv);
+const options = {
+  string: [
+    'buildPath',
+    'distPath',
+    'reporter',
+    'host',
+    'port',
+    'publicPath',
+  ],
+  boolean: [
+    'profile',
+    'verbose',
+    'quiet',
+    'force',
+  ],
+  alias: {
+    buildPath: [ 'b', 'build', 'buildpath' ],
+    distPath: [ 'd', 'dist', 'distpath' ],
+    reporter: [ 'r' ],
+    host: [ 'h' ],
+    port: [ 'p' ],
+    publicPath: [ 'P', 'pp' ],
+    verbose: [ 'v' ],
+    quiet: [ 'q' ],
+  },
+  default: {
+    buildPath: path.resolve(__dirname, 'build'),
+    distPath: path.resolve(__dirname, 'dist'),
+    reporter: 'spec',
+    host: '0.0.0.0',
+    port: 3000,
+    publicPath: '/',
+    profile: false,
+    verbose: false,
+    quiet: false,
+    force: false,
+  },
+};
+
+const args = minimist(process.argv, options);
 
 const webpackAnalyzeUri = 'http://webpack.github.io/analyse/';
 
 const config = {
-  verbose: args.verbose || false,
-  quiet: args.quiet || false,
-  host: args.host || '0.0.0.0',
-  port: args.port || 3000,
-  publicPath: args.publicPath || '/',
-  profile: args.profile || false,
+  verbose: args.verbose,
+  quiet: args.quiet,
+  host: args.host,
+  port: args.port,
+  reporter: args.reporter,
+  publicPath: args.publicPath,
+  profile: args.profile,
   builds: {
     debug: 'debug',
     release: 'release',
@@ -49,14 +90,11 @@ const config = {
     stats: 'stats.json',
     index: 'index.html',
   },
-  dirs: {
-    src: path.resolve('src'),
-    test: path.resolve('test'),
-    build: path.resolve('build'),
-    dist: args.dist || path.resolve('dist'),
-  },
-  test: {
-    reporter: args.reporter || 'spec',
+  paths: {
+    src: path.resolve(__dirname, 'src'),
+    test: path.resolve(__dirname, 'test'),
+    build: args.buildPath,
+    dist: args.distPath,
   },
 };
 
@@ -94,9 +132,9 @@ Command Line Overrides:
   ${ util.colors.cyan('--verbose') }          : print webpack module details and stats after bundling (${ util.colors.magenta(config.verbose) })
   ${ util.colors.cyan('--quiet') }            : do not print any extra build details (${ util.colors.magenta(config.quiet) })
   ${ util.colors.cyan('--profile') }          : provides webpack build profiling in ${ util.colors.magenta(config.files.stats) } (${ util.colors.magenta(config.profile) })
-  ${ util.colors.cyan('--lib') }       ${ util.colors.yellow('<path>') } : override lib directory (${ util.colors.magenta(config.dirs.lib) })
-  ${ util.colors.cyan('--dist') }      ${ util.colors.yellow('<path>') } : override dist directory (${ util.colors.magenta(config.dirs.dist) })
-  ${ util.colors.cyan('--reporter') }  ${ util.colors.yellow('<name>') } : mocha test reporter (${ util.colors.magenta(config.test.reporter) })
+  ${ util.colors.cyan('--build') }       ${ util.colors.yellow('<path>') } : override build directory (${ util.colors.magenta(config.paths.build) })
+  ${ util.colors.cyan('--dist') }      ${ util.colors.yellow('<path>') } : override dist directory (${ util.colors.magenta(config.paths.dist) })
+  ${ util.colors.cyan('--reporter') }  ${ util.colors.yellow('<name>') } : mocha test reporter (${ util.colors.magenta(config.reporter) })
              options : ${ [ 'spec', 'list', 'progress', 'dot', 'min' ].map((x) => util.colors.magenta(x)).join(', ') }
 
 Run ${ util.colors.cyan('gulp --tasks') } to see complete task hierarchy
@@ -107,8 +145,8 @@ Tasks:
   ${ util.colors.cyan('gulp help') } will print this help text
   ${ util.colors.cyan('gulp config') } will print the gulp build configuration
 
-  ${ util.colors.cyan('gulp clean') } will delete all files in ${ util.colors.magenta(config.dirs.build) }, ${ util.colors.magenta(config.dirs.dist) }
-       ${ [ 'build', 'dist', 'all' ].map((x) => util.colors.cyan(`clean:${ x }`)).join(', ') }
+  ${ util.colors.cyan('gulp clean') } will delete all files in ${ util.colors.magenta(config.paths.build) }, ${ util.colors.magenta(config.paths.dist) }
+       ${ [ 'gulp', 'build', 'dist', 'all' ].map((x) => util.colors.cyan(`clean:${ x }`)).join(', ') }
 
   ${ util.colors.cyan('gulp lint') } will lint the source files with ${ util.colors.yellow('eslint') }, ${ util.colors.yellow('tslint') }, and ${ util.colors.yellow('stylelint') }
        ${ [ 'es', 'ts', 'style', 'all' ].map((x) => util.colors.cyan(`lint:${ x }`)).join(', ') }
@@ -131,39 +169,38 @@ Tasks:
        ${ [ 'debug', 'release', 'watch' ].map((x) => util.colors.cyan(`browser:${ x }`)).join(', ') }
   ${ util.colors.cyan('gulp browser:stats') } will open a browser window to ${ util.colors.underline.blue(webpackAnalyzeUri) }
 
-  ${ util.colors.cyan('gulp dist') } will deploy release bundles to ${ util.colors.magenta(config.dirs.dist) }
+  ${ util.colors.cyan('gulp dist') } will deploy release bundles to ${ util.colors.magenta(config.paths.dist) }
 
-  ${ util.colors.cyan('gulp deploy') } will bundle and deploy release bundles to ${ util.colors.magenta(config.dirs.dist) }
+  ${ util.colors.cyan('gulp deploy') } will bundle and deploy release bundles to ${ util.colors.magenta(config.paths.dist) }
 `);
   /* eslint-enable max-len */
 });
 
 gulp.task('clean', [ 'clean:all' ]);
-gulp.task('clean:all', [ 'clean:build', 'clean:dist' ]);
+gulp.task('clean:all', [ 'clean:gulp', 'clean:build', 'clean:dist' ]);
 
-gulp.task('clean:build', () => {
-  const target = config.dirs.build;
+gulp.task('clean:gulp', () => {
+  const target = path.resolve('gulpfile.js');
 
   log('Cleaning', util.colors.magenta(target));
 
-  return gulp
-    .src(target, { read: false })
-    .pipe(clean());
+  del.sync([ target ], { force: true });
+});
+
+gulp.task('clean:build', () => {
+  const target = config.paths.build;
+
+  log('Cleaning', util.colors.magenta(target));
+
+  del.sync([ target ], { force: true });
 });
 
 gulp.task('clean:dist', () => {
-  const target = config.dirs.dist;
-  let force = false;
+  const target = config.paths.dist;
 
   log('Cleaning', util.colors.magenta(target));
 
-  if (args.dist) {
-    force = true;
-  }
-
-  return gulp
-    .src(target, { read: false })
-    .pipe(clean({ force }));
+  del.sync([ target ], { force: true });
 });
 
 gulp.task('lint', [ 'lint:all' ]);
@@ -177,8 +214,8 @@ gulp.task('lint:es', () => {
 
   return gulp
     .src([
-      path.resolve(config.dirs.src, '**', '*.js'),
-      path.resolve(config.dirs.test, '**', '*.js'),
+      path.resolve(config.paths.src, '**', '*.js'),
+      path.resolve(config.paths.test, '**', '*.js'),
       path.resolve('*.js'),
     ])
     .pipe(eslint())
@@ -191,9 +228,9 @@ gulp.task('lint:ts', () => {
 
   return gulp
     .src([
-      path.resolve(config.dirs.src, '**', '*.ts'),
-      path.resolve(config.dirs.src, '**', '*.tsx'),
-      path.resolve(config.dirs.test, '**', '*.ts'),
+      path.resolve(config.paths.src, '**', '*.ts'),
+      path.resolve(config.paths.src, '**', '*.tsx'),
+      path.resolve(config.paths.test, '**', '*.ts'),
     ])
     .pipe(tslint({
       formatter: 'verbose',
@@ -210,7 +247,7 @@ gulp.task('lint:style:less', () => {
   log('Linting with Stylelint:Less...');
 
   return gulp
-    .src(path.resolve(config.dirs.src, '**', '*.less'))
+    .src(path.resolve(config.paths.src, '**', '*.less'))
     .pipe(stylelint({
       syntax: 'less',
       failAfterError: true,
@@ -224,7 +261,7 @@ gulp.task('lint:style:css', () => {
   log('Linting with Stylelint:CSS...');
 
   return gulp
-    .src(path.resolve(config.dirs.src, '**', '*.css'))
+    .src(path.resolve(config.paths.src, '**', '*.css'))
     .pipe(stylelint({
       failAfterError: true,
       reporters: [
@@ -285,7 +322,7 @@ function getWebpackConfig(build, uglify, dist) {
 }
 
 function printAssets(jsonStats, build) {
-  const outputPath = path.resolve(config.dirs.build, build);
+  const outputPath = path.resolve(config.paths.build, build);
   const assets = jsonStats.assetsByChunkName;
 
   for (const chunk in assets) {
@@ -339,7 +376,7 @@ function onWebpackComplete(build, err, stats, omitAssets) {
     }
 
     if (config.profile) {
-      const statsPath = path.resolve(config.dirs.build, build, config.files.stats);
+      const statsPath = path.resolve(config.paths.build, build, config.files.stats);
 
       log('Writing Webpack Profile Stats to', util.colors.magenta(statsPath));
 
@@ -353,7 +390,7 @@ function onWebpackComplete(build, err, stats, omitAssets) {
 }
 
 function webpackBuild(build, webpackConfig, callback) {
-  const target = path.resolve(config.dirs.build, build);
+  const target = path.resolve(config.paths.build, build);
 
   webpackConfig.output.path = target;
   webpackConfig.output.publicPath = config.publicPath;
@@ -369,15 +406,11 @@ function webpackBuild(build, webpackConfig, callback) {
     }
 
     onWebpackComplete(build, err, stats);
-  })
-  .on('error', () => {
-    // webpack-stream errors don't format very nicely
-    // errors must be handled in the callback or onWebpackComplete
   });
 }
 
 function webpackWatcherStream(webpackConfig, build) {
-  const target = path.resolve(config.dirs.build, build);
+  const target = path.resolve(config.paths.build, build);
 
   webpackConfig.output.path = target;
   webpackConfig.output.publicPath = config.publicPath;
@@ -467,13 +500,13 @@ gulp.task('mocha', (done) => {
 
 gulp.task('mocha:run', () => {
   const webpackConfig = getWebpackConfig(config.builds.test);
-  const target = path.resolve(config.dirs.build, config.builds.test, webpackConfig.output.filename);
+  const target = path.resolve(config.paths.build, config.builds.test, webpackConfig.output.filename);
 
   log('Testing with Mocha:', util.colors.magenta(target));
 
   return gulp
     .src(target)
-    .pipe(mocha({ reporter: args.reporter || (config.quiet ? 'dot' : config.test.reporter) }));
+    .pipe(mocha({ reporter: args.reporter || (config.quiet ? 'dot' : config.reporter) }));
 });
 
 gulp.task('watch', [ 'watch:webpack' ]);
@@ -483,7 +516,7 @@ gulp.task('watch:webpack', [ 'clean:build', 'index:watch' ], (done) => {
   const uri = `http://${ config.host === '0.0.0.0' ? 'localhost' : config.host }:${ config.port }`;
 
   webpackConfig.entry['webrx-react'].unshift(`webpack-dev-server/client?${ uri }`, 'webpack/hot/only-dev-server');
-  webpackConfig.output.path = path.resolve(config.dirs.build, config.builds.watch);
+  webpackConfig.output.path = path.resolve(config.paths.build, config.builds.watch);
   webpackConfig.output.publicPath = config.publicPath;
   // remove ExtractTextPlugin
   webpackConfig.plugins.pop();
@@ -536,7 +569,7 @@ gulp.task('watch:webpack', [ 'clean:build', 'index:watch' ], (done) => {
 
   new WebpackDevServer(compiler, {
     publicPath: webpackConfig.output.publicPath,
-    contentBase: path.resolve(config.dirs.build, config.builds.watch),
+    contentBase: path.resolve(config.paths.build, config.builds.watch),
     hot: true,
     historyApiFallback: true,
     quiet: true,
@@ -561,20 +594,18 @@ gulp.task('watch:mocha', [ 'clean:build' ], () => {
 
   const reporter = args.reporter || 'dot';
 
-  return webpackBuild(config.builds.test, webpackConfig)
-    .on('error', (err) => {
-      log(err.message);
-    })
+  return gulp
+    .src([])
+    .pipe(plumber())
+    .pipe(webpackBuild(config.builds.test, webpackConfig))
     .pipe(gulp.dest(webpackConfig.output.path))
     .pipe(through((file) => {
       log('Testing', file.path, '...');
 
       gulp
         .src(file.path, { read: false })
-        .pipe(mocha({ reporter }))
-        .on('error', (err) => {
-          log(err.message);
-        });
+        .pipe(plumber())
+        .pipe(mocha({ reporter }));
     }));
 });
 
@@ -583,19 +614,19 @@ gulp.task('watch:lint', () => {
 
   gulp
     .watch([
-      path.resolve(config.dirs.src, '**', '*.ts'),
-      path.resolve(config.dirs.src, '**', '*.tsx'),
-      path.resolve(config.dirs.test, '**', '*.ts'),
-      path.resolve(config.dirs.src, '**', '*.js'),
-      path.resolve(config.dirs.test, '**', '*.js'),
-      path.resolve(config.dirs.src, '**', '*.css'),
-      path.resolve(config.dirs.src, '**', '*.less'),
+      path.resolve(config.paths.src, '**', '*.ts'),
+      path.resolve(config.paths.src, '**', '*.tsx'),
+      path.resolve(config.paths.test, '**', '*.ts'),
+      path.resolve(config.paths.src, '**', '*.js'),
+      path.resolve(config.paths.test, '**', '*.js'),
+      path.resolve(config.paths.src, '**', '*.css'),
+      path.resolve(config.paths.src, '**', '*.less'),
       path.resolve('*.js'),
     ], [ 'lint' ]);
 });
 
 gulp.task('watch:dist', [ 'clean:build', 'clean:dist' ], () => {
-  const target = path.resolve(config.dirs.dist);
+  const target = path.resolve(config.paths.dist);
   const webpackConfig = getWebpackConfig(config.builds.release);
 
   log('Deploying', util.colors.yellow(config.builds.release), 'Build to', util.colors.magenta(target));
@@ -614,7 +645,7 @@ gulp.task('index', [ 'index:all' ]);
 gulp.task('index:all', [ 'index:debug', 'index:release', 'index:watch' ]);
 
 gulp.task('index:debug', [ 'clean:build' ], () => {
-  const target = path.resolve(config.dirs.build, config.builds.debug);
+  const target = path.resolve(config.paths.build, config.builds.debug);
 
   log('Transforming', util.colors.magenta(path.resolve(target, config.files.index)));
 
@@ -624,7 +655,7 @@ gulp.task('index:debug', [ 'clean:build' ], () => {
 });
 
 gulp.task('index:release', [ 'clean:build' ], () => {
-  const target = path.resolve(config.dirs.build, config.builds.release);
+  const target = path.resolve(config.paths.build, config.builds.release);
 
   log('Transforming', util.colors.magenta(path.resolve(target, config.files.index)));
 
@@ -634,7 +665,7 @@ gulp.task('index:release', [ 'clean:build' ], () => {
 });
 
 gulp.task('index:watch', [ 'clean:build' ], () => {
-  const target = path.resolve(config.dirs.build, config.builds.watch);
+  const target = path.resolve(config.paths.build, config.builds.watch);
 
   log('Transforming', util.colors.magenta(path.resolve(target, config.files.index)));
 
@@ -649,13 +680,13 @@ gulp.task('browser', [ 'browser:watch' ]);
 gulp.task('browser:debug', [ 'webpack:debug', 'index:debug' ], () => {
   gulp
     .src('')
-    .pipe(open({ uri: path.resolve(config.dirs.build, config.builds.debug, config.files.index) }));
+    .pipe(open({ uri: path.resolve(config.paths.build, config.builds.debug, config.files.index) }));
 });
 
 gulp.task('browser:release', [ 'webpack:release', 'index:release' ], () => {
   gulp
     .src('')
-    .pipe(open({ uri: path.resolve(config.dirs.build, config.builds.release, config.files.index) }));
+    .pipe(open({ uri: path.resolve(config.paths.build, config.builds.release, config.files.index) }));
 });
 
 gulp.task('browser:watch', [ 'watch:webpack', 'index:watch' ], () => {
@@ -671,12 +702,12 @@ gulp.task('browser:stats', () => {
 });
 
 gulp.task('dist', () => {
-  const target = path.resolve(config.dirs.dist);
+  const target = path.resolve(config.paths.dist);
 
   log('Deploying', util.colors.yellow(config.builds.release), 'Build to', util.colors.magenta(target));
 
   return gulp
-    .src(path.resolve(config.dirs.build, config.builds.release, '**', '*'))
+    .src(path.resolve(config.paths.build, config.builds.release, '**', '*'))
     .pipe(gulp.dest(target))
     .pipe(through((file) => {
       util.log('Deploying', util.colors.magenta(file.path));
