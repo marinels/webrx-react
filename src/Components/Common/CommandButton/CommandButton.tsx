@@ -44,8 +44,8 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
 
   render() {
     const { className, children, rest, props } = this.restProps(x => {
-      const { command, commandParameter } = x;
-      return { command, commandParameter };
+      const { onClick, command, commandParameter } = x;
+      return { onClick, command, commandParameter };
     });
 
     let canExecute = false;
@@ -53,10 +53,14 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
 
     if (props.command == null) {
       // if props.command is null, try to fall back onto href
-      canExecute = String.isNullOrEmpty(rest.href) === false;
+      canExecute = String.isNullOrEmpty(rest.href) === false || props.onClick != null;
       onClick = e => {
         e.stopPropagation();
         e.preventDefault();
+
+        if (props.onClick != null) {
+          props.onClick(e);
+        }
       };
     }
     else {
