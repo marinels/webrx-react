@@ -91,8 +91,10 @@ export abstract class BaseViewModel implements IDisposable {
 
     return Observable
       .defer(observableFactory)
-      .doOnError(err => {
+      .catch(err => {
         this.alertForError(err, header, style, timeout, errorFormatter);
+
+        return Observable.empty<T>();
       });
   }
 
