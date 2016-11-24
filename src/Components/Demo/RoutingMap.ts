@@ -158,7 +158,7 @@ routeMap.addRoute('React', 'CommonPanel', 'Common Panel', (state: any) => 'Commo
 routeMap.addRoute('React', 'CommonPanelList', 'Common Panel (List)', (state: any) => 'CommonPanelList');
 
 routeMap.addRoute('WebRx-React', 'TimeSpanInput', 'Time Span Input', (state: any) => new Components.TimeSpanInputViewModel(true, Components.TimeSpanUnitType.Seconds));
-routeMap.addRoute('WebRx-React', 'List', 'List', (state: any) => new Components.ListViewModel(wx.property(sampleListData), false, false));
+routeMap.addRoute('WebRx-React', 'List', 'List', (state: any) => new Components.ListViewModel(Observable.of(sampleListData), false, false));
 routeMap.addRoute('WebRx-React', 'Tree', 'Tree', (state: any) => new Components.ListViewModel(wx.property(sampleTreeData), true, false));
 routeMap.addRoute('WebRx-React', 'PanelList', 'Panel List', (state: any) => new Components.ListViewModel(wx.property(sampleListData), true, false));
 routeMap.addRoute('WebRx-React', 'DataGrid', 'Data Grid', (state: any) =>
@@ -166,7 +166,7 @@ routeMap.addRoute('WebRx-React', 'DataGrid', 'Data Grid', (state: any) =>
 );
 routeMap.addRoute('WebRx-React', 'DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: any) => Components.DataGridViewModel.create(...sampleListData));
 routeMap.addRoute('WebRx-React', 'DataGridList', 'DataGrid (List View)', (state: any) =>
-  new Components.DataGridViewModel(wx.property(sampleListData), (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0)
+  new Components.DataGridViewModel(Observable.of(sampleListData), (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0)
 );
 routeMap.addRoute('WebRx-React', 'AsyncDataGrid', 'DataGrid (Async)', (state: any) => {
   return new Components.AsyncDataGridViewModel(sampleDataSource, true, true);
@@ -186,7 +186,7 @@ routeMap.addRoute('WebRx-React', 'ItemListPanel', 'Item List Panel', (state: any
   new Components.ItemListPanelViewModel(wx.property(sampleListData), (x, r) => r.test(x.name))
 );
 routeMap.addRoute('WebRx-React', 'ListItemListPanel', 'Item List Panel (List)', (state: any) =>
-  new Components.ItemListPanelViewModel(wx.property(sampleListData), (x, r) => r.test(x.name))
+  new Components.ItemListPanelViewModel(Observable.of(sampleListData), (x, r) => r.test(x.name))
 );
 routeMap.addRoute('WebRx-React', 'AsyncItemListPanel', 'ItemListPanel (Async)', (state: any) => {
   const canGetResult = Observable.of(true).delay(1000);
