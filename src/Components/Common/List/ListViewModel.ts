@@ -23,7 +23,7 @@ export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<T
   protected toggleSelection: wx.ICommand<TData>;
 
   constructor(
-    items: ObservableItemList<TData> = wx.property<TData[]>(),
+    items: ObservableItemList<TData> = wx.property<TData[]>([]),
     public isMultiSelectEnabled = false,
     isRoutingEnabled?: boolean
   ) {
@@ -33,7 +33,7 @@ export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<T
       this.items = <wx.IObservableProperty<TData[]>>items;
     }
     else {
-      this.items = (<Observable<TData[]>>items).toProperty();
+      this.items = (<Observable<TData[]>>items).toProperty([]);
     }
 
     this.selectItem = wx.asyncCommand((x: TData) => Observable.of(x));
