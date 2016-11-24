@@ -2,7 +2,7 @@ import * as wx from 'webrx';
 import { Observable } from 'rx';
 
 import { ObjectComparer, SortDirection } from '../../../Utils/Compare';
-import { ListViewModel } from '../List/ListViewModel';
+import { ListViewModel, ObservableItemList } from '../List/ListViewModel';
 import { SearchViewModel, SearchRoutingState } from '../Search/SearchViewModel';
 import { PagerViewModel, PagerRoutingState } from '../Pager/PagerViewModel';
 
@@ -37,7 +37,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
   public refresh: wx.ICommand<any>;
 
   constructor(
-    public items: wx.IObservableProperty<TData[]> = wx.property<TData[]>([]),
+    items?: ObservableItemList<TData>,
     protected filterer?: (item: TData, regex: RegExp) => boolean,
     protected comparer = new ObjectComparer<TData>(),
     isMultiSelectEnabled?: boolean,

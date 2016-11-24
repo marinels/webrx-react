@@ -1,6 +1,7 @@
 import * as wx from 'webrx';
 
 import { BaseItemListPanelViewModel } from './BaseItemListPanelViewModel';
+import { ObservableItemList } from '../List/ListViewModel';
 import { DataGridViewModel } from '../DataGrid/DataGridViewModel';
 import { ObjectComparer } from '../../../Utils/Compare';
 
@@ -12,7 +13,7 @@ export class ItemListPanelViewModel<TData> extends BaseItemListPanelViewModel<TD
   }
 
   constructor(
-    items?: wx.IObservableProperty<TData[]>,
+    items?: ObservableItemList<TData>,
     filterer?: (item: TData, regex: RegExp) => boolean,
     comparer?: ObjectComparer<TData>,
     isLoading?: boolean | wx.IObservableProperty<boolean>,
@@ -24,5 +25,9 @@ export class ItemListPanelViewModel<TData> extends BaseItemListPanelViewModel<TD
       new DataGridViewModel<TData>(items, filterer, comparer, isMultiSelectEnabled, rateLimit, isRoutingEnabled),
       isLoading, isRoutingEnabled
     );
+  }
+
+  public get items() {
+    return this.grid.items;
   }
 }
