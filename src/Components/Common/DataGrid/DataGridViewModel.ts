@@ -101,19 +101,13 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
   }
 
   protected getProjectedItems() {
-    try {
-      return this.projectItems()
-        .catch(e => this.handleProjectionError(e));
-    }
-    catch (e) {
-      return this.handleProjectionError(e);
-    }
-  }
+    return Observable
+      .defer(() => this.projectItems())
+      .catch(e => {
+        this.alertForError(e, 'Error Projecting Data');
 
-  protected handleProjectionError(e: Error) {
-    this.alertForError(e, 'Error Projecting Data');
-
-    return Observable.empty<TData[]>();
+        return Observable.empty<TData[]>();
+      });
   }
 
   protected projectItems() {

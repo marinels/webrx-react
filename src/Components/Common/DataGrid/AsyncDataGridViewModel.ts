@@ -42,7 +42,8 @@ export class AsyncDataGridViewModel<TData, TResult extends AsyncDataResult<TData
     this.requestData = wx.asyncCommand(
       this.dataSource.canGetResult || Observable.of(true),
       (x: AsyncDataRequest) => {
-        return this.dataSource.getResultAsync(x)
+        return Observable
+          .defer(() => this.dataSource.getResultAsync(x))
           .catch(e => {
             this.alertForError(e, 'Async Data Result Error: getResultAsync');
 
@@ -72,7 +73,8 @@ export class AsyncDataGridViewModel<TData, TResult extends AsyncDataResult<TData
       .of(this.requestData)
       .filter(x => x.canExecute(null) === true)
       .flatMap(x => {
-        return x.executeAsync(this.getRequestParams())
+        return Observable
+          .defer(() => x.executeAsync(this.getRequestParams()))
           .catch(e => {
             this.alertForError(e, 'Async Data Request Error');
 
