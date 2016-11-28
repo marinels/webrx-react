@@ -84,6 +84,10 @@ const sampleTreeData = sampleListData
 
 const sampleDataSource = <Components.AsyncDataSource<SampleData, Components.AsyncDataResult<SampleData>>>{
     getResultAsync: (request) => {
+      if (request.filter === 'throw') {
+        throw new Error('Simulated Coding Error');
+      }
+
       return Observable
         .of(sampleListData)
         .doOnNext(x => {
