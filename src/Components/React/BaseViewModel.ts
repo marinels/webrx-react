@@ -105,11 +105,9 @@ export abstract class BaseViewModel implements IDisposable {
     timeout?: number,
     errorFormatter?: (e: TError) => string) {
 
-    return Observable
-      .defer(() => Observable.of(<TResult>resultFactory.call(this)))
-      .doOnError(err => {
-        this.alertForError(err, header, style, timeout, errorFormatter);
-      });
+    const observableFactory = () => Observable.of<TResult>(resultFactory.call(this));
+
+    return this.getObservableOrAlert(observableFactory, header, style, timeout, errorFormatter);
   }
 
   public notifyChanged(...args: any[]) {
