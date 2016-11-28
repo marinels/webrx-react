@@ -87,7 +87,8 @@ export abstract class BaseViewModel implements IDisposable {
     header: string,
     style?: string,
     timeout?: number,
-    errorFormatter?: (e: TError) => string) {
+    errorFormatter?: (e: TError) => string,
+  ) {
 
     return Observable
       .defer(observableFactory)
@@ -103,7 +104,8 @@ export abstract class BaseViewModel implements IDisposable {
     header?: string,
     style?: string,
     timeout?: number,
-    errorFormatter?: (e: TError) => string) {
+    errorFormatter?: (e: TError) => string,
+  ) {
 
     const observableFactory = () => Observable.of<TResult>(resultFactory.call(this));
 
