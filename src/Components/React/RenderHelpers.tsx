@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Grid } from 'react-bootstrap';
 import { Enumerable } from 'ix';
 import * as wx from 'webrx';
 
@@ -77,5 +78,18 @@ export function renderSizedLoadable(
   return this.renderLoadable(isLoading, {
     text,
     fontSize,
+  }, loadedComponent);
+}
+
+export function renderGridLoadable(
+  isLoading: wx.IObservableProperty<boolean> | boolean,
+  text: string,
+  fontSize: number | string,
+  loadedComponent?: any
+) {
+  return this.renderLoadable(isLoading, {
+    text,
+    fontSize,
+    componentClass: Grid,
   }, loadedComponent);
 }

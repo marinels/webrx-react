@@ -26,6 +26,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
   protected renderConditional = renderHelpers.renderConditional;
   protected renderLoadable = renderHelpers.renderLoadable;
   protected renderSizedLoadable = renderHelpers.renderSizedLoadable;
+  protected renderGridLoadable = renderHelpers.renderGridLoadable;
 
   protected logger = Logging.getLogger(this.getDisplayName());
 
