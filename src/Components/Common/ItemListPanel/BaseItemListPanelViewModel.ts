@@ -29,6 +29,14 @@ export abstract class BaseItemListPanelViewModel<TData, TGrid extends DataGridVi
       .distinctUntilChanged();
   }
 
+  public get selectedItem() {
+    return this.grid.selectedItem;
+  }
+
+  public get selectItem() {
+    return this.grid.selectItem;
+  }
+
   getSearch() {
     return this.grid.getSearch();
   }

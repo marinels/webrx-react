@@ -26,8 +26,4 @@ export class ItemListPanelViewModel<TData> extends BaseItemListPanelViewModel<TD
       isLoading, isRoutingEnabled
     );
   }
-
-  public get items() {
-    return this.grid.items;
-  }
 }
