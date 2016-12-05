@@ -7,6 +7,8 @@ import { Button, ButtonProps } from 'react-bootstrap';
 export interface CommandButtonProps extends ButtonProps {
   command?: wx.ICommand<any> | { (): wx.ICommand<any> };
   commandParameter?: any;
+  stopPropagation?: boolean;
+  preventDefault?: boolean;
 }
 
 export class CommandButton extends React.Component<CommandButtonProps, any> {
@@ -44,39 +46,60 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
 
   render() {
     const { className, children, rest, props } = this.restProps(x => {
-      const { onClick, command, commandParameter } = x;
-      return { onClick, command, commandParameter };
+      const { onClick, command, commandParameter, stopPropagation, preventDefault } = x;
+      return { onClick, command, commandParameter, stopPropagation, preventDefault };
     });
 
-    let canExecute = false;
-    let onClick: React.MouseEventHandler<Button> = null;
-
-    if (props.command == null) {
-      // if props.command is null, try to fall back onto href
-      canExecute = String.isNullOrEmpty(rest.href) === false || props.onClick != null;
-      onClick = e => {
-        e.stopPropagation();
-        e.preventDefault();
-
-        if (props.onClick != null) {
-          props.onClick(e);
-        }
-      };
-    }
-    else {
-      canExecute = this.getCommand().canExecute(this.getParam());
-      onClick = e => {
-        e.stopPropagation();
-        e.preventDefault();
-
-        this.getCommand().execute(this.getParam());
-      };
-    }
+    const canExecute = (props.command == null) ?
+      // no command was supplied so check both href and onClick to see if this button is enabled
+      String.isNullOrEmpty(rest.href) === false || props.onClick != null :
+      // use the command to see if this button is enabled
+      this.getCommand().canExecute(this.getParam());
 
     return (
-      <Button { ...rest } className={ classNames('CommandButton', className) } disabled={ canExecute !== true } onClick={ onClick }>
+      <Button { ...rest } className={ classNames('CommandButton', className) } disabled={ canExecute !== true } onClick={ e => this.handleClick(e) }>
         { children }
       </Button>
     );
+  }
+
+  private handleClick(e: React.MouseEvent<Button>) {
+    if (this.props.command == null) {
+      if (this.props.onClick != null) {
+        // onClick was supplied so we don't override default click handling unless explicitly defined
+        if (this.props.stopPropagation === true) {
+          e.stopPropagation();
+        }
+
+        if (this.props.preventDefault === true) {
+          e.preventDefault();
+        }
+
+        this.props.onClick(e);
+      }
+      else if (String.isNullOrEmpty(this.props.href) === false) {
+        // we stop propagation by default (this prevents things below the button from being activated)
+        if (this.props.stopPropagation !== false) {
+          e.stopPropagation();
+        }
+
+        // we don't disable default click behaviour (this allows href's to be managed with default behaviour)
+        if (this.props.preventDefault === true) {
+          e.preventDefault();
+        }
+      }
+    }
+    else {
+      // command was supplied so we disable default click handling unless explicitly disabled
+      if (this.props.stopPropagation !== false) {
+        e.stopPropagation();
+      }
+
+      if (this.props.preventDefault !== false) {
+        e.preventDefault();
+      }
+
+      this.getCommand().execute(this.getParam());
+    }
   }
 }
