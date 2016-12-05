@@ -24,9 +24,14 @@ export class ModalDialogViewModel extends BaseViewModel {
   }
 
   public hideOnExecute<T>(command: wx.ICommand<T>) {
-    this.subscribe(
-      command.results.invokeCommand(this.hide)
-    );
+    if (command != null) {
+      this.subscribe(
+        command.results.invokeCommand(this.hide)
+      );
+    }
+    else {
+      this.logger.warn('hideOnExecute called with null command');
+    }
 
     return command;
   }
