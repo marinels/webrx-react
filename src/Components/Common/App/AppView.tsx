@@ -31,6 +31,12 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
     guide: DEBUG,
   };
 
+  updateOn() {
+    return [
+      this.state.isLoading.changed,
+    ];
+  }
+
   render() {
     const { className, props, rest } = this.restProps(x => {
       const { viewMap, guide, brand, copyright } = x;
@@ -39,15 +45,25 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
 
     return (
       <div { ...rest } className={ classNames('App', className) }>
-        <BootstrapGuide visible={ props.guide } />
-        <div className='float-container'>
-          <Grid>
-            <AlertHostView viewModel={ this.state.alerts } />
-          </Grid>
-        </div>
-        <PageHeaderView viewModel={ this.state.header } brand={ props.brand } />
-        <RouteHandlerView viewModel={ this.state.routeHandler } viewMap={ props.viewMap } />
-        <PageFooterView viewModel={ this.state.footer } copyright={ props.copyright } />
+        {
+          this.renderConditional(this.state.isLoading, () => (
+            <div className='preload'>
+              <i className='fa fa-spinner fa-5x fa-pulse' aria-hidden='true'></i>
+            </div>
+          ), () => (
+            <div>
+              <BootstrapGuide visible={ props.guide } />
+              <div className='float-container'>
+                <Grid>
+                  <AlertHostView viewModel={ this.state.alerts } />
+                </Grid>
+              </div>
+              <PageHeaderView viewModel={ this.state.header } brand={ props.brand } />
+              <RouteHandlerView viewModel={ this.state.routeHandler } viewMap={ props.viewMap } />
+              <PageFooterView viewModel={ this.state.footer } copyright={ props.copyright } />
+            </div>
+          ))
+        }
       </div>
     );
   }
