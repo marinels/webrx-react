@@ -45,8 +45,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     updateProps.push(this.state.stateChanged.results);
 
     this.updateSubscription = Observable
-      .fromArray(updateProps)
-      .selectMany(x => x)
+      .merge(updateProps)
       .debounce(this.getRateLimit())
       .subscribe(x => {
         this.renderView();
