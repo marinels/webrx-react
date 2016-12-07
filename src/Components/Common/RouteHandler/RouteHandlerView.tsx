@@ -42,6 +42,7 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
 
   updateOn() {
     return [
+      this.state.isLoading.changed,
       this.state.currentViewModel.changed,
     ];
   }
@@ -78,6 +79,8 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
     if (activator instanceof Function) {
       view = activator(viewModel);
     }
+
+    this.logger.debug(`Rendering routed view for '${ Object.getName(viewModel) }' (${ key })`);
 
     return view || 'Catastrophic Failure';
   }
