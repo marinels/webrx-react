@@ -15,7 +15,7 @@ export class RouteManager {
   public static displayName = 'RouteManager';
 
   private logger = Logging.getLogger(RouteManager.displayName);
-  public currentRoute: wx.IObservableProperty<Route>;
+  public currentRoute: wx.IObservableReadOnlyProperty<Route>;
 
   constructor(hashChanged?: Observable<string>, public hashCodec = new HashCodec()) {
     if (hashChanged == null) {

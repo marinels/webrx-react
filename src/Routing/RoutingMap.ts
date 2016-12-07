@@ -6,7 +6,7 @@ export interface ViewModelActivator {
 }
 
 export interface RouteMapper {
-  [path: string]: ViewModelActivator;
+  [ path: string ]: ViewModelActivator;
 }
 
 export const RouteMap = <RouteMapper>{
