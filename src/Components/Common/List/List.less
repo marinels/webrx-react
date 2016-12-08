@@ -14,56 +14,43 @@
     padding: 0;
   }
 
-  // fix focus border issue
-  & > .list-group-item:focus {
-    margin: 0;
-  }
-
-  // the main three sections of a list item are full height table cells, vertically centered
+  // the main three sections of a list item (and two tree node sections) are
+  // full height table cells, vertically centered
   .List-itemSelection,
   .List-itemContent,
-  .List-itemActions {
+  .List-itemActions,
+  .TreeNode-indent,
+  .TreeNode-expander {
     display: table-cell;
     vertical-align: middle;
     height: 100%;
+  }
+
+  .List-itemSelection,
+  .TreeNode-expander,
+  .List-itemContent {
+    & > .btn {
+      // remove the padding and border of the selection and expander buttons
+      padding: 0;
+      border: 0;
+    }
   }
 
   .List-itemContent {
     // this is our stretch block, consumes all of the available horizontal space
     width: 100%;
-    // some default padding around the rendered content (override this to remove it)
-    padding: 5px;
-  }
 
-  .TreeNode-content {
-    display: table;
-  }
-
-  .TreeNode-indent,
-  .TreeNode-expander,
-  .TreeNode-template {
-    // all tree node elements are full height table cells, vertically centered
-    display: table-cell;
-    vertical-align: middle;
-    height: 100%;
+    // this is the first block inside itemContent, it can be a div or a button
+    & > .List-itemTemplate {
+      // some default padding around the rendered content (override this to remove it)
+      padding: 5px;
+    }
   }
 
   .TreeNode-expander {
     // we need to set this width because the expander needs to consume
     // the horizontal space whether the icon is visible or not
     width: 16px;
-    text-align: center;
-
-    & > .btn {
-      // clear padding and border (tighter fit)
-      padding: 0;
-      border: 0;
-    }
-  }
-
-  .TreeNode-template {
-    // 10px between the tree node rendered template and the expander button
-    padding-left: 10px;
   }
 
   .List-empty {
