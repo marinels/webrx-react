@@ -38,7 +38,6 @@ export class DataGridColumn extends React.Component<DataGridColumnProps, any> {
   public static displayName = 'DataGridColumn';
 
   static defaultProps = {
-    sortable: false,
   };
 }
 
