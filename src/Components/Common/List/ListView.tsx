@@ -12,6 +12,8 @@ import { ListViewModel } from './ListViewModel';
 import { bindEventToCommand } from '../../React/BindingHelpers';
 import { renderConditional } from '../../React/RenderHelpers';
 
+export * from './NavButton';
+
 import './List.less';
 
 export interface ListViewRenderTemplate<TData> {
