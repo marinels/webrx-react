@@ -11,6 +11,7 @@ import { bindEventToCommand } from '../../React/BindingHelpers';
 import { renderConditional } from '../../React/RenderHelpers';
 import { DataGridViewModel } from './DataGridViewModel';
 import { SortDirection } from '../../../Utils/Compare';
+import { NavButton, NavButtonProps } from '../List/NavButton';
 
 import './DataGrid.less';
 
@@ -38,6 +39,33 @@ export class DataGridColumn extends React.Component<DataGridColumnProps, any> {
 
   static defaultProps = {
     sortable: false,
+  };
+}
+
+interface NavDataGridColumnProps extends NavButtonProps {
+  header?: string;
+  width?: number | string;
+  renderCell?: ColumnRenderFunction;
+}
+
+export class NavDataGridColumn extends React.Component<NavDataGridColumnProps, any> {
+  public static displayName = 'NavDataGridColumn';
+
+  static defaultProps = {
+    fieldName: 'nav',
+    header: '',
+    className: 'navColumn',
+    width: 1,
+    renderCell: (x: any, i: number, c: NavDataGridColumnProps) => {
+      const { rest } = Object.rest(c as any, d => {
+        const { fieldName, header, className, width, renderCell } = d;
+        return { fieldName, header, className, width, renderCell };
+      });
+
+      return (
+        <NavButton { ...rest } />
+      );
+    },
   };
 }
 
