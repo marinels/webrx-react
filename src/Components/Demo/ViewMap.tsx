@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as wx from 'webrx';
-import { Icon } from 'react-fa';
 import { Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab, Well, ListGroup, ListGroupItem, Table } from 'react-bootstrap';
 
 import { Logging, Alert } from '../../Utils';
@@ -75,7 +74,7 @@ const listTemplate = new ListViewTemplate<SampleData>(
   },
   (x, i, vm, v) => {
     return [
-      <NavButton href='#' />,
+      <NavButton key='nav' href='#' />,
     ];
   },
 );
@@ -87,7 +86,7 @@ const treeTemplate = new TreeViewTemplate<SampleTreeData>(
   },
   (x, i, vm, v) => {
     return [
-      <NavButton href='#' />,
+      <NavButton key='nav' href='#' />,
     ];
   },
   (x, i, vm, v) => true,
@@ -202,7 +201,7 @@ const viewMap: ViewActivatorMap = {
       columns = [
         <DataGridColumn key='name' fieldName='name' header='Name' sortable />,
         <DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 } />,
-        <NavDataGridColumn href='#' />,
+        <NavDataGridColumn key='nav' href='#' />,
       ];
     }
 
