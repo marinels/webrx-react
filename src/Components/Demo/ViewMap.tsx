@@ -5,7 +5,20 @@ import { Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab,
 
 import { Logging, Alert } from '../../Utils';
 import { renderSizedLoadable, bindEventToCommand } from '../React';
-import * as Components from '../Common';
+import { SampleData, SampleTreeData } from './RoutingMap';
+
+import {
+  TimeSpanInputViewModel,
+  ListViewModel,
+  DataGridViewModel,
+  DataGridViewTemplate,
+  AsyncDataGridViewModel,
+  ModalDialogViewModel,
+  TabsViewModel,
+  ItemListPanelViewModel,
+  AsyncItemListPanelViewModel,
+  InlineEditViewModel,
+} from '../Common';
 
 import {
   CommandButton,
@@ -16,10 +29,12 @@ import {
   ContextMenu,
   ProfilePicture,
   ListView,
+  NavButton,
   ListViewTemplate,
   TreeViewTemplate,
   DataGridView,
   DataGridColumn,
+  NavDataGridColumn,
   DataGridListViewTemplate,
   ModalDialogView,
   TabRenderTemplate,
@@ -41,16 +56,41 @@ export interface ViewActivatorMap {
 
 const logger = Logging.getLogger('Demo.ViewMap');
 
-const listTemplate = new ListViewTemplate<any>((x, i, vm, v) => {
-  return `${ x.name } (Required By ${ x.requiredBy })`;
-});
+const sampleDataTemplate = (x: SampleData) => {
+  return (
+    <div>
+      <div>
+        <span>Name: </span><span>{ x.name }</span>
+      </div>
+      <div>
+        <span>Required By: </span><span>{ x.requiredBy }</span>
+      </div>
+    </div>
+  );
+};
 
-const treeTemplate = new TreeViewTemplate<any>(
-  x => x.items,
-  x => {
-    return `${ x.name } (Required By ${ x.requiredBy })`;
+const listTemplate = new ListViewTemplate<SampleData>(
+  (x, i, vm, v) => {
+    return sampleDataTemplate(x);
   },
-  () => true
+  (x, i, vm, v) => {
+    return [
+      <NavButton href='#' />,
+    ];
+  },
+);
+
+const treeTemplate = new TreeViewTemplate<SampleTreeData>(
+  (x, vm, v) => x.items,
+  (x, i, vm, v) => {
+    return sampleDataTemplate(x);
+  },
+  (x, i, vm, v) => {
+    return [
+      <NavButton href='#' />,
+    ];
+  },
+  (x, i, vm, v) => true,
 );
 
 const viewMap: ViewActivatorMap = {
@@ -76,7 +116,7 @@ const viewMap: ViewActivatorMap = {
       <Button onClick={() => Alert.createForError(new Error(`Error Message: ${new Date()}`), 'Error Alert')}>Error Alert</Button>
     </div>
   ),
-  TimeSpanInputViewModel: (viewModel: Components.TimeSpanInputViewModel) => (
+  TimeSpanInputViewModel: (viewModel: TimeSpanInputViewModel) => (
     <div>
       <TimeSpanInputView viewModel={ viewModel } />
       <TimeSpanInputView viewModel={ viewModel } >
@@ -123,7 +163,7 @@ const viewMap: ViewActivatorMap = {
       </div>
     );
   },
-  ListViewModel: (viewModel: Components.ListViewModel<any, any>, componentRoute: string) => {
+  ListViewModel: (viewModel: ListViewModel<any, any>, componentRoute: string) => {
     switch (componentRoute) {
       case 'List':
         return (
@@ -143,8 +183,8 @@ const viewMap: ViewActivatorMap = {
         return null;
     }
   },
-  DataGridViewModel: (viewModel: Components.DataGridViewModel<any>, componentRoute: string) => {
-    let view: Components.DataGridViewTemplate<{name: string, requiredBy: string}> = undefined;
+  DataGridViewModel: (viewModel: DataGridViewModel<any>, componentRoute: string) => {
+    let view: DataGridViewTemplate<{name: string, requiredBy: string}> = undefined;
     let columns: any;
     let pager = true;
     let search = false;
@@ -162,11 +202,7 @@ const viewMap: ViewActivatorMap = {
       columns = [
         <DataGridColumn key='name' fieldName='name' header='Name' sortable />,
         <DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 } />,
-        <DataGridColumn key='nav' fieldName='nav' header='' width={ 1 } valueSelector={
-          () => (
-            <Button style={ ({ margin: -5 }) } bsStyle='link'><Icon name='chevron-right' size='lg' /></Button>
-          ) }
-        />,
+        <NavDataGridColumn href='#' />,
       ];
     }
 
@@ -176,13 +212,13 @@ const viewMap: ViewActivatorMap = {
       </DataGridView>
     );
   },
-  AsyncDataGridViewModel: (viewModel: Components.AsyncDataGridViewModel<any, any>) => (
+  AsyncDataGridViewModel: (viewModel: AsyncDataGridViewModel<any, any>) => (
     <DataGridView viewModel={ viewModel } pager pagerLimits={ [ 1, 5, 10, null ] }>
       <DataGridColumn key='name' fieldName='name' header='Name' sortable />
       <DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 } />
     </DataGridView>
   ),
-  ModalDialogViewModel: (data: { viewModel: Components.ModalDialogViewModel, accept: wx.ICommand<any>, reject: wx.ICommand<any> }) => (
+  ModalDialogViewModel: (data: { viewModel: ModalDialogViewModel, accept: wx.ICommand<any>, reject: wx.ICommand<any> }) => (
     <div>
       <Button onClick={ bindEventToCommand(this, data.viewModel, x => x.show) }>Show Confirmation Dialog</Button>
       <ModalDialogView viewModel={ data.viewModel } title='Demo Modal Confirmation Dialog' body='You can put custom content here'>
@@ -192,7 +228,7 @@ const viewMap: ViewActivatorMap = {
       </ModalDialogView>
     </div>
   ),
-  TabsViewModel: (viewModel: Components.TabsViewModel<any>, componentRoute: string) => {
+  TabsViewModel: (viewModel: TabsViewModel<any>, componentRoute: string) => {
     if (componentRoute === 'StaticTabs') {
       return (
         <TabsView viewModel={viewModel} id='demo-tabs'>
@@ -253,7 +289,7 @@ const viewMap: ViewActivatorMap = {
       </Table>
     </CommonPanel>
   ),
-  ItemListPanelViewModel: (viewModel: Components.ItemListPanelViewModel<any>, componentRoute: string) => {
+  ItemListPanelViewModel: (viewModel: ItemListPanelViewModel<any>, componentRoute: string) => {
     if (componentRoute === 'ItemListPanel') {
       return (
         <ItemListPanelView viewModel={viewModel} headerContent='Sample Grid Data' collapsible pager search
@@ -279,7 +315,7 @@ const viewMap: ViewActivatorMap = {
       );
     }
   },
-  AsyncItemListPanelViewModel: (viewModel: Components.AsyncItemListPanelViewModel<any, any>) => (
+  AsyncItemListPanelViewModel: (viewModel: AsyncItemListPanelViewModel<any, any>) => (
     <ItemListPanelView viewModel={viewModel} headerContent='Sample Data' collapsible
       headerActions={[ { id: 'footer', bsStyle: 'primary', command: viewModel.navigate, children: (<ViewAllFooterAction suffix='Things' />) } ]}
       footerContent={ (<CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
@@ -289,7 +325,7 @@ const viewMap: ViewActivatorMap = {
       <DataGridColumn fieldName='requiredBy' header='Required By' sortable className='col-md-4' />
     </ItemListPanelView>
   ),
-  InlineEditViewModel: (viewModel: Components.InlineEditViewModel<any>) => (
+  InlineEditViewModel: (viewModel: InlineEditViewModel<any>) => (
     <InlineEditView style={({ margin: 0 })} viewModel={viewModel} inputType='number'
       template={ x => `${ x.rank } of 10` } converter={ x => Number(x) } keyboard
       valueGetter={ x => x().rank } valueSetter={ (x, v) => x().rank = v }
