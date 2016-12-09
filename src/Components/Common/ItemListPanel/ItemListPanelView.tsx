@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
 
-import { BaseView } from '../../React/BaseView';
-import { DataGridView, DataGridViewProps, DataGridColumn, DataGridTableViewTemplate } from '../DataGrid/DataGridView';
+import { BaseView, ViewModelProps } from '../../React/BaseView';
+import { DataGridView, DataGridProps, DataGridColumn, DataGridTableViewTemplate } from '../DataGrid/DataGridView';
 import { CommonPanel, CommonPanelProps } from '../CommonPanel/CommonPanel';
 import { ItemListPanelViewModel } from './ItemListPanelViewModel';
 
@@ -11,7 +11,7 @@ import './ItemListPanel.less';
 export * from './CountFooterContent';
 export * from './ViewAllFooterAction';
 
-export interface ItemListPanelProps extends CommonPanelProps, DataGridViewProps {
+export interface ItemListPanelProps extends CommonPanelProps, DataGridProps, ViewModelProps {
   children?: DataGridColumn[];
 }
 
@@ -20,9 +20,6 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
 
   static defaultProps = {
     fill: true,
-    search: false,
-    pager: false,
-    highlightSelected: false,
   };
 
   render() {

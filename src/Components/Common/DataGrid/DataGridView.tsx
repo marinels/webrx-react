@@ -305,30 +305,16 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
   }
 }
 
-export interface DataGridViewProps extends ViewModelProps {
-  fill?: boolean;
-  view?: DataGridViewTemplate<any>;
-  search?: boolean | SearchView;
-  pager?: boolean | PagerView;
-  pagerLimits?: number[];
-  highlightSelected?: boolean;
-  children?: DataGridColumn[];
-}
-
-export interface DataGridProps extends DataGridViewProps, BaseViewProps {
-  children?: DataGridColumn[];
-}
-
-export interface DataGridSearchProps extends SearchProps {
+export interface DataGridComponentProps {
   grid: DataGridViewModel<any>;
   view: DataGridViewTemplate<any>;
+  fill?: boolean;
+}
+
+export interface DataGridSearchProps extends DataGridComponentProps, SearchProps {
 }
 
 export class DataGridSearch extends React.Component<DataGridSearchProps, any> {
-  static defaultProps = {
-    fill: true,
-  };
-
   render() {
     const { className, props, rest } = this.restProps(x => {
       const { grid, view } = x;
@@ -343,16 +329,10 @@ export class DataGridSearch extends React.Component<DataGridSearchProps, any> {
   }
 }
 
-export interface DataGridPagerProps extends PagerProps {
-  grid: DataGridViewModel<any>;
-  view: DataGridViewTemplate<any>;
+export interface DataGridPagerProps extends DataGridComponentProps, PagerProps {
 }
 
 export class DataGridPager extends React.Component<DataGridPagerProps, any> {
-  static defaultProps = {
-    fill: true,
-  };
-
   render() {
     const { className, props, rest } = this.restProps(x => {
       const { grid, view } = x;
@@ -367,7 +347,21 @@ export class DataGridPager extends React.Component<DataGridPagerProps, any> {
   }
 }
 
-export class DataGridView extends BaseView<DataGridProps, DataGridViewModel<any>> {
+export interface DataGridProps {
+  fill?: boolean;
+  view?: DataGridViewTemplate<any>;
+  search?: boolean | SearchView;
+  pager?: boolean | PagerView;
+  pagerLimits?: number[];
+  highlightSelected?: boolean;
+  children?: DataGridColumn[];
+}
+
+export interface DataGridViewProps extends DataGridProps, BaseViewProps {
+  children?: DataGridColumn[];
+}
+
+export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<any>> {
   public static displayName = 'DataGridView';
 
   public static Search = DataGridSearch;
