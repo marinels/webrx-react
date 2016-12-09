@@ -183,7 +183,7 @@ const viewMap: ViewActivatorMap = {
     }
   },
   DataGridViewModel: (viewModel: DataGridViewModel<any>, componentRoute: string) => {
-    let view: DataGridViewTemplate<{name: string, requiredBy: string}> = undefined;
+    let view: DataGridViewTemplate<SampleData> = undefined;
     let columns: any;
     let pager: any = true;
     let search = false;
@@ -191,7 +191,7 @@ const viewMap: ViewActivatorMap = {
     if (componentRoute === 'DataGridList') {
       pager = false;
       search = true;
-      view = new DataGridListViewTemplate<{name: string, requiredBy: string}>(
+      view = new DataGridListViewTemplate<SampleData>(
         x => `Name: ${x.name}, Required By: ${x.requiredBy}`
       );
     }
@@ -214,7 +214,7 @@ const viewMap: ViewActivatorMap = {
     }
 
     return (
-      <DataGridView key={ componentRoute } viewModel={ viewModel } view={view} pager={ pager } search={ search }>
+      <DataGridView key={ componentRoute } viewModel={ viewModel } view={ view } pager={ pager } search={ search }>
         { columns }
       </DataGridView>
     );
@@ -313,7 +313,7 @@ const viewMap: ViewActivatorMap = {
       return (
         <ItemListPanelView viewModel={ viewModel } headerContent='Sample List Data' collapsible pager search
           view={
-            new DataGridListViewTemplate<{ name: string, requiredBy: string }>(
+            new DataGridListViewTemplate<SampleData>(
               x => `Name: ${ x.name }, Required By: ${ x.requiredBy }`
             )
           }
