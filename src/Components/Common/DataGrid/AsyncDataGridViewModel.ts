@@ -34,10 +34,11 @@ export class AsyncDataGridViewModel<TData, TResult extends AsyncDataResult<TData
     protected enableFilter = false,
     protected enableSort = false,
     isMultiSelectEnabled?: boolean,
+    pagerLimit?: number,
     rateLimit?: number,
     isRoutingEnabled?: boolean
   ) {
-    super(undefined, undefined, undefined, isMultiSelectEnabled, rateLimit, isRoutingEnabled);
+    super(undefined, undefined, undefined, isMultiSelectEnabled, pagerLimit, rateLimit, isRoutingEnabled);
 
     this.requestData = wx.asyncCommand(
       this.dataSource.canGetResult || Observable.of(true),

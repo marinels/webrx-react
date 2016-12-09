@@ -41,13 +41,14 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
     protected filterer?: (item: TData, regex: RegExp) => boolean,
     protected comparer = new ObjectComparer<TData>(),
     isMultiSelectEnabled?: boolean,
+    pagerLimit?: number,
     rateLimit = 100,
     isRoutingEnabled?: boolean
   ) {
     super(items, isMultiSelectEnabled, isRoutingEnabled);
 
     this.search = new SearchViewModel(true, undefined, undefined, this.isRoutingEnabled);
-    this.pager = new PagerViewModel(undefined, this.isRoutingEnabled);
+    this.pager = new PagerViewModel(pagerLimit, this.isRoutingEnabled);
 
     this.sort = wx.asyncCommand((x: SortArgs) => Observable.of(x));
     this.toggleSortDirection = wx.asyncCommand((x: string) => Observable.of(x));
