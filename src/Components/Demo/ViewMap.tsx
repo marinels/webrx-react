@@ -185,7 +185,7 @@ const viewMap: ViewActivatorMap = {
   DataGridViewModel: (viewModel: DataGridViewModel<any>, componentRoute: string) => {
     let view: DataGridViewTemplate<{name: string, requiredBy: string}> = undefined;
     let columns: any;
-    let pager = true;
+    let pager: any = true;
     let search = false;
 
     if (componentRoute === 'DataGridList') {
@@ -194,6 +194,14 @@ const viewMap: ViewActivatorMap = {
       view = new DataGridListViewTemplate<{name: string, requiredBy: string}>(
         x => `Name: ${x.name}, Required By: ${x.requiredBy}`
       );
+    }
+
+    if (componentRoute === 'DataGridPager') {
+      view = new DataGridListViewTemplate<SampleData>(
+        x => `Name: ${x.name}, Required By: ${x.requiredBy}`
+      );
+
+      pager = <DataGridView.Pager grid={ viewModel } view={ view } order={ [ 'controls', 'info', 'limit' ] } />;
     }
 
     if (componentRoute === 'DataGrid') {

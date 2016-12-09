@@ -176,6 +176,9 @@ routeMap.addRoute('WebRx-React', 'DataGridAutoCol', 'Data Grid (Automatic Column
 routeMap.addRoute('WebRx-React', 'DataGridList', 'DataGrid (List View)', (state: any) =>
   new Components.DataGridViewModel(Observable.of(sampleListData), (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0, undefined, undefined, 0)
 );
+routeMap.addRoute('WebRx-React', 'DataGridPager', 'DataGrid (Custom Pager)', (state: any) =>
+  new Components.DataGridViewModel(Observable.of(sampleListData))
+);
 routeMap.addRoute('WebRx-React', 'AsyncDataGrid', 'DataGrid (Async)', (state: any) => {
   return new Components.AsyncDataGridViewModel(sampleDataSource, true, true);
 });
