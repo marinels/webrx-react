@@ -3,27 +3,30 @@
   width: 100%;
   table-layout: fixed;
 
-  .Pager-info,
-  .Pager-controls,
-  .Pager-limit {
+  .Pager-left,
+  .Pager-center,
+  .Pager-right {
     display: table-cell;
     vertical-align: middle;
   }
 
-  .Pager-info {
+  .Pager-left {
     text-align: left;
+  }
+
+  .Pager-center {
+    text-align: center;
+  }
+
+  .Pager-right {
+    text-align: right;
   }
 
   .Pager-controls {
     line-height: 0;
-    text-align: center;
 
     .pagination {
       margin: 0;
     }
-  }
-
-  .Pager-limit {
-    text-align: right;
   }
 }

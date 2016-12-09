@@ -20,6 +20,8 @@ export interface PagerViewProps extends PagerProps, ViewModelProps {
 export type PagerComponentTypes = 'info' | 'controls' | 'limit';
 export const StandardPagerComponentOrder: PagerComponentTypes[] = [ 'info', 'controls', 'limit' ];
 
+const ComponentLocations = [ 'left', 'center', 'right' ];
+
 export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
   public static displayName = 'PagerView';
 
@@ -65,9 +67,13 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     return (
       <div { ...pagerProps.rest } className={ classNames('Pager', className) }>
         {
-          this.renderConditional(this.shouldRenderPager(), () =>
-            (props.order || []).map(x => this.renderComponent(x))
-          )
+          this.renderConditional(this.shouldRenderPager(), () => {
+            const types = props.order || [];
+
+            return ComponentLocations
+              .map((location, i) => ({ location, type: types[i] }))
+              .map(x => this.renderComponent(x.location, x.type));
+          })
         }
       </div>
     );
@@ -93,9 +99,13 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     return (this.props.limits || []).length > 0 && (this.state.itemCount() || 0) > 0;
   }
 
-  private renderComponent(type: PagerComponentTypes) {
+  private renderComponent(location: string, type: PagerComponentTypes) {
+    const className = type == null ? null : `Pager-${ type }`;
+
     return (
-      <div key={ type } className={ `Pager-${ type }`}>{ this.renderFunctions[type].apply(this) }</div>
+      <div key={ location } className={ classNames(className, `Pager-${ location }`) }>
+        { this.renderConditional(type != null, () => this.renderFunctions[type].apply(this)) }
+      </div>
     );
   }
 
@@ -103,7 +113,7 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     return this.renderConditional(this.shouldRenderInfo(), () => (
       this.renderConditional((this.state.itemCount() || 0) === 0,
         this.props.emptyInfo,
-        `Showing Items ${ this.state.offset() + 1 } through ${ Math.min(this.state.itemCount(), this.state.offset() + this.state.limit()) } of ${ this.state.itemCount() }`
+        `Showing Items ${ this.state.offset() + 1 } through ${ Math.min(this.state.itemCount(), this.state.offset() + (this.state.limit() || 0)) } of ${ this.state.itemCount() }`
       )
     ), () => '');
   }
