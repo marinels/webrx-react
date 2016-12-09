@@ -377,22 +377,6 @@ export class DataGridView extends BaseView<DataGridProps, DataGridViewModel<any>
     view: new DataGridTableViewTemplate<any>(),
   };
 
-  constructor(props?: DataGridProps, context?: any) {
-    super(props, context);
-
-    // sanitize on construction to prevent the first projection
-    this.sanitizePagerLimit();
-  }
-
-  private sanitizePagerLimit() {
-    // make sure we reset the pager limit to null if no pager is being rendered
-    // otherwise we use the default pager limit which not page the results
-    // without any UI to adjust paging
-    if (this.props.pager == null || this.props.pager === false) {
-      this.state.pager.limit(null);
-    }
-  }
-
   public isOnlyView() {
     return (
       this.props != null &&
