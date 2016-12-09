@@ -3,7 +3,7 @@ import * as classNames from 'classnames';
 import { Icon } from 'react-fa';
 import { Table, TableProps, ListGroup, ListGroupItem } from 'react-bootstrap';
 
-import { BaseView, BaseViewProps, ViewModelProps } from '../../React/BaseView';
+import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { SearchView, SearchProps } from '../Search/SearchView';
 import { PagerView, PagerProps } from '../Pager/PagerView';
 import { CommandButton } from '../CommandButton/CommandButton';
