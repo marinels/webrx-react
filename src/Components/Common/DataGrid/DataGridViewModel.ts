@@ -31,6 +31,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
   public projectedItems: wx.IObservableReadOnlyProperty<TData[]>;
   public sortField: wx.IObservableReadOnlyProperty<string>;
   public sortDirection: wx.IObservableReadOnlyProperty<SortDirection>;
+  public isLoading: wx.IObservableReadOnlyProperty<boolean>;
 
   public sort: wx.ICommand<SortArgs>;
   public toggleSortDirection: wx.ICommand<string>;
@@ -41,11 +42,22 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
     protected filterer?: (item: TData, regex: RegExp) => boolean,
     protected comparer = new ObjectComparer<TData>(),
     isMultiSelectEnabled?: boolean,
+    isLoading?: wx.ObservableOrProperty<boolean>,
     pagerLimit?: number,
     rateLimit = 100,
     isRoutingEnabled?: boolean
   ) {
     super(items, isMultiSelectEnabled, isRoutingEnabled);
+
+    if (wx.isProperty(isLoading) === true) {
+      this.isLoading = <wx.IObservableReadOnlyProperty<boolean>>isLoading;
+    }
+    else if (Observable.isObservable(isLoading) === true) {
+      this.isLoading = (<Observable<boolean>>isLoading).toProperty(true);
+    }
+    else {
+      this.isLoading = Observable.of(false).toProperty();
+    }
 
     this.search = new SearchViewModel(true, undefined, undefined, this.isRoutingEnabled);
     this.pager = new PagerViewModel(pagerLimit, this.isRoutingEnabled);

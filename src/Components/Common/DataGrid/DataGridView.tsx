@@ -354,6 +354,7 @@ export interface DataGridProps {
   pager?: boolean | PagerView;
   pagerLimits?: number[];
   highlightSelected?: boolean;
+  loadingContent?: any;
   children?: DataGridColumn[];
 }
 
@@ -369,6 +370,7 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
 
   static defaultProps = {
     view: new DataGridTableViewTemplate<any>(),
+    loadingContent: 'Loading Data...',
   };
 
   public isOnlyView() {
@@ -381,6 +383,7 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
 
   updateOn() {
     const watches = [
+      this.state.isLoading.changed,
       this.state.projectedItems.changed,
     ];
 
@@ -393,31 +396,33 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { fill, view, search, pager, pagerLimits, highlightSelected } = x;
-      return { fill, view, search, pager, pagerLimits, highlightSelected };
+      const { fill, view, search, pager, pagerLimits, highlightSelected, loadingContent } = x;
+      return { fill, view, search, pager, pagerLimits, highlightSelected, loadingContent };
     });
 
-    return this.renderConditional(
-      this.isOnlyView() === true,
-      () => React.cloneElement(
-        this.props.view.render(this.state, this),
-        Object.assign({ className: classNames('DataGrid', className) }, rest),
-      ),
-      () => (
-        <div { ...rest } className={ classNames('DataGrid', className) }>
-          {
-            this.renderConditional(props.search === true, () => (
-              <DataGridView.Search grid={ this.state } view={ props.view } />
-            ), () => props.search)
-          }
-          { this.props.view.render(this.state, this) }
-          {
-            this.renderConditional(props.pager === true, () => (
-              <DataGridView.Pager grid={ this.state } view={ props.view } limits={ props.pagerLimits } />
-            ), () => props.pager)
-          }
-        </div>
-      ),
+    return this.renderSizedLoadable(this.state.isLoading, props.loadingContent, '1.5em', () =>
+      this.renderConditional(
+        this.isOnlyView() === true,
+        () => React.cloneElement(
+          props.view.render(this.state, this),
+          Object.assign({ className: classNames('DataGrid', className) }, rest),
+        ),
+        () => (
+          <div { ...rest } className={ classNames('DataGrid', className) }>
+            {
+              this.renderConditional(props.search === true, () => (
+                <DataGridView.Search grid={ this.state } view={ props.view } />
+              ), () => props.search)
+            }
+            { props.view.render(this.state, this) }
+            {
+              this.renderConditional(props.pager === true, () => (
+                <DataGridView.Pager grid={ this.state } view={ props.view } limits={ props.pagerLimits } />
+              ), () => props.pager)
+            }
+          </div>
+        ),
+      )
     );
   }
 }

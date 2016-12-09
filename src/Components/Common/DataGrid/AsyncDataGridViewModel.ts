@@ -34,11 +34,12 @@ export class AsyncDataGridViewModel<TData, TResult extends AsyncDataResult<TData
     protected enableFilter = false,
     protected enableSort = false,
     isMultiSelectEnabled?: boolean,
+    isLoading?: wx.ObservableOrProperty<boolean>,
     pagerLimit?: number,
     rateLimit?: number,
     isRoutingEnabled?: boolean
   ) {
-    super(undefined, undefined, undefined, isMultiSelectEnabled, pagerLimit, rateLimit, isRoutingEnabled);
+    super(undefined, undefined, undefined, isMultiSelectEnabled, isLoading, pagerLimit, rateLimit, isRoutingEnabled);
 
     this.requestData = wx.asyncCommand(
       this.dataSource.canGetResult || Observable.of(true),
@@ -59,6 +60,15 @@ export class AsyncDataGridViewModel<TData, TResult extends AsyncDataResult<TData
         this.pager.itemCount(x.count);
       })
       .toProperty();
+
+    if (isLoading == null) {
+      this.isLoading = Observable
+        .merge(
+          this.requestData.isExecuting.filter(x => x === true),
+          this.requestData.results.map(x => false),
+        )
+        .toProperty(true);
+    }
   }
 
   canFilter() {

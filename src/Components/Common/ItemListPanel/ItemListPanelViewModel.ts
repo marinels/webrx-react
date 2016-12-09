@@ -16,15 +16,15 @@ export class ItemListPanelViewModel<TData> extends BaseItemListPanelViewModel<TD
     items?: ObservableItemList<TData>,
     filterer?: (item: TData, regex: RegExp) => boolean,
     comparer?: ObjectComparer<TData>,
-    isLoading?: boolean | wx.IObservableProperty<boolean>,
     isMultiSelectEnabled?: boolean,
+    isLoading?: wx.ObservableOrProperty<boolean>,
     pagerLimit?: number,
     rateLimit?: number,
     isRoutingEnabled?: boolean
   ) {
     super(
-      new DataGridViewModel<TData>(items, filterer, comparer, isMultiSelectEnabled, pagerLimit, rateLimit, isRoutingEnabled),
-      isLoading, isRoutingEnabled
+      new DataGridViewModel<TData>(items, filterer, comparer, isMultiSelectEnabled, isLoading, pagerLimit, rateLimit, isRoutingEnabled),
+      isRoutingEnabled
     );
   }
 }

@@ -11,12 +11,15 @@ export abstract class BaseItemListPanelViewModel<TData, TGrid extends DataGridVi
 
   constructor(
     public grid: TGrid,
-    public isLoading: boolean | wx.IObservableProperty<boolean> = false,
     isRoutingEnabled?: boolean
   ) {
     super(isRoutingEnabled);
 
     this.navigate = wx.asyncCommand((x: TData) => Rx.Observable.return(x));
+  }
+
+  public get isLoading() {
+    return this.grid.isLoading;
   }
 
   public get items() {

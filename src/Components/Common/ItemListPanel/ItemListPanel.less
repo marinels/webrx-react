@@ -1,6 +1,11 @@
 @import (reference) '../../../Style/App.less';
 
 .ItemListPanel {
+  & > .Loading > .progress,
+  & > .collapse > .Loading > .progress {
+    border-radius: 0;
+  }
+
   // we need set the top/bottom border for a table since it isn't rendered when
   // inside a panel
   .table {
