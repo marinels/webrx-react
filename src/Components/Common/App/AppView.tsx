@@ -21,6 +21,9 @@ ViewMap['Splash'] = () => (
 export interface AppProps extends PageHeaderProps, PageFooterProps {
   viewMap?: ViewMapper;
   guide?: boolean;
+  alerts?: boolean;
+  header?: boolean;
+  footer?: boolean;
 }
 
 export class AppView extends BaseView<AppProps, AppViewModel> {
@@ -39,8 +42,8 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { viewMap, guide, brand, copyright } = x;
-      return { viewMap, guide, brand, copyright };
+      const { viewMap, guide, brand, alerts, header, footer, copyright } = x;
+      return { viewMap, guide, brand, alerts, header, footer, copyright };
     });
 
     return (
@@ -52,15 +55,19 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
             </div>
           ), () => (
             <div>
-              <BootstrapGuide visible={ props.guide } />
-              <div className='float-container'>
-                <Grid>
-                  <AlertHostView viewModel={ this.state.alerts } />
-                </Grid>
-              </div>
-              <PageHeaderView viewModel={ this.state.header } brand={ props.brand } />
+              { this.renderConditional(props.guide, () => (<BootstrapGuide />)) }
+              {
+                this.renderConditional(props.alerts, () => (
+                  <div className='float-container'>
+                    <Grid>
+                      <AlertHostView viewModel={ this.state.alerts } />
+                    </Grid>
+                  </div>
+                ))
+              }
+              { this.renderConditional(props.header, () => (<PageHeaderView viewModel={ this.state.header } brand={ props.brand } />)) }
               <RouteHandlerView viewModel={ this.state.routeHandler } viewMap={ props.viewMap } />
-              <PageFooterView viewModel={ this.state.footer } copyright={ props.copyright } />
+              { this.renderConditional(props.footer, () => (<PageFooterView viewModel={ this.state.footer } copyright={ props.copyright } />)) }
             </div>
           ))
         }

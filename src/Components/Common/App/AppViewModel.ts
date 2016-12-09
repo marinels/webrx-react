@@ -21,19 +21,36 @@ export class AppViewModel extends BaseViewModel {
 
   public isLoading: wx.IObservableReadOnlyProperty<boolean>;
 
-  constructor(routingMap = RouteMap, preloadDelay = 25) {
+  constructor(alerts = false, header = false, footer = false, isLoading?: wx.ObservableOrProperty<boolean>, routingMap = RouteMap) {
     super();
 
-    this.alerts = new AlertHostViewModel();
-    this.routeHandler = new RouteHandlerViewModel(routingMap);
-    this.header = new PageHeaderViewModel(this.routeHandler);
-    this.footer = new PageFooterViewModel();
+    if (alerts === true) {
+      this.alerts = new AlertHostViewModel();
+    }
 
-    // this is a micro delay for the preloader to prevent FOUC
-    this.isLoading = Observable
-      .of(false)
-      .delay(preloadDelay)
-      .toProperty(true);
+    this.routeHandler = new RouteHandlerViewModel(routingMap);
+
+    if (header === true) {
+      this.header = new PageHeaderViewModel(this.routeHandler);
+    }
+
+    if (footer === true) {
+      this.footer = new PageFooterViewModel();
+    }
+
+    if (wx.isProperty(isLoading) === true) {
+      this.isLoading = <wx.IObservableReadOnlyProperty<boolean>>isLoading;
+    }
+    else if (Observable.isObservable(isLoading) === true) {
+      this.isLoading = (<Observable<boolean>>isLoading).toProperty(true);
+    }
+    else {
+      this.isLoading = Observable
+        .of(false)
+        // this is a micro delay for the preloader to prevent FOUC
+        .delay(100)
+        .toProperty(true);
+    }
 
     Current = this;
   }
