@@ -30,7 +30,8 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     prev: true,
     next: true,
     last: true,
-    ellipsis: true,
+    boundaryLinks: true,
+    maxButtons: 5,
     info: true,
     limits: StandardLimits,
     order: StandardPagerComponentOrder,
@@ -60,8 +61,8 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     });
 
     const pagerProps = Object.rest(rest, x => {
-      const { activePage, bsSize, bsStyle, buttonComponentClass, ellipsis, first, items, last, maxButtons, next, prev } = x;
-      return { activePage, bsSize, bsStyle, buttonComponentClass, ellipsis, first, items, last, maxButtons, next, prev };
+      const { activePage, boundaryLinks, bsSize, bsStyle, bsClass, buttonComponentClass, ellipsis, first, items, last, maxButtons, next, onSelect, prev } = x;
+      return { activePage, boundaryLinks, bsSize, bsStyle, bsClass, buttonComponentClass, ellipsis, first, items, last, maxButtons, next, onSelect, prev };
     });
 
     return (
