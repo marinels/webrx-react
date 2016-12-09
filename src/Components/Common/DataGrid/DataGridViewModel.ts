@@ -128,7 +128,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
 
     const offset = this.pager.offset() || 0;
 
-    if (offset > 0 || this.pager.limit() != null) {
+    if (offset > 0 || (this.pager.limit() || 0) > 0) {
       const end = this.pager.limit() == null ? items.length : offset + this.pager.limit();
 
       items = items.slice(offset, end);

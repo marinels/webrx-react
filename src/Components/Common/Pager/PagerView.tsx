@@ -41,6 +41,9 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
 
   updateOn() {
     return [
+      this.state.itemCount.changed,
+      this.state.limit.changed,
+      this.state.offset.changed,
       this.state.pageCount.changed,
       this.state.selectedPage.changed,
     ];
@@ -77,15 +80,15 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
   }
 
   private shouldRenderInfo() {
-    return this.props.info === true;
+    return this.props.info === true && (this.state.limit() || 0) > 0;
   }
 
   private shouldRenderControls() {
-    return this.state.pageCount() > 1 && this.state.selectedPage() != null;
+    return (this.state.pageCount() || 1) > 1;
   }
 
   private shouldRenderLimit() {
-    return this.props.limits != null && this.props.limits.length > 0 && this.state.itemCount() > 0;
+    return (this.props.limits || []).length > 0 && (this.state.itemCount() || 0) > 0;
   }
 
   private renderComponent(type: PagerComponentTypes) {
