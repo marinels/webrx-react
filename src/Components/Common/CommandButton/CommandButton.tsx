@@ -4,11 +4,14 @@ import { IDisposable } from  'rx';
 import * as wx from 'webrx';
 import { Button, ButtonProps } from 'react-bootstrap';
 
+import './CommandButton.less';
+
 export interface CommandButtonProps extends ButtonProps {
   command?: wx.ICommand<any> | { (): wx.ICommand<any> };
   commandParameter?: any;
   stopPropagation?: boolean;
   preventDefault?: boolean;
+  plain?: boolean;
 }
 
 export class CommandButton extends React.Component<CommandButtonProps, any> {
@@ -46,8 +49,8 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
 
   render() {
     const { className, children, rest, props } = this.restProps(x => {
-      const { onClick, command, commandParameter, stopPropagation, preventDefault } = x;
-      return { onClick, command, commandParameter, stopPropagation, preventDefault };
+      const { onClick, command, commandParameter, stopPropagation, preventDefault, plain } = x;
+      return { onClick, command, commandParameter, stopPropagation, preventDefault, plain };
     });
 
     const canExecute = (props.command == null) ?
@@ -57,7 +60,7 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
       this.getCommand().canExecute(this.getParam());
 
     return (
-      <Button { ...rest } className={ classNames('CommandButton', className) } disabled={ canExecute !== true } onClick={ e => this.handleClick(e) }>
+      <Button { ...rest } className={ classNames('CommandButton', className, { plain: props.plain }) } disabled={ canExecute !== true } onClick={ e => this.handleClick(e) }>
         { children }
       </Button>
     );

@@ -11,23 +11,60 @@ import { bindEventToCommand } from '../../React/BindingHelpers';
 import { renderConditional } from '../../React/RenderHelpers';
 import { DataGridViewModel } from './DataGridViewModel';
 import { SortDirection } from '../../../Utils/Compare';
+import { NavButton, NavButtonProps } from '../List/NavButton';
 
 import './DataGrid.less';
+
+type ColumnRenderFunction = (
+  item: any,
+  index: number,
+  column: DataGridColumnProps,
+  columnIndex: number,
+  columns: DataGridColumnProps[],
+  viewModel: DataGridViewModel<any>,
+  view: DataGridView,
+) => any;
 
 export interface DataGridColumnProps {
   fieldName: string;
   header?: string;
-  valueSelector?: (x: any) => any;
   sortable?: boolean;
   className?: string;
   width?: number | string;
+  renderCell?: ColumnRenderFunction;
 }
 
 export class DataGridColumn extends React.Component<DataGridColumnProps, any> {
   public static displayName = 'DataGridColumn';
 
   static defaultProps = {
-    sortable: false,
+  };
+}
+
+interface NavDataGridColumnProps extends NavButtonProps {
+  header?: string;
+  width?: number | string;
+  renderCell?: ColumnRenderFunction;
+}
+
+export class NavDataGridColumn extends React.Component<NavDataGridColumnProps, any> {
+  public static displayName = 'NavDataGridColumn';
+
+  static defaultProps = {
+    fieldName: 'nav',
+    header: '',
+    className: 'navColumn',
+    width: 1,
+    renderCell: (x: any, i: number, c: NavDataGridColumnProps) => {
+      const { rest } = Object.rest(c as any, d => {
+        const { fieldName, header, className, width, renderCell } = d;
+        return { fieldName, header, className, width, renderCell };
+      });
+
+      return (
+        <NavButton { ...rest } />
+      );
+    },
   };
 }
 
@@ -130,8 +167,8 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
             column.header = column.fieldName;
           }
 
-          if (column.valueSelector == null) {
-            column.valueSelector = ((item: any) => item[column.fieldName]);
+          if (column.renderCell == null) {
+            column.renderCell = ((item: any) => item[column.fieldName]);
           }
 
           return column;
@@ -247,7 +284,7 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
         {
           (columns || [])
             .asEnumerable()
-            .map((x, i) => this.renderCell(x.valueSelector(item), x, i, viewModel, view))
+            .map((x, i) => this.renderCell(x.renderCell(item, index, x, i, columns, viewModel, view), x, i, viewModel, view))
             .defaultIfEmpty(
               <td>
                 <div className='DataGrid-empty text-muted'>No Columns Defined...</div>

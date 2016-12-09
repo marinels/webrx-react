@@ -1,39 +1,61 @@
 @import (reference) '../../../Style/App.less';
 
 .List.list-group {
+  // disable the default margins (let consumers define their own margins)
   margin: 0;
 
-  // margin to the right of the checkmark icon
-  .list-group-item > .fa {
-    margin-right: 5px;
-  }
+  & > .list-group-item {
+    // this prevents things from extending past the rounded corners
+    overflow: hidden;
 
-  // fix focus border issue
-  .list-group-item:focus {
-    margin: 0;
-  }
+    display: table;
 
-  // make sure all parts are rendered on the same line
-  .List-itemContent,
-  .TreeNode-indent,
-  .TreeNode-expander,
-  .TreeNode-content {
-    display: inline-block;
-  }
-
-  // make the expander button look consistent
-  // we remove padding because we set a fixed width instead
-  // margin puts space between the button and content
-  .TreeNode-expander {
-    width: 20px;
-    margin-right: 5px;
+    // remove the default list-group-item padding (we supply it in List-itemContent)
     padding: 0;
-    text-align: center;
+  }
+
+  // the main three sections of a list item (and two tree node sections) are
+  // full height table cells, vertically centered
+  .List-itemSelection,
+  .List-itemContent,
+  .List-itemActions,
+  .TreeNode-indent,
+  .TreeNode-expander {
+    display: table-cell;
+    vertical-align: middle;
+    height: 100%;
+  }
+
+  .List-itemSelection,
+  .TreeNode-expander,
+  .List-itemContent {
+    & > .btn {
+      // remove the padding and border of the selection and expander buttons
+      padding: 0;
+      border: 0;
+    }
+  }
+
+  .List-itemContent {
+    // this is our stretch block, consumes all of the available horizontal space
+    width: 100%;
+
+    // this is the first block inside itemContent, it can be a div or a button
+    & > .List-itemTemplate {
+      // some default padding around the rendered content (override this to remove it)
+      padding: 5px;
+    }
+  }
+
+  .TreeNode-expander {
+    // we need to set this width because the expander needs to consume
+    // the horizontal space whether the icon is visible or not
+    width: 16px;
   }
 
   .List-empty {
-    // margin: 20px;
-    // font-size: 1.25em;
+    margin: 5px;
+    font-size: 1.25em;
     text-align: center;
   }
 }
