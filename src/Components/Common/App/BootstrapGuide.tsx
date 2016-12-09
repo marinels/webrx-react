@@ -4,12 +4,9 @@ import { Observable, IDisposable } from 'rx';
 import { Enumerable } from 'ix';
 import { Grid, Row, Col } from 'react-bootstrap';
 
-import { renderConditional } from '../../React/RenderHelpers';
-
 import './BootstrapGuide.less';
 
 export interface BootstrapGuideProps {
-  visible?: boolean;
 }
 
 export class BootstrapGuide extends React.Component<BootstrapGuideProps, any> {
@@ -47,7 +44,7 @@ export class BootstrapGuide extends React.Component<BootstrapGuideProps, any> {
   }
 
   render() {
-    return renderConditional(this.props.visible === true, () => (
+    return (
       <div ref='guide' className='BootstrapGuide'>
         <Grid>
           <Row>
@@ -66,6 +63,6 @@ export class BootstrapGuide extends React.Component<BootstrapGuideProps, any> {
         <div ref='hline' className='BootstrapGuide-line BootstrapGuide-hline'></div>
         <div ref='vline' className='BootstrapGuide-line BootstrapGuide-vline'></div>
       </div>
-    ));
+    );
   }
 }
