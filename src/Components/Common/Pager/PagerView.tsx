@@ -20,6 +20,7 @@ export class PagerView extends BaseView<PagerProps, PagerViewModel> {
     prev: true,
     next: true,
     last: true,
+    ellipsis: true,
     info: true,
     limits: StandardLimits,
   };

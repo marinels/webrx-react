@@ -332,7 +332,7 @@ class DataGridSearch extends BaseView<DataGridViewProps, DataGridViewModel<any>>
 class DataGridPager extends BaseView<DataGridViewProps, DataGridViewModel<any>> {
   render() {
     return this.renderConditional(this.props.pager === true, () => (
-      <PagerView className='DataGrid' viewModel={ this.state.pager } limits={ this.props.pagerLimits } info />
+      <PagerView className='DataGrid' viewModel={ this.state.pager } limits={ this.props.pagerLimits } />
     ));
   }
 }
