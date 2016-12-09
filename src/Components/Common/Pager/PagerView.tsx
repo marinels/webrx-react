@@ -7,12 +7,15 @@ import { PagerViewModel, StandardLimits } from './PagerViewModel';
 
 import './Pager.less';
 
-export interface PagerProps extends PaginationProps, ViewModelProps {
+export interface PagerProps extends PaginationProps {
   info?: boolean;
   limits?: number[];
 }
 
-export class PagerView extends BaseView<PagerProps, PagerViewModel> {
+export interface PagerViewProps extends PagerProps, ViewModelProps {
+}
+
+export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
   public static displayName = 'PagerView';
 
   static defaultProps = {

@@ -10,12 +10,15 @@ import { CommandButton } from '../CommandButton/CommandButton';
 
 const EnterKey = 13;
 
-export interface SearchProps extends BaseViewProps {
+export interface SearchProps {
   button?: any;
   placeholder?: string;
 }
 
-export class SearchView extends BaseView<SearchProps, SearchViewModel> {
+export interface SearchViewProps extends SearchProps, BaseViewProps {
+}
+
+export class SearchView extends BaseView<SearchViewProps, SearchViewModel> {
   public static displayName = 'SearchView';
 
   static defaultProps = {
