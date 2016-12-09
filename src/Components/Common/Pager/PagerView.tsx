@@ -11,6 +11,7 @@ export interface PagerProps extends PaginationProps {
   info?: boolean;
   limits?: number[];
   order?: PagerComponentTypes[];
+  emptyInfo?: string;
 }
 
 export interface PagerViewProps extends PagerProps, ViewModelProps {
@@ -31,6 +32,7 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     info: true,
     limits: StandardLimits,
     order: StandardPagerComponentOrder,
+    emptyInfo: 'No Items to Display',
   };
 
   private renderFunctions: { [ type: string ]: Function } = {
@@ -51,8 +53,8 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { info, limits, order } = x;
-      return { info, limits, order };
+      const { info, limits, order, emptyInfo } = x;
+      return { info, limits, order, emptyInfo };
     });
 
     const pagerProps = Object.rest(rest, x => {
@@ -100,7 +102,7 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
   private renderInfo() {
     return this.renderConditional(this.shouldRenderInfo(), () => (
       this.renderConditional((this.state.itemCount() || 0) === 0,
-        'No Items to Display',
+        this.props.emptyInfo,
         `Showing Items ${ this.state.offset() + 1 } through ${ Math.min(this.state.itemCount(), this.state.offset() + this.state.limit()) } of ${ this.state.itemCount() }`
       )
     ), () => '');
