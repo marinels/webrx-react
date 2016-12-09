@@ -4,8 +4,8 @@ import { Icon } from 'react-fa';
 import { Table, TableProps, ListGroup, ListGroupItem } from 'react-bootstrap';
 
 import { BaseView, BaseViewProps, ViewModelProps } from '../../React/BaseView';
-import { SearchView } from '../Search/SearchView';
-import { PagerView } from '../Pager/PagerView';
+import { SearchView, SearchProps } from '../Search/SearchView';
+import { PagerView, PagerProps } from '../Pager/PagerView';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { bindEventToCommand } from '../../React/BindingHelpers';
 import { renderConditional } from '../../React/RenderHelpers';
@@ -308,8 +308,8 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
 export interface DataGridViewProps extends ViewModelProps {
   fill?: boolean;
   view?: DataGridViewTemplate<any>;
-  search?: boolean;
-  pager?: boolean;
+  search?: boolean | SearchView;
+  pager?: boolean | PagerView;
   pagerLimits?: number[];
   highlightSelected?: boolean;
   children?: DataGridColumn[];
@@ -319,21 +319,51 @@ export interface DataGridProps extends DataGridViewProps, BaseViewProps {
   children?: DataGridColumn[];
 }
 
-class DataGridSearch extends BaseView<DataGridViewProps, DataGridViewModel<any>> {
+export interface DataGridSearchProps extends SearchProps {
+  grid: DataGridViewModel<any>;
+  view: DataGridViewTemplate<any>;
+}
+
+export class DataGridSearch extends React.Component<DataGridSearchProps, any> {
+  static defaultProps = {
+    fill: true,
+  };
+
   render() {
-    return this.renderConditional(this.props.search === true && this.state.canFilter() === true, () => (
-      <SearchView viewModel={ this.state.search }
-        className={ classNames('DataGrid', { Table: this.props.view instanceof DataGridTableViewTemplate }) }
+    const { className, props, rest } = this.restProps(x => {
+      const { grid, view } = x;
+      return { grid, view };
+    });
+
+    return renderConditional(props.grid.canFilter() === true, () => (
+      <SearchView { ...rest } viewModel={ props.grid.search }
+        className={ classNames('DataGrid', className, { Table: props.view instanceof DataGridTableViewTemplate }) }
       />
     ));
   }
 }
 
-class DataGridPager extends BaseView<DataGridViewProps, DataGridViewModel<any>> {
+export interface DataGridPagerProps extends PagerProps {
+  grid: DataGridViewModel<any>;
+  view: DataGridViewTemplate<any>;
+}
+
+export class DataGridPager extends React.Component<DataGridPagerProps, any> {
+  static defaultProps = {
+    fill: true,
+  };
+
   render() {
-    return this.renderConditional(this.props.pager === true, () => (
-      <PagerView className='DataGrid' viewModel={ this.state.pager } limits={ this.props.pagerLimits } />
-    ));
+    const { className, props, rest } = this.restProps(x => {
+      const { grid, view } = x;
+      return { grid, view };
+    });
+
+    return (
+      <PagerView { ...rest } viewModel={ props.grid.pager }
+        className={ classNames('DataGrid', className) }
+      />
+    );
   }
 }
 
@@ -347,8 +377,28 @@ export class DataGridView extends BaseView<DataGridProps, DataGridViewModel<any>
     view: new DataGridTableViewTemplate<any>(),
   };
 
+  constructor(props?: DataGridProps, context?: any) {
+    super(props, context);
+
+    // sanitize on construction to prevent the first projection
+    this.sanitizePagerLimit();
+  }
+
+  private sanitizePagerLimit() {
+    // make sure we reset the pager limit to null if no pager is being rendered
+    // otherwise we use the default pager limit which not page the results
+    // without any UI to adjust paging
+    if (this.props.pager == null || this.props.pager === false) {
+      this.state.pager.limit(null);
+    }
+  }
+
   public isOnlyView() {
-    return this.props != null && this.props.search !== true && this.props.pager !== true;
+    return (
+      this.props != null &&
+      (this.props.search == null || this.props.search === false) &&
+      (this.props.pager == null || this.props.pager === false)
+    );
   }
 
   updateOn() {
@@ -377,9 +427,17 @@ export class DataGridView extends BaseView<DataGridProps, DataGridViewModel<any>
       ),
       () => (
         <div { ...rest } className={ classNames('DataGrid', className) }>
-          <DataGridView.Search { ...props } viewModel={ this.state } />
+          {
+            this.renderConditional(props.search === true, () => (
+              <DataGridView.Search grid={ this.state } view={ props.view } />
+            ), () => props.search)
+          }
           { this.props.view.render(this.state, this) }
-          <DataGridView.Pager { ...props } viewModel={ this.state } />
+          {
+            this.renderConditional(props.pager === true, () => (
+              <DataGridView.Pager grid={ this.state } view={ props.view } limits={ props.pagerLimits } />
+            ), () => props.pager)
+          }
         </div>
       ),
     );

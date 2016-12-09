@@ -35,11 +35,11 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
 
     return (
       <CommonPanel { ...rest } className={ classNames('ItemListPanel', viewType, className) }>
-        <DataGridView.Search { ...props } viewModel={ this.state.grid } />
+        <DataGridView.Search grid={ this.state.grid } view={ props.view } />
         <DataGridView { ...props } viewModel={ this.state.grid } search={ false } pager={ false }>
           { children }
         </DataGridView>
-        <DataGridView.Pager { ...props } viewModel={ this.state.grid } />
+        <DataGridView.Pager grid={ this.state.grid } view={ props.view } />
       </CommonPanel>
     );
   }
