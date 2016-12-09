@@ -323,7 +323,7 @@ const viewMap: ViewActivatorMap = {
     }
   },
   AsyncItemListPanelViewModel: (viewModel: AsyncItemListPanelViewModel<any, any>) => (
-    <ItemListPanelView viewModel={viewModel} headerContent='Sample Data' collapsible
+    <ItemListPanelView viewModel={viewModel} headerContent='Sample Data' collapsible pager
       headerActions={[ { id: 'footer', bsStyle: 'primary', command: viewModel.navigate, children: (<ViewAllFooterAction suffix='Things' />) } ]}
       footerContent={ (<CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
       footerActions={[ { id: 'refresh', command: viewModel.grid.refresh, children: 'Refresh' } ]}
