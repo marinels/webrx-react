@@ -208,7 +208,7 @@ const viewMap: ViewActivatorMap = {
       columns = [
         <DataGridColumn key='name' fieldName='name' header='Name' sortable />,
         <DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 } />,
-        <NavDataGridColumn key='nav' href='#' />,
+        <NavDataGridColumn key='nav' buttonProps={ (x: SampleData) => ({ href: `#/name/${ x.name }` }) } />,
       ];
     }
 
