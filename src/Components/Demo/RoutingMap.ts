@@ -167,6 +167,7 @@ routeMap.addRoute('React', 'CommonPanelList', 'Common Panel (List)', (state: any
 
 routeMap.addRoute('WebRx-React', 'TimeSpanInput', 'Time Span Input', (state: any) => new Components.TimeSpanInputViewModel(true, Components.TimeSpanUnitType.Seconds));
 routeMap.addRoute('WebRx-React', 'List', 'List', (state: any) => new Components.ListViewModel(Observable.of(sampleListData), false, false));
+routeMap.addRoute('WebRx-React', 'ListCmd', 'List (Command)', (state: any) => new Components.ListViewModel(Observable.of(sampleListData), false, false));
 routeMap.addRoute('WebRx-React', 'Tree', 'Tree', (state: any) => new Components.ListViewModel(wx.property(sampleTreeData), true, false));
 routeMap.addRoute('WebRx-React', 'PanelList', 'Panel List', (state: any) => new Components.ListViewModel(wx.property(sampleListData), true, false));
 routeMap.addRoute('WebRx-React', 'DataGrid', 'Data Grid', (state: any) =>

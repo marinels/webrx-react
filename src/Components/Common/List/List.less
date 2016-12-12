@@ -8,7 +8,11 @@
     // this prevents things from extending past the rounded corners
     overflow: hidden;
 
+    // all our list item components sit inside this table as table-cell's
     display: table;
+
+    // consume all horizontal space for each list item
+    width: 100%;
 
     // remove the default list-group-item padding (we supply it in List-itemContent)
     padding: 0;
@@ -17,18 +21,19 @@
   // the main three sections of a list item (and two tree node sections) are
   // full height table cells, vertically centered
   .List-itemSelection,
-  .List-itemContent,
+  .List-itemContainer,
   .List-itemActions,
   .TreeNode-indent,
   .TreeNode-expander {
     display: table-cell;
     vertical-align: middle;
+    width: 1px;
     height: 100%;
   }
 
   .List-itemSelection,
   .TreeNode-expander,
-  .List-itemContent {
+  .List-itemContainer {
     & > .btn {
       // remove the padding and border of the selection and expander buttons
       padding: 0;
@@ -36,15 +41,14 @@
     }
   }
 
-  .List-itemContent {
+  .List-itemContainer {
     // this is our stretch block, consumes all of the available horizontal space
     width: 100%;
+  }
 
-    // this is the first block inside itemContent, it can be a div or a button
-    & > .List-itemTemplate {
-      // some default padding around the rendered content (override this to remove it)
-      padding: 5px;
-    }
+  .List-itemTemplate {
+    // some default padding around the rendered content (override this to remove it)
+    padding: 5px;
   }
 
   .TreeNode-expander {

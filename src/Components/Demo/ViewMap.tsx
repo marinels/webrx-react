@@ -74,22 +74,37 @@ const listTemplate = new ListViewTemplate<SampleData>(
   },
   (x, i, vm, v) => {
     return [
-      <NavButton key='nav' href='#' />,
+      <NavButton key='nav' href={ `#/name/${ x.name }` } />,
     ];
+  },
+);
+
+// this template renders a custom template container to show how we can
+// inject a custom button that wraps our item template
+const listCmdTemplate = new ListViewTemplate<SampleData>(
+  (x, i, vm, v) => {
+    return sampleDataTemplate(x);
+  },
+  undefined, undefined,
+  (contents, x, i, vm, v) => {
+    return (
+      <CommandButton block plain href={ `#/name/${ x.name }` }>
+        { contents }
+      </CommandButton>
+    );
   },
 );
 
 const treeTemplate = new TreeViewTemplate<SampleTreeData>(
   (x, vm, v) => x.items,
-  (x, i, vm, v) => {
+  (n, x, i, vm, v) => {
     return sampleDataTemplate(x);
   },
-  (x, i, vm, v) => {
+  (n, x, i, vm, v) => {
     return [
-      <NavButton key='nav' href='#' />,
+      <NavButton key='nav' href={ `#/name/${ x.name }` } />,
     ];
   },
-  (x, i, vm, v) => true,
 );
 
 const viewMap: ViewActivatorMap = {
@@ -168,6 +183,10 @@ const viewMap: ViewActivatorMap = {
         return (
           <ListView viewModel={ viewModel } view={ listTemplate } />
         );
+      case 'ListCmd':
+        return (
+          <ListView viewModel={ viewModel } view={ listCmdTemplate } />
+        );
       case 'Tree':
         return (
           <ListView viewModel={ viewModel } selectable checkmarkSelected view={ treeTemplate } />
@@ -192,13 +211,13 @@ const viewMap: ViewActivatorMap = {
       pager = false;
       search = true;
       view = new DataGridListViewTemplate<SampleData>(
-        x => `Name: ${x.name}, Required By: ${x.requiredBy}`
+        x => sampleDataTemplate(x)
       );
     }
 
     if (componentRoute === 'DataGridPager') {
       view = new DataGridListViewTemplate<SampleData>(
-        x => `Name: ${x.name}, Required By: ${x.requiredBy}`
+        x => sampleDataTemplate(x)
       );
 
       pager = <DataGridView.Pager grid={ viewModel } view={ view } order={ [ 'controls', 'info', 'limit' ] } />;
@@ -209,7 +228,7 @@ const viewMap: ViewActivatorMap = {
       columns = [
         <DataGridColumn key='name' fieldName='name' header='Name' sortable />,
         <DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 } />,
-        <NavDataGridColumn key='nav' href='#' />,
+        <NavDataGridColumn key='nav' buttonProps={ (x: SampleData) => ({ href: `#/name/${ x.name }` }) } />,
       ];
     }
 

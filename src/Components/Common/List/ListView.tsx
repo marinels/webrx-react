@@ -15,109 +15,166 @@ export * from './NavButton';
 
 import './List.less';
 
-export interface ListViewRenderTemplate<TData> {
-  initialize(viewModel: ListViewModel<TData, any>, view: ListView): void;
-  cleanup(viewModel: ListViewModel<TData, any>, view: ListView): void;
-  render(viewModel: ListViewModel<TData, any>, view: ListView): any[];
+export interface ListViewRenderTemplateProps {
+  selectable?: boolean;
+  highlightSelected?: boolean;
+  checkmarkSelected?: boolean;
 }
 
-export abstract class BaseListViewTemplate<TItem, TData> implements ListViewRenderTemplate<TData> {
+export interface ListViewRenderTemplate<TData, TViewModel extends ListViewModel<TData, any>, TView extends React.Component<ListViewRenderTemplateProps, any>> {
+  initialize(viewModel: ListViewModel<TData, any>, view: TView): void;
+  cleanup(viewModel: ListViewModel<TData, any>, view: TView): void;
+  render(viewModel: ListViewModel<TData, any>, view: TView): any;
+}
+
+export abstract class BaseListViewTemplate<TItem, TData, TViewModel extends ListViewModel<TData, any>, TView extends React.Component<ListViewRenderTemplateProps, any>> implements ListViewRenderTemplate<TData, TViewModel, TView> {
   public static displayName = 'BaseListViewTemplate';
 
   constructor(
-    protected itemDataSelector: (x: TItem) => TData,
-    protected renderItem: (x: TData, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => any = (v, x) => x.toString(),
-    protected renderItemActions?: (x: TData, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
-    protected getIsVisible: (x: TData, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => boolean = x => true,
-    protected keySelector: (x: TItem, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => any = (x, i) => i,
-    protected renderItemContainer?: (x: TItem, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => any
+    protected renderItem: (item: TItem, data: TData, index: number, viewModel: TViewModel, view: TView) => any = (x, data) => data.toString(),
+    protected renderItemActions?: (item: TItem, data: TData, index: number, viewModel: TViewModel, view: TView) => any,
+    protected keySelector: (item: TItem, data: TData, index: number, viewModel: TViewModel, view: TView) => any = (x, d, index) => index,
+    protected renderTemplateContainer?: (content: any, item: TItem, data: TData, index: number, viewModel: TViewModel, view: TView) => any,
   ) {
-    if (this.renderItemContainer == null) {
-      this.renderItemContainer = this.renderDefaultItemContainer;
-    }
+    this.renderTemplateContainer = this.renderTemplateContainer || this.renderDefaultTemplateContainer;
   }
 
-  protected renderDefaultItemContainer(item: TItem, index: number, viewModel: ListViewModel<TData, any>, view: ListView) {
-    return renderConditional(this.getIsVisible(this.itemDataSelector(item), index, viewModel, view) === true, () => (
-      <ListGroupItem
-        key={ this.keySelector(item, index, viewModel, view) }
-        active={ view.props.highlightSelected === true && viewModel.isItemSelected(this.itemDataSelector(item)) === true }
+  private renderDefaultTemplateContainer(contents: any, item: TItem, data: TData, index: number, viewModel: TViewModel, view: TView) {
+    return renderConditional(
+      view.props.selectable === true,
+      () => (
+        <CommandButton className='List-templateContainer' block plain command={ viewModel.selectItem } commandParameter={ data } >
+          { contents }
+        </CommandButton>
+      ),
+      () => (
+        <div className='List-templateContainer'>
+          { contents }
+        </div>
+      )
+    );
+  }
+
+  protected renderRow(item: TItem, index: number, viewModel: TViewModel, view: TView) {
+    const data = this.getItemData(item, index, viewModel, view);
+
+    return (
+      <ListGroupItem className='List-row'
+        key={ this.keySelector(item, data, index, viewModel, view) }
+        active={ view.props.highlightSelected === true && viewModel.isItemSelected(data) === true }
       >
-        { this.renderCheckmark(item, index, viewModel, view) }
-        { this.renderContent(item, index, viewModel, view) }
-        { this.renderActions(item, index, viewModel, view) }
+        { this.renderCheckmark(item, data, index, viewModel, view) }
+        { this.renderItemContainer(item, data, index, viewModel, view) }
+        { this.renderActions(item, data, index, viewModel, view) }
       </ListGroupItem>
-    ));
+    );
   }
 
-  protected renderCheckmark(item: TItem, index: number, viewModel: ListViewModel<TData, any>, view: ListView) {
+  protected renderCheckmark(item: TItem, data: TData, index: number, viewModel: TViewModel, view: TView) {
     return renderConditional(view.props.checkmarkSelected === true, () => (
       <div className='List-itemSelection'>
-        <CommandButton bsStyle='link' command={ viewModel.selectItem } commandParameter={ () => this.itemDataSelector(item) }>
-          <Icon name={ (viewModel.isItemSelected(this.itemDataSelector(item)) === true) ? 'check-circle' : 'circle-o' } size='lg' fixedWidth />
+        <CommandButton plain command={ viewModel.selectItem } commandParameter={ data }>
+          <Icon name={ (viewModel.isItemSelected(data) === true) ? 'check-circle' : 'circle-o' } size='lg' fixedWidth />
         </CommandButton>
       </div>
     ));
   }
 
-  protected renderContent(item: TItem, index: number, viewModel: ListViewModel<TData, any>, view: ListView) {
+  protected renderItemContainer(item: TItem, data: TData, index: number, viewModel: TViewModel, view: TView): any {
     return (
-      <div className='List-itemContent'>
+      <div className='List-itemContainer'>
         {
-          renderConditional(view.props.selectable === true, () => (
-            <CommandButton className='List-itemTemplate' bsStyle='link' block plain command={ viewModel.selectItem } commandParameter={ () => this.itemDataSelector(item) }>
-              { this.renderItem(this.itemDataSelector(item), index, viewModel, view) }
-            </CommandButton>
-          ), () => (
-            <div className='List-itemTemplate'>
-              { this.renderItem(this.itemDataSelector(item), index, viewModel, view) }
-            </div>
-          ))
+          this.renderTemplateContainer(
+            this.renderItemTemplate(item, data, index, viewModel, view),
+            item,
+            data,
+            index,
+            viewModel,
+            view,
+          )
         }
       </div>
     );
   }
 
-  protected renderActions(item: TItem, index: number, viewModel: ListViewModel<TData, any>, view: ListView) {
+  protected renderItemTemplate(item: TItem, data: TData, index: number, viewModel: TViewModel, view: TView) {
+    return (
+      <div className='List-itemTemplate'>
+        { this.renderItem(item, data, index, viewModel, view) }
+      </div>
+    );
+  }
+
+  protected renderActions(item: TItem, data: TData, index: number, viewModel: TViewModel, view: TView) {
     return renderConditional(this.renderItemActions != null, () => (
       <div className='List-itemActions'>
-        { this.renderItemActions(this.itemDataSelector(item), index, viewModel, view) }
+        { this.renderItemActions(item, data, index, viewModel, view) }
       </div>
     ));
   }
 
-  public initialize(viewModel: ListViewModel<TData, any>, view: ListView) {
+  protected getClassName(): string {
+    return null;
+  }
+
+  protected abstract getItems(viewModel: TViewModel, view: TView): TItem[];
+  protected abstract getItemData(item: TItem, index: number, viewModel: TViewModel, view: TView): TData;
+
+  public initialize(viewModel: TViewModel, view: TView) {
     // do nothing
   }
 
-  public cleanup(viewModel: ListViewModel<TData, any>, view: ListView) {
+  public cleanup(viewModel: TViewModel, view: TView) {
     // do nothing
   }
 
-  abstract render(viewModel: ListViewModel<TData, any>, view: ListView): any[];
+  public render(viewModel: TViewModel, view: TView) {
+    return (
+      <ListGroup className={ this.getClassName() }>
+        {
+          (this.getItems(viewModel, view) || [])
+            .map((x, i) => this.renderRow(x, i, viewModel, view))
+            .asEnumerable()
+            .defaultIfEmpty(
+              <ListGroupItem key='empty' className='List-empty text-muted'>
+                Nothing to Display...
+              </ListGroupItem>
+            )
+            .toArray()
+        }
+      </ListGroup>
+    );
+  }
 }
 
-export class ListViewTemplate<TData> extends BaseListViewTemplate<TData, TData> {
+export class ListViewTemplate<TData> extends BaseListViewTemplate<TData, TData, ListViewModel<TData, any>, ListView> {
   public static displayName = 'ListViewTemplate';
 
   constructor(
-    renderItem?: (x: TData, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
-    renderItemActions?: (x: TData, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
-    getIsVisible?: (x: TData, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => boolean,
-    keySelector?: (x: TData, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
-    renderItemContainer?: (x: TData, i: number, viewModel: ListViewModel<TData, any>, view: ListView, itemTemplate?: () => any) => any
+    renderItem?: (item: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
+    renderItemActions?: (item: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
+    keySelector?: (item: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
+    renderItemContainer?: (content: any, item: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) => any
   ) {
-    super(x => x, renderItem, renderItemActions, getIsVisible, keySelector, renderItemContainer);
+    super(
+      renderItem == null ? undefined : (item, data, index, viewModel, view) => renderItem(data, index, viewModel, view),
+      renderItemActions == null ? undefined : (item, data, index, viewModel, view) => renderItemActions(data, index, viewModel, view),
+      keySelector == null ? undefined : (item, data, index, viewModel, view) => keySelector(data, index, viewModel, view),
+      renderItemContainer == null ? undefined : (content, item, data, index, viewModel, view) => renderItemContainer(content, data, index, viewModel, view),
+    );
   }
 
-  render(viewModel: ListViewModel<TData, any>, view: ListView) {
-    return (viewModel.items() || [])
-      .map((x, i) => this.renderItemContainer(x, i, viewModel, view));
+  getItems(viewModel: ListViewModel<TData, any>, view: ListView) {
+    return viewModel.items();
+  }
+
+  getItemData(item: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) {
+    return item;
   }
 }
 
 export interface TreeNode<TData> {
-  item: TData;
+  data: TData;
   index: number;
   level: number;
   nodes: TreeNode<TData>[];
@@ -125,7 +182,7 @@ export interface TreeNode<TData> {
   isExpanded: boolean;
 }
 
-export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData>, TData> {
+export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData>, TData, ListViewModel<TData, any>, ListView> {
   public static displayName = 'TreeViewTemplate';
 
   private nodes: wx.IObservableReadOnlyProperty<TreeNode<TData>[]>;
@@ -134,14 +191,13 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
   private lastKey = 0;
 
   constructor(
-    protected getItems: (x: TData, viewModel: ListViewModel<TData, any>, view: ListView) => TData[],
-    renderItem?: (x: TData, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
-    renderItemActions?: (x: TData, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
-    getIsVisible?: (x: TData, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => boolean,
-    keySelector: (x: TreeNode<TData>, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => any = x => x.key,
-    renderItemContainer?: (x: TreeNode<TData>, i: number, viewModel: ListViewModel<TData, any>, view: ListView) => any
+    protected getNestedData: (data: TData, viewModel: ListViewModel<TData, any>, view: ListView) => TData[],
+    renderItem?: (node: TreeNode<TData>, data: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
+    renderItemActions?: (node: TreeNode<TData>, data: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
+    keySelector?: (node: TreeNode<TData>, data: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
+    renderItemContainer?: (content: any, node: TreeNode<TData>, data: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
   ) {
-    super(x => x.item, renderItem, renderItemActions, getIsVisible, keySelector, renderItemContainer);
+    super(renderItem, renderItemActions, keySelector, renderItemContainer);
 
     this.toggleNode = wx.asyncCommand((x: TreeNode<TData>) => {
       if (x != null) {
@@ -184,28 +240,27 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
     }
   }
 
-  render(viewModel: ListViewModel<TData, any>, view: ListView) {
-    return renderConditional(this.items != null, () => {
-      return (this.items() || [])
-        .map((x, i) => {
-          x.key = this.keySelector(x, i, viewModel, view) || `${ x.level }.${ x.index }`;
-
-          return this.renderItemContainer(x, i, viewModel, view);
-        });
-    });
+  getClassName() {
+    return 'Tree';
   }
 
-  protected renderContent(node: TreeNode<TData>, index: number, viewModel: ListViewModel<TData, any>, view: ListView) {
+  getItems(viewModel: ListViewModel<TData, any>, view: ListView) {
+    return this.items();
+  }
+
+  getItemData(node: TreeNode<TData>, index: number, viewModel: ListViewModel<TData, any>, view: ListView) {
+    return node.data;
+  }
+
+  renderItemContainer(node: TreeNode<TData>, data: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) {
     return [
-      this.renderIndent(node, viewModel, view),
-      <div key='expander' className='TreeNode-expander'>
-        { this.renderExpander(node, viewModel, view) }
-      </div>,
-      React.cloneElement(super.renderContent(node, index, viewModel, view), { key: 'content' }),
-    ] as any;
+      this.renderIndent(node, data, index, viewModel, view),
+      this.renderExpander(node, data, index, viewModel, view),
+      React.cloneElement(super.renderItemContainer(node, data, index, viewModel, view), { key: 'content' }),
+    ];
   }
 
-  protected renderIndent(node: TreeNode<TData>, viewModel: ListViewModel<TData, any>, view: ListView) {
+  protected renderIndent(node: TreeNode<TData>, data: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) {
     return (
       <div key='indent' className='TreeNode-indent'>
         <div style={ ({ width: node.level * 10 }) }>&nbsp;</div>
@@ -213,28 +268,34 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
     );
   }
 
-  protected renderExpander(node: TreeNode<TData>, viewModel: ListViewModel<TData, any>, view: ListView) {
-    return renderConditional(node.nodes.length > 0, () => (
-      <CommandButton bsStyle='link' command={ this.toggleNode } commandParameter={ node }>
-        <Icon name={ node.isExpanded === true ? 'minus-square-o' : 'plus-square-o' } size='lg' fixedWidth />
-      </CommandButton>
-    ), () => (
-      <Icon name='' size='lg' fixedWidth />
-    ));
+  protected renderExpander(node: TreeNode<TData>, data: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) {
+    return (
+      <div key='expander' className='TreeNode-expander'>
+        {
+          renderConditional(node.nodes.length > 0, () => (
+            <CommandButton plain command={ this.toggleNode } commandParameter={ node }>
+              <Icon name={ node.isExpanded === true ? 'minus-square-o' : 'plus-square-o' } size='lg' fixedWidth />
+            </CommandButton>
+          ), () => (
+            <Icon name='' size='lg' fixedWidth />
+          ))
+        }
+      </div>
+    );
   }
 
-  protected getNode(item: TData, index: number, level: number, viewModel: ListViewModel<TData, any>, view: ListView): TreeNode<TData> {
+  protected getNode(data: TData, index: number, level: number, viewModel: ListViewModel<TData, any>, view: ListView): TreeNode<TData> {
     const node = {
-      item,
+      data,
       index,
       level,
-      nodes: (this.getItems(item, viewModel, view) || [])
+      nodes: (this.getNestedData(data, viewModel, view) || [])
         .map((x, i) => this.getNode(x, i, level + 1, viewModel, view)),
       key: ++this.lastKey,
       isExpanded: false,
     } as TreeNode<TData>;
 
-    node.key = this.keySelector(node, index, viewModel, view) || node.key;
+    node.key = this.keySelector(node, data, index, viewModel, view) || node.key;
 
     return node;
   }
@@ -259,11 +320,8 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
   }
 }
 
-export interface ListProps extends ListGroupProps, ViewModelProps {
-  view?: ListViewRenderTemplate<any>;
-  selectable?: boolean;
-  highlightSelected?: boolean;
-  checkmarkSelected?: boolean;
+export interface ListProps extends ListGroupProps, ListViewRenderTemplateProps, ViewModelProps {
+  view?: ListViewRenderTemplate<any, any, any>;
 }
 
 export class ListView extends BaseView<ListProps, ListViewModel<any, any>> {
@@ -307,22 +365,16 @@ export class ListView extends BaseView<ListProps, ListViewModel<any, any>> {
   }
 
   render() {
-    const { props, rest } = this.restProps(x => {
-      const { view, selectable, highlightSelected, checkmarkSelected, className } = x;
-      return { view, selectable, highlightSelected, checkmarkSelected, className };
+    const { className, props, rest } = this.restProps(x => {
+      const { view, selectable, highlightSelected, checkmarkSelected } = x;
+      return { view, selectable, highlightSelected, checkmarkSelected };
     });
 
-    return (
-      <ListGroup { ...rest } className={ classNames('List', props.className) }>
-        {
-          (this.props.view.render(this.state, this) || [])
-            .asEnumerable()
-            .defaultIfEmpty(
-              <div key='empty' className='List-empty text-muted'>Nothing to Display...</div>
-            )
-            .toArray()
-        }
-      </ListGroup>
+    const list = props.view.render(this.state, this);
+
+    return React.cloneElement(
+      list,
+      Object.assign({ className: classNames('List', list.props.className, className) }, rest),
     );
   }
 }
