@@ -79,6 +79,22 @@ const listTemplate = new ListViewTemplate<SampleData>(
   },
 );
 
+// this template renders a custom template container to show how we can
+// inject a custom button that wraps our item template
+const listCmdTemplate = new ListViewTemplate<SampleData>(
+  (x, i, vm, v) => {
+    return sampleDataTemplate(x);
+  },
+  undefined, undefined,
+  (contents, x, i, vm, v) => {
+    return (
+      <CommandButton block plain href={ `#/name/${ x.name }` }>
+        { contents }
+      </CommandButton>
+    );
+  },
+);
+
 const treeTemplate = new TreeViewTemplate<SampleTreeData>(
   (x, vm, v) => x.items,
   (n, x, i, vm, v) => {
@@ -166,6 +182,10 @@ const viewMap: ViewActivatorMap = {
       case 'List':
         return (
           <ListView viewModel={ viewModel } view={ listTemplate } />
+        );
+      case 'ListCmd':
+        return (
+          <ListView viewModel={ viewModel } view={ listCmdTemplate } />
         );
       case 'Tree':
         return (
