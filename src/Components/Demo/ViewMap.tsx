@@ -74,22 +74,21 @@ const listTemplate = new ListViewTemplate<SampleData>(
   },
   (x, i, vm, v) => {
     return [
-      <NavButton key='nav' href='#' />,
+      <NavButton key='nav' href={ `#/name/${ x.name }` } />,
     ];
   },
 );
 
 const treeTemplate = new TreeViewTemplate<SampleTreeData>(
   (x, vm, v) => x.items,
-  (x, i, vm, v) => {
+  (n, x, i, vm, v) => {
     return sampleDataTemplate(x);
   },
-  (x, i, vm, v) => {
+  (n, x, i, vm, v) => {
     return [
-      <NavButton key='nav' href='#' />,
+      <NavButton key='nav' href={ `#/name/${ x.name }` } />,
     ];
   },
-  (x, i, vm, v) => true,
 );
 
 const viewMap: ViewActivatorMap = {
@@ -192,13 +191,13 @@ const viewMap: ViewActivatorMap = {
       pager = false;
       search = true;
       view = new DataGridListViewTemplate<SampleData>(
-        x => `Name: ${x.name}, Required By: ${x.requiredBy}`
+        x => sampleDataTemplate(x)
       );
     }
 
     if (componentRoute === 'DataGridPager') {
       view = new DataGridListViewTemplate<SampleData>(
-        x => `Name: ${x.name}, Required By: ${x.requiredBy}`
+        x => sampleDataTemplate(x)
       );
 
       pager = <DataGridView.Pager grid={ viewModel } view={ view } order={ [ 'controls', 'info', 'limit' ] } />;
