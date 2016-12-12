@@ -1,6 +1,13 @@
 @import (reference) '../../../Style/App.less';
 
 .CommandButton {
+  // we want to disable text decorations on link buttons by default
+  // opt-out to disable this default style
+  &.btn-link {
+    text-decoration: none;
+  }
+
+  // plain buttons are (nearly) completely unstyled to allow maximum customability
   &.plain {
     padding: 0;
     color: inherit;
