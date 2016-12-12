@@ -24,8 +24,8 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
 
   render() {
     const { className, children, rest, props } = this.restProps(x => {
-      const { fill, view, search, pager, pagerLimits, highlightSelected } = x;
-      return { fill, view, search, pager, pagerLimits, highlightSelected };
+      const { fill, view, search, pager, pagerLimits, selectable, highlightSelected, checkmarkSelected } = x;
+      return { fill, view, search, pager, pagerLimits, selectable, highlightSelected, checkmarkSelected };
     });
 
     const viewType = props.view instanceof DataGridTableViewTemplate ? 'Table' : 'List';
