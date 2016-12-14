@@ -1,3 +1,5 @@
+@import (reference) '../../../Style/App.less';
+
 .DataGrid {
   & > .Search,
   &.Search {
@@ -19,6 +21,9 @@
 
     // consistent background color for the table
     background-color: #fff;
+
+    // always put a border around the outside
+    border: 1px solid @table-border-color;
 
     .DataGrid-column {
       padding: 0;
