@@ -39,7 +39,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
       <CommonPanel { ...rest } className={ classNames('ItemListPanel', viewType, className) }>
         {
           this.renderConditional(
-            props.search !== false && this.state.isLoading() === false,
+            props.search != null && props.search !== false && this.state.isLoading() === false,
             () => this.renderConditional(
               React.isValidElement(props.search),
               props.search,
@@ -52,7 +52,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
         </DataGridView>
         {
           this.renderConditional(
-            props.pager !== false && this.state.isLoading() === false,
+            props.pager != null && props.pager !== false && this.state.isLoading() === false,
             () => this.renderConditional(
               React.isValidElement(props.pager),
               props.pager,
