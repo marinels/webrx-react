@@ -1,6 +1,6 @@
-declare var global: any;
+import { Observable } from 'rx';
 
-import * as Rx from 'rx';
+declare var global: any;
 
 // WebRx assumes a lot about the state of javascript.
 // This setup will mock the assumptions so that we can continue testing its
@@ -44,7 +44,7 @@ function setupWebRx() {
   // this is a fake (empty) result that won't interfere
   global.window.createMockHistory = () => {
     return {
-      onPopState: Rx.Observable.never<PopStateEvent>(),
+      onPopState: Observable.never<PopStateEvent>(),
     };
   };
 }

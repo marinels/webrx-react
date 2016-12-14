@@ -1,4 +1,3 @@
-import * as Rx from 'rx';
 import * as wx from 'webrx';
 
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';

@@ -1,6 +1,5 @@
 import { Observable } from 'rx';
 import * as wx from 'webrx';
-// import * as moment from 'moment';
 
 import { BaseViewModel } from '../../React/BaseViewModel';
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Rx from 'rx';
+import { Observable, IDisposable } from 'rx';
 import { Badge } from 'react-bootstrap';
 
 import { renderConditional } from '../../React/RenderHelpers';
@@ -7,7 +7,7 @@ import { renderConditional } from '../../React/RenderHelpers';
 import './CountFooterContent.less';
 
 export interface CountFooterContentProps extends React.HTMLAttributes<CountFooterContent> {
-  length: Rx.Observable<number>;
+  length: Observable<number>;
   suffix?: string;
 }
 
@@ -22,7 +22,7 @@ export class CountFooterContent extends React.Component<CountFooterContentProps,
     suffix: 'Items',
   };
 
-  private lengthChangedSub: Rx.IDisposable;
+  private lengthChangedSub: IDisposable;
 
   constructor(props?: CountFooterContentProps, context?: any) {
     super(props, context);

@@ -1,6 +1,5 @@
+import { IDisposable, Disposable } from 'rx';
 import { expect } from 'chai';
-
-import * as Rx from 'rx';
 
 import { SubMan } from '../../src/Utils/SubMan';
 
@@ -8,16 +7,16 @@ describe('SubMan', () => {
   describe('constructor', () => {
     it('handles no subscription args', () => {
       let subman = new SubMan();
-      let subs = (<any>subman).subscriptions as Rx.IDisposable[];
+      let subs = (<any>subman).subscriptions as IDisposable[];
 
       expect(subs).to.be.not.null;
       expect(subs.length).to.equal(0);
     });
 
     it('handles subscription args', () => {
-      let sub = Rx.Disposable.create(null);
+      let sub = Disposable.create(null);
       let subman = new SubMan(sub);
-      let subs = (<any>subman).subscriptions as Rx.IDisposable[];
+      let subs = (<any>subman).subscriptions as IDisposable[];
 
       expect(subs).to.be.not.null;
       expect(subs.length).to.equal(1);
@@ -27,9 +26,9 @@ describe('SubMan', () => {
 
   describe('add', () => {
     it('handles a single subscription', () => {
-      let sub = Rx.Disposable.create(null);
+      let sub = Disposable.create(null);
       let subman = new SubMan();
-      let subs = (<any>subman).subscriptions as Rx.IDisposable[];
+      let subs = (<any>subman).subscriptions as IDisposable[];
 
       subman.add(sub);
 
@@ -38,11 +37,11 @@ describe('SubMan', () => {
     });
 
     it('handles multiple subscriptions', () => {
-      let sub1 = Rx.Disposable.create(null);
-      let sub2 = Rx.Disposable.create(null);
-      let sub3 = Rx.Disposable.create(null);
+      let sub1 = Disposable.create(null);
+      let sub2 = Disposable.create(null);
+      let sub3 = Disposable.create(null);
       let subman = new SubMan();
-      let subs = (<any>subman).subscriptions as Rx.IDisposable[];
+      let subs = (<any>subman).subscriptions as IDisposable[];
 
       subman.add(sub1);
       subman.add(sub2);
@@ -57,9 +56,9 @@ describe('SubMan', () => {
 
   describe('dispose', () => {
     it('disposes subscriptions and empties the list', () => {
-      let sub = Rx.Disposable.create(() => null);
+      let sub = Disposable.create(() => null);
       let subman = new SubMan(sub);
-      let subs = (<any>subman).subscriptions as Rx.IDisposable[];
+      let subs = (<any>subman).subscriptions as IDisposable[];
 
       subman.dispose();
 

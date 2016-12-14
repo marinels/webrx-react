@@ -40,7 +40,7 @@ function invokeCommand<T, TResult>(command: (x: T) => wx.ICommand<TResult> | wx.
       command: <wx.ICommand<TResult>>(command instanceof Function ? command(x) : command),
     }))
     .debounce(x => x.command.canExecuteObservable.startWith(x.command.canExecute(x.parameter)).where(b => b))
-    .select(x => x.command.executeAsync(x.parameter).catch(Rx.Observable.empty<TResult>()))
+    .select(x => x.command.executeAsync(x.parameter).catch(Observable.empty<TResult>()))
     .switch()
     .subscribe();
 }

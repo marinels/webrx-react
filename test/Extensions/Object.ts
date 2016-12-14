@@ -1,3 +1,4 @@
+import { Disposable } from 'rx';
 import { expect } from 'chai';
 
 import '../../src/Extensions/Object';
@@ -87,7 +88,7 @@ describe('Object Extensions', () => {
 
     it('Can dispose a disposable', () => {
       let disposed = false;
-      let disposable = new Rx.Disposable(() => disposed = true);
+      let disposable = new Disposable(() => disposed = true);
       expect(Object.dispose(disposable)).to.be.null;
       expect(disposed).to.equal(true);
     });
