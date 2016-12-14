@@ -19,7 +19,6 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
   public static displayName = 'ItemListPanelView';
 
   static defaultProps = {
-    fill: true,
   };
 
   updateOn() {
@@ -41,15 +40,15 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
         {
           this.renderConditional(props.search === true && this.state.isLoading() === false, () => (
             <DataGridView.Search grid={ this.state.grid } view={ props.view } fill />
-          ), () => React.isValidElement(props.search) ? props.search : (<DataGridView.Search { ...props.search } grid={ this.state.grid } view={ props.view } fill />))
+          ), () => (props.search == null || React.isValidElement(props.search)) ? props.search : (<DataGridView.Search { ...props.search } grid={ this.state.grid } view={ props.view } fill />))
         }
-        <DataGridView { ...props } viewModel={ this.state.grid } search={ false } pager={ false }>
+        <DataGridView { ...props } viewModel={ this.state.grid } search={ false } pager={ false } fill>
           { children }
         </DataGridView>
         {
           this.renderConditional(props.pager === true && this.state.isLoading() === false, () => (
             <DataGridView.Pager grid={ this.state.grid } view={ props.view } limits={ props.pagerLimits } fill />
-          ), () => React.isValidElement(props.pager) ? props.pager : (<DataGridView.Pager limits={ props.pagerLimits } { ...props.pager } grid={ this.state.grid } view={ props.view } fill />))
+          ), () => (props.pager == null || React.isValidElement(props.pager)) ? props.pager : (<DataGridView.Pager limits={ props.pagerLimits } { ...props.pager } grid={ this.state.grid } view={ props.view } fill />))
         }
       </CommonPanel>
     );
