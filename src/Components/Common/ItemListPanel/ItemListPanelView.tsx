@@ -38,17 +38,27 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
     return (
       <CommonPanel { ...rest } className={ classNames('ItemListPanel', viewType, className) }>
         {
-          this.renderConditional(props.search === true && this.state.isLoading() === false, () => (
-            <DataGridView.Search grid={ this.state.grid } view={ props.view } fill />
-          ), () => (props.search == null || React.isValidElement(props.search)) ? props.search : (<DataGridView.Search { ...props.search } grid={ this.state.grid } view={ props.view } fill />))
+          this.renderConditional(
+            props.search !== false && this.state.isLoading() === false,
+            () => this.renderConditional(
+              React.isValidElement(props.search),
+              props.search,
+              () => <DataGridView.Search { ...(props.search === true ? {} : props.search) } grid={ this.state.grid } view={ props.view } fill />
+            )
+          )
         }
         <DataGridView { ...props } viewModel={ this.state.grid } search={ false } pager={ false } fill>
           { children }
         </DataGridView>
         {
-          this.renderConditional(props.pager === true && this.state.isLoading() === false, () => (
-            <DataGridView.Pager grid={ this.state.grid } view={ props.view } limits={ props.pagerLimits } fill />
-          ), () => (props.pager == null || React.isValidElement(props.pager)) ? props.pager : (<DataGridView.Pager limits={ props.pagerLimits } { ...props.pager } grid={ this.state.grid } view={ props.view } fill />))
+          this.renderConditional(
+            props.pager !== false && this.state.isLoading() === false,
+            () => this.renderConditional(
+              React.isValidElement(props.pager),
+              props.pager,
+              () => <DataGridView.Pager limits={ props.pagerLimits } { ...(props.pager === true ? {} : props.pager) } grid={ this.state.grid } view={ props.view } fill />
+            )
+          )
         }
       </CommonPanel>
     );

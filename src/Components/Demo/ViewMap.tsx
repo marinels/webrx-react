@@ -220,7 +220,10 @@ const viewMap: ViewActivatorMap = {
         x => sampleDataTemplate(x)
       );
 
+      // this is the simple method of overriding pager details
       pager = { order: [ 'controls', 'info' ] };
+      // this method allows much more complex composition
+      // pager = (<DataGridView.Pager grid={ viewModel } view={ view } order={ [ null, 'info' ] } />);
     }
 
     if (componentRoute === 'DataGrid') {
