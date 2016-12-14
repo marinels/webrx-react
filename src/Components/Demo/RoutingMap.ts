@@ -86,7 +86,19 @@ const sampleTreeData = sampleListData
     }, x)
   );
 
-const sampleDataSource = <Components.AsyncDataSource<SampleData, Components.AsyncDataResult<SampleData>>>{
+interface SampleDataSourceRequest extends Components.ProjectionRequest {
+  type: string;
+}
+
+const sampleDataSource = <Components.AsyncDataSource<SampleDataSourceRequest, Components.ProjectionResult<SampleData>>>{
+    requests: <Observable<SampleDataSourceRequest>>Observable
+      .timer(2000, 20000)
+      .map(x => ({
+        type: `param ${ x }`,
+      }))
+      .doOnNext(x => {
+        Alert.create('Input Param Changed', `type = ${ x.type }`, undefined, 1000);
+      }),
     getResultAsync: (request) => {
       if (request.filter === 'throw') {
         throw new Error('Simulated Coding Error');
@@ -94,9 +106,12 @@ const sampleDataSource = <Components.AsyncDataSource<SampleData, Components.Asyn
 
       return Observable
         .of(sampleListData)
+        // simulate async result delay
+        .delay(2000)
         .doOnNext(x => {
           const msg = [
-            'Simulating Async Data Request...',
+            'Simulating Async Data Result...',
+            `type = ${ request.type }`,
             `filter = ${ request.filter }`,
             `offset = ${ request.offset }`,
             `limit = ${ request.limit }`,
@@ -105,7 +120,6 @@ const sampleDataSource = <Components.AsyncDataSource<SampleData, Components.Asyn
           ].join('<br/>');
           Alert.create(msg, 'Async DataGrid Demo', undefined, 1000);
         })
-        .delay(1000)
         .map(x => {
           let query = x
             .asEnumerable();
@@ -145,10 +159,10 @@ const sampleDataSource = <Components.AsyncDataSource<SampleData, Components.Asyn
             query = query.take(request.limit);
           }
 
-          const data = query.toArray();
+          const items = query.toArray();
 
-          return <Components.AsyncDataResult<SampleData>>{
-            data,
+          return <Components.ProjectionResult<SampleData>>{
+            items,
             count,
           };
         });
@@ -201,11 +215,7 @@ routeMap.addRoute('WebRx-React', 'ListItemListPanel', 'Item List Panel (List)', 
   new Components.ItemListPanelViewModel(Observable.of(sampleListData), (x, r) => r.test(x.name))
 );
 routeMap.addRoute('WebRx-React', 'AsyncItemListPanel', 'ItemListPanel (Async)', (state: any) => {
-  const canGetResult = Observable.of(true).delay(1000);
-  const dataSource = Object.assign<Components.AsyncDataSource<SampleData, Components.AsyncDataResult<SampleData>>>({ canGetResult }, sampleDataSource);
-  const vm = new Components.AsyncItemListPanelViewModel(dataSource, true, true);
-  vm.grid.requestData.canExecuteObservable.take(1).invokeCommand(vm.grid.refresh);
-  return vm;
+  return new Components.AsyncItemListPanelViewModel(sampleDataSource, true, true);
 });
 routeMap.addRoute('WebRx-React', 'InlineEdit', 'InlineEdit', (state: any) => {
   interface SampleUser {
