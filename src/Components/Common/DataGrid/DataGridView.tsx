@@ -423,15 +423,21 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
         () => (
           <div { ...rest } className={ classNames('DataGrid', className) }>
             {
-              this.renderConditional(props.search === true, () => (
-                <DataGridView.Search grid={ this.state } view={ props.view } />
-              ), () => (props.search == null || React.isValidElement(props.search)) ? props.search : (<DataGridView.Search { ...props.search } grid={ this.state } view={ props.view } />))
+              this.renderConditional(
+                props.search !== false,
+                () => React.isValidElement(props.search) ? props.search : (
+                  <DataGridView.Search { ...(props.search === true ? {} : props.search) } grid={ this.state } view={ props.view } />
+                )
+              )
             }
             { grid }
             {
-              this.renderConditional(props.pager === true, () => (
-                <DataGridView.Pager grid={ this.state } view={ props.view } limits={ props.pagerLimits } />
-              ), () => (props.pager == null || React.isValidElement(props.pager)) ? props.pager : (<DataGridView.Pager limits={ props.pagerLimits } { ...props.pager } grid={ this.state } view={ props.view } />))
+              this.renderConditional(
+                props.pager !== false,
+                () => React.isValidElement(props.pager) ? props.pager : (
+                  <DataGridView.Pager limits={ props.pagerLimits } { ...(props.pager === true ? {} : props.pager) } grid={ this.state } view={ props.view } />
+                )
+              )
             }
           </div>
         ),
