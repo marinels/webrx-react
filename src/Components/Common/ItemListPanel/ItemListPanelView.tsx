@@ -19,7 +19,6 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
   public static displayName = 'ItemListPanelView';
 
   static defaultProps = {
-    fill: true,
   };
 
   updateOn() {
@@ -43,7 +42,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
             <DataGridView.Search grid={ this.state.grid } view={ props.view } fill />
           ), () => (props.search == null || React.isValidElement(props.search)) ? props.search : (<DataGridView.Search { ...props.search } grid={ this.state.grid } view={ props.view } fill />))
         }
-        <DataGridView { ...props } viewModel={ this.state.grid } search={ false } pager={ false }>
+        <DataGridView { ...props } viewModel={ this.state.grid } search={ false } pager={ false } fill>
           { children }
         </DataGridView>
         {
