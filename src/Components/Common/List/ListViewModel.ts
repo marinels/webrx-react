@@ -3,8 +3,6 @@ import * as wx from 'webrx';
 
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 
-export type ObservableItemList<TData> = wx.IObservableProperty<TData[]> | Observable<TData[]>;
-
 export interface SelectableItem {
   isSelected: boolean;
 }
@@ -23,7 +21,7 @@ export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<T
   protected toggleSelection: wx.ICommand<TData>;
 
   constructor(
-    items: ObservableItemList<TData> = wx.property<TData[]>([]),
+    items: wx.ObservableOrProperty<TData[]> = wx.property<TData[]>([]),
     public isMultiSelectEnabled = false,
     isRoutingEnabled?: boolean
   ) {

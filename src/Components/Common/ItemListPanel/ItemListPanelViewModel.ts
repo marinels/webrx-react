@@ -1,7 +1,6 @@
 import * as wx from 'webrx';
 
 import { BaseItemListPanelViewModel } from './BaseItemListPanelViewModel';
-import { ObservableItemList } from '../List/ListViewModel';
 import { DataGridViewModel } from '../DataGrid/DataGridViewModel';
 import { ObjectComparer } from '../../../Utils/Compare';
 
@@ -13,7 +12,7 @@ export class ItemListPanelViewModel<TData> extends BaseItemListPanelViewModel<TD
   }
 
   constructor(
-    items?: ObservableItemList<TData>,
+    items?: wx.ObservableOrProperty<TData[]>,
     filterer?: (item: TData, regex: RegExp) => boolean,
     comparer?: ObjectComparer<TData>,
     isMultiSelectEnabled?: boolean,
