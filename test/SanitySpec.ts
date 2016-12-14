@@ -1,7 +1,6 @@
-import { expect } from 'chai';
-
-import * as Rx from 'rx';
+import { Observable } from 'rx';
 import * as wx from 'webrx';
+import { expect } from 'chai';
 
 describe('Sanity Tests', () => {
   it('Can make assertions', () => {
@@ -9,7 +8,7 @@ describe('Sanity Tests', () => {
   });
 
   it('Can access Rx', () => {
-    let source = Rx.Observable.return(1);
+    let source = Observable.return(1);
     expect(source).to.exist;
     source.subscribe(x => {
       expect(x).to.equal(1);

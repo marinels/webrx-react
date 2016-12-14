@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { findDOMNode } from 'react-dom';
 import { Icon } from 'react-fa';
 import * as classNames from 'classnames';
 import { FormGroup, InputGroup, FormControl, Sizes } from 'react-bootstrap';
@@ -47,7 +47,7 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
   }
 
   private focusAndSelectControlText() {
-    const control = ReactDOM.findDOMNode(this.refs['control']) as HTMLInputElement;
+    const control = findDOMNode(this.refs['control']) as HTMLInputElement;
 
     if (control != null) {
       control.focus();

@@ -1,21 +1,16 @@
-import * as Rx from 'rx';
 import * as wx from 'webrx';
 
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
-import { DataGridViewModel } from '../DataGrid/DataGridViewModel';
+import { BaseDataGridViewModel, ProjectionRequest, ProjectionResult } from '../DataGrid/DataGridViewModel';
 
-export abstract class BaseItemListPanelViewModel<TData, TGrid extends DataGridViewModel<TData>> extends BaseRoutableViewModel<any> {
+export abstract class BaseItemListPanelViewModel<TData, TRequest extends ProjectionRequest, TResult extends ProjectionResult<TData>, TGrid extends BaseDataGridViewModel<TData, TRequest, TResult>> extends BaseRoutableViewModel<any> {
   public static displayName = 'BaseItemListPanelViewModel';
-
-  public navigate: wx.ICommand<TData>;
 
   constructor(
     public grid: TGrid,
     isRoutingEnabled?: boolean
   ) {
     super(isRoutingEnabled);
-
-    this.navigate = wx.asyncCommand((x: TData) => Rx.Observable.return(x));
   }
 
   public get isLoading() {
@@ -24,6 +19,10 @@ export abstract class BaseItemListPanelViewModel<TData, TGrid extends DataGridVi
 
   public get items() {
     return this.grid.items;
+  }
+
+  public get projectedItems() {
+    return this.grid.projectedItems;
   }
 
   public get lengthChanged() {

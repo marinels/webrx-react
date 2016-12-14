@@ -10,6 +10,17 @@ export interface LifecycleComponentViewModel {
   cleanupViewModel(): void;
 }
 
+export function isViewModel(source: any): source is BaseViewModel {
+  const viewModel = <BaseViewModel>source;
+
+  if (viewModel != null && viewModel.isViewModel instanceof Function) {
+    return viewModel.isViewModel();
+  }
+  else {
+    return false;
+  }
+}
+
 export abstract class BaseViewModel implements IDisposable {
   public static displayName = 'BaseViewModel';
 
@@ -66,6 +77,10 @@ export abstract class BaseViewModel implements IDisposable {
 
   protected get logger() {
     return this.viewModelLogger.value;
+  }
+
+  public isViewModel() {
+    return true;
   }
 
   public dispose() {

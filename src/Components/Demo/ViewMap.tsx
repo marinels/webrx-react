@@ -238,7 +238,7 @@ const viewMap: ViewActivatorMap = {
       </DataGridView>
     );
   },
-  AsyncDataGridViewModel: (viewModel: AsyncDataGridViewModel<any, any>) => (
+  AsyncDataGridViewModel: (viewModel: AsyncDataGridViewModel<any, any, any>) => (
     <DataGridView viewModel={ viewModel } pager pagerLimits={ [ 1, 5, 10, null ] }>
       <DataGridColumn key='name' fieldName='name' header='Name' sortable />
       <DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 } />
@@ -321,7 +321,7 @@ const viewMap: ViewActivatorMap = {
         <ItemListPanelView viewModel={viewModel} headerContent='Sample Grid Data' collapsible pager search
           headerActions={[ { id: 'header', children: 'Header Action' } ]}
           footerContent={ (<CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
-          footerActions={[ { id: 'footer', bsStyle: 'primary', command: viewModel.navigate, children: (<ViewAllFooterAction suffix='Things' />) } ]}
+          footerActions={[ { id: 'viewall', bsStyle: 'primary', command: wx.command(x => Alert.create(x, 'View All Pressed')), commandParameter: 'ItemListPanel', children: (<ViewAllFooterAction suffix='Things' />) } ]}
         >
           <DataGridColumn fieldName='name' header='Name' sortable className='col-md-8' />
           <DataGridColumn fieldName='requiredBy' header='Required By' sortable className='col-md-4' />
@@ -341,9 +341,9 @@ const viewMap: ViewActivatorMap = {
       );
     }
   },
-  AsyncItemListPanelViewModel: (viewModel: AsyncItemListPanelViewModel<any, any>) => (
+  AsyncItemListPanelViewModel: (viewModel: AsyncItemListPanelViewModel<any, any, any>) => (
     <ItemListPanelView viewModel={viewModel} headerContent='Sample Data' collapsible pager
-      headerActions={[ { id: 'footer', bsStyle: 'primary', command: viewModel.navigate, children: (<ViewAllFooterAction suffix='Things' />) } ]}
+      headerActions={[ { id: 'viewall', bsStyle: 'primary', command: wx.command(x => Alert.create(x, 'View All Pressed')), commandParameter: 'AsyncItemListPanel', children: (<ViewAllFooterAction suffix='Things' />) } ]}
       footerContent={ (<CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
       footerActions={[ { id: 'refresh', command: viewModel.grid.refresh, children: 'Refresh' } ]}
     >

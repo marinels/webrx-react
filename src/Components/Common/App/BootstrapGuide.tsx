@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { findDOMNode } from 'react-dom';
 import { Observable, IDisposable } from 'rx';
 import { Enumerable } from 'ix';
 import { Grid, Row, Col } from 'react-bootstrap';
@@ -13,11 +13,11 @@ export class BootstrapGuide extends React.Component<BootstrapGuideProps, any> {
   private mouseMoveSub: IDisposable;
 
   componentDidMount() {
-    const guide = ReactDOM.findDOMNode(this.refs['guide']) as HTMLDivElement;
+    const guide = findDOMNode(this.refs['guide']) as HTMLDivElement;
 
     if (guide != null) {
-      const hline = ReactDOM.findDOMNode(this.refs['hline']) as HTMLDivElement;
-      const vline = ReactDOM.findDOMNode(this.refs['vline']) as HTMLDivElement;
+      const hline = findDOMNode(this.refs['hline']) as HTMLDivElement;
+      const vline = findDOMNode(this.refs['vline']) as HTMLDivElement;
 
       this.mouseMoveSub = Observable
         .fromEvent(document, 'mousemove')

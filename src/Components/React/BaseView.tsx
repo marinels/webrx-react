@@ -4,8 +4,8 @@ import * as wx from 'webrx';
 
 import { Logging } from '../../Utils';
 import { BaseViewModel, LifecycleComponentViewModel } from './BaseViewModel';
-import * as bindingHelpers from './BindingHelpers';
-import * as renderHelpers from './RenderHelpers';
+import { bindObservableToCommand, bindEventToProperty, bindEventToCommand } from './BindingHelpers';
+import { renderEnumerable, renderConditional, renderLoadable, renderSizedLoadable, renderGridLoadable } from './RenderHelpers';
 
 export interface ViewModelProps {
   viewModel: BaseViewModel;
@@ -22,11 +22,11 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
   // -----------------------------------------
   // these are render helper methods
   // -----------------------------------------
-  protected renderEnumerable = renderHelpers.renderEnumerable;
-  protected renderConditional = renderHelpers.renderConditional;
-  protected renderLoadable = renderHelpers.renderLoadable;
-  protected renderSizedLoadable = renderHelpers.renderSizedLoadable;
-  protected renderGridLoadable = renderHelpers.renderGridLoadable;
+  protected renderEnumerable = renderEnumerable;
+  protected renderConditional = renderConditional;
+  protected renderLoadable = renderLoadable;
+  protected renderSizedLoadable = renderSizedLoadable;
+  protected renderGridLoadable = renderGridLoadable;
 
   protected logger = Logging.getLogger(this.getDisplayName());
 
@@ -190,7 +190,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
    * Binds an observable to a command on the view model
    */
   protected bindObservableToCommand<TResult>(commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>, observable: Observable<TResult>) {
-    return bindingHelpers.bindObservableToCommand(this.state, commandSelector, observable);
+    return bindObservableToCommand(this.state, commandSelector, observable);
   }
 
   /**
@@ -200,7 +200,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     targetSelector: (viewModel: TViewModel) => wx.IObservableProperty<TValue>,
     valueSelector?: (eventKey: any, event: TEvent) => TValue
   ): any {
-    return bindingHelpers.bindEventToProperty(this, this.state, targetSelector, valueSelector);
+    return bindEventToProperty(this, this.state, targetSelector, valueSelector);
   }
 
   /**
@@ -211,7 +211,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     paramSelector?: (eventKey: any, event: TEvent) => TParameter,
     conditionSelector?: (event: TEvent, eventKey: any) => boolean
   ): any {
-    return bindingHelpers.bindEventToCommand(this, this.state, commandSelector, paramSelector, conditionSelector);
+    return bindEventToCommand(this, this.state, commandSelector, paramSelector, conditionSelector);
   }
   // -----------------------------------------
 }
