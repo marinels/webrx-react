@@ -97,7 +97,7 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
   }
 
   private shouldRenderLimit() {
-    return (this.props.limits || []).length > 0 && (this.state.itemCount() || 0) > 0;
+    return (this.props.limits || []).length > 1 && (this.state.itemCount() || 0) > 0;
   }
 
   private renderComponent(location: string, type: PagerComponentTypes) {

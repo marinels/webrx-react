@@ -92,10 +92,17 @@ interface SampleDataSourceRequest extends Components.ProjectionRequest {
 
 const sampleDataSource = <Components.AsyncDataSource<SampleDataSourceRequest, Components.ProjectionResult<SampleData>>>{
     requests: <Observable<SampleDataSourceRequest>>Observable
-      .timer(2000, 20000)
-      .map(x => ({
-        type: `param ${ x }`,
-      }))
+      .timer(2000, 10000)
+      .map(x => {
+        if (x === 2) {
+          // this will kill this request stream
+          throw new Error('Simulated Request Stream Error');
+        }
+
+        return {
+          type: `param ${ x }`,
+        };
+      })
       .doOnNext(x => {
         Alert.create('Input Param Changed', `type = ${ x.type }`, undefined, 1000);
       }),

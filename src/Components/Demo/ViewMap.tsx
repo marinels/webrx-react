@@ -220,7 +220,7 @@ const viewMap: ViewActivatorMap = {
         x => sampleDataTemplate(x)
       );
 
-      pager = <DataGridView.Pager grid={ viewModel } view={ view } order={ [ 'controls', 'info', 'limit' ] } />;
+      pager = { order: [ 'controls', 'info' ] };
     }
 
     if (componentRoute === 'DataGrid') {

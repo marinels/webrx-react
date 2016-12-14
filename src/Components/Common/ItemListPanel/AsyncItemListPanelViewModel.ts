@@ -34,3 +34,7 @@ export class AsyncItemListPanelViewModel<TData, TRequest extends ProjectionReque
       .distinctUntilChanged();
   }
 }
+
+export class BasicAsyncItemListPanelViewModel<TData, TRequest extends ProjectionRequest> extends AsyncItemListPanelViewModel<TData, TRequest, ProjectionResult<TData>> {
+  public static displayName = 'BasicAsyncItemListPanelViewModel';
+}

@@ -8,6 +8,9 @@ export interface AsyncDataSource<TRequest extends ProjectionRequest, TResult ext
   getResultAsync(request: TRequest): Observable<TResult>;
 }
 
+export interface BasicAsyncDataSource<TRequest extends ProjectionRequest, TData> extends AsyncDataSource<TRequest, ProjectionResult<TData>> {
+}
+
 export function isAsyncDataSource(source: any): source is AsyncDataSource<any, any> {
   const dataSource = <AsyncDataSource<any, any>>source;
   if (dataSource != null && Observable.isObservable(dataSource.requests) && dataSource.getResultAsync instanceof Function) {

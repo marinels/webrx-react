@@ -22,6 +22,12 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
     fill: true,
   };
 
+  updateOn() {
+    return [
+      this.state.isLoading.changed,
+    ];
+  }
+
   render() {
     const { className, children, rest, props } = this.restProps(x => {
       const { fill, view, search, pager, pagerLimits, loadingContent, selectable, highlightSelected, checkmarkSelected } = x;
@@ -33,17 +39,17 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
     return (
       <CommonPanel { ...rest } className={ classNames('ItemListPanel', viewType, className) }>
         {
-          this.renderConditional(props.search === true, () => (
+          this.renderConditional(props.search === true && this.state.isLoading() === false, () => (
             <DataGridView.Search grid={ this.state.grid } view={ props.view } fill />
-          ), () => props.search)
+          ), () => React.isValidElement(props.search) ? props.search : (<DataGridView.Search { ...props.search } grid={ this.state.grid } view={ props.view } fill />))
         }
         <DataGridView { ...props } viewModel={ this.state.grid } search={ false } pager={ false }>
           { children }
         </DataGridView>
         {
-          this.renderConditional(props.pager === true, () => (
+          this.renderConditional(props.pager === true && this.state.isLoading() === false, () => (
             <DataGridView.Pager grid={ this.state.grid } view={ props.view } limits={ props.pagerLimits } fill />
-          ), () => props.pager)
+          ), () => React.isValidElement(props.pager) ? props.pager : (<DataGridView.Pager limits={ props.pagerLimits } { ...props.pager } grid={ this.state.grid } view={ props.view } fill />))
         }
       </CommonPanel>
     );
