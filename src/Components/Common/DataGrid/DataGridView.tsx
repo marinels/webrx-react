@@ -339,8 +339,8 @@ export class DataGridPager extends React.Component<DataGridPagerProps, any> {
 export interface DataGridProps extends ListViewRenderTemplateProps {
   fill?: boolean;
   view?: DataGridViewTemplate<any>;
-  search?: boolean | SearchView;
-  pager?: boolean | PagerView;
+  search?: boolean | SearchProps | any;
+  pager?: boolean | PagerProps | any;
   pagerLimits?: number[];
   loadingContent?: any;
   children?: DataGridColumn[];
@@ -425,13 +425,13 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
             {
               this.renderConditional(props.search === true, () => (
                 <DataGridView.Search grid={ this.state } view={ props.view } />
-              ), () => props.search)
+              ), () => React.isValidElement(props.search) ? props.search : (<DataGridView.Search { ...props.search } grid={ this.state } view={ props.view } />))
             }
             { grid }
             {
               this.renderConditional(props.pager === true, () => (
                 <DataGridView.Pager grid={ this.state } view={ props.view } limits={ props.pagerLimits } />
-              ), () => props.pager)
+              ), () => React.isValidElement(props.pager) ? props.pager : (<DataGridView.Pager limits={ props.pagerLimits } { ...props.pager } grid={ this.state } view={ props.view } />))
             }
           </div>
         ),
