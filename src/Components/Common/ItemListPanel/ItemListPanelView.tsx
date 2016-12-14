@@ -22,6 +22,12 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
     fill: true,
   };
 
+  updateOn() {
+    return [
+      this.state.isLoading.changed,
+    ];
+  }
+
   render() {
     const { className, children, rest, props } = this.restProps(x => {
       const { fill, view, search, pager, pagerLimits, loadingContent, selectable, highlightSelected, checkmarkSelected } = x;
@@ -33,7 +39,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
     return (
       <CommonPanel { ...rest } className={ classNames('ItemListPanel', viewType, className) }>
         {
-          this.renderConditional(props.search === true, () => (
+          this.renderConditional(props.search === true && this.state.isLoading() === false, () => (
             <DataGridView.Search grid={ this.state.grid } view={ props.view } fill />
           ), () => props.search)
         }
@@ -41,7 +47,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
           { children }
         </DataGridView>
         {
-          this.renderConditional(props.pager === true, () => (
+          this.renderConditional(props.pager === true && this.state.isLoading() === false, () => (
             <DataGridView.Pager grid={ this.state.grid } view={ props.view } limits={ props.pagerLimits } fill />
           ), () => props.pager)
         }
