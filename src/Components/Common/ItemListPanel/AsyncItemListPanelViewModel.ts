@@ -1,13 +1,14 @@
 import * as wx from 'webrx';
 
 import { BaseItemListPanelViewModel } from './BaseItemListPanelViewModel';
-import { AsyncDataGridViewModel, AsyncDataSource, AsyncDataResult } from '../DataGrid/AsyncDataGridViewModel';
+import { AsyncDataGridViewModel, isAsyncDataSource, AsyncDataSource } from '../DataGrid/AsyncDataGridViewModel';
+import { ProjectionRequest, ProjectionResult } from '../DataGrid/DataGridViewModel';
 
-export class AsyncItemListPanelViewModel<TData, TResult extends AsyncDataResult<TData>> extends BaseItemListPanelViewModel<TData, AsyncDataGridViewModel<TData, TResult>> {
+export class AsyncItemListPanelViewModel<TData, TRequest extends ProjectionRequest, TResult extends ProjectionResult<TData>> extends BaseItemListPanelViewModel<TData, TRequest, TResult, AsyncDataGridViewModel<TData, TRequest, TResult>> {
   public static displayName = 'AsyncItemListPanelViewModel';
 
   constructor(
-    dataSourceOrViewModel: AsyncDataSource<TData, TResult> | AsyncDataGridViewModel<TData, TResult>,
+    dataSourceOrViewModel: AsyncDataSource<TRequest, TResult> | AsyncDataGridViewModel<TData, TRequest, TResult>,
     enableFilter?: boolean,
     enableSort?: boolean,
     isMultiSelectEnabled?: boolean,
@@ -16,14 +17,11 @@ export class AsyncItemListPanelViewModel<TData, TResult extends AsyncDataResult<
     rateLimit?: number,
     isRoutingEnabled?: boolean
   ) {
-    const dataSource = <AsyncDataSource<TData, TResult>>dataSourceOrViewModel;
-    let dataGridViewModel = <AsyncDataGridViewModel<TData, TResult>>dataSourceOrViewModel;
+    const grid = isAsyncDataSource(dataSourceOrViewModel) ?
+      new AsyncDataGridViewModel<TData, TRequest, TResult>(dataSourceOrViewModel, enableFilter, enableSort, isMultiSelectEnabled, isLoading, pagerLimit, rateLimit, isRoutingEnabled) :
+      dataSourceOrViewModel;
 
-    if (dataGridViewModel.asyncResult == null) {
-      dataGridViewModel = new AsyncDataGridViewModel(dataSource, enableFilter, enableSort, isMultiSelectEnabled, isLoading, pagerLimit, rateLimit, isRoutingEnabled);
-    }
-
-    super(dataGridViewModel, isRoutingEnabled);
+    super(grid, isRoutingEnabled);
   }
 
   public get items() {

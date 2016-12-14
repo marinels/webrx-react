@@ -1,5 +1,5 @@
-import * as wx from 'webrx';
 import { Observable } from 'rx';
+import * as wx from 'webrx';
 
 import { ObjectComparer, SortDirection } from '../../../Utils/Compare';
 import { ListViewModel } from '../List/ListViewModel';
@@ -11,6 +11,20 @@ export interface SortArgs {
   direction: SortDirection;
 }
 
+export interface ProjectionRequest {
+  filter?: string;
+  regex?: RegExp;
+  offset?: number;
+  limit?: number;
+  sortField?: string;
+  sortDirection?: SortDirection;
+}
+
+export interface ProjectionResult<TData> {
+  items: TData[];
+  count: number;
+}
+
 export interface DataGridRoutingState {
   search: SearchRoutingState;
   sortBy: string;
@@ -18,16 +32,14 @@ export interface DataGridRoutingState {
   pager: PagerRoutingState;
 }
 
-export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRoutingState> {
-  public static displayName = 'DataGridViewModel';
-
-  public static create<TData>(...items: TData[]) {
-    return new DataGridViewModel(wx.property<TData[]>(items));
-  }
+export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRequest, TResult extends ProjectionResult<TData>> extends ListViewModel<TData, DataGridRoutingState> {
+  public static displayName = 'BaseDataGridViewModel';
 
   public search: SearchViewModel;
   public pager: PagerViewModel;
 
+  public projectionRequests: wx.IObservableReadOnlyProperty<TRequest>;
+  public projectionResults: wx.IObservableReadOnlyProperty<TResult>;
   public projectedItems: wx.IObservableReadOnlyProperty<TData[]>;
   public sortField: wx.IObservableReadOnlyProperty<string>;
   public sortDirection: wx.IObservableReadOnlyProperty<SortDirection>;
@@ -36,8 +48,10 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
   public sort: wx.ICommand<SortArgs>;
   public toggleSortDirection: wx.ICommand<string>;
   public refresh: wx.ICommand<any>;
+  protected project: wx.ICommand<TResult>;
 
   constructor(
+    requests: Observable<TRequest> = Observable.of<TRequest>(null),
     items?: wx.ObservableOrProperty<TData[]>,
     protected filterer?: (item: TData, regex: RegExp) => boolean,
     protected comparer = new ObjectComparer<TData>(),
@@ -49,17 +63,7 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
   ) {
     super(items, isMultiSelectEnabled, isRoutingEnabled);
 
-    if (wx.isProperty(isLoading) === true) {
-      this.isLoading = <wx.IObservableReadOnlyProperty<boolean>>isLoading;
-    }
-    else if (Observable.isObservable(isLoading) === true) {
-      this.isLoading = (<Observable<boolean>>isLoading).toProperty(true);
-    }
-    else {
-      this.isLoading = Observable.of(false).toProperty();
-    }
-
-    this.search = new SearchViewModel(true, undefined, undefined, this.isRoutingEnabled);
+    this.search = new SearchViewModel(undefined, undefined, this.isRoutingEnabled);
     this.pager = new PagerViewModel(pagerLimit, this.isRoutingEnabled);
 
     this.sort = wx.asyncCommand((x: SortArgs) => Observable.of(x));
@@ -69,28 +73,95 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
     const sortChanged = wx
       .whenAny(this.sort.results, x => x);
 
-    this.sortField = sortChanged
-      .map(x => x == null ? null : x.field)
+    this.sortField = Observable
+      .merge(
+        this.routingState.changed.map(x => x.sortBy),
+        sortChanged.map(x => x.field)
+      )
+      .map(x => x || null)
       .toProperty();
 
-    this.sortDirection = sortChanged
-      .map(x => x == null ? null : x.direction)
+    this.sortDirection = Observable
+      .merge(
+        this.routingState.changed.map(x => x.sortDir),
+        sortChanged.map(x => x.direction)
+      )
+      .map(x => x || null)
       .toProperty();
+
+    this.projectionRequests = wx
+      .whenAny(
+        // merge our input requests with our projection requests
+        this.getObservableOrAlert(
+          () => wx
+            .whenAny(this.getProjectionRequests(), requests, (pr, r) => ({ pr, r }))
+            .filter(x => x.pr != null)
+            .map(x => Object.assign<TRequest>({}, x.pr, x.r)),
+          'Error Creating Data Grid Requests',
+        ),
+        // whenever our source items list changes we also want to re-project
+        this.items,
+        // whenever a discrete refresh request is made we need to re-project
+        this.refresh.results.startWith(null),
+        // we only care about the requests object from here on out
+        x => x,
+      )
+      // filter out null request data
+      .filter(x => x != null)
+      .toProperty();
+
+    this.project = wx.asyncCommand((x: TRequest) => {
+      return this
+        .getObservableOrAlert(
+          () => this.getProjectionResult(x),
+          'Error Projecting Data Grid Results',
+        )
+        // this ensures that errors still generate a result
+        .defaultIfEmpty(null);
+    });
+
+    this.projectionResults = wx
+      .whenAny(this.project.results, x => x)
+      // we will get null projection results back if there is an error
+      // so just filter these results out of our results observable
+      .filter(x => x != null)
+      .toProperty();
+
+    if (wx.isProperty(isLoading) === true) {
+      this.isLoading = <wx.IObservableReadOnlyProperty<boolean>>isLoading;
+    }
+    else if (Observable.isObservable(isLoading) === true) {
+      this.isLoading = (<Observable<boolean>>isLoading).toProperty(true);
+    }
+    else {
+      // setup a default isLoading observable
+      this.isLoading = Observable
+        .merge(
+          this.project.isExecuting.filter(x => x === true),
+          this.project.results.map(() => false)
+        )
+        .toProperty(true);
+    }
 
     this.projectedItems = wx
-      .whenAny(
-        this.pager.offset,
-        this.pager.limit,
-        this.sortField,
-        this.sortDirection,
-        this.items,
-        this.search.results,
-        this.refresh.results,
-        () => null
-      )
-      .debounce(rateLimit)
-      .flatMap(x => this.getProjectedItems())
+      .whenAny(this.project.results, x => x)
+      .do(x => {
+        // update global pager state
+        this.pager.itemCount(x.count);
+      })
+      // project back down into the item array
+      .map(x => x.items)
       .toProperty();
+
+    // whenever there is a new request we re-project
+    this.subscribe(wx
+      .whenAny(this.projectionRequests, x => x)
+      // ignore the (first) null requests
+      .filter(x => x != null)
+      // debounce on input projection requests
+      .debounce(rateLimit)
+      .invokeCommand(this.project)
+    );
 
     this.subscribe(
       this.toggleSortDirection.results
@@ -102,54 +173,30 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
         }))
         .invokeCommand(x => this.sort)
     );
-
-    this.subscribe(wx
-      .whenAny(this.items, x => (x || []).length)
-      .subscribe(x => {
-        this.pager.itemCount(x);
-      })
-    );
-
-    this.refresh.execute(null);
   }
 
-  protected getProjectedItems() {
-    return Observable
-      .defer(() => this.projectItems())
-      .catch(e => {
-        this.alertForError(e, 'Error Projecting Data');
-
-        return Observable.empty<TData[]>();
-      });
+  // create the default projection request structure
+  protected getProjectionRequests() {
+    return wx
+      .whenAny(
+        this.search.requests,
+        this.pager.offset,
+        this.pager.limit,
+        this.sortField,
+        this.sortDirection,
+        (search, offset, limit, sortField, sortDirection) => <ProjectionRequest>{
+          filter: search == null ? null : search.filter,
+          regex: search == null ? null : search.regex,
+          search,
+          offset,
+          limit,
+          sortField,
+          sortDirection,
+        }
+      );
   }
 
-  protected projectItems() {
-    let items = this.items();
-    const regex = this.search.regex();
-
-    if (this.filterer != null && regex != null) {
-      items = items.filter(x => this.filterer(x, regex));
-    }
-
-    this.pager.itemCount(items.length);
-
-    if (this.comparer != null && String.isNullOrEmpty(this.sortField()) === false && this.sortDirection() != null) {
-      items = items.sort((a, b) => {
-        return this.comparer.compare(a, b, this.sortField(), this.sortDirection());
-      });
-    }
-
-    const offset = this.pager.offset() || 0;
-
-    if (offset > 0 || (this.pager.limit() || 0) > 0) {
-      const end = this.pager.limit() == null ? items.length : offset + this.pager.limit();
-
-      items = items.slice(offset, end);
-    }
-
-    return Observable
-      .of(items);
-  }
+  protected abstract getProjectionResult(request: TRequest): Observable<TResult>;
 
   public canFilter() {
     return this.filterer != null;
@@ -183,8 +230,55 @@ export class DataGridViewModel<TData> extends ListViewModel<TData, DataGridRouti
   loadRoutingState(state: DataGridRoutingState) {
     this.search.setRoutingState(state.search);
     this.pager.setRoutingState(state.pager);
+  }
+}
 
-    this.sortField(state.sortBy);
-    this.sortDirection(state.sortDir);
+export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, ProjectionRequest, ProjectionResult<TData>> {
+  public static displayName = 'DataGridViewModel';
+
+  public static create<TData>(...items: TData[]) {
+    return new DataGridViewModel(wx.property<TData[]>(items));
+  }
+
+  constructor(
+    items?: wx.ObservableOrProperty<TData[]>,
+    protected filterer?: (item: TData, regex: RegExp) => boolean,
+    protected comparer = new ObjectComparer<TData>(),
+    isMultiSelectEnabled?: boolean,
+    isLoading?: wx.ObservableOrProperty<boolean>,
+    pagerLimit?: number,
+    rateLimit = 100,
+    isRoutingEnabled?: boolean
+  ) {
+    super(undefined, items, filterer, comparer, isMultiSelectEnabled, isLoading, pagerLimit, rateLimit, isRoutingEnabled);
+  }
+
+  getProjectionResult(request: ProjectionRequest) {
+    let items = this.items();
+
+    if (this.filterer != null && request.regex != null) {
+      items = items.filter(x => this.filterer(x, request.regex));
+    }
+
+    const count = items.length;
+
+    if (this.comparer != null && String.isNullOrEmpty(request.sortField) === false && request.sortDirection != null) {
+      items = items.sort((a, b) => {
+        return this.comparer.compare(a, b, request.sortField, request.sortDirection);
+      });
+    }
+
+    const offset = request.offset || 0;
+    const limit = request.limit || items.length;
+
+    if (offset > 0 || (request.limit || 0) > 0) {
+      items = items.slice(offset || 0, Math.min(items.length, offset + limit));
+    }
+
+    return Observable
+      .of(<ProjectionResult<TData>>{
+        items,
+        count,
+      });
   }
 }
