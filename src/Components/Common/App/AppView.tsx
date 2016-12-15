@@ -6,6 +6,7 @@ import { BootstrapGuide } from './BootstrapGuide';
 import { BaseView } from '../../React/BaseView';
 import { Splash } from '../Splash/Splash';
 import { AlertHostView } from '../Alert/AlertHostView';
+import { SplashKey } from '../RouteHandler/RouteHandlerViewModel';
 import { RouteHandlerView } from '../RouteHandler/RouteHandlerView';
 import { PageHeaderView, PageHeaderProps } from '../PageHeader/PageHeaderView';
 import { PageFooterView, PageFooterProps } from '../PageFooter/PageFooterView';
@@ -14,7 +15,7 @@ import { ViewMap, ViewMapper } from '../../../Routing/ViewMap';
 
 import './App.less';
 
-ViewMap['Splash'] = () => (
+ViewMap[SplashKey] = () => (
   <Splash header='WebRx-React' />
 );
 

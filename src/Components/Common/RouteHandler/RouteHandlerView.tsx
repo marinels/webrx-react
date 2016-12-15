@@ -4,12 +4,10 @@ import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as classNames from 'classnames';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';
-import { RouteHandlerViewModel } from './RouteHandlerViewModel';
+import { RouteHandlerViewModel, SplashKey } from './RouteHandlerViewModel';
 import { ViewMapper } from '../../../Routing/ViewMap';
 
 import './RouteHandler.less';
-
-export const SplashKey = 'Splash';
 
 export interface RouteHandlerProps extends BaseViewProps {
   viewMap: ViewMapper;

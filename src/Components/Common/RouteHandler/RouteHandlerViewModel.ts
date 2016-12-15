@@ -9,6 +9,8 @@ import { RouteMapper, ViewModelActivator } from '../../../Routing/RoutingMap';
 import { PubSub } from '../../../Utils';
 import { RoutingStateChangedKey, RoutingStateChanged } from '../../../Events/RoutingStateChanged';
 
+export const SplashKey = 'Splash';
+
 // this is a special (internal) activator that additionally includes the route that created it
 interface RoutedActivator extends ViewModelActivator {
   route: Route;
