@@ -1,12 +1,16 @@
 import { Route } from './RouteManager';
 
-export interface ViewModelActivator {
+export interface ComponentActivator {
   path?: string;
-  creator?: <T>(route: Route) => T;
+  creator?: (route: Route) => any;
+}
+
+export interface RoutedComponentActivator extends ComponentActivator {
+  route: Route;
 }
 
 export interface RouteMapper {
-  [ path: string ]: ViewModelActivator;
+  [ path: string ]: ComponentActivator;
 }
 
 export const RouteMap = <RouteMapper>{
