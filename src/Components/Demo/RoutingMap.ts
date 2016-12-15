@@ -191,9 +191,22 @@ routeMap.addRoute('WebRx-React', 'List', 'List', (state: any) => new Components.
 routeMap.addRoute('WebRx-React', 'ListCmd', 'List (Command)', (state: any) => new Components.ListViewModel(Observable.of(sampleListData), false, false));
 routeMap.addRoute('WebRx-React', 'Tree', 'Tree', (state: any) => new Components.ListViewModel(wx.property(sampleTreeData), true, false));
 routeMap.addRoute('WebRx-React', 'PanelList', 'Panel List', (state: any) => new Components.ListViewModel(wx.property(sampleListData), true, false));
-routeMap.addRoute('WebRx-React', 'DataGrid', 'Data Grid', (state: any) =>
-  new Components.DataGridViewModel(wx.property(sampleListData), (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0)
-);
+routeMap.addRoute('WebRx-React', 'DataGrid', 'Data Grid', (state: any) => {
+  const prop = wx.property<SampleData[]>();
+
+  // simulate delayed loading
+  Observable
+    .of(sampleListData)
+    .delay(2000)
+    .do(x => {
+      Alert.create('Simulating Delay', 'Delayed Observable Property List Loading', undefined, 1000);
+    })
+    .subscribe(x => {
+      prop(x);
+    });
+
+  return new Components.DataGridViewModel(prop, (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0);
+});
 routeMap.addRoute('WebRx-React', 'DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: any) => Components.DataGridViewModel.create(...sampleListData));
 routeMap.addRoute('WebRx-React', 'DataGridList', 'DataGrid (List View)', (state: any) =>
   new Components.DataGridViewModel(Observable.of(sampleListData), (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0, undefined, undefined, undefined, 0)
