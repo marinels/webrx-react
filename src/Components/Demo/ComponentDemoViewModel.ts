@@ -6,6 +6,12 @@ import { BaseRoutableViewModel } from '../React/BaseRoutableViewModel';
 import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
 import { Current as App } from '../Common/App/AppViewModel';
 import { RouteMap, ViewModelActivator } from './RoutingMap';
+import { RouteMap as AppRouteMap } from '../../Routing/RoutingMap';
+
+// inject the demo infrastructure into the app routing and view maps
+AppRouteMap['/'] = { path: '/demo' };
+// setup the demo route path pattern
+AppRouteMap['^/demo(/(.*))?'] = { path: '/demo', creator: () => new ComponentDemoViewModel() };
 
 export interface ComponentDemoRoutingState {
   route: Route;

@@ -4,12 +4,11 @@ import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as classNames from 'classnames';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';
-import { RouteHandlerViewModel } from './RouteHandlerViewModel';
+import { isRoutableViewModel } from '../../React/BaseRoutableViewModel';
+import { RouteHandlerViewModel, SplashKey } from './RouteHandlerViewModel';
 import { ViewMapper } from '../../../Routing/ViewMap';
 
 import './RouteHandler.less';
-
-export const SplashKey = 'Splash';
 
 export interface RouteHandlerProps extends BaseViewProps {
   viewMap: ViewMapper;
@@ -35,15 +34,28 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
   }
 
   private getViewKey() {
-    return this.state.isLoading() === true ? SplashKey :
-      this.state.currentViewModel() == null ? '' :
-      this.state.currentViewModel().getRoutingKey();
+    if (this.state.isLoading() === true) {
+      return SplashKey;
+    }
+    else {
+      const component = this.state.routedComponent();
+
+      if (isRoutableViewModel(component)) {
+        return component.getRoutingKey();
+      }
+      else if (typeof(component) === 'string') {
+        return component;
+      }
+      else {
+        return '';
+      }
+    }
   }
 
   updateOn() {
     return [
       this.state.isLoading.changed,
-      this.state.currentViewModel.changed,
+      this.state.routedComponent.changed,
     ];
   }
 
@@ -67,7 +79,7 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
   }
 
   private renderRoutedView(key: string): any {
-    let viewModel = this.state.currentViewModel();
+    let component = this.state.routedComponent();
 
     let activator = this.props.viewMap[key];
     if (activator == null && key !== SplashKey) {
@@ -77,10 +89,10 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
     let view: any = activator;
 
     if (activator instanceof Function) {
-      view = activator(viewModel);
+      view = activator(component);
     }
 
-    this.logger.debug(`Rendering routed view for '${ Object.getName(viewModel) }' (${ key })`);
+    this.logger.debug(`Rendering routed view for '${ Object.getName(component) }' (${ key })`);
 
     return view || 'Catastrophic Failure';
   }

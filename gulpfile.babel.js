@@ -280,6 +280,8 @@ function getWebpackConfig(build, uglify, dist) {
   } else if (build === config.builds.release) {
     if (uglify === true) {
       webpackConfig.output.filename = util.replaceExtension(webpackConfig.output.filename, '.min.js');
+      webpackConfig.plugins[1].filenameTemplate = util
+        .replaceExtension(webpackConfig.plugins[1].filenameTemplate, '.min.js');
       webpackConfig.plugins[2].filename = util.replaceExtension(webpackConfig.plugins[2].filename, '.min.css');
     }
 

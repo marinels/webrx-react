@@ -6,6 +6,17 @@ import { HeaderCommandAction, HeaderMenu, HeaderMenuItem } from './Actions';
 import { Default as pubSub } from '../../Utils/PubSub';
 import { RoutingStateChangedKey, RoutingStateChanged } from '../../Events/RoutingStateChanged';
 
+export function isRoutableViewModel(source: any): source is BaseRoutableViewModel<any> {
+  const viewModel = <BaseRoutableViewModel<any>>source;
+
+  if (viewModel != null && viewModel.isRoutableViewModel instanceof Function) {
+    return viewModel.isRoutableViewModel();
+  }
+  else {
+    return false;
+  }
+}
+
 export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel {
   public static displayName = 'BaseRoutableViewModel';
 
@@ -73,6 +84,10 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
     // do nothing
   }
   // -------------------------------------------------------
+
+  public isRoutableViewModel() {
+    return true;
+  }
 
   /**
    * Get the current routing state

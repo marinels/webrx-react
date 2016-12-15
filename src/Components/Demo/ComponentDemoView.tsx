@@ -6,14 +6,10 @@ import * as classNames from 'classnames';
 import { BaseView, BaseViewProps } from '../React/BaseView';
 import { ComponentDemoViewModel } from './ComponentDemoViewModel';
 import { ViewMap } from './ViewMap';
-import { RouteMap as AppRouteMap } from '../../Routing/RoutingMap';
 import { ViewMap as AppViewMap } from '../../Routing/ViewMap';
 
 import './ComponentDemo.less';
 
-// inject the demo infrastructure into the app routing and view maps
-AppRouteMap['/'] = { path: '/demo' };
-AppRouteMap['^/demo(/(.*))?'] = { path: '/demo', creator: () => new ComponentDemoViewModel() };
 AppViewMap['ComponentDemoViewModel'] = (viewModel: ComponentDemoViewModel) => (
   <ComponentDemoView viewModel={ viewModel } />
 );
