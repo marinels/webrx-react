@@ -51,7 +51,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
   protected project: wx.ICommand<TResult>;
 
   constructor(
-    requests: Observable<TRequest> = Observable.of<TRequest>(null),
+    requests: Observable<TRequest>,
     items?: wx.ObservableOrProperty<TData[]>,
     protected filterer?: (item: TData, regex: RegExp) => boolean,
     protected comparer = new ObjectComparer<TData>(),
@@ -99,8 +99,6 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
             .map(x => Object.assign<TRequest>({}, x.pr, x.r)),
           'Error Creating Data Grid Requests',
         ),
-        // whenever our source items list changes we also want to re-project
-        this.items,
         // whenever a discrete refresh request is made we need to re-project
         this.refresh.results.startWith(null),
         // we only care about the requests object from here on out
@@ -233,15 +231,36 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
   }
 }
 
-export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, ProjectionRequest, ProjectionResult<TData>> {
+interface ItemsProjectionRequest<TData> extends ProjectionRequest {
+  items: TData[];
+}
+
+export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, ItemsProjectionRequest<TData>, ProjectionResult<TData>> {
   public static displayName = 'DataGridViewModel';
 
   public static create<TData>(...items: TData[]) {
     return new DataGridViewModel(wx.property<TData[]>(items));
   }
 
+  private static getItemsRequestObservable<TData>(source: wx.ObservableOrProperty<TData[]>) {
+    if (wx.isProperty(source) === true) {
+      return wx
+        .whenAny(<wx.IObservableProperty<TData[]>>source, x => x)
+        .filter(x => x != null)
+        .map(items => <ItemsProjectionRequest<TData>>{
+          items,
+        });
+    }
+    else {
+      return (<Observable<TData[]>>source)
+        .map(items => <ItemsProjectionRequest<TData>>{
+          items,
+        });
+    }
+  }
+
   constructor(
-    items?: wx.ObservableOrProperty<TData[]>,
+    items: wx.ObservableOrProperty<TData[]> = wx.property<TData[]>([]),
     protected filterer?: (item: TData, regex: RegExp) => boolean,
     protected comparer = new ObjectComparer<TData>(),
     isMultiSelectEnabled?: boolean,
@@ -250,11 +269,11 @@ export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, Proje
     rateLimit = 100,
     isRoutingEnabled?: boolean
   ) {
-    super(undefined, items, filterer, comparer, isMultiSelectEnabled, isLoading, pagerLimit, rateLimit, isRoutingEnabled);
+    super(DataGridViewModel.getItemsRequestObservable(items), items, filterer, comparer, isMultiSelectEnabled, isLoading, pagerLimit, rateLimit, isRoutingEnabled);
   }
 
-  getProjectionResult(request: ProjectionRequest) {
-    let items = this.items();
+  getProjectionResult(request: ItemsProjectionRequest<TData>) {
+    let items = request.items || [];
 
     if (this.filterer != null && request.regex != null) {
       items = items.filter(x => this.filterer(x, request.regex));
