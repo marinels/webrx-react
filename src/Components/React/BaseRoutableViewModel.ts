@@ -2,7 +2,7 @@ import { Observable, IDisposable } from 'rx';
 import * as wx from 'webrx';
 
 import { BaseViewModel } from './BaseViewModel';
-import { HeaderCommandAction, HeaderMenu, HeaderMenuItem } from './Actions';
+import { HeaderCommandAction, HeaderMenu } from './Actions';
 import { Default as pubSub } from '../../Utils/PubSub';
 import { RoutingStateChangedKey, RoutingStateChanged } from '../../Events/RoutingStateChanged';
 
@@ -145,15 +145,15 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
   }
 
   public getHelpMenuItems() {
-    return <HeaderMenuItem[]>[];
+    return <HeaderCommandAction[]>[];
   }
 
   public getAdminMenuItems() {
-    return <HeaderMenuItem[]>[];
+    return <HeaderCommandAction[]>[];
   }
 
   public getUserMenuItems() {
-    return <HeaderMenuItem[]>[];
+    return <HeaderCommandAction[]>[];
   }
   // -------------------------------------------------------
 }

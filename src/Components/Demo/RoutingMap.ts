@@ -2,7 +2,7 @@ import { Observable } from 'rx';
 import * as wx from 'webrx';
 
 import { Alert, Compare } from '../../Utils';
-import { HeaderMenu, HeaderMenuItem } from '../React';
+import { HeaderMenu, HeaderCommandAction } from '../React';
 import * as Components from '../Common';
 
 export interface ViewModelActivator {
@@ -33,7 +33,7 @@ export class RoutingMap {
       header: `${menuName} Demos`,
       items: [],
     };
-    menu.items.push(<HeaderMenuItem>{ id: path, header: name, uri: this.getUri(path, uri), iconName: iconName || this.defaultIconName, order: menu.items.length });
+    menu.items.push(<HeaderCommandAction>{ id: path, header: name, uri: this.getUri(path, uri), iconName: iconName || this.defaultIconName, order: menu.items.length });
   }
 
   public getUri(path: string, uri: string) {
