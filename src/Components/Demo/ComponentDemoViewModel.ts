@@ -1,7 +1,8 @@
+import { Observable } from 'rx';
 import * as wx from 'webrx';
 
 import { Route } from '../../Routing/RouteManager';
-import { HeaderCommandAction, HeaderMenu, HeaderMenuItem } from '../React/Actions';
+import { HeaderCommandAction, HeaderMenu } from '../React/Actions';
 import { BaseRoutableViewModel } from '../React/BaseRoutableViewModel';
 import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
 import { Current as App } from '../Common/App/AppViewModel';
@@ -23,7 +24,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   public static displayName = 'ComponentDemoViewModel';
 
   private pageHeader: PageHeaderViewModel;
-  private demoAlertItem: HeaderMenuItem;
+  private demoAlertItem: HeaderCommandAction;
 
   public componentRoute: wx.IObservableProperty<string>;
   public columns: wx.IObservableProperty<number>;
@@ -40,12 +41,13 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     this.columns = wx.property(12);
 
     this.reRender = wx.command();
-    this.demoAlert = wx.command((x: string) => this.createAlert(x, 'Demo Alert'));
+    this.demoAlert = wx.command((x: string) => this.createAlert(x, 'Demo Alert'), Observable.of(true));
 
     this.demoAlertItem = {
       id: 'demo-alert-item',
       header: 'Generate Alert',
       command: this.demoAlert,
+      visibleWhenDisabled: true,
       iconName: 'flask',
     };
 
@@ -161,22 +163,30 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
         id: 'sidebar-1',
         header: 'Section 1',
         items: [
-          Object.assign<HeaderMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-1`, commandParameter: 'Sidebar Section 1 Menu Item' }),
+          Object.assign<HeaderCommandAction>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-1`, commandParameter: 'Sidebar Section 1 Menu Item' }),
         ],
       },
       {
         id: 'sidebar-2',
         header: 'Section 2',
         items: [
-          Object.assign<HeaderMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-2-1`, commandParameter: 'Sidebar Section 2 Menu Item 1' }),
-          Object.assign<HeaderMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-2-2`, commandParameter: 'Sidebar Section 2 Menu Item 2' }),
+          Object.assign<HeaderCommandAction>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-2-1`, commandParameter: 'Sidebar Section 2 Menu Item 1' }),
+          Object.assign<HeaderCommandAction>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-2-2`, commandParameter: 'Sidebar Section 2 Menu Item 2' }),
         ],
       },
     ];
   }
 
   getNavbarMenus() {
-    return RouteMap.menus;
+    return RouteMap.menus
+      .concat(<HeaderMenu>{
+        id: `${ this.demoAlertItem.id }-menu`,
+        header: 'Sample Routed Menu',
+        order: -1,
+        items: [
+          Object.assign<HeaderCommandAction>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-menuitem`, commandParameter: 'Routed Menu Item' }),
+        ],
+      });
   }
 
   getNavbarActions() {
@@ -187,20 +197,20 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   }
 
   getHelpMenuItems() {
-    return <HeaderMenuItem[]>[
-      Object.assign<HeaderMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-help`, commandParameter: 'Help Menu Item' }),
+    return <HeaderCommandAction[]>[
+      Object.assign<HeaderCommandAction>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-help`, commandParameter: 'Help Menu Item' }),
     ];
   }
 
   getAdminMenuItems() {
-    return <HeaderMenuItem[]>[
-      Object.assign<HeaderMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-admin`, commandParameter: 'Admin Menu Item' }),
+    return <HeaderCommandAction[]>[
+      Object.assign<HeaderCommandAction>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-admin`, commandParameter: 'Admin Menu Item' }),
     ];
   }
 
   getUserMenuItems() {
-    return <HeaderMenuItem[]>[
-      Object.assign<HeaderMenuItem>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-user`, commandParameter: 'User Menu Item' }),
+    return <HeaderCommandAction[]>[
+      Object.assign<HeaderCommandAction>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-user`, commandParameter: 'User Menu Item' }),
     ];
   }
 
