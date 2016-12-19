@@ -109,14 +109,16 @@ export class PageHeaderViewModel extends BaseViewModel {
       this.search = null;
     }
 
+    // dispose any existing subscriptions to header actions
+    this.dynamicSubs.dispose();
+
+    // add our header actions
     this.addItems(this.sidebarMenus, this.staticSidebarMenus, component, x => x.getSidebarMenus);
     this.addItems(this.navbarMenus, this.staticNavbarMenus, component, x => x.getNavbarMenus);
     this.addItems(this.navbarActions, this.staticNavbarActions, component, x => x.getNavbarActions);
     this.addItems(this.helpMenuItems, this.staticHelpMenuItems, component, x => x.getHelpMenuItems);
     this.addItems(this.adminMenuItems, this.staticAdminMenuItems, component, x => x.getAdminMenuItems);
     this.addItems(this.userMenuItems, this.staticUserMenuItems, component, x => x.getUserMenuItems);
-
-    this.dynamicSubs.dispose();
   }
 
   private addItems<T extends HeaderAction>(list: wx.IObservableList<T>, staticItems: T[], component?: any, delegateSelector?: (viewModel: BaseRoutableViewModel<any>) => (() => T[])) {
