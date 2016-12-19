@@ -17,6 +17,7 @@
     "target": "es5"
   },
   "files": [
-    "src/app.tsx"
+    "src/app.tsx",
+    "src/Components/Demo/index.ts"
   ]
 }
