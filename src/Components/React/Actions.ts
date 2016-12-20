@@ -7,19 +7,22 @@ export interface HeaderAction {
 }
 
 export interface HeaderCommandAction extends HeaderAction {
-  command: wx.ICommand<any>;
+  command?: wx.ICommand<any>;
   commandParameter?: any;
+  visibleWhenDisabled?: boolean;
   iconName?: string;
   bsStyle?: string;
+  uri?: string;
 }
 
 export interface HeaderMenu extends HeaderAction {
-  items: HeaderMenuItem[];
+  items: HeaderCommandAction[];
 }
 
-export interface HeaderMenuItem extends HeaderAction {
-  command?: wx.ICommand<any>;
-  commandParameter?: any;
-  iconName?: string;
-  uri?: string;
+export function isHeaderCommandAction(action: HeaderAction): action is HeaderCommandAction {
+  return wx.isCommand((<HeaderCommandAction>action).command);
+}
+
+export function isHeaderMenu(action: HeaderAction): action is HeaderMenu {
+  return Array.isArray((<HeaderMenu>action).items);
 }
