@@ -231,7 +231,11 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
       .defaultIfEmpty(
         <tr key='rows-empty'>
           <td colSpan={ (columns || []).length + 1 }>
-            <div className='DataGrid-empty text-muted'>List is Empty...</div>
+            <div className='DataGrid-empty text-muted'>
+            { renderConditional(view.state.isError()
+              , () => <div className='alert alert-danger'><b>Sorry, unable to load data.</b><br />Please contact system administrators if problem persists: <a href="mailto:support@marinels.com">support@marinels.com</a></div>
+              , () => 'No Results') }
+            </div>
           </td>
         </tr>
       )

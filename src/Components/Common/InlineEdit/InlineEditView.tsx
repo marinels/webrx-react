@@ -2,7 +2,7 @@ import * as React from 'react';
 import { findDOMNode } from 'react-dom';
 import { Icon } from 'react-fa';
 import * as classNames from 'classnames';
-import { FormGroup, InputGroup, FormControl, Sizes } from 'react-bootstrap';
+import { FormGroup, InputGroup, FormControl, Sizes, Popover, OverlayTrigger } from 'react-bootstrap';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { BindableInput, BindableProps } from '../BindableInput/BindableInput';
@@ -61,6 +61,7 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
   updateOn() {
     return [
       this.state.isEditing.changed,
+      this.state.isError.changed,
       this.state.save.canExecuteObservable,
     ];
   }
@@ -81,9 +82,16 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
       return { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate };
     });
 
+    const tooltip = (
+      <Popover id='tooltip' className='alert-danger'><strong>Sorry, your change was not saved.</strong> Please try again.</Popover>
+    );
+
     return (
       <FormGroup { ...rest } className={ classNames('InlineEditView', className)}>
         <InputGroup>
+        { this.renderConditional(this.state.isError(), () => <OverlayTrigger placement='left' overlay={tooltip}>
+            <InputGroup.Addon className='errorInputAddon'><i className='fa fa-exclamation alert-danger'></i></InputGroup.Addon>
+          </OverlayTrigger> ) }
           { this.renderBindableInput() }
           <InputGroup.Button>
             <CommandButton bsSize={ this.props.bsSize } bsStyle='success' command={ this.state.save }>

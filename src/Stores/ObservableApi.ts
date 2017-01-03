@@ -53,7 +53,9 @@ export class ObservableApi {
           let error: any = null;
 
           try {
-            error = JSON.parse(x.response);
+            error = x.readyState === 4
+              ? 'Request Timeout Error'
+              : JSON.parse(x.response);
           }
           catch (e) {
             this.logger.error('Unable to Get Error Response', e);

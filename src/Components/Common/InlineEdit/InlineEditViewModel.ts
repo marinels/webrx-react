@@ -9,6 +9,7 @@ export class InlineEditViewModel<T> extends BaseViewModel {
   public value: wx.IObservableProperty<T>;
   public editValue: wx.IObservableProperty<T>;
   public isEditing: wx.IObservableReadOnlyProperty<boolean>;
+  public isError: wx.IObservableProperty<boolean>;
 
   public edit: wx.ICommand<T>;
   public save: wx.ICommand<T>;
@@ -16,7 +17,7 @@ export class InlineEditViewModel<T> extends BaseViewModel {
 
   constructor(
     value?: wx.IObservableProperty<T> | T,
-    protected onSave: (value: T) => Observable<T> = x => Observable.of(x),
+    protected onSave: (value: T, thisArg: InlineEditViewModel<T>) => Observable<T> = x => Observable.of(x),
   ) {
     super();
 
@@ -30,18 +31,25 @@ export class InlineEditViewModel<T> extends BaseViewModel {
     this.editValue = wx.property<T>();
 
     this.edit = wx.asyncCommand(() => {
-      this.editValue(this.value());
+      const value = <T>((typeof this.value() === 'object')
+        ? Object.assign({}, this.value())
+        : this.value());
 
-      return Observable.of(this.editValue());
+      this.editValue(value);
+      return Observable.of(value);
     });
 
     this.save = wx.asyncCommand(() => {
       return Observable
-        .defer(() => this.onSave(this.editValue()))
+        .defer(() => {
+            this.isError(false);
+            return this.onSave(this.editValue(), this);
+        })
         .catch(e => {
-          this.alertForError(e, 'Unable to Save');
+            this.isError(true);
+            this.alertForError(e, 'Unable to Save');
 
-          return Observable.empty<T>();
+            return Observable.empty<T>();
         })
         .doOnNext(x => {
           this.value(x);
@@ -53,6 +61,7 @@ export class InlineEditViewModel<T> extends BaseViewModel {
       this.save.isExecuting.map(x => x === false),
       () => {
         this.editValue(null);
+        this.isError(false);
 
         return Observable.of(null);
       });
@@ -64,5 +73,7 @@ export class InlineEditViewModel<T> extends BaseViewModel {
         this.cancel.results.map(x => false),
       )
       .toProperty();
+
+    this.isError = wx.property(false);
   }
 }

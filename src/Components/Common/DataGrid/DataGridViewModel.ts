@@ -44,6 +44,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
   public sortField: wx.IObservableReadOnlyProperty<string>;
   public sortDirection: wx.IObservableReadOnlyProperty<SortDirection>;
   public isLoading: wx.IObservableReadOnlyProperty<boolean>;
+  public isError: wx.IObservableProperty<boolean>;
 
   public sort: wx.ICommand<SortArgs>;
   public toggleSortDirection: wx.ICommand<string>;
@@ -108,10 +109,17 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
       .filter(x => x != null)
       .toProperty();
 
+    this.isError = wx.property(false);
+
     this.project = wx.asyncCommand((x: TRequest) => {
+      this.isError(false);
       return this
         .getObservableOrAlert(
-          () => this.getProjectionResult(x),
+          () => this.getProjectionResult(x)
+            .catch((e) => {
+              this.isError(true);
+              return Observable.empty<TResult>();
+            }),
           'Error Projecting Data Grid Results',
         )
         // this ensures that errors still generate a result
