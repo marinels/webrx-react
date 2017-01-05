@@ -19,6 +19,7 @@ export interface ListViewRenderTemplateProps {
   selectable?: boolean;
   highlightSelected?: boolean;
   checkmarkSelected?: boolean;
+  emptyContent?: any | ((viewModel: ListViewModel<any, any>, view: React.Component<ListViewRenderTemplateProps, any>) => any);
 }
 
 export interface ListViewRenderTemplate<TData, TViewModel extends ListViewModel<TData, any>, TView extends React.Component<ListViewRenderTemplateProps, any>> {
@@ -113,6 +114,12 @@ export abstract class BaseListViewTemplate<TItem, TData, TViewModel extends List
     ));
   }
 
+  protected renderEmptyContent(viewModel: TViewModel, view: TView) {
+    return renderConditional(view.props.emptyContent instanceof Function, () => {
+      return view.props.emptyContent.apply(this, [ viewModel, view ]);
+    }, () => view.props.emptyContent);
+  }
+
   protected getClassName(): string {
     return null;
   }
@@ -137,7 +144,7 @@ export abstract class BaseListViewTemplate<TItem, TData, TViewModel extends List
             .asEnumerable()
             .defaultIfEmpty(
               <ListGroupItem key='empty' className='List-empty text-muted'>
-                Nothing to Display...
+                { this.renderEmptyContent(viewModel, view) }
               </ListGroupItem>
             )
             .toArray()
@@ -332,6 +339,7 @@ export class ListView extends BaseView<ListProps, ListViewModel<any, any>> {
     selectable: false,
     highlightSelected: false,
     checkmarkSelected: false,
+    emptyContent: 'Nothing to Display...',
   };
 
   initialize() {
@@ -366,8 +374,8 @@ export class ListView extends BaseView<ListProps, ListViewModel<any, any>> {
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { view, selectable, highlightSelected, checkmarkSelected } = x;
-      return { view, selectable, highlightSelected, checkmarkSelected };
+      const { view, selectable, highlightSelected, checkmarkSelected, emptyContent } = x;
+      return { view, selectable, highlightSelected, checkmarkSelected, emptyContent };
     });
 
     const list = props.view.render(this.state, this);
