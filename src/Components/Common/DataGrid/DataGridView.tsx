@@ -405,6 +405,7 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
     const watches = [
       this.state.isLoading.changed,
       this.state.projectedItems.changed,
+      this.state.hasProjectionError.changed,
     ];
 
     if (this.props.selectable === true) {
