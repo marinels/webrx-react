@@ -19,6 +19,7 @@ interface InlineEditProps<T> extends BaseViewProps, BindableProps {
   bsSize?: Sizes;
   template?: (x: T, view: InlineEditView) => any;
   editTemplate?: (x: T, view: InlineEditView) => any;
+  errorContent?: any | ((viewModel: InlineEditViewModel<any>, view: InlineEditView) => any);
 }
 
 export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditViewModel<any>> {
@@ -30,6 +31,12 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
     template: (x: any, view: InlineEditView) => x.toString(),
     editTemplate: (x: any, view: InlineEditView) => (
       <FormControl type={ view.props.inputType } placeholder={ view.props.placeholder } />
+    ),
+    errorContent: (
+      <div>
+        <div><strong>Sorry, your change was not saved.</strong></div>
+        <div>Please try again.</div>
+      </div>
     ),
   };
 
@@ -61,7 +68,7 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
   updateOn() {
     return [
       this.state.isEditing.changed,
-      this.state.isError.changed,
+      this.state.hasSavingError.changed,
       this.state.save.canExecuteObservable,
     ];
   }
@@ -76,22 +83,36 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
     return this.renderConditional(this.state.isEditing, () => this.renderEditor(), () => this.renderValue());
   }
 
+  private renderErrorTooltip() {
+    return (
+      <Popover id='tooltip' className='alert-danger'>
+        {
+          this.renderConditional(this.props.errorContent instanceof Function, () => {
+            return this.props.errorContent.apply(this, [ this.state, this ]);
+          }, () => this.props.errorContent)
+        }
+      </Popover>
+    );
+  }
+
   private renderEditor() {
     const { className, rest } = this.restProps(x => {
-      const { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate } = x;
-      return { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate };
+      const { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate, errorContent } = x;
+      return { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate, errorContent };
     });
-
-    const tooltip = (
-      <Popover id='tooltip' className='alert-danger'><strong>Sorry, your change was not saved.</strong> Please try again.</Popover>
-    );
 
     return (
       <FormGroup { ...rest } className={ classNames('InlineEditView', className)}>
         <InputGroup>
-        { this.renderConditional(this.state.isError(), () => <OverlayTrigger placement='left' overlay={tooltip}>
-            <InputGroup.Addon className='errorInputAddon'><i className='fa fa-exclamation alert-danger'></i></InputGroup.Addon>
-          </OverlayTrigger> ) }
+          {
+            this.renderConditional(this.state.hasSavingError, () => (
+              <OverlayTrigger placement='left' overlay={ this.renderErrorTooltip() }>
+                <InputGroup.Addon className='InlineEditView-error'>
+                  <Icon className='alert-danger' name='exclamation' />
+                </InputGroup.Addon>
+              </OverlayTrigger>
+            ))
+          }
           { this.renderBindableInput() }
           <InputGroup.Button>
             <CommandButton bsSize={ this.props.bsSize } bsStyle='success' command={ this.state.save }>
@@ -128,8 +149,8 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
 
   private renderValue() {
     const { className, rest } = this.restProps(x => {
-      const { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate } = x;
-      return { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate };
+      const { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate, errorContent } = x;
+      return { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate, errorContent };
     });
 
     return (
