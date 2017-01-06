@@ -44,18 +44,24 @@ export class ObservableApi {
       // if an API call throws an uncaught error, that means you are not subscribing to the observable's error
       Observable
         .fromPromise(method === HttpRequestMethod.POST ? this.client.post<T>(uri, params, options) : this.client.get<T>(uri, params, options))
-        .do(x => {
+        .doOnNext(x => {
           this.logger.info(`API Result: ${action} (${uri})`, x);
         })
-        .catch(x => {
+        .catch((x: { xhr: XMLHttpRequest }) => {
           this.logger.error(`API ERROR: ${action} (${uri})`, x);
 
           let error: any = null;
 
           try {
-            error = x.readyState === 4
-              ? 'Request Timeout Error'
-              : JSON.parse(x.response);
+            // NOTE: timeouts can be tested by supplying options param, with an
+            // xmlHttpRequest creation function that injects timeout = 1, then
+            // use the following as the uri:
+            // https://httpbin.org/delay/5
+
+            // readyState = 4 is the best indicator we have to know that a timeout occurred.
+            error = x.xhr.readyState === 4 ?
+              'Request Timeout Error' :
+              JSON.parse(x.xhr.response);
           }
           catch (e) {
             this.logger.error('Unable to Get Error Response', e);
@@ -65,8 +71,8 @@ export class ObservableApi {
 
           return Observable.throw<T>(error);
         }) :
-        // if sample data has been created just use that instead (opt-in)
-        this.sampleData.getObservable<T>(action, params);
+      // if sample data has been created just use that instead (opt-in)
+      this.sampleData.getObservable<T>(action, params);
   }
 
     public getSampleData(name: string, selector: (data: any) => any) {

@@ -44,7 +44,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
   public sortField: wx.IObservableReadOnlyProperty<string>;
   public sortDirection: wx.IObservableReadOnlyProperty<SortDirection>;
   public isLoading: wx.IObservableReadOnlyProperty<boolean>;
-  public isError: wx.IObservableProperty<boolean>;
+  public hasProjectionError: wx.IObservableProperty<boolean>;
 
   public sort: wx.ICommand<SortArgs>;
   public toggleSortDirection: wx.ICommand<string>;
@@ -66,6 +66,8 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
 
     this.search = new SearchViewModel(undefined, undefined, this.isRoutingEnabled);
     this.pager = new PagerViewModel(pagerLimit, this.isRoutingEnabled);
+
+    this.hasProjectionError = wx.property(false);
 
     this.sort = wx.asyncCommand((x: SortArgs) => Observable.of(x));
     this.toggleSortDirection = wx.asyncCommand((x: string) => Observable.of(x));
@@ -109,15 +111,20 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
       .filter(x => x != null)
       .toProperty();
 
-    this.isError = wx.property(false);
-
     this.project = wx.asyncCommand((x: TRequest) => {
-      this.isError(false);
+
+
       return this
         .getObservableOrAlert(
           () => this.getProjectionResult(x)
+            .doOnNext(() => {
+              // reset our projection error flag since we received a valid result
+              this.hasProjectionError(false);
+            })
             .catch((e) => {
-              this.isError(true);
+              // set the projection error flag
+              this.hasProjectionError(true);
+
               return Observable.empty<TResult>();
             }),
           'Error Projecting Data Grid Results',

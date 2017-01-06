@@ -158,6 +158,14 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
     return columns;
   }
 
+  protected renderEmptyColumns(viewModel: DataGridViewModel<T>, view: DataGridView) {
+    return (
+      <th key='empty'>
+        <div key='columns-empty' className='DataGrid-empty text-muted'>No Columns Defined...</div>
+      </th>
+    );
+  }
+
   protected renderColumns(columns: DataGridColumnProps[], viewModel: DataGridViewModel<T>, view: DataGridView) {
     return (
       <tr>
@@ -165,11 +173,7 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
           (columns || [])
             .asEnumerable()
             .map((x, i) => this.renderColumnHeader(x, i, viewModel, view))
-            .defaultIfEmpty(
-              <th key='empty'>
-                <div key='columns-empty' className='DataGrid-empty text-muted'>No Columns Defined...</div>
-              </th>
-            )
+            .defaultIfEmpty(this.renderEmptyColumns(viewModel, view))
             .toArray()
         }
       </tr>
@@ -224,6 +228,12 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
     return icon;
   }
 
+  protected renderEmptyContent(viewModel: DataGridViewModel<T>, view: DataGridView) {
+    return renderConditional(view.props.emptyContent instanceof Function, () => {
+      return view.props.emptyContent.apply(this, [ viewModel, view ]);
+    }, () => view.props.emptyContent);
+  }
+
   protected renderRows(columns: DataGridColumnProps[], viewModel: DataGridViewModel<T>, view: DataGridView) {
     return (viewModel.projectedItems() || [])
       .asEnumerable()
@@ -232,9 +242,7 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
         <tr key='rows-empty'>
           <td colSpan={ (columns || []).length + 1 }>
             <div className='DataGrid-empty text-muted'>
-            { renderConditional(view.state.isError()
-              , () => <div className='alert alert-danger'><b>Sorry, unable to load data.</b><br />Please contact system administrators if problem persists: <a href="mailto:support@marinels.com">support@marinels.com</a></div>
-              , () => 'No Results') }
+              { this.renderEmptyContent(viewModel, view) }
             </div>
           </td>
         </tr>
@@ -255,11 +263,7 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
           (columns || [])
             .asEnumerable()
             .map((x, i) => this.renderCell(x.renderCell(item, index, x, i, columns, viewModel, view), x, i, viewModel, view))
-            .defaultIfEmpty(
-              <td>
-                <div className='DataGrid-empty text-muted'>No Columns Defined...</div>
-              </td>
-            )
+            .defaultIfEmpty(this.renderEmptyColumns(viewModel, view))
             .toArray()
         }
       </tr>
@@ -363,6 +367,7 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
   static defaultProps = {
     view: new DataGridTableViewTemplate<any>(),
     loadingContent: 'Loading Data...',
+    emptyContent: 'No Data...',
   };
 
   public isOnlyView() {
@@ -400,6 +405,7 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
     const watches = [
       this.state.isLoading.changed,
       this.state.projectedItems.changed,
+      this.state.hasProjectionError.changed,
     ];
 
     if (this.props.selectable === true) {
@@ -411,8 +417,8 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { fill, view, search, pager, pagerLimits, selectable, highlightSelected, checkmarkSelected, loadingContent } = x;
-      return { fill, view, search, pager, pagerLimits, selectable, highlightSelected, checkmarkSelected, loadingContent };
+      const { fill, view, search, pager, pagerLimits, selectable, highlightSelected, checkmarkSelected, loadingContent, emptyContent } = x;
+      return { fill, view, search, pager, pagerLimits, selectable, highlightSelected, checkmarkSelected, loadingContent, emptyContent };
     });
 
     return this.renderSizedLoadable(this.state.isLoading, props.loadingContent, '1.5em', () => {

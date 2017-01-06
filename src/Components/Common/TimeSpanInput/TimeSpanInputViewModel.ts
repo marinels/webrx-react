@@ -13,8 +13,7 @@ export enum TimeSpanUnitType {
   Days = 5,
   Weeks = 6,
   Months = 7,
-  Quarters = 8,
-  Years = 9
+  Years = 8,
 }
 
 export interface TimeSpanUnit {

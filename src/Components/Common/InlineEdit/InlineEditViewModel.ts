@@ -1,5 +1,6 @@
 import { Observable } from 'rx';
 import * as wx from 'webrx';
+import * as clone from 'clone';
 
 import { BaseViewModel } from '../../React/BaseViewModel';
 
@@ -9,7 +10,7 @@ export class InlineEditViewModel<T> extends BaseViewModel {
   public value: wx.IObservableProperty<T>;
   public editValue: wx.IObservableProperty<T>;
   public isEditing: wx.IObservableReadOnlyProperty<boolean>;
-  public isError: wx.IObservableProperty<boolean>;
+  public hasSavingError: wx.IObservableProperty<boolean>;
 
   public edit: wx.ICommand<T>;
   public save: wx.ICommand<T>;
@@ -17,9 +18,11 @@ export class InlineEditViewModel<T> extends BaseViewModel {
 
   constructor(
     value?: wx.IObservableProperty<T> | T,
-    protected onSave: (value: T, thisArg: InlineEditViewModel<T>) => Observable<T> = x => Observable.of(x),
+    protected onSave: (value: T, viewModel: InlineEditViewModel<T>) => Observable<T> = x => Observable.of(x),
   ) {
     super();
+
+    this.hasSavingError = wx.property(false);
 
     if (wx.isProperty(value) === true) {
       this.value = <wx.IObservableProperty<T>>value;
@@ -31,29 +34,31 @@ export class InlineEditViewModel<T> extends BaseViewModel {
     this.editValue = wx.property<T>();
 
     this.edit = wx.asyncCommand(() => {
-      const value = <T>((typeof this.value() === 'object')
-        ? Object.assign({}, this.value())
-        : this.value());
+      this.editValue(clone(this.value()));
 
-      this.editValue(value);
-      return Observable.of(value);
+      return Observable.of(this.editValue());
     });
 
     this.save = wx.asyncCommand(() => {
       return Observable
-        .defer(() => {
-            this.isError(false);
-            return this.onSave(this.editValue(), this);
+        .defer(() => this.onSave(this.editValue(), this))
+        .doOnNext(x => {
+          // reset the error flag since we received a result
+          this.hasSavingError(false);
+
+          // copy our edit value to our display value
+          this.value(x);
+
+          // clear the edit value
+          this.editValue(null);
         })
         .catch(e => {
-            this.isError(true);
-            this.alertForError(e, 'Unable to Save');
+          // set the error flag
+          this.hasSavingError(true);
 
-            return Observable.empty<T>();
-        })
-        .doOnNext(x => {
-          this.value(x);
-          this.editValue(null);
+          this.alertForError(e, 'Unable to Save');
+
+          return Observable.empty<T>();
         });
     });
 
@@ -61,7 +66,9 @@ export class InlineEditViewModel<T> extends BaseViewModel {
       this.save.isExecuting.map(x => x === false),
       () => {
         this.editValue(null);
-        this.isError(false);
+
+        // clear the edit value
+        this.hasSavingError(false);
 
         return Observable.of(null);
       });
@@ -73,7 +80,5 @@ export class InlineEditViewModel<T> extends BaseViewModel {
         this.cancel.results.map(x => false),
       )
       .toProperty();
-
-    this.isError = wx.property(false);
   }
 }

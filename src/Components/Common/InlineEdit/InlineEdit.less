@@ -1,9 +1,11 @@
+@import (reference) '../../../Style/App.less';
+
 .InlineEditView {
   &.btn-link > span {
     border-bottom: 1px dotted #000;
   }
 
-  & .errorInputAddon {
-    background-color: #ebccd1;
+  & > .input-group > .InlineEditView-error {
+    background-color: @state-danger-bg;
   }
 }
