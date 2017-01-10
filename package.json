@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@types/chai": "^3.4.34",
-    "@types/classnames": "0.0.32",
+    "@types/classnames": "^0.0.32",
     "@types/clone": "^0.1.30",
     "@types/ix.js": "^1.0.17",
     "@types/jquery-param": "^1.0.1",
@@ -49,7 +49,7 @@
     "@types/react": "^0.14.51",
     "@types/react-addons-css-transition-group": "^0.14.18",
     "@types/react-addons-transition-group": "^0.14.17",
-    "@types/react-bootstrap": "0.0.37",
+    "@types/react-bootstrap": "^0.0.37",
     "@types/react-dom": "^0.14.19",
     "@types/react-fa": "^4.0.28",
     "babel-cli": "^6.18.0",
