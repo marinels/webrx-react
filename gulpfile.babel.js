@@ -214,10 +214,8 @@ gulp.task('lint:es', () => {
 
   return gulp
     .src([
-      path.resolve(config.paths.src, '**', '*.js'),
-      path.resolve(config.paths.test, '**', '*.js'),
       path.resolve('*.js'),
-    ])
+    ], { base: __dirname })
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failOnError());
@@ -231,7 +229,7 @@ gulp.task('lint:ts', () => {
       path.resolve(config.paths.src, '**', '*.ts'),
       path.resolve(config.paths.src, '**', '*.tsx'),
       path.resolve(config.paths.test, '**', '*.ts'),
-    ])
+    ], { base: __dirname })
     .pipe(tslint({
       formatter: 'verbose',
     }))
@@ -247,7 +245,10 @@ gulp.task('lint:style:less', () => {
   log('Linting with Stylelint:Less...');
 
   return gulp
-    .src(path.resolve(config.paths.src, '**', '*.less'))
+    .src(
+      path.resolve(config.paths.src, '**', '*.less'),
+      { base: __dirname }
+    )
     .pipe(stylelint({
       syntax: 'less',
       failAfterError: true,
@@ -261,7 +262,10 @@ gulp.task('lint:style:css', () => {
   log('Linting with Stylelint:CSS...');
 
   return gulp
-    .src(path.resolve(config.paths.src, '**', '*.css'))
+    .src(
+      path.resolve(config.paths.src, '**', '*.css'),
+      { base: __dirname }
+    )
     .pipe(stylelint({
       failAfterError: true,
       reporters: [
