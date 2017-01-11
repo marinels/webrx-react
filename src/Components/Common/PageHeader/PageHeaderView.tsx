@@ -57,7 +57,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
   private getVisibleActions(items: HeaderCommandAction[]) {
     return this.getOrderedActions(
       (items || [])
-        .filter(x => x.visibleWhenDisabled === true || this.isActionDisabled(x) === false)
+        .filter(x => x.visibleWhenDisabled === true || this.isActionDisabled(x) === false),
     );
   }
 
@@ -128,7 +128,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
             x.items,
           );
         })
-        .filter(x => x != null)
+        .filter(x => x != null),
     );
   }
 
@@ -137,7 +137,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
       'helpMenu',
       (<Icon name='question-circle' size='2x' />),
       this.state.helpMenuItems.toArray(),
-      true
+      true,
     );
   }
 
@@ -147,7 +147,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
       (<Icon name='cog' size='2x' />),
       this.state.adminMenuItems.toArray(),
       true,
-      'hover-spin'
+      'hover-spin',
     );
   }
 
@@ -156,7 +156,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
       'userMenu',
       (<ProfilePicture src={ this.state.userImage } title={ this.state.userDisplayName } iconSize='2x' size={ 30 } />),
       this.state.userMenuItems.toArray(),
-      true
+      true,
     );
   }
 
@@ -183,7 +183,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
                   { String.isNullOrEmpty(x.iconName) ? null : <Icon className='PageHeader-actionHeaderIcon' name={ x.iconName } /> }
                   <span className='PageHeader-actionHeaderText'>{ x.header }</span>
                 </CommandButton>
-              ))
+              )),
           )
         }
       </Navbar.Form>
@@ -225,7 +225,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
                   </Nav>
                 ));
               })
-              .filter(x => x != null)
+              .filter(x => x != null),
           )
         }
       </Sidebar>

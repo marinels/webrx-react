@@ -45,7 +45,7 @@ export class CommonPanel extends React.Component<CommonPanelProps, any> {
         shadow: props.shadow === true,
         collapsible: rest.collapsible,
       },
-      className
+      className,
     );
 
     return (

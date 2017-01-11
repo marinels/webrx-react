@@ -53,7 +53,7 @@ export class ValueComparer<T> implements Comparer<T> {
 
 export enum SortDirection {
   Ascending = 1,
-  Descending = 2
+  Descending = 2,
 }
 
 export interface FieldComparer<T> extends Comparer<T> {

@@ -54,7 +54,7 @@ export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewM
             this.renderConditional(
               (this.props.title instanceof Function) === true,
               () => this.props.title.apply(null),
-              () => this.props.title
+              () => this.props.title,
             )
           }
         </Modal.Title>
@@ -69,7 +69,7 @@ export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewM
           this.renderConditional(
             (this.props.body instanceof Function) === true,
             () => this.props.body.apply(null),
-            () => this.props.body
+            () => this.props.body,
           )
         }
       </Modal.Body>

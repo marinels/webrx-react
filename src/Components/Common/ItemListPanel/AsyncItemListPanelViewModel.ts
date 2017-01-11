@@ -15,7 +15,7 @@ export class AsyncItemListPanelViewModel<TData, TRequest extends ProjectionReque
     isLoading?: wx.ObservableOrProperty<boolean>,
     pagerLimit?: number,
     rateLimit?: number,
-    isRoutingEnabled?: boolean
+    isRoutingEnabled?: boolean,
   ) {
     const grid = isAsyncDataSource(dataSourceOrViewModel) ?
       new AsyncDataGridViewModel<TData, TRequest, TResult>(dataSourceOrViewModel, enableFilter, enableSort, isMultiSelectEnabled, isLoading, pagerLimit, rateLimit, isRoutingEnabled) :

@@ -89,7 +89,7 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInpu
       () => this.props.children,
       () => (
         <TimeSpanControl viewModel={ this.state } componentClass={ this.props.componentClass } placeholder='Type in a timespan, or use the controls on the right...' />
-      )
+      ),
     );
   }
 
@@ -118,7 +118,7 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInpu
           this.renderConditional(
             String.isNullOrEmpty(this.state.text()) === true,
             () => 'Duration is required.',
-            () => 'Invalid Duration Format.'
+            () => 'Invalid Duration Format.',
           )
         }
       </HelpBlock>

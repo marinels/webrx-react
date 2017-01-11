@@ -75,7 +75,7 @@ export class DataGridListViewTemplate<TData> extends BaseListViewTemplate<TData,
     renderItem?: (item: TData, index: number, viewModel: DataGridViewModel<TData>, view: DataGridView) => any,
     renderItemActions?: (item: TData, index: number, viewModel: DataGridViewModel<TData>, view: DataGridView) => any,
     keySelector?: (item: TData, index: number, viewModel: DataGridViewModel<TData>, view: DataGridView) => any,
-    renderItemContainer?: (content: any, item: TData, index: number, viewModel: DataGridViewModel<TData>, view: DataGridView) => any
+    renderItemContainer?: (content: any, item: TData, index: number, viewModel: DataGridViewModel<TData>, view: DataGridView) => any,
   ) {
     super(
       renderItem == null ? undefined : (item, data, index, viewModel, view) => renderItem(data, index, viewModel, view),
@@ -107,7 +107,7 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
     protected renderItem: (item: T, column: DataGridColumnProps, index: number, viewModel: DataGridViewModel<T>, view: DataGridView) => any = x => x,
     protected rowKeySelector: (item: T, index: number, viewModel: DataGridViewModel<T>, view: DataGridView) => any = (r, i) => i,
     protected enableAutomaticColumns = true,
-    bordered = false, hover = true, striped = false, condensed = true, responsive = true
+    bordered = false, hover = true, striped = false, condensed = true, responsive = true,
   ) {
     this.tableProps = { bordered, hover, striped, condensed, responsive };
   }
@@ -245,7 +245,7 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
               { this.renderEmptyContent(viewModel, view) }
             </div>
           </td>
-        </tr>
+        </tr>,
       )
       .toArray();
   }
@@ -437,7 +437,7 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
                 props.search !== false,
                 () => React.isValidElement(props.search) ? props.search : (
                   <DataGridView.Search { ...(props.search === true ? {} : props.search) } grid={ this.state } view={ props.view } />
-                )
+                ),
               )
             }
             { grid }
@@ -446,7 +446,7 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
                 props.pager !== false,
                 () => React.isValidElement(props.pager) ? props.pager : (
                   <DataGridView.Pager limits={ props.pagerLimits } { ...(props.pager === true ? {} : props.pager) } grid={ this.state } view={ props.view } />
-                )
+                ),
               )
             }
           </div>

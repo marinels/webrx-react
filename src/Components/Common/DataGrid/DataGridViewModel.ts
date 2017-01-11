@@ -60,7 +60,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
     isLoading?: wx.ObservableOrProperty<boolean>,
     pagerLimit?: number,
     rateLimit = 100,
-    isRoutingEnabled?: boolean
+    isRoutingEnabled?: boolean,
   ) {
     super(items, isMultiSelectEnabled, isRoutingEnabled);
 
@@ -79,7 +79,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
     this.sortField = Observable
       .merge(
         this.routingState.changed.map(x => x.sortBy),
-        sortChanged.map(x => x.field)
+        sortChanged.map(x => x.field),
       )
       .map(x => x || null)
       .toProperty();
@@ -87,7 +87,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
     this.sortDirection = Observable
       .merge(
         this.routingState.changed.map(x => x.sortDir),
-        sortChanged.map(x => x.direction)
+        sortChanged.map(x => x.direction),
       )
       .map(x => x || null)
       .toProperty();
@@ -151,7 +151,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
       this.isLoading = Observable
         .merge(
           this.project.isExecuting.filter(x => x === true),
-          this.project.results.map(() => false)
+          this.project.results.map(() => false),
         )
         .toProperty(true);
     }
@@ -173,7 +173,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
       .filter(x => x != null)
       // debounce on input projection requests
       .debounce(rateLimit)
-      .invokeCommand(this.project)
+      .invokeCommand(this.project),
     );
 
     this.subscribe(
@@ -184,7 +184,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
             (this.sortDirection() === SortDirection.Descending ? SortDirection.Ascending : SortDirection.Descending) :
             SortDirection.Ascending,
         }))
-        .invokeCommand(x => this.sort)
+        .invokeCommand(x => this.sort),
     );
   }
 
@@ -205,7 +205,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
           limit,
           sortField,
           sortDirection,
-        }
+        },
       );
   }
 
@@ -282,7 +282,7 @@ export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, Items
     isLoading?: wx.ObservableOrProperty<boolean>,
     pagerLimit?: number,
     rateLimit = 100,
-    isRoutingEnabled?: boolean
+    isRoutingEnabled?: boolean,
   ) {
     super(DataGridViewModel.getItemsRequestObservable(items), items, filterer, comparer, isMultiSelectEnabled, isLoading, pagerLimit, rateLimit, isRoutingEnabled);
   }

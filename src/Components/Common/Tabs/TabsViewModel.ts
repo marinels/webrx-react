@@ -35,19 +35,19 @@ export class TabsViewModel<T> extends BaseRoutableViewModel<TabsRoutingState> {
 
     this.subscribe(this.selectTab.results
       .map(x => this.tabs.indexOf(x))
-      .invokeCommand(this.selectIndex)
+      .invokeCommand(this.selectIndex),
     );
 
     this.subscribe(wx
       .whenAny(this.tabs.lengthChanged, l => ({ i: this.selectedIndex(), l }))
       .filter(x => x.l > 0 && (x.i == null || x.i < 0 || x.i >= x.l))
       .map(x => x.l - 1)
-      .invokeCommand(this.selectIndex)
+      .invokeCommand(this.selectIndex),
     );
 
     this.subscribe(wx
       .whenAny(this.selectedIndex, x => x)
-      .invokeCommand(this.routingStateChanged)
+      .invokeCommand(this.routingStateChanged),
     );
   }
 

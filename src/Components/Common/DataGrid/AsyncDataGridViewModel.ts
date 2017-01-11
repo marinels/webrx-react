@@ -32,7 +32,7 @@ export class AsyncDataGridViewModel<TData, TRequest extends ProjectionRequest, T
     isLoading?: wx.ObservableOrProperty<boolean>,
     pagerLimit?: number,
     rateLimit?: number,
-    isRoutingEnabled?: boolean
+    isRoutingEnabled?: boolean,
   ) {
     super(dataSource.requests, undefined, undefined, undefined, isMultiSelectEnabled, isLoading, pagerLimit, rateLimit, isRoutingEnabled);
   }

@@ -16,6 +16,6 @@ const container = document.getElementById('app');
 if (container) {
   render(
     <AppView viewModel={ new AppViewModel(true, true, true) } copyright='WebRx-React' alerts header footer />,
-    container
+    container,
   );
 }

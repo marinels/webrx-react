@@ -45,7 +45,7 @@ export class ConsoleLogManager extends DelegateLogManager {
     this.logToConsole(
       level,
       `${styles.length > 0 ? '%c' : ''}[${moment().format('HH:mm:ss.SSS')}][${getLevelName(level)}][${logger.name}] ${text}`,
-      ...styles
+      ...styles,
     );
 
     if (args != null && args.length > 0) {

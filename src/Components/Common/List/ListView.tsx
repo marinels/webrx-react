@@ -52,7 +52,7 @@ export abstract class BaseListViewTemplate<TItem, TData, TViewModel extends List
         <div className='List-templateContainer'>
           { contents }
         </div>
-      )
+      ),
     );
   }
 
@@ -145,7 +145,7 @@ export abstract class BaseListViewTemplate<TItem, TData, TViewModel extends List
             .defaultIfEmpty(
               <ListGroupItem key='empty' className='List-empty text-muted'>
                 { this.renderEmptyContent(viewModel, view) }
-              </ListGroupItem>
+              </ListGroupItem>,
             )
             .toArray()
         }
@@ -161,7 +161,7 @@ export class ListViewTemplate<TData> extends BaseListViewTemplate<TData, TData, 
     renderItem?: (item: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
     renderItemActions?: (item: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
     keySelector?: (item: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
-    renderItemContainer?: (content: any, item: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) => any
+    renderItemContainer?: (content: any, item: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
   ) {
     super(
       renderItem == null ? undefined : (item, data, index, viewModel, view) => renderItem(data, index, viewModel, view),

@@ -198,7 +198,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
    */
   protected bindEventToProperty<TValue, TEvent extends Event | React.SyntheticEvent<this>>(
     targetSelector: (viewModel: TViewModel) => wx.IObservableProperty<TValue>,
-    valueSelector?: (eventKey: any, event: TEvent) => TValue
+    valueSelector?: (eventKey: any, event: TEvent) => TValue,
   ): any {
     return bindEventToProperty(this, this.state, targetSelector, valueSelector);
   }
@@ -209,7 +209,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
   protected bindEventToCommand<TParameter, TEvent extends Event | React.SyntheticEvent<this>>(
     commandSelector: (viewModel: TViewModel) => wx.ICommand<any>,
     paramSelector?: (eventKey: any, event: TEvent) => TParameter,
-    conditionSelector?: (event: TEvent, eventKey: any) => boolean
+    conditionSelector?: (event: TEvent, eventKey: any) => boolean,
   ): any {
     return bindEventToCommand(this, this.state, commandSelector, paramSelector, conditionSelector);
   }

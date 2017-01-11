@@ -15,7 +15,7 @@ export class TabRenderTemplate<T> {
     protected titleSelector: (x: T, i: number, viewModel: TabsViewModel<T>, view: TabsView) => string,
     protected renderItem: (x: T, i: number, viewModel: TabsViewModel<T>, view: TabsView) => any = x => x.toString(),
     protected keySelector: (x: T, i: number, viewModel: TabsViewModel<T>, view: TabsView) => any = (x, i) => i,
-    protected renderItemContainer?: (value: () => any, x: T, i: number, viewModel: TabsViewModel<T>, view: TabsView) => any
+    protected renderItemContainer?: (value: () => any, x: T, i: number, viewModel: TabsViewModel<T>, view: TabsView) => any,
   ) {
     if (this.renderItemContainer == null) {
       this.renderItemContainer = this.renderDefaultItemContainer;
@@ -72,7 +72,7 @@ export class TabsView extends BaseView<TabsProps, TabsViewModel<any>> {
     return this.renderConditional(
       this.props.template == null,
       () => this.renderStaticTabs(),
-      () => this.renderDynamicTabs()
+      () => this.renderDynamicTabs(),
     );
   }
 

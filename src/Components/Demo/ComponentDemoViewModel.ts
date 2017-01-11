@@ -58,7 +58,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
 
     this.subscribe(wx
       .whenAny(this.columns.changed, x => null)
-      .invokeCommand(this.routingStateChanged)
+      .invokeCommand(this.routingStateChanged),
     );
 
     this.subscribe(wx
@@ -67,7 +67,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
         if (this.pageHeader != null) {
           this.pageHeader.updateDynamicContent();
         }
-      })
+      }),
     );
   }
 

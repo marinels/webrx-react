@@ -10,7 +10,7 @@ import { BaseViewModel } from './BaseViewModel';
 export function bindObservableToCommand<TViewModel extends BaseViewModel, TResult>(
   viewModel: TViewModel,
   commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>,
-  observable: Observable<TResult>
+  observable: Observable<TResult>,
 ) {
   return viewModel.bind(commandSelector, observable);
 }
@@ -22,7 +22,7 @@ export function bindEventToProperty<TViewModel extends BaseViewModel, TValue, TE
   thisArg: any,
   viewModel: TViewModel,
   targetSelector: (viewModel: TViewModel) => wx.IObservableProperty<TValue>,
-  valueSelector?: (eventKey: any, event: TEvent) => TValue
+  valueSelector?: (eventKey: any, event: TEvent) => TValue,
 ): any {
   return (eventKey: any, event: TEvent) => {
     // this ensures that we can still use this function for basic HTML events
@@ -43,7 +43,7 @@ export function bindEventToCommand<TViewModel extends BaseViewModel, TParameter,
   viewModel: TViewModel,
   commandSelector: (viewModel: TViewModel) => wx.ICommand<any>,
   paramSelector?: (eventKey: any, event: TEvent) => TParameter,
-  conditionSelector?: (event: TEvent, eventKey: any) => boolean
+  conditionSelector?: (event: TEvent, eventKey: any) => boolean,
 ): any {
   return (eventKey: any, event: Event) => {
     // this ensures that we can still use this function for basic HTML events

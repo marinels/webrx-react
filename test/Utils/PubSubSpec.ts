@@ -74,7 +74,8 @@ describe('PubSub', () => {
 
   it('Can handle multiple subscriptions on the same key', () => {
     let pubsub = new PubSub();
-    let called1 = false, called2 = false;
+    let called1 = false;
+    let called2 = false;
     let handle1 = pubsub.subscribe('test', x => called1 = true);
     let handle2 = pubsub.subscribe('test', x => called2 = true);
     expect(handle1).to.exist;
@@ -86,7 +87,8 @@ describe('PubSub', () => {
 
   it('Can unsubscribe from a single handle with multiple subscriptions on the same key', () => {
     let pubsub = new PubSub();
-    let called1 = false, called2 = false;
+    let called1 = false;
+    let called2 = false;
     let handle1 = pubsub.subscribe('test', x => called1 = true);
     let handle2 = pubsub.subscribe('test', x => called2 = true);
     expect(handle1).to.exist;

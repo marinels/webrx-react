@@ -35,7 +35,7 @@ export class PageHeaderViewModel extends BaseViewModel {
     public staticUserMenuItems: HeaderCommandAction[] = [],
     public userImage?: string,
     public userDisplayName?: string,
-    public homeLink = '#/'
+    public homeLink = '#/',
   ) {
     super();
 
@@ -49,7 +49,7 @@ export class PageHeaderViewModel extends BaseViewModel {
     this.userMenuItems = wx.list<HeaderCommandAction>();
 
     this.toggleSideBar = wx.asyncCommand((isVisible: boolean) =>
-      Observable.of(Object.fallback(isVisible, !this.isSidebarVisible()))
+      Observable.of(Object.fallback(isVisible, !this.isSidebarVisible())),
     );
 
     this.isSidebarVisible = wx
@@ -63,7 +63,7 @@ export class PageHeaderViewModel extends BaseViewModel {
         .whenAny(this.menuItemSelected.results, x => x)
         .filter(x => x != null)
         .map(x => false)
-        .invokeCommand(this.toggleSideBar)
+        .invokeCommand(this.toggleSideBar),
     );
 
     this.subscribeOrAlert(
@@ -83,7 +83,7 @@ export class PageHeaderViewModel extends BaseViewModel {
             window.location.href = x.uri;
           }
         }
-      }
+      },
     );
 
     if (this.routeHandler != null) {
@@ -92,7 +92,7 @@ export class PageHeaderViewModel extends BaseViewModel {
           .whenAny(this.routeHandler.routedComponent, x => x)
           .subscribe(x => {
             this.updateDynamicContent();
-          })
+          }),
       );
     }
   }
@@ -149,7 +149,7 @@ export class PageHeaderViewModel extends BaseViewModel {
             .distinctUntilChanged()
             .subscribe(x => {
               this.notifyChanged();
-            })
+            }),
         );
       }
     });

@@ -42,12 +42,12 @@ export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
         this.filter.changed
           // debounce on the live search timeout
           .debounce(this.liveSearchTimeout)
-          .invokeCommand(this.search)
+          .invokeCommand(this.search),
       );
     }
 
     this.subscribe(this.search.results
-      .invokeCommand(this.routingStateChanged)
+      .invokeCommand(this.routingStateChanged),
     );
   }
 

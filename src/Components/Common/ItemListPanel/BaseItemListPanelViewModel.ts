@@ -8,7 +8,7 @@ export abstract class BaseItemListPanelViewModel<TData, TRequest extends Project
 
   constructor(
     public grid: TGrid,
-    isRoutingEnabled?: boolean
+    isRoutingEnabled?: boolean,
   ) {
     super(isRoutingEnabled);
   }
