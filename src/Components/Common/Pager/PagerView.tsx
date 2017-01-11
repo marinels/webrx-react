@@ -114,7 +114,7 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     return this.renderConditional(this.shouldRenderInfo(), () => (
       this.renderConditional((this.state.itemCount() || 0) === 0,
         this.props.emptyInfo,
-        `Showing Items ${ this.state.offset() + 1 } through ${ Math.min(this.state.itemCount(), this.state.offset() + (this.state.limit() || 0)) } of ${ this.state.itemCount() }`
+        `Showing Items ${ this.state.offset() + 1 } through ${ Math.min(this.state.itemCount(), this.state.offset() + (this.state.limit() || 0)) } of ${ this.state.itemCount() }`,
       )
     ), () => '');
   }

@@ -27,10 +27,10 @@ export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewMode
       Observable
         .merge(
           Observable.fromEvent<UIEvent>(window, 'resize'),
-          Observable.fromEvent<Event>(window, 'orientationchange')
+          Observable.fromEvent<Event>(window, 'orientationchange'),
         )
         .startWith(null)
-        .map(() => this.getDimensions())
+        .map(() => this.getDimensions()),
     );
   }
 
@@ -80,7 +80,7 @@ export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewMode
     return this.renderConditional(
       (dim == null || dim.width === 0 || dim.height === 0),
       () => 'Measuring...',
-      () => `Viewport: ${ dim.width }x${ dim.height }`
+      () => `Viewport: ${ dim.width }x${ dim.height }`,
     );
   }
 }

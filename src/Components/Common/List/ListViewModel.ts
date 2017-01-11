@@ -23,7 +23,7 @@ export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<T
   constructor(
     items: wx.ObservableOrProperty<TData[]> = wx.property<TData[]>([]),
     public isMultiSelectEnabled = false,
-    isRoutingEnabled?: boolean
+    isRoutingEnabled?: boolean,
   ) {
     super(isRoutingEnabled);
 
@@ -47,7 +47,7 @@ export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<T
             selectable.isSelected = !(selectable.isSelected || false);
 
             this.notifyChanged();
-          })
+          }),
       );
     }
 

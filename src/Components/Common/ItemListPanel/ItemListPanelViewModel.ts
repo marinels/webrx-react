@@ -19,11 +19,11 @@ export class ItemListPanelViewModel<TData> extends BaseItemListPanelViewModel<TD
     isLoading?: wx.ObservableOrProperty<boolean>,
     pagerLimit?: number,
     rateLimit?: number,
-    isRoutingEnabled?: boolean
+    isRoutingEnabled?: boolean,
   ) {
     super(
       new DataGridViewModel<TData>(items, filterer, comparer, isMultiSelectEnabled, isLoading, pagerLimit, rateLimit, isRoutingEnabled),
-      isRoutingEnabled
+      isRoutingEnabled,
     );
   }
 }

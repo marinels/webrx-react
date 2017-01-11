@@ -55,7 +55,7 @@ export class BindableInput extends React.Component<BindableInputProps, any> {
 
     return React.cloneElement(
       React.Children.only(children),
-      Object.assign({ className }, rest, bindProps)
+      Object.assign({ className }, rest, bindProps),
     );
   }
 

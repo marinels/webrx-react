@@ -78,7 +78,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
           };
         },
         // this initializes the scan operator with an empty object (the first `x` value)
-        <LoadComponentParams>{}
+        <LoadComponentParams>{},
       )
       // publish is required here because we use this Observable in multiple streams
       // we use publish instead of share so we can kick this engine off at the end of stream composition
@@ -142,7 +142,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
       // this may not be necessary for most components, but a small price to pay if a component
       // performs a lot of routing state changes in a short amount of time
       .debounce(100)
-      .invokeCommand(this.loadComponent)
+      .invokeCommand(this.loadComponent),
     );
 
     this.subscribe(
@@ -153,13 +153,13 @@ export class RouteHandlerViewModel extends BaseViewModel {
         if (this.currentRoute() != null && this.routedComponent() != null) {
           Manager.navTo(this.currentRoute().path, this.routedComponent().getRoutingState(x));
         }
-      })
+      }),
     );
 
     // connect the primary observable to allow the routing engine to start processing routes
     this.subscribe(
       loadComponentParams
-        .connect()
+        .connect(),
     );
   }
 

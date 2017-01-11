@@ -24,7 +24,7 @@ export class AlertHostViewModel extends BaseViewModel {
 
     this.subscribe(
       pubSub.observe<AlertCreated>(AlertCreatedKey)
-        .invokeCommand(this.newAlert)
+        .invokeCommand(this.newAlert),
     );
 
     this.subscribe(
@@ -40,7 +40,7 @@ export class AlertHostViewModel extends BaseViewModel {
             });
 
           this.alerts.add(alert);
-        })
+        }),
     );
   }
 }

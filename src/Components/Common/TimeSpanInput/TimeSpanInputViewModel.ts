@@ -68,7 +68,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
     minValue?: moment.Duration,
     maxValue?: moment.Duration,
     precision = DefaultPrecision,
-    parseDelay = DefaultParseDelay
+    parseDelay = DefaultParseDelay,
   ) {
     super();
 

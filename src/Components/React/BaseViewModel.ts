@@ -182,7 +182,7 @@ export abstract class BaseViewModel implements IDisposable {
         header,
         style,
         timeout,
-        errorFormatter
+        errorFormatter,
       ).subscribe(x => {
         try {
           onNext(x);
@@ -190,7 +190,7 @@ export abstract class BaseViewModel implements IDisposable {
         catch (err) {
           this.alertForError(err, header, style, timeout, errorFormatter);
         }
-      })
+      }),
     );
   }
 

@@ -6,7 +6,7 @@ export enum LogLevel {
   Warn = 40,
   Error = 50,
   Fatal = 60,
-  Off = 99
+  Off = 99,
 }
 
 export function getLevelName(level: LogLevel | number) {

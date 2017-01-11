@@ -140,7 +140,7 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
         {
           React.cloneElement(
             this.props.editTemplate(this.state.editValue(), this),
-            { ref: 'control' }
+            { ref: 'control' },
           )
         }
       </BindableInput>

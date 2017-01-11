@@ -8,7 +8,7 @@ import { Loading } from '../Common/Loading/Loading';
 export function renderEnumerable<T, TResult>(
   source: T[] | Enumerable<T>,
   selector: (data: T[]) => TResult = (data) => data as any as TResult,
-  defaultSelector: () => TResult = () => null as TResult
+  defaultSelector: () => TResult = () => null as TResult,
 ) {
   const array = (source instanceof Array) ? source : source.toArray();
 
@@ -47,7 +47,7 @@ export function renderConditional(
 export function renderLoadable(
   isLoading: wx.IObservableProperty<boolean> | boolean,
   loadingComponent: any,
-  loadedComponent?: any
+  loadedComponent?: any,
 ) {
   const loadingComponentType = typeof loadingComponent;
 
@@ -73,7 +73,7 @@ export function renderSizedLoadable(
   isLoading: wx.IObservableProperty<boolean> | boolean,
   text: string,
   fontSize: number | string,
-  loadedComponent?: any
+  loadedComponent?: any,
 ) {
   return this.renderLoadable(isLoading, {
     text,
@@ -85,7 +85,7 @@ export function renderGridLoadable(
   isLoading: wx.IObservableProperty<boolean> | boolean,
   text: string,
   fontSize: number | string,
-  loadedComponent?: any
+  loadedComponent?: any,
 ) {
   return this.renderLoadable(isLoading, {
     text,

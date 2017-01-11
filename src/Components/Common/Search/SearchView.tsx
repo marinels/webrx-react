@@ -54,7 +54,7 @@ export class SearchView extends BaseView<SearchViewProps, SearchViewModel> {
             </CommandButton>
           </InputGroup.Button>
         </InputGroup>
-      ), () => this.renderInput()
+      ), () => this.renderInput(),
     );
   }
 

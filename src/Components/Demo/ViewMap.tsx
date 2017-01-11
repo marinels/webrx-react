@@ -211,13 +211,13 @@ const viewMap: ViewActivatorMap = {
       pager = false;
       search = true;
       view = new DataGridListViewTemplate<SampleData>(
-        x => sampleDataTemplate(x)
+        x => sampleDataTemplate(x),
       );
     }
 
     if (componentRoute === 'DataGridPager') {
       view = new DataGridListViewTemplate<SampleData>(
-        x => sampleDataTemplate(x)
+        x => sampleDataTemplate(x),
       );
 
       // this is the simple method of overriding pager details
@@ -336,7 +336,7 @@ const viewMap: ViewActivatorMap = {
         <ItemListPanelView viewModel={ viewModel } headerContent='Sample List Data' collapsible pager search
           view={
             new DataGridListViewTemplate<SampleData>(
-              x => `Name: ${ x.name }, Required By: ${ x.requiredBy }`
+              x => `Name: ${ x.name }, Required By: ${ x.requiredBy }`,
             )
           }
         >
