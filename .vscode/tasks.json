@@ -20,6 +20,25 @@
         {
             "taskName": "test",
             "isTestCommand": true
+        },
+        {
+            "taskName": "lint:ts",
+            "problemMatcher": {
+                "owner": "tslint",
+                "fileLocation": [
+                    "relative",
+                    "${workspaceRoot}"
+                ],
+                "severity": "warning",
+                "pattern": {
+                    "regexp": "^\\((\\S.*)\\)\\s+(\\S.*)\\[(\\d+),\\s+(\\d+)\\]:\\s+(.*)$",
+                    "code": 1,
+                    "file": 2,
+                    "line": 3,
+                    "column": 4,
+                    "message": 5
+                }
+            }
         }
     ]
 }
