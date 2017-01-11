@@ -1,6 +1,6 @@
 import './TestSetup';
 
 import './SanitySpec';
-import './Extensions/AllExtensions';
-import './Utils/AllUtils';
-import './Components/AllComponents';
+import './Extensions';
+import './Utils';
+import './Components';
