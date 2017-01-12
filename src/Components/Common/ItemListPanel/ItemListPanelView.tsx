@@ -29,11 +29,11 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
 
   render() {
     const { className, children, rest, props } = this.restProps(x => {
-      const { fill, view, search, pager, pagerLimits, loadingContent, selectable, highlightSelected, checkmarkSelected } = x;
-      return { fill, view, search, pager, pagerLimits, loadingContent, selectable, highlightSelected, checkmarkSelected };
+      const { fill, viewTemplate, search, pager, pagerLimits, loadingContent, selectable, highlightSelected, checkmarkSelected } = x;
+      return { fill, viewTemplate, search, pager, pagerLimits, loadingContent, selectable, highlightSelected, checkmarkSelected };
     });
 
-    const viewType = props.view instanceof DataGridTableViewTemplate ? 'Table' : 'List';
+    const viewType = props.viewTemplate instanceof DataGridTableViewTemplate ? 'Table' : 'List';
 
     return (
       <CommonPanel { ...rest } className={ classNames('ItemListPanel', viewType, className) }>
@@ -43,7 +43,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
             () => this.renderConditional(
               React.isValidElement(props.search),
               props.search,
-              () => <DataGridView.Search { ...(props.search === true ? {} : props.search) } grid={ this.state.grid } view={ props.view } fill />,
+              () => <DataGridView.Search { ...(props.search === true ? {} : props.search) } grid={ this.state.grid } viewTemplate={ props.viewTemplate } fill />,
             ),
           )
         }
@@ -56,7 +56,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
             () => this.renderConditional(
               React.isValidElement(props.pager),
               props.pager,
-              () => <DataGridView.Pager limits={ props.pagerLimits } { ...(props.pager === true ? {} : props.pager) } grid={ this.state.grid } view={ props.view } fill />,
+              () => <DataGridView.Pager limits={ props.pagerLimits } { ...(props.pager === true ? {} : props.pager) } grid={ this.state.grid } viewTemplate={ props.viewTemplate } fill />,
             ),
           )
         }
