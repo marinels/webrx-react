@@ -1,5 +1,6 @@
 import { Observable } from  'rx';
 import * as wx from 'webrx';
+import * as clone from 'clone';
 
 import { Logging } from '../Utils';
 import { SampleData } from './SampleData/SampleData';
@@ -7,6 +8,9 @@ import { SampleData } from './SampleData/SampleData';
 export enum HttpRequestMethod {
   GET,
   POST,
+  PUT,
+  DELETE,
+  PATCH,
 }
 
 export class ObservableApi {
@@ -33,17 +37,37 @@ export class ObservableApi {
     return params;
   }
 
-  public getObservable<T>(action: string, params?: any, method: HttpRequestMethod = HttpRequestMethod.GET, options?: wx.IHttpClientOptions, baseUri?: string) {
-    const uri = `${baseUri || this.baseUri}${action}`;
+  private getRequest<T>(url: string, method: HttpRequestMethod, params?: any, data?: any, options?: wx.IHttpClientOptions) {
+    if (method === HttpRequestMethod.POST && data === undefined && params !== undefined) {
+      // we're performing a POST request but only supplying params, this likely
+      // means the body was passed in as the params, so we can swap the two.
+      // if this is intentional, pass in null for the data instead of leaving it blank
+
+      data = params;
+      params = null;
+    }
 
     params = this.getNonNullParams(params);
+
+    options = Object.assign<wx.IHttpClientOptions>({}, options, <wx.IHttpClientOptions>{
+      url,
+      method: method.toString(),
+      params,
+      data,
+    });
+
+    return this.client.request<T>(options);
+  }
+
+  public getObservable<T>(action: string, params?: any, data?: any, method: HttpRequestMethod = HttpRequestMethod.GET, options?: wx.IHttpClientOptions, baseUri?: string) {
+    const uri = `${baseUri || this.baseUri}${action}`;
 
     this.logger.info(`Calling API: ${action} (${uri})`, params);
 
     return this.sampleData == null ?
       // if an API call throws an uncaught error, that means you are not subscribing to the observable's error
       Observable
-        .fromPromise(method === HttpRequestMethod.POST ? this.client.post<T>(uri, params, options) : this.client.get<T>(uri, params, options))
+        .fromPromise(this.getRequest(uri, method, params, data, options))
         .doOnNext(x => {
           this.logger.info(`API Result: ${action} (${uri})`, x);
         })
