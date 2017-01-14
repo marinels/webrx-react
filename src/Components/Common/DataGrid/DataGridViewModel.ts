@@ -112,8 +112,6 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
       .toProperty();
 
     this.project = wx.asyncCommand((x: TRequest) => {
-
-
       return this
         .getObservableOrAlert(
           () => this.getProjectionResult(x)
