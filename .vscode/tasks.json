@@ -13,8 +13,26 @@
             "problemMatcher": [
                 "$lessCompile",
                 "$tsc",
-                "$jshint",
-                "$lessCompile"
+                {
+                    "owner": "webpack",
+                    "severity": "error",
+                    "fileLocation": [
+                        "relative",
+                        "${workspaceRoot}"
+                    ],
+                    "pattern": [
+                        {
+                            "regexp": "Error:\\s+(.*)$",
+                            "file" : 1
+                        },
+                        {
+                            "regexp": "\\((\\d+),(\\d+)\\):\\s+(.*)\\]$",
+                            "line":1,
+                            "column": 2,
+                            "message": 3
+                        }
+                    ]
+                }
             ]
         },
         {
