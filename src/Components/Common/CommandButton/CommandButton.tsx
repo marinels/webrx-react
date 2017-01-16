@@ -49,15 +49,19 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
 
   render() {
     const { className, children, rest, props } = this.restProps(x => {
-      const { onClick, command, commandParameter, stopPropagation, preventDefault, plain } = x;
-      return { onClick, command, commandParameter, stopPropagation, preventDefault, plain };
+      const { onClick, command, commandParameter, stopPropagation, preventDefault, plain, disabled } = x;
+      return { onClick, command, commandParameter, stopPropagation, preventDefault, plain, disabled };
     });
 
-    const canExecute = (props.command == null) ?
-      // no command was supplied so check both href and onClick to see if this button is enabled
-      String.isNullOrEmpty(rest.href) === false || props.onClick != null :
-      // use the command to see if this button is enabled
-      this.getCommand().canExecute(this.getParam());
+    const canExecute = (
+      props.disabled !== true &&
+      (props.command == null ?
+        // no command was supplied so check both href and onClick to see if this button is enabled
+        String.isNullOrEmpty(rest.href) === false || props.onClick != null :
+        // use the command to see if this button is enabled
+        this.getCommand().canExecute(this.getParam())
+      )
+    );
 
     return (
       <Button { ...rest } className={ classNames('CommandButton', className, { plain: props.plain }) } disabled={ canExecute !== true } onClick={ e => this.handleClick(e) }>

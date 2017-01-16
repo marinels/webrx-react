@@ -181,20 +181,20 @@ const viewMap: ViewActivatorMap = {
     switch (componentRoute) {
       case 'List':
         return (
-          <ListView viewModel={ viewModel } view={ listTemplate } />
+          <ListView viewModel={ viewModel } viewTemplate={ listTemplate } />
         );
       case 'ListCmd':
         return (
-          <ListView viewModel={ viewModel } view={ listCmdTemplate } />
+          <ListView viewModel={ viewModel } viewTemplate={ listCmdTemplate } />
         );
       case 'Tree':
         return (
-          <ListView viewModel={ viewModel } selectable checkmarkSelected view={ treeTemplate } />
+          <ListView viewModel={ viewModel } selectable checkmarkSelected viewTemplate={ treeTemplate } />
         );
       case 'PanelList':
         return (
           <Panel header='List View Embedded Within a Panel' style={({ margin: 0 })}>
-            <ListView viewModel={ viewModel } selectable checkmarkSelected fill view={ listTemplate } />
+            <ListView viewModel={ viewModel } selectable checkmarkSelected fill viewTemplate={ listTemplate } />
           </Panel>
         );
       default:
@@ -223,7 +223,7 @@ const viewMap: ViewActivatorMap = {
       // this is the simple method of overriding pager details
       pager = { order: [ 'controls', 'info' ] };
       // this method allows much more complex composition
-      // pager = (<DataGridView.Pager grid={ viewModel } view={ view } order={ [ null, 'info' ] } />);
+      // pager = (<DataGridView.Pager grid={ viewModel } viewTemplate={ view } order={ [ null, 'info' ] } />);
     }
 
     if (componentRoute === 'DataGrid') {
@@ -236,7 +236,7 @@ const viewMap: ViewActivatorMap = {
     }
 
     return (
-      <DataGridView key={ componentRoute } viewModel={ viewModel } view={ view } pager={ pager } search={ search }>
+      <DataGridView key={ componentRoute } viewModel={ viewModel } viewTemplate={ view } pager={ pager } search={ search }>
         { columns }
       </DataGridView>
     );
@@ -334,7 +334,7 @@ const viewMap: ViewActivatorMap = {
     else {
       return (
         <ItemListPanelView viewModel={ viewModel } headerContent='Sample List Data' collapsible pager search
-          view={
+          viewTemplate={
             new DataGridListViewTemplate<SampleData>(
               x => `Name: ${ x.name }, Required By: ${ x.requiredBy }`,
             )

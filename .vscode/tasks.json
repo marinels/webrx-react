@@ -13,13 +13,50 @@
             "problemMatcher": [
                 "$lessCompile",
                 "$tsc",
-                "$jshint",
-                "$lessCompile"
+                {
+                    "owner": "webpack",
+                    "severity": "error",
+                    "fileLocation": [
+                        "relative",
+                        "${workspaceRoot}"
+                    ],
+                    "pattern": [
+                        {
+                            "regexp": "Error:\\s+(.*)$",
+                            "file" : 1
+                        },
+                        {
+                            "regexp": "\\((\\d+),(\\d+)\\):\\s+(.*)\\]$",
+                            "line":1,
+                            "column": 2,
+                            "message": 3
+                        }
+                    ]
+                }
             ]
         },
         {
             "taskName": "test",
             "isTestCommand": true
+        },
+        {
+            "taskName": "lint:ts",
+            "problemMatcher": {
+                "owner": "tslint",
+                "fileLocation": [
+                    "relative",
+                    "${workspaceRoot}"
+                ],
+                "severity": "warning",
+                "pattern": {
+                    "regexp": "^\\((\\S.*)\\)\\s+(\\S.*)\\[(\\d+),\\s+(\\d+)\\]:\\s+(.*)$",
+                    "code": 1,
+                    "file": 2,
+                    "line": 3,
+                    "column": 4,
+                    "message": 5
+                }
+            }
         }
     ]
 }

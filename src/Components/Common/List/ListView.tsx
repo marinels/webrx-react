@@ -16,6 +16,7 @@ export * from './NavButton';
 import './List.less';
 
 export interface ListViewRenderTemplateProps {
+  viewTemplate?: ListViewRenderTemplate<any, any, any>;
   selectable?: boolean;
   highlightSelected?: boolean;
   checkmarkSelected?: boolean;
@@ -328,14 +329,13 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
 }
 
 export interface ListProps extends ListGroupProps, ListViewRenderTemplateProps, ViewModelProps {
-  view?: ListViewRenderTemplate<any, any, any>;
 }
 
 export class ListView extends BaseView<ListProps, ListViewModel<any, any>> {
   public static displayName = 'ListView';
 
   static defaultProps = {
-    view: new ListViewTemplate<any>(),
+    viewTemplate: new ListViewTemplate<any>(),
     selectable: false,
     highlightSelected: false,
     checkmarkSelected: false,
@@ -345,24 +345,24 @@ export class ListView extends BaseView<ListProps, ListViewModel<any, any>> {
   initialize() {
     super.initialize();
 
-    this.props.view.initialize(this.state, this);
+    this.props.viewTemplate.initialize(this.state, this);
   }
 
   updated(prevProps: ListProps) {
     // if the view was changed then we need to re-init
-    if (prevProps.view !== this.props.view) {
+    if (prevProps.viewTemplate !== this.props.viewTemplate) {
       // cleanup old view
-      prevProps.view.cleanup(this.state, this);
+      prevProps.viewTemplate.cleanup(this.state, this);
 
       // initialize new view
-      this.props.view.initialize(this.state, this);
+      this.props.viewTemplate.initialize(this.state, this);
     }
   }
 
   cleanup() {
     super.cleanup();
 
-    this.props.view.cleanup(this.state, this);
+    this.props.viewTemplate.cleanup(this.state, this);
   }
 
   updateOn() {
@@ -374,11 +374,11 @@ export class ListView extends BaseView<ListProps, ListViewModel<any, any>> {
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { view, selectable, highlightSelected, checkmarkSelected, emptyContent } = x;
-      return { view, selectable, highlightSelected, checkmarkSelected, emptyContent };
+      const { viewTemplate, selectable, highlightSelected, checkmarkSelected, emptyContent } = x;
+      return { viewTemplate, selectable, highlightSelected, checkmarkSelected, emptyContent };
     });
 
-    const list = props.view.render(this.state, this);
+    const list = props.viewTemplate.render(this.state, this);
 
     return React.cloneElement(
       list,

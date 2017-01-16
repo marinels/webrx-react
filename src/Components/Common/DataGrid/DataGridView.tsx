@@ -304,7 +304,7 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
 
 export interface DataGridComponentProps {
   grid: DataGridViewModel<any>;
-  view: DataGridViewTemplate<any>;
+  viewTemplate: DataGridViewTemplate<any>;
   fill?: boolean;
 }
 
@@ -314,13 +314,13 @@ export interface DataGridSearchProps extends DataGridComponentProps, SearchProps
 export class DataGridSearch extends React.Component<DataGridSearchProps, any> {
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { grid, view } = x;
-      return { grid, view };
+      const { grid, viewTemplate } = x;
+      return { grid, viewTemplate };
     });
 
     return renderConditional(props.grid.canFilter() === true, () => (
       <SearchView { ...rest } viewModel={ props.grid.search }
-        className={ classNames('DataGrid', className, { Table: props.view instanceof DataGridTableViewTemplate }) }
+        className={ classNames('DataGrid', className, { Table: props.viewTemplate instanceof DataGridTableViewTemplate }) }
       />
     ));
   }
@@ -332,8 +332,8 @@ export interface DataGridPagerProps extends DataGridComponentProps, PagerProps {
 export class DataGridPager extends React.Component<DataGridPagerProps, any> {
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { grid, view } = x;
-      return { grid, view };
+      const { grid, viewTemplate } = x;
+      return { grid, viewTemplate };
     });
 
     return (
@@ -346,7 +346,7 @@ export class DataGridPager extends React.Component<DataGridPagerProps, any> {
 
 export interface DataGridProps extends ListViewRenderTemplateProps {
   fill?: boolean;
-  view?: DataGridViewTemplate<any>;
+  viewTemplate?: DataGridViewTemplate<any>;
   search?: boolean | SearchProps | any;
   pager?: boolean | PagerProps | any;
   pagerLimits?: number[];
@@ -365,7 +365,7 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
   public static Pager = DataGridPager;
 
   static defaultProps = {
-    view: new DataGridTableViewTemplate<any>(),
+    viewTemplate: new DataGridTableViewTemplate<any>(),
     loadingContent: 'Loading Data...',
     emptyContent: 'No Data...',
   };
@@ -381,24 +381,24 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
   initialize() {
     super.initialize();
 
-    this.props.view.initialize(this.state, this);
+    this.props.viewTemplate.initialize(this.state, this);
   }
 
   updated(prevProps: DataGridViewProps) {
     // if the view was changed then we need to re-init
-    if (prevProps.view !== this.props.view) {
+    if (prevProps.viewTemplate !== this.props.viewTemplate) {
       // cleanup old view
-      prevProps.view.cleanup(this.state, this);
+      prevProps.viewTemplate.cleanup(this.state, this);
 
       // initialize new view
-      this.props.view.initialize(this.state, this);
+      this.props.viewTemplate.initialize(this.state, this);
     }
   }
 
   cleanup() {
     super.cleanup();
 
-    this.props.view.cleanup(this.state, this);
+    this.props.viewTemplate.cleanup(this.state, this);
   }
 
   updateOn() {
@@ -417,12 +417,12 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { fill, view, search, pager, pagerLimits, selectable, highlightSelected, checkmarkSelected, loadingContent, emptyContent } = x;
-      return { fill, view, search, pager, pagerLimits, selectable, highlightSelected, checkmarkSelected, loadingContent, emptyContent };
+      const { fill, viewTemplate, search, pager, pagerLimits, selectable, highlightSelected, checkmarkSelected, loadingContent, emptyContent } = x;
+      return { fill, viewTemplate, search, pager, pagerLimits, selectable, highlightSelected, checkmarkSelected, loadingContent, emptyContent };
     });
 
     return this.renderSizedLoadable(this.state.isLoading, props.loadingContent, '1.5em', () => {
-      const grid = props.view.render(this.state, this);
+      const grid = props.viewTemplate.render(this.state, this);
 
       return this.renderConditional(
         this.isOnlyView() === true,
@@ -436,7 +436,7 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
               this.renderConditional(
                 props.search !== false,
                 () => React.isValidElement(props.search) ? props.search : (
-                  <DataGridView.Search { ...(props.search === true ? {} : props.search) } grid={ this.state } view={ props.view } />
+                  <DataGridView.Search { ...(props.search === true ? {} : props.search) } grid={ this.state } viewTemplate={ props.viewTemplate } />
                 ),
               )
             }
@@ -445,7 +445,7 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
               this.renderConditional(
                 props.pager !== false,
                 () => React.isValidElement(props.pager) ? props.pager : (
-                  <DataGridView.Pager limits={ props.pagerLimits } { ...(props.pager === true ? {} : props.pager) } grid={ this.state } view={ props.view } />
+                  <DataGridView.Pager limits={ props.pagerLimits } { ...(props.pager === true ? {} : props.pager) } grid={ this.state } viewTemplate={ props.viewTemplate } />
                 ),
               )
             }

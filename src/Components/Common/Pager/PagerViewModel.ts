@@ -46,7 +46,9 @@ export class PagerViewModel extends BaseRoutableViewModel<PagerRoutingState> {
 
     this.subscribe(
       wx
-        .whenAny(this.pageCount, x => x > 0 ? 1 : 0)
+        .whenAny(this.pageCount, this.selectedPage, (pc, sp) => ({ pc, sp }))
+        .filter(x => (x.pc > 0 && x.sp === 0) || (x.pc === 0 && x.sp > 0))
+        .map(x => x.pc > 0 ? 1 : 0)
         .invokeCommand(this.selectPage),
     );
 
