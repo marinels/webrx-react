@@ -42,7 +42,7 @@ export class ObservableApi {
 
     options = Object.assign<wx.IHttpClientOptions>({}, options, <wx.IHttpClientOptions>{
       url,
-      method: method.toString(),
+      method: HttpRequestMethod[method],
       params,
       data,
     });
