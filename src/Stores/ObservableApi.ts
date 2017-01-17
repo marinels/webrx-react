@@ -37,16 +37,7 @@ export class ObservableApi {
     return params;
   }
 
-  private getRequest<T>(url: string, method: HttpRequestMethod, params?: any, data?: any, options?: wx.IHttpClientOptions) {
-    if (method === HttpRequestMethod.POST && data === undefined && params !== undefined) {
-      // we're performing a POST request but only supplying params, this likely
-      // means the body was passed in as the params, so we can swap the two.
-      // if this is intentional, pass in null for the data instead of leaving it blank
-
-      data = params;
-      params = null;
-    }
-
+  private getRequest<T>(url: string, method = HttpRequestMethod.GET, params?: any, data?: any, options?: wx.IHttpClientOptions) {
     params = this.getNonNullParams(params);
 
     options = Object.assign<wx.IHttpClientOptions>({}, options, <wx.IHttpClientOptions>{
@@ -59,7 +50,7 @@ export class ObservableApi {
     return this.client.request<T>(options);
   }
 
-  public getObservable<T>(action: string, params?: any, data?: any, method: HttpRequestMethod = HttpRequestMethod.GET, options?: wx.IHttpClientOptions, baseUri?: string) {
+  public getObservableResult<T>(action: string, params?: any, data?: any, method?: HttpRequestMethod, options?: wx.IHttpClientOptions, baseUri?: string) {
     const uri = `${baseUri || this.baseUri}${action}`;
 
     this.logger.info(`Calling API: ${action} (${uri})`, params);
@@ -97,6 +88,14 @@ export class ObservableApi {
         }) :
       // if sample data has been created just use that instead (opt-in)
       this.sampleData.getObservable<T>(action, params);
+  }
+
+  public getObservable<T>(action: string, params?: any, options?: wx.IHttpClientOptions, baseUri?: string) {
+    return this.getObservableResult<T>(action, params, null, HttpRequestMethod.GET, options, baseUri);
+  }
+
+  public postObservable<T>(action: string, data?: any, params?: any, options?: wx.IHttpClientOptions, baseUri?: string) {
+    return this.getObservableResult<T>(action, params, data, HttpRequestMethod.POST, options, baseUri);
   }
 
   public getSampleData(name: string, selector: (data: any) => any) {
