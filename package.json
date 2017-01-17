@@ -1,6 +1,6 @@
 {
   "name": "webrx-react",
-  "version": "0.5.29",
+  "version": "0.5.30",
   "description": "ReactJS + WebRx + RxJS + Bootstrap: MVVM for Single Page Web Applications",
   "scripts": {
     "start": "gulp",
@@ -25,6 +25,7 @@
   "dependencies": {
     "bootstrap": "^3.3.7",
     "classnames": "^2.2.5",
+    "clone": "^2.1.0",
     "ix": "^1.0.6",
     "jquery-deparam": "^0.5.3",
     "jquery-param": "^0.2.0",
@@ -57,7 +58,6 @@
     "babel-preset-es2015": "^6.18.0",
     "babel-register": "^6.18.0",
     "chai": "^3.5.0",
-    "clone": "^2.1.0",
     "css-loader": "^0.26.1",
     "del": "^2.2.2",
     "es6-shim": "^0.35.2",

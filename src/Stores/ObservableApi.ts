@@ -67,7 +67,7 @@ export class ObservableApi {
     return this.sampleData == null ?
       // if an API call throws an uncaught error, that means you are not subscribing to the observable's error
       Observable
-        .fromPromise(this.getRequest(uri, method, params, data, options))
+        .fromPromise(this.getRequest<T>(uri, method, params, data, options))
         .doOnNext(x => {
           this.logger.info(`API Result: ${action} (${uri})`, x);
         })
