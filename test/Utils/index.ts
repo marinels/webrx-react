@@ -1,4 +1,4 @@
-import './AlertSpec';
-import './MomentSpec';
-import './PubSubSpec';
-import './SubManSpec';
+import './Alert.spec';
+import './Moment.spec';
+import './PubSub.spec';
+import './SubMan.spec';

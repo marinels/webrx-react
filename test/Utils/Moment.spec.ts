@@ -1,6 +1,5 @@
-import { expect } from 'chai';
+import { should } from '../setup';
 import * as moment from 'moment';
-
 import { DateTime, TimeSpan, TicksPerMillisecond } from '../../src/Utils/Moment';
 
 const SampleDateTimeOffsetText = '2016-03-09 4:32:32 PM +00:00';
@@ -20,29 +19,31 @@ describe('Moment', () => {
       it('parses standard .NET DateTimeOffset strings', () => {
         const timestamp = DateTime.fromString(SampleDateTimeOffsetText);
 
-        expect(timestamp).to.be.not.null;
-        expect(timestamp.isValid()).to.be.true;
-        expect(timestamp.utcOffset()).to.equal(0);
-        expect(timestamp.valueOf()).to.equal(SampleDateTimeUnixMilliseconds);
+        should.exist(timestamp);
+        timestamp.isValid().should.be.true;
+        timestamp.utcOffset().should.eql(0);
+        timestamp.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
       });
 
       it('parses standard .NET DateTime strings', () => {
         const timestamp = DateTime.fromString(SampleDateTimeText);
 
-        expect(timestamp).to.be.not.null;
-        expect(timestamp.isValid()).to.be.true;
-        expect(timestamp.utcOffset()).to.equal(0); // date times should default to UTC
-        expect(timestamp.valueOf()).to.equal(SampleDateTimeUnixMilliseconds);
+        should.exist(timestamp);
+        timestamp.isValid().should.be.true;
+        timestamp.utcOffset().should.eql(0); // date times should default to UTC
+        timestamp.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
       });
 
       it('parses non-utc .NET DateTimeOffset strings', () => {
         let text = SampleDateTimeOffsetText.replace('4:', '8:').replace('+00', '+04');
         let timestamp = DateTime.fromString(text);
 
-        expect(timestamp.valueOf()).to.equal(SampleDateTimeUnixMilliseconds);
+        timestamp.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
 
         text = SampleDateTimeOffsetText.replace('4:', '2:').replace('+00', '-02');
         timestamp = DateTime.fromString(text);
+
+        timestamp.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
       });
 
       it('parses non-standard DateTime strings with a valid format', () => {
@@ -50,7 +51,7 @@ describe('Moment', () => {
         const format = 'ddd, DD MMM YYYY HH:mm:ss Z';
         const timestamp = DateTime.fromString(text, format);
 
-        expect(timestamp.valueOf()).to.equal(SampleDateTimeUnixMilliseconds);
+        timestamp.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
       });
 
       it('parses non-standard DateTime strings with multiple formats', () => {
@@ -61,13 +62,13 @@ describe('Moment', () => {
         ];
         const timestamp = DateTime.fromString(text, ...formats);
 
-        expect(timestamp.valueOf()).to.equal(SampleDateTimeUnixMilliseconds);
+        timestamp.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
       });
 
       it('returns null for null input', () => {
         const timestamp = DateTime.fromString(null);
 
-        expect(timestamp).to.be.null;
+        should.not.exist(timestamp);
       });
 
       it('returns an invalid moment instance for a bad format', () => {
@@ -75,7 +76,7 @@ describe('Moment', () => {
         const format = 'YYYY-MM-DD HH:mm:ss Z';
         const timestamp = DateTime.fromString(text, format);
 
-        expect(timestamp.isValid()).to.be.false;
+        timestamp.isValid().should.be.false;
       });
     });
 
@@ -83,30 +84,30 @@ describe('Moment', () => {
       it('converts .NET Ticks', () => {
         const timestamp = DateTime.fromNumber(SampleDateTimeTicks, 0);
 
-        expect(timestamp).to.be.not.null;
-        expect(timestamp.isValid()).to.be.true;
-        expect(timestamp.utcOffset()).to.equal(0);
-        expect(timestamp.valueOf()).to.equal(SampleDateTimeUnixMilliseconds);
+        should.exist(timestamp);
+        timestamp.isValid().should.be.true;
+        timestamp.utcOffset().should.eql(0);
+        timestamp.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
       });
 
       it('converts .NET Ticks with a numeric offset', () => {
         const timestamp = DateTime.fromNumber(SampleDateTimeTicks, -8);
 
-        expect(timestamp.utcOffset()).to.equal(-8 * 60); // utcOffset() returns minutes
-        expect(timestamp.valueOf()).to.equal(SampleDateTimeUnixMilliseconds);
+        timestamp.utcOffset().should.eql(-8 * 60); // utcOffset() returns minutes
+        timestamp.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
       });
 
       it('converts .NET Ticks with a text offset', () => {
         const timestamp = DateTime.fromNumber(SampleDateTimeTicks, '-08:00');
 
-        expect(timestamp.utcOffset()).to.equal(-8 * 60); // utcOffset() returns minutes
-        expect(timestamp.valueOf()).to.equal(SampleDateTimeUnixMilliseconds);
+        timestamp.utcOffset().should.eql(-8 * 60); // utcOffset() returns minutes
+        timestamp.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
       });
 
       it('returns null for null input', () => {
         const timestamp = DateTime.fromNumber(null);
 
-        expect(timestamp).to.be.null;
+        should.not.exist(timestamp);
       });
     });
 
@@ -115,20 +116,20 @@ describe('Moment', () => {
         const timestamp = DateTime.fromNumber(SampleDateTimeTicks);
         const ticks = DateTime.toNumber(timestamp);
 
-        expect(ticks).to.equal(SampleDateTimeTicks);
+        ticks.should.eql(SampleDateTimeTicks);
       });
 
       it('returns null for null input', () => {
         const ticks = DateTime.toNumber(null);
 
-        expect(ticks).to.be.null;
+        should.not.exist(ticks);
       });
 
       it('returns null for an invalid moment value', () => {
         const timestamp = moment.invalid();
         const ticks = DateTime.toNumber(timestamp);
 
-        expect(ticks).to.be.null;
+        should.not.exist(ticks);
       });
     });
   });
@@ -138,21 +139,21 @@ describe('Moment', () => {
       it('parses standard .NET TimeSpan strings', () => {
         const timespan = TimeSpan.fromString(SampleTimeSpanText);
 
-        expect(timespan).to.be.not.null;
-        expect(timespan.asMilliseconds()).to.equal(SampleTimeSpanMilliseconds);
+        timespan.should.be.not.null;
+        timespan.asMilliseconds().should.eql(SampleTimeSpanMilliseconds);
       });
 
       it('parses negative .NET TimeSpan strings', () => {
         const timespan = TimeSpan.fromString(`-${SampleTimeSpanText}`);
 
-        expect(timespan).to.be.not.null;
-        expect(timespan.asMilliseconds()).to.equal(-1 * SampleTimeSpanMilliseconds);
+        timespan.should.be.not.null;
+        timespan.asMilliseconds().should.eql(-1 * SampleTimeSpanMilliseconds);
       });
 
       it('return null for null input', () => {
         const timespan = TimeSpan.fromString(null);
 
-        expect(timespan).to.be.null;
+        should.not.exist(timespan);
       });
     });
 
@@ -160,21 +161,21 @@ describe('Moment', () => {
       it('converts standard .NET TimeSpan Ticks', () => {
         const timespan = TimeSpan.fromNumber(SampleTimeSpanTicks);
 
-        expect(timespan).to.be.not.null;
-        expect (timespan.asMilliseconds()).to.equal(SampleTimeSpanMilliseconds);
+        timespan.should.be.not.null;
+        timespan.asMilliseconds().should.eql(SampleTimeSpanMilliseconds);
       });
 
       it('converts negative values to negative durations', () => {
         const timespan = TimeSpan.fromNumber(-1 * TicksPerMillisecond);
 
-        expect(timespan).to.be.not.null;
-        expect (timespan.asMilliseconds()).to.equal(-1);
+        timespan.should.be.not.null;
+        timespan.asMilliseconds().should.eql(-1);
       });
 
       it('returns null for null input', () => {
         const timespan = TimeSpan.fromNumber(null);
 
-        expect(timespan).to.be.null;
+        should.not.exist(timespan);
       });
     });
 
@@ -183,13 +184,13 @@ describe('Moment', () => {
         const timespan = TimeSpan.fromNumber(SampleTimeSpanTicks);
         const ticks = TimeSpan.toNumber(timespan);
 
-        expect(ticks).to.equal(SampleTimeSpanTicks);
+        ticks.should.eql(SampleTimeSpanTicks);
       });
 
       it('returns null for null input', () => {
         const ticks = TimeSpan.toNumber(null);
 
-        expect(ticks).to.be.null;
+        should.not.exist(ticks);
       });
     });
   });
