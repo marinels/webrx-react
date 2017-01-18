@@ -50,7 +50,10 @@ export class BindableInput extends React.Component<BindableInputProps, any> {
     });
 
     const bindProps: any = {};
-    bindProps[props.valueProperty] = props.valueGetter(props.property);
+    const value = props.valueGetter(props.property);
+    // NOTE: react says the value of a bindable control should not be null, but
+    //       instead empty string (undefined is ok though, so === is required).s
+    bindProps[props.valueProperty] = value === null ? '' : value;
     bindProps[props.onChangeProperty] = (e: React.FormEvent<any>) => this.onChange(e);
 
     return React.cloneElement(
