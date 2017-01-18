@@ -1,5 +1,6 @@
 import * as wx from 'webrx';
 
+import '../Extensions/String';
 import { getLogger } from './Logging';
 import { PubSub, Default as PubSubInstance } from './PubSub';
 import { AlertCreatedKey, AlertCreated } from '../Events/AlertCreated';
