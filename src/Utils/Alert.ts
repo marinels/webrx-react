@@ -53,9 +53,10 @@ export class Alert {
           stack = childError.stack || childError.stacktrace || childError.stackTrace || childError.StackTrace;
         }
 
-        if (stack != null) {
-          this.logger.value.error(`${ header }: ${ text }`, error);
-        }
+        this.logger.value.error(`${ header }: ${ text }`, error);
+      }
+      else {
+        this.logger.value.error(`${ header }: ${ text }`);
       }
 
       this.create(text, header, style, timeout);
