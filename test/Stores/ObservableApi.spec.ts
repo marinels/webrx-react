@@ -80,6 +80,15 @@ describe('ObservableApi', () => {
       stub.should.have.been.calledOnce;
       stub.should.have.been.calledWith(expectedOptions);
     });
+
+    it('omits null param values from the uri', () => {
+      const request = Observable.of(true);
+      const stub = sandbox.stub(rxdom, 'ajax', () => request);
+      api.getObservableResult(action, { param1: 'param1 value', param2: null, param3: undefined });
+
+      stub.should.have.been.calledOnce;
+      stub.firstCall.args[0].url.should.eql(`${ baseUri }${ action }?${ uriParams }`);
+    });
   });
 
   describe('getObservable', () => {
