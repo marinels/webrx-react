@@ -49,6 +49,7 @@ describe('ObservableApi', () => {
 
     it('composes GET request options from the provided parameters', () => {
       const expectedOptions = {
+        headers: ObservableApi.defaultHeaders,
         async: true,
         body,
         url: `${ baseUri }${ action }?${ uriParams }`,
@@ -65,6 +66,7 @@ describe('ObservableApi', () => {
 
     it('composes POST request options from the provided parameters', () => {
       const expectedOptions = {
+        headers: ObservableApi.defaultHeaders,
         async: true,
         body,
         url: `${ baseUri }${ action }?${ uriParams }`,
