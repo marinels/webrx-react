@@ -20,7 +20,7 @@ export class Alert {
     }
   }
 
-  public createForError<TError>(error: TError, header?: string, style = 'danger', timeout?: number, formatter?: (e: TError) => string, logErrorObject = false) {
+  public createForError<TError>(error: TError, header?: string, style = 'danger', timeout?: number, formatter?: (e: TError) => any, logErrorObject = false) {
     if (error != null) {
       let content: any;
       let text: string;
@@ -95,6 +95,6 @@ export function create(content: any, header?: string, style?: string, timeout?: 
   Default.create(content, header, style, timeout);
 }
 
-export function createForError<TError>(error: TError, header = 'Unknown Error', style = 'danger', timeout?: number, formatter?: (e: TError) => string) {
+export function createForError<TError>(error: TError, header?: string, style?: string, timeout?: number, formatter?: (e: TError) => any) {
   Default.createForError(error, header, style, timeout, formatter);
 }
