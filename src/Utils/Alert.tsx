@@ -1,3 +1,4 @@
+import * as React from 'react';
 import * as wx from 'webrx';
 
 import '../Extensions/String';
@@ -21,12 +22,14 @@ export class Alert {
 
   public createForError<TError>(error: TError, header?: string, style = 'danger', timeout?: number, formatter?: (e: TError) => string, logErrorObject = false) {
     if (error != null) {
+      let content: any;
       let text: string;
       const anyError = error as any;
       const childError = anyError.error;
 
       if (formatter != null) {
-        text = formatter(error);
+        content = formatter(error);
+        text = String.stringify(content);
       }
       else {
         let code = anyError.status || anyError.Status || anyError.code || anyError.Code;
@@ -44,8 +47,29 @@ export class Alert {
           message = childError.message || childError.Message;
         }
 
-        text = `Error ${ code || '' }${ String.isNullOrEmpty(reason) ? '' : ` (${ reason })` }: ${ message || String.stringify(error, null, 2) }`;
+        text = `${ String.isNullOrEmpty(code) ? '' : `Error ${ code }: ` }${ String.isNullOrEmpty(reason) ? '' : `(${ reason }): ` }${ message || String.stringify(error) }`;
         header = header || reason || 'Unknown Error';
+
+        let uri = anyError.uri || anyError.Uri || anyError.url || anyError.Url;
+        if (uri == null && childError != null) {
+          uri = childError.uri || childError.Uri || childError.url || childError.Url;
+        }
+
+        content = (
+          <div className='Alert-content'>
+            <div className='Alert-text'>{ text }</div>
+            {
+              // if there is a uri attached to the error then include it in the text
+              String.isNullOrEmpty(uri) ?
+                null :
+                (
+                  <div className='Alert-uri'>
+                    <a href={ uri }>{ uri }</a>
+                  </div>
+                )
+            }
+          </div>
+        );
       }
 
       // allow build to override default value
@@ -60,7 +84,7 @@ export class Alert {
         this.logger.value.error(`${ header }: ${ text }`);
       }
 
-      this.create(text, header, style, timeout);
+      this.create(content, header, style, timeout);
     }
   }
 }
