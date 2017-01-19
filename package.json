@@ -37,6 +37,7 @@
     "react-dom": "^15.4.2",
     "react-fa": "^4.1.2",
     "rx": "^4.1.0",
+    "rx-dom": "^7.0.3",
     "webrx": "^1.5.0"
   },
   "devDependencies": {
