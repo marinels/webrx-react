@@ -76,6 +76,11 @@ export class ObservableApi {
       // xmlHttpRequest creation function that injects timeout = 1, then
       // use the following as the uri:
       // https://httpbin.org/delay/5
+
+      // NOTE: it is possible that you can reach this path if you attempt a CORS
+      //       fetch where the OPTIONS preflight request 404's.
+      // see: https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Preflighted_requests
+
       message = 'Request Timeout';
     }
     else if (code === 404) {
