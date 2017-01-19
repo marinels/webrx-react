@@ -77,11 +77,16 @@ export class ObservableApi {
       // use the following as the uri:
       // https://httpbin.org/delay/5
 
-      // NOTE: it is possible that you can reach this path if you attempt a CORS
-      //       fetch where the OPTIONS preflight request 404's.
-      // see: https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Preflighted_requests
+      if (uri.indexOf(window.location.origin) !== 0) {
+        // NOTE: it is possible that you can reach this path if you attempt a CORS
+        //       fetch where the OPTIONS preflight request 404's.
+        // see: https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Preflighted_requests
 
-      message = 'Request Timeout';
+        message = 'Request Timeout or Invalid Cross Origin Request';
+      }
+      else {
+        message = 'Request Timeout';
+      }
     }
     else if (code === 404) {
       message = xhr.responseURL;
