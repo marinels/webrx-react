@@ -47,6 +47,11 @@ export class Alert {
           message = childError.message || childError.Message;
         }
 
+        let messageDetail = anyError.messageDetail || anyError.MessageDetail;
+        if (messageDetail == null && childError != null) {
+          messageDetail = childError.messageDetail || childError.MessageDetail;
+        }
+
         text = `${ String.isNullOrEmpty(code) ? '' : `Error ${ code }: ` }${ String.isNullOrEmpty(reason) ? '' : `(${ reason }): ` }${ message || String.stringify(error) }`;
         header = header || reason || 'Unknown Error';
 
@@ -57,7 +62,42 @@ export class Alert {
 
         content = (
           <div className='Alert-content'>
-            <div className='Alert-text'>{ text }</div>
+            <div className='Alert-title'>
+            {
+              // if there is a uri attached to the error then include it in the text
+              String.isNullOrEmpty(code) ?
+                null :
+                (
+                  <span className='Alert-code'>{ `Error ${ code }: ` }</span>
+                )
+            }
+            {
+              // if there is a uri attached to the error then include it in the text
+              String.isNullOrEmpty(reason) ?
+                null :
+                (
+                  <span className='Alert-code'>{ `${ reason }` }</span>
+                )
+            }
+            </div>
+            <div className='Alert-text'>
+            {
+              // if there is a uri attached to the error then include it in the text
+              String.isNullOrEmpty(message) ?
+                null :
+                (
+                  <div className='Alert-message'>{ message }</div>
+                )
+            }
+            {
+              // if there is a uri attached to the error then include it in the text
+              String.isNullOrEmpty(messageDetail) ?
+                null :
+                (
+                  <div className='Alert-messageDetail'>{ messageDetail }</div>
+                )
+            }
+            </div>
             {
               // if there is a uri attached to the error then include it in the text
               String.isNullOrEmpty(uri) ?

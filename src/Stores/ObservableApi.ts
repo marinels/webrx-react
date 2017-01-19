@@ -67,6 +67,7 @@ export class ObservableApi {
     const reason = String.isNullOrEmpty(xhr.statusText) ? null : xhr.statusText;
     const response = String.isNullOrEmpty(xhr.response) ? null : xhr.response;
     let message: string;
+    let messageDetail: string;
 
     if (xhr.readyState === 4 && xhr.status === 0) {
       // this is the best heuristic we have for detecting a timeout
@@ -88,24 +89,49 @@ export class ObservableApi {
         message = 'Request Timeout';
       }
     }
-    else if (code === 404) {
-      message = xhr.responseURL;
-    }
     else if (response != null) {
       // something came back in the response, so let's try and extract an error
 
-      if (typeof response === 'object') {
-        // response is an object, so try and stringify it
+      if (String.isNullOrEmpty(xhr.responseURL) === false) {
+        // the responseURL will be more trustworth than our passed in parameter
+        uri = xhr.responseURL;
+      }
+
+      let responseObject: any;
+
+      if (typeof response === 'string') {
+        try {
+          // try and parse the response as JSON
+          responseObject = JSON.parse(response);
+        }
+        catch (e) {
+          this.logger.debug('Unable to parse response', response, e);
+          // JSON parsing didn't work, fallback on straight assignment
+          message = response;
+        }
+      }
+      else if (typeof response === 'object') {
+        responseObject = response;
+      }
+
+      if (responseObject != null) {
+        // try and get the message and message detail
+        message = responseObject.message || responseObject.Message;
+        messageDetail = responseObject.messageDetail || responseObject.MessageDetail;
+      }
+
+      if (message == null && messageDetail == null) {
+        // unable to produce a message yet, so fallback on stringify
+
         try {
           message = String.stringify(response, null, 2);
         }
         catch (e) {
           this.logger.warn('Unable to stringify response', response);
+
+          // last ditch effort, just call toString on the object
+          message = response.toString();
         }
-      }
-      else {
-        // response is a simple type so just toString it
-        message = response.toString();
       }
     }
     else {
@@ -120,6 +146,7 @@ export class ObservableApi {
       reason,
       response,
       message,
+      messageDetail,
       uri,
     };
   }
