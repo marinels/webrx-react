@@ -19,7 +19,7 @@ export class Alert {
     }
   }
 
-  public createForError<TError>(error: TError, header = 'Unknown Error', style = 'danger', timeout?: number, formatter?: (e: TError) => string, logStackTrace = false) {
+  public createForError<TError>(error: TError, header?: string, style = 'danger', timeout?: number, formatter?: (e: TError) => string, logErrorObject = false) {
     if (error != null) {
       let text: string;
       const anyError = error as any;
@@ -34,25 +34,26 @@ export class Alert {
           code = childError.status || childError.Status || childError.code || childError.Code;
         }
 
+        let reason = anyError.reason || anyError.Reason;
+        if (code == null && childError != null) {
+          code = childError.reason || childError.Reason;
+        }
+
         let message = anyError.message || anyError.Message;
         if (message == null && childError != null) {
           message = childError.message || childError.Message;
         }
 
-        text = `Error ${ code || '' }: ${ message || String.stringify(error, null, 2) }`;
+        text = `Error ${ code || '' }${ String.isNullOrEmpty(reason) ? '' : ` (${ reason })` }: ${ message || String.stringify(error, null, 2) }`;
+        header = header || reason || 'Unknown Error';
       }
 
       // allow build to override default value
       if (DEBUG) {
-        logStackTrace = true;
+        logErrorObject = true;
       }
 
-      if (logStackTrace === true) {
-        let stack = anyError.stack || anyError.stacktrace || anyError.stackTrace || anyError.StackTrace;
-        if (stack == null && childError != null) {
-          stack = childError.stack || childError.stacktrace || childError.stackTrace || childError.StackTrace;
-        }
-
+      if (logErrorObject === true) {
         this.logger.value.error(`${ header }: ${ text }`, error);
       }
       else {
