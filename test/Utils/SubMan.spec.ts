@@ -1,6 +1,5 @@
+import { should } from '../setup';
 import { IDisposable, Disposable } from 'rx';
-import { expect } from 'chai';
-
 import { SubMan } from '../../src/Utils/SubMan';
 
 describe('SubMan', () => {
@@ -9,8 +8,8 @@ describe('SubMan', () => {
       let subman = new SubMan();
       let subs = (<any>subman).subscriptions as IDisposable[];
 
-      expect(subs).to.be.not.null;
-      expect(subs.length).to.equal(0);
+      should.exist(subs);
+      subs.length.should.eql(0);
     });
 
     it('handles subscription args', () => {
@@ -18,9 +17,9 @@ describe('SubMan', () => {
       let subman = new SubMan(sub);
       let subs = (<any>subman).subscriptions as IDisposable[];
 
-      expect(subs).to.be.not.null;
-      expect(subs.length).to.equal(1);
-      expect(subs[0]).to.eql(sub);
+      should.exist(subs);
+      subs.length.should.eql(1);
+      subs[0].should.eql(sub);
     });
   });
 
@@ -32,8 +31,8 @@ describe('SubMan', () => {
 
       subman.add(sub);
 
-      expect(subs.length).to.equal(1);
-      expect(subs[0]).to.eql(sub);
+      subs.length.should.eql(1);
+      subs[0].should.eql(sub);
     });
 
     it('handles multiple subscriptions', () => {
@@ -47,10 +46,10 @@ describe('SubMan', () => {
       subman.add(sub2);
       subman.add(sub3);
 
-      expect(subs.length).to.equal(3);
-      expect(subs[0]).to.eql(sub1);
-      expect(subs[1]).to.eql(sub2);
-      expect(subs[2]).to.eql(sub3);
+      subs.length.should.eql(3);
+      subs[0].should.eql(sub1);
+      subs[1].should.eql(sub2);
+      subs[2].should.eql(sub3);
     });
   });
 
@@ -62,8 +61,8 @@ describe('SubMan', () => {
 
       subman.dispose();
 
-      expect(subs.length).to.equal(0);
-      expect(sub.isDisposed).to.be.true;
+      subs.length.should.eql(0);
+      sub.isDisposed.should.be.true;
     });
   });
 });

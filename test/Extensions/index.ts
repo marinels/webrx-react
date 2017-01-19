@@ -1,2 +1,2 @@
-import './Object';
-import './String';
+import './Object.spec';
+import './String.spec';

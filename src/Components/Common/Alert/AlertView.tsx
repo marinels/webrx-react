@@ -19,10 +19,19 @@ export class AlertView extends BaseView<AlertProps, AlertViewModel> {
     return (
       <div { ...rest } className={ classNames('Alert', className) }>
         <Alert bsStyle={ this.state.style } onDismiss={ this.bindEventToCommand(x => x.dismiss) }>
-          <h4>{ this.state.header }</h4>
-          <span className='Alert-text' dangerouslySetInnerHTML={ { __html: this.state.content } }></span>
+          <div className='Alert-header'>{ this.state.header }</div>
+          { this.renderAlertContent() }
         </Alert>
       </div>
     );
+  }
+
+  private renderAlertContent() {
+    return this.renderConditional(typeof this.state.content === 'string', () => (
+      <div className='Alert-content'>
+        <div className='Alert-text' dangerouslySetInnerHTML={ { __html: this.state.content } }>
+        </div>
+      </div>
+    ), () => this.state.content);
   }
 }

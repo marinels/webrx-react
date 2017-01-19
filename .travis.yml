@@ -1,7 +1,9 @@
 language: node_js
 node_js:
   - stable
-  - '4'
+  # until sinon release 2.0.0 stable, sinon-chai will have a broken dependency
+  # npm 2 will error out in this case, so our legacy builds will fail
+  # - '4'
 notifications:
   email: false
   # webhooks:

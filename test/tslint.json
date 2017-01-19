@@ -1,0 +1,7 @@
+{
+  "extends": "../tslint.json",
+  "rules": {
+    /* sinon-chai uses expressions to assert */
+    "no-unused-expression": false
+  }
+}

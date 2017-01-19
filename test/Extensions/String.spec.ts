@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { should } from '../setup';
 
 import '../../src/Extensions/String';
 
@@ -6,49 +6,49 @@ describe('String Extensions', () => {
   describe('String.IsNullOrEmpty', () => {
     it('Returns true when a string is undefined', () => {
       let str: string;
-      expect(String.isNullOrEmpty(str)).to.equal(true);
+      String.isNullOrEmpty(str).should.be.true;
     });
 
     it('Returns true when a string is null', () => {
       let str: string = null;
-      expect(String.isNullOrEmpty(str)).to.equal(true);
+      String.isNullOrEmpty(str).should.be.true;
     });
 
     it('Returns true when a string is empty', () => {
       let str: string = '';
-      expect(String.isNullOrEmpty(str)).to.equal(true);
+      String.isNullOrEmpty(str).should.be.true;
     });
 
     it('Returns true when a string is empty', () => {
       let str: string = '';
-      expect(String.isNullOrEmpty(str)).to.equal(true);
+      String.isNullOrEmpty(str).should.be.true;
     });
 
     it('Returns false when a string is non-empty', () => {
       let str: string = 'asdf';
-      expect(String.isNullOrEmpty(str)).to.equal(false);
+      String.isNullOrEmpty(str).should.be.false;
     });
   });
 
   describe('String.stringify', () => {
     it('Can handle a null value', () => {
       let val: any = null;
-      expect(String.stringify(val)).to.equal(null);
+      should.not.exist(String.stringify(val));
     });
 
     it('Can stringify an empty object', () => {
       let val: any = {};
-      expect(String.stringify(val)).to.equal(JSON.stringify(val, null, 2));
+      String.stringify(val).should.eql(JSON.stringify(val, null, 2));
     });
 
     it('Can stringify a non-empty object', () => {
       let val: any = { text: 'test' };
-      expect(String.stringify(val)).to.equal(JSON.stringify(val, null, 2));
+      String.stringify(val).should.eql(JSON.stringify(val, null, 2));
     });
 
     it('Can stringify with custom spaces', () => {
       let val: any = { text: 'test' };
-      expect(String.stringify(val, null, 4)).to.equal(JSON.stringify(val, null, 4));
+      String.stringify(val, null, 4).should.eql(JSON.stringify(val, null, 4));
     });
 
     it('Can stringify an object with an overridden toString() function', () => {
@@ -61,7 +61,7 @@ describe('String Extensions', () => {
       }
 
       let val = new Test();
-      expect(String.stringify(val)).to.equal('test');
+      String.stringify(val).should.eql('test');
     });
 
     it('Can stringify an object with an overridden toString() function in a base class', () => {
@@ -76,7 +76,7 @@ describe('String Extensions', () => {
       }
 
       let val = new Test();
-      expect(String.stringify(val)).to.equal('test');
+      String.stringify(val).should.eql('test');
     });
   });
 });

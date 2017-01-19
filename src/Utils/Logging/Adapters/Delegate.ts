@@ -29,6 +29,6 @@ export class DelegateLogManager implements LogManager {
   }
 
   getLogger(name: string, level?: LogLevel) {
-    return new DelegateLogger(this.action, name, level || this.defaultLevel);
+    return new DelegateLogger(this.action, name, level == null ? this.defaultLevel : level);
   }
 }

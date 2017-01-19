@@ -1,20 +1,19 @@
-import { expect } from 'chai';
-
+import { should } from '../setup';
 import { PubSub } from '../../src/Utils/PubSub';
 
 describe('PubSub', () => {
   it('Can subscribe and publish', () => {
-    let pubsub = new PubSub();
+    const pubsub = new PubSub();
     let called = false;
-    let handle = pubsub.subscribe('test', x => called = true);
-    expect(handle).to.exist;
-    expect(handle.dispose).to.exist;
+    const handle = pubsub.subscribe('test', x => called = true);
+    should.exist(handle);
+    should.exist(handle.dispose);
     pubsub.publish('test');
-    expect(called).to.equal(true);
+    called.should.be.true;
   });
 
   it('Can publish with no subscribers', () => {
-    let pubsub = new PubSub();
+    const pubsub = new PubSub();
     pubsub.publish('test2');
   });
 
@@ -22,9 +21,9 @@ describe('PubSub', () => {
     let pubsub = new PubSub();
     let called = false;
     let handle = pubsub.subscribe('test', x => called = true);
-    expect(handle).to.exist;
+    should.exist(handle);
     pubsub.publish('test2');
-    expect(called).to.equal(false);
+    called.should.eql(false);
   });
 
   it('Can handle anonymous publish args', () => {
@@ -32,15 +31,15 @@ describe('PubSub', () => {
     let testArg1: any;
     let testArg2: any;
     let handle = pubsub.subscribe('test', (x: {arg1: string, arg2: string}) => { testArg1 = x.arg1; testArg2 = x.arg2; });
-    expect(handle).to.exist;
+    should.exist(handle);
     pubsub.publish('test', {arg1: 'testing'});
-    expect(testArg1).to.exist;
-    expect(testArg2).to.be.undefined;
-    expect(testArg1).to.equal('testing');
+    should.exist(testArg1);
+    should.not.exist(testArg2);
+    testArg1.should.eql('testing');
     pubsub.publish('test', {arg1: 'testing1', arg2: 'testing2'});
-    expect(testArg2).to.exist;
-    expect(testArg1).to.equal('testing1');
-    expect(testArg2).to.equal('testing2');
+    should.exist(testArg2);
+    testArg1.should.eql('testing1');
+    testArg2.should.eql('testing2');
   });
 
   it('Can handle strongly typed publish args', () => {
@@ -52,15 +51,15 @@ describe('PubSub', () => {
     let testArg1: any;
     let testArg2: any;
     let handle = pubsub.subscribe<TestArgs>('test', x => { testArg1 = x.arg1; testArg2 = x.arg2; });
-    expect(handle).to.exist;
+    should.exist(handle);
     pubsub.publish('test', <TestArgs>{ arg1: 'testing' });
-    expect(testArg1).to.exist;
-    expect(testArg2).to.be.undefined;
-    expect(testArg1).to.equal('testing');
+    should.exist(testArg1);
+    should.not.exist(testArg2);
+    testArg1.should.eql('testing');
     pubsub.publish('test', <TestArgs>{arg1: 'testing1', arg2: 'testing2'});
-    expect(testArg2).to.exist;
-    expect(testArg1).to.equal('testing1');
-    expect(testArg2).to.equal('testing2');
+    should.exist(testArg2);
+    testArg1.should.eql('testing1');
+    testArg2.should.eql('testing2');
   });
 
   it('Can unsubscribe', () => {
@@ -69,7 +68,7 @@ describe('PubSub', () => {
     let handle = pubsub.subscribe('test', x => called = true);
     handle.dispose();
     pubsub.publish('test');
-    expect(called).to.equal(false);
+    called.should.eql(false);
   });
 
   it('Can handle multiple subscriptions on the same key', () => {
@@ -78,11 +77,11 @@ describe('PubSub', () => {
     let called2 = false;
     let handle1 = pubsub.subscribe('test', x => called1 = true);
     let handle2 = pubsub.subscribe('test', x => called2 = true);
-    expect(handle1).to.exist;
-    expect(handle2).to.exist;
+    should.exist(handle1);
+    should.exist(handle2);
     pubsub.publish('test');
-    expect(called1).to.equal(true);
-    expect(called2).to.equal(true);
+    called1.should.eql(true);
+    called2.should.eql(true);
   });
 
   it('Can unsubscribe from a single handle with multiple subscriptions on the same key', () => {
@@ -91,11 +90,11 @@ describe('PubSub', () => {
     let called2 = false;
     let handle1 = pubsub.subscribe('test', x => called1 = true);
     let handle2 = pubsub.subscribe('test', x => called2 = true);
-    expect(handle1).to.exist;
-    expect(handle2).to.exist;
+    should.exist(handle1);
+    should.exist(handle2);
     handle1.dispose();
     pubsub.publish('test');
-    expect(called1).to.equal(false);
-    expect(called2).to.equal(true);
+    called1.should.eql(false);
+    called2.should.eql(true);
   });
 });

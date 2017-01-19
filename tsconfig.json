@@ -18,6 +18,7 @@
   },
   "files": [
     "src/app.tsx",
-    "src/Components/Demo/index.ts"
+    "src/Components/Demo/index.ts",
+    "test/app.spec.ts"
   ]
 }

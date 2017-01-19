@@ -4,15 +4,15 @@ const webpackCommon = require('../webpack.common');
 
 const webpackConfig = Object.assign(clone(webpackCommon), {
   entry: [
-    path.resolve('test', 'app.ts'),
+    path.resolve('test', 'app.spec.ts'),
   ],
   output: {
     path: path.resolve('..', 'build', 'test'),
-    filename: 'app.js',
+    filename: 'app.spec.js',
   },
   module: {
     loaders: [
-      { test: /\.ts$/, loader: 'ts' },
+      { test: /\.tsx?$/, loader: 'ts' },
     ],
   },
 });

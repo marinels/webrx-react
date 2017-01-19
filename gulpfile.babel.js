@@ -221,16 +221,34 @@ gulp.task('lint:es', () => {
     .pipe(eslint.failOnError());
 });
 
-gulp.task('lint:ts', () => {
-  log('Linting with TSLint...');
+gulp.task('lint:ts', [ 'lint:ts:src', 'lint:ts:test' ]);
+
+gulp.task('lint:ts:src', () => {
+  log('Linting ', util.colors.magenta(config.paths.src), ' with TSLint...');
 
   return gulp
     .src([
       path.resolve(config.paths.src, '**', '*.ts'),
       path.resolve(config.paths.src, '**', '*.tsx'),
+    ], { base: __dirname })
+    .pipe(tslint({
+      formatter: 'verbose',
+    }))
+    .pipe(tslint.report({
+      emitError: true,
+      summarizeFailureOutput: true,
+    }));
+});
+
+gulp.task('lint:ts:test', () => {
+  log('Linting ', util.colors.magenta(config.paths.test), ' with TSLint...');
+
+  return gulp
+    .src([
       path.resolve(config.paths.test, '**', '*.ts'),
     ], { base: __dirname })
     .pipe(tslint({
+      configuration: path.resolve(config.paths.test, 'tslint.json'),
       formatter: 'verbose',
     }))
     .pipe(tslint.report({

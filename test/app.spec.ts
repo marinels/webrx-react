@@ -1,6 +1,8 @@
-import './TestSetup';
+import './setup';
 
-import './SanitySpec';
+import './Sanity.spec';
+
 import './Extensions';
 import './Utils';
+import './Stores';
 import './Components';
