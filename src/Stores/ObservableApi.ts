@@ -62,7 +62,7 @@ export class ObservableApi {
       });
   }
 
-  private getError(xhr: XMLHttpRequest) {
+  private getError(xhr: XMLHttpRequest, uri: string) {
     const code = xhr.status > 0 ? xhr.status : null;
     const reason = String.isNullOrEmpty(xhr.statusText) ? null : xhr.statusText;
     const response = String.isNullOrEmpty(xhr.response) ? null : xhr.response;
@@ -115,6 +115,7 @@ export class ObservableApi {
       reason,
       response,
       message,
+      uri,
     };
   }
 
@@ -133,7 +134,7 @@ export class ObservableApi {
         .catch((x: rxdom.AjaxErrorResponse) => {
           this.logger.error(`API ERROR: ${action} (${uri})`, x);
 
-          return Observable.throw<T>(this.getError(x.xhr));
+          return Observable.throw<T>(this.getError(x.xhr, uri));
         }) :
       // if sample data has been created just use that instead (opt-in)
       this.sampleData.getObservable<T>(action, params);
