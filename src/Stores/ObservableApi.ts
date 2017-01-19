@@ -64,6 +64,10 @@ export class ObservableApi {
     const body = data == null ? undefined : String.stringify(data, null, 2);
 
     options = Object.assign<rxdom.AjaxSettings>(<rxdom.AjaxSettings>{
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
       async: true,
       body,
       method: HttpRequestMethod[method],
