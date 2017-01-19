@@ -27,18 +27,38 @@ export class ObservableApi {
     }
   }
 
+  private getNonNullParams(params?: any) {
+    if (params == null) {
+      return null;
+    }
+
+    for (const key in params) {
+      if (params[key] == null) {
+        delete params[key];
+      }
+    }
+
+    return params;
+  }
+
   private getRequest<T>(url: string, method = HttpRequestMethod.GET, params?: any, data?: any, options?: rxdom.AjaxSettings) {
     if (params != null) {
-      if (url.indexOf('?') >= 0) {
-        if (url[url.length - 1] !== '&') {
-          url += '&';
-        }
-      }
-      else {
-        url += '?';
-      }
+      // first filter out any empty/null params
+      params = this.getNonNullParams(params);
 
-      url += param(params);
+      // only append params if there are any to append
+      if (Object.getOwnPropertyNames(params).length > 0) {
+        if (url.indexOf('?') >= 0) {
+          if (url[url.length - 1] !== '&') {
+            url += '&';
+          }
+        }
+        else {
+          url += '?';
+        }
+
+        url += param(params);
+      }
     }
 
     const body = data == null ? undefined : String.stringify(data, null, 2);
