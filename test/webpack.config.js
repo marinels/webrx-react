@@ -12,7 +12,7 @@ const webpackConfig = Object.assign(clone(webpackCommon), {
   },
   module: {
     loaders: [
-      { test: /\.ts$/, loader: 'ts' },
+      { test: /\.tsx?$/, loader: 'ts' },
     ],
   },
 });
