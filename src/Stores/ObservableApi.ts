@@ -18,6 +18,11 @@ export enum HttpRequestMethod {
 export class ObservableApi {
   public static displayName = 'ObservableApi';
 
+  public static defaultHeaders = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+  };
+
   private logger = Logging.getLogger(ObservableApi.displayName);
   protected sampleData: SampleData = null;
 
@@ -64,10 +69,7 @@ export class ObservableApi {
     const body = data == null ? undefined : String.stringify(data, null, 2);
 
     options = Object.assign<rxdom.AjaxSettings>(<rxdom.AjaxSettings>{
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
+      headers: ObservableApi.defaultHeaders,
       async: true,
       body,
       method: HttpRequestMethod[method],
