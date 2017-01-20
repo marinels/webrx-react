@@ -49,6 +49,7 @@ export class RoutingMap {
 const routeMap = new RoutingMap();
 
 export interface SampleData {
+  id: number;
   name: string;
   requiredBy: string;
 }
@@ -69,7 +70,7 @@ const sampleListData = <SampleData[]>[
   { name: 'test 9', requiredBy: 'test9' },
   { name: 'test 10', requiredBy: 'test10' },
   { name: 'test 11', requiredBy: 'test11' },
-];
+].map((x, i) => Object.assign<SampleData>(x, { id: i + 1 }));
 
 const sampleTreeData = sampleListData
   .map(x => Object

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
 import { Icon } from 'react-fa';
-import { Table, TableProps } from 'react-bootstrap';
+import { Table, TableProps, OverlayTrigger, OverlayTriggerProps } from 'react-bootstrap';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { SearchView, SearchProps } from '../Search/SearchView';
@@ -32,6 +32,7 @@ export interface DataGridColumnProps {
   sortable?: boolean;
   className?: string;
   width?: number | string;
+  tooltip?: ColumnRenderFunction;
   renderCell?: ColumnRenderFunction;
 }
 
@@ -75,13 +76,13 @@ export class DataGridListViewTemplate<TData> extends BaseListViewTemplate<TData,
     renderItem?: (item: TData, index: number, viewModel: DataGridViewModel<TData>, view: DataGridView) => any,
     renderItemActions?: (item: TData, index: number, viewModel: DataGridViewModel<TData>, view: DataGridView) => any,
     keySelector?: (item: TData, index: number, viewModel: DataGridViewModel<TData>, view: DataGridView) => any,
-    renderItemContainer?: (content: any, item: TData, index: number, viewModel: DataGridViewModel<TData>, view: DataGridView) => any,
+    renderTemplateContainer?: (content: any, item: TData, index: number, viewModel: DataGridViewModel<TData>, view: DataGridView) => any,
   ) {
     super(
       renderItem == null ? undefined : (item, data, index, viewModel, view) => renderItem(data, index, viewModel, view),
       renderItemActions == null ? undefined : (item, data, index, viewModel, view) => renderItemActions(data, index, viewModel, view),
       keySelector == null ? undefined : (item, data, index, viewModel, view) => keySelector(data, index, viewModel, view),
-      renderItemContainer == null ? undefined : (content, item, data, index, viewModel, view) => renderItemContainer(content, data, index, viewModel, view),
+      renderTemplateContainer == null ? undefined : (content, item, data, index, viewModel, view) => renderTemplateContainer(content, data, index, viewModel, view),
     );
   }
 
@@ -101,15 +102,80 @@ export class DataGridListViewTemplate<TData> extends BaseListViewTemplate<TData,
 export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
   public static displayName = 'DataGridTableViewTemplate';
 
+  public static renderColumnTooltip(content: any, item: any, index: number, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: DataGridViewModel<any>, view: DataGridView) {
+    if (column.tooltip != null) {
+      const tooltip = column.tooltip(item, index, column, columnIndex, columns, viewModel, view);
+
+      if (React.isValidElement<OverlayTriggerProps>(tooltip)) {
+        if (tooltip.type === OverlayTrigger) {
+          return React.cloneElement(tooltip as any, { key: content.key }, content);
+        }
+        else {
+          return (
+            <OverlayTrigger key={ content.key } placement={ tooltip.props.placement || 'top' } overlay={ tooltip } >
+              { content }
+            </OverlayTrigger>
+          );
+        }
+      }
+      else {
+        return content;
+      }
+    }
+    else {
+      return content;
+    }
+  }
+
+  public static renderDefaultTemplateContainer(content: any, item: any, index: number, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: DataGridViewModel<any>, view: DataGridView) {
+    content = (
+      <td className={ classNames('DataGrid-cell', column.className) } key={ columnIndex }>
+        { content }
+      </td>
+    );
+
+    return DataGridTableViewTemplate.renderColumnTooltip(content, item, index, column, columnIndex, columns, viewModel, view);
+  }
+
+  public static renderDefaultRowContainer(content: any, item: any, index: number, columns: DataGridColumnProps[], viewModel: DataGridViewModel<any>, view: DataGridView) {
+    const rowClasses = classNames('DataGrid-row', {
+      'DataGrid-row--selected': view.props.highlightSelected === true && viewModel.selectedItem() === item,
+    });
+
+    const onClick = view.props.selectable !== true ? null : bindEventToCommand(this, viewModel, x => x.selectItem, x => item);
+
+    return (
+      <tr className={ rowClasses } key={ (view.props.viewTemplate as DataGridTableViewTemplate<any>).rowKeySelector(item, index, columns, viewModel, view) } onClick={ onClick }>
+        { content }
+      </tr>
+    );
+  }
+
+  public static renderDefaultHeaderContainer(content: any, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: DataGridViewModel<any>, view: DataGridView) {
+    content = (
+      <th key={ columnIndex } className={ classNames('DataGrid-column', column.className) } width={ column.width }>
+        { content }
+      </th>
+    );
+
+    return DataGridTableViewTemplate.renderColumnTooltip(content, null, null, column, columnIndex, columns, viewModel, view);
+  }
+
   private tableProps: TableProps;
 
   constructor(
-    protected renderItem: (item: T, column: DataGridColumnProps, index: number, viewModel: DataGridViewModel<T>, view: DataGridView) => any = x => x,
-    protected rowKeySelector: (item: T, index: number, viewModel: DataGridViewModel<T>, view: DataGridView) => any = (r, i) => i,
+    protected renderItem: ColumnRenderFunction = x => x,
+    protected rowKeySelector: (item: T, index: number, columns: DataGridColumnProps[], viewModel: DataGridViewModel<T>, view: DataGridView) => any = (r, i) => i,
+    protected renderTemplateContainer?: (content: any, item: T, index: number, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: DataGridViewModel<T>, view: DataGridView) => any,
+    protected renderRowContainer?: (content: any, item: T, index: number, columns: DataGridColumnProps[], viewModel: DataGridViewModel<T>, view: DataGridView) => any,
+    protected renderHeaderContainer?: (content: any, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: DataGridViewModel<T>, view: DataGridView) => any,
     protected enableAutomaticColumns = true,
     bordered = false, hover = true, striped = false, condensed = true, responsive = true,
   ) {
     this.tableProps = { bordered, hover, striped, condensed, responsive };
+    this.renderTemplateContainer = this.renderTemplateContainer || DataGridTableViewTemplate.renderDefaultTemplateContainer;
+    this.renderRowContainer = this.renderRowContainer || DataGridTableViewTemplate.renderDefaultRowContainer;
+    this.renderHeaderContainer = this.renderHeaderContainer || DataGridTableViewTemplate.renderDefaultHeaderContainer;
   }
 
   protected getColumnDefinitions(viewModel: DataGridViewModel<T>, view: DataGridView) {
@@ -172,7 +238,7 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
         {
           (columns || [])
             .asEnumerable()
-            .map((x, i) => this.renderColumnHeader(x, i, viewModel, view))
+            .map((x, i) => this.renderColumnHeader(x, i, columns, viewModel, view))
             .defaultIfEmpty(this.renderEmptyColumns(viewModel, view))
             .toArray()
         }
@@ -180,8 +246,8 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
     );
   }
 
-  protected renderColumnHeader(column: DataGridColumnProps, index: number, viewModel: DataGridViewModel<T>, view: DataGridView) {
-    const sortIcon = this.renderSortIcon(column, index, viewModel, view);
+  protected renderColumnHeader(column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: DataGridViewModel<T>, view: DataGridView) {
+    const sortIcon = this.renderSortIcon(column, columnIndex, columns, viewModel, view);
 
     const headerContent = (
       <span className='DataGrid-columnHeader'>
@@ -189,23 +255,20 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
       </span>
     );
 
-    return (
-      <th key={ index } className={ classNames('DataGrid-column', column.className) } width={ column.width }>
-        {
-          renderConditional(sortIcon == null, () => (
-            <div className='DataGrid-columnContainer'>{ headerContent }</div>
-          ), () => (
-            <CommandButton className='DataGrid-columnContainer' bsStyle='link' command={ viewModel.toggleSortDirection } commandParameter={ column.fieldName }>
-              { headerContent }
-              { sortIcon }
-            </CommandButton>
-          ))
-        }
-      </th>
+    const header = renderConditional(sortIcon == null, () => (
+        <div className='DataGrid-columnContainer'>{ headerContent }</div>
+      ), () => (
+        <CommandButton className='DataGrid-columnContainer' bsStyle='link' command={ viewModel.toggleSortDirection } commandParameter={ column.fieldName }>
+          { headerContent }
+          { sortIcon }
+        </CommandButton>
+      ),
     );
+
+    return this.renderHeaderContainer(header, column, columnIndex, columns, viewModel, view);
   }
 
-  protected renderSortIcon(column: DataGridColumnProps, index: number, viewModel: DataGridViewModel<any>, view: DataGridView) {
+  protected renderSortIcon(column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: DataGridViewModel<any>, view: DataGridView) {
     let icon: any = null;
 
     if (viewModel.canSort() && column.sortable) {
@@ -257,25 +320,19 @@ export class DataGridTableViewTemplate<T> implements DataGridViewTemplate<T> {
 
     const onClick = view.props.selectable !== true ? null : bindEventToCommand(this, viewModel, x => x.selectItem, x => item);
 
-    return (
-      <tr className={ rowClasses } key={ this.rowKeySelector(item, index, viewModel, view) } onClick={ onClick }>
-        {
-          (columns || [])
-            .asEnumerable()
-            .map((x, i) => this.renderCell(x.renderCell(item, index, x, i, columns, viewModel, view), x, i, viewModel, view))
-            .defaultIfEmpty(this.renderEmptyColumns(viewModel, view))
-            .toArray()
-        }
-      </tr>
-    );
+    const rowContent = (columns || [])
+      .asEnumerable()
+      .map((x, i) => this.renderCell(item, index, x, i, columns, viewModel, view))
+      .defaultIfEmpty(this.renderEmptyColumns(viewModel, view))
+      .toArray();
+
+    return this.renderRowContainer(rowContent, item, index, columns, viewModel, view);
   }
 
-  protected renderCell(value: any, column: DataGridColumnProps, index: number, viewModel: DataGridViewModel<any>, view: DataGridView) {
-    return (
-      <td className={ column.className } key={ index }>
-        { this.renderItem(value, column, index, viewModel, view) }
-      </td>
-    );
+  protected renderCell(item: T, index: number, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: DataGridViewModel<any>, view: DataGridView) {
+    const cellContent = column.renderCell(item, index, column, columnIndex, columns, viewModel, view);
+
+    return this.renderTemplateContainer(cellContent, item, index, column, columnIndex, columns, viewModel, view);
   }
 
   public initialize(viewModel: DataGridViewModel<T>, view: DataGridView) {

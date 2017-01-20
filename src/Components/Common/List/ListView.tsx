@@ -41,17 +41,17 @@ export abstract class BaseListViewTemplate<TItem, TData, TViewModel extends List
     this.renderTemplateContainer = this.renderTemplateContainer || this.renderDefaultTemplateContainer;
   }
 
-  private renderDefaultTemplateContainer(contents: any, item: TItem, data: TData, index: number, viewModel: TViewModel, view: TView) {
+  private renderDefaultTemplateContainer(content: any, item: TItem, data: TData, index: number, viewModel: TViewModel, view: TView) {
     return renderConditional(
       view.props.selectable === true,
       () => (
         <CommandButton className='List-templateContainer' block plain command={ viewModel.selectItem } commandParameter={ data } >
-          { contents }
+          { content }
         </CommandButton>
       ),
       () => (
         <div className='List-templateContainer'>
-          { contents }
+          { content }
         </div>
       ),
     );
