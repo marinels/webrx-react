@@ -75,13 +75,13 @@ export class DataGridListViewTemplate<TData> extends BaseListViewTemplate<TData,
     renderItem?: (item: TData, index: number, viewModel: DataGridViewModel<TData>, view: DataGridView) => any,
     renderItemActions?: (item: TData, index: number, viewModel: DataGridViewModel<TData>, view: DataGridView) => any,
     keySelector?: (item: TData, index: number, viewModel: DataGridViewModel<TData>, view: DataGridView) => any,
-    renderItemContainer?: (content: any, item: TData, index: number, viewModel: DataGridViewModel<TData>, view: DataGridView) => any,
+    renderTemplateContainer?: (content: any, item: TData, index: number, viewModel: DataGridViewModel<TData>, view: DataGridView) => any,
   ) {
     super(
       renderItem == null ? undefined : (item, data, index, viewModel, view) => renderItem(data, index, viewModel, view),
       renderItemActions == null ? undefined : (item, data, index, viewModel, view) => renderItemActions(data, index, viewModel, view),
       keySelector == null ? undefined : (item, data, index, viewModel, view) => keySelector(data, index, viewModel, view),
-      renderItemContainer == null ? undefined : (content, item, data, index, viewModel, view) => renderItemContainer(content, data, index, viewModel, view),
+      renderTemplateContainer == null ? undefined : (content, item, data, index, viewModel, view) => renderTemplateContainer(content, data, index, viewModel, view),
     );
   }
 
