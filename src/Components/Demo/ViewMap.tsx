@@ -1,6 +1,8 @@
 import * as React from 'react';
 import * as wx from 'webrx';
-import { Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab, Well, ListGroup, ListGroupItem, Table } from 'react-bootstrap';
+import { Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab,
+  Well, ListGroup, ListGroupItem, Table, OverlayTrigger, Overlay, Tooltip, Popover,
+} from 'react-bootstrap';
 
 import { Logging, Alert } from '../../Utils';
 import { renderSizedLoadable, bindEventToCommand } from '../React';
@@ -229,8 +231,34 @@ const viewMap: ViewActivatorMap = {
     if (componentRoute === 'DataGrid') {
       search = true;
       columns = [
-        <DataGridColumn key='name' fieldName='name' header='Name' sortable />,
-        <DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 } />,
+        <DataGridColumn key='id' fieldName='id' header='ID' sortable
+          tooltip={ (x: SampleData) => x == null ? null : (
+            <Tooltip id={ `${ x.id }-id-tt` }>{ `Cells support tooltips: ${ x.id }` }</Tooltip>
+          ) }
+        />,
+        <DataGridColumn key='name' fieldName='name' header='Name' sortable
+          tooltip={ (x: SampleData, index, column) => {
+            if (x == null) {
+              // header
+              return (
+                <Tooltip id='name-header-tt' placement='top'>{ `Headers can have tooltips too: ${ column.fieldName }` }</Tooltip>
+              );
+            }
+            else {
+              // cell
+              return (
+                <Popover id={ `${ x.id }-name-tt` } placement='left'>{ `You can use fancy popover tooltips: ${ x.name }` }</Popover>
+              );
+            }
+          } }
+        />,
+        <DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 }
+          tooltip={ (x: SampleData) => x == null ? null : (
+            <OverlayTrigger placement='top'
+              overlay={ <Tooltip id={ `${ x.id }-requiredBy-tt` }>Even completely custom overlay triggers: { x.requiredBy }</Tooltip> }
+            />
+          ) }
+        />,
         <NavDataGridColumn key='nav' buttonProps={ (x: SampleData) => ({ href: `#/name/${ x.name }` }) } />,
       ];
     }
