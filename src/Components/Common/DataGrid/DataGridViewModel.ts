@@ -102,9 +102,6 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
             .map(x => Object.assign<TRequest>({}, x.pr, x.r)),
           'Error Creating Data Grid Requests',
         ),
-        // whenever a discrete refresh request is made we need to re-project
-        this.refresh.results.startWith(null),
-        // we only care about the requests object from here on out
         x => x,
       )
       // filter out null request data
@@ -166,7 +163,13 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
 
     // whenever there is a new request we re-project
     this.subscribe(wx
-      .whenAny(this.projectionRequests, x => x)
+      .whenAny(
+        this.projectionRequests,
+        // whenever a discrete refresh request is made we need to re-project
+        this.refresh.results.startWith(null),
+        // we don't care about the discrete refresh request data, just the most recent projection request
+        x => x,
+      )
       // ignore the (first) null requests
       .filter(x => x != null)
       // debounce on input projection requests
