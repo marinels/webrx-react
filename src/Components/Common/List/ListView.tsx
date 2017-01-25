@@ -15,33 +15,35 @@ export * from './NavButton';
 
 import './List.less';
 
+type ReadonlyListViewModel<TData> = Readonly<ListViewModel<TData, any>>;
+
 export interface ListViewRenderTemplateProps {
-  viewTemplate?: ListViewRenderTemplate<any, any, any>;
+  viewTemplate?: ListViewRenderTemplate<any, any>;
   selectable?: boolean;
   highlightSelected?: boolean;
   checkmarkSelected?: boolean;
-  emptyContent?: any | ((viewModel: ListViewModel<any, any>, view: React.Component<ListViewRenderTemplateProps, any>) => any);
+  emptyContent?: any | ((viewModel: ReadonlyListViewModel<any>, view: React.Component<ListViewRenderTemplateProps, any>) => any);
 }
 
-export interface ListViewRenderTemplate<TData, TViewModel extends ListViewModel<TData, any>, TView extends React.Component<ListViewRenderTemplateProps, any>> {
-  initialize(viewModel: ListViewModel<TData, any>, view: TView): void;
-  cleanup(viewModel: ListViewModel<TData, any>, view: TView): void;
-  render(viewModel: ListViewModel<TData, any>, view: TView): any;
+export interface ListViewRenderTemplate<TData, TView extends React.Component<ListViewRenderTemplateProps, any>> {
+  initialize(viewModel: ReadonlyListViewModel<TData>, view: TView): void;
+  cleanup(viewModel: ReadonlyListViewModel<TData>, view: TView): void;
+  render(viewModel: ReadonlyListViewModel<TData>, view: TView): any;
 }
 
-export abstract class BaseListViewTemplate<TItem, TData, TViewModel extends ListViewModel<TData, any>, TView extends React.Component<ListViewRenderTemplateProps, any>> implements ListViewRenderTemplate<TData, TViewModel, TView> {
+export abstract class BaseListViewTemplate<TItem, TData, TView extends React.Component<ListViewRenderTemplateProps, any>> implements ListViewRenderTemplate<TData, TView> {
   public static displayName = 'BaseListViewTemplate';
 
   constructor(
-    protected renderItem: (item: TItem, data: TData, index: number, viewModel: TViewModel, view: TView) => any = (x, data) => data.toString(),
-    protected renderItemActions?: (item: TItem, data: TData, index: number, viewModel: TViewModel, view: TView) => any,
-    protected keySelector: (item: TItem, data: TData, index: number, viewModel: TViewModel, view: TView) => any = (x, d, index) => index,
-    protected renderTemplateContainer?: (content: any, item: TItem, data: TData, index: number, viewModel: TViewModel, view: TView) => any,
+    protected renderItem: (item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) => any = (x, data) => data.toString(),
+    protected renderItemActions?: (item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) => any,
+    protected keySelector: (item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) => any = (x, d, index) => index,
+    protected renderTemplateContainer?: (content: any, item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) => any,
   ) {
     this.renderTemplateContainer = this.renderTemplateContainer || this.renderDefaultTemplateContainer;
   }
 
-  private renderDefaultTemplateContainer(content: any, item: TItem, data: TData, index: number, viewModel: TViewModel, view: TView) {
+  protected renderDefaultTemplateContainer(content: any, item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) {
     return renderConditional(
       view.props.selectable === true,
       () => (
@@ -57,7 +59,7 @@ export abstract class BaseListViewTemplate<TItem, TData, TViewModel extends List
     );
   }
 
-  protected renderRow(item: TItem, index: number, viewModel: TViewModel, view: TView) {
+  protected renderRow(item: TItem, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) {
     const data = this.getItemData(item, index, viewModel, view);
 
     return (
@@ -72,7 +74,7 @@ export abstract class BaseListViewTemplate<TItem, TData, TViewModel extends List
     );
   }
 
-  protected renderCheckmark(item: TItem, data: TData, index: number, viewModel: TViewModel, view: TView) {
+  protected renderCheckmark(item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) {
     return renderConditional(view.props.checkmarkSelected === true, () => (
       <div className='List-itemSelection'>
         <CommandButton plain command={ viewModel.selectItem } commandParameter={ data }>
@@ -82,7 +84,7 @@ export abstract class BaseListViewTemplate<TItem, TData, TViewModel extends List
     ));
   }
 
-  protected renderItemContainer(item: TItem, data: TData, index: number, viewModel: TViewModel, view: TView): any {
+  protected renderItemContainer(item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView): any {
     return (
       <div className='List-itemContainer'>
         {
@@ -99,7 +101,7 @@ export abstract class BaseListViewTemplate<TItem, TData, TViewModel extends List
     );
   }
 
-  protected renderItemTemplate(item: TItem, data: TData, index: number, viewModel: TViewModel, view: TView) {
+  protected renderItemTemplate(item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) {
     return (
       <div className='List-itemTemplate'>
         { this.renderItem(item, data, index, viewModel, view) }
@@ -107,7 +109,7 @@ export abstract class BaseListViewTemplate<TItem, TData, TViewModel extends List
     );
   }
 
-  protected renderActions(item: TItem, data: TData, index: number, viewModel: TViewModel, view: TView) {
+  protected renderActions(item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) {
     return renderConditional(this.renderItemActions != null, () => (
       <div className='List-itemActions'>
         { this.renderItemActions(item, data, index, viewModel, view) }
@@ -115,7 +117,7 @@ export abstract class BaseListViewTemplate<TItem, TData, TViewModel extends List
     ));
   }
 
-  protected renderEmptyContent(viewModel: TViewModel, view: TView) {
+  protected renderEmptyContent(viewModel: ReadonlyListViewModel<TData>, view: TView) {
     return renderConditional(view.props.emptyContent instanceof Function, () => {
       return view.props.emptyContent.apply(this, [ viewModel, view ]);
     }, () => view.props.emptyContent);
@@ -125,18 +127,18 @@ export abstract class BaseListViewTemplate<TItem, TData, TViewModel extends List
     return null;
   }
 
-  protected abstract getItems(viewModel: TViewModel, view: TView): TItem[];
-  protected abstract getItemData(item: TItem, index: number, viewModel: TViewModel, view: TView): TData;
+  protected abstract getItems(viewModel: ReadonlyListViewModel<TData>, view: TView): TItem[];
+  protected abstract getItemData(item: TItem, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView): TData;
 
-  public initialize(viewModel: TViewModel, view: TView) {
+  public initialize(viewModel: ReadonlyListViewModel<TData>, view: TView) {
     // do nothing
   }
 
-  public cleanup(viewModel: TViewModel, view: TView) {
+  public cleanup(viewModel: ReadonlyListViewModel<TData>, view: TView) {
     // do nothing
   }
 
-  public render(viewModel: TViewModel, view: TView) {
+  public render(viewModel: ReadonlyListViewModel<TData>, view: TView) {
     return (
       <ListGroup className={ this.getClassName() }>
         {
@@ -155,28 +157,28 @@ export abstract class BaseListViewTemplate<TItem, TData, TViewModel extends List
   }
 }
 
-export class ListViewTemplate<TData> extends BaseListViewTemplate<TData, TData, ListViewModel<TData, any>, ListView> {
+export class ListViewTemplate<TData> extends BaseListViewTemplate<TData, TData, ListView> {
   public static displayName = 'ListViewTemplate';
 
   constructor(
-    renderItem?: (item: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
-    renderItemActions?: (item: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
-    keySelector?: (item: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
-    renderItemContainer?: (content: any, item: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
+    renderItem?: (item: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) => any,
+    renderItemActions?: (item: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) => any,
+    keySelector?: (item: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) => any,
+    renderTemplateContainer?: (content: any, item: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) => any,
   ) {
     super(
       renderItem == null ? undefined : (item, data, index, viewModel, view) => renderItem(data, index, viewModel, view),
       renderItemActions == null ? undefined : (item, data, index, viewModel, view) => renderItemActions(data, index, viewModel, view),
       keySelector == null ? undefined : (item, data, index, viewModel, view) => keySelector(data, index, viewModel, view),
-      renderItemContainer == null ? undefined : (content, item, data, index, viewModel, view) => renderItemContainer(content, data, index, viewModel, view),
+      renderTemplateContainer == null ? undefined : (content, item, data, index, viewModel, view) => renderTemplateContainer(content, data, index, viewModel, view),
     );
   }
 
-  getItems(viewModel: ListViewModel<TData, any>, view: ListView) {
+  getItems(viewModel: ReadonlyListViewModel<TData>, view: ListView) {
     return viewModel.items();
   }
 
-  getItemData(item: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) {
+  getItemData(item: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) {
     return item;
   }
 }
@@ -190,7 +192,7 @@ export interface TreeNode<TData> {
   isExpanded: boolean;
 }
 
-export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData>, TData, ListViewModel<TData, any>, ListView> {
+export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData>, TData, ListView> {
   public static displayName = 'TreeViewTemplate';
 
   private nodes: wx.IObservableReadOnlyProperty<TreeNode<TData>[]>;
@@ -199,13 +201,13 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
   private lastKey = 0;
 
   constructor(
-    protected getNestedData: (data: TData, viewModel: ListViewModel<TData, any>, view: ListView) => TData[],
-    renderItem?: (node: TreeNode<TData>, data: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
-    renderItemActions?: (node: TreeNode<TData>, data: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
-    keySelector?: (node: TreeNode<TData>, data: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
-    renderItemContainer?: (content: any, node: TreeNode<TData>, data: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) => any,
+    protected getNestedData: (data: TData, viewModel: ReadonlyListViewModel<TData>, view: ListView) => TData[],
+    renderItem?: (node: TreeNode<TData>, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) => any,
+    renderItemActions?: (node: TreeNode<TData>, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) => any,
+    keySelector?: (node: TreeNode<TData>, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) => any,
+    renderTemplateContainer?: (content: any, node: TreeNode<TData>, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) => any,
   ) {
-    super(renderItem, renderItemActions, keySelector, renderItemContainer);
+    super(renderItem, renderItemActions, keySelector, renderTemplateContainer);
 
     this.toggleNode = wx.asyncCommand((x: TreeNode<TData>) => {
       if (x != null) {
@@ -216,7 +218,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
     });
   }
 
-  initialize(viewModel: ListViewModel<TData, any>, view: ListView) {
+  initialize(viewModel: ReadonlyListViewModel<TData>, view: ListView) {
     this.nodes = wx
       .whenAny(viewModel.items, x => x || [])
       .map(nodes => {
@@ -236,7 +238,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
       .toProperty([]);
   }
 
-  cleanup(viewModel: ListViewModel<TData, any>, view: ListView) {
+  cleanup(viewModel: ReadonlyListViewModel<TData>, view: ListView) {
     if (this.nodes != null) {
       this.nodes.dispose();
       this.nodes = null;
@@ -252,15 +254,15 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
     return 'Tree';
   }
 
-  getItems(viewModel: ListViewModel<TData, any>, view: ListView) {
+  getItems(viewModel: ReadonlyListViewModel<TData>, view: ListView) {
     return this.items();
   }
 
-  getItemData(node: TreeNode<TData>, index: number, viewModel: ListViewModel<TData, any>, view: ListView) {
+  getItemData(node: TreeNode<TData>, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) {
     return node.data;
   }
 
-  renderItemContainer(node: TreeNode<TData>, data: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) {
+  renderItemContainer(node: TreeNode<TData>, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) {
     return [
       this.renderIndent(node, data, index, viewModel, view),
       this.renderExpander(node, data, index, viewModel, view),
@@ -268,7 +270,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
     ];
   }
 
-  protected renderIndent(node: TreeNode<TData>, data: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) {
+  protected renderIndent(node: TreeNode<TData>, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) {
     return (
       <div key='indent' className='TreeNode-indent'>
         <div style={ ({ width: node.level * 10 }) }>&nbsp;</div>
@@ -276,7 +278,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
     );
   }
 
-  protected renderExpander(node: TreeNode<TData>, data: TData, index: number, viewModel: ListViewModel<TData, any>, view: ListView) {
+  protected renderExpander(node: TreeNode<TData>, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) {
     return (
       <div key='expander' className='TreeNode-expander'>
         {
@@ -292,7 +294,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
     );
   }
 
-  protected getNode(data: TData, index: number, level: number, viewModel: ListViewModel<TData, any>, view: ListView): TreeNode<TData> {
+  protected getNode(data: TData, index: number, level: number, viewModel: ReadonlyListViewModel<TData>, view: ListView): TreeNode<TData> {
     const node = {
       data,
       index,

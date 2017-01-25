@@ -8,33 +8,35 @@ import { renderConditional } from '../../React/RenderHelpers';
 
 import './Tabs.less';
 
-export class TabRenderTemplate<T> {
+type ReadonlyTabsViewModel<TData> = Readonly<TabsViewModel<TData>>;
+
+export class TabRenderTemplate<TData> {
   public static displayName = 'TabViewTemplate';
 
   constructor(
-    protected titleSelector: (x: T, i: number, viewModel: TabsViewModel<T>, view: TabsView) => string,
-    protected renderItem: (x: T, i: number, viewModel: TabsViewModel<T>, view: TabsView) => any = x => x.toString(),
-    protected keySelector: (x: T, i: number, viewModel: TabsViewModel<T>, view: TabsView) => any = (x, i) => i,
-    protected renderItemContainer?: (value: () => any, x: T, i: number, viewModel: TabsViewModel<T>, view: TabsView) => any,
+    protected titleSelector: (item: TData, index: number, viewModel: ReadonlyTabsViewModel<TData>, view: TabsView) => string,
+    protected renderItem: (item: TData, index: number, viewModel: ReadonlyTabsViewModel<TData>, view: TabsView) => any = x => x.toString(),
+    protected keySelector: (item: TData, index: number, viewModel: ReadonlyTabsViewModel<TData>, view: TabsView) => any = (x, i) => i,
+    protected renderTemplateContainer?: (content: () => any, item: TData, index: number, viewModel: ReadonlyTabsViewModel<TData>, view: TabsView) => any,
   ) {
-    if (this.renderItemContainer == null) {
-      this.renderItemContainer = this.renderDefaultItemContainer;
+    if (this.renderTemplateContainer == null) {
+      this.renderTemplateContainer = this.renderDefaultTemplateContainer;
     }
   }
 
-  protected renderDefaultItemContainer(value: () => any, x: T, i: number, viewModel: TabsViewModel<T>, view: TabsView) {
+  protected renderDefaultTemplateContainer(content: () => any, item: TData, index: number, viewModel: ReadonlyTabsViewModel<TData>, view: TabsView) {
     return (
-      <Tab key={ this.keySelector(x, i, viewModel, view) } title={ this.titleSelector(x, i, viewModel, view) } eventKey={ i }>
-        { renderConditional(i === viewModel.selectedIndex(), value) }
+      <Tab key={ this.keySelector(item, index, viewModel, view) } title={ this.titleSelector(item, index, viewModel, view) } eventKey={ index }>
+        { renderConditional(index === viewModel.selectedIndex(), content) }
       </Tab>
     );
   }
 
-  public render(viewModel: TabsViewModel<T>, view: TabsView) {
+  public render(viewModel: ReadonlyTabsViewModel<TData>, view: TabsView) {
     return viewModel.tabs
       .toArray()
       .map((x, i) => {
-        return this.renderItemContainer(() => this.renderItem(x, i, viewModel, view), x, i, viewModel, view);
+        return this.renderTemplateContainer(() => this.renderItem(x, i, viewModel, view), x, i, viewModel, view);
       });
   }
 }
