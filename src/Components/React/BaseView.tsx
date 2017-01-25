@@ -189,29 +189,29 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
   /**
    * Binds an observable to a command on the view model
    */
-  protected bindObservableToCommand<TResult>(commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>, observable: Observable<TResult>) {
-    return bindObservableToCommand(this.state, commandSelector, observable);
+  protected bindObservableToCommand<TInput, TResult>(observable: Observable<TInput>, commandSelector: (viewModel: Readonly<TViewModel>) => wx.ICommand<TResult>) {
+    return bindObservableToCommand(this.state as TViewModel, observable, commandSelector);
   }
 
   /**
    * Binds a DOM event to an observable property on the view model
    */
   protected bindEventToProperty<TValue, TEvent extends Event | React.SyntheticEvent<this>>(
-    targetSelector: (viewModel: TViewModel) => wx.IObservableProperty<TValue>,
+    targetSelector: (viewModel: Readonly<TViewModel>) => wx.IObservableProperty<TValue>,
     valueSelector?: (eventKey: any, event: TEvent) => TValue,
-  ): any {
-    return bindEventToProperty(this, this.state, targetSelector, valueSelector);
+  ) {
+    return bindEventToProperty(this, this.state as TViewModel, targetSelector, valueSelector);
   }
 
   /**
    * Binds a DOM event to an observable command on the view model
    */
   protected bindEventToCommand<TParameter, TEvent extends Event | React.SyntheticEvent<this>>(
-    commandSelector: (viewModel: TViewModel) => wx.ICommand<any>,
+    commandSelector: (viewModel: Readonly<TViewModel>) => wx.ICommand<any>,
     paramSelector?: (eventKey: any, event: TEvent) => TParameter,
     conditionSelector?: (event: TEvent, eventKey: any) => boolean,
-  ): any {
-    return bindEventToCommand(this, this.state, commandSelector, paramSelector, conditionSelector);
+  ) {
+    return bindEventToCommand(this, this.state as TViewModel, commandSelector, paramSelector, conditionSelector);
   }
   // -----------------------------------------
 }
