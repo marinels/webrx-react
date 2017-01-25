@@ -38,7 +38,8 @@ export class AsyncDataGridViewModel<TData, TRequest extends ProjectionRequest, T
   }
 
   getProjectionResult(request: TRequest) {
-    return this.dataSource.getResultAsync(request);
+    return this.selectItem.executeAsync(null)
+      .flatMap(() => this.dataSource.getResultAsync(request));
   }
 
   canFilter() {
