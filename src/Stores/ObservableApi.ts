@@ -180,7 +180,7 @@ export class ObservableApi {
   public getObservableResult<T>(action: string, params?: any, data?: any, method?: HttpRequestMethod, options?: rxdom.AjaxSettings, baseUri?: string) {
     const uri = `${baseUri || this.baseUri}${action}`;
 
-    this.logger.info(`Calling API: ${action} (${uri})`, params);
+    this.logger.info(`API Request: ${action} (${uri})`, params);
 
     return this.sampleData == null ?
       // if an API call throws an uncaught error, that means you are not subscribing to the observable's error
@@ -190,7 +190,7 @@ export class ObservableApi {
           this.logger.info(`API Result: ${action} (${uri})`, x);
         })
         .catch((x: rxdom.AjaxErrorResponse) => {
-          this.logger.error(`API ERROR: ${action} (${uri})`, x);
+          this.logger.error(`API  ERROR: ${action} (${uri})`, x);
 
           return Observable.throw<T>(this.getError(x.xhr, uri));
         }) :
