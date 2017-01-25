@@ -100,7 +100,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     this.logRender(false);
   }
 
-  componentDidUpdate(prevProps: TViewProps, prevState: TViewModel) {
+  componentDidUpdate(prevProps: TViewProps, prevState: TViewModel, prevContext: any) {
     this.updatedView(prevProps);
   }
 
@@ -113,6 +113,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
 
   // -----------------------------------------
   // these are internal lifecycle functions
+  // NOTE: we use 'as any as LifecycleComponentViewModel' because the methods are private
   // -----------------------------------------
   private initializeView() {
     (this.state as any as LifecycleComponentViewModel).initializeViewModel();

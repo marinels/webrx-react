@@ -23,7 +23,7 @@ export function bindEventToProperty<TViewModel extends Readonly<BaseViewModel>, 
   viewModel: TViewModel,
   targetSelector: (viewModel: TViewModel) => wx.IObservableProperty<TValue>,
   valueSelector?: (eventKey: any, event: TEvent) => TValue,
-): any {
+): any { // this needs to be any instead of Function to support React.EventHandler<T>
   return (eventKey: any, event: TEvent) => {
     // this ensures that we can still use this function for basic HTML events
     event = event || eventKey;
@@ -44,7 +44,7 @@ export function bindEventToCommand<TViewModel extends Readonly<BaseViewModel>, T
   commandSelector: (viewModel: TViewModel) => wx.ICommand<any>,
   paramSelector?: (eventKey: any, event: TEvent) => TParameter,
   conditionSelector?: (event: TEvent, eventKey: any) => boolean,
-): any {
+): any { // this needs to be any instead of Function to support React.EventHandler<T>
   return (eventKey: any, event: Event) => {
     // this ensures that we can still use this function for basic HTML events
     event = event || eventKey;
