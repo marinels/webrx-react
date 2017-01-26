@@ -7,10 +7,10 @@ import { BaseViewModel } from './BaseViewModel';
 /**
  * Binds an observable to a command on the view model
  */
-export function bindObservableToCommand<TViewModel extends Readonly<BaseViewModel>, TInput, TResult>(
-  viewModel: TViewModel,
+export function bindObservableToCommand<TViewModel extends BaseViewModel, TInput, TResult>(
+  viewModel: Readonly<TViewModel>,
   observable: Observable<TInput>,
-  commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>,
+  commandSelector: (viewModel: Readonly<TViewModel>) => wx.ICommand<TResult>,
 ) {
   return viewModel.bindObservable(observable, x => x.invokeCommand(commandSelector(viewModel)));
 }
@@ -18,10 +18,10 @@ export function bindObservableToCommand<TViewModel extends Readonly<BaseViewMode
 /**
  * Binds a DOM event to an observable property on the view model
  */
-export function bindEventToProperty<TViewModel extends Readonly<BaseViewModel>, TValue, TEvent extends Event | React.SyntheticEvent<any>>(
+export function bindEventToProperty<TViewModel extends BaseViewModel, TValue, TEvent extends Event | React.SyntheticEvent<any>>(
   thisArg: any,
-  viewModel: TViewModel,
-  targetSelector: (viewModel: TViewModel) => wx.IObservableProperty<TValue>,
+  viewModel: Readonly<TViewModel>,
+  targetSelector: (viewModel: Readonly<TViewModel>) => wx.IObservableProperty<TValue>,
   valueSelector?: (eventKey: any, event: TEvent) => TValue,
 ): any { // this needs to be any instead of Function to support React.EventHandler<T>
   return (eventKey: any, event: TEvent) => {
@@ -38,10 +38,10 @@ export function bindEventToProperty<TViewModel extends Readonly<BaseViewModel>, 
 /**
  * Binds a DOM event to an observable command on the view model
  */
-export function bindEventToCommand<TViewModel extends Readonly<BaseViewModel>, TParameter, TEvent extends Event | React.SyntheticEvent<any>>(
+export function bindEventToCommand<TViewModel extends BaseViewModel, TParameter, TEvent extends Event | React.SyntheticEvent<any>>(
   thisArg: any,
-  viewModel: TViewModel,
-  commandSelector: (viewModel: TViewModel) => wx.ICommand<any>,
+  viewModel: Readonly<TViewModel>,
+  commandSelector: (viewModel: Readonly<TViewModel>) => wx.ICommand<any>,
   paramSelector?: (eventKey: any, event: TEvent) => TParameter,
   conditionSelector?: (event: TEvent, eventKey: any) => boolean,
 ): any { // this needs to be any instead of Function to support React.EventHandler<T>

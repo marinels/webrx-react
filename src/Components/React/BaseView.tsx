@@ -191,7 +191,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
    * Binds an observable to a command on the view model
    */
   protected bindObservableToCommand<TInput, TResult>(observable: Observable<TInput>, commandSelector: (viewModel: Readonly<TViewModel>) => wx.ICommand<TResult>) {
-    return bindObservableToCommand(this.state as TViewModel, observable, commandSelector);
+    return bindObservableToCommand(this.state, observable, commandSelector);
   }
 
   /**
@@ -201,7 +201,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     targetSelector: (viewModel: Readonly<TViewModel>) => wx.IObservableProperty<TValue>,
     valueSelector?: (eventKey: any, event: TEvent) => TValue,
   ) {
-    return bindEventToProperty(this, this.state as TViewModel, targetSelector, valueSelector);
+    return bindEventToProperty(this, this.state, targetSelector, valueSelector);
   }
 
   /**
@@ -212,7 +212,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     paramSelector?: (eventKey: any, event: TEvent) => TParameter,
     conditionSelector?: (event: TEvent, eventKey: any) => boolean,
   ) {
-    return bindEventToCommand(this, this.state as TViewModel, commandSelector, paramSelector, conditionSelector);
+    return bindEventToCommand(this, this.state, commandSelector, paramSelector, conditionSelector);
   }
   // -----------------------------------------
 }
