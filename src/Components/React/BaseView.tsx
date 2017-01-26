@@ -8,7 +8,7 @@ import { bindObservableToCommand, bindEventToProperty, bindEventToCommand } from
 import { renderEnumerable, renderConditional, renderLoadable, renderSizedLoadable, renderGridLoadable } from './RenderHelpers';
 
 export interface ViewModelProps {
-  viewModel: BaseViewModel;
+  viewModel: Readonly<BaseViewModel>;
 }
 
 export interface BaseViewProps extends React.HTMLProps<any>, ViewModelProps {
