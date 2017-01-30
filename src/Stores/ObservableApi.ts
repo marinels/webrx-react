@@ -23,16 +23,7 @@ export class ObservableApi {
     'Content-Type': 'application/json',
   };
 
-  private logger = Logging.getLogger(ObservableApi.displayName);
-  protected sampleData: SampleData = null;
-
-  constructor(public baseUri?: string) {
-    if (String.isNullOrEmpty(this.baseUri) && window != null && window.location != null) {
-      this.baseUri = (window.location.origin || 'http://localhost') + (window.location.pathname || '/');
-    }
-  }
-
-  private getNonNullParams(params?: any) {
+  public static getNonNullParams(params?: any) {
     if (params == null) {
       return null;
     }
@@ -46,46 +37,44 @@ export class ObservableApi {
     return params;
   }
 
-  private getRequest<T>(url: string, method = HttpRequestMethod.GET, params?: any, data?: any, options?: rxdom.AjaxSettings) {
-    if (params != null) {
-      // first filter out any empty/null params
-      params = this.getNonNullParams(params);
+  public static getUriFromParams(uri: string, params: any) {
+    // first filter out any empty/null params
+    params = this.getNonNullParams(params);
 
-      // only append params if there are any to append
-      if (Object.getOwnPropertyNames(params).length > 0) {
-        if (url.indexOf('?') >= 0) {
-          if (url[url.length - 1] !== '&') {
-            url += '&';
-          }
-        }
-        else {
-          url += '?';
-        }
-
-        url += param(params);
-      }
+    if (params == null) {
+      // if we have no params to append then just return the provided uri verbatim
+      return uri;
     }
 
-    const body = data == null ? undefined : String.stringify(data, null, 2);
-
-    options = Object.assign<rxdom.AjaxSettings>(<rxdom.AjaxSettings>{
-      headers: ObservableApi.defaultHeaders,
-      async: true,
-      body,
-      method: HttpRequestMethod[method],
-      url,
-    }, options);
-
-    return rxdom
-      .ajax(options)
-      .map(x => {
-        try {
-          return <T>JSON.parse(x.response);
+    // only append params if there are any to append
+    if (Object.getOwnPropertyNames(params).length > 0) {
+      // first check if our provided uri is already prepped for params
+      if (uri.indexOf('?') >= 0) {
+        // it has been prepped, so check to see if the last character is an '&'
+        if (uri[uri.length - 1] !== '&') {
+          // no '&' at the end, so append one
+          uri += '&';
         }
-        catch (e) {
-          throw x;
-        }
-      });
+      }
+      else {
+        // it hasn't been prepped so just append a '?'
+        uri += '?';
+      }
+
+      // finally append our params to the uri
+      uri += param(params);
+    }
+
+    return uri;
+  }
+
+  private logger = Logging.getLogger(ObservableApi.displayName);
+  protected sampleData: SampleData = null;
+
+  constructor(public baseUri?: string) {
+    if (String.isNullOrEmpty(this.baseUri) && window != null && window.location != null) {
+      this.baseUri = (window.location.origin || 'http://localhost') + (window.location.pathname || '/');
+    }
   }
 
   private getError(xhr: XMLHttpRequest, uri: string) {
@@ -175,6 +164,31 @@ export class ObservableApi {
       messageDetail,
       uri,
     };
+  }
+
+  public getRequest<T>(url: string, method = HttpRequestMethod.GET, params?: any, data?: any, options?: rxdom.AjaxSettings) {
+    url = ObservableApi.getUriFromParams(url, params);
+
+    const body = data == null ? undefined : String.stringify(data, null, 2);
+
+    options = Object.assign<rxdom.AjaxSettings>(<rxdom.AjaxSettings>{
+      headers: ObservableApi.defaultHeaders,
+      async: true,
+      body,
+      method: HttpRequestMethod[method],
+      url,
+    }, options);
+
+    return rxdom
+      .ajax(options)
+      .map(x => {
+        try {
+          return <T>JSON.parse(x.response);
+        }
+        catch (e) {
+          throw x;
+        }
+      });
   }
 
   public getObservableResult<T>(action: string, params?: any, data?: any, method?: HttpRequestMethod, options?: rxdom.AjaxSettings, baseUri?: string) {
