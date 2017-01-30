@@ -23,7 +23,6 @@ export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewMode
     super(props, context);
 
     this.bindObservableToCommand(
-      x => x.viewportDimensionsChanged,
       Observable
         .merge(
           Observable.fromEvent<UIEvent>(window, 'resize'),
@@ -31,6 +30,7 @@ export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewMode
         )
         .startWith(null)
         .map(() => this.getDimensions()),
+      x => x.viewportDimensionsChanged,
     );
   }
 

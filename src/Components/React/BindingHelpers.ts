@@ -7,12 +7,12 @@ import { BaseViewModel } from './BaseViewModel';
 /**
  * Binds an observable to a command on the view model
  */
-export function bindObservableToCommand<TViewModel extends BaseViewModel, TResult>(
-  viewModel: TViewModel,
-  commandSelector: (viewModel: TViewModel) => wx.ICommand<TResult>,
-  observable: Observable<TResult>,
+export function bindObservableToCommand<TViewModel extends BaseViewModel, TInput, TResult>(
+  viewModel: Readonly<TViewModel>,
+  observable: Observable<TInput>,
+  commandSelector: (viewModel: Readonly<TViewModel>) => wx.ICommand<TResult>,
 ) {
-  return viewModel.bind(commandSelector, observable);
+  return viewModel.bindObservable(observable, x => x.invokeCommand(commandSelector(viewModel)));
 }
 
 /**
@@ -20,10 +20,10 @@ export function bindObservableToCommand<TViewModel extends BaseViewModel, TResul
  */
 export function bindEventToProperty<TViewModel extends BaseViewModel, TValue, TEvent extends Event | React.SyntheticEvent<any>>(
   thisArg: any,
-  viewModel: TViewModel,
-  targetSelector: (viewModel: TViewModel) => wx.IObservableProperty<TValue>,
+  viewModel: Readonly<TViewModel>,
+  targetSelector: (viewModel: Readonly<TViewModel>) => wx.IObservableProperty<TValue>,
   valueSelector?: (eventKey: any, event: TEvent) => TValue,
-): any {
+): any { // this needs to be any instead of Function to support React.EventHandler<T>
   return (eventKey: any, event: TEvent) => {
     // this ensures that we can still use this function for basic HTML events
     event = event || eventKey;
@@ -40,11 +40,11 @@ export function bindEventToProperty<TViewModel extends BaseViewModel, TValue, TE
  */
 export function bindEventToCommand<TViewModel extends BaseViewModel, TParameter, TEvent extends Event | React.SyntheticEvent<any>>(
   thisArg: any,
-  viewModel: TViewModel,
-  commandSelector: (viewModel: TViewModel) => wx.ICommand<any>,
+  viewModel: Readonly<TViewModel>,
+  commandSelector: (viewModel: Readonly<TViewModel>) => wx.ICommand<any>,
   paramSelector?: (eventKey: any, event: TEvent) => TParameter,
   conditionSelector?: (event: TEvent, eventKey: any) => boolean,
-): any {
+): any { // this needs to be any instead of Function to support React.EventHandler<T>
   return (eventKey: any, event: Event) => {
     // this ensures that we can still use this function for basic HTML events
     event = event || eventKey;

@@ -275,7 +275,7 @@ const viewMap: ViewActivatorMap = {
       <DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 } />
     </DataGridView>
   ),
-  ModalDialogViewModel: (data: { viewModel: ModalDialogViewModel, accept: wx.ICommand<any>, reject: wx.ICommand<any> }) => (
+  ModalDialogViewModel: (data: { viewModel: Readonly<ModalDialogViewModel>, accept: wx.ICommand<any>, reject: wx.ICommand<any> }) => (
     <div>
       <Button onClick={ bindEventToCommand(this, data.viewModel, x => x.show) }>Show Confirmation Dialog</Button>
       <ModalDialogView viewModel={ data.viewModel } title='Demo Modal Confirmation Dialog' body='You can put custom content here'>
