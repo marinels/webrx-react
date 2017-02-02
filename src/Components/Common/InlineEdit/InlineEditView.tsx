@@ -85,12 +85,14 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
 
   private renderErrorTooltip() {
     return (
-      <Popover id='tooltip' className='alert-danger'>
-        {
-          this.renderConditional(this.props.errorContent instanceof Function, () => {
-            return this.props.errorContent.apply(this, [ this.state, this ]);
-          }, () => this.props.errorContent)
-        }
+      <Popover id='tooltip' className='InlineEditView-popover alert-danger'>
+        <div className='InlineEditView-errorContent'>
+          {
+            this.renderConditional(this.props.errorContent instanceof Function, () => {
+              return this.props.errorContent.apply(this, [ this.state, this ]);
+            }, () => this.props.errorContent)
+          }
+        </div>
       </Popover>
     );
   }
