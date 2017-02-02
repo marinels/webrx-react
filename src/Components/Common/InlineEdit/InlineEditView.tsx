@@ -16,6 +16,7 @@ interface InlineEditProps<T> extends BaseViewProps, BindableProps {
   inputType?: string;
   placeholder?: string;
   keyboard?: boolean;
+  clickToEdit?: boolean;
   bsSize?: Sizes;
   template?: (x: T, view: InlineEditView) => any;
   editTemplate?: (x: T, view: InlineEditView) => any;
@@ -99,8 +100,8 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
 
   private renderEditor() {
     const { className, props, rest } = this.restProps(x => {
-      const { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate, errorContent, errorPlacement } = x;
-      return { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate, errorContent, errorPlacement };
+      const { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, clickToEdit, template, editTemplate, errorContent, errorPlacement } = x;
+      return { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, clickToEdit, template, editTemplate, errorContent, errorPlacement };
     });
 
     return (
@@ -150,15 +151,23 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
   }
 
   private renderValue() {
-    const { className, rest } = this.restProps(x => {
-      const { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate, errorContent, errorPlacement } = x;
-      return { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate, errorContent, errorPlacement };
+    const { className, props, rest } = this.restProps(x => {
+      const { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, clickToEdit, template, editTemplate, errorContent, errorPlacement } = x;
+      return { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, clickToEdit, template, editTemplate, errorContent, errorPlacement };
     });
 
-    return (
-      <CommandButton { ...rest } className={ classNames('InlineEditView', className)} bsStyle='link' command={ this.state.edit }>
-        <span>{ this.props.template(this.state.value(), this) }</span>
-      </CommandButton>
+    const displayContent = (
+      <span>{ this.props.template(this.state.value(), this) }</span>
+    );
+
+    return this.renderConditional(
+      props.clickToEdit === true,
+      () => (
+        <CommandButton { ...rest } className={ classNames('InlineEditView', className)} bsStyle='link' command={ this.state.edit }>
+          { displayContent }
+        </CommandButton>
+      ),
+      () => displayContent,
     );
   }
 }

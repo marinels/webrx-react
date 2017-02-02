@@ -384,7 +384,7 @@ const viewMap: ViewActivatorMap = {
   ),
   InlineEditViewModel: (viewModel: InlineEditViewModel<any>) => (
     <InlineEditView style={({ margin: 0 })} viewModel={viewModel} inputType='number'
-      template={ x => `${ x.rank } of 10` } converter={ x => Number(x) } keyboard
+      template={ x => `${ x.rank } of 10` } converter={ x => Number(x) } keyboard clickToEdit
       valueGetter={ x => x().rank } valueSetter={ (x, v) => x().rank = v }
     />
   ),
