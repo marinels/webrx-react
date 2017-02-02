@@ -53,12 +53,16 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
     }
   }
 
-  private focusAndSelectControlText() {
-    const control = findDOMNode(this.refs['control']) as HTMLInputElement;
+  private focusAndSelectControlText(component: Element) {
+    const control = findDOMNode(component) as HTMLInputElement;
 
     if (control != null) {
-      control.focus();
+      // focus the control
+      if (control.focus != null) {
+        control.focus();
+      }
 
+      // select the content of the control
       if (control.select != null) {
         control.select();
       }
@@ -71,12 +75,6 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
       this.state.hasSavingError.changed,
       this.state.save.canExecuteObservable,
     ];
-  }
-
-  updated(prevProps: InlineEditProps<any>) {
-    super.updated(prevProps);
-
-    this.focusAndSelectControlText();
   }
 
   render() {
@@ -140,7 +138,7 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
         {
           React.cloneElement(
             this.props.editTemplate(this.state.editValue(), this),
-            { ref: 'control' },
+            { ref: x => this.focusAndSelectControlText(x) },
           )
         }
       </BindableInput>
