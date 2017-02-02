@@ -30,7 +30,7 @@ type ColumnRenderFunction = (
 
 export interface DataGridColumnProps {
   fieldName?: string;
-  header?: string;
+  header?: any;
   sortable?: boolean;
   className?: string;
   width?: number | string;
