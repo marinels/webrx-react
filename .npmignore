@@ -4,15 +4,11 @@
 /test
 
 /.babelrc
-/.eslintignore
-/.eslintrc
 /.gitattributes
 /.gitignore
-/.stylelintrc.js
 /.travis.yml
 /gulpfile.babel.js
 /index.html
 /*.log
-/tslint.json
 /webpack.common.js
 /webpack.config.js

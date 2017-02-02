@@ -30,13 +30,21 @@ export class RouteManager {
       .map(x => {
         let route = hashCodec.decode(x, (path, params, state) => <Route>{path, params, state});
 
+        // reconstruct the route hash
         let hash = '#' + route.path;
         if (route.params && route.params.length > 0) {
           hash += route.params;
         }
 
+        // if the reconstructed route hash differs from the current hash
+        // re-route to the constructed hash so that we have a consistent route
+        // NOTE: this can happen if the passed in route is not sanitized, as the
+        //       decode function will sanitize input
+        // i.e., if no route is supplied (no hash) then a default route of #/ is
+        //       coerced from the decode function.
         if (hash !== x) {
           this.navTo(route.path, route.state);
+          // set the current route to null to ignore further processing
           route = null;
         }
 

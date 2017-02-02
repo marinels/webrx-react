@@ -16,10 +16,12 @@ interface InlineEditProps<T> extends BaseViewProps, BindableProps {
   inputType?: string;
   placeholder?: string;
   keyboard?: boolean;
+  clickToEdit?: boolean;
   bsSize?: Sizes;
   template?: (x: T, view: InlineEditView) => any;
   editTemplate?: (x: T, view: InlineEditView) => any;
   errorContent?: any | ((viewModel: InlineEditViewModel<any>, view: InlineEditView) => any);
+  errorPlacement?: string;
 }
 
 export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditViewModel<any>> {
@@ -38,6 +40,7 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
         <div>Please try again.</div>
       </div>
     ),
+    errorPlacement: 'right',
   };
 
   private handleKeyDown(e: React.KeyboardEvent<any>) {
@@ -53,12 +56,16 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
     }
   }
 
-  private focusAndSelectControlText() {
-    const control = findDOMNode(this.refs['control']) as HTMLInputElement;
+  private focusAndSelectControlText(component: Element) {
+    const control = findDOMNode(component) as HTMLInputElement;
 
     if (control != null) {
-      control.focus();
+      // focus the control
+      if (control.focus != null) {
+        control.focus();
+      }
 
+      // select the content of the control
       if (control.select != null) {
         control.select();
       }
@@ -73,32 +80,28 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
     ];
   }
 
-  updated(prevProps: InlineEditProps<any>) {
-    super.updated(prevProps);
-
-    this.focusAndSelectControlText();
-  }
-
   render() {
     return this.renderConditional(this.state.isEditing, () => this.renderEditor(), () => this.renderValue());
   }
 
   private renderErrorTooltip() {
     return (
-      <Popover id='tooltip' className='alert-danger'>
-        {
-          this.renderConditional(this.props.errorContent instanceof Function, () => {
-            return this.props.errorContent.apply(this, [ this.state, this ]);
-          }, () => this.props.errorContent)
-        }
+      <Popover id='tooltip' className='InlineEditView-popover alert-danger'>
+        <div className='InlineEditView-errorContent'>
+          {
+            this.renderConditional(this.props.errorContent instanceof Function, () => {
+              return this.props.errorContent.apply(this, [ this.state, this ]);
+            }, () => this.props.errorContent)
+          }
+        </div>
       </Popover>
     );
   }
 
   private renderEditor() {
-    const { className, rest } = this.restProps(x => {
-      const { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate, errorContent } = x;
-      return { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate, errorContent };
+    const { className, props, rest } = this.restProps(x => {
+      const { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, clickToEdit, template, editTemplate, errorContent, errorPlacement } = x;
+      return { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, clickToEdit, template, editTemplate, errorContent, errorPlacement };
     });
 
     return (
@@ -106,7 +109,7 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
         <InputGroup>
           {
             this.renderConditional(this.state.hasSavingError, () => (
-              <OverlayTrigger placement='left' overlay={ this.renderErrorTooltip() }>
+              <OverlayTrigger placement={ props.errorPlacement } overlay={ this.renderErrorTooltip() }>
                 <InputGroup.Addon className='InlineEditView-error'>
                   <Icon className='alert-danger' name='exclamation' />
                 </InputGroup.Addon>
@@ -140,7 +143,7 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
         {
           React.cloneElement(
             this.props.editTemplate(this.state.editValue(), this),
-            { ref: 'control' },
+            { ref: x => this.focusAndSelectControlText(x) },
           )
         }
       </BindableInput>
@@ -148,15 +151,23 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
   }
 
   private renderValue() {
-    const { className, rest } = this.restProps(x => {
-      const { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate, errorContent } = x;
-      return { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate, errorContent };
+    const { className, props, rest } = this.restProps(x => {
+      const { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, clickToEdit, template, editTemplate, errorContent, errorPlacement } = x;
+      return { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, clickToEdit, template, editTemplate, errorContent, errorPlacement };
     });
 
-    return (
-      <CommandButton { ...rest } className={ classNames('InlineEditView', className)} bsStyle='link' command={ this.state.edit }>
-        <span>{ this.props.template(this.state.value(), this) }</span>
-      </CommandButton>
+    const displayContent = (
+      <span>{ this.props.template(this.state.value(), this) }</span>
+    );
+
+    return this.renderConditional(
+      props.clickToEdit === true,
+      () => (
+        <CommandButton { ...rest } className={ classNames('InlineEditView', className)} bsStyle='link' command={ this.state.edit }>
+          { displayContent }
+        </CommandButton>
+      ),
+      () => displayContent,
     );
   }
 }

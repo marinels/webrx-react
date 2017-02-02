@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Observable } from 'rx';
 import * as wx from 'webrx';
 import { Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab,
   Well, ListGroup, ListGroupItem, Table, OverlayTrigger, Overlay, Tooltip, Popover,
@@ -25,6 +26,7 @@ import {
   CommandButton,
   Loading,
   Splash,
+  ObservableWrapper,
   TimeSpanControl,
   TimeSpanInputView,
   ContextMenu,
@@ -131,6 +133,9 @@ const viewMap: ViewActivatorMap = {
       <Button onClick={() => Alert.create(`Alert Content: ${new Date()}`, 'Info Alert', 'info')}>Info Alert</Button>
       <Button onClick={() => Alert.createForError(new Error(`Error Message: ${new Date()}`), 'Error Alert')}>Error Alert</Button>
     </div>
+  ),
+  ObservableWrapper: () => (
+    <ObservableWrapper observableOrProperty={ Observable.timer(0, 1000) } render={ x => (<div>Current Value is { x }</div>) } />
   ),
   TimeSpanInputViewModel: (viewModel: TimeSpanInputViewModel) => (
     <div>
@@ -270,7 +275,7 @@ const viewMap: ViewActivatorMap = {
     );
   },
   AsyncDataGridViewModel: (viewModel: AsyncDataGridViewModel<any, any, any>) => (
-    <DataGridView viewModel={ viewModel } pager pagerLimits={ [ 1, 5, 10, null ] }>
+    <DataGridView viewModel={ viewModel } pager={ ({ limits: [ 1, 5, 10, null ] }) }>
       <DataGridColumn key='name' fieldName='name' header='Name' sortable />
       <DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 } />
     </DataGridView>
@@ -384,7 +389,7 @@ const viewMap: ViewActivatorMap = {
   ),
   InlineEditViewModel: (viewModel: InlineEditViewModel<any>) => (
     <InlineEditView style={({ margin: 0 })} viewModel={viewModel} inputType='number'
-      template={ x => `${ x.rank } of 10` } converter={ x => Number(x) } keyboard
+      template={ x => `${ x.rank } of 10` } converter={ x => Number(x) } keyboard clickToEdit
       valueGetter={ x => x().rank } valueSetter={ (x, v) => x().rank = v }
     />
   ),

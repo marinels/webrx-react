@@ -166,7 +166,9 @@ export class ObservableApi {
     };
   }
 
-  public getRequest<T>(url: string, method = HttpRequestMethod.GET, params?: any, data?: any, options?: rxdom.AjaxSettings) {
+  public getRequest<T>(action: string, url: string, method = HttpRequestMethod.GET, params?: any, data?: any, options?: rxdom.AjaxSettings) {
+    this.logger.info(`API Request: ${ action } (${ url })`, params);
+
     url = ObservableApi.getUriFromParams(url, params);
 
     const body = data == null ? undefined : String.stringify(data, null, 2);
@@ -188,28 +190,25 @@ export class ObservableApi {
         catch (e) {
           throw x;
         }
+      })
+      .doOnNext(x => {
+        this.logger.info(`API Result: ${ action } (${ url })`, x);
+      })
+      .catch((x: rxdom.AjaxErrorResponse) => {
+        this.logger.error(`API  ERROR: ${ action } (${ url })`, x);
+
+        return Observable.throw<T>(this.getError(x.xhr, url));
       });
   }
 
   public getObservableResult<T>(action: string, params?: any, data?: any, method?: HttpRequestMethod, options?: rxdom.AjaxSettings, baseUri?: string) {
-    const uri = `${baseUri || this.baseUri}${action}`;
-
-    this.logger.info(`API Request: ${action} (${uri})`, params);
-
-    return this.sampleData == null ?
-      // if an API call throws an uncaught error, that means you are not subscribing to the observable's error
-      this
-        .getRequest<T>(uri, method, params, data, options)
-        .doOnNext(x => {
-          this.logger.info(`API Result: ${action} (${uri})`, x);
-        })
-        .catch((x: rxdom.AjaxErrorResponse) => {
-          this.logger.error(`API  ERROR: ${action} (${uri})`, x);
-
-          return Observable.throw<T>(this.getError(x.xhr, uri));
-        }) :
-      // if sample data has been created just use that instead (opt-in)
-      this.sampleData.getObservable<T>(action, params);
+    return Observable
+      .defer(() => {
+        // use sampleData if it has been defined
+        return this.sampleData == null ?
+          this.getRequest<T>(action, `${baseUri || this.baseUri}${action}`, method, params, data, options) :
+          this.sampleData.getObservable<T>(action, params);
+      });
   }
 
   public getObservable<T>(action: string, params?: any, options?: rxdom.AjaxSettings, baseUri?: string) {

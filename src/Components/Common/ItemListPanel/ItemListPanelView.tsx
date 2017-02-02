@@ -29,8 +29,8 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
 
   render() {
     const { className, children, rest, props } = this.restProps(x => {
-      const { fill, viewTemplate, search, pager, pagerLimits, loadingContent, selectable, highlightSelected, checkmarkSelected } = x;
-      return { fill, viewTemplate, search, pager, pagerLimits, loadingContent, selectable, highlightSelected, checkmarkSelected };
+      const { fill, viewTemplate, search, pager, loadingContent, selectable, highlightSelected, checkmarkSelected } = x;
+      return { fill, viewTemplate, search, pager, loadingContent, selectable, highlightSelected, checkmarkSelected };
     });
 
     const viewType = props.viewTemplate instanceof DataGridTableViewTemplate ? 'Table' : 'List';
@@ -56,7 +56,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
             () => this.renderConditional(
               React.isValidElement(props.pager),
               props.pager,
-              () => <DataGridView.Pager limits={ props.pagerLimits } { ...(props.pager === true ? {} : props.pager) } grid={ this.state.grid } viewTemplate={ props.viewTemplate } fill />,
+              () => <DataGridView.Pager { ...(props.pager === true ? {} : props.pager) } grid={ this.state.grid } viewTemplate={ props.viewTemplate } fill />,
             ),
           )
         }

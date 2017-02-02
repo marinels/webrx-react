@@ -22,7 +22,7 @@ describe('ObservableApi', () => {
   };
   const baseUriOverride = 'http://test2.com/';
 
-  describe('getObservableResult', () => {
+  describe.only('getObservableResult', () => {
     it('creates a GET request', () => {
       const request = Observable.of(true);
       const stub = sandbox.stub(api, 'getRequest', () => request);
@@ -31,8 +31,10 @@ describe('ObservableApi', () => {
 
       should.exist(result);
       Observable.isObservable(result).should.be.true;
+
+      result.subscribe();
       stub.should.have.been.calledOnce;
-      stub.should.have.been.calledWith(`${baseUriOverride}${action}`, HttpRequestMethod.GET, params, data, options);
+      stub.should.have.been.calledWith(action, `${ baseUriOverride }${ action }`, HttpRequestMethod.GET, params, data, options);
     });
 
     it('creates a POST request', () => {
@@ -43,8 +45,10 @@ describe('ObservableApi', () => {
 
       should.exist(result);
       Observable.isObservable(result).should.be.true;
+
+      result.subscribe();
       stub.should.have.been.calledOnce;
-      stub.should.have.been.calledWith(`${baseUriOverride}${action}`, HttpRequestMethod.POST, params, data, options);
+      stub.should.have.been.calledWith(action, `${ baseUriOverride }${ action }`, HttpRequestMethod.POST, params, data, options);
     });
 
     it('composes GET request options from the provided parameters', () => {
@@ -55,11 +59,16 @@ describe('ObservableApi', () => {
         url: `${ baseUri }${ action }?${ uriParams }`,
         method: 'GET',
       };
-      const request = Observable.of(true);
+      const response = { response: true };
+      const request = Observable.of(response);
       const stub = sandbox.stub(rxdom, 'ajax', () => request);
 
-      api.getObservableResult(action, params, data, HttpRequestMethod.GET);
+      const result = api.getObservableResult(action, params, data, HttpRequestMethod.GET);
 
+      should.exist(result);
+      Observable.isObservable(result).should.be.true;
+
+      result.subscribe();
       stub.should.have.been.calledOnce;
       stub.should.have.been.calledWith(expectedOptions);
     });
@@ -72,20 +81,31 @@ describe('ObservableApi', () => {
         url: `${ baseUri }${ action }?${ uriParams }`,
         method: 'POST',
       };
-      const request = Observable.of(true);
+      const response = { response: true };
+      const request = Observable.of(response);
       const stub = sandbox.stub(rxdom, 'ajax', () => request);
 
-      api.getObservableResult(action, params, data, HttpRequestMethod.POST);
+      const result = api.getObservableResult(action, params, data, HttpRequestMethod.POST);
 
+      should.exist(result);
+      Observable.isObservable(result).should.be.true;
+
+      result.subscribe();
       stub.should.have.been.calledOnce;
       stub.should.have.been.calledWith(expectedOptions);
     });
 
     it('omits null param values from the uri', () => {
-      const request = Observable.of(true);
+      const response = { response: true };
+      const request = Observable.of(response);
       const stub = sandbox.stub(rxdom, 'ajax', () => request);
-      api.getObservableResult(action, { param1: 'param1 value', param2: null, param3: undefined });
 
+      const result = api.getObservableResult(action, { param1: 'param1 value', param2: null, param3: undefined });
+
+      should.exist(result);
+      Observable.isObservable(result).should.be.true;
+
+      result.subscribe();
       stub.should.have.been.calledOnce;
       stub.firstCall.args[0].url.should.eql(`${ baseUri }${ action }?${ uriParams }`);
     });

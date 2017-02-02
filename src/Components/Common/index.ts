@@ -26,6 +26,7 @@ export * from './ContextMenu/ContextMenu';
 export * from './Loading/Loading';
 export * from './ProfilePicture/ProfilePicture';
 export * from './CommonPanel/CommonPanel';
+export * from './ObservableWrapper/ObservableWrapper';
 
 // Views
 export * from './InlineEdit/InlineEditView';

@@ -186,6 +186,7 @@ routeMap.addRoute('React', 'ContextMenu', 'Context Menu', (state: any) => 'Conte
 routeMap.addRoute('React', 'ProfilePicture', 'Profile Picture', (state: any) => 'ProfilePicture');
 routeMap.addRoute('React', 'CommonPanel', 'Common Panel', (state: any) => 'CommonPanel');
 routeMap.addRoute('React', 'CommonPanelList', 'Common Panel (List)', (state: any) => 'CommonPanelList');
+routeMap.addRoute('React', 'ObservableWrapper', 'Observable Wrapper', (state: any) => 'ObservableWrapper');
 
 routeMap.addRoute('WebRx-React', 'TimeSpanInput', 'Time Span Input', (state: any) => new Components.TimeSpanInputViewModel(true, Components.TimeSpanUnitType.Seconds));
 routeMap.addRoute('WebRx-React', 'List', 'List', (state: any) => new Components.ListViewModel(Observable.of(sampleListData), false, false));
