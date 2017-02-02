@@ -408,7 +408,6 @@ export interface DataGridProps extends ListViewRenderTemplateProps {
   viewTemplate?: DataGridViewTemplate<any>;
   search?: boolean | SearchProps | any;
   pager?: boolean | PagerProps | any;
-  pagerLimits?: number[];
   loadingContent?: any;
   children?: DataGridColumn[];
 }
@@ -476,8 +475,8 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { fill, viewTemplate, search, pager, pagerLimits, selectable, highlightSelected, checkmarkSelected, loadingContent, emptyContent } = x;
-      return { fill, viewTemplate, search, pager, pagerLimits, selectable, highlightSelected, checkmarkSelected, loadingContent, emptyContent };
+      const { fill, viewTemplate, search, pager, selectable, highlightSelected, checkmarkSelected, loadingContent, emptyContent } = x;
+      return { fill, viewTemplate, search, pager, selectable, highlightSelected, checkmarkSelected, loadingContent, emptyContent };
     });
 
     return this.renderSizedLoadable(this.state.isLoading, props.loadingContent, '1.5em', () => {
@@ -504,7 +503,7 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
               this.renderConditional(
                 props.pager !== false,
                 () => React.isValidElement(props.pager) ? props.pager : (
-                  <DataGridView.Pager limits={ props.pagerLimits } { ...(props.pager === true ? {} : props.pager) } grid={ this.state } viewTemplate={ props.viewTemplate } />
+                  <DataGridView.Pager { ...(props.pager === true ? {} : props.pager) } grid={ this.state } viewTemplate={ props.viewTemplate } />
                 ),
               )
             }

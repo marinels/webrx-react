@@ -270,7 +270,7 @@ const viewMap: ViewActivatorMap = {
     );
   },
   AsyncDataGridViewModel: (viewModel: AsyncDataGridViewModel<any, any, any>) => (
-    <DataGridView viewModel={ viewModel } pager pagerLimits={ [ 1, 5, 10, null ] }>
+    <DataGridView viewModel={ viewModel } pager={ ({ limits: [ 1, 5, 10, null ] }) }>
       <DataGridColumn key='name' fieldName='name' header='Name' sortable />
       <DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 } />
     </DataGridView>
