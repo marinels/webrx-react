@@ -78,48 +78,52 @@ function dispose<T>(disposable: T, returnNull = true) {
   return returnNull ? null : disposable;
 }
 
-function getName(source: any, undefinedValue = 'undefined', isStatic = false) {
-  const displayNameProperty = 'displayName';
-  const typeNameProperty = 'typeName';
-  const nameProperty = 'name';
+interface NamedObject {
+  displayName?: string;
+  typeName?: string;
+  name?: string;
 
-  let name: string = null;
+  constructor?: NamedObject;
+}
 
+function getName(source: NamedObject, undefinedValue = 'undefined', isStatic = false): string {
   if (source != null) {
     if (typeof source === 'string') {
-      name = source;
+      return source;
     }
-    else if (source.hasOwnProperty(displayNameProperty)) {
-      name = source[displayNameProperty];
+    else if (String.isNullOrEmpty(source.displayName) === false) {
+      return source.displayName;
     }
-    else if (source.hasOwnProperty(typeNameProperty)) {
-      name = source[typeNameProperty];
+    else if (String.isNullOrEmpty(source.typeName) === false) {
+      return source.typeName;
     }
-    else if (source.hasOwnProperty(nameProperty)) {
-      name = source[nameProperty];
+    else if (String.isNullOrEmpty(source.name) === false) {
+      return source.name;
     }
     else if (source.constructor != null) {
       // this allows us to inspect the static properties of the source object
       // but we don't want to go beyond the the static properties
       if (isStatic === false) {
-        name = getName(source.constructor, undefinedValue, true);
+        const name = getName(source.constructor, undefinedValue, true);
+
+        if (String.isNullOrEmpty(name) === false) {
+          return name;
+        }
       }
       else {
         // IE is pretty dumb and doesn't expose any useful naming properties
         // so we can try and extract it from the toString()
         let match = /function (.+)\(/.exec(source.toString());
         if (match != null && match.length >= 2) {
-          name = match[1];
+          if (String.isNullOrEmpty(match[1]) === false) {
+            return match[1];
+          }
         }
       }
     }
   }
 
-  if (name == null) {
-    name = undefinedValue;
-  }
-
-  return name;
+  return undefinedValue;
 }
 
 function fallback<T>(...values: T[]) {
