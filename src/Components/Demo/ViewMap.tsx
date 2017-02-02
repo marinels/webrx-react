@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Observable } from 'rx';
 import * as wx from 'webrx';
 import { Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab,
   Well, ListGroup, ListGroupItem, Table, OverlayTrigger, Overlay, Tooltip, Popover,
@@ -25,6 +26,7 @@ import {
   CommandButton,
   Loading,
   Splash,
+  ObservableWrapper,
   TimeSpanControl,
   TimeSpanInputView,
   ContextMenu,
@@ -131,6 +133,9 @@ const viewMap: ViewActivatorMap = {
       <Button onClick={() => Alert.create(`Alert Content: ${new Date()}`, 'Info Alert', 'info')}>Info Alert</Button>
       <Button onClick={() => Alert.createForError(new Error(`Error Message: ${new Date()}`), 'Error Alert')}>Error Alert</Button>
     </div>
+  ),
+  ObservableWrapper: () => (
+    <ObservableWrapper observableOrProperty={ Observable.timer(0, 1000) } render={ x => (<div>Current Value is { x }</div>) } />
   ),
   TimeSpanInputViewModel: (viewModel: TimeSpanInputViewModel) => (
     <div>
