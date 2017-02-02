@@ -20,6 +20,7 @@ interface InlineEditProps<T> extends BaseViewProps, BindableProps {
   template?: (x: T, view: InlineEditView) => any;
   editTemplate?: (x: T, view: InlineEditView) => any;
   errorContent?: any | ((viewModel: InlineEditViewModel<any>, view: InlineEditView) => any);
+  errorPlacement?: string;
 }
 
 export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditViewModel<any>> {
@@ -38,6 +39,7 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
         <div>Please try again.</div>
       </div>
     ),
+    errorPlacement: 'right',
   };
 
   private handleKeyDown(e: React.KeyboardEvent<any>) {
@@ -94,9 +96,9 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
   }
 
   private renderEditor() {
-    const { className, rest } = this.restProps(x => {
-      const { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate, errorContent } = x;
-      return { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate, errorContent };
+    const { className, props, rest } = this.restProps(x => {
+      const { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate, errorContent, errorPlacement } = x;
+      return { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate, errorContent, errorPlacement };
     });
 
     return (
@@ -104,7 +106,7 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
         <InputGroup>
           {
             this.renderConditional(this.state.hasSavingError, () => (
-              <OverlayTrigger placement='left' overlay={ this.renderErrorTooltip() }>
+              <OverlayTrigger placement={ props.errorPlacement } overlay={ this.renderErrorTooltip() }>
                 <InputGroup.Addon className='InlineEditView-error'>
                   <Icon className='alert-danger' name='exclamation' />
                 </InputGroup.Addon>
@@ -147,8 +149,8 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
 
   private renderValue() {
     const { className, rest } = this.restProps(x => {
-      const { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate, errorContent } = x;
-      return { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate, errorContent };
+      const { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate, errorContent, errorPlacement } = x;
+      return { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, template, editTemplate, errorContent, errorPlacement };
     });
 
     return (
