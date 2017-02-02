@@ -79,8 +79,8 @@ function dispose<T>(disposable: T, returnNull = true) {
 }
 
 function getName(source: any, undefinedValue = 'undefined', isStatic = false) {
-  const typeNameProperty = 'typeName';
   const displayNameProperty = 'displayName';
+  const typeNameProperty = 'typeName';
   const nameProperty = 'name';
 
   let name: string = null;
@@ -89,11 +89,11 @@ function getName(source: any, undefinedValue = 'undefined', isStatic = false) {
     if (typeof source === 'string') {
       name = source;
     }
-    else if (source.hasOwnProperty(typeNameProperty)) {
-      name = source[typeNameProperty];
-    }
     else if (source.hasOwnProperty(displayNameProperty)) {
       name = source[displayNameProperty];
+    }
+    else if (source.hasOwnProperty(typeNameProperty)) {
+      name = source[typeNameProperty];
     }
     else if (source.hasOwnProperty(nameProperty)) {
       name = source[nameProperty];
