@@ -42,7 +42,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
             props.search != null && props.search !== false && this.state.isLoading() === false,
             () => this.renderConditional(
               React.isValidElement(props.search),
-              props.search,
+              () => props.search,
               () => <DataGridView.Search { ...(props.search === true ? {} : props.search) } grid={ this.state.grid } viewTemplate={ props.viewTemplate } fill />,
             ),
           )
@@ -55,7 +55,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
             props.pager != null && props.pager !== false && this.state.isLoading() === false,
             () => this.renderConditional(
               React.isValidElement(props.pager),
-              props.pager,
+              () => props.pager,
               () => <DataGridView.Pager { ...(props.pager === true ? {} : props.pager) } grid={ this.state.grid } viewTemplate={ props.viewTemplate } fill />,
             ),
           )
