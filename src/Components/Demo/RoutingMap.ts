@@ -219,6 +219,9 @@ routeMap.addRoute('WebRx-React', 'DataGridPager', 'DataGrid (Custom Pager)', (st
 routeMap.addRoute('WebRx-React', 'AsyncDataGrid', 'DataGrid (Async)', (state: any) => {
   return new Components.AsyncDataGridViewModel(sampleDataSource, true, true);
 });
+routeMap.addRoute('WebRx-React', 'DataGridRoutingState', 'DataGrid (Routing State)', (state: any) =>
+  new Components.DataGridViewModel(Observable.of(sampleListData), undefined, undefined, undefined, undefined, undefined, undefined, true),
+);
 routeMap.addRoute('WebRx-React', 'ModalDialog', 'Modal Dialog', (state: any) => {
   // we are simulating a modal being contained within another view model
   return {
