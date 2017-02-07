@@ -38,7 +38,7 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
 
   private createRoutingState(initializer: (state: TRoutingState) => void, initialState = {} as TRoutingState) {
     if (this.isRoutingEnabled === true && initializer != null) {
-      initializer(initialState);
+      return initializer(initialState) || initialState;
     }
 
     return initialState;
@@ -94,7 +94,7 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
    */
   public getRoutingState(context?: any) {
     return this.createRoutingState(state => {
-      this.saveRoutingState(state);
+      return this.saveRoutingState(state) || state;
     });
   }
 
