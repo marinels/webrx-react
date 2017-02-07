@@ -71,7 +71,7 @@ export class PagerViewModel extends BaseRoutableViewModel<PagerRoutingState> {
   }
 
   loadRoutingState(state: PagerRoutingState) {
-    this.limit(state.limit || 0);
-    this.selectedPage(state.page || 1);
+    this.limit(state.limit || this.limit() || 0);
+    this.selectPage.execute(state.page || this.selectedPage() || 1);
   }
 }
