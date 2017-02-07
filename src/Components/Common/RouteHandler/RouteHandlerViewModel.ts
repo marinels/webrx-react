@@ -145,15 +145,18 @@ export class RouteHandlerViewModel extends BaseViewModel {
       .invokeCommand(this.loadComponent),
     );
 
-    this.subscribe(
-      // if any component changes its routing state we'll pick it up here and ask the
-      // currently routed component to generate a new routing state object, then
-      // ask the routing manager to navigate to the current route with our updated state
-      PubSub.subscribe<RoutingStateChanged>(RoutingStateChangedKey, x => {
+    // if any component changes its routing state we'll pick it up here and ask the
+    // currently routed component to generate a new routing state object, then
+    // ask the routing manager to navigate to the current route with our updated state
+    this.subscribeOrAlert(
+      () => PubSub.observe<RoutingStateChanged>(RoutingStateChangedKey)
+        .debounce(100),
+      'Routing Handler State Changed Error',
+      x => {
         if (this.currentRoute() != null && this.routedComponent() != null) {
           Manager.navTo(this.currentRoute().path, this.routedComponent().getRoutingState(x));
         }
-      }),
+      },
     );
 
     // connect the primary observable to allow the routing engine to start processing routes

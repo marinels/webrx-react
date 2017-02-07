@@ -24,7 +24,7 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
 
   public routingStateChanged = wx.command();
 
-  constructor(public isRoutingEnabled = false, routingStateRateLimit = 100) {
+  constructor(public isRoutingEnabled = false, routingStateRateLimit = 25) {
     super();
 
     this.subscribe(
