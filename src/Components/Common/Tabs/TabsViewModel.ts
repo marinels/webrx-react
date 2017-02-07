@@ -58,8 +58,12 @@ export class TabsViewModel<T> extends BaseRoutableViewModel<TabsRoutingState> {
   }
 
   loadRoutingState(state: TabsRoutingState) {
-    const tab = this.tabs.get(state.tab || 0);
+    const prevState = this.routingState() || <TabsRoutingState>{};
 
-    this.selectTab.execute(tab);
+    if (state.tab == null && prevState.tab != null) {
+      state.tab = 0;
+    }
+
+    this.selectIndex.execute(state.tab || this.selectedIndex() || 0);
   }
 }

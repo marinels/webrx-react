@@ -46,3 +46,20 @@ function invokeCommand<T, TResult>(command: (x: T) => wx.ICommand<TResult> | wx.
 }
 
 (<any>Observable).prototype.invokeCommand = invokeCommand;
+
+// save a handle to the default toProperty function
+const wxToProperty: Function = (<any>Observable).prototype.toProperty;
+
+function toProperty(initialValue?: any, scheduler?: Rx.IScheduler) {
+  // create our prop using the default function
+  const prop = wxToProperty.apply(this, [ initialValue, scheduler ]);
+
+  // override the queryInterface on the patched toProperty function
+  prop.queryInterface = (iid: string) => {
+    return iid === wx.IID.IObservableReadOnlyProperty || iid === wx.IID.IObservableProperty || iid === wx.IID.IDisposable;
+  };
+
+  return prop;
+}
+
+(<any>Observable).prototype.toProperty = toProperty;

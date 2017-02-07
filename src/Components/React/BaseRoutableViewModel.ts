@@ -22,23 +22,30 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
 
   protected routingState = wx.property<TRoutingState>();
 
-  public routingStateChanged = wx.command(x => {
-    this.notifyRoutingStateChanged(x);
-  });
+  public routingStateChanged = wx.command();
 
-  constructor(public isRoutingEnabled = false) {
+  constructor(public isRoutingEnabled = false, routingStateRateLimit = 25) {
     super();
+
+    this.subscribe(
+      this.routingStateChanged.results
+        .filter(x => this.isRoutingEnabled)
+        .debounce(routingStateRateLimit)
+        .subscribe(x => {
+          pubSub.publish<RoutingStateChanged>(RoutingStateChangedKey, x);
+        }),
+    );
   }
 
   protected notifyRoutingStateChanged(context?: any) {
     if (this.isRoutingEnabled) {
-      pubSub.publish<RoutingStateChanged>(RoutingStateChangedKey, context);
+      this.routingStateChanged.execute(context);
     }
   }
 
   private createRoutingState(initializer: (state: TRoutingState) => void, initialState = {} as TRoutingState) {
     if (this.isRoutingEnabled === true && initializer != null) {
-      initializer(initialState);
+      return initializer(initialState) || initialState;
     }
 
     return initialState;
@@ -94,7 +101,7 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
    */
   public getRoutingState(context?: any) {
     return this.createRoutingState(state => {
-      this.saveRoutingState(state);
+      return this.saveRoutingState(state) || state;
     });
   }
 

@@ -28,6 +28,17 @@ type ColumnRenderFunction = (
   view: DataGridView,
 ) => any;
 
+type ColumnContainerRenderFunction = (
+  content: any,
+  item: any,
+  index: number,
+  column: DataGridColumnProps,
+  columnIndex: number,
+  columns: DataGridColumnProps[],
+  viewModel: ReadonlyDataGridViewModel<any>,
+  view: DataGridView,
+) => any;
+
 export interface DataGridColumnProps {
   fieldName?: string;
   header?: any;
@@ -36,6 +47,7 @@ export interface DataGridColumnProps {
   width?: number | string;
   tooltip?: ColumnRenderFunction;
   renderCell?: ColumnRenderFunction;
+  renderCellContainer?: ColumnContainerRenderFunction;
 }
 
 export class DataGridColumn extends React.Component<DataGridColumnProps, any> {
@@ -109,14 +121,14 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
   constructor(
     protected renderItem: ColumnRenderFunction = x => x,
     protected rowKeySelector: (item: TData, index: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) => any = (r, i) => i,
-    protected renderTemplateContainer?: (content: any, item: TData, index: number, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) => any,
+    protected renderCellContainer?: (content: any, item: TData, index: number, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) => any,
     protected renderRowContainer?: (content: any, item: TData, index: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) => any,
     protected renderHeaderContainer?: (content: any, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) => any,
     protected enableAutomaticColumns = true,
     bordered = false, hover = true, striped = false, condensed = true, responsive = true,
   ) {
     this.tableProps = { bordered, hover, striped, condensed, responsive };
-    this.renderTemplateContainer = this.renderTemplateContainer || this.renderDefaultTemplateContainer;
+    this.renderCellContainer = this.renderCellContainer || this.renderDefaultCellContainer;
     this.renderRowContainer = this.renderRowContainer || this.renderDefaultRowContainer;
     this.renderHeaderContainer = this.renderHeaderContainer || this.renderDefaultHeaderContainer;
   }
@@ -146,7 +158,7 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
     }
   }
 
-  protected renderDefaultTemplateContainer(content: any, item: any, index: number, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) {
+  protected renderDefaultCellContainer(content: any, item: any, index: number, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) {
     content = (
       <td className={ classNames('DataGrid-cell', column.className) } key={ columnIndex }>
         { content }
@@ -334,7 +346,13 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
   protected renderCell(item: TData, index: number, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) {
     const cellContent = column.renderCell(item, index, column, columnIndex, columns, viewModel, view);
 
-    return this.renderTemplateContainer(cellContent, item, index, column, columnIndex, columns, viewModel, view);
+    const cellContainer = renderConditional(
+      column.renderCellContainer == null,
+      () => (<div className='DataGrid-cellContainer'>{ cellContent }</div>),
+      () => column.renderCellContainer(cellContent, item, index, column, columnIndex, columns, viewModel, view),
+    );
+
+    return this.renderCellContainer(cellContainer, item, index, column, columnIndex, columns, viewModel, view);
   }
 
   public initialize(viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) {

@@ -35,22 +35,13 @@ export class PagerViewModel extends BaseRoutableViewModel<PagerRoutingState> {
       .toProperty(0);
 
     this.selectedPage = wx
-      .whenAny(this.selectPage.results, this.pageCount, (sp, pc) => ({ sp, pc }))
-      .map(x => (x.sp != null && x.pc != null) ? x.sp : 0)
+      .whenAny(this.selectPage.results, x => x)
       .toProperty(0);
 
     this.offset = wx
       .whenAny(this.selectedPage, this.limit, (sp, l) => ({ sp, l }))
       .map(x => (x.sp != null && x.sp > 0) ? (x.sp - 1) * (x.l || 0) : 0)
       .toProperty();
-
-    this.subscribe(
-      wx
-        .whenAny(this.pageCount, this.selectedPage, (pc, sp) => ({ pc, sp }))
-        .filter(x => (x.pc > 0 && x.sp === 0) || (x.pc === 0 && x.sp > 0))
-        .map(x => x.pc > 0 ? 1 : 0)
-        .invokeCommand(this.selectPage),
-    );
 
     this.subscribe(
       wx
@@ -62,7 +53,7 @@ export class PagerViewModel extends BaseRoutableViewModel<PagerRoutingState> {
 
   saveRoutingState(state: PagerRoutingState) {
     if ((this.limit() || 0) > 0) {
-      state.limit = this.limit() || 0;
+      state.limit = this.limit();
     }
 
     if ((this.selectedPage() || 1) > 1) {
@@ -71,7 +62,17 @@ export class PagerViewModel extends BaseRoutableViewModel<PagerRoutingState> {
   }
 
   loadRoutingState(state: PagerRoutingState) {
-    this.limit(state.limit || 0);
-    this.selectedPage(state.page || 1);
+    const prevState = this.routingState() || <PagerRoutingState>{};
+
+    if (state.limit == null && prevState.limit != null) {
+      state.limit = 0;
+    }
+
+    if (state.page == null && prevState.limit != null) {
+      state.page = 1;
+    }
+
+    this.limit(state.limit || this.limit() || 0);
+    this.selectPage.execute(state.page || this.selectedPage() || 1);
   }
 }
