@@ -84,6 +84,6 @@ export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
   }
 
   loadRoutingState(state: SearchRoutingState) {
-    this.filter(state.filter || '');
+    this.filter(state.filter || this.filter() || '');
   }
 }
