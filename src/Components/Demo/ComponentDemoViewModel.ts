@@ -132,6 +132,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   }
 
   loadRoutingState(state: ComponentDemoRoutingState) {
+    const prevState = this.routingState() || <ComponentDemoRoutingState>{};
     const componentRoute = this.getComponentRoute(state);
 
     if (String.isNullOrEmpty(componentRoute) === true) {
@@ -146,8 +147,12 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
       }
     }
     else {
+      if (state.columns == null && prevState.columns != null) {
+        state.columns = 12;
+      }
+
       this.componentRoute(componentRoute);
-      this.columns(state.columns == null ? 12 : state.columns);
+      this.columns(state.columns || this.columns() || 12);
     }
   }
 
