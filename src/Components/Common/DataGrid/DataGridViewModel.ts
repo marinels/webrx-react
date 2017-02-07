@@ -187,6 +187,13 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
         }))
         .invokeCommand(x => this.sort),
     );
+
+    this.subscribe(
+      wx
+        .whenAny(this.sortField, this.sortDirection, (f, d) => ({ f, d }))
+        .filter(x => x.f != null && x.d != null)
+        .invokeCommand(this.routingStateChanged),
+    );
   }
 
   // create the default projection request structure
