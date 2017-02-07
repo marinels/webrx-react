@@ -81,7 +81,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
         this.routingState.changed.map(x => x.sortBy),
         sortChanged.map(x => x.field),
       )
-      .map(x => x || null)
+      .map(x => x || this.sortField() || null)
       .toProperty();
 
     this.sortDirection = Observable
@@ -89,7 +89,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
         this.routingState.changed.map(x => x.sortDir),
         sortChanged.map(x => x.direction),
       )
-      .map(x => x || null)
+      .map(x => x || this.sortDirection() || null)
       .toProperty();
 
     this.projectionRequests = wx
@@ -249,6 +249,12 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
   }
 
   loadRoutingState(state: DataGridRoutingState) {
+    const prevState = this.routingState() || <DataGridRoutingState>{};
+
+    if (state.sortDir == null && prevState.sortDir != null) {
+      state.sortDir = SortDirection.Ascending;
+    }
+
     this.search.setRoutingState(state.search);
     this.pager.setRoutingState(state.pager);
   }
