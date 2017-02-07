@@ -62,7 +62,7 @@ export class PagerViewModel extends BaseRoutableViewModel<PagerRoutingState> {
 
   saveRoutingState(state: PagerRoutingState) {
     if ((this.limit() || 0) > 0) {
-      state.limit = this.limit() || 0;
+      state.limit = this.limit();
     }
 
     if ((this.selectedPage() || 1) > 1) {
