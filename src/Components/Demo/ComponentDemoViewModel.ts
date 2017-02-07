@@ -3,7 +3,7 @@ import * as wx from 'webrx';
 
 import { Route } from '../../Routing/RouteManager';
 import { HeaderCommandAction, HeaderMenu } from '../React/Actions';
-import { BaseRoutableViewModel } from '../React/BaseRoutableViewModel';
+import { BaseRoutableViewModel, isRoutableViewModel } from '../React/BaseRoutableViewModel';
 import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
 import { Current as App } from '../Common/App/AppViewModel';
 import { RouteMap, ViewModelActivator } from './RoutingMap';
@@ -18,6 +18,7 @@ export interface ComponentDemoRoutingState {
   route: Route;
   componentRoute: string;
   columns: number;
+  component: any;
 }
 
 export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoRoutingState> {
@@ -76,45 +77,66 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   }
 
   private getViewModel(state: ComponentDemoRoutingState) {
+    let component: any = null;
     let activator: ViewModelActivator = null;
 
+    // extract the component route from the routing state
     const componentRoute = this.getComponentRoute(state);
 
+    // if our component route is null then we can ignore activation
+    // let the routing system perform some automated navigation to a new route
     if (componentRoute != null) {
-      this.logger.debug(`Loading View Model for "${ componentRoute }"...`);
+      if (componentRoute === this.componentRoute() && this.component() != null) {
+        this.logger.debug(`Using Previously Activated Component for "${ componentRoute }"...`);
 
-      activator = RouteMap.viewModelMap[componentRoute];
+        // if our component route has not changed then we can just use our previously activated component
+        component = this.component();
+      }
+      else {
+        this.logger.debug(`Loading Component for "${ componentRoute }"...`);
 
-      if (activator == null) {
-        let result = Object.keys(RouteMap.viewModelMap)
-          .filter(x => x != null && x.length > 0 && x[0] === '^')
-          .map(x => ({ path: x, regex: new RegExp(x, 'i') }))
-          .map(x => ({ path: x.path, match: x.regex.exec(componentRoute) }))
-          .filter(x => x.match != null)
-          .map(x => ({ path: x.path, match: x.match, activator: RouteMap.viewModelMap[x.path] }))
-          .asEnumerable()
-          .firstOrDefault();
+        // try and load our component from the component map using a static route
+        activator = RouteMap.viewModelMap[componentRoute];
 
-        if (result != null) {
-          activator = result.activator;
+        // if no static route was found then we can attempt an expression route
+        if (activator == null) {
+          // project out the first expression route match (path, match, and activator)
+          let result = Object.keys(RouteMap.viewModelMap)
+            .filter(x => x != null && x.length > 0 && x[0] === '^')
+            .map(x => ({ path: x, regex: new RegExp(x, 'i') }))
+            .map(x => ({ path: x.path, match: x.regex.exec(componentRoute) }))
+            .filter(x => x.match != null)
+            .map(x => ({ path: x.path, match: x.match, activator: RouteMap.viewModelMap[x.path] }))
+            .asEnumerable()
+            .firstOrDefault();
 
-          // override the routed state's match with the demo's context
-          state.route.match = result.match;
+          if (result != null) {
+            // if we found an expression route match, assign our activator
+            activator = result.activator;
+
+            // and override the routed state's match with the demo's context
+            state.route.match = result.match;
+          }
+        }
+
+        // activate our component from the routing state
+        component = activator == null ? null : activator(state);
+
+        if (component != null) {
+          this.logger.debug(`Loaded Component "${ Object.getName(component) }"`, component);
         }
       }
     }
 
-    const viewModel: BaseRoutableViewModel<any> = activator == null ? null : activator(state);
-
-    if (viewModel != null) {
-      this.logger.debug(`Loaded View Model "${ Object.getName(viewModel) }"`, viewModel);
-
-      if (viewModel.setRoutingState != null) {
-        viewModel.setRoutingState(state);
-      }
+    // if our activated component is routable, then apply the current routing state
+    if (isRoutableViewModel(component)) {
+      this.setRoutingState(state);
     }
 
-    return viewModel;
+    // finally save our current component route
+    this.componentRoute(componentRoute);
+
+    return component;
   }
 
   routed() {
@@ -128,6 +150,12 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
 
     if (this.columns() !== 12) {
       state.columns = this.columns();
+    }
+
+    const component = this.component();
+
+    if (isRoutableViewModel(component)) {
+      state.component = component.getRoutingState('demo');
     }
   }
 
@@ -151,8 +179,13 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
         state.columns = 12;
       }
 
-      this.componentRoute(componentRoute);
       this.columns(state.columns || this.columns() || 12);
+
+      const component = this.component();
+
+      if (isRoutableViewModel(component)) {
+        component.setRoutingState(state.component);
+      }
     }
   }
 
