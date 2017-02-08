@@ -11,6 +11,7 @@ declare global {
     getEnumPropertyDescriptors<T>(type: any): EnumPropertyDescriptor<T>[];
     getEnumNames(type: any): string[];
     getEnumValues<T>(type: any): T[];
+    getPropName<T>(p: (x: T) => any): string;
   }
 }
 
@@ -168,6 +169,16 @@ function getEnumValues<T>(type: T) {
     .map(x => x.type);
 }
 
+/**
+ *  Get object property name: http://stackoverflow.com/questions/37048274/typescript-how-to-get-objects-property-name-from-its-value
+ * @param {p: (x: T) => any} function which returns any object property
+ * @returns {string} property name
+ */
+function getPropName<T>(p: (x: T) => any): string {
+  const propertyRegEx = /\.([^\.;]+);?\s*\}$/;
+  return propertyRegEx.exec(p.toString())[1];
+}
+
 Object.assign = fallback(Object.assign, assign);
 Object.rest = fallback(Object.rest, rest);
 Object.dispose = fallback(Object.dispose, dispose);
@@ -177,3 +188,4 @@ Object.fallbackAsync = fallback(Object.fallbackAsync, fallbackAsync);
 Object.getEnumPropertyDescriptors = fallback(Object.getEnumPropertyDescriptors, getEnumPropertyDescriptors);
 Object.getEnumNames = fallback(Object.getEnumNames, getEnumNames);
 Object.getEnumValues = fallback(Object.getEnumValues, getEnumValues);
+Object.getPropName = fallback(Object.getPropName, getPropName);
