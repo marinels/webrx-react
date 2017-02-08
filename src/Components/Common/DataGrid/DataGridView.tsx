@@ -77,6 +77,7 @@ export class NavDataGridColumn extends React.Component<NavDataGridColumnProps, a
         <NavButton { ...props } />
       );
     },
+    renderCellContainer: (x: any) => x,
   };
 }
 
