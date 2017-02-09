@@ -37,6 +37,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
 
   public search: SearchViewModel;
   public pager: PagerViewModel;
+  public defaultSortDirection: SortDirection;
 
   public projectionRequests: wx.IObservableReadOnlyProperty<TRequest>;
   public projectionResults: wx.IObservableReadOnlyProperty<TResult>;
@@ -66,6 +67,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
 
     this.search = new SearchViewModel(undefined, undefined, this.isRoutingEnabled);
     this.pager = new PagerViewModel(pagerLimit, this.isRoutingEnabled);
+    this.defaultSortDirection = SortDirection.Ascending;
 
     this.hasProjectionError = wx.property(false);
 
@@ -183,7 +185,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
           field: x || this.sortField(),
           direction: (x === this.sortField()) ?
             (this.sortDirection() === SortDirection.Descending ? SortDirection.Ascending : SortDirection.Descending) :
-            SortDirection.Ascending,
+            this.defaultSortDirection,
         }))
         .invokeCommand(x => this.sort),
     );
