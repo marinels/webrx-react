@@ -36,7 +36,7 @@ export class PagerViewModel extends BaseRoutableViewModel<PagerRoutingState> {
 
     this.selectedPage = wx
       .whenAny(this.selectPage.results, x => x)
-      .toProperty(0);
+      .toProperty(1);
 
     this.offset = wx
       .whenAny(this.selectedPage, this.limit, (sp, l) => ({ sp, l }))
