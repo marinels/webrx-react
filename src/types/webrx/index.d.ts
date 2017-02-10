@@ -436,6 +436,11 @@ export class IID {
 export function isProperty(target: any): boolean;
 
 /**
+ * if the param is an observable return it, otherwise create an observable from the property
+ */
+export function getObservable<T>(observableOrProperty: ObservableOrProperty<T>): Observable<T>;
+
+/**
 /* Wraps an action in try/finally block and disposes the resource after the action has completed even if it throws an exception
 /* (mimics C# using statement)
 /* @param {IDisposable} disp The resource to dispose after action completes
