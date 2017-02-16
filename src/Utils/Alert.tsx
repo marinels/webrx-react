@@ -46,6 +46,9 @@ export class Alert {
         if (message == null && childError != null) {
           message = childError.message || childError.Message;
         }
+        if (message == null && String.isString(anyError)) {
+          message = anyError;
+        }
 
         let messageDetail = anyError.messageDetail || anyError.MessageDetail;
         if (messageDetail == null && childError != null) {
