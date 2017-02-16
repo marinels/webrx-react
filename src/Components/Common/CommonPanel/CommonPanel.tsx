@@ -12,7 +12,7 @@ type ContentSection = 'header' | 'body' | 'footer';
 type ContentType = 'teaser' | 'summary';
 
 export interface CommonPanelProps extends PanelProps {
-  headerContent: Content;
+  headerContent?: Content;
   headerActions?: CommandButtonProps[];
   teaserContent?: Content;
   summaryContent?: Content;
