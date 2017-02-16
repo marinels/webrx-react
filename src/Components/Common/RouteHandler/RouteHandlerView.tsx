@@ -4,6 +4,7 @@ import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as classNames from 'classnames';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';
+import { isViewModel } from '../../React/BaseViewModel';
 import { isRoutableViewModel } from '../../React/BaseRoutableViewModel';
 import { RouteHandlerViewModel, SplashKey } from './RouteHandlerViewModel';
 import { ViewMapper } from '../../../Routing/ViewMap';
@@ -42,6 +43,11 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
 
       if (isRoutableViewModel(component)) {
         return component.getRoutingKey();
+      }
+      else if (isViewModel(component)) {
+        this.logger.warn('Routing to Non-Routable View Model', component);
+
+        return component.getDisplayName();
       }
       else if (typeof(component) === 'string') {
         return component;
