@@ -361,6 +361,7 @@ const viewMap: ViewActivatorMap = {
         >
           <DataGridColumn fieldName='name' header='Name' sortable className='col-md-8' />
           <DataGridColumn fieldName='requiredBy' header='Required By' sortable className='col-md-4' />
+          <NavDataGridColumn buttonProps={ (x: SampleData) => ({ href: `#/name/${ x.name }` }) } />
         </ItemListPanelView>
       );
     }
