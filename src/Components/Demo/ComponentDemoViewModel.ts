@@ -108,7 +108,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   }
 
   private getComponentRoute(state: ComponentDemoRoutingState) {
-    return state == null ? null : (state.route.match[2] || this.componentRoute());
+    return state == null ? null : state.route.match[2];
   }
 
   private getViewModel(state: ComponentDemoRoutingState) {
