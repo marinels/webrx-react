@@ -27,7 +27,7 @@ export class AlertView extends BaseView<AlertProps, AlertViewModel> {
   }
 
   private renderAlertContent() {
-    return this.renderConditional(typeof this.state.content === 'string', () => (
+    return this.renderConditional(String.isString(this.state.content), () => (
       <div className='Alert-content'>
         <div className='Alert-text' dangerouslySetInnerHTML={ { __html: this.state.content } }>
         </div>

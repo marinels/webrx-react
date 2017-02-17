@@ -49,7 +49,7 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
 
         return component.getDisplayName();
       }
-      else if (typeof(component) === 'string') {
+      else if (String.isString(component)) {
         return component;
       }
       else {

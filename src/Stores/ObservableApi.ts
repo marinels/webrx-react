@@ -114,7 +114,7 @@ export class ObservableApi {
 
       let responseObject: any;
 
-      if (typeof response === 'string') {
+      if (String.isString(response)) {
         try {
           // try and parse the response as JSON
           responseObject = JSON.parse(response);

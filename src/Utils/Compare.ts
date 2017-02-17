@@ -30,9 +30,9 @@ export class ValueComparer<T> implements Comparer<T> {
       // simple subtraction
       return (<number><any>a) - (<number><any>b);
     }
-    else if (typeof a === 'string' && typeof b === 'string') {
+    else if (String.isString(a) && String.isString(b)) {
       // native string comparison
-      return (<string><any>a).localeCompare(<string><any>b);
+      return a.localeCompare(b);
     }
     else {
       // fallback on equality

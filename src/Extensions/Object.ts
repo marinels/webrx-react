@@ -89,7 +89,7 @@ interface NamedObject {
 
 function getName(source: NamedObject, undefinedValue = 'undefined', isStatic = false): string {
   if (source != null) {
-    if (typeof source === 'string') {
+    if (String.isString(source)) {
       return source;
     }
     else if (String.isNullOrEmpty(source.displayName) === false) {
