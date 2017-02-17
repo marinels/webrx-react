@@ -17,6 +17,7 @@ export interface HashManager {
   updateHash: (hash: string, state: any, title: string, replace: boolean) => void;
 }
 
+// this is a very basic hash manager, it does not support history replacement
 export const windowLocationHashManager = <HashManager>{
   hashChanged: Observable
     .fromEvent<HashChangeEvent>(window, 'hashchange')
@@ -26,6 +27,9 @@ export const windowLocationHashManager = <HashManager>{
   },
 };
 
+// this is a more comprehensive hash manager that does support history replacement
+// however, this hash manager requires at least IE11
+// if support is not detected, then the window location hash manager is used instead
 class HistoryStateHashManager implements HashManager {
   private changeHash: wx.ICommand<string>;
 
@@ -54,10 +58,15 @@ class HistoryStateHashManager implements HashManager {
 
   public get hashChanged() {
     return Observable
+      // we need to merge both hash change requests (from updateHash)
+      // as well as manual URI hash changes from the window location hash manager
       .merge(
         this.changeHash.results,
         windowLocationHashManager.hashChanged,
       )
+      // we must use the async scheduler to prevent recursive re-entrancy calls
+      // re-entrancy can occur on redirects, we want each new route to be handled
+      // as its own routing state change in sequence, which the async scheduler permits.
       .observeOn(Scheduler.async);
   }
 }
