@@ -1,4 +1,4 @@
-import { Observable } from  'rx';
+import { Observable, Subject, Scheduler } from  'rx';
 import * as wx from 'webrx';
 
 import { Logging } from '../Utils';
@@ -11,21 +11,66 @@ export interface Route {
   match: RegExpMatchArray;
 }
 
+export interface HashManager {
+  readonly hashChanged: Observable<string>;
+  // hash will contain the # prefix
+  updateHash: (hash: string, state: any, title: string, replace: boolean) => void;
+}
+
+export const windowLocationHashManager = <HashManager>{
+  hashChanged: Observable
+    .fromEvent<HashChangeEvent>(window, 'hashchange')
+    .map(x => window.location.hash),
+  updateHash: (hash) => {
+    window.location.hash = hash;
+  },
+};
+
+class HistoryStateHashManager implements HashManager {
+  private changeHash: wx.ICommand<string>;
+
+  constructor() {
+    this.changeHash = wx.asyncCommand((hash: string) => {
+      return Observable.of(hash);
+    });
+  }
+
+  updateHash(hash: string, state: any, title: string, replace: boolean) {
+    if (replace === true) {
+      history.replaceState(state, title, hash);
+    }
+    else {
+      history.pushState(state, title, hash);
+    }
+
+    this.changeHash.execute(hash);
+  }
+
+  public get hashChanged() {
+    return Observable
+      .merge(
+        this.changeHash.results,
+        windowLocationHashManager.hashChanged,
+      )
+      .observeOn(Scheduler.async);
+  }
+}
+
+export const historyStateHashManager = new HistoryStateHashManager();
+
 export class RouteManager {
   public static displayName = 'RouteManager';
 
   private logger = Logging.getLogger(RouteManager.displayName);
   public currentRoute: wx.IObservableReadOnlyProperty<Route>;
 
-  constructor(hashChanged?: Observable<string>, public hashCodec = new HashCodec()) {
-    if (hashChanged == null) {
-      hashChanged = Observable
-        .fromEvent<HashChangeEvent>(window, 'hashchange')
-        .map(x => window.location.hash)
-        .startWith(window.location.hash);
+  constructor(private hashManager?: HashManager, public hashCodec = new HashCodec()) {
+    if (this.hashManager == null) {
+      this.hashManager = historyStateHashManager;
     }
 
-    this.currentRoute = hashChanged
+    this.currentRoute = this.hashManager.hashChanged
+      .startWith(window.location.hash)
       .debounce(100)
       .map(x => {
         let route = hashCodec.decode(x, (path, params, state) => <Route>{path, params, state});
@@ -43,7 +88,7 @@ export class RouteManager {
         // i.e., if no route is supplied (no hash) then a default route of #/ is
         //       coerced from the decode function.
         if (hash !== x) {
-          this.navTo(route.path, route.state);
+          this.navTo(route.path, route.state, true);
           // set the current route to null to ignore further processing
           route = null;
         }
@@ -107,7 +152,7 @@ export class RouteManager {
     return path;
   }
 
-  public navTo(path: string, state?: any, uriEncode = false) {
+  public navTo(path: string, state?: any, replace = false, uriEncode = false) {
     path = this.getPath(state) || path;
 
     if (String.isNullOrEmpty(path) === false) {
@@ -119,13 +164,13 @@ export class RouteManager {
 
       let hash = this.hashCodec.encode(path, state, uriEncode);
 
-      this.logger.debug(`Routing to Hash: ${hash}`);
+      this.logger.debug(`Routing to Hash: ${ hash }`, state);
 
       if (state != null) {
         this.logger.debug(JSON.stringify(state, null, 2));
       }
 
-      window.location.hash = hash;
+      this.hashManager.updateHash(hash, state, undefined, replace);
     }
   }
 }

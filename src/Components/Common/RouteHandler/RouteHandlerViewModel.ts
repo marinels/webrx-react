@@ -282,7 +282,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
       this.logger.debug(`Redirecting from '${ activator.route.path }' to '${ activator.path }'`, activator);
 
       // inform the routing manager of the redirection
-      Manager.navTo(activator.path);
+      Manager.navTo(activator.path, undefined, true);
 
       // return null to stop processing this route
       return null;

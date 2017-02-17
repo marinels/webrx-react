@@ -199,8 +199,8 @@ export abstract class BaseViewModel implements IDisposable {
     return subscription;
   }
 
-  protected navTo(path: string, state?: any, uriEncode = false) {
-    Manager.navTo(path, state, uriEncode);
+  protected navTo(path: string, state?: any, replace = false, uriEncode = false) {
+    Manager.navTo(path, state, replace, uriEncode);
   }
 
   public bindObservable<T>(observable: Observable<T>, subscriptionSelector: (x: Observable<T>) => IDisposable) {

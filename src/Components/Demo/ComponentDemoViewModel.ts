@@ -209,7 +209,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
 
       if (String.isNullOrEmpty(uri) === false) {
         // providing there exists at least one component route, navigate to it
-        this.navTo(uri);
+        this.navTo(uri, undefined, true);
       }
     }
     else {
