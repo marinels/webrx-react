@@ -72,6 +72,7 @@ export class RouteManager {
     this.currentRoute = this.hashManager.hashChanged
       .startWith(window.location.hash)
       .debounce(100)
+      .distinctUntilChanged()
       .map(x => {
         let route = hashCodec.decode(x, (path, params, state) => <Route>{path, params, state});
 
