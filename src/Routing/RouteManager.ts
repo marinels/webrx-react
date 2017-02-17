@@ -36,14 +36,20 @@ class HistoryStateHashManager implements HashManager {
   }
 
   updateHash(hash: string, state: any, title: string, replace: boolean) {
-    if (replace === true) {
-      history.replaceState(state, title, hash);
+    if (history != null && history.replaceState instanceof Function && history.pushState instanceof Function) {
+      if (replace === true) {
+        history.replaceState(state, title, hash);
+      }
+      else {
+        history.pushState(state, title, hash);
+      }
+
+      this.changeHash.execute(hash);
     }
     else {
-      history.pushState(state, title, hash);
+      // history API not supported, fallback onto window location hash manager
+      windowLocationHashManager.updateHash(hash, state, title, replace);
     }
-
-    this.changeHash.execute(hash);
   }
 
   public get hashChanged() {
