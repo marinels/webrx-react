@@ -200,6 +200,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     const componentRoute = this.getComponentRoute(state);
 
     if (String.isNullOrEmpty(componentRoute) === true) {
+      // if we have no component route then choose the first one
       const uri = RouteMap.menus
         .asEnumerable()
         .selectMany(x => x.items.asEnumerable().map(y => y.uri))
@@ -207,6 +208,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
         .firstOrDefault();
 
       if (String.isNullOrEmpty(uri) === false) {
+        // providing there exists at least one component route, navigate to it
         this.navTo(uri);
       }
     }
