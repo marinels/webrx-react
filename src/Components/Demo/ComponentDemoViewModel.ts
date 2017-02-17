@@ -11,8 +11,9 @@ import { RouteMap as AppRouteMap } from '../../Routing/RoutingMap';
 
 // inject the demo infrastructure into the app routing and view maps
 AppRouteMap['/'] = { path: '/demo' };
+AppRouteMap['/demo'] = { path: '/demo/' };
 // setup the demo route path pattern
-AppRouteMap['^/demo(/(.*))?'] = { path: '/demo', creator: () => new ComponentDemoViewModel() };
+AppRouteMap['^/demo/(.*)?'] = { path: '/demo', creator: () => new ComponentDemoViewModel() };
 
 export interface ComponentDemoRoutingState {
   route: Route;
@@ -108,7 +109,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   }
 
   private getComponentRoute(state: ComponentDemoRoutingState) {
-    return state == null ? null : state.route.match[2];
+    return state == null ? null : state.route.match[1];
   }
 
   private getViewModel(state: ComponentDemoRoutingState) {
