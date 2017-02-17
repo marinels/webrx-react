@@ -23,6 +23,11 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
   protected routingState = wx.property<TRoutingState>();
 
   public routingStateChanged = wx.command();
+  protected updateDocumentTitle = wx.asyncCommand((title: any) => {
+    return Observable.of<string>(title.toString());
+  });
+
+  public documentTitle = this.updateDocumentTitle.results.toProperty();
 
   constructor(public isRoutingEnabled = false, routingStateRateLimit = 25) {
     super();
@@ -122,16 +127,6 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
   // These are overridable dynamic routing content functions
   // -------------------------------------------------------
   public getRoutingKey() {
-    return Object.getName(this);
-  }
-
-  public updateDocumentTitle() {
-    document.title = this.getTitle();
-  }
-
-  public getTitle() {
-    this.logger.warn(`${Object.getName(this)} does not provide a custom routed browser title`);
-
     return Object.getName(this);
   }
 

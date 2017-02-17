@@ -70,6 +70,41 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
         }
       }),
     );
+
+    // set a default title
+    this.updateDocumentTitle.execute('Loading Demos...');
+
+    // this is very similar to what the route handler does for title updates
+    // we are essentially projecting the demo title and passing it up the chain
+    this.subscribe(wx
+      .whenAny(this.component, x => x)
+      .debounce(100)
+      .subscribe(component => {
+        if (isRoutableViewModel(component)) {
+          this.subscribe(wx
+            .whenAny(component.documentTitle, x => String.isNullOrEmpty(x) ? Object.getName(component) : x)
+            .debounce(100)
+            .map(x => `Demo: ${ x }`)
+            .invokeCommand(this.updateDocumentTitle),
+          );
+        }
+        else {
+          let title: string;
+
+          if (component == null) {
+            title = 'No Routed Component';
+          }
+          else if (String.isString(component)) {
+            title = component;
+          }
+          else {
+            title = Object.getName(component);
+          }
+
+          this.updateDocumentTitle.execute(`Demo: ${ title }`);
+        }
+      }),
+    );
   }
 
   private getComponentRoute(state: ComponentDemoRoutingState) {
@@ -250,25 +285,5 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     return <HeaderCommandAction[]>[
       Object.assign<HeaderCommandAction>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-user`, commandParameter: 'User Menu Item' }),
     ];
-  }
-
-  getTitle() {
-    let title: string;
-    const component = this.component() as BaseRoutableViewModel<any>;
-
-    if (component == null) {
-      title = 'No Routed Component';
-    }
-    else if (typeof component === 'string') {
-      title = (<string>component).toString();
-    }
-    else if (component.getTitle instanceof Function) {
-      title = component.getTitle();
-    }
-    else {
-      title = Object.getName(component);
-    }
-
-    return `Demo: ${ title }`;
   }
 }

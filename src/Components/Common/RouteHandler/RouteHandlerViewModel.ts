@@ -159,11 +159,67 @@ export class RouteHandlerViewModel extends BaseViewModel {
       },
     );
 
+    // this handles document title changes for any routed component
+    this.subscribe(wx
+      // for every routed component
+      .whenAny(this.routedComponent, x => x)
+      // skip the initial null stream element
+      .skip(1)
+      // wait for routing to settle down
+      .debounce(100)
+      .subscribe(component => {
+        if (isRoutableViewModel(component)) {
+          // we have a routable component, so watch the documentTitle observable property
+          this.subscribe(wx
+            .whenAny(component.documentTitle, x => {
+              if (String.isNullOrEmpty(x)) {
+                // there isn't any title set (BAD) so warn and use a sane default
+                this.logger.warn(`${ Object.getName(component) } does not provide a custom routed browser title`);
+
+                return Object.getName(component);
+              }
+
+              return x;
+            })
+            // give rapid title changes a bit to settle down
+            .debounce(100)
+            .subscribe(x => {
+              this.updateDocumentTitle(component, x);
+            }),
+          );
+        }
+        else {
+          // we don't have a routable component
+          // so try and generate a reasonable static title
+          let title: string;
+
+          if (component == null) {
+            // this shouldn't happen in practice
+            title = 'No Routed Component';
+          }
+          else if (String.isString(component)) {
+            title = component;
+          }
+          else {
+            title = Object.getName(component);
+          }
+
+          this.updateDocumentTitle(component, title);
+        }
+      }),
+    );
+
     // connect the primary observable to allow the routing engine to start processing routes
     this.subscribe(
       loadComponentParams
         .connect(),
     );
+  }
+
+  private updateDocumentTitle(component: any, title: string) {
+    this.logger.debug(`Updating document title for component: ${ title }`, component);
+
+    document.title = title;
   }
 
   private getActivator(route: Route) {
