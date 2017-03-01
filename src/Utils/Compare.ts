@@ -26,17 +26,13 @@ export class ValueComparer<T> implements Comparer<T> {
       // implements Comparable
       return (<Comparable<T>><any>a).compareTo(b);
     }
-    else if (typeof a === 'number' && typeof b === 'number') {
-      // simple subtraction
-      return (<number><any>a) - (<number><any>b);
-    }
     else if (String.isString(a) && String.isString(b)) {
       // native string comparison
       return a.localeCompare(b);
     }
     else {
-      // fallback on equality
-      return 0;
+      // fallback on a basic equality check
+      return a > b ? 1 : -1;
     }
   };
 
