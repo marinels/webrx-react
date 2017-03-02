@@ -121,8 +121,31 @@ const viewMap: ViewActivatorMap = {
         <InputGroup>
           <FormControl id='CommandButtonParamInput' type='text' placeholder='Enter Command Parameter Text Here...' />
           <InputGroup.Button>
-            <CommandButton bsSize='large' commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
-              command={wx.command(x => Alert.create(x, 'CommandButton Pressed'))}>Execute Command</CommandButton>
+            <CommandButton bsSize='large'
+              commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
+              command={wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
+              tooltip='Embedded Command Tooltips!!!'
+            >
+              Execute Command
+            </CommandButton>
+            <CommandButton bsSize='large'
+              commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
+              command={wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
+              tooltip={ (<Popover id='cmd-btn-custom-tt' placement='top'>Custom Tooltip</Popover>) }
+            >
+              Same Command
+            </CommandButton>
+            <CommandButton bsSize='large'
+              commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
+              command={wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
+              tooltip={(
+                <OverlayTrigger placement='bottom'
+                  overlay={ (<Tooltip id='cmd-btn-custom-tt'>Custom Overlay Tooltip</Tooltip>) }
+                />
+              )}
+            >
+              Same Again
+            </CommandButton>
           </InputGroup.Button>
         </InputGroup>
       </FormGroup>
