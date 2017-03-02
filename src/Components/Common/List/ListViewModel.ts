@@ -61,6 +61,11 @@ export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<T
       .toProperty();
   }
 
+  public get hasItems() {
+    return wx
+      .whenAny(this.items, x => (x || []).length > 0);
+  }
+
   public isItemSelected(item: TData) {
     return (this.isMultiSelectEnabled === true) ?
       (<SelectableItem><any>item).isSelected === true :
