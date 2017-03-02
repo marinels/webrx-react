@@ -167,9 +167,11 @@ export class ObservableApi {
   }
 
   public getRequest<T>(action: string, url: string, method = HttpRequestMethod.GET, params?: any, data?: any, options?: rxdom.AjaxSettings) {
-    this.logger.info(`API Request: ${ action } (${ url })`, params);
+    this.logger.debug(`getRequest: [${ method }] ${ action }`, { url, params, data, options });
 
     url = ObservableApi.getUriFromParams(url, params);
+
+    this.logger.info(`API Request: ${ action } (${ url })`, data);
 
     const body = data == null ? undefined : String.stringify(data, null, 2);
 
