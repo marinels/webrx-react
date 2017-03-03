@@ -11,7 +11,7 @@ import { RouteMap } from '../../../Routing/RoutingMap';
 // inject a default route
 RouteMap['/'] = { path: SplashKey };
 // setup default splash route
-RouteMap[`/${ SplashKey }`] = { creator: () => SplashKey };
+RouteMap[`^/${ SplashKey }$`] = { creator: () => SplashKey };
 
 export class AppViewModel extends BaseViewModel {
   public static displayName = 'AppViewModel';

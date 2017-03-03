@@ -10,8 +10,8 @@ import { RouteMap, ViewModelActivator } from './RoutingMap';
 import { RouteMap as AppRouteMap } from '../../Routing/RoutingMap';
 
 // inject the demo infrastructure into the app routing and view maps
-AppRouteMap['/'] = { path: '/demo' };
-AppRouteMap['/demo'] = { path: '/demo/' };
+AppRouteMap['/'] = { path: '/demo/' };
+AppRouteMap['^/demo$'] = { path: '/demo/' };
 // setup the demo route path pattern
 AppRouteMap['^/demo/(.*)?'] = { path: '/demo', creator: () => new ComponentDemoViewModel() };
 

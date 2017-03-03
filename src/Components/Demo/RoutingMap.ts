@@ -27,6 +27,11 @@ export class RoutingMap {
   }
 
   public addRoute(menuName: string, path: string, name: string, activator: ViewModelActivator, uri?: string, iconName?: string) {
+    if (/^\w+$/.test(path)) {
+      uri = uri || path;
+      path = `^${ path }$`;
+    }
+
     this.viewModelMap[path] = activator;
     const menu = this.menuMap[menuName] = this.menuMap[menuName] || <HeaderMenu>{
       id: menuName,
