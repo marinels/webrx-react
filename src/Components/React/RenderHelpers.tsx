@@ -44,6 +44,10 @@ export function renderConditional(
     (falseContent instanceof Function ? falseContent.apply(this) : falseContent);
 }
 
+export function renderNullable<T>(element: T, notNullContent: (x: T) => any, nullContent?: () => any, constraint?: (x: T) => boolean) {
+  return renderConditional(element != null && (constraint == null || constraint(element)), () => notNullContent(element), nullContent);
+}
+
 export function renderLoadable(
   isLoading: wx.IObservableProperty<boolean> | boolean,
   loadingComponent: any,
