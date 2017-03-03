@@ -9,30 +9,65 @@
     .drop-shadow(1px, 3px, 7px, 0, 0.2);
   }
 
-  &.collapsible > .panel-heading {
-    // disable the default padding (it is too high up the style chain)
+  .panel-heading,
+  .panel-footer,
+  &.collapsible .CommonPanel-header {
+    // disable the default header/footer padding (it is too high up the style chain)
+    // in collpase mode, we need to disable the adjusted padding in CommonPanel-header
     padding: 0;
-
-    // style the header so that it is fully clickable
-    & > .panel-title > a {
-      display: block;
-      padding: @panel-heading-padding;
-      cursor: pointer;
-    }
   }
 
+  // style the header so that it appears clickable without text decoration
+  &.collapsible > .panel-heading > .panel-title > a {
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  // boost the header content font size
   .CommonPanel-headerContent {
     font-size: 1.25em;
   }
 
-  .CommonPanel-headerContent,
-  .CommonPanel-footerContent {
-    float: left;
-    line-height: @button-height;
+  // the following styles deal with laying out the header and footer sections
+  // we want to layout the content on the left and the actions on the right
+  // both content and actions should center themselves vertically
+  // actions should consume as much horizontal as necessary, and never break onto a second line
+  // content should consume all available horizontal space
+
+  // set up the "container" block, a full with table display
+  // we also set up our standard padding at this level which means our collpasible headers are completely clickable
+  .CommonPanel-header,
+  .CommonPanel-footer,
+  &.collapsible > .panel-heading > .panel-title > a {
+    display: table;
+    width: 100%;
+    padding: @panel-heading-padding;
   }
 
+  // each of our sections is a table cell, and must be verically centered
+  // because we don't specify a width they will by default consume full width (weighted equally)
+  .CommonPanel-headerContent,
+  .CommonPanel-footerContent,
   .CommonPanel-headerActions,
   .CommonPanel-footerActions {
-    float: right;
+    display: table-cell;
+    vertical-align: middle;
+  }
+
+  // action sections are set to consume minimum width
+  // -- (they will consume at least 1px and stretch to their desired size)
+  // we text align right to push buttons to the right when there is no content section
+  // -- (since it is not always rendered)
+  // we want to enforce action sections be rendered on a single line, no breaks
+  // -- (this requires both nowrap to enforce, and disable floating buttons which do not respect nowrap)
+  .CommonPanel-headerActions,
+  .CommonPanel-footerActions {
+    width: 1px;
+    text-align: right;
+    white-space: nowrap;
+
+    & > .btn {
+      float: none;
+    }
   }
 }
