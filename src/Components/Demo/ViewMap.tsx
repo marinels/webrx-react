@@ -374,6 +374,52 @@ const viewMap: ViewActivatorMap = {
       </Table>
     </CommonPanel>
   ),
+  CommonPanelTest: () => (
+    <div>
+      <CommonPanel
+        headerContent='Basic'
+        footerContent='no buttons'
+      />
+      <CommonPanel style={({ marginTop: 5 })}
+        headerContent='No Footer'
+      />
+      <CommonPanel style={({ marginTop: 5 })}
+        footerContent='no header'
+      />
+      <CommonPanel style={({ marginTop: 5 })}
+        headerContent='Footer only button'
+        footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' } ]}
+      />
+      <CommonPanel style={({ marginTop: 5 })}
+        headerContent='Basic with buttons'
+        footerContent='header and footer and buttons'
+        headerActions={[ { id: 'header-action-1', children: 'Header Button 1' } ]}
+        footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' } ]}
+      />
+      <CommonPanel style={({ marginTop: 5 })} collapsible
+        headerContent='Collapsible with buttons'
+        footerContent='collapsible header and footer and buttons'
+        headerActions={[ { id: 'header-action-1', children: 'Header Button 1' } ]}
+        footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' } ]}
+      >
+        Content
+      </CommonPanel>
+      <CommonPanel style={({ marginTop: 5 })}
+        headerContent='Long text -- asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf'
+        footerContent='long header, long footer with buttons -- asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf'
+        headerActions={[ { id: 'header-action-1', children: 'Header Button 1' }, { id: 'header-action-2', children: 'Header Button 2' } ]}
+        footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' }, { id: 'footer-action-2', children: 'Footer Button 2' } ]}
+      />
+      <CommonPanel style={({ marginTop: 5 })} collapsible
+        headerContent='Collapsible Long text -- asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf'
+        footerContent='long collapsible header, long footer with buttons -- asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf'
+        headerActions={[ { id: 'header-action-1', children: 'Header Button 1' }, { id: 'header-action-2', children: 'Header Button 2' } ]}
+        footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' }, { id: 'footer-action-2', children: 'Footer Button 2' } ]}
+      >
+        Content
+      </CommonPanel>
+    </div>
+  ),
   ItemListPanelViewModel: (viewModel: ItemListPanelViewModel<any>, componentRoute: string) => {
     if (componentRoute === 'ItemListPanel') {
       return (
