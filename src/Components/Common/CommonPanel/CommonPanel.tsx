@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
-import { Panel, PanelProps, ButtonToolbar, Clearfix } from 'react-bootstrap';
+import { Panel, PanelProps, ButtonToolbar } from 'react-bootstrap';
 
 import { CommandButton, CommandButtonProps } from '../CommandButton/CommandButton';
 import { renderConditional } from '../../React/RenderHelpers';
@@ -86,7 +86,6 @@ export class CommonPanel extends React.Component<CommonPanelProps, any> {
       <div className={ `CommonPanel-${ section }` }>
         { this.renderContent(content, section) }
         { this.renderActions(actions, section) }
-        <Clearfix />
       </div>
     ));
   }

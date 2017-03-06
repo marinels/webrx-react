@@ -27,6 +27,11 @@ export class RoutingMap {
   }
 
   public addRoute(menuName: string, path: string, name: string, activator: ViewModelActivator, uri?: string, iconName?: string) {
+    if (/^\w+$/.test(path)) {
+      uri = uri || path;
+      path = `^${ path }$`;
+    }
+
     this.viewModelMap[path] = activator;
     const menu = this.menuMap[menuName] = this.menuMap[menuName] || <HeaderMenu>{
       id: menuName,
@@ -186,6 +191,8 @@ routeMap.addRoute('React', 'ContextMenu', 'Context Menu', (state: any) => 'Conte
 routeMap.addRoute('React', 'ProfilePicture', 'Profile Picture', (state: any) => 'ProfilePicture');
 routeMap.addRoute('React', 'CommonPanel', 'Common Panel', (state: any) => 'CommonPanel');
 routeMap.addRoute('React', 'CommonPanelList', 'Common Panel (List)', (state: any) => 'CommonPanelList');
+routeMap.addRoute('React', 'CommonPanelTable', 'Common Panel (Table)', (state: any) => 'CommonPanelTable');
+routeMap.addRoute('React', 'CommonPanelTest', 'Common Panel (Test)', (state: any) => 'CommonPanelTest');
 routeMap.addRoute('React', 'ObservableWrapper', 'Observable Wrapper', (state: any) => 'ObservableWrapper');
 
 routeMap.addRoute('WebRx-React', 'TimeSpanInput', 'Time Span Input', (state: any) => new Components.TimeSpanInputViewModel(true, Components.TimeSpanUnitType.Seconds));

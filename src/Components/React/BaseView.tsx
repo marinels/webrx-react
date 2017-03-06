@@ -5,7 +5,7 @@ import * as wx from 'webrx';
 import { Logging } from '../../Utils';
 import { BaseViewModel, LifecycleComponentViewModel } from './BaseViewModel';
 import { bindObservableToCommand, bindEventToProperty, bindEventToCommand } from './BindingHelpers';
-import { renderEnumerable, renderConditional, renderLoadable, renderSizedLoadable, renderGridLoadable } from './RenderHelpers';
+import { renderEnumerable, renderConditional, renderNullable, renderLoadable, renderSizedLoadable, renderGridLoadable } from './RenderHelpers';
 
 export interface ViewModelProps {
   viewModel: Readonly<BaseViewModel>;
@@ -24,6 +24,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
   // -----------------------------------------
   protected renderEnumerable = renderEnumerable;
   protected renderConditional = renderConditional;
+  protected renderNullable = renderNullable;
   protected renderLoadable = renderLoadable;
   protected renderSizedLoadable = renderSizedLoadable;
   protected renderGridLoadable = renderGridLoadable;

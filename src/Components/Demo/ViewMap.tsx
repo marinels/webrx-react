@@ -121,8 +121,31 @@ const viewMap: ViewActivatorMap = {
         <InputGroup>
           <FormControl id='CommandButtonParamInput' type='text' placeholder='Enter Command Parameter Text Here...' />
           <InputGroup.Button>
-            <CommandButton bsSize='large' commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
-              command={wx.command(x => Alert.create(x, 'CommandButton Pressed'))}>Execute Command</CommandButton>
+            <CommandButton bsSize='large'
+              commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
+              command={wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
+              tooltip='Embedded Command Tooltips!!!'
+            >
+              Execute Command
+            </CommandButton>
+            <CommandButton bsSize='large'
+              commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
+              command={wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
+              tooltip={ (<Popover id='cmd-btn-custom-tt' placement='top'>Custom Tooltip</Popover>) }
+            >
+              Same Command
+            </CommandButton>
+            <CommandButton bsSize='large'
+              commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
+              command={wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
+              tooltip={(
+                <OverlayTrigger placement='bottom'
+                  overlay={ (<Tooltip id='cmd-btn-custom-tt'>Custom Overlay Tooltip</Tooltip>) }
+                />
+              )}
+            >
+              Same Again
+            </CommandButton>
           </InputGroup.Button>
         </InputGroup>
       </FormGroup>
@@ -350,6 +373,52 @@ const viewMap: ViewActivatorMap = {
         <tbody><tr><td>Row Data!</td></tr></tbody>
       </Table>
     </CommonPanel>
+  ),
+  CommonPanelTest: () => (
+    <div>
+      <CommonPanel
+        headerContent='Basic'
+        footerContent='no buttons'
+      />
+      <CommonPanel style={({ marginTop: 5 })}
+        headerContent='No Footer'
+      />
+      <CommonPanel style={({ marginTop: 5 })}
+        footerContent='no header'
+      />
+      <CommonPanel style={({ marginTop: 5 })}
+        headerContent='Footer only button'
+        footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' } ]}
+      />
+      <CommonPanel style={({ marginTop: 5 })}
+        headerContent='Basic with buttons'
+        footerContent='header and footer and buttons'
+        headerActions={[ { id: 'header-action-1', children: 'Header Button 1' } ]}
+        footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' } ]}
+      />
+      <CommonPanel style={({ marginTop: 5 })} collapsible
+        headerContent='Collapsible with buttons'
+        footerContent='collapsible header and footer and buttons'
+        headerActions={[ { id: 'header-action-1', children: 'Header Button 1' } ]}
+        footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' } ]}
+      >
+        Content
+      </CommonPanel>
+      <CommonPanel style={({ marginTop: 5 })}
+        headerContent='Long text -- asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf'
+        footerContent='long header, long footer with buttons -- asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf'
+        headerActions={[ { id: 'header-action-1', children: 'Header Button 1' }, { id: 'header-action-2', children: 'Header Button 2' } ]}
+        footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' }, { id: 'footer-action-2', children: 'Footer Button 2' } ]}
+      />
+      <CommonPanel style={({ marginTop: 5 })} collapsible
+        headerContent='Collapsible Long text -- asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf'
+        footerContent='long collapsible header, long footer with buttons -- asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf'
+        headerActions={[ { id: 'header-action-1', children: 'Header Button 1' }, { id: 'header-action-2', children: 'Header Button 2' } ]}
+        footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' }, { id: 'footer-action-2', children: 'Footer Button 2' } ]}
+      >
+        Content
+      </CommonPanel>
+    </div>
   ),
   ItemListPanelViewModel: (viewModel: ItemListPanelViewModel<any>, componentRoute: string) => {
     if (componentRoute === 'ItemListPanel') {

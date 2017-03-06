@@ -39,7 +39,11 @@ export class DateTime {
    * NOTE: if no offset is provided, UTC is assumed
    */
   public static fromNumber(value: number, offset?: number | string) {
-    const result = value == null ? null : moment(value / TicksPerMillisecond - EpochOffset);
+    if (value == null) {
+      return null;
+    }
+
+    const result = moment(value / TicksPerMillisecond - EpochOffset);
 
     return offset == null ? result.local() : result.utcOffset(offset);
   }

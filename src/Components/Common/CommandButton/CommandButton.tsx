@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as classNames from 'classnames';
 import { IDisposable } from  'rx';
 import * as wx from 'webrx';
-import { Button, ButtonProps } from 'react-bootstrap';
+import { Button, ButtonProps, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import './CommandButton.less';
 
@@ -12,6 +12,7 @@ export interface CommandButtonProps extends ButtonProps {
   stopPropagation?: boolean;
   preventDefault?: boolean;
   plain?: boolean;
+  tooltip?: any;
 }
 
 export class CommandButton extends React.Component<CommandButtonProps, any> {
@@ -49,8 +50,8 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
 
   render() {
     const { className, children, rest, props } = this.restProps(x => {
-      const { onClick, command, commandParameter, stopPropagation, preventDefault, plain, disabled } = x;
-      return { onClick, command, commandParameter, stopPropagation, preventDefault, plain, disabled };
+      const { onClick, command, commandParameter, stopPropagation, preventDefault, plain, tooltip, disabled } = x;
+      return { onClick, command, commandParameter, stopPropagation, preventDefault, plain, tooltip, disabled };
     });
 
     const canExecute = (
@@ -63,11 +64,31 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
       )
     );
 
-    return (
+    const button = (
       <Button { ...rest } className={ classNames('CommandButton', className, { plain: props.plain }) } disabled={ canExecute !== true } onClick={ e => this.handleClick(e) }>
         { children }
       </Button>
     );
+
+    const tooltip = (props.tooltip != null && String.isString(props.tooltip)) ?
+      (<Tooltip id={ `${ rest.id }-tt` }>{ props.tooltip }</Tooltip>) :
+      props.tooltip;
+
+    if (React.isValidElement<any>(tooltip)) {
+      if (tooltip.type === OverlayTrigger) {
+        return React.cloneElement(tooltip as any, { key: button.key }, button);
+      }
+      else {
+        return (
+          <OverlayTrigger key={ button.key } placement={ tooltip.props.placement } overlay={ tooltip } >
+            { button }
+          </OverlayTrigger>
+        );
+      }
+    }
+    else {
+      return button;
+    }
   }
 
   private handleClick(e: React.MouseEvent<Button>) {

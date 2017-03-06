@@ -10,8 +10,8 @@ import { RouteMap, ViewModelActivator } from './RoutingMap';
 import { RouteMap as AppRouteMap } from '../../Routing/RoutingMap';
 
 // inject the demo infrastructure into the app routing and view maps
-AppRouteMap['/'] = { path: '/demo' };
-AppRouteMap['/demo'] = { path: '/demo/' };
+AppRouteMap['/'] = { path: '/demo/' };
+AppRouteMap['^/demo$'] = { path: '/demo/' };
 // setup the demo route path pattern
 AppRouteMap['^/demo/(.*)?'] = { path: '/demo', creator: () => new ComponentDemoViewModel() };
 
@@ -150,7 +150,8 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
             // if we found an expression route match, assign our activator
             activator = result.activator;
 
-            // and override the routed state's match with the demo's context
+            // and override the routed state's path and match with the demo's context
+            state.route.path = result.path;
             state.route.match = result.match;
           }
         }
@@ -166,7 +167,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
 
     // if our activated component is routable, then apply the current routing state
     if (isRoutableViewModel(component)) {
-      this.setRoutingState(state);
+      component.setRoutingState(state);
     }
 
     // finally save our current component route
@@ -214,14 +215,20 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     }
     else {
       if (state.columns == null && prevState.columns != null) {
+        // if colums were previously specified, but omitted in the current routing state
+        // then "reset" the columns to 12
         state.columns = 12;
       }
 
+      // update the columns from the state, fallback on existing columns, then two 12 as the default
       this.columns(state.columns || this.columns() || 12);
 
       const component = this.component();
 
-      if (isRoutableViewModel(component)) {
+      // if we have explicit component routing state available, then pass it on
+      // NOTE: we won't typically have any state here, unless the component is firing
+      //       routing state changed events
+      if (isRoutableViewModel(component) && state.component != null) {
         component.setRoutingState(state.component);
       }
     }
