@@ -92,7 +92,7 @@
     "style-loader": "^0.13.2",
     "stylelint": "^7.9.0",
     "stylelint-config-standard": "^16.0.0",
-    "stylelint-config-strict": "^5.0.0",
+    "stylelint-config-suitcss": "^10.0.0",
     "through": "^2.3.8",
     "tslint": "^4.5.1",
     "tslint-config-unional": "^0.6.0",
