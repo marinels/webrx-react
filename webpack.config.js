@@ -42,7 +42,7 @@ module.exports = Object.assign(clone(webpackCommon), {
     loaders: [
       { test: /\.css$/, loader: cssLoader },
       { test: /\.less$/, loader: lessLoader },
-      { test: /moment[\\\/]locale/, loader: 'file?name=locale/moment/[name].[ext]' },
+      { test: /moment[\\/]locale/, loader: 'file?name=locale/moment/[name].[ext]' },
       { test: /\.(woff|woff2|ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file?name=fonts/[name].[ext]' },
       { test: /\.tsx?$/, loader: 'ts' },
     ],

@@ -445,11 +445,11 @@ function webpackWatcherStream(webpackConfig, build) {
     // eslint-disable-next-line no-invalid-this
     const self = this;
 
-    const compiler = webpack(webpackConfig, (err, stats) => {
+    const { compiler } = webpack(webpackConfig, (err, stats) => {
       onWebpackComplete(config.builds.watch, err, stats, true);
 
       log('watching for changes');
-    }).compiler;
+    });
 
     compiler.plugin('compile', () => {
       log('Bundling...');
