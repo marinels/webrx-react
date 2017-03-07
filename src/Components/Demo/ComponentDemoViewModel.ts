@@ -221,7 +221,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
       }
 
       // update the columns from the state, fallback on existing columns, then two 12 as the default
-      this.columns(state.columns || this.columns() || 12);
+      this.columns(state.columns || (this.columns() == null ? 12 : this.columns()));
 
       const component = this.component();
 
