@@ -1,66 +1,32 @@
 @import (reference) '~bootstrap/less/mixins.less';
 
-// disable all stylelint rules here, the rules are not capable of parsing this file very well
-// stylelint-disable property-no-vendor-prefix,value-no-vendor-prefix
-// we want vendor prefixes here
-
-// stylelint-disable selector-list-comma-newline-after
-// stylelint/postcss-less is having trouble with the commas in param lists here
-
 .text-shadow (@string: 0 1px 3px rgba(0, 0, 0, 0.25)) {
   text-shadow: @string;
 }
 
 .box-shadow (@string) {
-  -moz-box-shadow: @string;
-  -webkit-box-shadow: @string;
   box-shadow: @string;
 }
 
 .drop-shadow (@x: 0, @y: 1px, @blur: 2px, @spread: 0, @alpha: 0.25) {
-  -moz-box-shadow: @x @y @blur @spread rgba(0, 0, 0, @alpha);
-  -webkit-box-shadow: @x @y @blur @spread rgba(0, 0, 0, @alpha);
   box-shadow: @x @y @blur @spread rgba(0, 0, 0, @alpha);
 }
 
 .inner-shadow (@x: 0, @y: 1px, @blur: 2px, @spread: 0, @alpha: 0.25) {
-  -moz-box-shadow: inset @x @y @blur @spread rgba(0, 0, 0, @alpha);
-  -webkit-box-shadow: inset @x @y @blur @spread rgba(0, 0, 0, @alpha);
   box-shadow: inset @x @y @blur @spread rgba(0, 0, 0, @alpha);
 }
 
 .box-sizing (@type: border-box) {
-  -moz-box-sizing: @type;
-  -webkit-box-sizing: @type;
   box-sizing: @type;
 }
 
 .border-radius (@radius: 5px) {
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
-
-  -moz-border-radius: @radius;
-  -webkit-border-radius: @radius;
   border-radius: @radius;
 }
 
-// stylelint-disable declaration-block-properties-order
-// stylelint is complaining here for some reason about order
 .border-radiuses (@topright: 0, @bottomright: 0, @bottomleft: 0, @topleft: 0) {
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
   background-clip: padding-box;
-
-  -moz-border-radius-topleft: @topleft;
-  -moz-border-radius-topright: @topright;
-  -moz-border-radius-bottomright: @bottomright;
-  -moz-border-radius-bottomleft: @bottomleft;
-
-  -webkit-border-top-left-radius: @topleft;
-  -webkit-border-top-right-radius: @topright;
-  -webkit-border-bottom-left-radius: @bottomleft;
-  -webkit-border-bottom-right-radius: @bottomright;
 
   border-top-left-radius: @topleft;
   border-top-right-radius: @topright;
@@ -69,98 +35,55 @@
 }
 
 .opacity (@opacity: 0.5) {
-  -moz-opacity: @opacity;
-  -webkit-opacity: @opacity;
   opacity: @opacity;
 }
-// stylelint-enable declaration-block-properties-order
 
-// stylelint-disable function-linear-gradient-no-nonstandard-direction,declaration-block-no-duplicate-properties
-// the browser specific styles don't match the standard syntax
 .gradient (@startColor: #eee, @endColor: white) {
-  background: -webkit-gradient(linear, left top, left bottom, from(@startColor), to(@endColor));
-  background: -webkit-linear-gradient(top, @startColor, @endColor);
-  background: -moz-linear-gradient(top, @startColor, @endColor);
-  background: -ms-linear-gradient(top, @startColor, @endColor);
-  background: -o-linear-gradient(top, @startColor, @endColor);
+  background: linear-gradient(to top, @startColor, @endColor);
   background-color: @startColor;
 }
 
 .horizontal-gradient (@startColor: #eee, @endColor: white) {
   background-color: @startColor;
-  background-image: -moz-linear-gradient(left, @startColor, @endColor);
-  background-image: -ms-linear-gradient(left, @startColor, @endColor);
-  background-image: -o-linear-gradient(left, @startColor, @endColor);
-  background-image: -webkit-gradient(linear, left top, right top, from(@startColor), to(@endColor));
-  background-image: -webkit-linear-gradient(left, @startColor, @endColor);
+  background-image: linear-gradient(to left, @startColor, @endColor);
 }
-// stylelint-enable function-linear-gradient-no-nonstandard-direction,declaration-block-no-duplicate-properties
 
 .animation (@name, @duration: 300ms, @delay: 0, @ease: ease) {
-  -moz-animation: @name @duration @delay @ease;
-  -ms-animation: @name @duration @delay @ease;
-  -webkit-animation: @name @duration @delay @ease;
+  animation: @name @duration @delay @ease;
 }
 
 .transition (@transition) {
-  -moz-transition: @transition;
-  -ms-transition: @transition;
-  -o-transition: @transition;
-  -webkit-transition: @transition;
+  transition: @transition;
 }
 
 .transform(@string) {
-  -moz-transform: @string;
-  -ms-transform: @string;
-  -o-transform: @string;
-  -webkit-transform: @string;
+  transform: @string;
 }
 
 .scale (@factor) {
-  -moz-transform: scale(@factor);
-  -ms-transform: scale(@factor);
-  -o-transform: scale(@factor);
-  -webkit-transform: scale(@factor);
+  transform: scale(@factor);
 }
 
 .rotate (@deg) {
-  -moz-transform: rotate(@deg);
-  -ms-transform: rotate(@deg);
-  -o-transform: rotate(@deg);
-  -webkit-transform: rotate(@deg);
+  transform: rotate(@deg);
 }
 
 .skew (@deg, @deg2) {
-  -moz-transform: skew(@deg, @deg2);
-  -ms-transform: skew(@deg, @deg2);
-  -o-transform: skew(@deg, @deg2);
-  -webkit-transform: skew(@deg, @deg2);
+  transform: skew(@deg, @deg2);
 }
 
 .translate (@x, @y:0) {
-  -moz-transform: translate(@x, @y);
-  -ms-transform: translate(@x, @y);
-  -o-transform: translate(@x, @y);
-  -webkit-transform: translate(@x, @y);
+  transform: translate(@x, @y);
 }
 
 .translate3d (@x, @y: 0, @z: 0) {
-  -moz-transform: translate3d(@x, @y, @z);
-  -ms-transform: translate3d(@x, @y, @z);
-  -o-transform: translate3d(@x, @y, @z);
-  -webkit-transform: translate3d(@x, @y, @z);
+  transform: translate3d(@x, @y, @z);
 }
 
 .perspective (@value: 1000) {
-  -moz-perspective: @value;
-  -ms-perspective: @value;
-  -webkit-perspective: @value;
   perspective: @value;
 }
 
 .transform-origin (@x:center, @y:center) {
-  -moz-transform-origin: @x @y;
-  -ms-transform-origin: @x @y;
-  -o-transform-origin: @x @y;
-  -webkit-transform-origin: @x @y;
+  transform-origin: @x @y;
 }

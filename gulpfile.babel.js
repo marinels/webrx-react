@@ -445,11 +445,11 @@ function webpackWatcherStream(webpackConfig, build) {
     // eslint-disable-next-line no-invalid-this
     const self = this;
 
-    const compiler = webpack(webpackConfig, (err, stats) => {
+    const { compiler } = webpack(webpackConfig, (err, stats) => {
       onWebpackComplete(config.builds.watch, err, stats, true);
 
       log('watching for changes');
-    }).compiler;
+    });
 
     compiler.plugin('compile', () => {
       log('Bundling...');
@@ -558,7 +558,7 @@ gulp.task('watch:webpack', [ 'clean:build', 'index:watch' ], (done) => {
     { test: /\.less$/, loader: 'style!css?sourceMap!less?sourceMap' },
     { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url?mimetype=application/font-woff' },
     { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url' },
-    { test: /\.tsx?$/, loaders: [ 'react-hot', 'ts' ] },
+    { test: /\.tsx?$/, loaders: [ 'react-hot', 'awesome-typescript' ] },
   ];
 
   const compiler = webpack(webpackConfig);
