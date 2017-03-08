@@ -19,7 +19,6 @@ export interface ComponentDemoRoutingState {
   route: Route;
   componentRoute: string;
   columns: number;
-  component: any;
 }
 
 export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoRoutingState> {
@@ -192,7 +191,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     const component = this.component();
 
     if (isRoutableViewModel(component)) {
-      state.component = component.getRoutingState('demo');
+      Object.assign(state, component.getRoutingState('demo'));
     }
   }
 
@@ -221,15 +220,12 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
       }
 
       // update the columns from the state, fallback on existing columns, then two 12 as the default
-      this.columns(state.columns || this.columns() || 12);
+      this.columns(state.columns || (this.columns() == null ? 12 : this.columns()));
 
       const component = this.component();
 
-      // if we have explicit component routing state available, then pass it on
-      // NOTE: we won't typically have any state here, unless the component is firing
-      //       routing state changed events
-      if (isRoutableViewModel(component) && state.component != null) {
-        component.setRoutingState(state.component);
+      if (isRoutableViewModel(component)) {
+        component.setRoutingState(state);
       }
     }
   }
