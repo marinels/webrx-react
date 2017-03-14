@@ -4,7 +4,7 @@ declare global {
   interface ObjectConstructor {
     assign<T>(target: any, ...sources: any[]): T;
     rest<TData, TProps>(data: TData, propsCreator?: (x: TData) => TProps, ...omits: string[]): { rest: TData, props: TProps };
-    dispose<T>(disposable: T | undefined, returnNull?: boolean): T;
+    dispose<T>(disposable: T | undefined, returnNull?: boolean): T | undefined;
     getName(source: any, undefinedValue?: string): string;
     fallback<T>(...values: T[]): T;
     fallbackAsync<T>(...actions: (T | (() => T))[]): T;
@@ -67,7 +67,7 @@ function rest<TData, TProps>(data: TData, propsCreator?: (x: TData) => TProps, .
   };
 }
 
-function dispose<T>(disposable: T | undefined, returnNull = true) {
+function dispose<T>(disposable: T | undefined, returnUndefined = true) {
   if (disposable) {
     let dispose = (disposable as any).dispose as Function;
 
@@ -76,7 +76,7 @@ function dispose<T>(disposable: T | undefined, returnNull = true) {
     }
   }
 
-  return returnNull ? null : disposable;
+  return returnUndefined ? undefined : disposable;
 }
 
 interface NamedObject {

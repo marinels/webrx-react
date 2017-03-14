@@ -30,6 +30,8 @@ export class DateTime {
    * Converts a .NET DateTime string to a moment value
    * i.e. "2016-03-09 4:32:32 PM" or "2016-03-09 4:32:32 PM -08:00" (default formats)
    */
+  static fromString(value: string, ...formats: string[]): moment.Moment;
+  static fromString(value: string | undefined, ...formats: string[]): moment.Moment | undefined;
   public static fromString(value: string | undefined, ...formats: string[]) {
     return String.isNullOrEmpty(value) ? undefined : moment.utc(value, formats.length === 0 ? DefaultDateTimeFormats : formats);
   }
@@ -38,6 +40,8 @@ export class DateTime {
    * Converts a .NET DateTime.Ticks value to a moment value (and optionally sets the UTC offset)
    * NOTE: if no offset is provided, UTC is assumed
    */
+  static fromNumber(value: number, offset?: number | string): moment.Moment;
+  static fromNumber(value: number | undefined, offset?: number | string): moment.Moment | undefined;
   public static fromNumber(value: number | undefined, offset?: number | string) {
     if (value == null) {
       return undefined;
@@ -51,6 +55,8 @@ export class DateTime {
   /**
    * Converts a moment value to a DateTime.Ticks
    */
+  static toNumber(value: moment.Moment): number;
+  static toNumber(value: moment.Moment | undefined): number | undefined;
   public static toNumber(value: moment.Moment | undefined) {
     return (value != null && value.isValid()) ? (value.valueOf() + EpochOffset) * TicksPerMillisecond : undefined;
   }
@@ -64,6 +70,8 @@ export class TimeSpan {
    * Converts a .NET TimeSpan string to a moment duration
    * i.e. "1.05:37:46.6660000" (1.23456789 days)
    */
+  static fromString(value: string): moment.Duration;
+  static fromString(value: string | undefined): moment.Duration | undefined;
   public static fromString(value: string | undefined) {
     return String.isNullOrEmpty(value) ? undefined : moment.duration(value);
   }
@@ -71,6 +79,8 @@ export class TimeSpan {
   /**
    * Converts a .NET TimeSpan.Ticks value to a moment duration
    */
+  static fromNumber(value: number): moment.Duration;
+  static fromNumber(value: number | undefined): moment.Duration | undefined;
   public static fromNumber(value: number | undefined) {
     return value == null ? undefined : moment.duration(value / TicksPerMillisecond);
   }
@@ -78,6 +88,8 @@ export class TimeSpan {
   /**
    * Converts a moment duration a .NET TimeSpan.Ticks amount
    */
+  static toNumber(value: moment.Duration): number;
+  static toNumber(value: moment.Duration | undefined): number | undefined;
   public static toNumber(value: moment.Duration | undefined) {
     return value == null ? undefined : value.asMilliseconds() * TicksPerMillisecond;
   }
