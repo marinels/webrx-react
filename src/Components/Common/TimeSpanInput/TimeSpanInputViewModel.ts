@@ -51,7 +51,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
   public units: TimeSpanUnit[];
   public text: wx.IObservableProperty<string>;
   public unit: wx.IObservableReadOnlyProperty<TimeSpanUnit>;
-  public duration: wx.IObservableReadOnlyProperty<moment.Duration>;
+  public duration: wx.IObservableReadOnlyProperty<moment.Duration | undefined>;
   public isValid: wx.IObservableReadOnlyProperty<boolean>;
   public hasError: wx.IObservableReadOnlyProperty<boolean>;
 
@@ -83,17 +83,17 @@ export class TimeSpanInputViewModel extends BaseViewModel {
       .whenAny(this.setUnit.results, x => x)
       .toProperty(TimeSpanUnits[(initialUnit < minUnit || initialUnit > maxUnit) ? minUnit : initialUnit]);
 
-    this.text = wx.property(this.getText(initialValue, precision));
+    this.text = wx.property(this.getText(initialValue, this.unit(), precision));
 
     this.duration = wx
       .whenAny(this.text, this.unit, (text, unit) => ({ text, unit }))
       .where(x => x.unit != null)
       .debounce(parseDelay)
-      .map(x => this.parse(x.text, x.unit))
+      .map(x => ({ duration: this.parse(x.text, x.unit), unit: x.unit }))
       .doOnNext(x => {
         // if we have a valid duration then check to see if we need to update the text
         if (x != null) {
-          const text = this.getText(x, precision);
+          const text = this.getText(x.duration, x.unit, precision);
 
           // if we have new text update and queue a re-rendering
           if (text.localeCompare(this.text()) !== 0) {
@@ -103,6 +103,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
           }
         }
       })
+      .map(x => x.duration)
       .toProperty();
 
     this.isValid = wx
@@ -114,11 +115,13 @@ export class TimeSpanInputViewModel extends BaseViewModel {
       .toProperty();
   }
 
-  private getText(duration: moment.Duration, precision: number) {
+  private getText(duration: moment.Duration | undefined, unit: TimeSpanUnit | undefined, precision: number) {
     let text = '';
 
-    if (duration != null) {
-      const value = duration.as(this.unit().key);
+    const key = unit == null ? undefined : unit.key;
+
+    if (duration != null && key != null) {
+      const value = duration.as(key);
       let unitName = this.unit().name;
 
       if (value === 1) {
@@ -142,7 +145,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
   }
 
   private parse(text: string, unit: TimeSpanUnit) {
-    let duration: moment.Duration = null;
+    let duration: moment.Duration | undefined;
 
     if (String.isNullOrEmpty(text) === false) {
       // we don't need the other placeholder matches
@@ -165,7 +168,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
 
           if (String.isNullOrEmpty(unitName) === false) {
             const parsedUnit = this.units
-              .filter(x => x.key.localeCompare(unitName) === 0)
+              .filter(x => x.key != null && x.key.localeCompare(unitName) === 0)
               .asEnumerable()
               .singleOrDefault();
 

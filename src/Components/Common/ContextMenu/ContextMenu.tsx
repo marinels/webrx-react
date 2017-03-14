@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as classNames from 'classnames';
 import { Overlay, Popover, MenuItemProps, PopoverProps } from 'react-bootstrap';
 
-import { renderConditional } from '../../React/RenderHelpers';
+import { renderConditional, renderNullable } from '../../React/RenderHelpers';
 
 import './ContextMenu.less';
 
@@ -16,8 +16,8 @@ export interface ContextMenuProps {
 
 export interface ContextMenuState {
   isVisible: boolean;
-  left: number;
-  top: number;
+  left?: number;
+  top?: number;
 }
 
 // this is necessary to prevent a js error due to the Overlay trying to position
@@ -71,8 +71,8 @@ export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuSt
   private hide() {
     this.setState({
       isVisible: false,
-      left: null,
-      top: null,
+      left: undefined,
+      top: undefined,
     });
   }
 
@@ -96,20 +96,22 @@ export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuSt
 
   private renderMenu(menuItems: React.ReactChild[]) {
     return renderConditional(this.state.isVisible === true, () => {
-      // if onSelect is provided we need to inject it into all the menu items
-      if (this.props.onSelect != null) {
-        menuItems = React.Children
-          .map(menuItems, (x: React.ReactElement<any>) => {
-            return React.cloneElement(x, { onSelect: () => this.props.onSelect(x.props) });
-          });
-      }
-
       return (
         <Popover id={ this.props.id } placement='right' title={ this.props.header }
           arrowOffsetTop={ ArrowOffset } positionLeft={ this.state.left } positionTop={ this.state.top }
         >
           <ul className='dropdown-menu'>
-            { menuItems }
+            {
+              // if onSelect is provided we need to inject it into all the menu items
+              renderNullable(
+                this.props.onSelect,
+                onSelect => React.Children
+                  .map(menuItems, (x: React.ReactElement<any>) =>
+                    React.cloneElement(x, { onSelect: () => onSelect(x.props) }),
+                  ),
+                () => menuItems,
+              )
+            }
           </ul>
         </Popover>
       );

@@ -56,9 +56,9 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
             </div>
           ), () => (
             <div>
-              { this.renderConditional(props.guide, () => (<BootstrapGuide />)) }
+              { this.renderConditional(props.guide!, () => (<BootstrapGuide />)) }
               {
-                this.renderConditional(props.alerts, () => (
+                this.renderConditional(props.alerts!, () => (
                   <div className='float-container'>
                     <Grid>
                       <AlertHostView viewModel={ this.state.alerts } />
@@ -66,9 +66,9 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
                   </div>
                 ))
               }
-              { this.renderConditional(props.header, () => (<PageHeaderView viewModel={ this.state.header } brand={ props.brand } />)) }
-              <RouteHandlerView viewModel={ this.state.routeHandler } viewMap={ props.viewMap } />
-              { this.renderConditional(props.footer, () => (<PageFooterView viewModel={ this.state.footer } copyright={ props.copyright } />)) }
+              { this.renderConditional(props.header!, () => (<PageHeaderView viewModel={ this.state.header } brand={ props.brand } />)) }
+              <RouteHandlerView viewModel={ this.state.routeHandler } viewMap={ props.viewMap! } />
+              { this.renderConditional(props.footer!, () => (<PageFooterView viewModel={ this.state.footer } copyright={ props.copyright } />)) }
             </div>
           ))
         }

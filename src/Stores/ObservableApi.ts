@@ -69,7 +69,7 @@ export class ObservableApi {
   }
 
   private logger = Logging.getLogger(ObservableApi.displayName);
-  protected sampleData: SampleData = null;
+  protected sampleData: SampleData;
 
   constructor(public baseUri?: string) {
     if (String.isNullOrEmpty(this.baseUri) && window != null && window.location != null) {
@@ -81,8 +81,8 @@ export class ObservableApi {
     const code = xhr.status > 0 ? xhr.status : null;
     const reason = String.isNullOrEmpty(xhr.statusText) ? null : xhr.statusText;
     const response = String.isNullOrEmpty(xhr.response) ? null : xhr.response;
-    let message: string;
-    let messageDetail: string;
+    let message: string | undefined;
+    let messageDetail: string | undefined;
 
     if (xhr.readyState === 4 && xhr.status === 0) {
       // this is the best heuristic we have for detecting a timeout

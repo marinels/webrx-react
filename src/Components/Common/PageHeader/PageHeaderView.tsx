@@ -161,9 +161,9 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
   }
 
   private renderSearch() {
-    return this.renderConditional(this.state.search != null, () => (
+    return this.renderNullable(this.state.search, x => (
       <Navbar.Form pullRight>
-        <SearchView viewModel={ this.state.search } />
+        <SearchView viewModel={ x } />
       </Navbar.Form>
     ));
   }
@@ -214,8 +214,8 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
                             onClick={ String.isNullOrEmpty(x.uri) === true ? this.bindEventToCommand(vm => vm.menuItemSelected, () => x) : this.bindEventToCommand(vm => vm.toggleSideBar, () => false) }
                           >
                             {
-                              this.renderConditional(String.isNullOrEmpty(x.iconName) == null, () => (
-                                <Icon name={ x.iconName } fixedWidth />
+                              this.renderConditional(String.isNullOrEmpty(x.iconName) === false, () => (
+                                <Icon name={ x.iconName! } fixedWidth />
                               ))
                             }
                             { x.header }

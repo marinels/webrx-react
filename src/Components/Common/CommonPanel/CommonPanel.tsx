@@ -74,14 +74,14 @@ export class CommonPanel extends React.Component<CommonPanelProps, any> {
         {
           actions
             // strip off the ref prop if it exists
-            .map(x => Object.rest(x, null, 'ref').rest as any)
+            .map(x => Object.rest(x, undefined, 'ref').rest as any)
             .map(x => (<CommandButton key={ x.id } { ...x } />))
         }
       </ButtonToolbar>
     ));
   }
 
-  private renderHeaderFooter(content: Content, actions: CommandButtonProps[], section: ContentSection) {
+  private renderHeaderFooter(content: Content, actions: CommandButtonProps[] = [], section: ContentSection) {
     return renderConditional(content != null || (actions != null && actions.length > 0), () => (
       <div className={ `CommonPanel-${ section }` }>
         { this.renderContent(content, section) }

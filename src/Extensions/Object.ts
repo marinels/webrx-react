@@ -4,7 +4,7 @@ declare global {
   interface ObjectConstructor {
     assign<T>(target: any, ...sources: any[]): T;
     rest<TData, TProps>(data: TData, propsCreator?: (x: TData) => TProps, ...omits: string[]): { rest: TData, props: TProps };
-    dispose<T>(disposable: T, returnNull?: boolean): T;
+    dispose<T>(disposable: T | undefined, returnNull?: boolean): T;
     getName(source: any, undefinedValue?: string): string;
     fallback<T>(...values: T[]): T;
     fallbackAsync<T>(...actions: (T | (() => T))[]): T;
@@ -67,7 +67,7 @@ function rest<TData, TProps>(data: TData, propsCreator?: (x: TData) => TProps, .
   };
 }
 
-function dispose<T>(disposable: T, returnNull = true) {
+function dispose<T>(disposable: T | undefined, returnNull = true) {
   if (disposable) {
     let dispose = (disposable as any).dispose as Function;
 
@@ -93,13 +93,13 @@ function getName(source: NamedObject, undefinedValue = 'undefined', isStatic = f
       return source;
     }
     else if (String.isNullOrEmpty(source.displayName) === false) {
-      return source.displayName;
+      return source.displayName!;
     }
     else if (String.isNullOrEmpty(source.typeName) === false) {
-      return source.typeName;
+      return source.typeName!;
     }
     else if (String.isNullOrEmpty(source.name) === false) {
-      return source.name;
+      return source.name!;
     }
     else if (source.constructor != null) {
       // this allows us to inspect the static properties of the source object
@@ -176,7 +176,7 @@ function getEnumValues<T>(type: T) {
  */
 function getPropName<T>(p: (x: T) => any): string {
   const propertyRegEx = /\.([^\.;]+);?\s*\}$/;
-  return propertyRegEx.exec(p.toString())[1];
+  return (propertyRegEx.exec(p.toString()) || [])[1];
 }
 
 Object.assign = fallback(Object.assign, assign);

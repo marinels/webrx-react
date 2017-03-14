@@ -3,12 +3,12 @@ import { Image } from 'react-bootstrap';
 import { Icon, IconSize } from 'react-fa';
 import * as classNames from 'classnames';
 
-import { renderConditional } from '../../React/RenderHelpers';
+import { renderNullable } from '../../React/RenderHelpers';
 
 import './ProfilePicture.less';
 
 export interface ProfilePictureProps extends React.HTMLAttributes<ProfilePicture> {
-  src: string;
+  src?: string;
   size?: number;
   responsive?: boolean;
   rounded?: boolean;
@@ -38,17 +38,19 @@ export class ProfilePicture extends React.Component<ProfilePictureProps, any> {
     let src = this.props.src || this.props.defaultSrc;
 
     // if we're using a src URI, ensure it contains a data URI prefix
-    if (String.isNullOrEmpty(src) === false && src.indexOf(dataUriPrefix) < 0) {
-      src = `${dataUriPrefix}${src}`;
+    if (!String.isNullOrEmpty(src) && src.indexOf(dataUriPrefix) < 0) {
+      src = `${ dataUriPrefix }${ src }`;
     }
 
     return src;
   }
 
   render() {
-    const src = this.getImageSource();
-
-    return renderConditional(src == null, () => this.renderIcon(), () => this.renderImage(src));
+    return renderNullable(
+      this.getImageSource(),
+      x => this.renderImage(x),
+      () => this.renderIcon(),
+    );
   }
 
   private renderIcon() {
@@ -70,7 +72,7 @@ export class ProfilePicture extends React.Component<ProfilePictureProps, any> {
 
     return (
       <div { ...rest } className={ classNames('ProfilePicture', 'ProfilePicture-icon', iconClassNames, className) } style={ style }>
-        <Icon name={ props.defaultIcon } size={ props.iconSize } />
+        <Icon name={ props.defaultIcon! } size={ props.iconSize } />
       </div>
     );
   }

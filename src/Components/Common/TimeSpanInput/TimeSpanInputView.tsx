@@ -61,7 +61,7 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInpu
       return { bsClass, bsSize, controlId, validationState };
     });
 
-    props.validationState = props.validationState || (this.state.hasError() ? 'error' : null);
+    props.validationState = props.validationState || (this.state.hasError() ? 'error' : undefined);
 
     return (
       <FormGroup { ...rest } { ...props } className={ classNames('TimeSpanInput', className) }>

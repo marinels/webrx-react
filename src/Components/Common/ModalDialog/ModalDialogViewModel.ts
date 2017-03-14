@@ -6,7 +6,7 @@ import { BaseViewModel } from '../../React/BaseViewModel';
 export class ModalDialogViewModel extends BaseViewModel {
   public static displayName = 'ModalDialogViewModel';
 
-  public isVisible: wx.IObservableProperty<boolean> = null;
+  public isVisible: wx.IObservableProperty<boolean>;
 
   public show: wx.ICommand<any>;
   public hide: wx.ICommand<any>;

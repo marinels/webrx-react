@@ -13,7 +13,7 @@ describe('SubMan', () => {
     });
 
     it('handles subscription args', () => {
-      let sub = Disposable.create(null);
+      let sub = Disposable.create(() => null);
       let subman = new SubMan(sub);
       let subs = (<any>subman).subscriptions as IDisposable[];
 
@@ -25,7 +25,7 @@ describe('SubMan', () => {
 
   describe('add', () => {
     it('handles a single subscription', () => {
-      let sub = Disposable.create(null);
+      let sub = Disposable.create(() => null);
       let subman = new SubMan();
       let subs = (<any>subman).subscriptions as IDisposable[];
 
@@ -36,9 +36,9 @@ describe('SubMan', () => {
     });
 
     it('handles multiple subscriptions', () => {
-      let sub1 = Disposable.create(null);
-      let sub2 = Disposable.create(null);
-      let sub3 = Disposable.create(null);
+      let sub1 = Disposable.create(() => null);
+      let sub2 = Disposable.create(() => null);
+      let sub3 = Disposable.create(() => null);
       let subman = new SubMan();
       let subs = (<any>subman).subscriptions as IDisposable[];
 
@@ -62,7 +62,7 @@ describe('SubMan', () => {
       subman.dispose();
 
       subs.length.should.eql(0);
-      sub.isDisposed.should.be.true;
+      (sub.isDisposed || false).should.be.true;
     });
   });
 });

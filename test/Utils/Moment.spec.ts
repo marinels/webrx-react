@@ -20,30 +20,30 @@ describe('Moment', () => {
         const timestamp = DateTime.fromString(SampleDateTimeOffsetText);
 
         should.exist(timestamp);
-        timestamp.isValid().should.be.true;
-        timestamp.utcOffset().should.eql(0);
-        timestamp.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
+        timestamp!.isValid().should.be.true;
+        timestamp!.utcOffset().should.eql(0);
+        timestamp!.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
       });
 
       it('parses standard .NET DateTime strings', () => {
         const timestamp = DateTime.fromString(SampleDateTimeText);
 
         should.exist(timestamp);
-        timestamp.isValid().should.be.true;
-        timestamp.utcOffset().should.eql(0); // date times should default to UTC
-        timestamp.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
+        timestamp!.isValid().should.be.true;
+        timestamp!.utcOffset().should.eql(0); // date times should default to UTC
+        timestamp!.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
       });
 
       it('parses non-utc .NET DateTimeOffset strings', () => {
         let text = SampleDateTimeOffsetText.replace('4:', '8:').replace('+00', '+04');
         let timestamp = DateTime.fromString(text);
 
-        timestamp.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
+        timestamp!.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
 
         text = SampleDateTimeOffsetText.replace('4:', '2:').replace('+00', '-02');
         timestamp = DateTime.fromString(text);
 
-        timestamp.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
+        timestamp!.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
       });
 
       it('parses non-standard DateTime strings with a valid format', () => {
@@ -51,7 +51,7 @@ describe('Moment', () => {
         const format = 'ddd, DD MMM YYYY HH:mm:ss Z';
         const timestamp = DateTime.fromString(text, format);
 
-        timestamp.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
+        timestamp!.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
       });
 
       it('parses non-standard DateTime strings with multiple formats', () => {
@@ -62,11 +62,11 @@ describe('Moment', () => {
         ];
         const timestamp = DateTime.fromString(text, ...formats);
 
-        timestamp.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
+        timestamp!.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
       });
 
       it('returns null for null input', () => {
-        const timestamp = DateTime.fromString(null);
+        const timestamp = DateTime.fromString(undefined);
 
         should.not.exist(timestamp);
       });
@@ -76,7 +76,8 @@ describe('Moment', () => {
         const format = 'YYYY-MM-DD HH:mm:ss Z';
         const timestamp = DateTime.fromString(text, format);
 
-        timestamp.isValid().should.be.false;
+        should.not.exist(timestamp);
+        timestamp!.isValid().should.be.false;
       });
     });
 
@@ -85,27 +86,29 @@ describe('Moment', () => {
         const timestamp = DateTime.fromNumber(SampleDateTimeTicks, 0);
 
         should.exist(timestamp);
-        timestamp.isValid().should.be.true;
-        timestamp.utcOffset().should.eql(0);
-        timestamp.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
+        timestamp!.isValid().should.be.true;
+        timestamp!.utcOffset().should.eql(0);
+        timestamp!.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
       });
 
       it('converts .NET Ticks with a numeric offset', () => {
         const timestamp = DateTime.fromNumber(SampleDateTimeTicks, -8);
 
-        timestamp.utcOffset().should.eql(-8 * 60); // utcOffset() returns minutes
-        timestamp.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
+        should.exist(timestamp);
+        timestamp!.utcOffset().should.eql(-8 * 60); // utcOffset() returns minutes
+        timestamp!.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
       });
 
       it('converts .NET Ticks with a text offset', () => {
         const timestamp = DateTime.fromNumber(SampleDateTimeTicks, '-08:00');
 
-        timestamp.utcOffset().should.eql(-8 * 60); // utcOffset() returns minutes
-        timestamp.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
+        should.exist(timestamp);
+        timestamp!.utcOffset().should.eql(-8 * 60); // utcOffset() returns minutes
+        timestamp!.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
       });
 
       it('returns null for null input', () => {
-        const timestamp = DateTime.fromNumber(null);
+        const timestamp = DateTime.fromNumber(undefined);
 
         should.not.exist(timestamp);
       });
@@ -114,13 +117,16 @@ describe('Moment', () => {
     describe('toNumber', () => {
       it('converts a moment value into ticks', () => {
         const timestamp = DateTime.fromNumber(SampleDateTimeTicks);
-        const ticks = DateTime.toNumber(timestamp);
+        should.exist(timestamp);
 
-        ticks.should.eql(SampleDateTimeTicks);
+        const ticks = DateTime.toNumber(timestamp!);
+
+        should.exist(ticks);
+        ticks!.should.eql(SampleDateTimeTicks);
       });
 
       it('returns null for null input', () => {
-        const ticks = DateTime.toNumber(null);
+        const ticks = DateTime.toNumber(undefined);
 
         should.not.exist(ticks);
       });
@@ -139,19 +145,19 @@ describe('Moment', () => {
       it('parses standard .NET TimeSpan strings', () => {
         const timespan = TimeSpan.fromString(SampleTimeSpanText);
 
-        timespan.should.be.not.null;
-        timespan.asMilliseconds().should.eql(SampleTimeSpanMilliseconds);
+        should.exist(timespan);
+        timespan!.asMilliseconds().should.eql(SampleTimeSpanMilliseconds);
       });
 
       it('parses negative .NET TimeSpan strings', () => {
         const timespan = TimeSpan.fromString(`-${SampleTimeSpanText}`);
 
-        timespan.should.be.not.null;
-        timespan.asMilliseconds().should.eql(-1 * SampleTimeSpanMilliseconds);
+        should.exist(timespan);
+        timespan!.asMilliseconds().should.eql(-1 * SampleTimeSpanMilliseconds);
       });
 
       it('return null for null input', () => {
-        const timespan = TimeSpan.fromString(null);
+        const timespan = TimeSpan.fromString(undefined);
 
         should.not.exist(timespan);
       });
@@ -161,19 +167,19 @@ describe('Moment', () => {
       it('converts standard .NET TimeSpan Ticks', () => {
         const timespan = TimeSpan.fromNumber(SampleTimeSpanTicks);
 
-        timespan.should.be.not.null;
-        timespan.asMilliseconds().should.eql(SampleTimeSpanMilliseconds);
+        should.exist(timespan);
+        timespan!.asMilliseconds().should.eql(SampleTimeSpanMilliseconds);
       });
 
       it('converts negative values to negative durations', () => {
         const timespan = TimeSpan.fromNumber(-1 * TicksPerMillisecond);
 
-        timespan.should.be.not.null;
-        timespan.asMilliseconds().should.eql(-1);
+        should.exist(timespan);
+        timespan!.asMilliseconds().should.eql(-1);
       });
 
       it('returns null for null input', () => {
-        const timespan = TimeSpan.fromNumber(null);
+        const timespan = TimeSpan.fromNumber(undefined);
 
         should.not.exist(timespan);
       });
@@ -182,13 +188,16 @@ describe('Moment', () => {
     describe('toNumber', () => {
       it('converts a duration value into .NET Ticks', () => {
         const timespan = TimeSpan.fromNumber(SampleTimeSpanTicks);
-        const ticks = TimeSpan.toNumber(timespan);
+        should.exist(timespan);
 
-        ticks.should.eql(SampleTimeSpanTicks);
+        const ticks = TimeSpan.toNumber(timespan!);
+
+        should.exist(ticks);
+        ticks!.should.eql(SampleTimeSpanTicks);
       });
 
       it('returns null for null input', () => {
-        const ticks = TimeSpan.toNumber(null);
+        const ticks = TimeSpan.toNumber(undefined);
 
         should.not.exist(ticks);
       });

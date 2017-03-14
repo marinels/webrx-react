@@ -12,7 +12,7 @@ export class HashCodec {
 
   private getPathAndParams(hash: string) {
     let path: string;
-    let params: string;
+    let params: string | undefined;
     let pattern = /#(\/[^?]*)(\?.*)/g;
 
     let matches = hash ? pattern.exec(hash) : null;
@@ -54,7 +54,7 @@ export class HashCodec {
     return hash;
   }
 
-  public decode<T>(hash: string, selector: (path: string, params: string, state: any) => T) {
+  public decode<T>(hash: string, selector: (path: string, params: string | undefined, state: any) => T) {
     hash = this.santize(hash);
 
     let { path, params } = this.getPathAndParams(hash);

@@ -27,7 +27,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   private pageHeader: PageHeaderViewModel;
   private demoAlertItem: HeaderCommandAction;
 
-  public componentRoute: wx.IObservableProperty<string>;
+  public componentRoute: wx.IObservableProperty<string | undefined>;
   public columns: wx.IObservableProperty<number>;
   public component: wx.IObservableReadOnlyProperty<any>;
 
@@ -108,12 +108,12 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   }
 
   private getComponentRoute(state: ComponentDemoRoutingState) {
-    return state == null ? null : state.route.match[1];
+    return state == null ? undefined : state.route.match[1];
   }
 
   private getViewModel(state: ComponentDemoRoutingState) {
-    let component: any = null;
-    let activator: ViewModelActivator = null;
+    let component: any;
+    let activator: ViewModelActivator;
 
     // extract the component route from the routing state
     const componentRoute = this.getComponentRoute(state);
@@ -141,7 +141,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
             .map(x => ({ path: x, regex: new RegExp(x, 'i') }))
             .map(x => ({ path: x.path, match: x.regex.exec(componentRoute) }))
             .filter(x => x.match != null)
-            .map(x => ({ path: x.path, match: x.match, activator: RouteMap.viewModelMap[x.path] }))
+            .map(x => ({ path: x.path, match: x.match!, activator: RouteMap.viewModelMap[x.path] }))
             .asEnumerable()
             .firstOrDefault();
 
@@ -207,7 +207,13 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
         .filter(x => String.isNullOrEmpty(x) === false)
         .firstOrDefault();
 
-      if (String.isNullOrEmpty(uri) === false) {
+      if (!String.isNullOrEmpty(uri)) {
+        type t = typeof uri;
+      }
+      else {
+        type t = typeof uri;
+      }
+      if (!String.isNullOrEmpty(uri)) {
         // providing there exists at least one component route, navigate to it
         this.navTo(uri, undefined, true);
       }

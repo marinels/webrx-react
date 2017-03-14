@@ -8,13 +8,13 @@ export class InlineEditViewModel<T> extends BaseViewModel {
   public static displayName = 'InlineEditViewModel';
 
   public value: wx.IObservableProperty<T>;
-  public editValue: wx.IObservableProperty<T>;
+  public editValue: wx.IObservableProperty<T | undefined>;
   public isEditing: wx.IObservableReadOnlyProperty<boolean>;
   public hasSavingError: wx.IObservableProperty<boolean>;
 
   public edit: wx.ICommand<T>;
   public save: wx.ICommand<T>;
-  public cancel: wx.ICommand<T>;
+  public cancel: wx.ICommand<T | undefined>;
 
   constructor(
     value?: wx.IObservableProperty<T> | T,
@@ -31,17 +31,18 @@ export class InlineEditViewModel<T> extends BaseViewModel {
       this.value = wx.property(<T>value);
     }
 
-    this.editValue = wx.property<T>();
+    this.editValue = wx.property<T | undefined>();
 
     this.edit = wx.asyncCommand(() => {
-      this.editValue(clone(this.value()));
+      const editVal = clone(this.value());
+      this.editValue(editVal);
 
-      return Observable.of(this.editValue());
+      return Observable.of(editVal);
     });
 
     this.save = wx.asyncCommand(() => {
       return Observable
-        .defer(() => this.onSave(this.editValue(), this))
+        .defer(() => this.onSave(this.editValue()!, this))
         .doOnNext(x => {
           // reset the error flag since we received a result
           this.hasSavingError(false);
@@ -50,7 +51,7 @@ export class InlineEditViewModel<T> extends BaseViewModel {
           this.value(x);
 
           // clear the edit value
-          this.editValue(null);
+          this.editValue(undefined);
         })
         .catch(e => {
           // set the error flag
@@ -62,15 +63,15 @@ export class InlineEditViewModel<T> extends BaseViewModel {
         });
     });
 
-    this.cancel = wx.asyncCommand<T>(
+    this.cancel = wx.asyncCommand<T | undefined>(
       this.save.isExecuting.map(x => x === false),
       () => {
-        this.editValue(null);
+        this.editValue(undefined);
 
         // clear the edit value
         this.hasSavingError(false);
 
-        return Observable.of(null);
+        return Observable.of(undefined);
       });
 
     this.isEditing = Observable

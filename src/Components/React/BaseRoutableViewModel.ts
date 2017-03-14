@@ -58,7 +58,7 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
 
   private handleRoutingState(state = {} as TRoutingState, handler: (state: TRoutingState) => void, ...observables: Observable<any>[]) {
     if (this.isRoutingEnabled && handler != null) {
-      let sub: IDisposable;
+      let sub: IDisposable | undefined;
 
       // if any observables are passed in then we watch them for any changes
       // if any changes are detected we invoke a stateChanged (i.e. force a render)

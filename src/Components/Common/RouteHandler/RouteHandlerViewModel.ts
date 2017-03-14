@@ -223,7 +223,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
   }
 
   private getActivator(route: Route) {
-    let activator: ComponentActivator;
+    let activator: ComponentActivator | undefined;
 
     // we shouldn't ever hit this function with a null route, but play safe anyways
     if (route != null) {
@@ -239,7 +239,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
           .filter(x => x != null && x.length > 0 && x[0] === '^')
           .map(x => ({ key: x, match: new RegExp(x, 'i').exec(route.path) }))
           .filter(x => x.match != null)
-          .map(x => ({ key: x.key, match: x.match, activator: this.routingMap[x.key] }))
+          .map(x => ({ key: x.key, match: x.match!, activator: this.routingMap[x.key] }))
           .asEnumerable()
           .firstOrDefault();
 
@@ -265,10 +265,10 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
     // if our route was null (should never happen) always return a null value
     // otherwise merge the route with the activator to create the RoutedActivator
-    return route == null ? null : Object.assign<RoutedComponentActivator>({ route }, activator);
+    return route == null ? undefined : Object.assign<RoutedComponentActivator>({ route }, activator);
   }
 
-  private handleRedirect(activator: RoutedComponentActivator) {
+  private handleRedirect(activator: RoutedComponentActivator | undefined) {
     // a redirect is essentially a valid activator with only a path (and no creator)
     const isRedirect = (
       activator != null &&
@@ -279,10 +279,10 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
     if (isRedirect === true) {
       // this is a redirect route
-      this.logger.debug(`Redirecting from '${ activator.route.path }' to '${ activator.path }'`, activator);
+      this.logger.debug(`Redirecting from '${ activator!.route.path }' to '${ activator!.path }'`, activator);
 
       // inform the routing manager of the redirection
-      Manager.navTo(activator.path, undefined, true);
+      Manager.navTo(activator!.path!, undefined, true);
 
       // return null to stop processing this route
       return null;

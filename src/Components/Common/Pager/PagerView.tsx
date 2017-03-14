@@ -113,8 +113,8 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
   private renderInfo() {
     return this.renderConditional(this.shouldRenderInfo(), () => (
       this.renderConditional((this.state.itemCount() || 0) === 0,
-        this.props.emptyInfo,
-        `Showing Items ${ this.state.offset() + 1 } through ${ Math.min(this.state.itemCount(), this.state.offset() + (this.state.limit() || 0)) } of ${ this.state.itemCount() }`,
+        () => this.props.emptyInfo,
+        () => `Showing Items ${ this.state.offset() + 1 } through ${ Math.min(this.state.itemCount(), this.state.offset() + (this.state.limit() || 0)) } of ${ this.state.itemCount() }`,
       )
     ), () => '');
   }
@@ -136,7 +136,7 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     return this.renderConditional(this.shouldRenderLimit(), () => (
       <DropdownButton id={ this.props.id || 'pager-limit-selector' } title={ this.renderLimitTitle() } onSelect={ this.bindEventToProperty(x => x.limit) }>
         {
-          this.props.limits
+          this.props.limits!
             .map((x, i) => (
               <MenuItem key={ i } eventKey={ x } selected={ this.state.limit() === x }>{x || 'All'}</MenuItem>
             ))

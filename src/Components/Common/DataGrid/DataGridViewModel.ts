@@ -27,8 +27,8 @@ export interface ProjectionResult<TData> {
 
 export interface DataGridRoutingState {
   search: SearchRoutingState;
-  sortBy: string;
-  sortDir: SortDirection;
+  sortBy?: string;
+  sortDir?: SortDirection;
   pager: PagerRoutingState;
 }
 
@@ -42,15 +42,15 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
   public projectionRequests: wx.IObservableReadOnlyProperty<TRequest>;
   public projectionResults: wx.IObservableReadOnlyProperty<TResult>;
   public projectedItems: wx.IObservableReadOnlyProperty<TData[]>;
-  public sortField: wx.IObservableReadOnlyProperty<string>;
-  public sortDirection: wx.IObservableReadOnlyProperty<SortDirection>;
+  public sortField: wx.IObservableReadOnlyProperty<string | undefined>;
+  public sortDirection: wx.IObservableReadOnlyProperty<SortDirection | undefined>;
   public isLoading: wx.IObservableReadOnlyProperty<boolean>;
   public hasProjectionError: wx.IObservableProperty<boolean>;
 
   public sort: wx.ICommand<SortArgs>;
   public toggleSortDirection: wx.ICommand<string>;
   public refresh: wx.ICommand<any>;
-  protected project: wx.ICommand<TResult>;
+  protected project: wx.ICommand<TResult | undefined>;
 
   constructor(
     requests: Observable<TRequest>,
@@ -83,7 +83,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
         this.routingState.changed.map(x => x.sortBy),
         sortChanged.map(x => x.field),
       )
-      .map(x => x || this.sortField() || null)
+      .map(x => x || this.sortField() || undefined)
       .toProperty();
 
     this.sortDirection = Observable
@@ -91,7 +91,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
         this.routingState.changed.map(x => x.sortDir),
         sortChanged.map(x => x.direction),
       )
-      .map(x => x || this.sortDirection() || null)
+      .map(x => x || this.sortDirection() || undefined)
       .toProperty();
 
     this.projectionRequests = wx
@@ -127,7 +127,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
           'Error Projecting Data Grid Results',
         )
         // this ensures that errors still generate a result
-        .defaultIfEmpty(null);
+        .defaultIfEmpty(undefined);
     });
 
     this.projectionResults = wx
@@ -135,6 +135,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
       // we will get null projection results back if there is an error
       // so just filter these results out of our results observable
       .filter(x => x != null)
+      .map(x => x!)
       .toProperty();
 
     if (wx.isProperty(isLoading) === true) {
@@ -155,6 +156,8 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
 
     this.projectedItems = wx
       .whenAny(this.project.results, x => x)
+      .filter(x => x != null)
+      .map(x => x!)
       .do(x => {
         // update global pager state
         this.pager.itemCount(x.count);
@@ -229,8 +232,8 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
     return this.comparer != null;
   }
 
-  public isSortedBy(fieldName: string, direction: SortDirection) {
-    return fieldName === this.sortField() && direction === this.sortDirection();
+  public isSortedBy(fieldName: string | undefined, direction: SortDirection) {
+    return !String.isNullOrEmpty(fieldName) && fieldName === this.sortField() && direction === this.sortDirection();
   }
 
   getSearch() {
@@ -307,14 +310,14 @@ export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, Items
     let items = request.items || [];
 
     if (this.filterer != null && request.regex != null) {
-      items = items.filter(x => this.filterer(x, request.regex));
+      items = items.filter(x => this.filterer!(x, request.regex!));
     }
 
     const count = items.length;
 
     if (this.comparer != null && String.isNullOrEmpty(request.sortField) === false && request.sortDirection != null) {
       items = items.sort((a, b) => {
-        return this.comparer.compare(a, b, request.sortField, request.sortDirection);
+        return this.comparer.compare(a, b, request.sortField!, request.sortDirection!);
       });
     }
 
