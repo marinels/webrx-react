@@ -8,7 +8,7 @@ import { Loading } from '../Common/Loading/Loading';
 export function renderEnumerable<T, TResult>(
   source: T[] | Enumerable<T>,
   selector: (data: T[]) => TResult = (data) => data as any as TResult,
-  defaultSelector: () => TResult | undefined = () => undefined,
+  defaultSelector: () => TResult | null = () => null,
 ) {
   const array = (source instanceof Array) ? source : source.toArray();
 
@@ -18,7 +18,7 @@ export function renderEnumerable<T, TResult>(
 export function renderConditional(
   condition: wx.IObservableProperty<boolean> | boolean,
   trueContent: () => any,
-  falseContent: () => any = () => undefined,
+  falseContent: () => any = () => null,
 ) {
   return (typeof condition === 'boolean' ? condition : condition()) ?
     trueContent() :
