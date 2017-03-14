@@ -17,7 +17,7 @@ export interface BaseViewProps extends React.HTMLProps<any>, ViewModelProps {
 export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel extends BaseViewModel> extends React.Component<TViewProps, TViewModel> {
   public static displayName = 'BaseView';
 
-  private updateSubscription: IDisposable;
+  private updateSubscription: IDisposable | undefined;
 
   // -----------------------------------------
   // these are render helper methods

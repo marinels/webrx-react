@@ -22,7 +22,7 @@ export class CountFooterContent extends React.Component<CountFooterContentProps,
     suffix: 'Items',
   };
 
-  private lengthChangedSub: IDisposable;
+  private lengthChangedSub: IDisposable | undefined;
 
   constructor(props?: CountFooterContentProps, context?: any) {
     super(props, context);
