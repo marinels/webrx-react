@@ -29,7 +29,7 @@ export class SampleData {
         .delay(this.delay);
     }
     else {
-      result = Observable.throw<T>(`Sample DataStore Action Not Found: ${action}`);
+      result = Observable.throw<T>(new Error(`Sample DataStore Action Not Found: ${ action }`));
     }
 
     return result;
