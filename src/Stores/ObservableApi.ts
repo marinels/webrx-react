@@ -1,4 +1,4 @@
-import { Observable, Promise, DOM as rxdom } from 'rx-dom';
+import { Observable, DOM as rxdom } from 'rx-dom';
 import * as wx from 'webrx';
 import * as clone from 'clone';
 import param = require('jquery-param');
