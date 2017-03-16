@@ -15,6 +15,7 @@ import './PageHeader.less';
 
 export interface PageHeaderProps extends BaseViewProps {
   brand?: any;
+  branduri?: string;
 }
 
 export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewModel> {
@@ -34,6 +35,10 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
       this.state.userMenuItems.listChanged,
       this.state.isSidebarVisible.changed,
     ];
+  }
+
+  private isSidebarEnabled() {
+    return String.isNullOrEmpty(this.props.branduri);
   }
 
   private isActionDisabled(item: HeaderCommandAction) {
@@ -63,8 +68,8 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { brand } = x;
-      return { brand };
+      const { brand, branduri } = x;
+      return { brand, branduri };
     });
 
     return (
@@ -72,11 +77,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
         <Navbar fixedTop fluid>
           <Navbar.Header>
             <Navbar.Brand>
-              <CommandButton className='PageHeader-brand' bsStyle='link' active={ this.state.isSidebarVisible() }
-                command={ this.state.toggleSideBar }
-              >
-                { props.brand }
-              </CommandButton>
+              { this.renderBrandButton() }
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
@@ -93,8 +94,20 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
             { this.renderRoutedActions() }
           </Navbar.Collapse>
         </Navbar>
-        { this.renderSidebar() }
+        { this.renderConditional(this.isSidebarEnabled(), () => this.renderSidebar()) }
       </div>
+    );
+  }
+
+  private renderBrandButton() {
+    const isSidebarEnabled = this.isSidebarEnabled();
+    const active = isSidebarEnabled && this.state.isSidebarVisible();
+    const command = isSidebarEnabled ? this.state.toggleSideBar : undefined;
+
+    return (
+      <CommandButton className='PageHeader-brand' bsStyle='link' active={ active } href={ this.props.branduri } command={ command }>
+        { this.props.brand }
+      </CommandButton>
     );
   }
 
