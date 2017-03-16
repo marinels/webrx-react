@@ -6,6 +6,10 @@ import * as moment from 'moment';
  */
 export const TicksPerMillisecond = 10000;
 
+// some helper constants to interact with milliseconds
+export const MillisecondsPerDay = 86400000;
+export const MillisecondsPerYear = 31536000000;
+
 /**
  * Offset from .NET milliseconds to unix milliseconds
  */
