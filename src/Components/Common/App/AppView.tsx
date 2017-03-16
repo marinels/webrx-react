@@ -51,9 +51,7 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
       <div { ...rest } className={ classNames('App', className) }>
         {
           this.renderConditional(this.state.isLoading, () => (
-            <div className='preload'>
-              <i className='fa fa-spinner fa-5x fa-pulse' aria-hidden='true'></i>
-            </div>
+            <i className='preload fa fa-spinner fa-5x fa-pulse' aria-hidden='true'></i>
           ), () => (
             <div>
               { this.renderConditional(props.guide!, () => (<BootstrapGuide />)) }
