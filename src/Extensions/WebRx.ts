@@ -47,6 +47,25 @@ function invokeCommand<T, TResult>(command: (x: T) => wx.ICommand<TResult> | wx.
 
 (<any>Observable).prototype.invokeCommand = invokeCommand;
 
+// patched whenAny function to resolve a bug that occurs when exactly two
+// observable or property parameters are passed in with no projection function.
+const wxWhenAny: Function = wx.whenAny;
+function whenAny() {
+  // if the input will cause the bug
+  if (arguments.length === 2 && (wx.isProperty(arguments[1]) || Observable.isObservable(arguments[1]))) {
+    // append a discrete projection function
+    arguments[2] = function() {
+      return [ arguments[0], arguments[1] ];
+    };
+    // and increment the length to skip the buggy code
+    arguments.length = 3;
+  }
+
+  // otherwise just pass everything on to the original function
+  return wxWhenAny.apply(this, arguments);
+}
+(<any>wx).whenAny = whenAny;
+
 // save a handle to the default toProperty function
 const wxToProperty: Function = (<any>Observable).prototype.toProperty;
 
