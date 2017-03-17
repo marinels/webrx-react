@@ -1,4 +1,4 @@
-import { Observable } from 'rx';
+import { Observable, IScheduler } from 'rx';
 import * as wx from 'webrx';
 
 declare module 'webrx' {
@@ -7,6 +7,9 @@ declare module 'webrx' {
   interface ICommand<T> {
     catchExceptions(onError: (error: Error) => void): ICommand<T>;
   }
+
+  function compositeCommand(commands: wx.ICommand<any>[], canExecute?: Observable<boolean>, scheduler?: IScheduler): wx.ICommand<any>;
+  function asyncCompositeCommand<T, TResult>(commands: wx.ICommand<T>[], selector?: (result: T[]) => TResult, canExecute?: Observable<boolean>, scheduler?: IScheduler): wx.ICommand<T[]>;
 }
 
 function catchExceptions<T>(onError: (error: Error) => void) {
@@ -28,6 +31,34 @@ function wrapCommand<T extends Function>(func: T, thisArg?: any) {
 }
 (<any>wx).command = wrapCommand(wx.command);
 (<any>wx).asyncCommand = wrapCommand(wx.asyncCommand);
+
+function asyncCompositeCommand<T, TResult>(...args: any[]) {
+  const commands: wx.ICommand<T>[] = args.shift() || [];
+  const selector: (result: T[]) => TResult = args.shift() || ((x: T[]) => x);
+  const canExecute: Observable<boolean> = args.shift() || Observable.of(true);
+  const scheduler: IScheduler = args.shift();
+
+  return wx.asyncCommand(
+    canExecute
+      .startWith(false)
+      .combineLatest(
+        Observable.combineLatest(
+          commands.map(x => x.canExecuteObservable.startWith(x.canExecute(undefined))),
+          (...x) => x.every(y => y),
+        ),
+        (ce, cce) => ce && cce,
+      ),
+    x => Observable.combineLatest(commands.map(y => y.executeAsync(x)), (...y) => selector(y)),
+    scheduler,
+  );
+}
+
+function compositeCommand(...args: any[]) {
+  return asyncCompositeCommand(args.shift(), undefined, ...args);
+}
+
+(<any>wx).compositeCommand = compositeCommand;
+(<any>wx).asyncCompositeCommand = asyncCompositeCommand;
 
 // this is a patch for invokeCommand to support command selector parameters
 function invokeCommand<T, TResult>(command: (x: T) => wx.ICommand<TResult> | wx.ICommand<TResult>) {
