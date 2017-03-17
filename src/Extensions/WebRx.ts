@@ -26,7 +26,6 @@ function wrapCommand<T extends Function>(func: T, thisArg?: any) {
     return cmd;
   };
 }
-
 (<any>wx).command = wrapCommand(wx.command);
 (<any>wx).asyncCommand = wrapCommand(wx.asyncCommand);
 
@@ -44,7 +43,6 @@ function invokeCommand<T, TResult>(command: (x: T) => wx.ICommand<TResult> | wx.
     .switch()
     .subscribe();
 }
-
 (<any>Observable).prototype.invokeCommand = invokeCommand;
 
 // patched whenAny function to resolve a bug that occurs when exactly two
@@ -68,7 +66,6 @@ function whenAny() {
 
 // save a handle to the default toProperty function
 const wxToProperty: Function = (<any>Observable).prototype.toProperty;
-
 function toProperty(initialValue?: any, scheduler?: Rx.IScheduler) {
   // create our prop using the default function
   const prop = wxToProperty.apply(this, [ initialValue, scheduler ]);
@@ -80,5 +77,4 @@ function toProperty(initialValue?: any, scheduler?: Rx.IScheduler) {
 
   return prop;
 }
-
 (<any>Observable).prototype.toProperty = toProperty;
