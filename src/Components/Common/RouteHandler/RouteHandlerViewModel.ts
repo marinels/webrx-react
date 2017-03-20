@@ -3,7 +3,7 @@ import 'ix';
 import * as wx from 'webrx';
 
 import { BaseViewModel } from '../../React/BaseViewModel';
-import { isRoutableViewModel } from '../../React/BaseRoutableViewModel';
+import { BaseRoutableViewModel, isRoutableViewModel, RoutingBreadcrumb } from '../../React/BaseRoutableViewModel';
 import { Manager, Route } from '../../../Routing/RouteManager';
 import { RouteMapper, ComponentActivator, RoutedComponentActivator } from '../../../Routing/RoutingMap';
 import { PubSub } from '../../../Utils';
@@ -26,6 +26,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
   public currentRoute: wx.IObservableReadOnlyProperty<Route>;
   public routedComponent: wx.IObservableReadOnlyProperty<any>;
+  public routingBreadcrumbs: wx.IObservableReadOnlyProperty<RoutingBreadcrumb[] | undefined>;
   public isLoading: wx.IObservableReadOnlyProperty<boolean>;
 
   private loadComponent: wx.ICommand<any>;
@@ -115,6 +116,12 @@ export class RouteHandlerViewModel extends BaseViewModel {
     });
 
     this.routedComponent = this.loadComponent.results
+      .toProperty();
+
+    this.routingBreadcrumbs = wx
+      .whenAny(this.routedComponent, x => <BaseRoutableViewModel<any>>x)
+      .map(x => isRoutableViewModel(x) ? wx.whenAny(x.breadcrumbs, y => y) : Observable.of(undefined))
+      .switchLatest()
       .toProperty();
 
     // when a route changes we enter loading mode and wait until the load finishes

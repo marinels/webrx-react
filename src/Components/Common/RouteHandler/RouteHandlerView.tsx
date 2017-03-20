@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { Grid, Alert } from 'react-bootstrap';
+import { Grid, Alert, Breadcrumb } from 'react-bootstrap';
 import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import * as classNames from 'classnames';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { isViewModel } from '../../React/BaseViewModel';
-import { isRoutableViewModel } from '../../React/BaseRoutableViewModel';
+import { BaseRoutableViewModel, isRoutableViewModel } from '../../React/BaseRoutableViewModel';
 import { RouteHandlerViewModel, SplashKey } from './RouteHandlerViewModel';
 import { ViewMapper } from '../../../Routing/ViewMap';
 
@@ -62,6 +62,7 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
     return [
       this.state.isLoading.changed,
       this.state.routedComponent.changed,
+      this.state.routingBreadcrumbs.changed,
     ];
   }
 
@@ -77,10 +78,27 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
       <div { ...rest } className={ classNames('RouteHandler', className) }>
         <ReactCSSTransitionGroup transitionName='view' transitionLeave={ false } transitionEnterTimeout={ 250 }>
           <div className='RouteHandler-viewContainer' key={ key }>
+            { this.renderBreadcrumbs() }
             { this.renderRoutedView(key) }
           </div>
         </ReactCSSTransitionGroup>
       </div>
+    );
+  }
+
+  private renderBreadcrumbs() {
+    return this.renderEnumerable(
+      this.state.routingBreadcrumbs(),
+      (x, i, a) => (
+        <Breadcrumb.Item key={ x.key } active={ i === a.length - 1 } href={ x.href } title={ x.title } target={ x.target }>
+          { x.content }
+        </Breadcrumb.Item>
+      ),
+      x => x.length === 0 ? null : (
+        <div className='RouteHandler-breadcrumbs'>
+          <Breadcrumb>{ x }</Breadcrumb>
+        </div>
+      ),
     );
   }
 
@@ -100,7 +118,11 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
 
     this.logger.debug(`Rendering routed view for '${ Object.getName(component) }' (${ key })`);
 
-    return view || 'Catastrophic Failure';
+    return (
+      <div className={ classNames('RouteHandler-view', { 'breadcrumbs': (this.state.routingBreadcrumbs() || []).length > 0 }) }>
+        { view || 'Catastrophic Failure' }
+      </div>
+    );
   }
 
   private renderError(text: string) {

@@ -1,3 +1,5 @@
+@import (reference) '../../../Style/App.less';
+
 .RouteHandler {
   .view-enter {
     opacity: 0.01;
@@ -6,6 +8,23 @@
   .view-enter.view-enter-active {
     opacity: 1;
     transition: opacity 250ms ease-in;
+  }
+
+  .RouteHandler-breadcrumbs {
+    position: fixed;
+    right: 0;
+    left: 0;
+    height: 36px;
+    text-align: center;
+    z-index: @zindex-dropdown - 1;
+
+    & > .breadcrumb {
+      margin: 0;
+    }
+  }
+
+  .RouteHandler-view.breadcrumbs {
+    padding-top: 36px;
   }
 
   .RouteHandler-error {

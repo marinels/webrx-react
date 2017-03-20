@@ -17,23 +17,38 @@ export function isRoutableViewModel(source: any): source is BaseRoutableViewMode
   }
 }
 
+export interface RoutingBreadcrumb {
+  key: any;
+  content: string;
+  href: string;
+  target?: string;
+  title?: string;
+}
+
 export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel {
   public static displayName = 'BaseRoutableViewModel';
 
   protected routingState: wx.IObservableProperty<TRoutingState>;
   protected updateDocumentTitle: wx.ICommand<string>;
+  protected updateRoutingBreadcrumbs: wx.ICommand<RoutingBreadcrumb[] | undefined>;
 
   public routingStateChanged: wx.ICommand<any>;
   public documentTitle: wx.IObservableReadOnlyProperty<string>;
+  public breadcrumbs: wx.IObservableReadOnlyProperty<RoutingBreadcrumb[] | undefined>;
 
   constructor(public isRoutingEnabled = false, routingStateRateLimit = 25) {
     super();
 
     this.routingState = wx.property<TRoutingState>();
     this.updateDocumentTitle = wx.asyncCommand((title: any) => Observable.of(title.toString()));
+    this.updateRoutingBreadcrumbs = wx.asyncCommand((x: RoutingBreadcrumb[] | undefined) => Observable.of(x));
 
     this.routingStateChanged = wx.command();
     this.documentTitle = this.updateDocumentTitle.results.toProperty();
+    this.breadcrumbs = wx
+      .whenAny(this.updateRoutingBreadcrumbs.results, x => x)
+      .toProperty();
+
     this.subscribe(
       this.routingStateChanged.results
         .filter(x => this.isRoutingEnabled)
