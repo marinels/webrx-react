@@ -5,14 +5,27 @@ import * as wx from 'webrx';
 
 import { Loading } from '../Common/Loading/Loading';
 
-export function renderEnumerable<T, TResult>(
-  source: T[] | Enumerable<T>,
-  selector: (data: T[]) => TResult = (data) => data as any as TResult,
-  defaultSelector: () => TResult | null = () => null,
-) {
-  const array = (source instanceof Array) ? source : source.toArray();
 
-  return array.length > 0 ? selector(array) : defaultSelector();
+export function renderEnumerable<T>(
+  source: T[] | Enumerable<T> | undefined,
+  selector: (item: T, index: number, items: T[]) => any = item => item,
+  projector: (items: T[]) => any = items => items,
+  defaultSelector: () => any | null = () => null,
+) {
+  if (source == null) {
+    source = Enumerable.empty<T>();
+  }
+  else if (Array.isArray(source)) {
+    source = source.asEnumerable();
+  }
+
+  return projector(
+    source
+      .defaultIfEmpty(defaultSelector())
+      .filter(x => x != null)
+      .toArray()
+      .map((x, i, a) => selector(x, i, a)),
+  );
 }
 
 export function renderConditional(
