@@ -20,18 +20,20 @@ export function isRoutableViewModel(source: any): source is BaseRoutableViewMode
 export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel {
   public static displayName = 'BaseRoutableViewModel';
 
-  protected routingState = wx.property<TRoutingState>();
+  protected routingState: wx.IObservableProperty<TRoutingState>;
+  protected updateDocumentTitle: wx.ICommand<string>;
 
-  public routingStateChanged = wx.command();
-  protected updateDocumentTitle = wx.asyncCommand((title: any) => {
-    return Observable.of<string>(title.toString());
-  });
-
-  public documentTitle = this.updateDocumentTitle.results.toProperty();
+  public routingStateChanged: wx.ICommand<any>;
+  public documentTitle: wx.IObservableReadOnlyProperty<string>;
 
   constructor(public isRoutingEnabled = false, routingStateRateLimit = 25) {
     super();
 
+    this.routingState = wx.property<TRoutingState>();
+    this.updateDocumentTitle = wx.asyncCommand((title: any) => Observable.of(title.toString()));
+
+    this.routingStateChanged = wx.command();
+    this.documentTitle = this.updateDocumentTitle.results.toProperty();
     this.subscribe(
       this.routingStateChanged.results
         .filter(x => this.isRoutingEnabled)
