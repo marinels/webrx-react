@@ -26,3 +26,16 @@
     transform: translate(-50%, -50%);
   }
 }
+
+// this is a hack to fix a bug in IE where td's cannot set height: 100%
+// this bug affects blocks inside of the td, essentially giving them height: 0
+.ie9,
+.ie10 {
+  td.navColumn:hover {
+    background-color: @list-group-active-bg;
+
+    & > .NavButton {
+      color: @list-group-active-color;
+    }
+  }
+}
