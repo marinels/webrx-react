@@ -1,8 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html dir="ltr" lang="en-US">
 <head>
   <meta charset='utf-8'>
   <title>WebRx-React App</title>
+  <script>
+    if (/MSIE 9/.test(navigator.appVersion)) {
+      document.documentElement.className += ' ie9';
+    }
+    else if (/MSIE 10/.test(navigator.appVersion)) {
+      document.documentElement.className += ' ie10';
+    }
+  </script>
   <link rel='stylesheet' type='text/css' href='vendor.css'>
   <link rel='stylesheet' type='text/css' href='webrx-react.css'>
 </head>
