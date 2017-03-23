@@ -119,7 +119,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
       .toProperty();
 
     this.routingBreadcrumbs = wx
-      .whenAny(this.routedComponent, x => <BaseRoutableViewModel<any>>x)
+      .whenAny(this.routedComponent, x => x)
       .map(x => isRoutableViewModel(x) ? wx.whenAny(x.breadcrumbs, y => y) : Observable.of(undefined))
       .switchLatest()
       .toProperty();
