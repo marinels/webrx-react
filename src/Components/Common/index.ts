@@ -33,6 +33,7 @@ export * from './InlineEdit/InlineEditView';
 export * from './Alert/AlertView';
 export * from './Alert/AlertHostView';
 export * from './ModalDialog/ModalDialogView';
+export * from './RouteHandler/Breadcrumbs';
 export * from './RouteHandler/RouteHandlerView';
 export * from './TimeSpanInput/TimeSpanInputView';
 export * from './Search/SearchView';
