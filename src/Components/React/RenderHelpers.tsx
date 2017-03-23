@@ -29,11 +29,11 @@ export function renderEnumerable<T>(
 }
 
 export function renderConditional(
-  condition: wx.IObservableProperty<boolean> | boolean,
+  condition: wx.IObservableProperty<boolean> | boolean | undefined,
   trueContent: () => any,
   falseContent: () => any = () => null,
 ) {
-  return (typeof condition === 'boolean' ? condition : condition()) ?
+  return (condition == null ? false : (typeof condition === 'boolean' ? condition : condition())) ?
     trueContent() :
     falseContent();
 }
@@ -47,7 +47,7 @@ export function renderNullable<T>(element: T | undefined, notNullContent: (x: T)
 }
 
 export function renderLoadable(
-  isLoading: wx.IObservableProperty<boolean> | boolean,
+  isLoading: wx.IObservableProperty<boolean> | boolean | undefined,
   loadingComponent: any,
   loadedComponent?: any,
 ) {
@@ -72,7 +72,7 @@ export function renderLoadable(
 }
 
 export function renderSizedLoadable(
-  isLoading: wx.IObservableProperty<boolean> | boolean,
+  isLoading: wx.IObservableProperty<boolean> | boolean | undefined,
   text: string,
   fontSize: number | string,
   loadedComponent?: any,
@@ -84,7 +84,7 @@ export function renderSizedLoadable(
 }
 
 export function renderGridLoadable(
-  isLoading: wx.IObservableProperty<boolean> | boolean,
+  isLoading: wx.IObservableProperty<boolean> | boolean | undefined,
   text: string,
   fontSize: number | string,
   loadedComponent?: any,
