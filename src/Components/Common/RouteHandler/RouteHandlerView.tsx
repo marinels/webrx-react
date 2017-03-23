@@ -8,6 +8,7 @@ import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { isViewModel } from '../../React/BaseViewModel';
 import { BaseRoutableViewModel, isRoutableViewModel } from '../../React/BaseRoutableViewModel';
 import { RouteHandlerViewModel, SplashKey } from './RouteHandlerViewModel';
+import { Breadcrumbs } from './Breadcrumbs';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { ViewMapper } from '../../../Routing/ViewMap';
 
@@ -80,50 +81,11 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
       <div { ...rest } className={ classNames('RouteHandler', className) }>
         <ReactCSSTransitionGroup transitionName='view' transitionLeave={ false } transitionEnterTimeout={ 250 }>
           <div className='RouteHandler-viewContainer' key={ key }>
-            { this.renderBreadcrumbs() }
+            <Breadcrumbs items={ this.state.routingBreadcrumbs() } pinnable />
             { this.renderRoutedView(key) }
           </div>
         </ReactCSSTransitionGroup>
       </div>
-    );
-  }
-
-  private toggleBreadcrumbsPin() {
-    const elem = document
-      .getElementsByClassName('RouteHandler-breadcrumbsContainer')
-      .item(0);
-
-    if (elem != null) {
-      if (/fixed/.test(elem.className)) {
-        elem.className = 'RouteHandler-breadcrumbsContainer';
-      }
-      else {
-        elem.className = 'RouteHandler-breadcrumbsContainer fixed';
-      }
-    }
-  }
-
-  private renderBreadcrumbs() {
-    return this.renderEnumerable(
-      this.state.routingBreadcrumbs(),
-      (x, i, a) => (
-        <Breadcrumb.Item key={ x.key } active={ i === a.length - 1 } href={ x.href } title={ x.title } target={ x.target }>
-          { x.content }
-        </Breadcrumb.Item>
-      ),
-      x => x.length === 0 ? null : (
-        <div className='RouteHandler-breadcrumbsContainer'>
-          <div className='RouteHandler-breadcrumbs'>
-            <Breadcrumb>{ x }</Breadcrumb>
-
-            <CommandButton className='RouteHandler-breadcrumbsPin' bsStyle='link'
-              onClick={ () => this.toggleBreadcrumbsPin() }
-            >
-              <Icon name='thumb-tack' size='lg' />
-            </CommandButton>
-          </div>
-        </div>
-      ),
     );
   }
 
