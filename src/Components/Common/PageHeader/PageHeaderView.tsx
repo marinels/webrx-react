@@ -14,6 +14,7 @@ import { HeaderAction, HeaderCommandAction } from '../../React/Actions';
 import './PageHeader.less';
 
 export interface PageHeaderProps extends BaseViewProps {
+  id?: string;
   brand?: any;
   branduri?: string;
 }
@@ -22,6 +23,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
   public static displayName = 'PageHeaderView';
 
   static defaultProps = {
+    id: 'page-header',
     brand: 'WebRx-React Rocks!!!',
   };
 
@@ -64,6 +66,25 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
       (items || [])
         .filter(x => x.visibleWhenDisabled === true || this.isActionDisabled(x) === false),
     );
+  }
+
+  private updatePadding() {
+    const elem = document.getElementById(this.props.id!) as HTMLElement;
+    const padding = ((elem.children.item(0) || {}).clientHeight || 0);
+
+    if (elem != null && padding > 0) {
+      elem.style.paddingBottom = `${ padding + 1 }px`;
+    }
+  }
+
+  loaded() {
+    super.loaded();
+
+    window.onresize = () => {
+      this.updatePadding();
+    };
+
+    this.updatePadding();
   }
 
   render() {
