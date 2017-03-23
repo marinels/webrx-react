@@ -45,7 +45,7 @@ export class Breadcrumbs extends React.Component<BreadcrumbsProps, any> {
         </Breadcrumb.Item>
       ),
       x => x.length === 0 ? null : (
-        <div { ...rest } className={ classNames('Breadcrumbs', className) }>
+        <div { ...rest } className={ classNames('Breadcrumbs', 'hidden-xs', className) }>
           <div className='Breadcrumbs-container'>
             <Breadcrumb>{ x }</Breadcrumb>
             {
