@@ -10,21 +10,47 @@
     transition: opacity 250ms ease-in;
   }
 
+  .RouteHandler-breadcrumbsContainer {
+    position: relative;
+    height: 36px;
+
+    &.fixed {
+      .RouteHandler-breadcrumbs {
+        position: fixed;
+      }
+
+      .RouteHandler-breadcrumbsPin {
+        color: @link-hover-color;
+
+        & > .fa {
+          transform: rotate(45deg);
+        }
+      }
+    }
+  }
+
   .RouteHandler-breadcrumbs {
-    position: fixed;
+    position: relative;
     right: 0;
     left: 0;
-    height: 36px;
     text-align: center;
-    z-index: @zindex-dropdown - 1;
+    z-index: @zindex-dropdown - 2;
 
     & > .breadcrumb {
       margin: 0;
     }
   }
 
-  .RouteHandler-view.breadcrumbs {
-    padding-top: 36px;
+  .RouteHandler-breadcrumbsPin {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: @link-color;
+    z-index: @zindex-dropdown - 1;
+
+    &:focus {
+      outline: 0;
+    }
   }
 
   .RouteHandler-error {

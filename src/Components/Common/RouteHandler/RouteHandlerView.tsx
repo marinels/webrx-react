@@ -1,12 +1,14 @@
 import * as React from 'react';
 import { Grid, Alert, Breadcrumb } from 'react-bootstrap';
 import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { Icon } from 'react-fa';
 import * as classNames from 'classnames';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { isViewModel } from '../../React/BaseViewModel';
 import { BaseRoutableViewModel, isRoutableViewModel } from '../../React/BaseRoutableViewModel';
 import { RouteHandlerViewModel, SplashKey } from './RouteHandlerViewModel';
+import { CommandButton } from '../CommandButton/CommandButton';
 import { ViewMapper } from '../../../Routing/ViewMap';
 
 import './RouteHandler.less';
@@ -86,6 +88,21 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
     );
   }
 
+  private toggleBreadcrumbsPin() {
+    const elem = document
+      .getElementsByClassName('RouteHandler-breadcrumbsContainer')
+      .item(0);
+
+    if (elem != null) {
+      if (/fixed/.test(elem.className)) {
+        elem.className = 'RouteHandler-breadcrumbsContainer';
+      }
+      else {
+        elem.className = 'RouteHandler-breadcrumbsContainer fixed';
+      }
+    }
+  }
+
   private renderBreadcrumbs() {
     return this.renderEnumerable(
       this.state.routingBreadcrumbs(),
@@ -95,8 +112,16 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
         </Breadcrumb.Item>
       ),
       x => x.length === 0 ? null : (
-        <div className='RouteHandler-breadcrumbs'>
-          <Breadcrumb>{ x }</Breadcrumb>
+        <div className='RouteHandler-breadcrumbsContainer'>
+          <div className='RouteHandler-breadcrumbs'>
+            <Breadcrumb>{ x }</Breadcrumb>
+
+            <CommandButton className='RouteHandler-breadcrumbsPin' bsStyle='link'
+              onClick={ () => this.toggleBreadcrumbsPin() }
+            >
+              <Icon name='thumb-tack' size='lg' />
+            </CommandButton>
+          </div>
         </div>
       ),
     );
@@ -119,8 +144,8 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
     this.logger.debug(`Rendering routed view for '${ Object.getName(component) }' (${ key })`);
 
     return (
-      <div className={ classNames('RouteHandler-view', { 'breadcrumbs': (this.state.routingBreadcrumbs() || []).length > 0 }) }>
-        { view || 'Catastrophic Failure' }
+      <div className='RouteHandler-view'>
+        { view || this.renderError('Catastrophic Failure') }
       </div>
     );
   }
