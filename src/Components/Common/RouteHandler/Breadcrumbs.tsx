@@ -53,7 +53,7 @@ export class Breadcrumbs extends React.Component<BreadcrumbsProps, any> {
                 <CommandButton className='Breadcrumbs-pin' bsStyle='link'
                   onClick={ () => this.toggleBreadcrumbsPin() }
                 >
-                  <Icon name='thumb-tack' size='lg' />
+                  <Icon name='thumb-tack' size='lg' rotate='90' />
                 </CommandButton>
               ))
             }
