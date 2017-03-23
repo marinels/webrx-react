@@ -3,7 +3,7 @@ import * as wx from 'webrx';
 
 import { Route } from '../../Routing/RouteManager';
 import { HeaderCommandAction, HeaderMenu } from '../React/Actions';
-import { BaseRoutableViewModel, isRoutableViewModel } from '../React/BaseRoutableViewModel';
+import { BaseRoutableViewModel, isRoutableViewModel, RoutingBreadcrumb } from '../React/BaseRoutableViewModel';
 import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
 import { Current as App } from '../Common/App/AppViewModel';
 import { RouteMap, ViewModelActivator } from './RoutingMap';
@@ -73,6 +73,14 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
 
     // set a default title
     this.updateDocumentTitle.execute('Loading Demos...');
+
+    // simulate some breadcrumbs
+    this.updateRoutingBreadcrumbs.execute(<RoutingBreadcrumb[]>[
+      { key: 1, content: 'Here', href: '#/demo' },
+      { key: 2, content: 'Are', href: '#/demo' },
+      { key: 3, content: 'Some', href: '#/demo' },
+      { key: 4, content: 'Breadcrumbs', href: '#/demo' },
+    ]);
 
     // this is very similar to what the route handler does for title updates
     // we are essentially projecting the demo title and passing it up the chain
