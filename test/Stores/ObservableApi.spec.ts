@@ -25,7 +25,7 @@ describe('ObservableApi', () => {
   describe.only('getObservableResult', () => {
     it('creates a GET request', () => {
       const request = Observable.of(true);
-      const stub = sandbox.stub(api, 'getRequest', () => request);
+      const stub = sandbox.stub(api, 'getRequest').callsFake(() => request);
 
       const result = api.getObservableResult(action, params, data, HttpRequestMethod.GET, options, baseUriOverride);
 
@@ -39,7 +39,7 @@ describe('ObservableApi', () => {
 
     it('creates a POST request', () => {
       const request = Observable.of(true);
-      const stub = sandbox.stub(api, 'getRequest', () => request);
+      const stub = sandbox.stub(api, 'getRequest').callsFake(() => request);
 
       const result = api.getObservableResult(action, params, data, HttpRequestMethod.POST, options, baseUriOverride);
 
@@ -61,7 +61,7 @@ describe('ObservableApi', () => {
       };
       const response = { response: true };
       const request = Observable.of(response);
-      const stub = sandbox.stub(rxdom, 'ajax', () => request);
+      const stub = sandbox.stub(rxdom, 'ajax').callsFake(() => request);
 
       const result = api.getObservableResult(action, params, data, HttpRequestMethod.GET);
 
@@ -83,7 +83,7 @@ describe('ObservableApi', () => {
       };
       const response = { response: true };
       const request = Observable.of(response);
-      const stub = sandbox.stub(rxdom, 'ajax', () => request);
+      const stub = sandbox.stub(rxdom, 'ajax').callsFake(() => request);
 
       const result = api.getObservableResult(action, params, data, HttpRequestMethod.POST);
 
@@ -98,7 +98,7 @@ describe('ObservableApi', () => {
     it('omits null param values from the uri', () => {
       const response = { response: true };
       const request = Observable.of(response);
-      const stub = sandbox.stub(rxdom, 'ajax', () => request);
+      const stub = sandbox.stub(rxdom, 'ajax').callsFake(() => request);
 
       const result = api.getObservableResult(action, { param1: 'param1 value', param2: null, param3: undefined });
 
@@ -114,7 +114,7 @@ describe('ObservableApi', () => {
   describe('getObservable', () => {
     it('calls getObservableResult with null data and GET method', () => {
       const expectedResult = 'result';
-      const stub = sandbox.stub(api, 'getObservableResult', () => expectedResult);
+      const stub = sandbox.stub(api, 'getObservableResult').callsFake(() => expectedResult);
 
       const result = api.getObservable<any>(action, params, options, baseUriOverride);
 
@@ -128,7 +128,7 @@ describe('ObservableApi', () => {
   describe('postObservable', () => {
     it('calls getObservableResult with POST method', () => {
       const expectedResult = 'result';
-      const stub = sandbox.stub(api, 'getObservableResult', () => expectedResult);
+      const stub = sandbox.stub(api, 'getObservableResult').callsFake(() => expectedResult);
 
       const result = api.postObservable<any>(action, data, params, options, baseUriOverride);
 

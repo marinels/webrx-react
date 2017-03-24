@@ -3,7 +3,7 @@ import * as wx from 'webrx';
 
 import { Route } from '../../Routing/RouteManager';
 import { HeaderCommandAction, HeaderMenu } from '../React/Actions';
-import { BaseRoutableViewModel, isRoutableViewModel } from '../React/BaseRoutableViewModel';
+import { BaseRoutableViewModel, isRoutableViewModel, RoutingBreadcrumb } from '../React/BaseRoutableViewModel';
 import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
 import { Current as App } from '../Common/App/AppViewModel';
 import { RouteMap, ViewModelActivator } from './RoutingMap';
@@ -27,7 +27,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   private pageHeader: PageHeaderViewModel;
   private demoAlertItem: HeaderCommandAction;
 
-  public componentRoute: wx.IObservableProperty<string>;
+  public componentRoute: wx.IObservableProperty<string | undefined>;
   public columns: wx.IObservableProperty<number>;
   public component: wx.IObservableReadOnlyProperty<any>;
 
@@ -74,6 +74,14 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     // set a default title
     this.updateDocumentTitle.execute('Loading Demos...');
 
+    // simulate some breadcrumbs
+    this.updateRoutingBreadcrumbs.execute(<RoutingBreadcrumb[]>[
+      { key: 1, content: 'Here', href: '#/demo' },
+      { key: 2, content: 'Are', href: '#/demo' },
+      { key: 3, content: 'Some', href: '#/demo' },
+      { key: 4, content: 'Breadcrumbs', href: '#/demo' },
+    ]);
+
     // this is very similar to what the route handler does for title updates
     // we are essentially projecting the demo title and passing it up the chain
     this.subscribe(wx
@@ -108,12 +116,12 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   }
 
   private getComponentRoute(state: ComponentDemoRoutingState) {
-    return state == null ? null : state.route.match[1];
+    return state == null ? undefined : state.route.match[1];
   }
 
   private getViewModel(state: ComponentDemoRoutingState) {
-    let component: any = null;
-    let activator: ViewModelActivator = null;
+    let component: any;
+    let activator: ViewModelActivator;
 
     // extract the component route from the routing state
     const componentRoute = this.getComponentRoute(state);
@@ -141,7 +149,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
             .map(x => ({ path: x, regex: new RegExp(x, 'i') }))
             .map(x => ({ path: x.path, match: x.regex.exec(componentRoute) }))
             .filter(x => x.match != null)
-            .map(x => ({ path: x.path, match: x.match, activator: RouteMap.viewModelMap[x.path] }))
+            .map(x => ({ path: x.path, match: x.match!, activator: RouteMap.viewModelMap[x.path] }))
             .asEnumerable()
             .firstOrDefault();
 
@@ -207,7 +215,13 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
         .filter(x => String.isNullOrEmpty(x) === false)
         .firstOrDefault();
 
-      if (String.isNullOrEmpty(uri) === false) {
+      if (!String.isNullOrEmpty(uri)) {
+        type t = typeof uri;
+      }
+      else {
+        type t = typeof uri;
+      }
+      if (!String.isNullOrEmpty(uri)) {
         // providing there exists at least one component route, navigate to it
         this.navTo(uri, undefined, true);
       }

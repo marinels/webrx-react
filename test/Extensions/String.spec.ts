@@ -5,12 +5,12 @@ import '../../src/Extensions/String';
 describe('String Extensions', () => {
   describe('String.IsNullOrEmpty', () => {
     it('Returns true when a string is undefined', () => {
-      let str: string;
+      let str: string | undefined;
       String.isNullOrEmpty(str).should.be.true;
     });
 
     it('Returns true when a string is null', () => {
-      let str: string = null;
+      let str: string | null = null;
       String.isNullOrEmpty(str).should.be.true;
     });
 
@@ -32,23 +32,32 @@ describe('String Extensions', () => {
 
   describe('String.stringify', () => {
     it('Can handle a null value', () => {
-      let val: any = null;
+      const val: any = null;
       should.not.exist(String.stringify(val));
     });
 
     it('Can stringify an empty object', () => {
-      let val: any = {};
-      String.stringify(val).should.eql(JSON.stringify(val, null, 2));
+      const val: any = {};
+      const str = String.stringify(val);
+
+      should.exist(str);
+      str!.should.eql(JSON.stringify(val, null, 2));
     });
 
     it('Can stringify a non-empty object', () => {
-      let val: any = { text: 'test' };
-      String.stringify(val).should.eql(JSON.stringify(val, null, 2));
+      const val: any = { text: 'test' };
+      const str = String.stringify(val);
+
+      should.exist(str);
+      str!.should.eql(JSON.stringify(val, null, 2));
     });
 
     it('Can stringify with custom spaces', () => {
-      let val: any = { text: 'test' };
-      String.stringify(val, null, 4).should.eql(JSON.stringify(val, null, 4));
+      const val: any = { text: 'test' };
+      const str = String.stringify(val, null, 4);
+
+      should.exist(str);
+      str!.should.eql(JSON.stringify(val, null, 4));
     });
 
     it('Can stringify an object with an overridden toString() function', () => {
@@ -60,8 +69,11 @@ describe('String Extensions', () => {
         }
       }
 
-      let val = new Test();
-      String.stringify(val).should.eql('test');
+      const val = new Test();
+      const str = String.stringify(val);
+
+      should.exist(str);
+      str!.should.eql('test');
     });
 
     it('Can stringify an object with an overridden toString() function in a base class', () => {
@@ -75,8 +87,13 @@ describe('String Extensions', () => {
       class Test extends Base {
       }
 
-      let val = new Test();
-      String.stringify(val).should.eql('test');
+      const val = new Test();
+      const str = String.stringify(val);
+
+      should.exist(str);
+      str!.should.eql('test');
     });
   });
 });
+
+

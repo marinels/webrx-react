@@ -22,7 +22,7 @@ export class Loading extends React.Component<LoadingProps, any> {
     componentClass: 'div',
   };
 
-  private changedSubscription: IDisposable;
+  private changedSubscription: IDisposable | undefined;
 
   componentDidMount() {
     if (wx.isProperty(this.props.progress) === true) {

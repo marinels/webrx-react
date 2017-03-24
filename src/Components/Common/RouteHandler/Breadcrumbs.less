@@ -1,0 +1,44 @@
+@import (reference) '../../../Style/App.less';
+
+.Breadcrumbs {
+  position: relative;
+  height: 36px;
+
+  &.fixed {
+    .Breadcrumbs-container {
+      position: fixed;
+    }
+
+    .Breadcrumbs-pin {
+      color: @link-hover-color;
+
+      & > .fa {
+        transform: rotate(0deg);
+      }
+    }
+  }
+
+  .Breadcrumbs-container {
+    position: relative;
+    right: 0;
+    left: 0;
+    text-align: center;
+    z-index: @zindex-dropdown - 2;
+
+    & > .breadcrumb {
+      margin: 0;
+    }
+  }
+
+  .Breadcrumbs-pin {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: @link-color;
+    z-index: @zindex-dropdown - 1;
+
+    &:focus {
+      outline: 0;
+    }
+  }
+}

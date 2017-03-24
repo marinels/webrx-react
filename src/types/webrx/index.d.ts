@@ -2,7 +2,7 @@
 // tslint:disable:no-unused-variable jsdoc-format
 // tslint:disable:jsdoc-format
 
-import { Observable, Observer, IObservable, Promise, IPromise, CompositeDisposable, IDisposable, IScheduler } from 'rx';
+import { Observable, Observer, IObservable, IPromise, CompositeDisposable, IDisposable, IScheduler } from 'rx';
 
 // Type alias for observables and properties
 type ObservableOrProperty<T> = Observable<T> | IObservableProperty<T>;

@@ -1,12 +1,15 @@
 import * as React from 'react';
-import { Grid, Alert } from 'react-bootstrap';
+import { Grid, Alert, Breadcrumb } from 'react-bootstrap';
 import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { Icon } from 'react-fa';
 import * as classNames from 'classnames';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { isViewModel } from '../../React/BaseViewModel';
-import { isRoutableViewModel } from '../../React/BaseRoutableViewModel';
+import { BaseRoutableViewModel, isRoutableViewModel } from '../../React/BaseRoutableViewModel';
 import { RouteHandlerViewModel, SplashKey } from './RouteHandlerViewModel';
+import { Breadcrumbs } from './Breadcrumbs';
+import { CommandButton } from '../CommandButton/CommandButton';
 import { ViewMapper } from '../../../Routing/ViewMap';
 
 import './RouteHandler.less';
@@ -62,6 +65,7 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
     return [
       this.state.isLoading.changed,
       this.state.routedComponent.changed,
+      this.state.routingBreadcrumbs.changed,
     ];
   }
 
@@ -77,6 +81,7 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
       <div { ...rest } className={ classNames('RouteHandler', className) }>
         <ReactCSSTransitionGroup transitionName='view' transitionLeave={ false } transitionEnterTimeout={ 250 }>
           <div className='RouteHandler-viewContainer' key={ key }>
+            <Breadcrumbs items={ this.state.routingBreadcrumbs() } pinnable />
             { this.renderRoutedView(key) }
           </div>
         </ReactCSSTransitionGroup>
@@ -100,7 +105,11 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
 
     this.logger.debug(`Rendering routed view for '${ Object.getName(component) }' (${ key })`);
 
-    return view || 'Catastrophic Failure';
+    return (
+      <div className='RouteHandler-view'>
+        { view || this.renderError('Catastrophic Failure') }
+      </div>
+    );
   }
 
   private renderError(text: string) {

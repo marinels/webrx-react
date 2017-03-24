@@ -13,15 +13,15 @@ type ReadonlyTabsViewModel<TData> = Readonly<TabsViewModel<TData>>;
 export class TabRenderTemplate<TData> {
   public static displayName = 'TabViewTemplate';
 
+  protected renderTemplateContainer: (content: () => any, item: TData, index: number, viewModel: ReadonlyTabsViewModel<TData>, view: TabsView) => any;
+
   constructor(
     protected titleSelector: (item: TData, index: number, viewModel: ReadonlyTabsViewModel<TData>, view: TabsView) => string,
     protected renderItem: (item: TData, index: number, viewModel: ReadonlyTabsViewModel<TData>, view: TabsView) => any = x => x.toString(),
     protected keySelector: (item: TData, index: number, viewModel: ReadonlyTabsViewModel<TData>, view: TabsView) => any = (x, i) => i,
-    protected renderTemplateContainer?: (content: () => any, item: TData, index: number, viewModel: ReadonlyTabsViewModel<TData>, view: TabsView) => any,
+    renderTemplateContainer?: (content: () => any, item: TData, index: number, viewModel: ReadonlyTabsViewModel<TData>, view: TabsView) => any,
   ) {
-    if (this.renderTemplateContainer == null) {
-      this.renderTemplateContainer = this.renderDefaultTemplateContainer;
-    }
+    this.renderTemplateContainer = renderTemplateContainer || this.renderDefaultTemplateContainer;
   }
 
   protected renderDefaultTemplateContainer(content: () => any, item: TData, index: number, viewModel: ReadonlyTabsViewModel<TData>, view: TabsView) {
@@ -71,10 +71,10 @@ export class TabsView extends BaseView<TabsProps, TabsViewModel<any>> {
   }
 
   private renderTabs() {
-    return this.renderConditional(
-      this.props.template == null,
+    return this.renderNullable(
+      this.props.template,
+      x => this.renderDynamicTabs(x),
       () => this.renderStaticTabs(),
-      () => this.renderDynamicTabs(),
     );
   }
 
@@ -93,12 +93,12 @@ export class TabsView extends BaseView<TabsProps, TabsViewModel<any>> {
     );
   }
 
-  private renderDynamicTabs() {
+  private renderDynamicTabs(template: TabRenderTemplate<any>) {
     return (
       <Tabs id={ this.props.id } activeKey={ this.state.selectedIndex() }
         onSelect={ this.bindEventToCommand(x => x.selectIndex) }
       >
-        { this.props.template.render(this.state, this) }
+        { template.render(this.state, this) }
       </Tabs>
     );
   }

@@ -8,7 +8,7 @@ import { SearchView, SearchProps } from '../Search/SearchView';
 import { PagerView, PagerProps } from '../Pager/PagerView';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { bindEventToCommand } from '../../React/BindingHelpers';
-import { renderConditional } from '../../React/RenderHelpers';
+import { renderConditional, renderNullable } from '../../React/RenderHelpers';
 import { DataGridViewModel } from './DataGridViewModel';
 import { SortDirection } from '../../../Utils/Compare';
 import { BaseListViewTemplate, ListViewRenderTemplate, ListViewRenderTemplateProps } from '../List/ListView';
@@ -20,7 +20,7 @@ type ReadonlyDataGridViewModel<TData> = Readonly<DataGridViewModel<TData>>;
 
 type ColumnRenderFunction = (
   item: any,
-  index: number,
+  index: number | undefined,
   column: DataGridColumnProps,
   columnIndex: number,
   columns: DataGridColumnProps[],
@@ -71,7 +71,7 @@ export class NavDataGridColumn extends React.Component<NavDataGridColumnProps, a
     className: 'navColumn',
     width: 1,
     renderCell: (item: any, index: number, column: NavDataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: DataGridViewModel<any>, view: DataGridView) => {
-      const props = renderConditional(column.buttonProps != null, () => column.buttonProps(item, index, column, columnIndex, columns, viewModel, view));
+      const props = renderNullable(column.buttonProps, buttonProps => buttonProps(item, index, column, columnIndex, columns, viewModel, view));
 
       return (
         <NavButton { ...props } />
@@ -119,22 +119,26 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
 
   private tableProps: TableProps;
 
+  protected renderCellContainer: (content: any, item: TData, index: number, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) => any;
+  protected renderRowContainer: (content: any, item: TData, index: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) => any;
+  protected renderHeaderContainer: (content: any, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) => any;
+
   constructor(
     protected renderItem: ColumnRenderFunction = x => x,
     protected rowKeySelector: (item: TData, index: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) => any = (r, i) => i,
-    protected renderCellContainer?: (content: any, item: TData, index: number, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) => any,
-    protected renderRowContainer?: (content: any, item: TData, index: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) => any,
-    protected renderHeaderContainer?: (content: any, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) => any,
+    renderCellContainer?: (content: any, item: TData, index: number, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) => any,
+    renderRowContainer?: (content: any, item: TData, index: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) => any,
+    renderHeaderContainer?: (content: any, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) => any,
     protected enableAutomaticColumns = true,
     bordered = false, hover = true, striped = false, condensed = true, responsive = true,
   ) {
     this.tableProps = { bordered, hover, striped, condensed, responsive };
-    this.renderCellContainer = this.renderCellContainer || this.renderDefaultCellContainer;
-    this.renderRowContainer = this.renderRowContainer || this.renderDefaultRowContainer;
-    this.renderHeaderContainer = this.renderHeaderContainer || this.renderDefaultHeaderContainer;
+    this.renderCellContainer = renderCellContainer || this.renderDefaultCellContainer;
+    this.renderRowContainer = renderRowContainer || this.renderDefaultRowContainer;
+    this.renderHeaderContainer = renderHeaderContainer || this.renderDefaultHeaderContainer;
   }
 
-  protected renderColumnTooltip(content: any, item: any, index: number, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) {
+  protected renderColumnTooltip(content: any, item: any, index: number | undefined, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) {
     if (column.tooltip != null) {
       const tooltip = column.tooltip(item, index, column, columnIndex, columns, viewModel, view);
 
@@ -190,10 +194,10 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
       </th>
     );
 
-    return this.renderColumnTooltip(content, null, null, column, columnIndex, columns, viewModel, view);
+    return this.renderColumnTooltip(content, null, undefined, column, columnIndex, columns, viewModel, view);
   }
 
-  protected getColumnDefinitions(viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) {
+  protected getColumnDefinitions(viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView): DataGridColumn[] | undefined {
     let children = view.props.children;
 
     if (this.enableAutomaticColumns === true && React.Children.count(children) === 0) {
@@ -213,11 +217,11 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
   }
 
   protected createColumns(viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) {
-    let columns: DataGridColumnProps[] = null;
+    let columns: DataGridColumnProps[] | undefined;
 
     const columnDefinitions = this.getColumnDefinitions(viewModel, view);
 
-    if (React.Children.count(columnDefinitions) > 0) {
+    if (columnDefinitions != null && React.Children.count(columnDefinitions) > 0) {
       columns = React.Children
         .map(columnDefinitions, x => x)
         .filter(x => x != null)
@@ -229,7 +233,7 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
           }
 
           if (column.renderCell == null) {
-            column.renderCell = ((item: any) => item[column.fieldName]);
+            column.renderCell = ((item: any) => String.isNullOrEmpty(column.fieldName) ? undefined : item[column.fieldName]);
           }
 
           return column;
@@ -251,7 +255,7 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
     return (
       <tr>
         {
-          (columns || [])
+          columns
             .asEnumerable()
             .map((x, i) => this.renderColumnHeader(x, i, columns, viewModel, view))
             .defaultIfEmpty(this.renderEmptyColumns(viewModel, view))
@@ -270,21 +274,22 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
       </span>
     );
 
-    const header = renderConditional(sortIcon == null, () => (
-        <div className='DataGrid-columnContainer'>{ headerContent }</div>
-      ), () => (
+    const header = renderNullable(
+      sortIcon,
+      x => (
         <CommandButton className='DataGrid-columnContainer' bsStyle='link' command={ viewModel.toggleSortDirection } commandParameter={ column.fieldName }>
           { headerContent }
-          { sortIcon }
+          { x }
         </CommandButton>
       ),
+      () => (<div className='DataGrid-columnContainer'>{ headerContent }</div>),
     );
 
     return this.renderHeaderContainer(header, column, columnIndex, columns, viewModel, view);
   }
 
   protected renderSortIcon(column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) {
-    let icon: any = null;
+    let icon: any;
 
     if (viewModel.canSort() && column.sortable) {
       let iconName = '';
@@ -318,7 +323,7 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
       .map((x, i) => this.renderRow(x, i, columns, viewModel, view))
       .defaultIfEmpty(
         <tr key='rows-empty'>
-          <td colSpan={ (columns || []).length + 1 }>
+          <td colSpan={ columns.length + 1 }>
             <div className='DataGrid-empty text-muted'>
               { this.renderEmptyContent(viewModel, view) }
             </div>
@@ -345,12 +350,15 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
   }
 
   protected renderCell(item: TData, index: number, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) {
-    const cellContent = column.renderCell(item, index, column, columnIndex, columns, viewModel, view);
+    const cellContent = renderNullable(
+      column.renderCell,
+      renderCell => renderCell(item, index, column, columnIndex, columns, viewModel, view),
+    );
 
-    const cellContainer = renderConditional(
-      column.renderCellContainer == null,
+    const cellContainer = renderNullable(
+      column.renderCellContainer,
+      renderCellContainer => renderCellContainer(cellContent, item, index, column, columnIndex, columns, viewModel, view),
       () => (<div className='DataGrid-cellContainer'>{ cellContent }</div>),
-      () => column.renderCellContainer(cellContent, item, index, column, columnIndex, columns, viewModel, view),
     );
 
     return this.renderCellContainer(cellContainer, item, index, column, columnIndex, columns, viewModel, view);
@@ -365,7 +373,7 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
   }
 
   public render(viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) {
-    const columns = this.createColumns(viewModel, view);
+    const columns = this.createColumns(viewModel, view) || [];
 
     const props = Object.assign({}, this.tableProps, {
       bordered: view.isOnlyView() === true ? false : this.tableProps.bordered,
@@ -380,9 +388,11 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
   }
 }
 
+export type DataGridViewType = 'Table' | 'List';
+
 export interface DataGridComponentProps {
   grid: Readonly<DataGridViewModel<any>>;
-  viewTemplate: DataGridViewTemplate<any>;
+  viewType: DataGridViewType;
   fill?: boolean;
 }
 
@@ -392,13 +402,13 @@ export interface DataGridSearchProps extends DataGridComponentProps, SearchProps
 export class DataGridSearch extends React.Component<DataGridSearchProps, any> {
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { grid, viewTemplate } = x;
-      return { grid, viewTemplate };
+      const { grid, viewType } = x;
+      return { grid, viewType };
     });
 
     return renderConditional(props.grid.canFilter() === true, () => (
       <SearchView { ...rest } viewModel={ props.grid.search }
-        className={ classNames('DataGrid', className, { Table: props.viewTemplate instanceof DataGridTableViewTemplate }) }
+        className={ classNames('DataGrid', className, { Table: props.viewType === 'Table' }) }
       />
     ));
   }
@@ -410,8 +420,8 @@ export interface DataGridPagerProps extends DataGridComponentProps, PagerProps {
 export class DataGridPager extends React.Component<DataGridPagerProps, any> {
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { grid, viewTemplate } = x;
-      return { grid, viewTemplate };
+      const { grid, viewType } = x;
+      return { grid, viewType };
     });
 
     return (
@@ -458,24 +468,24 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
   initialize() {
     super.initialize();
 
-    this.props.viewTemplate.initialize(this.state, this);
+    this.props.viewTemplate!.initialize(this.state, this);
   }
 
   updated(prevProps: DataGridViewProps) {
     // if the view was changed then we need to re-init
     if (prevProps.viewTemplate !== this.props.viewTemplate) {
       // cleanup old view
-      prevProps.viewTemplate.cleanup(this.state, this);
+      prevProps.viewTemplate!.cleanup(this.state, this);
 
       // initialize new view
-      this.props.viewTemplate.initialize(this.state, this);
+      this.props.viewTemplate!.initialize(this.state, this);
     }
   }
 
   cleanup() {
     super.cleanup();
 
-    this.props.viewTemplate.cleanup(this.state, this);
+    this.props.viewTemplate!.cleanup(this.state, this);
   }
 
   updateOn() {
@@ -499,7 +509,8 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
     });
 
     return this.renderSizedLoadable(this.state.isLoading, props.loadingContent, '1.5em', () => {
-      const grid = props.viewTemplate.render(this.state, this);
+      const viewType: DataGridViewType = props.viewTemplate instanceof DataGridTableViewTemplate ? 'Table' : 'List';
+      const grid = props.viewTemplate!.render(this.state, this);
 
       return this.renderConditional(
         this.isOnlyView() === true,
@@ -513,7 +524,7 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
               this.renderConditional(
                 props.search !== false,
                 () => React.isValidElement(props.search) ? props.search : (
-                  <DataGridView.Search { ...(props.search === true ? {} : props.search) } grid={ this.state } viewTemplate={ props.viewTemplate } />
+                  <DataGridView.Search { ...(props.search === true ? {} : props.search) } grid={ this.state } viewType={ viewType } />
                 ),
               )
             }
@@ -522,7 +533,7 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
               this.renderConditional(
                 props.pager !== false,
                 () => React.isValidElement(props.pager) ? props.pager : (
-                  <DataGridView.Pager { ...(props.pager === true ? {} : props.pager) } grid={ this.state } viewTemplate={ props.viewTemplate } />
+                  <DataGridView.Pager { ...(props.pager === true ? {} : props.pager) } grid={ this.state } viewType={ viewType } />
                 ),
               )
             }

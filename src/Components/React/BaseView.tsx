@@ -17,7 +17,7 @@ export interface BaseViewProps extends React.HTMLProps<any>, ViewModelProps {
 export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel extends BaseViewModel> extends React.Component<TViewProps, TViewModel> {
   public static displayName = 'BaseView';
 
-  private updateSubscription: IDisposable;
+  private updateSubscription: IDisposable | undefined;
 
   // -----------------------------------------
   // these are render helper methods
@@ -31,10 +31,12 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
 
   protected logger = Logging.getLogger(this.getDisplayName());
 
-  constructor(props?: TViewProps, context?: any) {
+  constructor(props?: TViewProps | undefined, context?: any) {
     super(props, context);
 
-    this.state = props.viewModel as TViewModel;
+    if (props != null) {
+      this.state = props.viewModel as TViewModel;
+    }
   }
 
   private logRender(initial: boolean) {

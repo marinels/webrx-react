@@ -13,7 +13,7 @@ export class PageHeaderViewModel extends BaseViewModel {
 
   private dynamicSubs: SubMan;
 
-  public search: SearchViewModel = null;
+  public search: SearchViewModel | undefined;
   public sidebarMenus: wx.IObservableList<HeaderMenu>;
   public navbarMenus: wx.IObservableList<HeaderMenu>;
   public navbarActions: wx.IObservableList<HeaderCommandAction>;
@@ -26,7 +26,7 @@ export class PageHeaderViewModel extends BaseViewModel {
   public toggleSideBar: wx.ICommand<boolean>;
 
   constructor(
-    public routeHandler?: RouteHandlerViewModel,
+    public routeHandler: RouteHandlerViewModel,
     public staticSidebarMenus: HeaderMenu[] = [],
     public staticNavbarMenus: HeaderMenu[] = [],
     public staticNavbarActions: HeaderCommandAction[] = [],
@@ -86,15 +86,13 @@ export class PageHeaderViewModel extends BaseViewModel {
       },
     );
 
-    if (this.routeHandler != null) {
-      this.subscribe(
-        wx
-          .whenAny(this.routeHandler.routedComponent, x => x)
-          .subscribe(x => {
-            this.updateDynamicContent();
-          }),
-      );
-    }
+    this.subscribe(
+      wx
+        .whenAny(this.routeHandler.routedComponent, x => x)
+        .subscribe(x => {
+          this.updateDynamicContent();
+        }),
+    );
   }
 
   public updateDynamicContent() {
@@ -106,7 +104,7 @@ export class PageHeaderViewModel extends BaseViewModel {
       this.search = component.getSearch.apply(component);
     }
     else {
-      this.search = null;
+      this.search = undefined;
     }
 
     // dispose any existing subscriptions to header actions
@@ -142,16 +140,18 @@ export class PageHeaderViewModel extends BaseViewModel {
 
     // now that our list is populated with our header actions, subscribe to the
     // canExecute observable to manage the disabled status of any header action
-    list.forEach((action: HeaderAction) => {
-      if (isHeaderCommandAction(action)) {
+    list
+      .map((x: HeaderAction) => isHeaderCommandAction(x) ? x : undefined)
+      .filter(x => x != null)
+      .map(x => x!)
+      .forEach(action => {
         this.dynamicSubs.add(
-          action.command.canExecuteObservable
+          action.command!.canExecuteObservable
             .distinctUntilChanged()
             .subscribe(x => {
               this.notifyChanged();
             }),
         );
-      }
-    });
+      });
   }
 }

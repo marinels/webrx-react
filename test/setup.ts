@@ -75,7 +75,7 @@ afterEach(() => {
 const should = chai.should();
 const assert = chai.assert;
 const expect = chai.expect;
-let sandbox: sinon.SinonSandbox;
+let sandbox: sinon.SinonSandbox = <any>undefined;
 
 chai.use(sinonChai);
 

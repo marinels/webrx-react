@@ -77,12 +77,15 @@ export class RouteManager {
   public static displayName = 'RouteManager';
 
   private logger = Logging.getLogger(RouteManager.displayName);
+  private hashManager: HashManager;
   public currentRoute: wx.IObservableReadOnlyProperty<Route>;
 
-  constructor(private hashManager?: HashManager, public hashCodec = new HashCodec()) {
-    if (this.hashManager == null) {
-      this.hashManager = historyStateHashManager;
+  constructor(hashManager?: HashManager, public hashCodec = new HashCodec()) {
+    if (hashManager == null) {
+      hashManager = historyStateHashManager;
     }
+
+    this.hashManager = hashManager;
 
     this.currentRoute = this.hashManager.hashChanged
       .startWith(window.location.hash)
@@ -106,17 +109,18 @@ export class RouteManager {
         if (hash !== x) {
           this.navTo(route.path, route.state, true);
           // set the current route to null to ignore further processing
-          route = null;
+          return undefined;
         }
 
         return route;
       })
       .filter(x => x != null)
+      .map(x => x!)
       .toProperty();
   }
 
   private getPath(state: {route: Route}) {
-    let path: string = null;
+    let path: string | undefined;
 
     if (state != null && state.route != null && String.isNullOrEmpty(state.route.path) === false) {
       path = state.route.path;
@@ -135,7 +139,7 @@ export class RouteManager {
         }
 
         // relative path
-        path = `${currentPath.split('/').slice(0, -1).join('/')}/${path}`;
+        path = `${ currentPath!.split('/').slice(0, -1).join('/') }/${ path }`;
       }
 
       // manage relative path elements (..)
@@ -186,7 +190,7 @@ export class RouteManager {
         this.logger.debug(JSON.stringify(state, null, 2));
       }
 
-      this.hashManager.updateHash(hash, state, undefined, replace);
+      this.hashManager.updateHash(hash, state, '', replace);
     }
   }
 }

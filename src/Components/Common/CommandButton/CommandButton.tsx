@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
-import { IDisposable } from  'rx';
+import { IDisposable, Disposable } from  'rx';
 import * as wx from 'webrx';
 import { Button, ButtonProps, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
@@ -18,7 +18,7 @@ export interface CommandButtonProps extends ButtonProps {
 export class CommandButton extends React.Component<CommandButtonProps, any> {
   public static displayName = 'CommandButton';
 
-  private canExecuteSubscription: IDisposable;
+  private canExecuteSubscription = Disposable.empty;
 
   private getCommand(): wx.ICommand<any> {
     const cmd = this.props.command;
@@ -44,7 +44,7 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
   componentWillUnmount() {
     if (this.canExecuteSubscription != null) {
       this.canExecuteSubscription.dispose();
-      this.canExecuteSubscription = null;
+      this.canExecuteSubscription = Disposable.empty;
     }
   }
 
@@ -80,7 +80,7 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
       }
       else {
         return (
-          <OverlayTrigger key={ button.key } placement={ tooltip.props.placement } overlay={ tooltip } >
+          <OverlayTrigger key={ button.key || undefined } placement={ tooltip.props.placement } overlay={ tooltip } >
             { button }
           </OverlayTrigger>
         );

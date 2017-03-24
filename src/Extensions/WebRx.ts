@@ -1,4 +1,4 @@
-import { Observable } from 'rx';
+import { Observable, IScheduler } from 'rx';
 import * as wx from 'webrx';
 
 declare module 'webrx' {
@@ -7,6 +7,9 @@ declare module 'webrx' {
   interface ICommand<T> {
     catchExceptions(onError: (error: Error) => void): ICommand<T>;
   }
+
+  function compositeCommand(commands: wx.ICommand<any>[], canExecute?: Observable<boolean>, scheduler?: IScheduler): wx.ICommand<any>;
+  function asyncCompositeCommand<T, TResult>(commands: wx.ICommand<T>[], selector?: (result: T[]) => TResult, canExecute?: Observable<boolean>, scheduler?: IScheduler): wx.ICommand<T[]>;
 }
 
 function catchExceptions<T>(onError: (error: Error) => void) {
@@ -26,9 +29,36 @@ function wrapCommand<T extends Function>(func: T, thisArg?: any) {
     return cmd;
   };
 }
-
 (<any>wx).command = wrapCommand(wx.command);
 (<any>wx).asyncCommand = wrapCommand(wx.asyncCommand);
+
+function asyncCompositeCommand<T, TResult>(...args: any[]) {
+  const commands: wx.ICommand<T>[] = args.shift() || [];
+  const selector: (result: T[]) => TResult = args.shift() || ((x: T[]) => x);
+  const canExecute: Observable<boolean> = args.shift() || Observable.of(true);
+  const scheduler: IScheduler = args.shift();
+
+  return wx.asyncCommand(
+    canExecute
+      .startWith(false)
+      .combineLatest(
+        Observable.combineLatest(
+          commands.map(x => x.canExecuteObservable.startWith(x.canExecute(undefined))),
+          (...x) => x.every(y => y),
+        ),
+        (ce, cce) => ce && cce,
+      ),
+    x => Observable.combineLatest(commands.map(y => y.executeAsync(x)), (...y) => selector(y)),
+    scheduler,
+  );
+}
+
+function compositeCommand(...args: any[]) {
+  return asyncCompositeCommand(args.shift(), undefined, ...args);
+}
+
+(<any>wx).compositeCommand = compositeCommand;
+(<any>wx).asyncCompositeCommand = asyncCompositeCommand;
 
 // this is a patch for invokeCommand to support command selector parameters
 function invokeCommand<T, TResult>(command: (x: T) => wx.ICommand<TResult> | wx.ICommand<TResult>) {
@@ -44,12 +74,29 @@ function invokeCommand<T, TResult>(command: (x: T) => wx.ICommand<TResult> | wx.
     .switch()
     .subscribe();
 }
-
 (<any>Observable).prototype.invokeCommand = invokeCommand;
+
+// patched whenAny function to resolve a bug that occurs when exactly two
+// observable or property parameters are passed in with no projection function.
+const wxWhenAny: Function = wx.whenAny;
+function whenAny() {
+  // if the input will cause the bug
+  if (arguments.length === 2 && (wx.isProperty(arguments[1]) || Observable.isObservable(arguments[1]))) {
+    // append a discrete projection function
+    arguments[2] = function() {
+      return [ arguments[0], arguments[1] ];
+    };
+    // and increment the length to skip the buggy code
+    arguments.length = 3;
+  }
+
+  // otherwise just pass everything on to the original function
+  return wxWhenAny.apply(this, arguments);
+}
+(<any>wx).whenAny = whenAny;
 
 // save a handle to the default toProperty function
 const wxToProperty: Function = (<any>Observable).prototype.toProperty;
-
 function toProperty(initialValue?: any, scheduler?: Rx.IScheduler) {
   // create our prop using the default function
   const prop = wxToProperty.apply(this, [ initialValue, scheduler ]);
@@ -61,5 +108,4 @@ function toProperty(initialValue?: any, scheduler?: Rx.IScheduler) {
 
   return prop;
 }
-
 (<any>Observable).prototype.toProperty = toProperty;

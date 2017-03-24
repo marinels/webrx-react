@@ -3,6 +3,13 @@
 // Definitions by: oliver Weichhold <https://github.com/oliverw>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
 
+// NOTE: even though the npm module @types/rx-dom exists, we cannot use it
+//       this is due to the fact that the module depends on @types/rx which is
+//       a stale set of type definitions compared to the rx module included type
+//       defintions. the rx module hasn't updated the version number since
+//       adding typings to the project.json file (4.1.0). Once a new version is
+//       published to npm we can start using @types/rx-dom
+
 import * as Rx from 'rx';
 
 declare module 'rx' {

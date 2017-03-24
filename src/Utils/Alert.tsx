@@ -23,7 +23,7 @@ export class Alert {
   public createForError<TError>(error: TError, header?: string, style = 'danger', timeout?: number, formatter?: (e: TError) => any, logErrorObject = false) {
     if (error != null) {
       let content: any;
-      let text: string;
+      let text: string | undefined;
       const anyError = error as any;
       const childError = anyError.error;
 

@@ -11,7 +11,7 @@ export class PubSub implements IDisposable {
   public static displayName = 'PubSub';
 
   private logger: wx.Lazy<Logger>;
-  private map: PubSubMap;
+  private map: PubSubMap | undefined;
 
   constructor() {
     this.logger = new wx.Lazy(() => getLogger(PubSub.displayName));
@@ -19,11 +19,11 @@ export class PubSub implements IDisposable {
   }
 
   private getSubject<T>(key: string) {
-    let subject: Subject<T> = this.map[key];
+    let subject: Subject<T> = this.map![key];
 
     if (subject == null) {
       subject = new Subject<T>();
-      this.map[key] = subject;
+      this.map![key] = subject;
     }
 
     return subject;
@@ -46,16 +46,16 @@ export class PubSub implements IDisposable {
   }
 
   public publish<T>(key: string, arg?: T) {
-    this.getSubject<T>(key).onNext(arg);
+    this.getSubject<T>(key).onNext(arg!);
   }
 
   dispose() {
     if (this.map != null) {
       Object.getOwnPropertyNames(this.map)
-        .map(x => this.map[x])
+        .map(x => this.map![x])
         .forEach(x => x.dispose());
 
-      this.map = null;
+      this.map = undefined;
     }
   }
 }

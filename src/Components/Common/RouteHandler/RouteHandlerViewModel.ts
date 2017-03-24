@@ -3,7 +3,7 @@ import 'ix';
 import * as wx from 'webrx';
 
 import { BaseViewModel } from '../../React/BaseViewModel';
-import { isRoutableViewModel } from '../../React/BaseRoutableViewModel';
+import { BaseRoutableViewModel, isRoutableViewModel, RoutingBreadcrumb } from '../../React/BaseRoutableViewModel';
 import { Manager, Route } from '../../../Routing/RouteManager';
 import { RouteMapper, ComponentActivator, RoutedComponentActivator } from '../../../Routing/RoutingMap';
 import { PubSub } from '../../../Utils';
@@ -26,6 +26,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
   public currentRoute: wx.IObservableReadOnlyProperty<Route>;
   public routedComponent: wx.IObservableReadOnlyProperty<any>;
+  public routingBreadcrumbs: wx.IObservableReadOnlyProperty<RoutingBreadcrumb[] | undefined>;
   public isLoading: wx.IObservableReadOnlyProperty<boolean>;
 
   private loadComponent: wx.ICommand<any>;
@@ -115,6 +116,12 @@ export class RouteHandlerViewModel extends BaseViewModel {
     });
 
     this.routedComponent = this.loadComponent.results
+      .toProperty();
+
+    this.routingBreadcrumbs = wx
+      .whenAny(this.routedComponent, x => x)
+      .map(x => isRoutableViewModel(x) ? wx.whenAny(x.breadcrumbs, y => y) : Observable.of(undefined))
+      .switchLatest()
       .toProperty();
 
     // when a route changes we enter loading mode and wait until the load finishes
@@ -223,7 +230,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
   }
 
   private getActivator(route: Route) {
-    let activator: ComponentActivator;
+    let activator: ComponentActivator | undefined;
 
     // we shouldn't ever hit this function with a null route, but play safe anyways
     if (route != null) {
@@ -239,7 +246,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
           .filter(x => x != null && x.length > 0 && x[0] === '^')
           .map(x => ({ key: x, match: new RegExp(x, 'i').exec(route.path) }))
           .filter(x => x.match != null)
-          .map(x => ({ key: x.key, match: x.match, activator: this.routingMap[x.key] }))
+          .map(x => ({ key: x.key, match: x.match!, activator: this.routingMap[x.key] }))
           .asEnumerable()
           .firstOrDefault();
 
@@ -265,10 +272,10 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
     // if our route was null (should never happen) always return a null value
     // otherwise merge the route with the activator to create the RoutedActivator
-    return route == null ? null : Object.assign<RoutedComponentActivator>({ route }, activator);
+    return route == null ? undefined : Object.assign<RoutedComponentActivator>({ route }, activator);
   }
 
-  private handleRedirect(activator: RoutedComponentActivator) {
+  private handleRedirect(activator: RoutedComponentActivator | undefined) {
     // a redirect is essentially a valid activator with only a path (and no creator)
     const isRedirect = (
       activator != null &&
@@ -279,10 +286,10 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
     if (isRedirect === true) {
       // this is a redirect route
-      this.logger.debug(`Redirecting from '${ activator.route.path }' to '${ activator.path }'`, activator);
+      this.logger.debug(`Redirecting from '${ activator!.route.path }' to '${ activator!.path }'`, activator);
 
       // inform the routing manager of the redirection
-      Manager.navTo(activator.path, undefined, true);
+      Manager.navTo(activator!.path!, undefined, true);
 
       // return null to stop processing this route
       return null;

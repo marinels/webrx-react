@@ -5,51 +5,49 @@ import * as wx from 'webrx';
 
 import { Loading } from '../Common/Loading/Loading';
 
-export function renderEnumerable<T, TResult>(
-  source: T[] | Enumerable<T>,
-  selector: (data: T[]) => TResult = (data) => data as any as TResult,
-  defaultSelector: () => TResult = () => null as TResult,
-) {
-  const array = (source instanceof Array) ? source : source.toArray();
 
-  return array.length > 0 ? selector(array) : defaultSelector();
+export function renderEnumerable<T>(
+  source: T[] | Enumerable<T> | undefined,
+  selector: (item: T, index: number, items: T[]) => any = item => item,
+  projector: (items: T[]) => any = items => items,
+  defaultSelector: () => any | null = () => null,
+) {
+  if (source == null) {
+    source = Enumerable.empty<T>();
+  }
+  else if (Array.isArray(source)) {
+    source = source.asEnumerable();
+  }
+
+  return projector(
+    source
+      .defaultIfEmpty(defaultSelector())
+      .filter(x => x != null)
+      .toArray()
+      .map((x, i, a) => selector(x, i, a)),
+  );
 }
 
 export function renderConditional(
-  condition: wx.IObservableProperty<boolean> | boolean,
-  trueContent: any,
-  falseContent: any = null,
-  warnStaticContent = false,
+  condition: wx.IObservableProperty<boolean> | boolean | undefined,
+  trueContent: () => any,
+  falseContent: () => any = () => null,
 ) {
-  // allow build to override default value
-  if (DEBUG) {
-    warnStaticContent = true;
-  }
-
-  // if either provided content is static warn that
-  if (warnStaticContent) {
-    // tslint:disable no-console
-    if (trueContent != null && (typeof trueContent === 'object')  && (trueContent instanceof Function) === false) {
-      console.warn('renderConditional using static trueContent, use a lambda instead');
-    }
-
-    if (falseContent != null && (typeof falseContent === 'object') && (falseContent instanceof Function) === false) {
-      console.warn('renderConditional using static falseContent, use a lambda instead');
-    }
-    // tslint:enable no-console
-  }
-
-  return (condition instanceof Function ? condition() : condition) === true ?
-    (trueContent instanceof Function ? trueContent.apply(this) : trueContent) :
-    (falseContent instanceof Function ? falseContent.apply(this) : falseContent);
+  return (condition == null ? false : (typeof condition === 'boolean' ? condition : condition())) ?
+    trueContent() :
+    falseContent();
 }
 
-export function renderNullable<T>(element: T, notNullContent: (x: T) => any, nullContent?: () => any, constraint?: (x: T) => boolean) {
-  return renderConditional(element != null && (constraint == null || constraint(element)), () => notNullContent(element), nullContent);
+export function renderNullable<T>(element: T | undefined, notNullContent: (x: T) => any, nullContent?: () => any, constraint?: (x: T) => boolean) {
+  return renderConditional(
+    element != null && (constraint == null || constraint(element)),
+    () => notNullContent(element as T),
+    nullContent,
+  );
 }
 
 export function renderLoadable(
-  isLoading: wx.IObservableProperty<boolean> | boolean,
+  isLoading: wx.IObservableProperty<boolean> | boolean | undefined,
   loadingComponent: any,
   loadedComponent?: any,
 ) {
@@ -74,7 +72,7 @@ export function renderLoadable(
 }
 
 export function renderSizedLoadable(
-  isLoading: wx.IObservableProperty<boolean> | boolean,
+  isLoading: wx.IObservableProperty<boolean> | boolean | undefined,
   text: string,
   fontSize: number | string,
   loadedComponent?: any,
@@ -86,7 +84,7 @@ export function renderSizedLoadable(
 }
 
 export function renderGridLoadable(
-  isLoading: wx.IObservableProperty<boolean> | boolean,
+  isLoading: wx.IObservableProperty<boolean> | boolean | undefined,
   text: string,
   fontSize: number | string,
   loadedComponent?: any,

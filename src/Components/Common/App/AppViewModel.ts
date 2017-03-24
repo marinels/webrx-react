@@ -58,4 +58,4 @@ export class AppViewModel extends BaseViewModel {
   }
 }
 
-export let Current: AppViewModel = null;
+export let Current: AppViewModel;

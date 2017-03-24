@@ -28,7 +28,7 @@ export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewMode
           Observable.fromEvent<UIEvent>(window, 'resize'),
           Observable.fromEvent<Event>(window, 'orientationchange'),
         )
-        .startWith(null)
+        .startWith(undefined as any)
         .map(() => this.getDimensions()),
       x => x.viewportDimensionsChanged,
     );

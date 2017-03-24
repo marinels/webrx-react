@@ -5,9 +5,7 @@ import { AlertCreatedKey, AlertCreated } from '../../src/Events/AlertCreated';
 
 describe('Utils', () => {
   describe('Alert', () => {
-    const mock = {
-      publish: <sinon.SinonStub>null,
-    };
+    const mock = <{ publish: sinon.SinonStub }>{};
     const pubSub = <PubSub><any>mock;
 
     describe('create', () => {
@@ -32,7 +30,7 @@ describe('Utils', () => {
       it('publishes alerts with a style override', () => {
         pubSub.publish = sandbox.stub();
 
-        new Alert(pubSub).create('test', null, 'danger');
+        new Alert(pubSub).create('test', undefined, 'danger');
 
         mock.publish.should.have.been.calledOnce;
         mock.publish.should.have.been.calledWith(AlertCreatedKey, sinon.match({ content: 'test', style: 'danger' }));
@@ -41,7 +39,7 @@ describe('Utils', () => {
       it('publishes alerts with a timeout override', () => {
         pubSub.publish = sandbox.stub();
 
-        new Alert(pubSub).create('test', null, null, 1000);
+        new Alert(pubSub).create('test', undefined, undefined, 1000);
 
         mock.publish.should.have.been.calledOnce;
         mock.publish.should.have.been.calledWith(AlertCreatedKey, sinon.match({ content: 'test', timeout: 1000 }));

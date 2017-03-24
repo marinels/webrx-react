@@ -14,13 +14,16 @@ import { HeaderAction, HeaderCommandAction } from '../../React/Actions';
 import './PageHeader.less';
 
 export interface PageHeaderProps extends BaseViewProps {
+  id?: string;
   brand?: any;
+  branduri?: string;
 }
 
 export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewModel> {
   public static displayName = 'PageHeaderView';
 
   static defaultProps = {
+    id: 'page-header',
     brand: 'WebRx-React Rocks!!!',
   };
 
@@ -34,6 +37,10 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
       this.state.userMenuItems.listChanged,
       this.state.isSidebarVisible.changed,
     ];
+  }
+
+  private isSidebarEnabled() {
+    return String.isNullOrEmpty(this.props.branduri);
   }
 
   private isActionDisabled(item: HeaderCommandAction) {
@@ -61,10 +68,29 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
     );
   }
 
+  private updatePadding() {
+    const elem = document.getElementById(this.props.id!) as HTMLElement;
+    const padding = ((elem.children.item(0) || {}).clientHeight || 0);
+
+    if (elem != null && padding > 0) {
+      elem.style.paddingBottom = `${ padding + 1 }px`;
+    }
+  }
+
+  loaded() {
+    super.loaded();
+
+    window.onresize = () => {
+      this.updatePadding();
+    };
+
+    this.updatePadding();
+  }
+
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { brand } = x;
-      return { brand };
+      const { brand, branduri } = x;
+      return { brand, branduri };
     });
 
     return (
@@ -72,11 +98,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
         <Navbar fixedTop fluid>
           <Navbar.Header>
             <Navbar.Brand>
-              <CommandButton className='PageHeader-brand' bsStyle='link' active={ this.state.isSidebarVisible() }
-                command={ this.state.toggleSideBar }
-              >
-                { props.brand }
-              </CommandButton>
+              { this.renderBrandButton() }
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
@@ -93,8 +115,20 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
             { this.renderRoutedActions() }
           </Navbar.Collapse>
         </Navbar>
-        { this.renderSidebar() }
+        { this.renderConditional(this.isSidebarEnabled(), () => this.renderSidebar()) }
       </div>
+    );
+  }
+
+  private renderBrandButton() {
+    const isSidebarEnabled = this.isSidebarEnabled();
+    const active = isSidebarEnabled && this.state.isSidebarVisible();
+    const command = isSidebarEnabled ? this.state.toggleSideBar : undefined;
+
+    return (
+      <CommandButton className='PageHeader-brand' bsStyle='link' active={ active } href={ this.props.branduri } command={ command }>
+        { this.props.brand }
+      </CommandButton>
     );
   }
 
@@ -161,9 +195,9 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
   }
 
   private renderSearch() {
-    return this.renderConditional(this.state.search != null, () => (
+    return this.renderNullable(this.state.search, x => (
       <Navbar.Form pullRight>
-        <SearchView viewModel={ this.state.search } />
+        <SearchView viewModel={ x } />
       </Navbar.Form>
     ));
   }
@@ -214,8 +248,8 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
                             onClick={ String.isNullOrEmpty(x.uri) === true ? this.bindEventToCommand(vm => vm.menuItemSelected, () => x) : this.bindEventToCommand(vm => vm.toggleSideBar, () => false) }
                           >
                             {
-                              this.renderConditional(String.isNullOrEmpty(x.iconName) == null, () => (
-                                <Icon name={ x.iconName } fixedWidth />
+                              this.renderConditional(String.isNullOrEmpty(x.iconName) === false, () => (
+                                <Icon name={ x.iconName! } fixedWidth />
                               ))
                             }
                             { x.header }

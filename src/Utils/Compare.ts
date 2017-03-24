@@ -36,10 +36,14 @@ export class ValueComparer<T> implements Comparer<T> {
     }
   };
 
-  constructor(public comparison?: ValueComparison<T>) {
-    if (this.comparison == null) {
-      this.comparison = ValueComparer.DefaultComparison;
+  public comparison: ValueComparison<T>;
+
+  constructor(comparison?: ValueComparison<T>) {
+    if (comparison == null) {
+      comparison = ValueComparer.DefaultComparison;
     }
+
+    this.comparison = comparison;
   }
 
   compare(a: T, b: T) {

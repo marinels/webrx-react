@@ -41,8 +41,8 @@ export class RoutingMap {
     menu.items.push(<HeaderCommandAction>{ id: path, header: name, uri: this.getUri(path, uri), iconName: iconName || this.defaultIconName, order: menu.items.length });
   }
 
-  public getUri(path: string, uri: string) {
-    return `${this.baseUri}/${uri || path}`;
+  public getUri(path: string, uri?: string) {
+    return `${ this.baseUri }/${ uri || path }`;
   }
 
   public get menus() {
@@ -129,7 +129,7 @@ const sampleDataSource = <Components.AsyncDataSource<SampleDataSourceRequest, Co
             `offset = ${ request.offset }`,
             `limit = ${ request.limit }`,
             `sortField = ${ request.sortField }`,
-            `sortDirection = ${ Compare.SortDirection[request.sortDirection] }`,
+            `sortDirection = ${ request.sortDirection == null ? '' : Compare.SortDirection[request.sortDirection] }`,
           ].join('<br/>');
           Alert.create(msg, 'Async DataGrid Demo', undefined, 1000);
         })
@@ -164,12 +164,14 @@ const sampleDataSource = <Components.AsyncDataSource<SampleDataSourceRequest, Co
             }
           }
 
-          if ((request.offset || 0) > 0) {
-            query = query.skip(request.offset);
+          const offset = request.offset || 0;
+          if (offset > 0) {
+            query = query.skip(offset);
           }
 
-          if ((request.limit || 0) > 0) {
-            query = query.take(request.limit);
+          const limit = request.limit || 0;
+          if (limit > 0) {
+            query = query.take(limit);
           }
 
           const items = query.toArray();
@@ -227,7 +229,7 @@ routeMap.addRoute('WebRx-React', 'AsyncDataGrid', 'DataGrid (Async)', (state: an
   return new Components.AsyncDataGridViewModel(sampleDataSource, true, true);
 });
 routeMap.addRoute('WebRx-React', 'DataGridRoutingState', 'DataGrid (Routing State)', (state: any) =>
-  new Components.DataGridViewModel(Observable.of(sampleListData), undefined, undefined, undefined, undefined, undefined, undefined, true),
+  new Components.DataGridViewModel(Observable.of(sampleListData), (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0, undefined, undefined, undefined, undefined, undefined, true),
 );
 routeMap.addRoute('WebRx-React', 'ModalDialog', 'Modal Dialog', (state: any) => {
   // we are simulating a modal being contained within another view model

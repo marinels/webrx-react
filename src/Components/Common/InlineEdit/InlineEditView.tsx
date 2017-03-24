@@ -136,13 +136,13 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
       return { converter, valueProperty, onChangeProperty, valueGetter, valueSetter };
     });
 
-    const onKeyDown = this.props.keyboard === true ? (e: React.KeyboardEvent<any>) => this.handleKeyDown(e) : null;
+    const onKeyDown = this.props.keyboard === true ? (e: React.KeyboardEvent<any>) => this.handleKeyDown(e) : undefined;
 
     return (
       <BindableInput { ...props } property={ this.state.editValue } onKeyDown={ onKeyDown } disabled={ this.state.save.canExecute(null) === false } >
         {
           React.cloneElement(
-            this.props.editTemplate(this.state.editValue(), this),
+            this.props.editTemplate!(this.state.editValue(), this),
             { ref: x => this.focusAndSelectControlText(x) },
           )
         }
@@ -157,7 +157,7 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
     });
 
     const displayContent = (
-      <span>{ this.props.template(this.state.value(), this) }</span>
+      <span>{ this.props.template!(this.state.value(), this) }</span>
     );
 
     return this.renderConditional(

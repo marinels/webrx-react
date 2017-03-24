@@ -3,8 +3,8 @@ import './Object';
 declare global {
   interface StringConstructor {
     isString(value: any): value is string;
-    isNullOrEmpty(value: string): boolean;
-    stringify(value: any, replacer?: any, space?: string | number): string;
+    isNullOrEmpty(value: string | null | undefined): value is undefined;
+    stringify(value: any, replacer?: any, space?: string | number): string | undefined;
   }
 }
 
@@ -12,12 +12,12 @@ function isString(value: any): value is string {
   return typeof(value) === 'string' || value instanceof String;
 }
 
-function isNullOrEmpty(value: string) {
+function isNullOrEmpty(value: string | undefined): value is undefined {
   return value == null || value === '';
 }
 
 function stringify(value: any, replacer?: any, space: string | number = 2) {
-  let result: string = null;
+  let result: string | undefined;
 
   if (value != null) {
     result = value.toString();

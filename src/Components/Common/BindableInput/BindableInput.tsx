@@ -50,11 +50,11 @@ export class BindableInput extends React.Component<BindableInputProps, any> {
     });
 
     const bindProps: any = {};
-    const value = props.valueGetter(props.property);
+    const value = props.valueGetter!(props.property);
     // NOTE: react says the value of a bindable control should not be null, but
-    //       instead empty string (undefined is ok though, so === is required).s
-    bindProps[props.valueProperty] = value === null ? '' : value;
-    bindProps[props.onChangeProperty] = (e: React.FormEvent<any>) => this.onChange(e);
+    //       instead empty string (undefined is ok though, so === is required).
+    bindProps[props.valueProperty!] = value === null ? '' : value;
+    bindProps[props.onChangeProperty!] = (e: React.FormEvent<any>) => this.onChange(e);
 
     return React.cloneElement(
       React.Children.only(children),
@@ -64,13 +64,13 @@ export class BindableInput extends React.Component<BindableInputProps, any> {
 
   protected onChange(e: React.FormEvent<any>) {
     const target: any = e.target;
-    let value: any = target[this.props.valueProperty];
+    let value: any = target[this.props.valueProperty!];
 
     if (this.props.converter != null) {
       value = this.props.converter(value);
     }
 
-    this.props.valueSetter(this.props.property, value);
+    this.props.valueSetter!(this.props.property, value);
 
     this.forceUpdate();
   }

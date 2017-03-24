@@ -6,6 +6,10 @@ import * as moment from 'moment';
  */
 export const TicksPerMillisecond = 10000;
 
+// some helper constants to interact with milliseconds
+export const MillisecondsPerDay = 86400000;
+export const MillisecondsPerYear = 31536000000;
+
 /**
  * Offset from .NET milliseconds to unix milliseconds
  */
@@ -30,17 +34,21 @@ export class DateTime {
    * Converts a .NET DateTime string to a moment value
    * i.e. "2016-03-09 4:32:32 PM" or "2016-03-09 4:32:32 PM -08:00" (default formats)
    */
-  public static fromString(value: string, ...formats: string[]) {
-    return String.isNullOrEmpty(value) ? null : moment.utc(value, formats.length === 0 ? DefaultDateTimeFormats : formats);
+  static fromString(value: string, ...formats: string[]): moment.Moment;
+  static fromString(value: string | undefined, ...formats: string[]): moment.Moment | undefined;
+  public static fromString(value: string | undefined, ...formats: string[]) {
+    return String.isNullOrEmpty(value) ? undefined : moment.utc(value, formats.length === 0 ? DefaultDateTimeFormats : formats);
   }
 
   /**
    * Converts a .NET DateTime.Ticks value to a moment value (and optionally sets the UTC offset)
    * NOTE: if no offset is provided, UTC is assumed
    */
-  public static fromNumber(value: number, offset?: number | string) {
+  static fromNumber(value: number, offset?: number | string): moment.Moment;
+  static fromNumber(value: number | undefined, offset?: number | string): moment.Moment | undefined;
+  public static fromNumber(value: number | undefined, offset?: number | string) {
     if (value == null) {
-      return null;
+      return undefined;
     }
 
     const result = moment(value / TicksPerMillisecond - EpochOffset);
@@ -51,8 +59,10 @@ export class DateTime {
   /**
    * Converts a moment value to a DateTime.Ticks
    */
-  public static toNumber(value: moment.Moment) {
-    return (value != null && value.isValid()) ? (value.valueOf() + EpochOffset) * TicksPerMillisecond : null;
+  static toNumber(value: moment.Moment): number;
+  static toNumber(value: moment.Moment | undefined): number | undefined;
+  public static toNumber(value: moment.Moment | undefined) {
+    return (value != null && value.isValid()) ? (value.valueOf() + EpochOffset) * TicksPerMillisecond : undefined;
   }
 }
 
@@ -64,21 +74,27 @@ export class TimeSpan {
    * Converts a .NET TimeSpan string to a moment duration
    * i.e. "1.05:37:46.6660000" (1.23456789 days)
    */
-  public static fromString(value: string) {
-    return String.isNullOrEmpty(value) ? null : moment.duration(value);
+  static fromString(value: string): moment.Duration;
+  static fromString(value: string | undefined): moment.Duration | undefined;
+  public static fromString(value: string | undefined) {
+    return String.isNullOrEmpty(value) ? undefined : moment.duration(value);
   }
 
   /**
    * Converts a .NET TimeSpan.Ticks value to a moment duration
    */
-  public static fromNumber(value: number) {
-    return value == null ? null : moment.duration(value / TicksPerMillisecond);
+  static fromNumber(value: number): moment.Duration;
+  static fromNumber(value: number | undefined): moment.Duration | undefined;
+  public static fromNumber(value: number | undefined) {
+    return value == null ? undefined : moment.duration(value / TicksPerMillisecond);
   }
 
   /**
    * Converts a moment duration a .NET TimeSpan.Ticks amount
    */
-  public static toNumber(value: moment.Duration) {
-    return value == null ? null : value.asMilliseconds() * TicksPerMillisecond;
+  static toNumber(value: moment.Duration): number;
+  static toNumber(value: moment.Duration | undefined): number | undefined;
+  public static toNumber(value: moment.Duration | undefined) {
+    return value == null ? undefined : value.asMilliseconds() * TicksPerMillisecond;
   }
 }

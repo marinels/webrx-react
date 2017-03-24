@@ -12,7 +12,7 @@ export class SampleData {
     Object.assign(this.actions, data.getActions());
 
     if (String.isNullOrEmpty(name) === false) {
-      (<any>this)[name] = data;
+      (<any>this)[<string>name] = data;
     }
   }
 
@@ -21,7 +21,7 @@ export class SampleData {
   }
 
   getObservable<T>(action: string, params?: any) {
-    let result: Observable<T> = null;
+    let result: Observable<T>;
     let sampleDataAction = this.actions[action];
 
     if (sampleDataAction != null) {
@@ -29,7 +29,7 @@ export class SampleData {
         .delay(this.delay);
     }
     else {
-      result = Observable.throw<T>(`Sample DataStore Action Not Found: ${action}`);
+      result = Observable.throw<T>(new Error(`Sample DataStore Action Not Found: ${ action }`));
     }
 
     return result;

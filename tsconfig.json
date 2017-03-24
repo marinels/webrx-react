@@ -13,7 +13,7 @@
       "*": [ "src/types/*" ]
     },
     "preserveConstEnums": true,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "target": "es5"
   },
   "files": [

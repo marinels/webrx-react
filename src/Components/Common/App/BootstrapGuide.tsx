@@ -10,7 +10,7 @@ export interface BootstrapGuideProps {
 }
 
 export class BootstrapGuide extends React.Component<BootstrapGuideProps, any> {
-  private mouseMoveSub: IDisposable;
+  private mouseMoveSub: IDisposable | undefined;
 
   componentDidMount() {
     const guide = findDOMNode(this.refs['guide']) as HTMLDivElement;

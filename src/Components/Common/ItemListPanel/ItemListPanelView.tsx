@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as classNames from 'classnames';
 
 import { BaseView, ViewModelProps } from '../../React/BaseView';
-import { DataGridView, DataGridProps, DataGridColumn, DataGridTableViewTemplate } from '../DataGrid/DataGridView';
+import { DataGridView, DataGridProps, DataGridColumn, DataGridTableViewTemplate, DataGridViewType } from '../DataGrid/DataGridView';
 import { CommonPanel, CommonPanelProps } from '../CommonPanel/CommonPanel';
 import { ItemListPanelViewModel } from './ItemListPanelViewModel';
 
@@ -33,7 +33,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
       return { fill, viewTemplate, search, pager, loadingContent, selectable, highlightSelected, checkmarkSelected };
     });
 
-    const viewType = props.viewTemplate instanceof DataGridTableViewTemplate ? 'Table' : 'List';
+    const viewType: DataGridViewType = props.viewTemplate instanceof DataGridTableViewTemplate ? 'Table' : 'List';
 
     return (
       <CommonPanel { ...rest } className={ classNames('ItemListPanel', viewType, className) }>
@@ -43,7 +43,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
             () => this.renderConditional(
               React.isValidElement(props.search),
               () => props.search,
-              () => <DataGridView.Search { ...(props.search === true ? {} : props.search) } grid={ this.state.grid } viewTemplate={ props.viewTemplate } fill />,
+              () => <DataGridView.Search { ...(props.search === true ? {} : props.search) } grid={ this.state.grid } viewType={ viewType } fill />,
             ),
           )
         }
@@ -56,7 +56,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
             () => this.renderConditional(
               React.isValidElement(props.pager),
               () => props.pager,
-              () => <DataGridView.Pager { ...(props.pager === true ? {} : props.pager) } grid={ this.state.grid } viewTemplate={ props.viewTemplate } fill />,
+              () => <DataGridView.Pager { ...(props.pager === true ? {} : props.pager) } grid={ this.state.grid } viewType={ viewType } fill />,
             ),
           )
         }

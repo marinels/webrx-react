@@ -60,17 +60,17 @@ export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
   }
 
   protected createRegex(filter: string) {
-    let regex: RegExp = null;
+    let regex: RegExp | undefined;
 
     if (String.isNullOrEmpty(filter) === false) {
       try {
-        regex = new RegExp(filter, this.isCaseInsensitive ? 'i' : null);
+        regex = new RegExp(filter, this.isCaseInsensitive ? 'i' : undefined);
       }
       catch (e) {
         // strip any regex syntax characters from the filter and create a "safe" escaped regex
         // see: http://stackoverflow.com/a/6300234/2789877
         filter = filter.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
-        regex = new RegExp(filter, this.isCaseInsensitive ? 'i' : null);
+        regex = new RegExp(filter, this.isCaseInsensitive ? 'i' : undefined);
       }
     }
 

@@ -99,7 +99,7 @@ export abstract class BaseViewModel implements IDisposable {
 
   public getObservableOrAlert<T, TError>(
     observableFactory: () => Observable<T>,
-    header: string,
+    header?: string,
     style?: string,
     timeout?: number,
     errorFormatter?: (e: TError) => string,

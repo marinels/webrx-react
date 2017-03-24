@@ -50,7 +50,7 @@ import {
 } from '../Common';
 
 export interface ViewActivator {
-  (component: any, componentRoute: string): any;
+  (component: any, componentRoute: string | undefined): any;
 }
 
 export interface ViewActivatorMap {
@@ -171,7 +171,11 @@ const viewMap: ViewActivatorMap = {
   ContextMenu: () => (
     <div>
       <ContextMenu id='demo' header='Optional Header' onSelect={(item) => {
-        logger.info(item.eventKey || item.href);
+        const content = String.isNullOrEmpty(item.eventKey) ?
+          item.href :
+          `eventKey = ${ String.stringify(item.eventKey) }`;
+
+        Alert.create(content, 'Context Menu Item Clicked');
       }}>
         <div style={({ padding: 15, border: '1px dashed black' })}>Right Click Here for the Context Menu</div>
 
@@ -191,18 +195,18 @@ const viewMap: ViewActivatorMap = {
     return (
       <div>
         <div>
-          <ProfilePicture style={style} src={null} title='Basic Icon' />
-          <ProfilePicture style={style} src={null} iconSize='2x' title='2x Size Icon' />
-          <ProfilePicture style={style} src={null} thumbnail title='Thumbnail Icon' />
-          <ProfilePicture style={style} src={null} iconSize='2x' thumbnail size={40} title='Fixed Width/Height Icon' />
-          <ProfilePicture style={style} src={null} iconSize='2x' thumbnail rounded size={40} title='Rounded Icon' />
-          <ProfilePicture style={style} src={imageData} title='Basic Image' />
-          <ProfilePicture style={style} src={imageData} rounded title='Rounded Image' />
-          <ProfilePicture style={style} src={imageData} thumbnail title='Thumbnail Image' />
-          <ProfilePicture style={style} src={imageData} thumbnail size={40} title='Fixed Width/Height Image' />
+          <ProfilePicture style={ style } src={ undefined } title='Basic Icon' />
+          <ProfilePicture style={ style } src={ undefined } iconSize='2x' title='2x Size Icon' />
+          <ProfilePicture style={ style } src={ undefined } thumbnail title='Thumbnail Icon' />
+          <ProfilePicture style={ style } src={ undefined } iconSize='2x' thumbnail size={ 40 } title='Fixed Width/Height Icon' />
+          <ProfilePicture style={ style } src={ undefined } iconSize='2x' thumbnail rounded size={ 40 } title='Rounded Icon' />
+          <ProfilePicture style={ style } src={ imageData } title='Basic Image' />
+          <ProfilePicture style={ style } src={ imageData } rounded title='Rounded Image' />
+          <ProfilePicture style={ style } src={ imageData } thumbnail title='Thumbnail Image' />
+          <ProfilePicture style={ style } src={ imageData } thumbnail size={ 40} title='Fixed Width/Height Image' />
         </div>
-        <div style={({ height: 250 })}>
-          <ProfilePicture style={style} src={imageData} thumbnail responsive title='Responsive Image' />
+        <div style={ ({ height: 250 }) }>
+          <ProfilePicture style={ style } src={ imageData } thumbnail responsive title='Responsive Image' />
         </div>
       </div>
     );
@@ -232,7 +236,7 @@ const viewMap: ViewActivatorMap = {
     }
   },
   DataGridViewModel: (viewModel: DataGridViewModel<any>, componentRoute: string) => {
-    let view: DataGridViewTemplate<SampleData> = undefined;
+    let view: DataGridViewTemplate<SampleData> | undefined;
     let columns: any;
     let pager: any = true;
     let search = false;
@@ -256,7 +260,7 @@ const viewMap: ViewActivatorMap = {
       // pager = (<DataGridView.Pager grid={ viewModel } viewTemplate={ view } order={ [ null, 'info' ] } />);
     }
 
-    if (componentRoute === 'DataGrid') {
+    if (componentRoute === 'DataGrid' || componentRoute === 'DataGridRoutingState') {
       search = true;
       columns = [
         <DataGridColumn key='id' fieldName='id' header='ID' sortable

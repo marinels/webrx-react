@@ -43,22 +43,20 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { viewMap, guide, brand, alerts, header, footer, copyright } = x;
-      return { viewMap, guide, brand, alerts, header, footer, copyright };
+      const { viewMap, guide, brand, branduri, alerts, header, footer, copyright } = x;
+      return { viewMap, guide, brand, branduri, alerts, header, footer, copyright };
     });
 
     return (
       <div { ...rest } className={ classNames('App', className) }>
         {
           this.renderConditional(this.state.isLoading, () => (
-            <div className='preload'>
-              <i className='fa fa-spinner fa-5x fa-pulse' aria-hidden='true'></i>
-            </div>
+            <i className='preload fa fa-spinner fa-5x fa-pulse' aria-hidden='true'></i>
           ), () => (
             <div>
-              { this.renderConditional(props.guide, () => (<BootstrapGuide />)) }
+              { this.renderConditional(props.guide!, () => (<BootstrapGuide />)) }
               {
-                this.renderConditional(props.alerts, () => (
+                this.renderConditional(props.alerts!, () => (
                   <div className='float-container'>
                     <Grid>
                       <AlertHostView viewModel={ this.state.alerts } />
@@ -66,9 +64,9 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
                   </div>
                 ))
               }
-              { this.renderConditional(props.header, () => (<PageHeaderView viewModel={ this.state.header } brand={ props.brand } />)) }
-              <RouteHandlerView viewModel={ this.state.routeHandler } viewMap={ props.viewMap } />
-              { this.renderConditional(props.footer, () => (<PageFooterView viewModel={ this.state.footer } copyright={ props.copyright } />)) }
+              { this.renderConditional(props.header!, () => (<PageHeaderView viewModel={ this.state.header } brand={ props.brand } branduri={ props.branduri } />)) }
+              <RouteHandlerView viewModel={ this.state.routeHandler } viewMap={ props.viewMap! } />
+              { this.renderConditional(props.footer!, () => (<PageFooterView viewModel={ this.state.footer } copyright={ props.copyright } />)) }
             </div>
           ))
         }

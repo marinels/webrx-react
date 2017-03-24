@@ -9,7 +9,7 @@ import { ListGroup, ListGroupProps, ListGroupItem } from 'react-bootstrap';
 import { BaseView, ViewModelProps } from '../../React/BaseView';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { ListViewModel } from './ListViewModel';
-import { renderConditional } from '../../React/RenderHelpers';
+import { renderConditional, renderNullable } from '../../React/RenderHelpers';
 
 export * from './NavButton';
 
@@ -34,13 +34,15 @@ export interface ListViewRenderTemplate<TData, TView extends React.Component<Lis
 export abstract class BaseListViewTemplate<TItem, TData, TView extends React.Component<ListViewRenderTemplateProps, any>> implements ListViewRenderTemplate<TData, TView> {
   public static displayName = 'BaseListViewTemplate';
 
+  protected renderTemplateContainer: (content: any, item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) => any;
+
   constructor(
     protected renderItem: (item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) => any = (x, data) => data.toString(),
     protected renderItemActions?: (item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) => any,
     protected keySelector: (item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) => any = (x, d, index) => index,
-    protected renderTemplateContainer?: (content: any, item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) => any,
+    renderTemplateContainer?: (content: any, item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) => any,
   ) {
-    this.renderTemplateContainer = this.renderTemplateContainer || this.renderDefaultTemplateContainer;
+    this.renderTemplateContainer = renderTemplateContainer || this.renderDefaultTemplateContainer;
   }
 
   protected renderDefaultTemplateContainer(content: any, item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) {
@@ -110,9 +112,9 @@ export abstract class BaseListViewTemplate<TItem, TData, TView extends React.Com
   }
 
   protected renderActions(item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) {
-    return renderConditional(this.renderItemActions != null, () => (
+    return renderNullable(this.renderItemActions, renderItemActions => (
       <div className='List-itemActions'>
-        { this.renderItemActions(item, data, index, viewModel, view) }
+        { renderItemActions(item, data, index, viewModel, view) }
       </div>
     ));
   }
@@ -124,7 +126,7 @@ export abstract class BaseListViewTemplate<TItem, TData, TView extends React.Com
   }
 
   protected getClassName(): string {
-    return null;
+    return '';
   }
 
   protected abstract getItems(viewModel: ReadonlyListViewModel<TData>, view: TView): TItem[];
@@ -195,9 +197,9 @@ export interface TreeNode<TData> {
 export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData>, TData, ListView> {
   public static displayName = 'TreeViewTemplate';
 
-  private nodes: wx.IObservableReadOnlyProperty<TreeNode<TData>[]>;
-  private items: wx.IObservableReadOnlyProperty<TreeNode<TData>[]>;
-  private toggleNode: wx.ICommand<TreeNode<TData>>;
+  private nodes: wx.IObservableReadOnlyProperty<TreeNode<TData>[]> | undefined;
+  private items: wx.IObservableReadOnlyProperty<TreeNode<TData>[]> | undefined;
+  private toggleNode: wx.ICommand<TreeNode<TData> | undefined>;
   private lastKey = 0;
 
   constructor(
@@ -228,7 +230,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
       .toProperty();
 
     this.items = wx
-      .whenAny(this.nodes, this.toggleNode.results.startWith(null), x => x || [])
+      .whenAny(this.nodes, this.toggleNode.results.startWith(undefined), x => x || [])
       .map(x => this.getExpandedNodes(x))
       .do(x => {
         if (x != null) {
@@ -241,12 +243,12 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
   cleanup(viewModel: ReadonlyListViewModel<TData>, view: ListView) {
     if (this.nodes != null) {
       this.nodes.dispose();
-      this.nodes = null;
+      this.nodes = undefined;
     }
 
     if (this.items != null) {
       this.items.dispose();
-      this.items = null;
+      this.items = undefined;
     }
   }
 
@@ -255,7 +257,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
   }
 
   getItems(viewModel: ReadonlyListViewModel<TData>, view: ListView) {
-    return this.items();
+    return this.items == null ? [] : this.items();
   }
 
   getItemData(node: TreeNode<TData>, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) {
@@ -347,24 +349,24 @@ export class ListView extends BaseView<ListProps, ListViewModel<any, any>> {
   initialize() {
     super.initialize();
 
-    this.props.viewTemplate.initialize(this.state, this);
+    this.props.viewTemplate!.initialize(this.state, this);
   }
 
   updated(prevProps: ListProps) {
     // if the view was changed then we need to re-init
     if (prevProps.viewTemplate !== this.props.viewTemplate) {
       // cleanup old view
-      prevProps.viewTemplate.cleanup(this.state, this);
+      prevProps.viewTemplate!.cleanup(this.state, this);
 
       // initialize new view
-      this.props.viewTemplate.initialize(this.state, this);
+      this.props.viewTemplate!.initialize(this.state, this);
     }
   }
 
   cleanup() {
     super.cleanup();
 
-    this.props.viewTemplate.cleanup(this.state, this);
+    this.props.viewTemplate!.cleanup(this.state, this);
   }
 
   updateOn() {
@@ -380,7 +382,7 @@ export class ListView extends BaseView<ListProps, ListViewModel<any, any>> {
       return { viewTemplate, selectable, highlightSelected, checkmarkSelected, emptyContent };
     });
 
-    const list = props.viewTemplate.render(this.state, this);
+    const list = props.viewTemplate!.render(this.state, this);
 
     return React.cloneElement(
       list,
