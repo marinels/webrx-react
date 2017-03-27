@@ -2,6 +2,7 @@
 // gulp tasks prefer unregulated arrow-body-style
 /* eslint-disable no-sync,arrow-body-style */
 
+import 'babel-polyfill';
 import File from 'vinyl';
 import WebpackDevServer from 'webpack-dev-server';
 import del from 'del';
@@ -298,7 +299,6 @@ function getWebpackConfig(build, uglify, dist) {
 
   if (build === config.builds.debug) {
     webpackConfig.plugins[0].definitions.DEBUG = true;
-    webpackConfig.debug = true;
   } else if (build === config.builds.release) {
     if (uglify === true) {
       webpackConfig.output.filename = util.replaceExtension(webpackConfig.output.filename, '.min.js');
@@ -422,7 +422,7 @@ function webpackBuild(build, webpackConfig, callback) {
 
   log('Bundling', util.colors.yellow(build), 'Build:', util.colors.magenta(target));
 
-  return webpackStream(webpackConfig, null, (err, stats) => {
+  return webpackStream(webpackConfig, webpack, (err, stats) => {
     if (callback) {
       callback(err, stats);
 
@@ -430,7 +430,15 @@ function webpackBuild(build, webpackConfig, callback) {
     }
 
     onWebpackComplete(build, err, stats);
-  });
+
+    if (err || (stats.compilation.errors || []).length) {
+      // this is required for external scripts to handle webpack errors
+      // eslint-disable-next-line no-process-exit
+      process.exit(1);
+    }
+  })
+  // this is required to swallow webpack-stream errors (we handle them on our own)
+  .on('error', () => null);
 }
 
 function webpackWatcherStream(webpackConfig, build) {
@@ -549,16 +557,15 @@ gulp.task('watch:webpack', [ 'clean:build', 'index:watch' ], (done) => {
   webpackConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
   webpackConfig.devtool = 'eval';
   webpackConfig.watch = true;
-  webpackConfig.failOnError = false;
-  webpackConfig.debug = true;
   webpackConfig.profile = config.profile;
 
-  webpackConfig.module.loaders = [
-    { test: /\.css$/, loader: 'style!css?sourceMap' },
-    { test: /\.less$/, loader: 'style!css?sourceMap!less?sourceMap' },
-    { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url?mimetype=application/font-woff' },
-    { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url' },
-    { test: /\.tsx?$/, loaders: [ 'react-hot', 'awesome-typescript' ] },
+  webpackConfig.module.rules = [
+    { test: /\.css$/, use: [ 'style-loader', 'css-loader' ] },
+    { test: /\.less$/, use: [ 'style-loader', 'css-loader', 'less-loader' ] },
+    { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, use: 'url-loader?mimetype=application/font-woff' },
+    { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, use: 'url-loader' },
+    { test: /\.(png|jpg|gif)$/, use: 'url-loader' },
+    { test: /\.tsx?$/, use: [ 'react-hot-loader', 'awesome-typescript-loader' ] },
   ];
 
   const compiler = webpack(webpackConfig);
@@ -613,8 +620,6 @@ gulp.task('watch:mocha', [ 'clean:build' ], () => {
 
   webpackConfig.devtool = 'eval';
   webpackConfig.watch = true;
-  webpackConfig.failOnError = false;
-  webpackConfig.debug = true;
 
   const reporter = args.reporter || 'dot';
 
@@ -656,7 +661,6 @@ gulp.task('watch:dist', [ 'clean:build', 'clean:dist' ], () => {
   log('Deploying', util.colors.yellow(config.builds.release), 'Build to', util.colors.magenta(target));
 
   webpackConfig.watch = true;
-  webpackConfig.failOnError = false;
 
   return webpackWatcherStream(webpackConfig, config.builds.watch)
     .pipe(gulp.dest(target))

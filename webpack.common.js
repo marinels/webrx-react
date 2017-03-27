@@ -10,7 +10,7 @@ module.exports = {
     new webpack.DefinePlugin({ DEBUG: false, PRODUCTION: false, TEST: false, WEBPACK_DEV_SERVER: false }),
   ],
   resolve: {
-    extensions: [ '', '.ts', '.tsx', '.webpack.js', '.web.js', '.js' ],
+    extensions: [ '.ts', '.tsx', '.webpack.js', '.web.js', '.js' ],
     alias: {
       webrx: 'webrx/dist/web.rx.lite.js',
       // the ix package uses Ix to refer to l2o for some reason
@@ -18,5 +18,5 @@ module.exports = {
       Ix: 'ix/l2o',
     },
   },
-  failOnError: true,
+  // failOnError: true,
 };
