@@ -4,13 +4,17 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const webpackCommon = require('./webpack.common');
 
-const cssLoader = ExtractTextPlugin.extract('style-loader', 'css-loader?sourceMap');
-const lessLoader = ExtractTextPlugin.extract('style-loader', 'css-loader?sourceMap!less-loader?sourceMap');
+const cssLoader = ExtractTextPlugin.extract(
+  { fallback: 'style-loader', use: 'css-loader?sourceMap' }
+);
+const lessLoader = ExtractTextPlugin.extract(
+  { fallback: 'style-loader', use: [ 'css-loader?sourceMap', 'less-loader?sourceMap' ] }
+);
 
 module.exports = Object.assign(clone(webpackCommon), {
   entry: {
     'webrx-react': [
-      path.resolve('src', 'app.tsx'),
+      path.resolve(__dirname, 'src', 'app.tsx'),
     ],
     vendor: [
       'bootstrap/less/bootstrap.less',
@@ -30,21 +34,21 @@ module.exports = Object.assign(clone(webpackCommon), {
     ],
   },
   output: {
-    path: path.resolve('build'),
+    path: path.resolve(__dirname, 'build'),
     filename: '[name].js',
   },
   plugins: [
     webpackCommon.plugins[0],
-    new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js'),
+    new webpack.optimize.CommonsChunkPlugin({ name: 'vendor', filename: 'vendor.js' }),
     new ExtractTextPlugin('[name].css'),
   ],
   module: {
-    loaders: [
-      { test: /\.css$/, loader: cssLoader },
-      { test: /\.less$/, loader: lessLoader },
-      { test: /moment[\\/]locale/, loader: 'file?name=locale/moment/[name].[ext]' },
-      { test: /\.(woff|woff2|ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file?name=fonts/[name].[ext]' },
-      { test: /\.tsx?$/, loader: 'awesome-typescript' },
+    rules: [
+      { test: /\.css$/, use: cssLoader },
+      { test: /\.less$/, use: lessLoader },
+      { test: /moment[\\/]locale/, use: 'file-loader?name=locale/moment/[name].[ext]' },
+      { test: /\.(woff|woff2|ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, use: 'file-loader?name=fonts/[name].[ext]' },
+      { test: /\.tsx?$/, use: 'awesome-typescript-loader' },
     ],
   },
 });
