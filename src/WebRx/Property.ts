@@ -71,7 +71,7 @@ export function property<T>(
 ): Property<T> {
   const prop = new ObservableProperty(initialValue, source);
 
-  return Object.assign<Property<T>>(property, function(this: Property<T>, value: T) {
+  return Object.assign<Property<T>>(function(this: Property<T>, value: T) {
     if (arguments.length === 0) {
       return this.value;
     }
@@ -79,5 +79,5 @@ export function property<T>(
     this.value = value;
 
     return undefined;
-  });
+  }, prop);
 }
