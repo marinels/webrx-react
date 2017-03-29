@@ -11,7 +11,7 @@ describe('ObservableApi', () => {
   const body = String.stringify(data, null, 2);
   const params = { param1: 'param1 value' };
   const uriParams = 'param1=param1+value';
-  const options = <wx.IHttpClientOptions>{
+  const options = <rxdom.AjaxSettings>{
     xmlHttpRequest: () => {
       const xhr = new XMLHttpRequest();
 
