@@ -11,36 +11,42 @@ export class AlertHostViewModel extends BaseViewModel {
 
   private currentAlertKey = 0;
 
-  public alerts: wx.IObservableList<AlertViewModel>;
+  public alerts: wx.IObservableReadOnlyProperty<AlertViewModel[]>;
 
-  private newAlert: wx.ICommand<AlertCreated>;
+  private addAlert: wx.ICommand<AlertViewModel>;
+  private removeAlert: wx.ICommand<AlertViewModel>;
 
   constructor() {
     super();
 
-    this.alerts = wx.list<AlertViewModel>();
+    const alerts = wx.property<AlertViewModel[]>([]);
+    this.alerts = <wx.IObservableReadOnlyProperty<AlertViewModel[]>>alerts;
 
-    this.newAlert = wx.asyncCommand((x: AlertCreated) => Observable.of(x));
+    this.addAlert = wx.asyncCommand((alert: AlertViewModel) => {
+      this.alerts(this.alerts().concat([ alert ]));
+      return Observable.of(alert);
+    });
+
+    this.removeAlert = wx.asyncCommand((alert: AlertViewModel) => {
+      this.alerts(this.alerts().filter(x => x !== alert));
+      return Observable.of(alert);
+    });
 
     this.subscribe(
-      pubSub.observe<AlertCreated>(AlertCreatedKey)
-        .invokeCommand(this.newAlert),
+      this.addAlert.results
+        .flatMap(alert => {
+          return wx
+            .whenAny(alert.isVisible, isVisible => ({ alert, isVisible }))
+            .filter(x => x.isVisible === false)
+            .map(x => x.alert);
+        })
+        .invokeCommand(this.removeAlert),
     );
 
     this.subscribe(
-      this.newAlert.results
+      pubSub.observe<AlertCreated>(AlertCreatedKey)
         .map(x => new AlertViewModel(++this.currentAlertKey, x.content, x.header, x.style, x.timeout))
-        .subscribe(alert => {
-          wx
-            .whenAny(alert.isVisible, x => x)
-            .filter(x => x === false)
-            .take(1)
-            .subscribe(x => {
-              this.alerts.remove(alert);
-            });
-
-          this.alerts.add(alert);
-        }),
+        .invokeCommand(this.addAlert),
     );
   }
 }
