@@ -22,7 +22,7 @@ describe('ObservableApi', () => {
   };
   const baseUriOverride = 'http://test2.com/';
 
-  describe.only('getObservableResult', () => {
+  describe('getObservableResult', () => {
     it('creates a GET request', () => {
       const request = Observable.of(true);
       const stub = sandbox.stub(api, 'getRequest').callsFake(() => request);
