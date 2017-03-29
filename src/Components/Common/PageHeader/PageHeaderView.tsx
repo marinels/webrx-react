@@ -29,12 +29,12 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
 
   updateOn() {
     return [
-      this.state.sidebarMenus.listChanged,
-      this.state.navbarMenus.listChanged,
-      this.state.navbarActions.listChanged,
-      this.state.helpMenuItems.listChanged,
-      this.state.adminMenuItems.listChanged,
-      this.state.userMenuItems.listChanged,
+      this.state.sidebarMenus.changed,
+      this.state.navbarMenus.changed,
+      this.state.navbarActions.changed,
+      this.state.helpMenuItems.changed,
+      this.state.adminMenuItems.changed,
+      this.state.userMenuItems.changed,
       this.state.isSidebarVisible.changed,
     ];
   }
@@ -153,8 +153,8 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
   }
 
   private renderRoutedMenus() {
-    return this.renderConditional(this.state.navbarMenus.length() > 0, () =>
-      this.getOrderedActions(this.state.navbarMenus.toArray())
+    return this.renderConditional(this.state.navbarMenus().length > 0, () =>
+      this.getOrderedActions(this.state.navbarMenus())
         .map(x => {
           return this.renderHeaderMenu(
             x.id,
@@ -170,7 +170,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
     return this.renderHeaderMenu(
       'helpMenu',
       (<Icon name='question-circle' size='2x' />),
-      this.state.helpMenuItems.toArray(),
+      this.state.helpMenuItems(),
       true,
     );
   }
@@ -179,7 +179,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
     return this.renderHeaderMenu(
       'adminMenu',
       (<Icon name='cog' size='2x' />),
-      this.state.adminMenuItems.toArray(),
+      this.state.adminMenuItems(),
       true,
       'hover-spin',
     );
@@ -189,7 +189,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
     return this.renderHeaderMenu(
       'userMenu',
       (<ProfilePicture src={ this.state.userImage } title={ this.state.userDisplayName } iconSize='2x' size={ 30 } />),
-      this.state.userMenuItems.toArray(),
+      this.state.userMenuItems(),
       true,
     );
   }
@@ -203,7 +203,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
   }
 
   private renderRoutedActions() {
-    const visibleActions = this.getVisibleActions(this.state.navbarActions.toArray());
+    const visibleActions = this.getVisibleActions(this.state.navbarActions());
 
     return (
       <Navbar.Form className='PageHeader-routedActions' pullRight>
@@ -232,7 +232,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
       >
         {
           this.renderConditional(this.state.isSidebarVisible, () =>
-            this.getOrderedActions(this.state.sidebarMenus.toArray())
+            this.getOrderedActions(this.state.sidebarMenus())
               .map(menu => {
                 const visibleActions = this.getVisibleActions(menu.items);
 

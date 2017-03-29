@@ -14,12 +14,12 @@ export class PageHeaderViewModel extends BaseViewModel {
   private dynamicSubs: SubMan;
 
   public search: SearchViewModel | undefined;
-  public sidebarMenus: wx.IObservableList<HeaderMenu>;
-  public navbarMenus: wx.IObservableList<HeaderMenu>;
-  public navbarActions: wx.IObservableList<HeaderCommandAction>;
-  public helpMenuItems: wx.IObservableList<HeaderCommandAction>;
-  public adminMenuItems: wx.IObservableList<HeaderCommandAction>;
-  public userMenuItems: wx.IObservableList<HeaderCommandAction>;
+  public sidebarMenus: wx.IObservableProperty<HeaderMenu[]>;
+  public navbarMenus: wx.IObservableProperty<HeaderMenu[]>;
+  public navbarActions: wx.IObservableProperty<HeaderCommandAction[]>;
+  public helpMenuItems: wx.IObservableProperty<HeaderCommandAction[]>;
+  public adminMenuItems: wx.IObservableProperty<HeaderCommandAction[]>;
+  public userMenuItems: wx.IObservableProperty<HeaderCommandAction[]>;
   public isSidebarVisible: wx.IObservableReadOnlyProperty<boolean>;
 
   public menuItemSelected: wx.ICommand<HeaderCommandAction>;
@@ -41,12 +41,12 @@ export class PageHeaderViewModel extends BaseViewModel {
 
     this.dynamicSubs = new SubMan();
 
-    this.sidebarMenus = wx.list<HeaderMenu>();
-    this.navbarMenus = wx.list<HeaderMenu>();
-    this.navbarActions = wx.list<HeaderCommandAction>();
-    this.helpMenuItems = wx.list<HeaderCommandAction>();
-    this.adminMenuItems = wx.list<HeaderCommandAction>();
-    this.userMenuItems = wx.list<HeaderCommandAction>();
+    this.sidebarMenus = wx.property<HeaderMenu[]>();
+    this.navbarMenus = wx.property<HeaderMenu[]>();
+    this.navbarActions = wx.property<HeaderCommandAction[]>();
+    this.helpMenuItems = wx.property<HeaderCommandAction[]>();
+    this.adminMenuItems = wx.property<HeaderCommandAction[]>();
+    this.userMenuItems = wx.property<HeaderCommandAction[]>();
 
     this.toggleSideBar = wx.asyncCommand((isVisible: boolean) =>
       Observable.of(Object.fallback(isVisible, !this.isSidebarVisible())),
@@ -119,28 +119,29 @@ export class PageHeaderViewModel extends BaseViewModel {
     this.addItems(this.userMenuItems, this.staticUserMenuItems, component, x => x.getUserMenuItems);
   }
 
-  private addItems<T extends HeaderAction>(list: wx.IObservableList<T>, staticItems: T[], component?: any, delegateSelector?: (viewModel: BaseRoutableViewModel<any>) => (() => T[])) {
-    wx.using(list.suppressChangeNotifications(), () => {
-      // start by clearing the action list
-      list.clear();
-      // then add all the static items
-      list.addRange(staticItems);
+  private addItems<T extends HeaderAction>(list: wx.IObservableProperty<T[]>, staticItems: T[], component?: any, delegateSelector?: (viewModel: BaseRoutableViewModel<any>) => (() => T[])) {
+    let routedItems: T[] | undefined;
 
-      // then attempt to add any routed actions to the list
-      if (delegateSelector != null && isRoutableViewModel(component)) {
-        let selector = delegateSelector(component);
-        if (selector != null) {
-          list.addRange(selector.apply(component) as T[]);
-        }
+    // interrogate the routed component for items from the delegate selector
+    if (delegateSelector != null && isRoutableViewModel(component)) {
+      let selector = delegateSelector(component);
+      if (selector != null) {
+        routedItems = <T[]>selector.apply(component);
       }
+    }
 
-      // finally sort the list so that we retain a consistent order
-      list.sort((a, b) => (a.order || 0) - (b.order || 0));
-    });
+    list(
+      // start with all the static items
+      staticItems
+        // then add any routed actions
+        .concat(routedItems || [])
+        // finally sort the list so that we retain a consistent order
+        .sort((a, b) => (a.order || 0) - (b.order || 0)),
+    );
 
     // now that our list is populated with our header actions, subscribe to the
     // canExecute observable to manage the disabled status of any header action
-    list
+    list()
       .map((x: HeaderAction) => isHeaderCommandAction(x) ? x : undefined)
       .filter(x => x != null)
       .map(x => x!)
