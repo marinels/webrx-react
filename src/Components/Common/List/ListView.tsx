@@ -241,15 +241,8 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
   }
 
   cleanup(viewModel: ReadonlyListViewModel<TData>, view: ListView) {
-    if (this.nodes != null) {
-      this.nodes.dispose();
-      this.nodes = undefined;
-    }
-
-    if (this.items != null) {
-      this.items.dispose();
-      this.items = undefined;
-    }
+    this.nodes = Object.dispose(this.nodes);
+    this.items = Object.dispose(this.items);
   }
 
   getClassName() {
