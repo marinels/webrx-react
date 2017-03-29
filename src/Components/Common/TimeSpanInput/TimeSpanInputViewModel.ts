@@ -1,7 +1,7 @@
 import { Observable } from 'rx';
-import * as wx from 'webrx';
 import * as moment from 'moment';
 
+import { wx } from '../../../WebRx';
 import { BaseViewModel } from '../../React/BaseViewModel';
 
 export enum TimeSpanUnitType {

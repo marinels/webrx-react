@@ -1,6 +1,6 @@
 import { Observable, Subject, Scheduler } from  'rx';
-import * as wx from 'webrx';
 
+import { wx } from '../WebRx';
 import { Logging } from '../Utils';
 import { HashCodec } from './HashCodec';
 

@@ -1,6 +1,6 @@
 import { Observable } from 'rx';
-import * as wx from 'webrx';
 
+import { wx } from '../../../WebRx';
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 
 export const StandardLimits = [ 10, 25, 0 ];

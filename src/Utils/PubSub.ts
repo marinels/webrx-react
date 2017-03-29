@@ -1,5 +1,4 @@
 import { Subject, IDisposable } from 'rx';
-import * as wx from 'webrx';
 
 import { Logger, getLogger } from './Logging';
 
@@ -10,11 +9,11 @@ interface PubSubMap {
 export class PubSub implements IDisposable {
   public static displayName = 'PubSub';
 
-  private logger: wx.Lazy<Logger>;
+  private logger: Logger;
   private map: PubSubMap | undefined;
 
   constructor() {
-    this.logger = new wx.Lazy(() => getLogger(PubSub.displayName));
+    this.logger = getLogger(PubSub.displayName);
     this.map = {};
   }
 
@@ -37,7 +36,7 @@ export class PubSub implements IDisposable {
   public subscribe<T>(key: string, onNext?: (value: T) => void, onError?: (exception: any) => void, onCompleted?: () => void) {
     if (onError == null) {
       onError = e => {
-        this.logger.value.error('PubSub Error', e);
+        this.logger.error('PubSub Error', e);
       };
     }
 

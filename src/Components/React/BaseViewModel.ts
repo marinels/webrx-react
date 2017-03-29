@@ -1,6 +1,6 @@
 import { Observable, IDisposable } from 'rx';
-import * as wx from 'webrx';
 
+import { wx } from '../../WebRx';
 import { Logging, Alert, SubMan } from '../../Utils';
 import { Manager } from '../../Routing/RouteManager';
 
@@ -24,7 +24,7 @@ export function isViewModel(source: any): source is BaseViewModel {
 export abstract class BaseViewModel implements IDisposable {
   public static displayName = 'BaseViewModel';
 
-  private viewModelLogger = new wx.Lazy(() => Logging.getLogger(this.getDisplayName()));
+  private viewModelLogger = Logging.getLogger(this.getDisplayName());
   private isLoggingMemberObservables = false;
 
   protected subs = new SubMan();
@@ -76,7 +76,7 @@ export abstract class BaseViewModel implements IDisposable {
   }
 
   protected get logger() {
-    return this.viewModelLogger.value;
+    return this.viewModelLogger;
   }
 
   public isViewModel() {

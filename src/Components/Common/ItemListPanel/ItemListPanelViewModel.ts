@@ -1,5 +1,4 @@
-import * as wx from 'webrx';
-
+import { wx } from '../../../WebRx';
 import { BaseItemListPanelViewModel } from './BaseItemListPanelViewModel';
 import { DataGridViewModel, ProjectionRequest, ProjectionResult } from '../DataGrid/DataGridViewModel';
 import { ObjectComparer } from '../../../Utils/Compare';

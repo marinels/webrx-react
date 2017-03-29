@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Observable, IDisposable } from 'rx';
-import * as wx from 'webrx';
+
+import { wx } from '../../../WebRx';
 
 export interface ObservableWrapperProps {
   observableOrProperty: wx.ObservableOrProperty<any>;

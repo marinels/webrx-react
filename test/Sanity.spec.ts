@@ -1,7 +1,7 @@
 import { Observable, BehaviorSubject, TestScheduler } from 'rx';
-import * as wx from 'webrx';
 
 import { should, sandbox } from './setup';
+import { wx } from '../src/WebRx';
 
 describe('Sanity Tests', () => {
   describe('for mocha', () => {

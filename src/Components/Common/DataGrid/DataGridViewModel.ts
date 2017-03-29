@@ -1,6 +1,6 @@
 import { Observable } from 'rx';
-import * as wx from 'webrx';
 
+import { wx } from '../../../WebRx';
 import { ObjectComparer, SortDirection } from '../../../Utils/Compare';
 import { ListViewModel } from '../List/ListViewModel';
 import { SearchViewModel, SearchRoutingState } from '../Search/SearchViewModel';

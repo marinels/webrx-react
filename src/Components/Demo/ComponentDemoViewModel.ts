@@ -1,6 +1,6 @@
 import { Observable } from 'rx';
-import * as wx from 'webrx';
 
+import { wx } from '../../WebRx';
 import { Route } from '../../Routing/RouteManager';
 import { HeaderCommandAction, HeaderMenu } from '../React/Actions';
 import { BaseRoutableViewModel, isRoutableViewModel, RoutingBreadcrumb } from '../React/BaseRoutableViewModel';

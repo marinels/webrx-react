@@ -1,5 +1,6 @@
 import * as React from 'react';
-import * as wx from 'webrx';
+
+import { wx } from '../../../WebRx';
 
 export interface BindableProps {
   /**

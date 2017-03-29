@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { Grid } from 'react-bootstrap';
 import { Enumerable } from 'ix';
-import * as wx from 'webrx';
 
+import { wx } from '../../WebRx';
 import { Loading } from '../Common/Loading/Loading';
-
 
 export function renderEnumerable<T>(
   source: T[] | Enumerable<T> | undefined,

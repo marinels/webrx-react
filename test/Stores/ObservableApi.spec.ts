@@ -1,7 +1,8 @@
-import { should, fail, logger, sandbox, sinon } from '../setup';
-import { HttpRequestMethod, ObservableApi } from '../../src/Stores/ObservableApi';
 import { Observable, DOM as rxdom } from 'rx-dom';
-import * as wx from 'webrx';
+
+import { should, fail, logger, sandbox, sinon } from '../setup';
+import { wx } from '../../src/WebRx';
+import { HttpRequestMethod, ObservableApi } from '../../src/Stores/ObservableApi';
 
 describe('ObservableApi', () => {
   const baseUri = 'http://test1.com/';

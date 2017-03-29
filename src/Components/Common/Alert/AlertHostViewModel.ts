@@ -1,6 +1,6 @@
 import { Observable } from 'rx';
-import * as wx from 'webrx';
 
+import { wx } from '../../../WebRx';
 import { BaseViewModel } from '../../React/BaseViewModel';
 import { AlertViewModel } from '../Alert/AlertViewModel';
 import { Default as pubSub } from '../../../Utils/PubSub';
