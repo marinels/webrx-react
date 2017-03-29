@@ -11,7 +11,7 @@ describe('ObservableApi', () => {
   const body = String.stringify(data, null, 2);
   const params = { param1: 'param1 value' };
   const uriParams = 'param1=param1+value';
-  const options = <wx.IHttpClientOptions>{
+  const options = <rxdom.AjaxSettings>{
     xmlHttpRequest: () => {
       const xhr = new XMLHttpRequest();
 
@@ -22,7 +22,7 @@ describe('ObservableApi', () => {
   };
   const baseUriOverride = 'http://test2.com/';
 
-  describe.only('getObservableResult', () => {
+  describe('getObservableResult', () => {
     it('creates a GET request', () => {
       const request = Observable.of(true);
       const stub = sandbox.stub(api, 'getRequest').callsFake(() => request);
