@@ -104,7 +104,7 @@ describe('Sanity Tests', () => {
     });
   });
 
-  describe('for webrx', () => {
+  describe('for observable constructs', () => {
     it('Can access wx', () => {
       const prop = wx.property('test');
 
