@@ -56,28 +56,9 @@ export class ObservableProperty<T> implements PropertyClass<T>, IDisposable {
   }
 }
 
-// export function property<T>(
-//   initialValue?: T,
-//   source?: Observable<T>,
-// ): Property<T> {
-//   return new ObservableProperty(initialValue, source);
-// }
-
-// COMPAT
-
 export function property<T>(
   initialValue?: T,
   source?: Observable<T>,
-): Property<T> {
-  const prop = new ObservableProperty(initialValue, source);
-
-  return Object.assign<Property<T>>(function(this: Property<T>, value: T) {
-    if (arguments.length === 0) {
-      return this.value;
-    }
-
-    this.value = value;
-
-    return undefined;
-  }, prop);
+) {
+  return new ObservableProperty(initialValue, source);
 }

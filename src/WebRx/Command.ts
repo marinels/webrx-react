@@ -46,7 +46,7 @@ export class ObservableCommand<T> implements Command<T>, IDisposable {
   }
 
   get isExecuting() {
-    // COMPAT
+    // COMPAT -- we need to return the observable instead of the current value
     // let result: boolean | undefined;
 
     // this.isExecutingObservable
@@ -66,7 +66,7 @@ export class ObservableCommand<T> implements Command<T>, IDisposable {
     return this.isExecutingObservable;
   }
 
-  // COMPAT
+  // COMPAT -- we need to define this as a function instead of a getter
   // get canExecute() {
   canExecute(parameter?: any) {
     let result: boolean | undefined;
@@ -137,9 +137,6 @@ export class ObservableCommand<T> implements Command<T>, IDisposable {
     this.resultsSubject = Object.dispose(this.resultsSubject);
     this.thrownErrorsSubject = Object.dispose(this.thrownErrorsSubject);
   }
-
-  // COMPAT
-  executeAsync = this.observeExecution;
 }
 
 export function command<T>(

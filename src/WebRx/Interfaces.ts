@@ -24,29 +24,10 @@ export interface Command<T> {
   readonly canExecuteObservable: Observable<boolean>;
   readonly results: Observable<T>;
   readonly thrownErrors: Observable<Error>;
-
-
-  // COMPAT
+  // COMPAT -- these members are redefined with different types in Compat.ts
   // readonly isExecuting: boolean;
   // readonly canExecute: boolean;
-  readonly isExecuting: Observable<boolean>;
-  canExecute(parameter?: any): boolean;
 
   observeExecution(parameter?: any): Observable<T>;
   execute(parameter?: any): IDisposable;
-}
-
-// COMPAT
-
-export interface ReadOnlyProperty<T>  {
-  (): T;
-}
-
-export interface Property<T> {
-  (): T;
-  (value: T): void;
-}
-
-export interface Command<T> {
-  executeAsync(parameter?: any): Observable<T>;
 }
