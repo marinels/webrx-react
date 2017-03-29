@@ -33,8 +33,7 @@ export class TabRenderTemplate<TData> {
   }
 
   public render(viewModel: ReadonlyTabsViewModel<TData>, view: TabsView) {
-    return viewModel.tabs
-      .toArray()
+    return viewModel.tabs()
       .map((x, i) => {
         return this.renderTemplateContainer(() => this.renderItem(x, i, viewModel, view), x, i, viewModel, view);
       });
@@ -52,7 +51,7 @@ export class TabsView extends BaseView<TabsProps, TabsViewModel<any>> {
 
   updateOn() {
     return [
-      this.state.tabs.listChanged,
+      this.state.tabs.changed,
       this.state.selectedIndex.changed,
     ];
   }
