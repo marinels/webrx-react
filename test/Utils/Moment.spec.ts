@@ -76,8 +76,8 @@ describe('Moment', () => {
         const format = 'YYYY-MM-DD HH:mm:ss Z';
         const timestamp = DateTime.fromString(text, format);
 
-        should.not.exist(timestamp);
-        timestamp!.isValid().should.be.false;
+        should.exist(timestamp);
+        timestamp.isValid().should.be.false;
       });
     });
 
