@@ -1,10 +1,12 @@
+import { IDisposable, Disposable } from 'rx';
 import { Enumerable } from 'ix';
 
 declare global {
   interface ObjectConstructor {
     assign<T>(target: any, ...sources: any[]): T;
     rest<TData, TProps>(data: TData, propsCreator?: (x: TData) => TProps, ...omits: string[]): { rest: TData, props: TProps };
-    dispose<T>(disposable: T | undefined, returnNull?: boolean): T | undefined;
+    isDisposable(disposable: any): disposable is IDisposable;
+    dispose<T>(disposable: T): T;
     getName(source: any, undefinedValue?: string): string;
     fallback<T>(...values: T[]): T;
     fallbackAsync<T>(...actions: (T | (() => T))[]): T;
@@ -67,16 +69,18 @@ function rest<TData, TProps>(data: TData, propsCreator?: (x: TData) => TProps, .
   };
 }
 
-function dispose<T>(disposable: T | undefined, returnUndefined = true) {
-  if (disposable) {
-    let dispose = (disposable as any).dispose as Function;
+function isDisposable(disposable: any): disposable is IDisposable {
+  return Disposable.isDisposable(disposable);
+}
 
-    if (dispose && dispose instanceof Function) {
-      dispose.apply(disposable);
-    }
+function dispose<T>(disposable: T) {
+  if (isDisposable(disposable)) {
+    disposable.dispose();
+
+    return <T><any>Disposable.empty;
   }
 
-  return returnUndefined ? undefined : disposable;
+  return disposable;
 }
 
 interface NamedObject {
@@ -181,6 +185,7 @@ function getPropName<T>(p: (x: T) => any): string {
 
 Object.assign = fallback(Object.assign, assign);
 Object.rest = fallback(Object.rest, rest);
+Object.isDisposable = fallback(Object.isDisposable, isDisposable);
 Object.dispose = fallback(Object.dispose, dispose);
 Object.getName = fallback(Object.getName, getName);
 Object.fallback = fallback(Object.fallback, fallback);
