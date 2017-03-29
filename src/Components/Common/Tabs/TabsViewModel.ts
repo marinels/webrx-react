@@ -26,12 +26,12 @@ export class TabsViewModel<T> extends BaseRoutableViewModel<TabsRoutingState> {
     this.tabs = <wx.IObservableReadOnlyProperty<T[]>>tabs;
 
     this.addTab = wx.asyncCommand((tab: T) => {
-      this.tabs(this.tabs().concat([ tab ]));
+      tabs(this.tabs().concat(tab));
       return Observable.of(tab);
     });
 
     this.removeTab = wx.asyncCommand((tab: T | number) => {
-      this.tabs(
+      tabs(
         Number.isNumeric(tab) ?
           this.tabs().filter((x, i) => i !== tab) :
           this.tabs().filter(x => x !== tab),

@@ -23,12 +23,12 @@ export class AlertHostViewModel extends BaseViewModel {
     this.alerts = <wx.IObservableReadOnlyProperty<AlertViewModel[]>>alerts;
 
     this.addAlert = wx.asyncCommand((alert: AlertViewModel) => {
-      this.alerts(this.alerts().concat([ alert ]));
+      alerts(this.alerts().concat(alert));
       return Observable.of(alert);
     });
 
     this.removeAlert = wx.asyncCommand((alert: AlertViewModel) => {
-      this.alerts(this.alerts().filter(x => x !== alert));
+      alerts(this.alerts().filter(x => x !== alert));
       return Observable.of(alert);
     });
 
