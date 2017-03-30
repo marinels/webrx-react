@@ -1,37 +1,48 @@
-import { Observable, Subject, BehaviorSubject, IDisposable } from 'rx';
+import { Observable, Subject, BehaviorSubject, IDisposable, Scheduler } from 'rx';
 
 import { PropertyClass, Property } from './Interfaces';
-import { asObservable, isSubject } from './Utils';
+import { asObservable, isSubject, handleError } from './Utils';
 
 export class ObservableProperty<T> implements PropertyClass<T>, IDisposable {
+  private sourceSubscription: IDisposable;
+
   protected changedSubject: BehaviorSubject<T>;
   protected thrownErrorsSubject: Subject<Error>;
 
-  public readonly changed: Observable<T>;
-  public readonly thrownErrors: Observable<Error>;
+  // public readonly changed: Observable<T>;
+  // public readonly thrownErrors: Observable<Error>;
 
   constructor(
     initialValue?: T,
     protected source: Observable<T> = new Subject<T>(),
   ) {
-    this.changedSubject = new BehaviorSubject<T>(<any>initialValue);
+    this.changedSubject = new BehaviorSubject<T>(initialValue!);
     this.thrownErrorsSubject = new Subject<Error>();
 
-    this.changed = this.source
-      .catch(e => {
-        const err = e instanceof Error ? e : new Error(e);
-        this.thrownErrorsSubject.onNext(err);
+    // this.changed = this.changedSubject
+    //   // skip the initial value so we only generate events for new values
+    //   .skip(1)
+    //   .share();
 
-        return Observable.empty<T>();
-      })
+    // this.thrownErrors = this.thrownErrorsSubject
+    //   .share();
+
+    this.sourceSubscription = this.source
       .distinctUntilChanged()
-      .do(x => {
-        this.changedSubject.onNext(x);
-      })
-      .share();
+      .subscribe(
+        x => {
+          if (this.isNewValue(x)) {
+            this.changedSubject.onNext(x);
+          }
+        },
+        e => {
+          handleError(e, this.thrownErrorsSubject);
+        },
+      );
+  }
 
-    this.thrownErrors = this.thrownErrorsSubject
-      .share();
+  protected isNewValue(newValue: T) {
+    return newValue !== this.value;
   }
 
   get isReadOnly() {
@@ -51,7 +62,18 @@ export class ObservableProperty<T> implements PropertyClass<T>, IDisposable {
     }
   }
 
+  get changed() {
+    return this.changedSubject
+      .skip(1);
+  }
+
+  get thrownErrors() {
+    return this.thrownErrorsSubject
+      .asObservable();
+  }
+
   dispose() {
+    this.sourceSubscription = Object.dispose(this.sourceSubscription);
     this.changedSubject = Object.dispose(this.changedSubject);
     this.thrownErrorsSubject = Object.dispose(this.thrownErrorsSubject);
   }
