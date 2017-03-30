@@ -31,12 +31,7 @@ declare module './Command' {
 }
 ObservableCommand.prototype.executeAsync = ObservableCommand.prototype.observeExecution;
 
-function propertyCompat<T>(
-  initialValue?: T,
-  source?: Observable<T>,
-) {
-  const prop = propertyFunc(initialValue, source);
-
+function createCompatProperty<T>(prop: ObservableProperty<T>) {
   const accessor = Object.assign<Property<T>>(function(this: Property<T>, value: T) {
     if (arguments.length === 0) {
       return prop.value;
@@ -68,6 +63,19 @@ function propertyCompat<T>(
 
   return accessor;
 }
+
+function propertyCompat<T>(
+  initialValue?: T,
+  source?: Observable<T>,
+) {
+  return createCompatProperty(propertyFunc(initialValue, source));
+}
+
+const toPropertyFunc: <T>(initialValue?: T) => Property<T> = (<any>Observable).prototype.toProperty;
+function toPropertyCompat<T>(this: Observable<T>, initialValue?: T) {
+  return createCompatProperty(toPropertyFunc.apply(this, [ initialValue ]));
+}
+(<any>Observable).prototype.toProperty = toPropertyCompat;
 
 export namespace wx {
   export const property = propertyCompat;
