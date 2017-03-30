@@ -1,90 +1,61 @@
-import { Observable, Subject, IObserver, IDisposable } from 'rx';
+import { Observable, Subject, BehaviorSubject, IObserver, IDisposable, Scheduler } from 'rx';
 
 import { Command } from './Interfaces';
-import { asObservable, isObserver } from './Utils';
+import { asObservable, isObserver, handleError } from './Utils';
 
 export class ObservableCommand<T> implements Command<T>, IDisposable {
-  protected isExecutingSubject: Subject<boolean>;
+  private canExecuteSubscription: IDisposable;
+
+  protected isExecutingSubject: BehaviorSubject<boolean>;
+  protected canExecuteSubject: BehaviorSubject<boolean>;
   protected resultsSubject: Subject<T>;
   protected thrownErrorsSubject: Subject<Error>;
 
-  public readonly isExecutingObservable: Observable<boolean>;
-  public readonly canExecuteObservable: Observable<boolean>;
-  public readonly results: Observable<T>;
-  public readonly thrownErrors: Observable<Error>;
-
   constructor(
     protected executeAction: (parameter: any) => Observable<T>,
-    canExecute: Observable<boolean> = asObservable(true),
+    canExecute?: Observable<boolean>,
   ) {
-    this.isExecutingSubject = new Subject<boolean>();
+    this.isExecutingSubject = new BehaviorSubject<boolean>(false);
+    this.canExecuteSubject = new BehaviorSubject<boolean>(canExecute == null);
     this.resultsSubject = new Subject<T>();
     this.thrownErrorsSubject = new Subject<Error>();
 
-    this.isExecutingObservable = this.isExecutingSubject
-      .distinctUntilChanged()
-      .startWith(false)
-      .shareReplay(1);
-
-    this.canExecuteObservable = canExecute
-      .combineLatest(this.isExecutingObservable, (ce, ie) => ce === true && ie === false)
+    this.canExecuteSubscription = (canExecute || asObservable(true))
+      .combineLatest(this.isExecutingSubject, (ce, ie) => ce === true && ie === false)
       .catch(e => {
-        const err = e instanceof Error ? e : new Error(e);
-        this.thrownErrorsSubject.onNext(err);
+        handleError(e, this.thrownErrorsSubject);
 
         return asObservable(false);
       })
-      .startWith(false)
       .distinctUntilChanged()
-      .shareReplay(1);
+      .subscribe(
+        x => {
+          this.canExecuteSubject.onNext(x);
+        },
+      );
+  }
 
-    this.results = this.resultsSubject
-      .share();
-
-    this.thrownErrors = this.thrownErrorsSubject
-      .share();
+  get isExecutingObservable() {
+    return this.isExecutingSubject
+      .distinctUntilChanged();
   }
 
   get isExecuting() {
     // COMPAT -- we need to return the observable instead of the current value
-    // let result: boolean | undefined;
+    // return this.isExecutingSubject.getValue();
 
-    // this.isExecutingObservable
-    //   .take(1)
-    //   .subscribe(x => {
-    //     result = x;
-    //   });
-
-    // if (result == null) {
-    //   this.thrownErrorsSubject
-    //     .onNext(new Error('isExecuting Observable has terminated abnormally'));
-
-    //   result = false;
-    // }
-
-    // return result;
     return this.isExecutingObservable;
+  }
+
+  get canExecuteObservable() {
+    return this.canExecuteSubject
+      .distinctUntilChanged();
   }
 
   // COMPAT -- we need to define this as a function instead of a getter
   // get canExecute() {
   canExecute(parameter?: any) {
-    let result: boolean | undefined;
-
-    this.canExecuteObservable
-      .take(1)
-      .subscribe(x => {
-        result = x;
-      });
-
-    if (result == null) {
-      this.thrownErrorsSubject
-        .onNext(new Error('canExecute Observable has terminated abnormally'));
-
-      result = false;
-    }
-
-    return result;
+    return this.canExecuteSubject.getValue();
   }
 
   observeExecution(parameter?: any) {
@@ -93,38 +64,38 @@ export class ObservableCommand<T> implements Command<T>, IDisposable {
     }
 
     return Observable
-      .defer(() => {
+      .of(parameter)
+      .flatMap(x => {
         this.isExecutingSubject.onNext(true);
 
-        return Observable.empty<T>();
+        return this.executeAction(x);
       })
-      .concat(
-        Observable.defer(() => {
-          return this.executeAction(parameter);
-        }),
-      )
       .do(
         x => {
           this.resultsSubject.onNext(x);
+
+          this.isExecutingSubject.onNext(false);
         },
-        undefined,
+        e => {
+          this.isExecutingSubject.onNext(false);
+        },
         () => {
           this.isExecutingSubject.onNext(false);
         },
       )
       .catch(e => {
-        const err = e instanceof Error ? e : new Error(e);
-        this.thrownErrorsSubject.onNext(err);
+        handleError(e, this.thrownErrorsSubject);
 
         return Observable.empty<T>();
       })
+      // this will prevent execution if nobody is subscribing to the result
       .share();
   }
 
   execute(
     parameter?: any,
     observerOrNext?: IObserver<T> | ((value: T) => void),
-    onError?: (exception: any) => void,
+    onError: (exception: any) => void = e => handleError(e, this.thrownErrorsSubject),
     onCompleted?: () => void,
   ) {
     return this
@@ -132,7 +103,18 @@ export class ObservableCommand<T> implements Command<T>, IDisposable {
       .subscribeWith(observerOrNext, onError, onCompleted);
   }
 
+  get results() {
+    return this.resultsSubject
+      .asObservable();
+  }
+
+  get thrownErrors() {
+    return this.thrownErrorsSubject
+      .asObservable();
+  }
+
   dispose() {
+    this.canExecuteSubscription = Object.dispose(this.canExecuteSubscription);
     this.isExecutingSubject = Object.dispose(this.isExecutingSubject);
     this.resultsSubject = Object.dispose(this.resultsSubject);
     this.thrownErrorsSubject = Object.dispose(this.thrownErrorsSubject);
