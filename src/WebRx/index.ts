@@ -7,8 +7,8 @@ export * from './Property';
 export * from './Command';
 export * from './WhenAny';
 
-// export webrx compatibility patches
-export * from './Compat';
-
 // import RxJS extensions
 import './Extensions';
+
+// export webrx compatibility patches
+export * from './Compat';
