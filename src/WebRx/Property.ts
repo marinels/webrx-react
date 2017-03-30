@@ -46,8 +46,9 @@ export class ObservableProperty<T> implements PropertyClass<T>, IDisposable {
     if (isSubject(this.source)) {
       this.source.onNext(newValue);
     }
-
-    throw new Error('attempt to write to a read-only observable property');
+    else {
+      throw new Error('attempt to write to a read-only observable property');
+    }
   }
 
   dispose() {
