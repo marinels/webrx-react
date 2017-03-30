@@ -1,7 +1,6 @@
 import { Observable, BehaviorSubject, TestScheduler } from 'rx';
 
 import { should, sandbox } from './setup';
-import { wx } from '../src/WebRx';
 
 describe('Sanity Tests', () => {
   describe('for mocha', () => {
@@ -101,16 +100,6 @@ describe('Sanity Tests', () => {
         .subscribe(() => done());
 
       timer.tick(6000);
-    });
-  });
-
-  describe('for observable constructs', () => {
-    it('Can access wx', () => {
-      const prop = wx.property('test');
-
-      should.exist(prop);
-      should.exist(prop());
-      prop().should.eql('test');
     });
   });
 });
