@@ -431,7 +431,7 @@ function webpackBuild(build, webpackConfig, callback) {
 
     onWebpackComplete(build, err, stats);
 
-    if (err || (stats.compilation.errors || []).length) {
+    if (webpackConfig.watch !== true && (err || (stats.compilation.errors || []).length)) {
       // this is required for external scripts to handle webpack errors
       // eslint-disable-next-line no-process-exit
       process.exit(1);
