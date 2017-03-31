@@ -58,6 +58,12 @@ export function getObservable<T>(observableOrProperty: ObservableOrProperty<T> |
 
 export function handleError(e: any, subject: Subject<Error>) {
   const err = e instanceof Error ? e : new Error(e);
-  console.error(err);
+
+  if (DEBUG) {
+    // in debug mode we want to emit any webrx errors
+    // tslint:disable-next-line:no-console
+    console.error(err);
+  }
+
   subject.onNext(err);
 }
