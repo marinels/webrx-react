@@ -55,3 +55,9 @@ export function getObservable<T>(observableOrProperty: ObservableOrProperty<T> |
 
   throw new Error(`${ observableOrProperty } is neither observable property nor observable`);
 }
+
+export function handleError(e: any, subject: Subject<Error>) {
+  const err = e instanceof Error ? e : new Error(e);
+  console.error(err);
+  subject.onNext(err);
+}
