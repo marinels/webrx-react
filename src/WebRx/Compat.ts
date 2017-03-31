@@ -1,7 +1,7 @@
 import { Observable } from 'rx';
 
 import { ReadOnlyProperty, Property, Command, ObservableOrProperty as OoP } from './Interfaces';
-import { isProperty as isPropertyFunc, isCommand as isCommandFunc, isObservable } from './Utils';
+import { isProperty as isPropertyFunc, isCommand as isCommandFunc, isObservable as isObservableFunc, getObservable as getObservableFunc } from './Utils';
 import { ObservableProperty, property as propertyFunc } from './Property';
 import { ObservableCommand, command as commandFunc } from './Command';
 import { whenAny as whenAnyFunc } from './WhenAny';
@@ -96,6 +96,8 @@ export namespace wx {
 
   export const isCommand = isCommandFunc;
   export const isProperty = isPropertyFunc;
+  export const isObservable = isObservableFunc;
+  export const getObservable = getObservableFunc;
 
   export type IObservableProperty<T> = Property<T>;
   export type IObservableReadOnlyProperty<T> = ReadOnlyProperty<T>;
