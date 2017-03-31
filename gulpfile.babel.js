@@ -626,13 +626,10 @@ gulp.task('watch:mocha', [ 'clean:build' ], () => {
 
   const reporter = args.reporter || 'dot';
 
-  return gulp
-    .src([])
-    .pipe(plumber())
-    .pipe(webpackBuild(config.builds.test, webpackConfig))
+  return webpackWatcherStream(webpackConfig, config.builds.test)
     .pipe(gulp.dest(webpackConfig.output.path))
     .pipe(through((file) => {
-      log('Testing', file.path, '...');
+      log('Testing', util.colors.magenta(file.path), '...');
 
       gulp
         .src(file.path, { read: false })
