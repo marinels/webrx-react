@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as wx from 'webrx';
 
 import '../Extensions/String';
 import { getLogger } from './Logging';
@@ -9,7 +8,7 @@ import { AlertCreatedKey, AlertCreated } from '../Events/AlertCreated';
 export class Alert {
   private static displayName = 'Alert';
 
-  private logger = new wx.Lazy(() => getLogger(Alert.displayName));
+  private logger = getLogger(Alert.displayName);
 
   constructor(private pubSub: PubSub) {
   }
@@ -121,10 +120,10 @@ export class Alert {
       }
 
       if (logErrorObject === true) {
-        this.logger.value.error(`${ header }: ${ text }`, error);
+        this.logger.error(`${ header }: ${ text }`, error);
       }
       else {
-        this.logger.value.error(`${ header }: ${ text }`);
+        this.logger.error(`${ header }: ${ text }`);
       }
 
       this.create(content, header, style, timeout);

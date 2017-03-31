@@ -1,8 +1,8 @@
 import * as React from 'react';
-import * as wx from 'webrx';
 import { Grid, Row, Image } from 'react-bootstrap';
 import * as classNames from 'classnames';
 
+import { wx } from '../../../WebRx';
 import { Loading } from '../Loading/Loading';
 import { renderConditional } from '../../React/RenderHelpers';
 

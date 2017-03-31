@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Observable } from 'rx';
-import * as wx from 'webrx';
 
+import { wx } from '../../WebRx';
 import { BaseViewModel } from './BaseViewModel';
 
 /**

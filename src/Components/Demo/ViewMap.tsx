@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { Observable } from 'rx';
-import * as wx from 'webrx';
 import { Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab,
   Well, ListGroup, ListGroupItem, Table, OverlayTrigger, Overlay, Tooltip, Popover,
 } from 'react-bootstrap';
 
+import { wx } from '../../WebRx';
 import { Logging, Alert } from '../../Utils';
 import { renderSizedLoadable, bindEventToCommand } from '../React';
 import { SampleData, SampleTreeData } from './RoutingMap';

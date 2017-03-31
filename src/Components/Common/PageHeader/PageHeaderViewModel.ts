@@ -1,6 +1,6 @@
 import { Observable } from 'rx';
-import * as wx from 'webrx';
 
+import { wx } from '../../../WebRx';
 import { BaseViewModel } from '../../React/BaseViewModel';
 import { BaseRoutableViewModel, isRoutableViewModel } from '../../React/BaseRoutableViewModel';
 import { HeaderAction, HeaderCommandAction, HeaderMenu, isHeaderCommandAction } from '../../React/Actions';
@@ -141,18 +141,15 @@ export class PageHeaderViewModel extends BaseViewModel {
 
     // now that our list is populated with our header actions, subscribe to the
     // canExecute observable to manage the disabled status of any header action
-    list()
-      .map((x: HeaderAction) => isHeaderCommandAction(x) ? x : undefined)
-      .filter(x => x != null)
-      .map(x => x!)
-      .forEach(action => {
-        this.dynamicSubs.add(
-          action.command!.canExecuteObservable
-            .distinctUntilChanged()
-            .subscribe(x => {
-              this.notifyChanged();
-            }),
-        );
-      });
+    this.dynamicSubs.add(
+      Observable
+        .merge(
+          list()
+            .map((x: HeaderAction) => isHeaderCommandAction(x) ? x : undefined)
+            .filter(x => x != null)
+            .map(x => x!.command!.canExecuteObservable),
+        )
+        .invokeCommand(this.stateChanged),
+    );
   }
 }

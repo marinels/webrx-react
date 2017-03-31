@@ -1,7 +1,7 @@
 import { Observable } from 'rx';
-import * as wx from 'webrx';
 import * as clone from 'clone';
 
+import { wx } from '../../../WebRx';
 import { BaseViewModel } from '../../React/BaseViewModel';
 
 export class InlineEditViewModel<T> extends BaseViewModel {

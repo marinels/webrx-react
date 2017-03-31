@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import * as wx from 'webrx';
+import { wx } from '../../src/WebRx';
 
 export function TestObservableList<T>(list: wx.IObservableList<T>, testValue: T): void {
   expect(list.listChanging).to.exist;
