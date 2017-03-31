@@ -465,8 +465,9 @@ function webpackWatcherStream(webpackConfig, build) {
 
     compiler.plugin('after-emit', (compilation, callback) => {
       Object.keys(compilation.assets).forEach((outname) => {
+        const filePath = path.resolve(compiler.outputPath, outname);
+
         if (compilation.assets[outname].emitted) {
-          const filePath = path.resolve(compiler.outputPath, outname);
           const file = new File({
             base: compiler.outputPath,
             path: filePath,
@@ -474,6 +475,8 @@ function webpackWatcherStream(webpackConfig, build) {
           });
 
           self.queue(file);
+        } else {
+          log(util.colors.yellow(`${ filePath } NOT emitted`));
         }
       });
       callback();
