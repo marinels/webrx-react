@@ -61,18 +61,20 @@ export class ObservableCommand<T> implements Command<T>, IDisposable {
 
     return Observable
       .of(parameter)
-      .flatMap(x => {
+      .do(() => {
         this.isExecutingSubject.onNext(true);
-
+      })
+      .flatMap(x => {
         return this.executeAction(x);
       })
+      .do(x => {
+        this.resultsSubject.onNext(x);
+      })
       .do(
-        x => {
-          this.resultsSubject.onNext(x);
-
+        () => {
           this.isExecutingSubject.onNext(false);
         },
-        e => {
+        () => {
           this.isExecutingSubject.onNext(false);
         },
         () => {
