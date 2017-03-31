@@ -47,7 +47,8 @@ function observeCommand<T, TRet>(this: Observable<T>, command: ((x: T) => Comman
     .debounce(x => {
       return x.command.canExecuteObservable
         // COMPAT -- canExecute is a function in Compat.ts
-        .startWith(x.command.canExecute());
+        .startWith(x.command.canExecute())
+        .filter(y => y);
     })
     .map(x => {
       return x.command
