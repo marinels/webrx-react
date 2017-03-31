@@ -28,11 +28,7 @@ export class ObservableCommand<T> implements Command<T>, IDisposable {
         return asObservable(false);
       })
       .distinctUntilChanged()
-      .subscribe(
-        x => {
-          this.canExecuteSubject.onNext(x);
-        },
-      );
+      .subscribe(this.canExecuteSubject);
   }
 
   get isExecutingObservable() {
