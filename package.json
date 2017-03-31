@@ -101,6 +101,6 @@
     "vinyl": "^2.0.1",
     "webpack": "^2.3.1",
     "webpack-dev-server": "^2.4.2",
-    "webpack-stream": "^3.2.0"
+    "webpack-stream-fixed": "^3.2.2"
   }
 }

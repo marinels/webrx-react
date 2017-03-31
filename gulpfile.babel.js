@@ -24,7 +24,7 @@ import through from 'through';
 import tslint from 'gulp-tslint';
 import util from 'gulp-util';
 import webpack from 'webpack';
-import webpackStream from 'webpack-stream';
+import webpackStream from 'webpack-stream-fixed';
 
 import webpackConfigTemplate from './webpack.config';
 import webpackConfigTestTemplate from './test/webpack.config';
