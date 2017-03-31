@@ -9,23 +9,12 @@ export class ObservableProperty<T> implements PropertyClass<T>, IDisposable {
   protected changedSubject: BehaviorSubject<T>;
   protected thrownErrorsSubject: Subject<Error>;
 
-  // public readonly changed: Observable<T>;
-  // public readonly thrownErrors: Observable<Error>;
-
   constructor(
     initialValue?: T,
     protected source: Observable<T> = new Subject<T>(),
   ) {
     this.changedSubject = new BehaviorSubject<T>(initialValue!);
     this.thrownErrorsSubject = new Subject<Error>();
-
-    // this.changed = this.changedSubject
-    //   // skip the initial value so we only generate events for new values
-    //   .skip(1)
-    //   .share();
-
-    // this.thrownErrors = this.thrownErrorsSubject
-    //   .share();
 
     this.sourceSubscription = this.source
       .distinctUntilChanged()
