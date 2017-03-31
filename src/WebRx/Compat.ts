@@ -109,6 +109,6 @@ export namespace wx {
       return commandFunc(execute, arg1);
     }
 
-    return commandFunc(execute);
+    return commandFunc(arg1);
   }
 }
