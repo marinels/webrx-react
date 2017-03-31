@@ -61,6 +61,18 @@ function createCompatProperty<T>(prop: ObservableProperty<T>) {
     },
   });
 
+  Object.defineProperty(accessor, 'changed', {
+    get: function() {
+      return prop.changed;
+    },
+  });
+
+  Object.defineProperty(accessor, 'thrownErrors', {
+    get: function() {
+      return prop.thrownErrors;
+    },
+  });
+
   return accessor;
 }
 
