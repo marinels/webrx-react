@@ -78,19 +78,26 @@ describe('Object Extensions', () => {
   });
 
   describe('Object.Dispose', () => {
-    it('Can dispose a null object', () => {
-      should.not.exist(Object.dispose(null));
+    it('Can dispose a undefined object', () => {
+      should.not.exist(Object.dispose(undefined));
     });
 
     it('Can dispose a non-null object that is not disposable', () => {
-      should.not.exist(Object.dispose({}));
+      const disposable = <any>{};
+      const disposed = Object.dispose(disposable);
+      should.exist(disposed);
+      disposed.should.eql(disposable);
+      disposable.test = 'test';
+      disposed.should.eql(disposable);
     });
 
     it('Can dispose a disposable', () => {
-      let disposed = false;
-      let disposable = new Disposable(() => disposed = true);
-      should.not.exist(Object.dispose(disposable));
-      disposed.should.be.true;
+      let isDisposed = false;
+      const disposable = Disposable.create(() => isDisposed = true);
+      const disposed = Object.dispose(disposable);
+      should.exist(disposed);
+      disposed.should.eql(Disposable.empty);
+      isDisposed.should.be.true;
     });
   });
 

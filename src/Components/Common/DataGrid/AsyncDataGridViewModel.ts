@@ -1,6 +1,6 @@
 import { Observable } from 'rx';
-import * as wx from 'webrx';
 
+import { wx } from '../../../WebRx';
 import { BaseDataGridViewModel, ProjectionRequest, ProjectionResult } from './DataGridViewModel';
 
 export interface AsyncDataSource<TRequest extends ProjectionRequest, TResult extends ProjectionResult<any>> {

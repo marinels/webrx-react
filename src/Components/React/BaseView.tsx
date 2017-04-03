@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Observable, IDisposable } from 'rx';
-import * as wx from 'webrx';
 
+import { wx } from '../../WebRx';
 import { Logging } from '../../Utils';
 import { BaseViewModel, LifecycleComponentViewModel } from './BaseViewModel';
 import { bindObservableToCommand, bindEventToProperty, bindEventToCommand } from './BindingHelpers';

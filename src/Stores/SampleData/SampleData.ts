@@ -3,13 +3,27 @@ import { Observable } from  'rx';
 import { BaseSampleDataStore, SampleDataActionSet, SampleDataAction } from './BaseSampleDataStore';
 
 export class SampleData {
-  protected actions: SampleDataActionSet = {};
+  protected actions: SampleDataActionSet | undefined;
 
-  constructor(protected delay = 0) {
+  constructor(private initializeActions: () => void, protected delay = 0) {
+  }
+
+  private getActions() {
+    if (this.actions == null) {
+      this.actions = {};
+
+      this.initializeActions();
+    }
+
+    return this.actions;
+  }
+
+  protected getAction(action: string) {
+    return this.getActions()[action];
   }
 
   public addDataStore(data: BaseSampleDataStore, name?: string): void {
-    Object.assign(this.actions, data.getActions());
+    Object.assign(this.getActions(), data.getActions());
 
     if (String.isNullOrEmpty(name) === false) {
       (<any>this)[<string>name] = data;
@@ -17,12 +31,12 @@ export class SampleData {
   }
 
   public addAction(action: string, dataAction: SampleDataAction) {
-    this.actions[action] = dataAction;
+    this.getActions()[action] = dataAction;
   }
 
   getObservable<T>(action: string, params?: any) {
     let result: Observable<T>;
-    let sampleDataAction = this.actions[action];
+    let sampleDataAction = this.getAction(action);
 
     if (sampleDataAction != null) {
       result = sampleDataAction(params)

@@ -1,6 +1,6 @@
 import { Observable } from 'rx';
-import * as wx from 'webrx';
 
+import { wx } from '../../../WebRx';
 import { BaseViewModel } from '../../React/BaseViewModel';
 import { AlertHostViewModel } from '../Alert/AlertHostViewModel';
 import { PageHeaderViewModel } from '../PageHeader/PageHeaderViewModel';

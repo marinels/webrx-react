@@ -30,7 +30,6 @@ module.exports = Object.assign(clone(webpackCommon), {
       'react-dom',
       'react-fa',
       'rx',
-      'webrx',
     ],
   },
   output: {

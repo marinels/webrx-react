@@ -1,4 +1,4 @@
-import * as wx from 'webrx';
+import { wx } from '../../WebRx';
 
 export interface HeaderAction {
   id: any;

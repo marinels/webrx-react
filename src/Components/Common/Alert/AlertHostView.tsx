@@ -16,7 +16,7 @@ export class AlertHostView extends BaseView<AlertHostProps, AlertHostViewModel> 
 
   updateOn() {
     return [
-      this.state.alerts.listChanged,
+      this.state.alerts.changed,
     ];
   }
 
@@ -33,7 +33,7 @@ export class AlertHostView extends BaseView<AlertHostProps, AlertHostViewModel> 
   }
 
   private renderAlerts() {
-    return this.state.alerts
+    return this.state.alerts()
       .map(x => (
         <AlertView viewModel={ x } key={ x.key } />
       ));

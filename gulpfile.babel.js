@@ -24,7 +24,7 @@ import through from 'through';
 import tslint from 'gulp-tslint';
 import util from 'gulp-util';
 import webpack from 'webpack';
-import webpackStream from 'webpack-stream';
+import webpackStream from 'webpack-stream-fixed';
 
 import webpackConfigTemplate from './webpack.config';
 import webpackConfigTestTemplate from './test/webpack.config';
@@ -431,7 +431,7 @@ function webpackBuild(build, webpackConfig, callback) {
 
     onWebpackComplete(build, err, stats);
 
-    if (err || (stats.compilation.errors || []).length) {
+    if (webpackConfig.watch !== true && (err || (stats.compilation.errors || []).length)) {
       // this is required for external scripts to handle webpack errors
       // eslint-disable-next-line no-process-exit
       process.exit(1);
@@ -465,8 +465,9 @@ function webpackWatcherStream(webpackConfig, build) {
 
     compiler.plugin('after-emit', (compilation, callback) => {
       Object.keys(compilation.assets).forEach((outname) => {
+        const filePath = path.resolve(compiler.outputPath, outname);
+
         if (compilation.assets[outname].emitted) {
-          const filePath = path.resolve(compiler.outputPath, outname);
           const file = new File({
             base: compiler.outputPath,
             path: filePath,
@@ -474,6 +475,8 @@ function webpackWatcherStream(webpackConfig, build) {
           });
 
           self.queue(file);
+        } else {
+          log(util.colors.yellow(`${ filePath } NOT emitted`));
         }
       });
       callback();
@@ -623,13 +626,10 @@ gulp.task('watch:mocha', [ 'clean:build' ], () => {
 
   const reporter = args.reporter || 'dot';
 
-  return gulp
-    .src([])
-    .pipe(plumber())
-    .pipe(webpackBuild(config.builds.test, webpackConfig))
+  return webpackWatcherStream(webpackConfig, config.builds.test)
     .pipe(gulp.dest(webpackConfig.output.path))
     .pipe(through((file) => {
-      log('Testing', file.path, '...');
+      log('Testing', util.colors.magenta(file.path), '...');
 
       gulp
         .src(file.path, { read: false })

@@ -1,8 +1,9 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
 import { IDisposable, Disposable } from  'rx';
-import * as wx from 'webrx';
 import { Button, ButtonProps, OverlayTrigger, Tooltip } from 'react-bootstrap';
+
+import { wx } from '../../../WebRx';
 
 import './CommandButton.less';
 

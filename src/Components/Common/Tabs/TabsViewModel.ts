@@ -1,6 +1,6 @@
 import { Observable } from 'rx';
-import * as wx from 'webrx';
 
+import { wx } from '../../../WebRx';
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 
 export interface TabsRoutingState {
@@ -10,23 +10,40 @@ export interface TabsRoutingState {
 export class TabsViewModel<T> extends BaseRoutableViewModel<TabsRoutingState> {
   public static displayName = 'TabsViewModel';
 
-  public tabs: wx.IObservableList<T>;
+  public tabs: wx.IObservableReadOnlyProperty<T[]>;
   public selectedTab: wx.IObservableReadOnlyProperty<T>;
   public selectedIndex: wx.IObservableReadOnlyProperty<number>;
 
+  public addTab: wx.ICommand<T>;
+  public removeTab: wx.ICommand<T | number>;
   public selectTab: wx.ICommand<T>;
   public selectIndex: wx.ICommand<number>;
 
-  constructor(tabs: T[] = [], isRoutingEnabled = false) {
+  constructor(initialTabs: T[] = [], isRoutingEnabled = false) {
     super(isRoutingEnabled);
 
-    this.tabs = wx.list<T>(tabs);
+    const tabs = wx.property<T[]>([]);
+    this.tabs = <wx.IObservableReadOnlyProperty<T[]>>tabs;
+
+    this.addTab = wx.asyncCommand((tab: T) => {
+      tabs(this.tabs().concat(tab));
+      return Observable.of(tab);
+    });
+
+    this.removeTab = wx.asyncCommand((tab: T | number) => {
+      tabs(
+        Number.isNumeric(tab) ?
+          this.tabs().filter((x, i) => i !== tab) :
+          this.tabs().filter(x => x !== tab),
+      );
+      return Observable.of(tab);
+    });
 
     this.selectTab = wx.asyncCommand((x: T) => Observable.of(x));
     this.selectIndex = wx.asyncCommand((x: number) => Observable.of(x));
 
     this.selectedTab = wx
-      .whenAny(this.selectIndex.results, x => this.tabs.get(x))
+      .whenAny(this.selectIndex.results, x => this.tabs()[x])
       .toProperty();
 
     this.selectedIndex = wx
@@ -34,12 +51,12 @@ export class TabsViewModel<T> extends BaseRoutableViewModel<TabsRoutingState> {
       .toProperty();
 
     this.subscribe(this.selectTab.results
-      .map(x => this.tabs.indexOf(x))
+      .map(x => this.tabs().indexOf(x))
       .invokeCommand(this.selectIndex),
     );
 
     this.subscribe(wx
-      .whenAny(this.tabs.lengthChanged, l => ({ i: this.selectedIndex(), l }))
+      .whenAny(this.tabs.changed, x => ({ i: this.selectedIndex(), l: x.length }))
       .filter(x => x.l > 0 && (x.i == null || x.i < 0 || x.i >= x.l))
       .map(x => x.l - 1)
       .invokeCommand(this.selectIndex),

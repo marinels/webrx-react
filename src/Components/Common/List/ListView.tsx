@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Observable } from 'rx';
 import { Enumerable } from 'ix';
-import * as wx from 'webrx';
 import * as classNames from 'classnames';
 import { Icon } from 'react-fa';
 import { ListGroup, ListGroupProps, ListGroupItem } from 'react-bootstrap';
 
+import { wx } from '../../../WebRx';
 import { BaseView, ViewModelProps } from '../../React/BaseView';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { ListViewModel } from './ListViewModel';
@@ -241,15 +241,8 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
   }
 
   cleanup(viewModel: ReadonlyListViewModel<TData>, view: ListView) {
-    if (this.nodes != null) {
-      this.nodes.dispose();
-      this.nodes = undefined;
-    }
-
-    if (this.items != null) {
-      this.items.dispose();
-      this.items = undefined;
-    }
+    this.nodes = Object.dispose(this.nodes);
+    this.items = Object.dispose(this.items);
   }
 
   getClassName() {

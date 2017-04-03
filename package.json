@@ -1,6 +1,6 @@
 {
   "name": "webrx-react",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "ReactJS + WebRx + RxJS + Bootstrap: MVVM for Single Page Web Applications",
   "scripts": {
     "start": "gulp",
@@ -37,8 +37,7 @@
     "react-dom": "^15.4.2",
     "react-fa": "^4.1.2",
     "rx": "^4.1.0",
-    "rx-dom": "^7.0.3",
-    "webrx": "^1.5.0"
+    "rx-dom": "^7.0.3"
   },
   "devDependencies": {
     "@types/chai": "^3.4.35",
@@ -97,11 +96,11 @@
     "through": "^2.3.8",
     "tslint": "^4.5.1",
     "tslint-config-unional": "^0.7.0",
-    "typescript": "^2.2.1",
+    "typescript": "^2.2.2",
     "url-loader": "^0.5.8",
     "vinyl": "^2.0.1",
     "webpack": "^2.3.1",
     "webpack-dev-server": "^2.4.2",
-    "webpack-stream": "^3.2.0"
+    "webpack-stream-fixed": "^3.2.2"
   }
 }

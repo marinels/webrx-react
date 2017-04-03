@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { Observable } from 'rx';
-import * as wx from 'webrx';
 import { Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab,
   Well, ListGroup, ListGroupItem, Table, OverlayTrigger, Overlay, Tooltip, Popover,
 } from 'react-bootstrap';
 
+import { wx } from '../../WebRx';
 import { Logging, Alert } from '../../Utils';
 import { renderSizedLoadable, bindEventToCommand } from '../React';
 import { SampleData, SampleTreeData } from './RoutingMap';
@@ -329,15 +329,15 @@ const viewMap: ViewActivatorMap = {
     else {
       let c = 0;
 
-      const template = new TabRenderTemplate<any>((x, i) => `Tab ${ i + 1 }`, (x, i, vm) => (
-        <Button style={({ width: '100%', marginTop: 10 })} onClick={ () => { vm.tabs.removeAt(i); } }>
-          { `Close Tab ${ i + 1 }` }
+      const template = new TabRenderTemplate<any>((x, i) => `Tab ${ x }`, (x, i, vm) => (
+        <Button style={({ width: '100%', marginTop: 10 })} onClick={ () => { vm.removeTab.execute(i); } }>
+          { `Close Tab ${ x }` }
         </Button>
       ));
 
       return (
         <div>
-          <Button style={({ width: '100%', marginBottom: 10 })} onClick={() => { viewModel.tabs.add(++c); } }>
+          <Button style={({ width: '100%', marginBottom: 10 })} onClick={() => { viewModel.addTab.execute(++c); } }>
             Create Tab
           </Button>
           <TabsView viewModel={ viewModel } id='demo-tabs' template={ template } />
