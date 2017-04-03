@@ -214,6 +214,40 @@ describe('for WebRx', () => {
       cmd2Executed.should.be.true;
       cmd2CanExecute.should.be.true;
     });
+
+    it('updates isExecuting while executing', () => {
+      let isExecuting = false;
+
+      const cmd = wx.command(() => {
+        isExecuting = (<any>cmd).isExecutingSubject.getValue();
+      });
+
+      cmd.execute();
+
+      isExecuting.should.be.true;
+    });
+
+    it('prevents execution while executing', () => {
+      let isExecutionPrevented = false;
+      const result = new BehaviorSubject('');
+      const cmd = wx.command(x => {
+        result.onNext(x);
+
+        return x;
+      });
+
+      Observable
+        .combineLatest(result, cmd.isExecutingObservable, cmd.canExecuteObservable, (r, ie, ce) => ({ r, ie, ce }))
+        .filter(x => x.r === 'test')
+        .take(1)
+        .subscribe(x => {
+          isExecutionPrevented = x.ie === true && x.ce === false;
+        });
+
+      cmd.execute('test');
+
+      isExecutionPrevented.should.be.true;
+    });
   });
 
   describe('whenAny', () => {
