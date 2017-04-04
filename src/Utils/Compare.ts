@@ -1,3 +1,5 @@
+import { Comparer as IxComparer } from 'ix';
+
 export interface Comparable<T> {
   compareTo(other: T): number;
 }
@@ -6,8 +8,7 @@ export function isComparable<T>(obj: any): obj is Comparable<T> {
   return (<Comparable<T>>obj).compareTo instanceof Function;
 }
 
-export interface ValueComparison<T> {
-  (a: T, b: T): number;
+export interface ValueComparison<T> extends IxComparer<T, T> {
 }
 
 export interface Comparer<T> {
