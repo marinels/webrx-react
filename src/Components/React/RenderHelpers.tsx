@@ -4,11 +4,14 @@ import { Enumerable } from 'ix';
 
 import { wx } from '../../WebRx';
 import { Loading } from '../Common/Loading/Loading';
+import { ValueComparison, ValueComparer } from '../../Utils/Compare';
 
 export function renderEnumerable<T>(
   source: T[] | Enumerable<T> | undefined,
   selector: (item: T, index: number, items: T[]) => any = item => item,
   projector: (items: T[]) => any = items => items,
+  sortKey?: (item: T) => any,
+  sortComparer: ValueComparison<T> = ValueComparer.DefaultComparison,
   defaultSelector: () => any | null = () => null,
 ) {
   if (source == null) {
@@ -16,6 +19,11 @@ export function renderEnumerable<T>(
   }
   else if (Array.isArray(source)) {
     source = source.asEnumerable();
+  }
+
+  if (sortKey != null) {
+    source = source
+      .orderBy(sortKey, sortComparer);
   }
 
   return projector(

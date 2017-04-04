@@ -1,9 +1,14 @@
+import { Comparer as IxComparer } from 'ix';
+
 export interface Comparable<T> {
   compareTo(other: T): number;
 }
 
-export interface ValueComparison<T> {
-  (a: T, b: T): number;
+export function isComparable<T>(obj: any): obj is Comparable<T> {
+  return (<Comparable<T>>obj).compareTo instanceof Function;
+}
+
+export interface ValueComparison<T> extends IxComparer<T, T> {
 }
 
 export interface Comparer<T> {
@@ -22,9 +27,9 @@ export class ValueComparer<T> implements Comparer<T> {
       // only one is null, non-null takes higher value
       return a == null ? -1 : 1;
     }
-    else if ((<Comparable<T>><any>a).compareTo != null) {
+    else if (isComparable(a)) {
       // implements Comparable
-      return (<Comparable<T>><any>a).compareTo(b);
+      return a.compareTo(b);
     }
     else if (String.isString(a) && String.isString(b)) {
       // native string comparison
