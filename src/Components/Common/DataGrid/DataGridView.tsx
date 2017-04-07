@@ -338,8 +338,6 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
       'DataGrid-row--selected': view.props.highlightSelected === true && viewModel.selectedItem() === item,
     });
 
-    const onClick = view.props.selectable !== true ? null : bindEventToCommand(this, viewModel, x => x.selectItem, x => item);
-
     const rowContent = (columns || [])
       .asEnumerable()
       .map((x, i) => this.renderCell(item, index, x, i, columns, viewModel, view))
