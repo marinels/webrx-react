@@ -6,8 +6,8 @@
 // NOTE: even though the npm module @types/rx-dom exists, we cannot use it
 //       this is due to the fact that the module depends on @types/rx which is
 //       a stale set of type definitions compared to the rx module included type
-//       defintions. the rx module hasn't updated the version number since
-//       adding typings to the project.json file (4.1.0). Once a new version is
+//       defintions. the rx module hasn't updated the version number (4.1.0) since
+//       adding typings to the project.json file (151d20d). Once a new version is
 //       published to npm we can start using @types/rx-dom
 
 import * as Rx from 'rx';
