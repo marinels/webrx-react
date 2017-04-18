@@ -224,6 +224,14 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
 
   protected abstract getProjectionResult(request: TRequest): Observable<TResult>;
 
+  get items() {
+    return this.projectedItems;
+  }
+
+  public get allItems() {
+    return this.listItems;
+  }
+
   public canFilter() {
     return this.filterer != null;
   }

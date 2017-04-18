@@ -15,7 +15,8 @@ export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<T
     return new ListViewModel(wx.property<TData[]>(items));
   }
 
-  public items: wx.IObservableReadOnlyProperty<TData[]>;
+  public readonly listItems: wx.IObservableReadOnlyProperty<TData[]>;
+  public readonly items: wx.IObservableReadOnlyProperty<TData[]>;
   public selectedItem: wx.IObservableReadOnlyProperty<TData>;
 
   public selectItem: wx.ICommand<TData>;
@@ -29,11 +30,13 @@ export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<T
     super(isRoutingEnabled);
 
     if (wx.isProperty(items)) {
-      this.items = <wx.IObservableReadOnlyProperty<TData[]>>items;
+      this.listItems = <wx.IObservableReadOnlyProperty<TData[]>>items;
     }
     else {
-      this.items = (<Observable<TData[]>>items).toProperty([]);
+      this.listItems = (<Observable<TData[]>>items).toProperty([]);
     }
+
+    this.items = this.listItems;
 
     this.selectItem = wx.asyncCommand((x: TData) => Observable.of(x));
     this.toggleSelection = wx.asyncCommand((x: TData) => Observable.of(x));
