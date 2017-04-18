@@ -5,7 +5,7 @@ import { wx } from '../../WebRx';
 import { Logging } from '../../Utils';
 import { BaseViewModel, LifecycleComponentViewModel } from './BaseViewModel';
 import { bindObservableToCommand, bindEventToProperty, bindEventToCommand } from './BindingHelpers';
-import { renderEnumerable, renderConditional, renderNullable, renderLoadable, renderSizedLoadable, renderGridLoadable } from './RenderHelpers';
+import { renderEnumerable, renderConditional, renderNullable, renderLoadable, renderSizedLoadable, renderGridLoadable, focusElement } from './RenderHelpers';
 
 export interface ViewModelProps {
   viewModel: Readonly<BaseViewModel>;
@@ -28,6 +28,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
   protected renderLoadable = renderLoadable;
   protected renderSizedLoadable = renderSizedLoadable;
   protected renderGridLoadable = renderGridLoadable;
+  protected focusElement = focusElement;
 
   protected logger = Logging.getLogger(this.getDisplayName());
 
