@@ -438,6 +438,16 @@ const viewMap: ViewActivatorMap = {
         </ItemListPanelView>
       );
     }
+    else if (componentRoute === 'TreeItemListPanel') {
+      return (
+        <ItemListPanelView viewModel={viewModel} headerContent='Sample Tree Data' collapsible search
+          headerActions={[ { id: 'header', children: 'Header Action' } ]} viewTemplate={ treeTemplate }
+          footerContent={ (<CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
+          footerActions={[ { id: 'viewall', bsStyle: 'primary', command: wx.command(x => Alert.create(x, 'View All Pressed')), commandParameter: 'ItemListPanel', children: (<ViewAllFooterAction suffix='Things' />) } ]}
+        >
+        </ItemListPanelView>
+      );
+    }
     else {
       return (
         <ItemListPanelView viewModel={ viewModel } headerContent='Sample List Data' collapsible pager search
