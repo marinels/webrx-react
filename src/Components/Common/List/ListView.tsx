@@ -208,6 +208,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
     renderItemActions?: (node: TreeNode<TData>, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) => any,
     keySelector?: (node: TreeNode<TData>, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) => any,
     renderTemplateContainer?: (content: any, node: TreeNode<TData>, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) => any,
+    protected clickToExpand = false,
   ) {
     super(renderItem, renderItemActions, keySelector, renderTemplateContainer);
 
@@ -258,10 +259,20 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
   }
 
   renderItemContainer(node: TreeNode<TData>, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) {
+    const content = super.renderItemContainer(node, data, index, viewModel, view);
+
     return [
       this.renderIndent(node, data, index, viewModel, view),
       this.renderExpander(node, data, index, viewModel, view),
-      React.cloneElement(super.renderItemContainer(node, data, index, viewModel, view), { key: 'content' }),
+      renderConditional(
+        this.clickToExpand === true,
+        () => (
+          <CommandButton key='content' className='List-itemContainer' plain command={ this.toggleNode } commandParameter={ node }>
+            { React.isValidElement<{ children?: React.ReactNode }>(content) ? content.props.children : content }
+          </CommandButton>
+        ),
+        () => React.cloneElement(content, { key: 'content' }),
+      ),
     ];
   }
 
