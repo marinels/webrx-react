@@ -2,8 +2,18 @@ import { Observable, IObserver, Subject, helpers } from 'rx';
 
 import { Property, Command, ObservableOrProperty } from './Interfaces';
 
+// this is a quick patch to prevent isObservable from detecting view models as
+// observables due to the existence of a subscribe function.
+function isViewModel(value: any | undefined) {
+  return (
+    value != null &&
+    value.isViewModel instanceof Function &&
+    value.isViewModel() === true
+  );
+}
+
 export function isObservable(value: any | undefined): value is Observable<any> {
-  return Observable.isObservable(value);
+  return Observable.isObservable(value) && isViewModel(value) === false;
 }
 
 export function isObserver(value: any | undefined): value is IObserver<any> {
