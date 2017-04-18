@@ -20,8 +20,7 @@ export class ModalDialogViewModel extends BaseViewModel {
 
     this.isVisible = Observable
       .merge(this.show.results.map(x => true), this.hide.results.map(x => false))
-      .startWith(isVisible)
-      .toProperty();
+      .toProperty(isVisible);
   }
 
   public hideOnExecute<T>(command: wx.ICommand<T>) {
