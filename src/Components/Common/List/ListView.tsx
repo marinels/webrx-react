@@ -197,10 +197,10 @@ export interface TreeNode<TData> {
 export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData>, TData, ListView> {
   public static displayName = 'TreeViewTemplate';
 
-  private nodes: wx.IObservableReadOnlyProperty<TreeNode<TData>[]> | undefined;
-  private items: wx.IObservableReadOnlyProperty<TreeNode<TData>[]> | undefined;
-  private toggleNode: wx.ICommand<TreeNode<TData> | undefined>;
-  private lastKey = 0;
+  protected nodes: wx.IObservableReadOnlyProperty<TreeNode<TData>[]> | undefined;
+  protected items: wx.IObservableReadOnlyProperty<TreeNode<TData>[]> | undefined;
+  protected toggleNode: wx.ICommand<TreeNode<TData> | undefined>;
+  protected lastKey = 0;
 
   constructor(
     protected getNestedData: (data: TData, viewModel: ReadonlyListViewModel<TData>, view: ListView) => TData[],
