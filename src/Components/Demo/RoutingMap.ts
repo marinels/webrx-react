@@ -59,8 +59,7 @@ export interface SampleData {
   requiredBy: string;
 }
 
-export interface SampleTreeData extends SampleData {
-  items: SampleTreeData[];
+export interface SampleTreeData extends SampleData, Components.HierarchicalItemsSource<SampleTreeData> {
 }
 
 const sampleListData = <SampleData[]>[
@@ -247,6 +246,11 @@ routeMap.addRoute('WebRx-React', 'ItemListPanel', 'Item List Panel', (state: any
 );
 routeMap.addRoute('WebRx-React', 'ListItemListPanel', 'Item List Panel (List)', (state: any) =>
   new Components.ItemListPanelViewModel(Observable.of(sampleListData), (x, r) => r.test(x.name)),
+);
+routeMap.addRoute('WebRx-React', 'TreeItemListPanel', 'Item List Panel (Tree)', (state: any) =>
+  new Components.ItemListPanelViewModel(Observable.of(sampleTreeData), (node, regexp) => {
+    return Components.filterHierarchical(node, regexp, x => regexp.test(x.name));
+  }, undefined, undefined, undefined, 0),
 );
 routeMap.addRoute('WebRx-React', 'AsyncItemListPanel', 'ItemListPanel (Async)', (state: any) => {
   return new Components.AsyncItemListPanelViewModel(sampleDataSource, true, true);

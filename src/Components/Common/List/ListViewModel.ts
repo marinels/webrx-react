@@ -8,6 +8,24 @@ export interface SelectableItem {
   isSelected: boolean;
 }
 
+export interface ItemsSource<T> {
+  items: T[]
+}
+
+export interface HierarchicalItemsSource<T extends HierarchicalItemsSource<T>> extends ItemsSource<T> {
+}
+
+export function filterHierarchical<T extends HierarchicalItemsSource<T>>(
+  item: T,
+  regexp: RegExp,
+  test: (item: T, r: RegExp) => boolean,
+) {
+  item.items = (item.items || [])
+    .filter(x => filterHierarchical(x, regexp, test));
+
+  return test(item, regexp) || item.items.length > 0;
+}
+
 export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<TRoutingState> {
   public static displayName = 'ListViewModel';
 
@@ -15,7 +33,8 @@ export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<T
     return new ListViewModel(wx.property<TData[]>(items));
   }
 
-  public items: wx.IObservableReadOnlyProperty<TData[]>;
+  public readonly listItems: wx.IObservableReadOnlyProperty<TData[]>;
+  public readonly items: wx.IObservableReadOnlyProperty<TData[]>;
   public selectedItem: wx.IObservableReadOnlyProperty<TData>;
 
   public selectItem: wx.ICommand<TData>;
@@ -29,11 +48,13 @@ export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<T
     super(isRoutingEnabled);
 
     if (wx.isProperty(items)) {
-      this.items = <wx.IObservableReadOnlyProperty<TData[]>>items;
+      this.listItems = <wx.IObservableReadOnlyProperty<TData[]>>items;
     }
     else {
-      this.items = (<Observable<TData[]>>items).toProperty([]);
+      this.listItems = (<Observable<TData[]>>items).toProperty([]);
     }
+
+    this.items = this.listItems;
 
     this.selectItem = wx.asyncCommand((x: TData) => Observable.of(x));
     this.toggleSelection = wx.asyncCommand((x: TData) => Observable.of(x));

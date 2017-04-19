@@ -1,4 +1,5 @@
 import { Observable } from 'rx';
+import * as clone from 'clone';
 
 import { wx } from '../../../WebRx';
 import { ObjectComparer, SortDirection } from '../../../Utils/Compare';
@@ -224,6 +225,14 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
 
   protected abstract getProjectionResult(request: TRequest): Observable<TResult>;
 
+  get items() {
+    return this.projectedItems;
+  }
+
+  public get allItems() {
+    return this.listItems;
+  }
+
   public canFilter() {
     return this.filterer != null;
   }
@@ -310,7 +319,7 @@ export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, Items
     let items = request.items || [];
 
     if (this.filterer != null && request.regex != null) {
-      items = items.filter(x => this.filterer!(x, request.regex!));
+      items = clone(items).filter(x => this.filterer!(x, request.regex!));
     }
 
     const count = items.length;
