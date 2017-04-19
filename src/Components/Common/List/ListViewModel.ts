@@ -8,6 +8,24 @@ export interface SelectableItem {
   isSelected: boolean;
 }
 
+export interface ItemsSource<T> {
+  items: T[]
+}
+
+export interface HierarchicalItemsSource<T extends HierarchicalItemsSource<T>> extends ItemsSource<T> {
+}
+
+export function filterHierarchical<T extends HierarchicalItemsSource<T>>(
+  item: T,
+  regexp: RegExp,
+  test: (item: T, r: RegExp) => boolean,
+) {
+  item.items = (item.items || [])
+    .filter(x => filterHierarchical(x, regexp, test));
+
+  return test(item, regexp) || item.items.length > 0;
+}
+
 export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<TRoutingState> {
   public static displayName = 'ListViewModel';
 

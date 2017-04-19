@@ -208,6 +208,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
     renderItemActions?: (node: TreeNode<TData>, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) => any,
     keySelector?: (node: TreeNode<TData>, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) => any,
     renderTemplateContainer?: (content: any, node: TreeNode<TData>, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) => any,
+    protected autoExpand: (data: TData[], viewModel: ReadonlyListViewModel<TData>, view: ListView) => Observable<boolean> = () => Observable.of(false),
     protected clickToExpand = false,
   ) {
     super(renderItem, renderItemActions, keySelector, renderTemplateContainer);
@@ -224,9 +225,13 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
   initialize(viewModel: ReadonlyListViewModel<TData>, view: ListView) {
     this.nodes = wx
       .whenAny(viewModel.items, x => x || [])
-      .map(nodes => {
-        return nodes
-          .map((x, i) => this.getNode(x, i, 0, viewModel, view));
+      .flatMapLatest(
+        x => this.autoExpand(x, viewModel, view),
+        (nodes, autoExpand) => ({ nodes, autoExpand }),
+      )
+      .map(x => {
+        return x.nodes
+          .map((node, i) => this.getNode(node, i, 0, viewModel, view, x.autoExpand));
       })
       .toProperty();
 
@@ -300,15 +305,15 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
     );
   }
 
-  protected getNode(data: TData, index: number, level: number, viewModel: ReadonlyListViewModel<TData>, view: ListView): TreeNode<TData> {
+  protected getNode(data: TData, index: number, level: number, viewModel: ReadonlyListViewModel<TData>, view: ListView, isExpanded = false): TreeNode<TData> {
     const node = {
       data,
       index,
       level,
       nodes: (this.getNestedData(data, viewModel, view) || [])
-        .map((x, i) => this.getNode(x, i, level + 1, viewModel, view)),
+        .map((x, i) => this.getNode(x, i, level + 1, viewModel, view, isExpanded)),
       key: ++this.lastKey,
-      isExpanded: false,
+      isExpanded,
     } as TreeNode<TData>;
 
     node.key = this.keySelector(node, data, index, viewModel, view) || node.key;
