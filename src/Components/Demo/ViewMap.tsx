@@ -10,6 +10,7 @@ import { renderSizedLoadable, bindEventToCommand } from '../React';
 import { SampleData, SampleTreeData } from './RoutingMap';
 
 import {
+  SearchViewModel,
   TimeSpanInputViewModel,
   ListViewModel,
   DataGridViewModel,
@@ -109,6 +110,18 @@ const treeTemplate = new TreeViewTemplate<SampleTreeData>(
       <NavButton key='nav' href={ `#/name/${ x.name }` } />,
     ];
   },
+  x => x.key,
+  undefined,
+  (x, vm, v) => {
+    const search: SearchViewModel = vm.getSearch();
+
+    if (search != null) {
+      return wx
+        .whenAny(search.filter, x => String.isNullOrEmpty(x) === false);
+    }
+
+    return Observable.of(false);
+  }
 );
 
 const viewMap: ViewActivatorMap = {
@@ -440,7 +453,7 @@ const viewMap: ViewActivatorMap = {
     }
     else if (componentRoute === 'TreeItemListPanel') {
       return (
-        <ItemListPanelView viewModel={viewModel} headerContent='Sample Tree Data' collapsible search
+        <ItemListPanelView viewModel={viewModel} headerContent='Sample Tree Data' collapsible
           headerActions={[ { id: 'header', children: 'Header Action' } ]} viewTemplate={ treeTemplate }
           footerContent={ (<CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
           footerActions={[ { id: 'viewall', bsStyle: 'primary', command: wx.command(x => Alert.create(x, 'View All Pressed')), commandParameter: 'ItemListPanel', children: (<ViewAllFooterAction suffix='Things' />) } ]}
