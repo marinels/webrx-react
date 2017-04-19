@@ -202,6 +202,8 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
   protected toggleNode: wx.ICommand<TreeNode<TData> | undefined>;
   protected lastKey = 0;
 
+  public indentSize = 24;
+
   constructor(
     protected getNestedData: (data: TData, viewModel: ReadonlyListViewModel<TData>, view: ListView) => TData[],
     renderItem?: (node: TreeNode<TData>, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) => any,
@@ -284,7 +286,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
   protected renderIndent(node: TreeNode<TData>, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) {
     return (
       <div key='indent' className='TreeNode-indent'>
-        <div style={ ({ width: node.level * 10 }) }>&nbsp;</div>
+        <div style={ ({ width: node.level * this.indentSize }) }>&nbsp;</div>
       </div>
     );
   }
