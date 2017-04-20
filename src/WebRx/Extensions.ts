@@ -52,8 +52,7 @@ function observeCommand<T, TRet>(this: Observable<T>, command: ((x: T) => Comman
     })
     .map(x => {
       return x.command
-        .observeExecution(x.parameter)
-        .catch(Observable.empty<TRet>());
+        .observeExecution(x.parameter);
     })
     .switch();
 }

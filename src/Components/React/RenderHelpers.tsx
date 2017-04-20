@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { findDOMNode } from 'react-dom';
 import { Grid } from 'react-bootstrap';
 import { Enumerable } from 'ix';
 
@@ -101,4 +102,16 @@ export function renderGridLoadable(
     fontSize,
     componentClass: Grid,
   }, loadedComponent);
+}
+
+/**
+ * Focus a react instance upon mounting
+ * i.e., <Elem ref={ (x: React.ReactInstance) => this.focusElement(x) } />
+ */
+export function focusElement(instance: React.ReactInstance) {
+  const elem = findDOMNode<HTMLElement>(instance);
+
+  if (elem != null) {
+    elem.focus();
+  }
 }
