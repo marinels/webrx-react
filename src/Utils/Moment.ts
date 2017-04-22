@@ -64,6 +64,25 @@ export class DateTime {
   public static toNumber(value: moment.Moment | undefined) {
     return (value != null && value.isValid()) ? (value.valueOf() + EpochOffset) * TicksPerMillisecond : undefined;
   }
+
+  // some default formatting values
+  public static DefaultLongFormat = 'dddd, LL';
+  public static DefaultShortFormat = 'DD-MMM-YYYY';
+
+  /**
+   * Standardized string representation of a moment
+   */
+  public static format(value: moment.Moment | undefined, format = DateTime.DefaultLongFormat, defaultValue: any = null) {
+    return value == null ? defaultValue : value.format(format);
+  }
+
+  public static formatLong(value: moment.Moment | undefined, defaultValue: any = null) {
+    return DateTime.format(value, DateTime.DefaultLongFormat, defaultValue);
+  }
+
+  public static formatShort(value: moment.Moment | undefined, defaultValue: any = null) {
+    return DateTime.format(value, DateTime.DefaultShortFormat, defaultValue);
+  }
 }
 
 /**
@@ -96,5 +115,15 @@ export class TimeSpan {
   static toNumber(value: moment.Duration | undefined): number | undefined;
   public static toNumber(value: moment.Duration | undefined) {
     return value == null ? undefined : value.asMilliseconds() * TicksPerMillisecond;
+  }
+
+  // some default formatting values
+  public static DefaultDurationHoursPrecision = 1;
+
+  /**
+   * Standardized hours string representation of a duration
+   */
+  public static formatHours(value: moment.Duration | undefined, precision = TimeSpan.DefaultDurationHoursPrecision, defaultValue: any = null) {
+    return value == null ? defaultValue : `${ value.asHours().toFixed(precision) } Hours`;
   }
 }
