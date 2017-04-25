@@ -161,7 +161,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
       'Routing Handler State Changed Error',
       x => {
         if (this.currentRoute() != null && this.routedComponent() != null) {
-          Manager.navTo(this.currentRoute().path, this.routedComponent().getRoutingState(x));
+          Manager.navTo(this.currentRoute().path, this.routedComponent().getRoutingState(x), true);
         }
       },
     );
