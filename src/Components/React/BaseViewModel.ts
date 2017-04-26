@@ -1,6 +1,6 @@
 import { Observable, IDisposable } from 'rx';
 
-import { property, command, whenAny, getObservable } from '../../WebRx';
+import { property, command, whenAny, getObservable, getProperty, isProperty, isCommand } from '../../WebRx';
 import { Logging, Alert, SubMan } from '../../Utils';
 import { Manager } from '../../Routing/RouteManager';
 
@@ -34,6 +34,9 @@ export abstract class BaseViewModel implements IDisposable {
   protected property = property;
   protected command = command;
   protected getObservable = getObservable;
+  protected getProperty = getProperty;
+  protected isProperty = isProperty;
+  protected isCommand = isCommand;
   protected whenAny = whenAny;
 
   // -----------------------------------------
