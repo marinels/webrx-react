@@ -13,7 +13,7 @@ export function renderEnumerable<T>(
   projector: (items: T[]) => any = items => items,
   sortKey?: (item: T) => any,
   sortComparer: ValueComparison<T> = ValueComparer.DefaultComparison,
-  defaultSelector: () => any | null = () => null,
+  defaultSelector: () => T | undefined = () => undefined,
 ) {
   if (source == null) {
     source = Enumerable.empty<T>();
