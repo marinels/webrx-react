@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as classNames from 'classnames';
 
 import { BaseView, ViewModelProps } from '../../React/BaseView';
-import { DataGridView, DataGridProps, DataGridColumn, DataGridTableViewTemplate, DataGridViewType } from '../DataGrid/DataGridView';
+import { DataGridView, DataGridProps, DataGridColumn, DataGridListViewTemplate, DataGridViewType } from '../DataGrid/DataGridView';
 import { CommonPanel, CommonPanelProps } from '../CommonPanel/CommonPanel';
 import { ItemListPanelViewModel } from './ItemListPanelViewModel';
 
@@ -33,7 +33,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
       return { fill, viewTemplate, search, pager, loadingContent, selectable, highlightSelected, checkmarkSelected };
     });
 
-    const viewType: DataGridViewType = props.viewTemplate instanceof DataGridTableViewTemplate ? 'Table' : 'List';
+    const viewType: DataGridViewType = props.viewTemplate instanceof DataGridListViewTemplate ? 'List' : 'Table';
 
     if ((props.search || false) !== false && this.props.headerFormat == null && this.state.isLoading() === false) {
       rest.headerFormat = (header: any) => (

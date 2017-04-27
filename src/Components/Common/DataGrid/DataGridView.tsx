@@ -507,7 +507,7 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
     });
 
     return this.renderSizedLoadable(this.state.isLoading, props.loadingContent, '1.5em', () => {
-      const viewType: DataGridViewType = props.viewTemplate instanceof DataGridTableViewTemplate ? 'Table' : 'List';
+      const viewType: DataGridViewType = props.viewTemplate instanceof DataGridListViewTemplate ? 'List' : 'Table';
       const grid = props.viewTemplate!.render(this.state, this);
 
       return this.renderConditional(
