@@ -506,6 +506,10 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
       return { fill, viewTemplate, search, pager, selectable, highlightSelected, checkmarkSelected, loadingContent, emptyContent };
     });
 
+    if ((props.search || false) !== false && this.state.canFilter() === false) {
+      this.logger.warn('Cannot render grid search component because data source cannot be filtered');
+    }
+
     return this.renderSizedLoadable(this.state.isLoading, props.loadingContent, '1.5em', () => {
       const viewType: DataGridViewType = props.viewTemplate instanceof DataGridListViewTemplate ? 'List' : 'Table';
       const grid = props.viewTemplate!.render(this.state, this);

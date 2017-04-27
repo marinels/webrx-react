@@ -33,6 +33,10 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
       return { fill, viewTemplate, search, pager, loadingContent, selectable, highlightSelected, checkmarkSelected };
     });
 
+    if ((props.search || false) !== false && this.state.grid.canFilter() === false) {
+      this.logger.warn('Cannot render item list panel search component because data source cannot be filtered');
+    }
+
     const viewType: DataGridViewType = props.viewTemplate instanceof DataGridListViewTemplate ? 'List' : 'Table';
 
     if ((props.search || false) !== false && this.props.headerFormat == null && this.state.isLoading() === false) {
