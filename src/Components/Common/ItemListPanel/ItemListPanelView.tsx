@@ -35,18 +35,28 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
 
     const viewType: DataGridViewType = props.viewTemplate instanceof DataGridTableViewTemplate ? 'Table' : 'List';
 
-    return (
-      <CommonPanel { ...rest } className={ classNames('ItemListPanel', viewType, className) }>
-        {
-          this.renderConditional(
-            props.search != null && props.search !== false && this.state.isLoading() === false,
-            () => this.renderConditional(
+    if ((props.search || false) !== false && this.props.headerFormat == null && this.state.isLoading() === false) {
+      rest.headerFormat = (header: any) => (
+        <div>
+          { header }
+          {
+            this.renderConditional(
               React.isValidElement(props.search),
               () => props.search,
-              () => <DataGridView.Search { ...(props.search === true ? {} : props.search) } grid={ this.state.grid } viewType={ viewType } fill />,
-            ),
-          )
-        }
+              () => (
+                <DataGridView.Search { ...(props.search === true ? {} : props.search) }
+                  grid={ this.state.grid } viewType={ viewType } fill
+                  onClick={ e => { e.stopPropagation(); } }
+                />
+              ),
+            )
+          }
+        </div>
+      );
+    }
+
+    return (
+      <CommonPanel { ...rest } className={ classNames('ItemListPanel', viewType, className) }>
         <DataGridView { ...props } viewModel={ this.state.grid } search={ false } pager={ false } fill>
           { children }
         </DataGridView>
