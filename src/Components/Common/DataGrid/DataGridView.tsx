@@ -394,7 +394,7 @@ export interface DataGridComponentProps {
   fill?: boolean;
 }
 
-export interface DataGridSearchProps extends DataGridComponentProps, SearchProps {
+export interface DataGridSearchProps extends DataGridComponentProps, SearchProps, React.HTMLProps<any> {
 }
 
 export class DataGridSearch extends React.Component<DataGridSearchProps, any> {
