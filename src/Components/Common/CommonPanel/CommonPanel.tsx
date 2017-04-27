@@ -8,16 +8,19 @@ import { renderConditional } from '../../React/RenderHelpers';
 import './CommonPanel.less';
 
 type Content = ((x: CommonPanel) => any) | any;
+type SectionFormatter = (section: any) => any;
 type ContentSection = 'header' | 'body' | 'footer';
 type ContentType = 'teaser' | 'summary';
 
 export interface CommonPanelProps extends PanelProps {
   headerContent?: Content;
   headerActions?: CommandButtonProps[];
+  headerFormat?: SectionFormatter;
   teaserContent?: Content;
   summaryContent?: Content;
   footerContent?: Content;
   footerActions?: CommandButtonProps[];
+  footerFormat?: SectionFormatter;
 
   shadow?: boolean;
 
@@ -35,8 +38,8 @@ export class CommonPanel extends React.Component<CommonPanelProps, any> {
 
   render() {
     const { className, children, props, rest } = this.restProps(x => {
-      const { headerContent, headerActions, teaserContent, summaryContent, footerContent, footerActions, shadow } = x;
-      return { headerContent, headerActions, teaserContent, summaryContent, footerContent, footerActions, shadow };
+      const { headerContent, headerActions, headerFormat, teaserContent, summaryContent, footerContent, footerActions, footerFormat, shadow } = x;
+      return { headerContent, headerActions, headerFormat, teaserContent, summaryContent, footerContent, footerActions, footerFormat, shadow };
     });
 
     const panelClassName = classNames(
@@ -50,8 +53,8 @@ export class CommonPanel extends React.Component<CommonPanelProps, any> {
 
     return (
       <Panel { ...rest } className={ panelClassName }
-        header={ rest.header || this.renderHeaderFooter(props.headerContent, props.headerActions, 'header') }
-        footer={ rest.footer || this.renderHeaderFooter(props.footerContent, props.footerActions, 'footer') }
+        header={ rest.header || this.renderHeaderFooter(props.headerContent, props.headerActions, 'header', props.headerFormat) }
+        footer={ rest.footer || this.renderHeaderFooter(props.footerContent, props.footerActions, 'footer', props.footerFormat) }
       >
         { this.renderContent(props.teaserContent, 'body', 'teaser') }
         { children }
@@ -81,12 +84,15 @@ export class CommonPanel extends React.Component<CommonPanelProps, any> {
     ));
   }
 
-  private renderHeaderFooter(content: Content, actions: CommandButtonProps[] = [], section: ContentSection) {
-    return renderConditional(content != null || (actions != null && actions.length > 0), () => (
-      <div className={ `CommonPanel-${ section }` }>
-        { this.renderContent(content, section) }
-        { this.renderActions(actions, section) }
-      </div>
-    ));
+  private renderHeaderFooter(content: Content, actions: CommandButtonProps[] = [], section: ContentSection, formatter: (section: any) => any = x => x) {
+    return renderConditional(
+      content != null || (actions != null && actions.length > 0),
+      () => formatter(
+        <div className={ `CommonPanel-${ section }` }>
+          { this.renderContent(content, section) }
+          { this.renderActions(actions, section) }
+        </div>
+      ),
+    );
   }
 }
