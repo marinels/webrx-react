@@ -8,6 +8,7 @@ import { whenAny } from './WhenAny';
 
 declare module 'rx' {
   interface Observable<T> {
+    startWith<TOther>(value: TOther): Observable<T | TOther>;
     subscribeWith(observerOrNext?: IObserver<T> | ((value: T) => void), onError?: (exception: any) => void, onCompleted?: () => void): IDisposable;
     toProperty: (initialValue?: T) => ReadOnlyProperty<T>;
     observeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>): Observable<TRet>;
