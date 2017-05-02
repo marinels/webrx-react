@@ -9,12 +9,19 @@ import { whenAny } from './WhenAny';
 declare module 'rx' {
   interface Observable<T> {
     startWith<TOther>(value: TOther): Observable<T | TOther>;
+    filterNull<T>(this: Observable<T | undefined | null>): Observable<T>;
     subscribeWith(observerOrNext?: IObserver<T> | ((value: T) => void), onError?: (exception: any) => void, onCompleted?: () => void): IDisposable;
     toProperty: (initialValue?: T) => ReadOnlyProperty<T>;
     observeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>): Observable<TRet>;
     invokeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>): IDisposable;
   }
 }
+
+function filterNull<T>(this: Observable<T | undefined | null>) {
+  return this
+    .filter(x => x != null);
+}
+(<any>Observable).prototype.filterNull = filterNull;
 
 function subscribeWith<T>(
   this: Observable<T>,
