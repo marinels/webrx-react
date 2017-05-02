@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Icon } from 'react-fa';
-import { InputGroup, FormControl } from 'react-bootstrap';
+import { FormGroup, InputGroup, FormControl } from 'react-bootstrap';
 import * as classNames from 'classnames';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';
@@ -8,10 +8,11 @@ import { BindableInput } from '../BindableInput/BindableInput';
 import { SearchViewModel } from './SearchViewModel';
 import { CommandButton } from '../CommandButton/CommandButton';
 
+import './Search.less';
+
 const EnterKey = 13;
 
 export interface SearchProps {
-  button?: any;
   placeholder?: string;
 }
 
@@ -22,49 +23,26 @@ export class SearchView extends BaseView<SearchViewProps, SearchViewModel> {
   public static displayName = 'SearchView';
 
   static defaultProps = {
-    button: false,
-    placeholder: 'Enter Search Terms...',
+    placeholder: 'Search',
   };
 
   render() {
     const { className, rest } = this.restProps(x => {
-      const { button, placeholder } = x;
-      return { button, placeholder };
+      const { placeholder } = x;
+      return { placeholder };
     });
 
     return (
       <div { ...rest } className={ classNames('Search', className) }>
-        { this.renderInputGroup() }
+        <FormGroup className='has-feedback'>
+          <BindableInput property={ this.state.filter }>
+            <FormControl className='Search-text' type='text' placeholder={ this.props.placeholder }
+              onKeyDown={ this.bindEventToCommand(x => x.search, undefined, (e: React.KeyboardEvent<any>) => e.keyCode === EnterKey) }
+            />
+          </BindableInput>
+          <Icon className='Search-icon form-control-feedback' name='search' />
+        </FormGroup>
       </div>
-    );
-  }
-
-  private renderInputGroup() {
-    return this.renderConditional(
-      (this.props.button != null && this.props.button !== false), () => (
-        <InputGroup>
-          { this.renderInput() }
-          <InputGroup.Button>
-            <CommandButton command={ this.state.search }>
-              {
-                this.renderConditional(this.props.button === true, () => (
-                  <Icon name='search' />
-                ), this.props.button)
-              }
-            </CommandButton>
-          </InputGroup.Button>
-        </InputGroup>
-      ), () => this.renderInput(),
-    );
-  }
-
-  private renderInput() {
-    return (
-      <BindableInput property={ this.state.filter }>
-        <FormControl className='Search-text' type='text' placeholder={ this.props.placeholder }
-          onKeyDown={ this.bindEventToCommand(x => x.search, undefined, (e: React.KeyboardEvent<any>) => e.keyCode === EnterKey) }
-        />
-      </BindableInput>
     );
   }
 }
