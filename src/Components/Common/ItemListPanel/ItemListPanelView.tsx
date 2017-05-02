@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as classNames from 'classnames';
 
 import { BaseView, ViewModelProps } from '../../React/BaseView';
-import { DataGridView, DataGridProps, DataGridColumn, DataGridTableViewTemplate, DataGridViewType } from '../DataGrid/DataGridView';
+import { DataGridView, DataGridProps, DataGridColumn, DataGridListViewTemplate, DataGridViewType } from '../DataGrid/DataGridView';
 import { CommonPanel, CommonPanelProps } from '../CommonPanel/CommonPanel';
 import { ItemListPanelViewModel } from './ItemListPanelViewModel';
 
@@ -33,20 +33,34 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
       return { fill, viewTemplate, search, pager, loadingContent, selectable, highlightSelected, checkmarkSelected };
     });
 
-    const viewType: DataGridViewType = props.viewTemplate instanceof DataGridTableViewTemplate ? 'Table' : 'List';
+    if ((props.search || false) !== false && this.state.grid.canFilter() === false) {
+      this.logger.warn('Cannot render item list panel search component because data source cannot be filtered');
+    }
+
+    const viewType: DataGridViewType = props.viewTemplate instanceof DataGridListViewTemplate ? 'List' : 'Table';
+
+    if ((props.search || false) !== false && this.props.headerFormat == null && this.state.isLoading() === false) {
+      rest.headerFormat = (header: any) => (
+        <div>
+          { header }
+          {
+            this.renderConditional(
+              React.isValidElement(props.search),
+              () => props.search,
+              () => (
+                <DataGridView.Search { ...(props.search === true ? {} : props.search) }
+                  grid={ this.state.grid } viewType={ viewType } fill
+                  onClick={ e => { e.stopPropagation(); } }
+                />
+              ),
+            )
+          }
+        </div>
+      );
+    }
 
     return (
       <CommonPanel { ...rest } className={ classNames('ItemListPanel', viewType, className) }>
-        {
-          this.renderConditional(
-            props.search != null && props.search !== false && this.state.isLoading() === false,
-            () => this.renderConditional(
-              React.isValidElement(props.search),
-              () => props.search,
-              () => <DataGridView.Search { ...(props.search === true ? {} : props.search) } grid={ this.state.grid } viewType={ viewType } fill />,
-            ),
-          )
-        }
         <DataGridView { ...props } viewModel={ this.state.grid } search={ false } pager={ false } fill>
           { children }
         </DataGridView>

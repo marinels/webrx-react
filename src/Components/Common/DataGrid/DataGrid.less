@@ -1,13 +1,10 @@
 @import (reference) '../../../Style/App.less';
 
 .DataGrid {
-  & > .Search,
-  &.Search {
+  & > .Search {
     margin-bottom: 5px;
 
-    // if we're rendering a table view, remove the rounded corners to match the
-    // table styling
-    &.Table > input {
+    &.Table input {
       border-radius: 0;
     }
   }

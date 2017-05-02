@@ -13,19 +13,16 @@
     border-width: 1px 0;
   }
 
-  // remove the bottom margin and remove the border
-  // renable the border when focused though
-  .Search {
-    margin: 0;
+  // add padding to the search component for a non-collapsible panel
+  // we only need to margin the sides and bottom, header content pads its bottom
+  .panel-title > .Search {
+    padding: 0 10px 10px;
+  }
 
-    & > input {
-      border-radius: 0;
-      border-width: 0;
-
-      &:focus {
-        border-width: 1px;
-      }
-    }
+  // add margin to the search component for a collapsible panel
+  // margin against the original header content
+  .panel-title > a > .Search {
+    margin-top: 10px;
   }
 
   // add a bottom margin and shift the drop down to the left slightly
