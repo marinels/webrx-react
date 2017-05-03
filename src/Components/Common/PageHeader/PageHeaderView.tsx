@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Icon } from 'react-fa';
+import { Icon, IconStack } from 'react-fa';
 import * as classNames from 'classnames';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 
@@ -143,13 +143,40 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
               <MenuItem key={ x.id } disabled={ this.isActionDisabled(x) } href={ x.uri }
                 onSelect={ String.isNullOrEmpty(x.uri) === true ? this.bindEventToCommand(vm => vm.menuItemSelected, () => x) : null }
               >
-                { String.isNullOrEmpty(x.iconName) ? null : <Icon name={ x.iconName } fixedWidth /> }
+                { this.renderHeaderCommandActionIcon(x) }
                 { x.header }
               </MenuItem>
             ))
         }
       </NavDropdown>
     ));
+  }
+
+  private renderHeaderCommandActionIcon(item: HeaderCommandAction, className?: string, fixedWidth = true) {
+    const props = { fixedWidth, className }
+
+    if (Array.isArray(item.iconName)) {
+      const names = item.iconName
+        .filter(x => String.isNullOrEmpty(x) === false);
+
+      if (names.length === 0) {
+        return null;
+      }
+      else if (names.length === 1) {
+        return (<Icon { ...props } name={ names[0] } />);
+      }
+      else {
+        return (
+          <IconStack className={ className }>
+            <Icon name={ names[0] } stack='2x' fixedWidth={ fixedWidth } />
+            <Icon name={ names[1] } stack='1x' fixedWidth={ fixedWidth } />
+          </IconStack>
+        )
+      }
+    }
+    else {
+      return String.isNullOrEmpty(item.iconName) ? null : (<Icon { ...props } name={ item.iconName } />);
+    }
   }
 
   private renderRoutedMenus() {
@@ -214,7 +241,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
                 <CommandButton key={ x.id } className='PageHeader-actionButton' bsStyle={ x.bsStyle }
                   href={ x.uri } command={ x.command } commandParameter={ x.commandParameter }
                 >
-                  { String.isNullOrEmpty(x.iconName) ? null : <Icon className='PageHeader-actionHeaderIcon' name={ x.iconName } /> }
+                  { this.renderHeaderCommandActionIcon(x, 'PageHeader-actionHeaderIcon', false) }
                   <span className='PageHeader-actionHeaderText'>{ x.header }</span>
                 </CommandButton>
               )),
@@ -247,11 +274,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
                           <NavItem key={ x.id } disabled={ this.isActionDisabled(x) } href={ x.uri }
                             onClick={ String.isNullOrEmpty(x.uri) === true ? this.bindEventToCommand(vm => vm.menuItemSelected, () => x) : this.bindEventToCommand(vm => vm.toggleSideBar, () => false) }
                           >
-                            {
-                              this.renderConditional(String.isNullOrEmpty(x.iconName) === false, () => (
-                                <Icon name={ x.iconName! } fixedWidth />
-                              ))
-                            }
+                            { this.renderHeaderCommandActionIcon(x) }
                             { x.header }
                           </NavItem>
                         ))

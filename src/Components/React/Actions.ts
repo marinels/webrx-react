@@ -10,7 +10,7 @@ export interface HeaderCommandAction extends HeaderAction {
   command?: wx.ICommand<any>;
   commandParameter?: any;
   visibleWhenDisabled?: boolean;
-  iconName?: string;
+  iconName?: string | string[];
   bsStyle?: string;
   uri?: string;
 }
