@@ -198,22 +198,23 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
   }
 
   protected getColumnDefinitions(viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView): DataGridColumn[] | undefined {
-    let children = view.props.children;
+    let columns: any[] = React.Children
+      .toArray(view.props.children) || [];
 
-    if (this.enableAutomaticColumns === true && React.Children.count(children) === 0) {
+    if (this.enableAutomaticColumns === true && columns.length === 0) {
       const items = (viewModel.items() || []);
 
       if (items.length > 0 && items[0] != null) {
         // auto-generate columns
-        children = Object
+        columns = Object
           .keys(items[0])
           .map(x => (
             <DataGridColumn fieldName={ x } />
-          )) as any;
+          ));
       }
     }
 
-    return children;
+    return columns;
   }
 
   protected createColumns(viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) {
