@@ -12,7 +12,6 @@ export * from './CountFooterContent';
 export * from './ViewAllFooterAction';
 
 export interface ItemListPanelProps extends CommonPanelProps, DataGridProps, ViewModelProps {
-  children?: DataGridColumn[];
 }
 
 export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPanelViewModel<any>> {

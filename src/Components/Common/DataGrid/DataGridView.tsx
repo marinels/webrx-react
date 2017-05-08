@@ -436,11 +436,9 @@ export interface DataGridProps extends ListViewRenderTemplateProps {
   search?: boolean | SearchProps | any;
   pager?: boolean | PagerProps | any;
   loadingContent?: any;
-  children?: DataGridColumn[];
 }
 
 export interface DataGridViewProps extends DataGridProps, BaseViewProps {
-  children?: DataGridColumn[];
 }
 
 export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<any>> {

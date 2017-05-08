@@ -23,8 +23,6 @@ export interface CommonPanelProps extends PanelProps {
   footerFormat?: SectionFormatter;
 
   shadow?: boolean;
-
-  children?: any;
 }
 
 export class CommonPanel extends React.Component<CommonPanelProps, any> {

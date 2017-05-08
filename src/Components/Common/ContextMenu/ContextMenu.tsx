@@ -11,7 +11,6 @@ export interface ContextMenuProps {
   id: string;
   header?: string;
   onSelect?: (item: MenuItemProps) => void;
-  children?: any;
 }
 
 export interface ContextMenuState {
