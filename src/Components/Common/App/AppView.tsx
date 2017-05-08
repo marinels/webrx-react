@@ -54,9 +54,9 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
             <i className='preload fa fa-spinner fa-5x fa-pulse' aria-hidden='true'></i>
           ), () => (
             <div>
-              { this.renderConditional(props.guide!, () => (<BootstrapGuide />)) }
+              { this.renderConditional(props.guide, () => (<BootstrapGuide />)) }
               {
-                this.renderConditional(props.alerts!, () => (
+                this.renderConditional(props.alerts, () => (
                   <div className='float-container'>
                     <Grid>
                       <AlertHostView viewModel={ this.state.alerts } />
