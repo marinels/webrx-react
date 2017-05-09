@@ -113,6 +113,7 @@ export class ObservableCommand<T> implements Command<T>, IDisposable {
 
   dispose() {
     this.canExecuteSubscription = Object.dispose(this.canExecuteSubscription);
+    this.canExecuteSubject = Object.dispose(this.canExecuteSubject);
     this.isExecutingSubject = Object.dispose(this.isExecutingSubject);
     this.resultsSubject = Object.dispose(this.resultsSubject);
     this.thrownErrorsSubject = Object.dispose(this.thrownErrorsSubject);
