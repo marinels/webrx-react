@@ -114,8 +114,7 @@ export class RouteManager {
 
         return route;
       })
-      .filter(x => x != null)
-      .map(x => x!)
+      .filterNull()
       .toProperty();
   }
 
