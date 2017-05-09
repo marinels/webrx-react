@@ -70,13 +70,17 @@ export function getObservable<T>(observableOrProperty: ObservableOrProperty<T> |
   throw new Error(`Unable to convert '${ observableOrProperty }' to an observable`);
 }
 
-export function getProperty<T>(observableOrProperty: ObservableOrProperty<T> | undefined, initialValue?: T) {
+export function getProperty<T>(observableOrProperty: ObservableOrProperty<T> | T | undefined, initialValue?: T) {
   if (isProperty(observableOrProperty)) {
     return observableOrProperty;
   }
 
   if (isObservable(observableOrProperty)) {
     return observableOrProperty.toProperty(initialValue);
+  }
+
+  if (initialValue == null && observableOrProperty != null) {
+    initialValue = observableOrProperty;
   }
 
   if (initialValue != null) {
