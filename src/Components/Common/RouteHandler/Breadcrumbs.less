@@ -1,8 +1,8 @@
 @import (reference) '../../../Style/App.less';
 
 .Breadcrumbs {
-  position: relative;
   height: 36px;
+  position: relative;
 
   &.fixed {
     .Breadcrumbs-container {
@@ -19,9 +19,9 @@
   }
 
   .Breadcrumbs-container {
+    left: 0;
     position: relative;
     right: 0;
-    left: 0;
     text-align: center;
     z-index: @zindex-dropdown - 2;
 
@@ -31,10 +31,10 @@
   }
 
   .Breadcrumbs-pin {
-    position: absolute;
-    top: 0;
-    right: 0;
     color: @link-color;
+    position: absolute;
+    right: 0;
+    top: 0;
     z-index: @zindex-dropdown - 1;
 
     &:focus {

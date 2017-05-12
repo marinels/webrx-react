@@ -6,17 +6,17 @@
   margin: 0;
 
   & > .list-group-item {
-    // this prevents things from extending past the rounded corners
-    overflow: hidden;
-
     // all our list item components sit inside this table as table-cell's
     display: table;
 
-    // consume all horizontal space for each list item
-    width: 100%;
+    // this prevents things from extending past the rounded corners
+    overflow: hidden;
 
     // remove the default list-group-item padding (we supply it in List-itemContent)
     padding: 0;
+
+    // consume all horizontal space for each list item
+    width: 100%;
   }
 
   // the main three sections of a list item (and two tree node sections) are
@@ -27,9 +27,9 @@
   .TreeNode-indent,
   .TreeNode-expander {
     display: table-cell;
+    height: 100%;
     vertical-align: middle;
     width: 1px;
-    height: 100%;
   }
 
   .List-itemSelection,
@@ -37,8 +37,8 @@
   .List-itemContainer {
     & > .btn {
       // remove the padding and border of the selection and expander buttons
-      padding: 0;
       border: 0;
+      padding: 0;
     }
   }
 
@@ -59,8 +59,8 @@
   }
 
   .List-empty {
-    padding: 5px;
     font-size: 1.25em;
+    padding: 5px;
     text-align: center;
   }
 }

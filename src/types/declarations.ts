@@ -22,4 +22,4 @@ declare global {
 }
 
 // since there are no exports, we must perform an empty export
-export {}
+export {};

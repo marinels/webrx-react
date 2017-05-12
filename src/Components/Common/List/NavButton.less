@@ -3,26 +3,28 @@
 @nav-button-width: 26px;
 
 .NavButton {
-  position: relative;
-  width: @nav-button-width;
+  // clear default padding and border so we sit flush inside of our container
+  border: 0;
+
   // stretch the full height of the containing block
   height: 100%;
 
-  // clear default padding and border so we sit flush inside of our container
   padding: 0;
-  border: 0;
+
+  position: relative;
+  width: @nav-button-width;
 
   // apply contrast hover style
   &:hover {
-    color: @list-group-active-color;
     background-color: @list-group-active-bg;
+    color: @list-group-active-color;
   }
 
   // center the icon within the button
   & > .fa {
+    left: 50%;
     position: absolute;
     top: 50%;
-    left: 50%;
     transform: translate(-50%, -50%);
   }
 }

@@ -342,6 +342,8 @@ function getWebpackConfig(build, uglify, dist) {
     }
   }
 
+  webpackConfig.profile = config.profile;
+
   return webpackConfig;
 }
 
@@ -418,7 +420,6 @@ function webpackBuild(build, webpackConfig, callback) {
 
   webpackConfig.output.path = target;
   webpackConfig.output.publicPath = config.publicPath;
-  webpackConfig.profile = config.profile;
 
   log('Bundling', util.colors.yellow(build), 'Build:', util.colors.magenta(target));
 
@@ -446,7 +447,6 @@ function webpackWatcherStream(webpackConfig, build) {
 
   webpackConfig.output.path = target;
   webpackConfig.output.publicPath = config.publicPath;
-  webpackConfig.profile = config.profile;
 
   // eslint-disable-next-line prefer-arrow-callback
   const stream = through(() => null, function () {
@@ -560,7 +560,6 @@ gulp.task('watch:webpack', [ 'clean:build', 'index:watch' ], (done) => {
   webpackConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
   webpackConfig.devtool = 'eval';
   webpackConfig.watch = true;
-  webpackConfig.profile = config.profile;
 
   webpackConfig.module.rules = [
     { test: /\.css$/, use: [ 'style-loader', 'css-loader' ] },

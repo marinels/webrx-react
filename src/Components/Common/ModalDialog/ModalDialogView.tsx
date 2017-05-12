@@ -11,7 +11,6 @@ export interface ModalDialogProps extends BaseViewProps {
   title: any;
   body?: any;
   canClose?: boolean;
-  children?: any;
 }
 
 export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewModel> {

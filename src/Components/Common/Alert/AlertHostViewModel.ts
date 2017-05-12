@@ -1,52 +1,64 @@
 import { Observable } from 'rx';
 
-import { wx } from '../../../WebRx';
+import { ReadOnlyProperty, Command } from '../../../WebRx';
 import { BaseViewModel } from '../../React/BaseViewModel';
 import { AlertViewModel } from '../Alert/AlertViewModel';
 import { Default as pubSub } from '../../../Utils/PubSub';
 import { AlertCreatedKey, AlertCreated } from '../../../Events/AlertCreated';
 
+interface AlertEvent {
+  add?: AlertViewModel,
+  remove?: AlertViewModel,
+}
+
 export class AlertHostViewModel extends BaseViewModel {
   public static displayName = 'AlertHostViewModel';
 
-  private currentAlertKey = 0;
-
-  public alerts: wx.IObservableReadOnlyProperty<AlertViewModel[]>;
-
-  private addAlert: wx.ICommand<AlertViewModel>;
-  private removeAlert: wx.ICommand<AlertViewModel>;
+  public readonly alerts: ReadOnlyProperty<AlertViewModel[]>;
 
   constructor() {
     super();
 
-    const alerts = wx.property<AlertViewModel[]>([]);
-    this.alerts = <wx.IObservableReadOnlyProperty<AlertViewModel[]>>alerts;
+    const addAlert = this.command((x: AlertViewModel) => x);
+    const removeAlert = this.command((x: AlertViewModel) => x);
 
-    this.addAlert = wx.asyncCommand((alert: AlertViewModel) => {
-      alerts(this.alerts().concat(alert));
-      return Observable.of(alert);
-    });
+    const events = Observable
+      .merge(
+        addAlert.results.map(add => <AlertEvent>{ add }),
+        removeAlert.results.map(remove => <AlertEvent>{ remove })
+      );
 
-    this.removeAlert = wx.asyncCommand((alert: AlertViewModel) => {
-      alerts(this.alerts().filter(x => x !== alert));
-      return Observable.of(alert);
-    });
+    this.alerts = events
+      .scan(
+        (alerts: AlertViewModel[], event) => {
+          if (event.add != null) {
+            return (alerts || []).concat(event.add);
+          }
+          else if (event.remove != null) {
+            return (alerts || []).filter(x => x !== event.remove);
+          }
+
+          throw new Error('Invalid Alert Event');
+        },
+        undefined,
+      )
+      .toProperty([])
 
     this.subscribe(
-      this.addAlert.results
+      addAlert.results
         .flatMap(alert => {
-          return wx
+          return this
             .whenAny(alert.isVisible, isVisible => ({ alert, isVisible }))
             .filter(x => x.isVisible === false)
             .map(x => x.alert);
         })
-        .invokeCommand(this.removeAlert),
+        .invokeCommand(removeAlert),
     );
 
     this.subscribe(
       pubSub.observe<AlertCreated>(AlertCreatedKey)
-        .map(x => new AlertViewModel(++this.currentAlertKey, x.content, x.header, x.style, x.timeout))
-        .invokeCommand(this.addAlert),
+        .map((x, i) => new AlertViewModel(i, x.content, x.header, x.style, x.timeout))
+        .invokeCommand(addAlert),
     );
   }
 }

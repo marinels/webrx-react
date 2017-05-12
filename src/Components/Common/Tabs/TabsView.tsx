@@ -43,7 +43,6 @@ export class TabRenderTemplate<TData> {
 // NOTE: id is required for tab (belongs to HTMLAttributes)
 export interface TabsProps extends BaseViewProps {
   template?: TabRenderTemplate<any>;
-  children?: Tab[];
 }
 
 export class TabsView extends BaseView<TabsProps, TabsViewModel<any>> {

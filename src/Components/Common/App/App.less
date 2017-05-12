@@ -11,20 +11,20 @@
 
 .App {
   & > .preload {
+    left: 50%;
     position: fixed;
     top: 50%;
-    left: 50%;
     transform: translate(-50%, -50%);
   }
 
   .float-container {
+    background: none;
+    margin: 0 auto;
+    pointer-events: none;
     position: fixed;
+    text-align: center;
     top: 0;
     width: 100%;
-    margin: 0 auto;
-    text-align: center;
-    background: none;
     z-index: @zindex-modal + 1;
-    pointer-events: none;
   }
 }
