@@ -19,9 +19,10 @@ module.exports = Object.assign(clone(webpackCommon), {
     vendor: [
       'bootstrap/less/bootstrap.less',
       'classnames',
+      'clone',
       'ix',
-      'jquery-param',
       'jquery-deparam',
+      'jquery-param',
       'moment',
       'react',
       'react-transition-group',
@@ -29,6 +30,7 @@ module.exports = Object.assign(clone(webpackCommon), {
       'react-dom',
       'react-fa',
       'rx',
+      'rx-dom',
     ],
   },
   output: {
