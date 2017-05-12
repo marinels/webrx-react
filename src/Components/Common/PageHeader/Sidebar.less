@@ -2,6 +2,10 @@
 
 .Sidebar {
   &.modal {
+    // choose some reasonable custom styles for the sidebar
+    background-color: @navbar-default-bg;
+    box-shadow: 5px 0 10px;
+
     // this will ensure the content will wrap if the resolution is too small
     max-width: 100%;
 
@@ -12,10 +16,6 @@
     // effect.
     padding: 0 !important;
     // stylelint-enable declaration-no-important
-
-    // choose some reasonable custom styles for the sidebar
-    background-color: @navbar-default-bg;
-    box-shadow: 5px 0 10px;
 
     // automatic right bound when displaying on the left
     &.left {
@@ -55,8 +55,8 @@
 
     & .modal-dialog {
       // ensure dialog wraps its contents
-      width: auto;
       margin: 0;
+      width: auto;
 
       & .modal-content {
         // disable original dialog content styles

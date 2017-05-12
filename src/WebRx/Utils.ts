@@ -54,7 +54,7 @@ export function isCommand(value: any | undefined): value is Command<any> {
   return isObservable((<Command<any>>value).results);
 }
 
-export function getObservable<T>(observableOrProperty: ObservableOrProperty<T> | undefined) {
+export function getObservable<T>(observableOrProperty: ObservableOrProperty<T> | T | undefined) {
   if (isProperty(observableOrProperty)) {
     return observableOrProperty.changed.startWith(observableOrProperty.value);
   }
@@ -63,10 +63,14 @@ export function getObservable<T>(observableOrProperty: ObservableOrProperty<T> |
     return observableOrProperty;
   }
 
-  throw new Error(`${ observableOrProperty } is neither observable property nor observable`);
+  if (observableOrProperty != null) {
+    return Observable.of(observableOrProperty);
+  }
+
+  throw new Error(`Unable to convert '${ observableOrProperty }' to an observable`);
 }
 
-export function getProperty<T>(observableOrProperty: ObservableOrProperty<T> | undefined, initialValue?: T) {
+export function getProperty<T>(observableOrProperty: ObservableOrProperty<T> | T | undefined, initialValue?: T) {
   if (isProperty(observableOrProperty)) {
     return observableOrProperty;
   }
@@ -75,7 +79,16 @@ export function getProperty<T>(observableOrProperty: ObservableOrProperty<T> | u
     return observableOrProperty.toProperty(initialValue);
   }
 
-  throw new Error(`${ observableOrProperty } is neither observable property nor observable`);
+  if (initialValue == null && observableOrProperty != null) {
+    initialValue = observableOrProperty;
+  }
+
+  if (initialValue != null) {
+    // this is technically a immutable readonly property
+    return Observable.never<T>().toProperty(initialValue);
+  }
+
+  throw new Error(`Unable to convert '${ observableOrProperty }' to a property`);
 }
 
 export function handleError(e: any, subject: Subject<Error>) {

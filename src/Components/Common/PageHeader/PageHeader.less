@@ -9,8 +9,8 @@
     margin-bottom: 0;
 
     & .dropdown-menu {
-      overflow-y: auto;
       max-height: 480px;
+      overflow-y: auto;
     }
 
     & .btn.navbar-brand,
@@ -76,21 +76,21 @@
       padding: 10px;
 
       .ProfilePicture {
-        // don't display any content outside fo our border radius
-        overflow: hidden;
-        // set the dimensions so that our parent's padding makes sense
-        width: 30px;
-        height: 30px;
-
         // these ensure the background makes a circular frame
         background-color: @navbar-default-link-active-bg;
         border-radius: 50%;
 
+        // don't display any content outside fo our border radius
+        // set the dimensions so that our parent's padding makes sense
+        height: 30px;
+        overflow: hidden;
+        width: 30px;
+
         // this ensures our icon or image is square
         & > img,
         .fa {
-          width: 100%;
           height: 100%;
+          width: 100%;
         }
       }
     }
@@ -103,9 +103,9 @@
   }
 
   .nav {
-    width: 320px;
     // margin navs between one another
     margin: 0 0 20px;
+    width: 320px;
 
     & > li > a > .fa {
       margin-right: 8px;

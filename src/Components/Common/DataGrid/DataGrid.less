@@ -13,16 +13,16 @@
   & > .table-responsive > .table,
   &.table-response > .table,
   &.table {
-    height: 100%;
-
-    // remove default table margin
-    margin: 0;
-
     // consistent background color for the table
     background-color: #fff;
 
     // always put a border around the outside
     border: 1px solid @table-border-color;
+
+    height: 100%;
+
+    // remove default table margin
+    margin: 0;
 
     .DataGrid-column {
       padding: 0;
@@ -33,8 +33,8 @@
 
       // style the sort direction buttons
       &.btn {
-        width: 100%;
         text-align: left;
+        width: 100%;
       }
     }
 
@@ -53,8 +53,8 @@
       }
 
       & > .navColumn {
-        overflow: hidden;
         height: 100%;
+        overflow: hidden;
       }
     }
   }

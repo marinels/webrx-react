@@ -38,8 +38,6 @@ export interface TimeSpanInputProps extends BaseViewProps {
 
   // FormControlProps
   componentClass?: React.ReactType;
-
-  children?: TimeSpanControl;
 }
 
 export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInputViewModel> {

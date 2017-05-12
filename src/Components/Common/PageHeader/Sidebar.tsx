@@ -9,7 +9,6 @@ export interface SidebarProps {
   isVisible?: boolean;
   side?: string;
   header?: any;
-  children?: any;
 }
 
 export class Sidebar extends React.Component<SidebarProps, any> {

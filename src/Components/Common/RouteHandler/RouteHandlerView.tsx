@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Grid, Alert, Breadcrumb } from 'react-bootstrap';
-import * as ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { CSSTransitionGroup } from 'react-transition-group';
 import { Icon } from 'react-fa';
 import * as classNames from 'classnames';
 
@@ -79,12 +79,12 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
 
     return (
       <div { ...rest } className={ classNames('RouteHandler', className) }>
-        <ReactCSSTransitionGroup transitionName='view' transitionLeave={ false } transitionEnterTimeout={ 250 }>
+        <CSSTransitionGroup transitionName='view' transitionLeave={ false } transitionEnterTimeout={ 250 }>
           <div className='RouteHandler-viewContainer' key={ key }>
             <Breadcrumbs items={ this.state.routingBreadcrumbs() } pinnable />
             { this.renderRoutedView(key) }
           </div>
-        </ReactCSSTransitionGroup>
+        </CSSTransitionGroup>
       </div>
     );
   }
