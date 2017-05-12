@@ -153,7 +153,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
   }
 
   private renderHeaderCommandActionIcon(item: HeaderCommandAction, className?: string, fixedWidth = true) {
-    const props = { fixedWidth, className }
+    const props = { fixedWidth, className };
 
     if (Array.isArray(item.iconName)) {
       const names = item.iconName
@@ -171,7 +171,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
             <Icon name={ names[0] } stack='2x' fixedWidth={ fixedWidth } />
             <Icon name={ names[1] } stack='1x' fixedWidth={ fixedWidth } />
           </IconStack>
-        )
+        );
       }
     }
     else {
