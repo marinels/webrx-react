@@ -1,4 +1,4 @@
-import { wx } from '../../../WebRx';
+import {  } from '../../../WebRx';
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 import { BaseDataGridViewModel, ProjectionRequest, ProjectionResult } from '../DataGrid/DataGridViewModel';
 
@@ -6,7 +6,7 @@ export abstract class BaseItemListPanelViewModel<TData, TRequest extends Project
   public static displayName = 'BaseItemListPanelViewModel';
 
   constructor(
-    public grid: TGrid,
+    public readonly grid: TGrid,
     isRoutingEnabled?: boolean,
   ) {
     super(isRoutingEnabled);
@@ -25,7 +25,7 @@ export abstract class BaseItemListPanelViewModel<TData, TRequest extends Project
   }
 
   public get lengthChanged() {
-    return wx
+    return this
       .whenAny(this.items, x => (x || []).length)
       .distinctUntilChanged();
   }

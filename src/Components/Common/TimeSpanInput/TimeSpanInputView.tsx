@@ -48,6 +48,7 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInpu
 
   updateOn() {
     return [
+      this.state.adjust.results,
       this.state.unit.changed,
       this.state.hasError.changed,
     ];
@@ -59,7 +60,7 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInpu
       return { bsClass, bsSize, controlId, validationState };
     });
 
-    props.validationState = props.validationState || (this.state.hasError() ? 'error' : undefined);
+    props.validationState = props.validationState || (this.state.hasError.value ? 'error' : undefined);
 
     return (
       <FormGroup { ...rest } { ...props } className={ classNames('TimeSpanInput', className) }>
@@ -94,13 +95,13 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInpu
   private renderDropdown() {
     return (
       <DropdownButton id={ `TimeSpanInput-units-${ this.props.id }` } className='TimeSpanInput-unitDropdown'
-        title={ this.state.unit().name } bsSize={ this.props.bsSize }
+        title={ this.state.unit.value.name } bsSize={ this.props.bsSize }
         onSelect={ this.bindEventToCommand(x => x.setUnit) }
       >
         {
           this.state.units
             .map(x => (
-              <MenuItem key={ x.type } eventKey={ x } active={ x.type === this.state.unit().type }>
+              <MenuItem key={ x.type } eventKey={ x } active={ x.type === this.state.unit.value.type }>
                 { x.name }
               </MenuItem>
             ))
@@ -114,7 +115,7 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInpu
       <HelpBlock>
         {
           this.renderConditional(
-            String.isNullOrEmpty(this.state.text()) === true,
+            String.isNullOrEmpty(this.state.text.value) === true,
             () => 'Duration is required.',
             () => 'Invalid Duration Format.',
           )

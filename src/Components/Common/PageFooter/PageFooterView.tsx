@@ -75,7 +75,7 @@ export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewMode
   }
 
   private renderDimensions() {
-    const dim = this.state.viewportDimensions();
+    const dim = this.state.viewportDimensions.value;
 
     return this.renderConditional(
       (dim == null || dim.width === 0 || dim.height === 0),

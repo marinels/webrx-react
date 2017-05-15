@@ -38,7 +38,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
 
     const viewType: DataGridViewType = props.viewTemplate instanceof DataGridListViewTemplate ? 'List' : 'Table';
 
-    if ((props.search || false) !== false && this.props.headerFormat == null && this.state.isLoading() === false) {
+    if ((props.search || false) !== false && this.props.headerFormat == null && this.state.isLoading.value === false) {
       rest.headerFormat = (header: any) => (
         <div>
           { header }
@@ -65,7 +65,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
         </DataGridView>
         {
           this.renderConditional(
-            props.pager != null && props.pager !== false && this.state.isLoading() === false,
+            props.pager != null && props.pager !== false && this.state.isLoading.value === false,
             () => this.renderConditional(
               React.isValidElement(props.pager),
               () => props.pager,

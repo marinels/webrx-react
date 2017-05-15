@@ -1,7 +1,6 @@
 import { Observable } from 'rx';
 
-import { wx } from '../../../WebRx';
-
+import { wx, ObservableOrProperty, ReadOnlyProperty, Command } from '../../../WebRx';
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 
 export interface SelectableItem {
@@ -9,7 +8,7 @@ export interface SelectableItem {
 }
 
 export interface ItemsSource<T> {
-  items: T[]
+  items: T[];
 }
 
 export interface HierarchicalItemsSource<T extends HierarchicalItemsSource<T>> extends ItemsSource<T> {
@@ -33,22 +32,22 @@ export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<T
     return new ListViewModel(wx.property<TData[]>(items));
   }
 
-  public readonly listItems: wx.IObservableReadOnlyProperty<TData[]>;
-  public readonly items: wx.IObservableReadOnlyProperty<TData[]>;
-  public selectedItem: wx.IObservableReadOnlyProperty<TData>;
+  public readonly listItems: ReadOnlyProperty<TData[]>;
+  public readonly items: ReadOnlyProperty<TData[]>;
+  public readonly selectedItem: ReadOnlyProperty<TData>;
 
-  public selectItem: wx.ICommand<TData>;
-  protected toggleSelection: wx.ICommand<TData>;
+  public readonly selectItem: Command<TData>;
+  protected readonly toggleSelection: Command<TData>;
 
   constructor(
-    items: wx.ObservableOrProperty<TData[]> = wx.property<TData[]>([]),
-    public isMultiSelectEnabled = false,
+    items: ObservableOrProperty<TData[]> = wx.property<TData[]>([]),
+    public readonly isMultiSelectEnabled = false,
     isRoutingEnabled?: boolean,
   ) {
     super(isRoutingEnabled);
 
     if (wx.isProperty(items)) {
-      this.listItems = <wx.IObservableReadOnlyProperty<TData[]>>items;
+      this.listItems = <ReadOnlyProperty<TData[]>>items;
     }
     else {
       this.listItems = (<Observable<TData[]>>items).toProperty([]);
@@ -56,11 +55,11 @@ export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<T
 
     this.items = this.listItems;
 
-    this.selectItem = wx.asyncCommand((x: TData) => Observable.of(x));
-    this.toggleSelection = wx.asyncCommand((x: TData) => Observable.of(x));
+    this.selectItem = this.command<TData>();
+    this.toggleSelection = this.command<TData>();
 
     if (this.isMultiSelectEnabled === true) {
-      this.subscribe(
+      this.addSubscription(
         wx
           .whenAny(this.toggleSelection.results, x => x)
           .subscribe(x => {
@@ -91,11 +90,11 @@ export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<T
   public isItemSelected(item: TData) {
     return (this.isMultiSelectEnabled === true) ?
       (<SelectableItem><any>item).isSelected === true :
-      this.selectedItem() === item;
+      this.selectedItem.value === item;
   }
 
   public getSelectedItems() {
-    return (this.items() || [])
+    return (this.items.value || [])
       .filter(x => (<SelectableItem><any>x).isSelected === true);
   }
 }

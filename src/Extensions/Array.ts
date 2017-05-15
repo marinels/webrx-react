@@ -9,8 +9,8 @@ declare global {
   }
 }
 
-function asEnumerable<T>() {
-  return Enumerable.fromArray(<T[]>this);
+function asEnumerable<T>(this: T[]) {
+  return Enumerable.fromArray(this);
 }
 Array.prototype.asEnumerable = Object.fallback(Array.prototype.asEnumerable, asEnumerable);
 

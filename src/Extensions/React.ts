@@ -24,13 +24,12 @@ declare module 'react' {
 // You may omit any of the className, children, props, or rest props from the return value
 // you may additionally choose to omit any properties by name from the rest
 // object that is returned (like 'children' for example).
-function restProps<P, S, T>(propsCreator?: (x: P) => T, ...omits: string[]) {
-  const props = (<React.Component<P, S>>this).props;
-  const result = Object.rest(props, propsCreator, ...omits.concat('key', 'ref', 'className', 'children'));
+function restProps<P, S, T>(this: React.Component<P, S>, propsCreator?: (x: P) => T, ...omits: string[]) {
+  const result = Object.rest(this.props, propsCreator, ...omits.concat('key', 'ref', 'className', 'children'));
 
   return Object.assign<ReactSpreadResult<T>>(result, {
-    className: (<React.HTMLAttributes<P>>props).className,
-    children: props.children,
+    className: (<React.HTMLAttributes<P>>this.props).className,
+    children: this.props.children,
   });
 }
 

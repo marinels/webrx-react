@@ -1,4 +1,4 @@
-import { wx } from '../../../WebRx';
+import { ObservableOrProperty } from '../../../WebRx';
 import { BaseItemListPanelViewModel } from './BaseItemListPanelViewModel';
 import { AsyncDataGridViewModel, isAsyncDataSource, AsyncDataSource } from '../DataGrid/AsyncDataGridViewModel';
 import { ProjectionRequest, ProjectionResult } from '../DataGrid/DataGridViewModel';
@@ -11,7 +11,7 @@ export class AsyncItemListPanelViewModel<TData, TRequest extends ProjectionReque
     enableFilter?: boolean,
     enableSort?: boolean,
     isMultiSelectEnabled?: boolean,
-    isLoading?: wx.ObservableOrProperty<boolean>,
+    isLoading?: ObservableOrProperty<boolean>,
     pagerLimit?: number,
     rateLimit?: number,
     isRoutingEnabled?: boolean,
@@ -28,7 +28,7 @@ export class AsyncItemListPanelViewModel<TData, TRequest extends ProjectionReque
   }
 
   public get lengthChanged() {
-    return wx
+    return this
       .whenAny(this.grid.pager.itemCount, x => x)
       .distinctUntilChanged();
   }

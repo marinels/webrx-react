@@ -1,78 +1,62 @@
 import { Observable } from 'rx';
 import * as clone from 'clone';
 
-import { wx } from '../../../WebRx';
+import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
 import { BaseViewModel } from '../../React/BaseViewModel';
 
 export class InlineEditViewModel<T> extends BaseViewModel {
   public static displayName = 'InlineEditViewModel';
 
-  public value: wx.IObservableProperty<T>;
-  public editValue: wx.IObservableProperty<T | undefined>;
-  public isEditing: wx.IObservableReadOnlyProperty<boolean>;
-  public hasSavingError: wx.IObservableProperty<boolean>;
+  public readonly value: Property<T>;
+  public readonly editValue: ReadOnlyProperty<T | undefined>;
+  public readonly isEditing: ReadOnlyProperty<boolean>;
+  public readonly hasSavingError: ReadOnlyProperty<boolean>;
 
-  public edit: wx.ICommand<T>;
-  public save: wx.ICommand<T>;
-  public cancel: wx.ICommand<T | undefined>;
+  public readonly edit: Command<T>;
+  public readonly save: Command<T>;
+  public readonly cancel: Command<undefined>;
 
   constructor(
-    value?: wx.IObservableProperty<T> | T,
-    protected onSave: (value: T, viewModel: InlineEditViewModel<T>) => Observable<T> = x => Observable.of(x),
+    value?: Property<T> | T,
+    protected readonly onSave: (value: T, viewModel: InlineEditViewModel<T>) => Observable<T> = x => Observable.of(x),
   ) {
     super();
 
-    this.hasSavingError = wx.property(false);
-
-    if (wx.isProperty(value) === true) {
-      this.value = <wx.IObservableProperty<T>>value;
+    if (this.isProperty(value)) {
+      this.value = value;
     }
     else {
-      this.value = wx.property(<T>value);
+      this.value = this.property(value);
     }
 
-    this.editValue = wx.property<T | undefined>();
-
-    this.edit = wx.asyncCommand(() => {
-      const editVal = clone(this.value());
-      this.editValue(editVal);
-
-      return Observable.of(editVal);
+    this.edit = this.command(() => {
+      return clone(this.value.value);
     });
 
-    this.save = wx.asyncCommand(() => {
-      return Observable
-        .defer(() => this.onSave(this.editValue()!, this))
-        .doOnNext(x => {
-          // reset the error flag since we received a result
-          this.hasSavingError(false);
-
-          // copy our edit value to our display value
-          this.value(x);
-
-          // clear the edit value
-          this.editValue(undefined);
-        })
-        .catch(e => {
-          // set the error flag
-          this.hasSavingError(true);
-
-          this.alertForError(e, 'Unable to Save');
-
-          return Observable.empty<T>();
-        });
-    });
-
-    this.cancel = wx.asyncCommand<T | undefined>(
-      this.save.isExecuting.map(x => x === false),
+    this.save = this.command(
       () => {
-        this.editValue(undefined);
+        return Observable
+          .defer(() => this.onSave(this.editValue.value!, this))
+          .doOnError(e => {
+            this.alertForError(e, 'Unable to Save');
+          });
+      },
+    );
 
-        // clear the edit value
-        this.hasSavingError(false);
+    this.cancel = this.command(
+      // prevent cancel from being executed while we are waiting for save to respond
+      this.save.isExecutingObservable.map(x => x === false),
+      // this is intentionally returning undefined to 'reset' the editValue
+      () => undefined,
+    );
 
-        return Observable.of(undefined);
-      });
+    this.editValue = Observable
+      .merge(
+        this.edit.results,
+        this.save.results,
+        this.cancel.results,
+      )
+      .toProperty();
 
     this.isEditing = Observable
       .merge(
@@ -80,6 +64,21 @@ export class InlineEditViewModel<T> extends BaseViewModel {
         this.save.results.map(x => false),
         this.cancel.results.map(x => false),
       )
-      .toProperty();
+      .toProperty(false);
+
+    this.hasSavingError = Observable
+      .merge(
+        this.save.results.map(x => false),
+        this.save.thrownErrors.map(x => true),
+        this.cancel.results.map(x => false),
+      )
+      .toProperty(false);
+
+    this.addSubscription(
+      this.save.results
+        .subscribe(x => {
+          this.value.value = x;
+        }),
+    );
   }
 }

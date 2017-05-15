@@ -1,9 +1,9 @@
-import { Observable, Subject, BehaviorSubject, IDisposable, Scheduler } from 'rx';
+import { Observable, Subject, BehaviorSubject, IDisposable } from 'rx';
 
-import { PropertyClass, Property } from './Interfaces';
-import { asObservable, isSubject, handleError } from './Utils';
+import { Property } from './Interfaces';
+import { isSubject, handleError } from './Utils';
 
-export class ObservableProperty<T> implements PropertyClass<T>, IDisposable {
+export class ObservableProperty<T> implements Property<T>, IDisposable {
   private sourceSubscription: IDisposable;
 
   protected changedSubject: BehaviorSubject<T>;
@@ -71,6 +71,6 @@ export class ObservableProperty<T> implements PropertyClass<T>, IDisposable {
 export function property<T>(
   initialValue?: T,
   source?: Observable<T>,
-) {
+): Property<T> {
   return new ObservableProperty(initialValue, source);
 }

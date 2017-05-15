@@ -1,6 +1,6 @@
 import { Observable, IDisposable } from 'rx';
 
-import { wx } from '../../WebRx';
+import { ReadOnlyProperty, Property, Command } from '../../WebRx';
 import { BaseViewModel } from './BaseViewModel';
 import { HeaderCommandAction, HeaderMenu } from './Actions';
 import { Default as pubSub } from '../../Utils/PubSub';
@@ -28,28 +28,28 @@ export interface RoutingBreadcrumb {
 export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel {
   public static displayName = 'BaseRoutableViewModel';
 
-  protected routingState: wx.IObservableProperty<TRoutingState>;
-  protected updateDocumentTitle: wx.ICommand<string>;
-  protected updateRoutingBreadcrumbs: wx.ICommand<RoutingBreadcrumb[] | undefined>;
+  protected readonly routingState: Property<TRoutingState>;
+  protected readonly updateDocumentTitle: Command<string>;
+  protected readonly updateRoutingBreadcrumbs: Command<RoutingBreadcrumb[] | undefined>;
 
-  public routingStateChanged: wx.ICommand<any>;
-  public documentTitle: wx.IObservableReadOnlyProperty<string>;
-  public breadcrumbs: wx.IObservableReadOnlyProperty<RoutingBreadcrumb[] | undefined>;
+  public readonly routingStateChanged: Command<any>;
+  public readonly documentTitle: ReadOnlyProperty<string>;
+  public readonly breadcrumbs: ReadOnlyProperty<RoutingBreadcrumb[] | undefined>;
 
   constructor(public isRoutingEnabled = false, routingStateRateLimit = 25) {
     super();
 
-    this.routingState = wx.property<TRoutingState>();
-    this.updateDocumentTitle = wx.asyncCommand((title: any) => Observable.of(title.toString()));
-    this.updateRoutingBreadcrumbs = wx.asyncCommand((x: RoutingBreadcrumb[] | undefined) => Observable.of(x));
+    this.routingState = this.property<TRoutingState>();
+    this.updateDocumentTitle = this.command((title: any) => title.toString());
+    this.updateRoutingBreadcrumbs = this.command<RoutingBreadcrumb[] | undefined>();
 
-    this.routingStateChanged = wx.command();
+    this.routingStateChanged = this.command();
     this.documentTitle = this.updateDocumentTitle.results.toProperty();
-    this.breadcrumbs = wx
+    this.breadcrumbs = this
       .whenAny(this.updateRoutingBreadcrumbs.results, x => x)
       .toProperty();
 
-    this.subscribe(
+    this.addSubscription(
       this.routingStateChanged.results
         .filter(x => this.isRoutingEnabled)
         .debounce(routingStateRateLimit)
@@ -134,7 +134,7 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
     this.handleRoutingState(state, x => {
       this.loadRoutingState(x);
 
-      this.routingState(state);
+      this.routingState.value = state;
     }, ...observables);
 
     this.routed();

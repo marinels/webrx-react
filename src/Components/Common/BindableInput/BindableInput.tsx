@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { wx } from '../../../WebRx';
+import { Property } from '../../../WebRx';
 
 export interface BindableProps {
   /**
@@ -40,8 +40,8 @@ export class BindableInput extends React.Component<BindableInputProps, any> {
   static defaultProps = {
     valueProperty: 'value',
     onChangeProperty: 'onChange',
-    valueGetter: (property: wx.IObservableProperty<any>) => { return property(); },
-    valueSetter: (property: wx.IObservableProperty<any>, value: any) => { property(value); },
+    valueGetter: (property: Property<any>) => { return property.value; },
+    valueSetter: (property: Property<any>, value: any) => { property.value = value; },
   };
 
   render() {

@@ -26,7 +26,7 @@ export class BootstrapGuide extends React.Component<BootstrapGuideProps, any> {
         })
         .filter((e: MouseEvent) => e.shiftKey === true)
         .subscribe((e: MouseEvent) => {
-          guide.style.top = `${ Math.max(0, e.clientY - guide.clientHeight) }px`;
+          guide.style.top = `${ this.calculateTop(guide, e) }px`;
 
           if (hline != null) {
             hline.style.top = `${ e.pageY }px`;
@@ -64,5 +64,9 @@ export class BootstrapGuide extends React.Component<BootstrapGuideProps, any> {
         <div ref='vline' className='BootstrapGuide-line BootstrapGuide-vline'></div>
       </div>
     );
+  }
+
+  private calculateTop(guide: HTMLDivElement, e: MouseEvent) {
+    return Math.max(0, e.clientY - guide.clientHeight);
   }
 }

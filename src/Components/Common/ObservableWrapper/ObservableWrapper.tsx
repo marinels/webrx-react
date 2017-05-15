@@ -1,22 +1,22 @@
 import * as React from 'react';
 import { Observable, IDisposable } from 'rx';
 
-import { wx } from '../../../WebRx';
+import { wx, ObservableOrProperty, ReadOnlyProperty } from '../../../WebRx';
 
 export interface ObservableWrapperProps {
-  observableOrProperty: wx.ObservableOrProperty<any>;
+  observableOrProperty: ObservableOrProperty<any>;
   render: (x: any) => any;
 }
 
 interface ObservableWrapperState {
-  property: wx.IObservableReadOnlyProperty<any>;
+  property: ReadOnlyProperty<any>;
   sub: IDisposable;
 }
 
 export class ObservableWrapper extends React.Component<ObservableWrapperProps, ObservableWrapperState> {
   private createProperty() {
     return wx.isProperty(this.props.observableOrProperty) ?
-      this.props.observableOrProperty as wx.IObservableReadOnlyProperty<any> :
+      this.props.observableOrProperty as ReadOnlyProperty<any> :
       (this.props.observableOrProperty as Observable<any>).toProperty();
   }
 
@@ -37,6 +37,6 @@ export class ObservableWrapper extends React.Component<ObservableWrapperProps, O
   }
 
   render() {
-    return this.props.render(this.state.property());
+    return this.props.render(this.state.property.value);
   }
 }

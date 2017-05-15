@@ -64,9 +64,9 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
                   </div>
                 ))
               }
-              { this.renderConditional(props.header!, () => (<PageHeaderView viewModel={ this.state.header } brand={ props.brand } branduri={ props.branduri } />)) }
+              { this.renderConditional(props.header, () => (<PageHeaderView viewModel={ this.state.header } brand={ props.brand } branduri={ props.branduri } />)) }
               <RouteHandlerView viewModel={ this.state.routeHandler } viewMap={ props.viewMap! } />
-              { this.renderConditional(props.footer!, () => (<PageFooterView viewModel={ this.state.footer } copyright={ props.copyright } />)) }
+              { this.renderConditional(props.footer, () => (<PageFooterView viewModel={ this.state.footer } copyright={ props.copyright } />)) }
             </div>
           ))
         }

@@ -1,6 +1,6 @@
 import { Observable } from 'rx';
 
-import { wx } from '../../../WebRx';
+import { ReadOnlyProperty, ObservableOrProperty } from '../../../WebRx';
 import { BaseViewModel } from '../../React/BaseViewModel';
 import { AlertHostViewModel } from '../Alert/AlertHostViewModel';
 import { PageHeaderViewModel } from '../PageHeader/PageHeaderViewModel';
@@ -16,14 +16,14 @@ RouteMap[`^/${ SplashKey }$`] = { creator: () => SplashKey };
 export class AppViewModel extends BaseViewModel {
   public static displayName = 'AppViewModel';
 
-  public alerts: AlertHostViewModel;
-  public routeHandler: RouteHandlerViewModel;
-  public header: PageHeaderViewModel;
-  public footer: PageFooterViewModel;
+  public readonly alerts: AlertHostViewModel;
+  public readonly routeHandler: RouteHandlerViewModel;
+  public readonly header: PageHeaderViewModel;
+  public readonly footer: PageFooterViewModel;
 
-  public isLoading: wx.IObservableReadOnlyProperty<boolean>;
+  public readonly isLoading: ReadOnlyProperty<boolean>;
 
-  constructor(alerts = false, header = false, footer = false, isLoading?: wx.ObservableOrProperty<boolean>, routingMap = RouteMap) {
+  constructor(alerts = false, header = false, footer = false, isLoading?: ObservableOrProperty<boolean>, routingMap = RouteMap) {
     super();
 
     if (alerts === true) {
@@ -40,19 +40,14 @@ export class AppViewModel extends BaseViewModel {
       this.footer = new PageFooterViewModel();
     }
 
-    if (wx.isProperty(isLoading) === true) {
-      this.isLoading = <wx.IObservableReadOnlyProperty<boolean>>isLoading;
-    }
-    else if (Observable.isObservable(isLoading) === true) {
-      this.isLoading = (<Observable<boolean>>isLoading).toProperty(true);
-    }
-    else {
-      this.isLoading = Observable
-        .of(false)
-        // this is a micro delay for the preloader to prevent FOUC
-        .delay(100)
-        .toProperty(true);
-    }
+    this.isLoading = this
+      .getProperty(
+        isLoading ||
+        Observable
+          .of(false)
+          // this is a micro delay for the preloader to prevent FOUC
+          .delay(100),
+      );
 
     Current = this;
   }

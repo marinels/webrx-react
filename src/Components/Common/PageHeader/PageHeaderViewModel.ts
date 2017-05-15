@@ -1,6 +1,6 @@
 import { Observable } from 'rx';
 
-import { wx } from '../../../WebRx';
+import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
 import { BaseViewModel } from '../../React/BaseViewModel';
 import { BaseRoutableViewModel, isRoutableViewModel } from '../../React/BaseRoutableViewModel';
 import { HeaderAction, HeaderCommandAction, HeaderMenu, isHeaderCommandAction } from '../../React/Actions';
@@ -14,62 +14,61 @@ export class PageHeaderViewModel extends BaseViewModel {
   private dynamicSubs: SubMan;
 
   public search: SearchViewModel | undefined;
-  public sidebarMenus: wx.IObservableProperty<HeaderMenu[]>;
-  public navbarMenus: wx.IObservableProperty<HeaderMenu[]>;
-  public navbarActions: wx.IObservableProperty<HeaderCommandAction[]>;
-  public helpMenuItems: wx.IObservableProperty<HeaderCommandAction[]>;
-  public adminMenuItems: wx.IObservableProperty<HeaderCommandAction[]>;
-  public userMenuItems: wx.IObservableProperty<HeaderCommandAction[]>;
-  public isSidebarVisible: wx.IObservableReadOnlyProperty<boolean>;
+  public readonly sidebarMenus: Property<HeaderMenu[]>;
+  public readonly navbarMenus: Property<HeaderMenu[]>;
+  public readonly navbarActions: Property<HeaderCommandAction[]>;
+  public readonly helpMenuItems: Property<HeaderCommandAction[]>;
+  public readonly adminMenuItems: Property<HeaderCommandAction[]>;
+  public readonly userMenuItems: Property<HeaderCommandAction[]>;
+  public readonly isSidebarVisible: ReadOnlyProperty<boolean>;
 
-  public menuItemSelected: wx.ICommand<HeaderCommandAction>;
-  public toggleSideBar: wx.ICommand<boolean>;
+  public readonly menuItemSelected: Command<HeaderCommandAction>;
+  public readonly toggleSideBar: Command<boolean>;
 
   constructor(
-    public routeHandler: RouteHandlerViewModel,
-    public staticSidebarMenus: HeaderMenu[] = [],
-    public staticNavbarMenus: HeaderMenu[] = [],
-    public staticNavbarActions: HeaderCommandAction[] = [],
-    public staticHelpMenuItems: HeaderCommandAction[] = [],
-    public staticAdminMenuItems: HeaderCommandAction[] = [],
-    public staticUserMenuItems: HeaderCommandAction[] = [],
-    public userImage?: string,
-    public userDisplayName?: string,
-    public homeLink = '#/',
+    public readonly routeHandler: RouteHandlerViewModel,
+    public readonly staticSidebarMenus: HeaderMenu[] = [],
+    public readonly staticNavbarMenus: HeaderMenu[] = [],
+    public readonly staticNavbarActions: HeaderCommandAction[] = [],
+    public readonly staticHelpMenuItems: HeaderCommandAction[] = [],
+    public readonly staticAdminMenuItems: HeaderCommandAction[] = [],
+    public readonly staticUserMenuItems: HeaderCommandAction[] = [],
+    public readonly userImage?: string,
+    public readonly userDisplayName?: string,
+    public readonly homeLink = '#/',
   ) {
     super();
 
     this.dynamicSubs = new SubMan();
 
-    this.sidebarMenus = wx.property<HeaderMenu[]>();
-    this.navbarMenus = wx.property<HeaderMenu[]>();
-    this.navbarActions = wx.property<HeaderCommandAction[]>();
-    this.helpMenuItems = wx.property<HeaderCommandAction[]>();
-    this.adminMenuItems = wx.property<HeaderCommandAction[]>();
-    this.userMenuItems = wx.property<HeaderCommandAction[]>();
+    this.sidebarMenus = this.property<HeaderMenu[]>();
+    this.navbarMenus = this.property<HeaderMenu[]>();
+    this.navbarActions = this.property<HeaderCommandAction[]>();
+    this.helpMenuItems = this.property<HeaderCommandAction[]>();
+    this.adminMenuItems = this.property<HeaderCommandAction[]>();
+    this.userMenuItems = this.property<HeaderCommandAction[]>();
 
-    this.toggleSideBar = wx.asyncCommand((isVisible: boolean) =>
-      Observable.of(Object.fallback(isVisible, !this.isSidebarVisible())),
-    );
+    this.toggleSideBar = this.command((isVisible: boolean) => {
+      return Object.fallback(isVisible, !this.isSidebarVisible.value);
+    });
 
-    this.isSidebarVisible = wx
+    this.isSidebarVisible = this
       .whenAny(this.toggleSideBar.results, x => x)
       .toProperty(false);
 
-    this.menuItemSelected = wx.asyncCommand((x: HeaderCommandAction) => Observable.of(x));
+    this.menuItemSelected = this.command<HeaderCommandAction>();
 
-    this.subscribe(
-      wx
-        .whenAny(this.menuItemSelected.results, x => x)
-        .filter(x => x != null)
-        .map(x => false)
-        .invokeCommand(this.toggleSideBar),
+    this.addSubscription(this
+      .whenAny(this.menuItemSelected.results, x => x)
+      .filterNull()
+      .map(x => false)
+      .invokeCommand(this.toggleSideBar),
     );
 
     this.subscribeOrAlert(
-      () => wx
+      () => this
         .whenAny(this.menuItemSelected.results, x => x)
-        .filter(x => x != null),
+        .filterNull(),
       'Page Header Menu Item Error',
       x => {
         if (x.command != null) {
@@ -86,17 +85,16 @@ export class PageHeaderViewModel extends BaseViewModel {
       },
     );
 
-    this.subscribe(
-      wx
-        .whenAny(this.routeHandler.routedComponent, x => x)
-        .subscribe(x => {
-          this.updateDynamicContent();
-        }),
+    this.addSubscription(this
+      .whenAny(this.routeHandler.routedComponent, x => x)
+      .subscribe(x => {
+        this.updateDynamicContent();
+      }),
     );
   }
 
   public updateDynamicContent() {
-    let component = this.routeHandler.routedComponent();
+    let component = this.routeHandler.routedComponent.value;
 
     this.logger.debug('Updating Page Header Dynamic Content', component);
 
@@ -119,7 +117,7 @@ export class PageHeaderViewModel extends BaseViewModel {
     this.addItems(this.userMenuItems, this.staticUserMenuItems, component, x => x.getUserMenuItems);
   }
 
-  private addItems<T extends HeaderAction>(list: wx.IObservableProperty<T[]>, staticItems: T[], component?: any, delegateSelector?: (viewModel: BaseRoutableViewModel<any>) => (() => T[])) {
+  private addItems<T extends HeaderAction>(list: Property<T[]>, staticItems: T[], component?: any, delegateSelector?: (viewModel: BaseRoutableViewModel<any>) => (() => T[])) {
     let routedItems: T[] | undefined;
 
     // interrogate the routed component for items from the delegate selector
@@ -130,24 +128,22 @@ export class PageHeaderViewModel extends BaseViewModel {
       }
     }
 
-    list(
-      // start with all the static items
-      staticItems
-        // then add any routed actions
-        .concat(routedItems || [])
-        // finally sort the list so that we retain a consistent order
-        .sort((a, b) => (a.order || 0) - (b.order || 0)),
-    );
+    // start with all the static items
+    list.value = staticItems
+      // then add any routed actions
+      .concat(routedItems || [])
+      // finally sort the list so that we retain a consistent order
+      .sort((a, b) => (a.order || 0) - (b.order || 0));
 
     // now that our list is populated with our header actions, subscribe to the
     // canExecute observable to manage the disabled status of any header action
     this.dynamicSubs.add(
       Observable
         .merge(
-          list()
+          list.value
             .map((x: HeaderAction) => isHeaderCommandAction(x) ? x : undefined)
-            .filter(x => x != null)
-            .map(x => x!.command!.canExecuteObservable),
+            .filterNull()
+            .map(x => x.command!.canExecuteObservable),
         )
         .invokeCommand(this.stateChanged),
     );

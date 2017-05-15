@@ -42,20 +42,6 @@ describe('for WebRx', () => {
       prop.value.should.eql('test2');
     });
 
-    it('can get the value using legacy functional notation', () => {
-      const prop = wx.property('test');
-
-      should.exist(prop());
-      prop().should.eql('test');
-    });
-
-    it('can set the value using legacy functional notation', () => {
-      const prop = wx.property('test1');
-
-      prop('test2');
-      prop.value.should.eql('test2');
-    });
-
     it('can set a property value to undefined', () => {
       const prop = wx.property<string | undefined>('test');
 
@@ -139,8 +125,8 @@ describe('for WebRx', () => {
     it('can check if the command can execute', () => {
       const cmd = wx.command();
 
-      should.exist(cmd.canExecute());
-      cmd.canExecute().should.be.true;
+      should.exist(cmd.canExecute);
+      cmd.canExecute.should.be.true;
     });
 
     it('can generate results from the parameter', () => {
@@ -168,9 +154,9 @@ describe('for WebRx', () => {
     });
 
     it('can create a command that defines canExecute', () => {
-      const cmd = wx.command(undefined, Observable.of(false));
+      const cmd = wx.command(Observable.of(false), () => undefined);
 
-      cmd.canExecute().should.be.false;
+      cmd.canExecute.should.be.false;
     });
 
     it('can observe execution', () => {
@@ -204,7 +190,7 @@ describe('for WebRx', () => {
         cmd1Executed = true;
         const cmd2 = wx.command(() => { cmd2Executed = true; });
 
-        cmd2CanExecute = cmd2.canExecute();
+        cmd2CanExecute = cmd2.canExecute;
         cmd2.execute();
       });
 
@@ -329,54 +315,6 @@ describe('for WebRx', () => {
   });
 
   describe('observable extensions', () => {
-    describe('subscribeWith', () => {
-      it('subscribes with an observer', () => {
-        const observer = new BehaviorSubject<string | undefined>(undefined);
-        const sub = Observable.of('test').subscribeWith(observer);
-
-        Disposable.isDisposable(sub).should.be.true;
-        should.exist(observer.getValue());
-        observer.getValue()!.should.eql('test');
-      });
-
-      it('subscribes with functions without an error', () => {
-        let onNextCalled = false;
-        let onCompletedCalled = false;
-
-        Observable
-          .of('test')
-          .subscribeWith(
-            x => {
-              onNextCalled = x === 'test';
-            },
-            undefined,
-            () => {
-              onCompletedCalled = true;
-            },
-          );
-
-        onNextCalled.should.be.true;
-        onCompletedCalled.should.be.true;
-      });
-
-      it('subscribes with functions with an error', () => {
-        let onErrorCalled = false;
-        const error = new Error('error');
-
-        Observable
-          .throw(error)
-          .subscribeWith(
-            undefined,
-            e => {
-              onErrorCalled = e === error;
-            },
-            undefined,
-          );
-
-        onErrorCalled.should.be.true;
-      });
-    });
-
     describe('toProperty', () => {
       it('creates a property for the observable source without an initial value', () => {
         const obs = Observable.of('test');

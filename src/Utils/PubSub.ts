@@ -2,15 +2,11 @@ import { Subject, IDisposable } from 'rx';
 
 import { Logger, getLogger } from './Logging';
 
-interface PubSubMap {
-  [key: string]: Subject<any>;
-}
-
 export class PubSub implements IDisposable {
   public static displayName = 'PubSub';
 
-  private logger: Logger;
-  private map: PubSubMap | undefined;
+  private readonly logger: Logger;
+  private map: StringMap<Subject<any>>;
 
   constructor() {
     this.logger = getLogger(PubSub.displayName);
@@ -18,11 +14,11 @@ export class PubSub implements IDisposable {
   }
 
   private getSubject<T>(key: string) {
-    let subject: Subject<T> = this.map![key];
+    let subject: Subject<T> = this.map[key];
 
     if (subject == null) {
       subject = new Subject<T>();
-      this.map![key] = subject;
+      this.map[key] = subject;
     }
 
     return subject;
@@ -44,18 +40,17 @@ export class PubSub implements IDisposable {
       .subscribe(onNext, onError, onCompleted);
   }
 
-  public publish<T>(key: string, arg?: T) {
-    this.getSubject<T>(key).onNext(arg!);
+  public publish<T>(key: string, arg: T) {
+    this.getSubject<T>(key).onNext(arg);
   }
 
   dispose() {
-    if (this.map != null) {
-      Object.getOwnPropertyNames(this.map)
-        .map(x => this.map![x])
-        .forEach(x => x.dispose());
+    Object
+      .keys(this.map)
+      .map(x => this.map[x])
+      .forEach(x => x.dispose());
 
-      this.map = undefined;
-    }
+    this.map = {};
   }
 }
 

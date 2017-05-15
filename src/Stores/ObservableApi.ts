@@ -67,7 +67,7 @@ export class ObservableApi {
     return uri;
   }
 
-  private logger = Logging.getLogger(ObservableApi.displayName);
+  private readonly logger = Logging.getLogger(ObservableApi.displayName);
   protected sampleData: SampleData;
 
   constructor(public baseUri?: string) {
@@ -207,7 +207,7 @@ export class ObservableApi {
       .defer(() => {
         // use sampleData if it has been defined
         return this.sampleData == null ?
-          this.getRequest<T>(action, `${baseUri || this.baseUri}${action}`, method, params, data, options) :
+          this.getRequest<T>(action, `${ baseUri || this.baseUri }${ action }`, method, params, data, options) :
           this.sampleData.getObservable<T>(action, params);
       });
   }

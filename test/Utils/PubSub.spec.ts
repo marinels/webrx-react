@@ -8,13 +8,13 @@ describe('PubSub', () => {
     const handle = pubsub.subscribe('test', x => called = true);
     should.exist(handle);
     should.exist(handle.dispose);
-    pubsub.publish('test');
+    pubsub.publish('test', undefined);
     called.should.be.true;
   });
 
   it('Can publish with no subscribers', () => {
     const pubsub = new PubSub();
-    pubsub.publish('test2');
+    pubsub.publish('test2', undefined);
   });
 
   it('Can publish on a different key with no subscribers', () => {
@@ -22,7 +22,7 @@ describe('PubSub', () => {
     let called = false;
     let handle = pubsub.subscribe('test', x => called = true);
     should.exist(handle);
-    pubsub.publish('test2');
+    pubsub.publish('test2', undefined);
     called.should.eql(false);
   });
 
@@ -67,7 +67,7 @@ describe('PubSub', () => {
     let called = false;
     let handle = pubsub.subscribe('test', x => called = true);
     handle.dispose();
-    pubsub.publish('test');
+    pubsub.publish('test', undefined);
     called.should.eql(false);
   });
 
@@ -79,7 +79,7 @@ describe('PubSub', () => {
     let handle2 = pubsub.subscribe('test', x => called2 = true);
     should.exist(handle1);
     should.exist(handle2);
-    pubsub.publish('test');
+    pubsub.publish('test', undefined);
     called1.should.eql(true);
     called2.should.eql(true);
   });
@@ -93,7 +93,7 @@ describe('PubSub', () => {
     should.exist(handle1);
     should.exist(handle2);
     handle1.dispose();
-    pubsub.publish('test');
+    pubsub.publish('test', undefined);
     called1.should.eql(false);
     called2.should.eql(true);
   });
