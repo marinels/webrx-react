@@ -129,8 +129,8 @@ export class RouteHandlerViewModel extends BaseViewModel {
     // at which point we can exit loading mode
     this.isLoading = Observable
       .merge(
-        this.currentRoute.changed.map(x => true),
-        this.loadComponent.results.map(x => false),
+        this.currentRoute.changed.map(() => true),
+        this.loadComponent.results.map(() => false),
       )
       // only show the loading screen if we are really taking a while to load
       // this will make the initial loading screen appear for at least 500ms as

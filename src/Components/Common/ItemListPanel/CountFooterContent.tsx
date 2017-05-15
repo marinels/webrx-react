@@ -11,7 +11,7 @@ export interface CountFooterContentProps extends React.HTMLAttributes<CountFoote
   suffix?: string;
 }
 
-interface CountFooterState {
+export interface CountFooterState {
   length: number;
 }
 

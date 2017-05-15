@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Observable } from 'rx';
 import * as classNames from 'classnames';
 import { Pagination, PaginationProps, DropdownButton, MenuItem } from 'react-bootstrap';
 

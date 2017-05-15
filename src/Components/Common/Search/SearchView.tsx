@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Observable } from 'rx';
 import { Icon } from 'react-fa';
 import { FormGroup, InputGroup, FormControl } from 'react-bootstrap';
 import * as classNames from 'classnames';

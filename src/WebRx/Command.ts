@@ -131,7 +131,7 @@ export class ObservableCommand<T> implements Command<T>, IDisposable {
   }
 }
 
-type ExecutionAction<T> = (parameter: any) => (T | Observable<T>);
+export type ExecutionAction<T> = (parameter: any) => (T | Observable<T>);
 
 export function command<T>(): Command<T>;
 export function command<T>(execute: ExecutionAction<T>): Command<T>;

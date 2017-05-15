@@ -1,4 +1,4 @@
-import { Subject, IDisposable } from 'rx';
+import { Observable, Subject, IDisposable } from 'rx';
 
 import { Logger, getLogger } from './Logging';
 
@@ -61,7 +61,7 @@ export function observe<T>(key: string) {
 }
 
 export function subscribe<T>(key: string, onNext?: (value: T) => void, onError?: (exception: any) => void, onCompleted?: () => void) {
-  return Default.subscribe(key, onNext, onerror, onCompleted);
+  return Default.subscribe(key, onNext, onError, onCompleted);
 }
 
 export function publish<T>(key: string, arg?: T) {

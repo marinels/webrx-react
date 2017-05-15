@@ -1,4 +1,4 @@
-import { Observable } from 'rx';
+import { Observable, IDisposable } from 'rx';
 
 import { wx } from '../../WebRx';
 import { Alert, Logging } from '../../Utils';

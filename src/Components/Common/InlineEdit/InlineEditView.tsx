@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { findDOMNode } from 'react-dom';
+import { Observable } from 'rx';
 import { Icon } from 'react-fa';
 import * as classNames from 'classnames';
 import { FormGroup, InputGroup, FormControl, Sizes, Popover, OverlayTrigger } from 'react-bootstrap';

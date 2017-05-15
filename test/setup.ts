@@ -3,7 +3,7 @@ import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import 'es6-shim';
 import { Observable } from 'rx';
-import { getLogger, LogLevel } from '../src/Utils/Logging';
+import { getLogger, LogLevel, Logger } from '../src/Utils/Logging';
 
 declare var global: any;
 
@@ -83,6 +83,6 @@ const fail = (message?: string, operator?: string) => {
   should.fail(false, true, message, operator);
 };
 
-const logger = getLogger('test', LogLevel.All);
+const logger: Logger = getLogger('test', LogLevel.All);
 
 export { should, assert, expect, chai, fail, logger, sandbox, sinon };

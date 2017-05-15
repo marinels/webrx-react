@@ -1,7 +1,6 @@
-import { Observable, ObservableStatic, IObserver, IDisposable } from 'rx';
+import { Observable, IObserver, IDisposable } from 'rx';
 
-import { Property, ReadOnlyProperty, Command } from './Interfaces';
-import { isObserver, isCommand } from './Utils';
+import { ReadOnlyProperty, Command } from './Interfaces';
 import { property } from './Property';
 
 declare module 'rx' {

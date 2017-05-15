@@ -2,8 +2,10 @@ import * as React from 'react';
 import { Observable, IDisposable } from 'rx';
 
 import { Property, Command } from '../../WebRx';
+import { ReactSpreadResult } from '../../Extensions/React';
 import { Alert, Logging, SubMan } from '../../Utils';
 import { BaseViewModel, LifecycleComponentViewModel } from './BaseViewModel';
+import { renderEnumerable, renderConditional, renderNullable, renderLoadable, renderSizedLoadable, renderGridLoadable, focusElement } from './RenderHelpers';
 import { wxr } from './StaticHelpers';
 
 export interface ViewModelProps {
@@ -21,19 +23,19 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
   // -----------------------------------------
   // these are render helper methods
   // -----------------------------------------
-  protected readonly renderEnumerable = wxr.renderEnumerable;
-  protected readonly renderConditional = wxr.renderConditional;
-  protected readonly renderNullable = wxr.renderNullable;
-  protected readonly renderLoadable = wxr.renderLoadable;
-  protected readonly renderSizedLoadable = wxr.renderSizedLoadable;
-  protected readonly renderGridLoadable = wxr.renderGridLoadable;
-  protected readonly focusElement = wxr.focusElement;
+  protected readonly renderEnumerable = renderEnumerable;
+  protected readonly renderConditional = renderConditional;
+  protected readonly renderNullable = renderNullable;
+  protected readonly renderLoadable = renderLoadable;
+  protected readonly renderSizedLoadable = renderSizedLoadable;
+  protected readonly renderGridLoadable = renderGridLoadable;
+  protected readonly focusElement = focusElement;
 
   // these are Alert helper functions
   protected readonly createAlert = Alert.create;
   protected readonly alertForError = Alert.createForError;
 
-  protected readonly logger = Logging.getLogger(this.getDisplayName());
+  protected readonly logger: Logging.Logger = Logging.getLogger(this.getDisplayName());
   protected readonly subs: SubMan;
 
   constructor(props?: TViewProps | undefined, context?: any) {
@@ -57,7 +59,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     this.updateSubscription = Observable
       .merge(updateProps)
       .debounce(this.getRateLimit())
-      .subscribe(x => {
+      .subscribe(() => {
         this.renderView();
       }, x => {
         this.alertForError(x);

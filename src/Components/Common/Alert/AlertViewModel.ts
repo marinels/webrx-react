@@ -33,7 +33,7 @@ export class AlertViewModel extends BaseViewModel {
     this.dismiss = this.command();
 
     this.isVisible = this.dismiss.results
-      .map(x => false)
+      .map(() => false)
       .toProperty(true);
 
     this.addSubscription(this

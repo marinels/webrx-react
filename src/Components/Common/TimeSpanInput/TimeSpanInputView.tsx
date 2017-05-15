@@ -1,11 +1,12 @@
 import * as React from 'react';
+import { Observable } from 'rx';
 import { FormGroup, InputGroup, Sizes, FormControl, FormControlProps, DropdownButton, MenuItem, HelpBlock } from 'react-bootstrap';
 import { Icon } from 'react-fa';
 import * as classNames from 'classnames';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { BindableInput } from '../BindableInput/BindableInput';
-import { TimeSpanInputViewModel } from './TimeSpanInputViewModel';
+import { TimeSpanInputViewModel, TimeSpanUnit } from './TimeSpanInputViewModel';
 import { CommandButton } from '../CommandButton/CommandButton';
 
 import './TimeSpanInput.less';

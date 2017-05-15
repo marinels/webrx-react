@@ -5,7 +5,7 @@ describe('PubSub', () => {
   it('Can subscribe and publish', () => {
     const pubsub = new PubSub();
     let called = false;
-    const handle = pubsub.subscribe('test', x => called = true);
+    const handle = pubsub.subscribe('test', () => called = true);
     should.exist(handle);
     should.exist(handle.dispose);
     pubsub.publish('test', undefined);
@@ -20,7 +20,7 @@ describe('PubSub', () => {
   it('Can publish on a different key with no subscribers', () => {
     let pubsub = new PubSub();
     let called = false;
-    let handle = pubsub.subscribe('test', x => called = true);
+    let handle = pubsub.subscribe('test', () => called = true);
     should.exist(handle);
     pubsub.publish('test2', undefined);
     called.should.eql(false);
@@ -65,7 +65,7 @@ describe('PubSub', () => {
   it('Can unsubscribe', () => {
     let pubsub = new PubSub();
     let called = false;
-    let handle = pubsub.subscribe('test', x => called = true);
+    let handle = pubsub.subscribe('test', () => called = true);
     handle.dispose();
     pubsub.publish('test', undefined);
     called.should.eql(false);
@@ -75,8 +75,8 @@ describe('PubSub', () => {
     let pubsub = new PubSub();
     let called1 = false;
     let called2 = false;
-    let handle1 = pubsub.subscribe('test', x => called1 = true);
-    let handle2 = pubsub.subscribe('test', x => called2 = true);
+    let handle1 = pubsub.subscribe('test', () => called1 = true);
+    let handle2 = pubsub.subscribe('test', () => called2 = true);
     should.exist(handle1);
     should.exist(handle2);
     pubsub.publish('test', undefined);
@@ -88,8 +88,8 @@ describe('PubSub', () => {
     let pubsub = new PubSub();
     let called1 = false;
     let called2 = false;
-    let handle1 = pubsub.subscribe('test', x => called1 = true);
-    let handle2 = pubsub.subscribe('test', x => called2 = true);
+    let handle1 = pubsub.subscribe('test', () => called1 = true);
+    let handle2 = pubsub.subscribe('test', () => called2 = true);
     should.exist(handle1);
     should.exist(handle2);
     handle1.dispose();

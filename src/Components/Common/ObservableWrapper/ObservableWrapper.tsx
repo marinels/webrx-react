@@ -8,7 +8,7 @@ export interface ObservableWrapperProps {
   render: (x: any) => any;
 }
 
-interface ObservableWrapperState {
+export interface ObservableWrapperState {
   property: ReadOnlyProperty<any>;
   sub: IDisposable;
 }

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Observable } from 'rx';
 import { Icon, IconStack } from 'react-fa';
 import * as classNames from 'classnames';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
@@ -9,7 +10,7 @@ import { SearchView } from '../Search/SearchView';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import { Sidebar } from './Sidebar';
 import { PageHeaderViewModel } from './PageHeaderViewModel';
-import { HeaderAction, HeaderCommandAction } from '../../React/Actions';
+import { HeaderAction, HeaderCommandAction, HeaderMenu } from '../../React/Actions';
 
 import './PageHeader.less';
 

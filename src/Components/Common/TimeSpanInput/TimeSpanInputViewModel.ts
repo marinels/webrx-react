@@ -89,7 +89,23 @@ export class TimeSpanInputViewModel extends BaseViewModel {
       .whenAny(this.text, this.unit, (text, unit) => ({ text, unit }))
       .where(x => x.unit != null)
       .debounce(parseDelay)
-      .map(x => ({ duration: this.parse(x.text, x.unit), unit: x.unit }))
+      .map(x => {
+        let duration = this.parse(x.text, x.unit);
+
+        if (duration != null) {
+          if (minValue != null && duration < minValue) {
+            duration = minValue;
+          }
+          else if (maxValue != null && duration > maxValue) {
+            duration = maxValue;
+          }
+        }
+
+        return {
+          duration,
+          unit: x.unit,
+        };
+      })
       .doOnNext(x => {
         // if we have a valid duration then check to see if we need to update the text
         if (x != null) {

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Observable } from 'rx';
 import { Grid, Alert, Breadcrumb } from 'react-bootstrap';
 import { CSSTransitionGroup } from 'react-transition-group';
 import { Icon } from 'react-fa';

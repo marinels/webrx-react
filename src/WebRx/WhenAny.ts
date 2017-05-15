@@ -1,7 +1,7 @@
 import { Observable } from 'rx';
 
 import { ObservableOrPropertyOrValue } from './Interfaces';
-import { isObservable, isProperty, getObservable } from './Utils';
+import { getObservable } from './Utils';
 
 export function whenAny<TRet, T1>(
   arg1: ObservableOrPropertyOrValue<T1>,

@@ -120,7 +120,7 @@ const sampleDataSource = <Components.AsyncDataSource<SampleDataSourceRequest, Co
         .of(sampleListData)
         // simulate async result delay
         .delay(2000)
-        .doOnNext(x => {
+        .doOnNext(() => {
           const msg = [
             'Simulating Async Data Result...',
             `type = ${ request.type }`,
@@ -208,7 +208,7 @@ routeMap.addRoute('WebRx-React', 'DataGrid', 'Data Grid', (state: any) => {
   Observable
     .of(sampleListData)
     .delay(2000)
-    .do(x => {
+    .do(() => {
       Alert.create('Simulating Delay', 'Delayed Observable Property List Loading', undefined, 1000);
     })
     .subscribe(x => {
@@ -235,8 +235,8 @@ routeMap.addRoute('WebRx-React', 'ModalDialog', 'Modal Dialog', (state: any) => 
   return {
     displayName: 'ModalDialogViewModel',
     viewModel: new Components.ModalDialogViewModel(),
-    accept: wx.command(x => Alert.create('Modal Accepted', 'Modal Closed...', 'success')),
-    reject: wx.command(x => Alert.create('Modal Rejected', 'Modal Closed...', 'danger')),
+    accept: wx.command(() => Alert.create('Modal Accepted', 'Modal Closed...', 'success')),
+    reject: wx.command(() => Alert.create('Modal Rejected', 'Modal Closed...', 'danger')),
   };
 });
 routeMap.addRoute('WebRx-React', 'Tabs', 'Tabs', (state: any) => new Components.TabsViewModel());

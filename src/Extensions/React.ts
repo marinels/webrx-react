@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import './Object';
 
-interface ReactSpreadResult<T> {
+export interface ReactSpreadResult<T> {
   className: string;
   children: React.ReactNode;
   props: T;
