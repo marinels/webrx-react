@@ -1,31 +1,31 @@
 import { Observable } from 'rx';
 
-import { wx } from '../../../WebRx';
+import { Property, Command } from '../../../WebRx';
 
 import { BaseViewModel } from '../../React/BaseViewModel';
 
 export class ModalDialogViewModel extends BaseViewModel {
   public static displayName = 'ModalDialogViewModel';
 
-  public isVisible: wx.IObservableProperty<boolean>;
+  public readonly isVisible: Property<boolean>;
 
-  public show: wx.ICommand<any>;
-  public hide: wx.ICommand<any>;
+  public readonly show: Command<any>;
+  public readonly hide: Command<any>;
 
   constructor(isVisible = false) {
     super();
 
-    this.show = wx.command();
-    this.hide = wx.command();
+    this.show = this.command();
+    this.hide = this.command();
 
     this.isVisible = Observable
       .merge(this.show.results.map(x => true), this.hide.results.map(x => false))
       .toProperty(isVisible);
   }
 
-  public hideOnExecute<T>(command: wx.ICommand<T>) {
+  public hideOnExecute<T>(command: Command<T>) {
     if (command != null) {
-      this.subscribe(
+      this.addSubscription(
         Observable
           .merge(
             command.results.map(() => null),
@@ -41,4 +41,4 @@ export class ModalDialogViewModel extends BaseViewModel {
 
     return command;
   }
-};
+}

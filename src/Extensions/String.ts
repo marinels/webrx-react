@@ -30,8 +30,7 @@ function stringify(value: any, replacer?: any, space: string | number = 2) {
           result = JSON.stringify(value, replacer, space);
         }
         catch (e) {
-          // console.warn('Attempt to stringify failed');
-          // console.log(e);
+          // do nothing and result will retain the getName value
         }
       }
     }

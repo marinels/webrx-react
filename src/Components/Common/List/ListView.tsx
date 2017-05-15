@@ -5,11 +5,11 @@ import * as classNames from 'classnames';
 import { Icon } from 'react-fa';
 import { ListGroup, ListGroupProps, ListGroupItem } from 'react-bootstrap';
 
-import { wx } from '../../../WebRx';
+import { wx, ReadOnlyProperty, Command } from '../../../WebRx';
 import { BaseView, ViewModelProps } from '../../React/BaseView';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { ListViewModel } from './ListViewModel';
-import { renderConditional, renderNullable } from '../../React/RenderHelpers';
+import { wxr } from '../../React';
 
 export * from './NavButton';
 
@@ -34,19 +34,19 @@ export interface ListViewRenderTemplate<TData, TView extends React.Component<Lis
 export abstract class BaseListViewTemplate<TItem, TData, TView extends React.Component<ListViewRenderTemplateProps, any>> implements ListViewRenderTemplate<TData, TView> {
   public static displayName = 'BaseListViewTemplate';
 
-  protected renderTemplateContainer: (content: any, item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) => any;
+  protected readonly renderTemplateContainer: (content: any, item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) => any;
 
   constructor(
-    protected renderItem: (item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) => any = (x, data) => data.toString(),
-    protected renderItemActions?: (item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) => any,
-    protected keySelector: (item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) => any = (x, d, index) => index,
+    protected readonly renderItem: (item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) => any = (x, data) => data.toString(),
+    protected readonly renderItemActions?: (item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) => any,
+    protected readonly keySelector: (item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) => any = (x, d, index) => index,
     renderTemplateContainer?: (content: any, item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) => any,
   ) {
     this.renderTemplateContainer = renderTemplateContainer || this.renderDefaultTemplateContainer;
   }
 
   protected renderDefaultTemplateContainer(content: any, item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) {
-    return renderConditional(
+    return wxr.renderConditional(
       view.props.selectable === true,
       () => (
         <CommandButton className='List-templateContainer' block plain command={ viewModel.selectItem } commandParameter={ data } >
@@ -77,7 +77,7 @@ export abstract class BaseListViewTemplate<TItem, TData, TView extends React.Com
   }
 
   protected renderCheckmark(item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) {
-    return renderConditional(view.props.checkmarkSelected === true, () => (
+    return wxr.renderConditional(view.props.checkmarkSelected === true, () => (
       <div className='List-itemSelection'>
         <CommandButton plain command={ viewModel.selectItem } commandParameter={ data }>
           <Icon name={ (viewModel.isItemSelected(data) === true) ? 'check-circle' : 'circle-o' } size='lg' fixedWidth />
@@ -112,7 +112,7 @@ export abstract class BaseListViewTemplate<TItem, TData, TView extends React.Com
   }
 
   protected renderActions(item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) {
-    return renderNullable(this.renderItemActions, renderItemActions => (
+    return wxr.renderNullable(this.renderItemActions, renderItemActions => (
       <div className='List-itemActions'>
         { renderItemActions(item, data, index, viewModel, view) }
       </div>
@@ -120,7 +120,7 @@ export abstract class BaseListViewTemplate<TItem, TData, TView extends React.Com
   }
 
   protected renderEmptyContent(viewModel: ReadonlyListViewModel<TData>, view: TView) {
-    return renderConditional(view.props.emptyContent instanceof Function, () => {
+    return wxr.renderConditional(view.props.emptyContent instanceof Function, () => {
       return view.props.emptyContent.apply(this, [ viewModel, view ]);
     }, () => view.props.emptyContent);
   }
@@ -177,7 +177,7 @@ export class ListViewTemplate<TData> extends BaseListViewTemplate<TData, TData, 
   }
 
   getItems(viewModel: ReadonlyListViewModel<TData>, view: ListView) {
-    return viewModel.items();
+    return viewModel.items.value;
   }
 
   getItemData(item: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) {
@@ -197,30 +197,30 @@ export interface TreeNode<TData> {
 export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData>, TData, ListView> {
   public static displayName = 'TreeViewTemplate';
 
-  protected nodes: wx.IObservableReadOnlyProperty<TreeNode<TData>[]> | undefined;
-  protected items: wx.IObservableReadOnlyProperty<TreeNode<TData>[]> | undefined;
-  protected toggleNode: wx.ICommand<TreeNode<TData> | undefined>;
+  protected nodes: ReadOnlyProperty<TreeNode<TData>[]> | undefined;
+  protected items: ReadOnlyProperty<TreeNode<TData>[]> | undefined;
+  protected readonly toggleNode: Command<TreeNode<TData> | undefined>;
   protected lastKey = 0;
 
   public indentSize = 24;
 
   constructor(
-    protected getNestedData: (data: TData, viewModel: ReadonlyListViewModel<TData>, view: ListView) => TData[],
+    protected readonly getNestedData: (data: TData, viewModel: ReadonlyListViewModel<TData>, view: ListView) => TData[],
     renderItem?: (node: TreeNode<TData>, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) => any,
     renderItemActions?: (node: TreeNode<TData>, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) => any,
     keySelector?: (node: TreeNode<TData>, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) => any,
     renderTemplateContainer?: (content: any, node: TreeNode<TData>, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) => any,
-    protected autoExpand: (data: TData[], viewModel: ReadonlyListViewModel<TData>, view: ListView) => Observable<boolean> = () => Observable.of(false),
-    protected clickToExpand = false,
+    protected readonly autoExpand: (data: TData[], viewModel: ReadonlyListViewModel<TData>, view: ListView) => Observable<boolean> = () => Observable.of(false),
+    protected readonly clickToExpand = false,
   ) {
     super(renderItem, renderItemActions, keySelector, renderTemplateContainer);
 
-    this.toggleNode = wx.asyncCommand((x: TreeNode<TData>) => {
+    this.toggleNode = wx.command((x: TreeNode<TData>) => {
       if (x != null) {
         x.isExpanded = !x.isExpanded;
       }
 
-      return Observable.of(x);
+      return x;
     });
   }
 
@@ -242,7 +242,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
       .map(x => this.getExpandedNodes(x))
       .do(x => {
         if (x != null) {
-          viewModel.notifyChanged();
+          viewModel.stateChanged.execute();
         }
       })
       .toProperty([]);
@@ -258,7 +258,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
   }
 
   getItems(viewModel: ReadonlyListViewModel<TData>, view: ListView) {
-    return this.items == null ? [] : this.items();
+    return this.items == null ? [] : this.items.value;
   }
 
   getItemData(node: TreeNode<TData>, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) {
@@ -271,7 +271,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
     return [
       this.renderIndent(node, data, index, viewModel, view),
       this.renderExpander(node, data, index, viewModel, view),
-      renderConditional(
+      wxr.renderConditional(
         this.clickToExpand === true,
         () => (
           <CommandButton key='content' className='List-itemContainer' plain command={ this.toggleNode } commandParameter={ node }>
@@ -295,7 +295,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
     return (
       <div key='expander' className='TreeNode-expander'>
         {
-          renderConditional(node.nodes.length > 0, () => (
+          wxr.renderConditional(node.nodes.length > 0, () => (
             <CommandButton plain command={ this.toggleNode } commandParameter={ node }>
               <Icon name={ node.isExpanded === true ? 'minus-square-o' : 'plus-square-o' } size='lg' fixedWidth />
             </CommandButton>

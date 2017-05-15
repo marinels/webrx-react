@@ -3,14 +3,22 @@ import { IDisposable } from  'rx';
 export class SubMan implements IDisposable {
   public static displayName = 'SubMan';
 
-  private subscriptions: IDisposable[];
+  private readonly subscriptions: IDisposable[];
 
   constructor(...subscriptions: IDisposable[]) {
     this.subscriptions = subscriptions;
   }
 
-  public add(...subscriptions: IDisposable[]) {
+  public add(subscription: IDisposable) {
+    this.subscriptions.push(subscription);
+
+    return subscription;
+  }
+
+  public addMany(...subscriptions: IDisposable[]) {
     this.subscriptions.push(...subscriptions);
+
+    return subscriptions;
   }
 
   dispose() {

@@ -1,6 +1,6 @@
 import { Observable, Subject, Scheduler } from  'rx';
 
-import { wx } from '../WebRx';
+import { wx, ReadOnlyProperty, Command } from '../WebRx';
 import { Logging } from '../Utils';
 import { HashCodec } from './HashCodec';
 
@@ -31,12 +31,10 @@ export const windowLocationHashManager = <HashManager>{
 // however, this hash manager requires at least IE11
 // if support is not detected, then the window location hash manager is used instead
 class HistoryStateHashManager implements HashManager {
-  private changeHash: wx.ICommand<string>;
+  private changeHash: Command<string>;
 
   constructor() {
-    this.changeHash = wx.asyncCommand((hash: string) => {
-      return Observable.of(hash);
-    });
+    this.changeHash = wx.command<string>();
   }
 
   updateHash(hash: string, state: any, title: string, replace: boolean) {
@@ -76,11 +74,11 @@ export const historyStateHashManager = new HistoryStateHashManager();
 export class RouteManager {
   public static displayName = 'RouteManager';
 
-  private logger = Logging.getLogger(RouteManager.displayName);
-  private hashManager: HashManager;
-  public currentRoute: wx.IObservableReadOnlyProperty<Route>;
+  private readonly logger = Logging.getLogger(RouteManager.displayName);
+  private readonly hashManager: HashManager;
+  public readonly currentRoute: ReadOnlyProperty<Route>;
 
-  constructor(hashManager?: HashManager, public hashCodec = new HashCodec()) {
+  constructor(hashManager?: HashManager, public readonly hashCodec = new HashCodec()) {
     if (hashManager == null) {
       hashManager = historyStateHashManager;
     }
@@ -92,7 +90,7 @@ export class RouteManager {
       .debounce(100)
       .distinctUntilChanged()
       .map(x => {
-        let route = hashCodec.decode(x, (path, params, state) => <Route>{path, params, state});
+        const route = hashCodec.decode(x, (path, params, state) => <Route>{ path, params, state });
 
         // reconstruct the route hash
         let hash = '#' + route.path;
@@ -118,7 +116,7 @@ export class RouteManager {
       .toProperty();
   }
 
-  private getPath(state: {route: Route}) {
+  private getPath(state: { route: Route}) {
     let path: string | undefined;
 
     if (state != null && state.route != null && String.isNullOrEmpty(state.route.path) === false) {
@@ -142,7 +140,8 @@ export class RouteManager {
       }
 
       // manage relative path elements (..)
-      let pathElems = path.split('/');
+      const pathElems = path.split('/');
+
       for (let i = 0; i < pathElems.length; ++i) {
         if (pathElems[i] === '..') {
           if (i === 0) {
@@ -181,7 +180,7 @@ export class RouteManager {
 
       path = this.normalizePath(path);
 
-      let hash = this.hashCodec.encode(path, state, uriEncode);
+      const hash = this.hashCodec.encode(path, state, uriEncode);
 
       this.logger.debug(`Routing to Hash: ${ hash }`, state);
 

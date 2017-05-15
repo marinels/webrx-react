@@ -4,7 +4,7 @@ import { Icon } from 'react-fa';
 import * as classNames from 'classnames';
 
 import { RoutingBreadcrumb } from '../../React/BaseRoutableViewModel';
-import { renderConditional, renderEnumerable } from '../../React/RenderHelpers';
+import { wxr } from '../../React';
 import { CommandButton } from '../CommandButton/CommandButton';
 
 import './Breadcrumbs.less';
@@ -37,7 +37,7 @@ export class Breadcrumbs extends React.Component<BreadcrumbsProps, any> {
   render() {
     const { children, className, ref, pinnable, items, ...rest } = this.props;
 
-    return renderEnumerable(
+    return wxr.renderEnumerable(
       items,
       (x, i, a) => (
         <Breadcrumb.Item key={ x.key } active={ i === a.length - 1 } href={ x.href } title={ x.title } target={ x.target }>
@@ -49,7 +49,7 @@ export class Breadcrumbs extends React.Component<BreadcrumbsProps, any> {
           <div className='Breadcrumbs-container'>
             <Breadcrumb>{ x }</Breadcrumb>
             {
-              renderConditional(pinnable, () => (
+              wxr.renderConditional(pinnable, () => (
                 <CommandButton className='Breadcrumbs-pin' bsStyle='link'
                   onClick={ () => this.toggleBreadcrumbsPin() }
                 >

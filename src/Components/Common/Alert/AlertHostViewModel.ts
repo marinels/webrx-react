@@ -7,8 +7,8 @@ import { Default as pubSub } from '../../../Utils/PubSub';
 import { AlertCreatedKey, AlertCreated } from '../../../Events/AlertCreated';
 
 interface AlertEvent {
-  add?: AlertViewModel,
-  remove?: AlertViewModel,
+  add?: AlertViewModel;
+  remove?: AlertViewModel;
 }
 
 export class AlertHostViewModel extends BaseViewModel {
@@ -19,13 +19,13 @@ export class AlertHostViewModel extends BaseViewModel {
   constructor() {
     super();
 
-    const addAlert = this.command((x: AlertViewModel) => x);
-    const removeAlert = this.command((x: AlertViewModel) => x);
+    const addAlert = this.command<AlertViewModel>();
+    const removeAlert = this.command<AlertViewModel>();
 
     const events = Observable
       .merge(
         addAlert.results.map(add => <AlertEvent>{ add }),
-        removeAlert.results.map(remove => <AlertEvent>{ remove })
+        removeAlert.results.map(remove => <AlertEvent>{ remove }),
       );
 
     this.alerts = events
@@ -42,9 +42,9 @@ export class AlertHostViewModel extends BaseViewModel {
         },
         undefined,
       )
-      .toProperty([])
+      .toProperty([]);
 
-    this.subscribe(
+    this.addSubscription(
       addAlert.results
         .flatMap(alert => {
           return this
@@ -52,10 +52,13 @@ export class AlertHostViewModel extends BaseViewModel {
             .filter(x => x.isVisible === false)
             .map(x => x.alert);
         })
+        .do(x => {
+          x.dispose();
+        })
         .invokeCommand(removeAlert),
     );
 
-    this.subscribe(
+    this.addSubscription(
       pubSub.observe<AlertCreated>(AlertCreatedKey)
         .map((x, i) => new AlertViewModel(i, x.content, x.header, x.style, x.timeout))
         .invokeCommand(addAlert),

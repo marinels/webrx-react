@@ -1,6 +1,6 @@
 import { Observable } from 'rx';
 
-import { wx } from '../../WebRx';
+import { ReadOnlyProperty, Property, Command } from '../../WebRx';
 import { Route } from '../../Routing/RouteManager';
 import { HeaderCommandAction, HeaderMenu } from '../React/Actions';
 import { BaseRoutableViewModel, isRoutableViewModel, RoutingBreadcrumb } from '../React/BaseRoutableViewModel';
@@ -25,44 +25,43 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   public static displayName = 'ComponentDemoViewModel';
 
   private pageHeader: PageHeaderViewModel;
-  private demoAlertItem: HeaderCommandAction;
+  private readonly demoAlertItem: HeaderCommandAction;
 
-  public componentRoute: wx.IObservableProperty<string | undefined>;
-  public columns: wx.IObservableProperty<number>;
-  public component: wx.IObservableReadOnlyProperty<any>;
+  public readonly componentRoute: Property<string | undefined>;
+  public readonly columns: Property<number>;
+  public readonly component: ReadOnlyProperty<any>;
 
-  public setColumns: wx.ICommand<number>;
-  public reRender: wx.ICommand<any>;
-  private demoAlert: wx.ICommand<any>;
+  public readonly setColumns: Command<number>;
+  public readonly reRender: Command<any>;
 
   constructor() {
     super(true);
 
-    this.componentRoute = wx.property<string>();
-    this.columns = wx.property(12);
+    this.componentRoute = this.property<string>();
+    this.columns = this.property(12);
 
-    this.reRender = wx.command();
-    this.demoAlert = wx.command((x: string) => this.createAlert(x, 'Demo Alert'), Observable.of(true));
+    this.reRender = this.command();
+    const demoAlert = this.command(Observable.of(true), (x: string) => this.createAlert(x, 'Demo Alert'));
 
     this.demoAlertItem = {
       id: 'demo-alert-item',
       header: 'Generate Alert',
-      command: this.demoAlert,
+      command: demoAlert,
       visibleWhenDisabled: true,
       iconName: 'flask',
     };
 
-    this.component = wx
+    this.component = this
       .whenAny(this.routingState, this.reRender.results.startWith(null), x => x)
       .map(x => this.getViewModel(x))
       .toProperty();
 
-    this.subscribe(wx
+    this.addSubscription(this
       .whenAny(this.columns.changed, x => null)
       .invokeCommand(this.routingStateChanged),
     );
 
-    this.subscribe(wx
+    this.addSubscription(this
       .whenAny(this.component, x => x)
       .subscribe(x => {
         if (this.pageHeader != null) {
@@ -84,12 +83,12 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
 
     // this is very similar to what the route handler does for title updates
     // we are essentially projecting the demo title and passing it up the chain
-    this.subscribe(wx
+    this.addSubscription(this
       .whenAny(this.component, x => x)
       .debounce(100)
       .subscribe(component => {
         if (isRoutableViewModel(component)) {
-          this.subscribe(wx
+          this.addSubscription(this
             .whenAny(component.documentTitle, x => String.isNullOrEmpty(x) ? Object.getName(component) : x)
             .debounce(100)
             .map(x => `Demo: ${ x }`)
@@ -129,11 +128,11 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     // if our component route is null then we can ignore activation
     // let the routing system perform some automated navigation to a new route
     if (componentRoute != null) {
-      if (componentRoute === this.componentRoute() && this.component() != null) {
+      if (componentRoute === this.componentRoute.value && this.component.value != null) {
         this.logger.debug(`Using Previously Activated Component for "${ componentRoute }"...`);
 
         // if our component route has not changed then we can just use our previously activated component
-        component = this.component();
+        component = this.component.value;
       }
       else {
         this.logger.debug(`Loading Component for "${ componentRoute }"...`);
@@ -178,7 +177,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     }
 
     // finally save our current component route
-    this.componentRoute(componentRoute);
+    this.componentRoute.value = componentRoute;
 
     return component;
   }
@@ -189,14 +188,14 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
 
   saveRoutingState(state: ComponentDemoRoutingState): any {
     state.route = <Route>{
-      path: `/demo/${ this.componentRoute() }`,
+      path: `/demo/${ this.componentRoute.value }`,
     };
 
-    if (this.columns() !== 12) {
-      state.columns = this.columns();
+    if (this.columns.value !== 12) {
+      state.columns = this.columns.value;
     }
 
-    const component = this.component();
+    const component = this.component.value;
 
     if (isRoutableViewModel(component)) {
       Object.assign(state, component.getRoutingState('demo'));
@@ -204,7 +203,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   }
 
   loadRoutingState(state: ComponentDemoRoutingState) {
-    const prevState = this.routingState() || <ComponentDemoRoutingState>{};
+    const prevState = this.routingState.value || <ComponentDemoRoutingState>{};
     const componentRoute = this.getComponentRoute(state);
 
     if (String.isNullOrEmpty(componentRoute) === true) {
@@ -234,9 +233,9 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
       }
 
       // update the columns from the state, fallback on existing columns, then two 12 as the default
-      this.columns(state.columns || (this.columns() == null ? 12 : this.columns()));
+      this.columns.value = state.columns || (this.columns.value == null ? 12 : this.columns.value);
 
-      const component = this.component();
+      const component = this.component.value;
 
       if (isRoutableViewModel(component)) {
         component.setRoutingState(state);
@@ -245,7 +244,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   }
 
   getSearch() {
-    let viewModel = <BaseRoutableViewModel<any>>this.component();
+    let viewModel = <BaseRoutableViewModel<any>>this.component.value;
 
     return (viewModel != null && viewModel.getSearch != null) ? viewModel.getSearch() : null;
   }

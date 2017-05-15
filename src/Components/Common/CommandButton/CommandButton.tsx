@@ -3,12 +3,12 @@ import * as classNames from 'classnames';
 import { IDisposable, Disposable } from  'rx';
 import { Button, ButtonProps, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
-import { wx } from '../../../WebRx';
+import { Command } from '../../../WebRx';
 
 import './CommandButton.less';
 
 export interface CommandButtonProps extends ButtonProps {
-  command?: wx.ICommand<any> | { (): wx.ICommand<any> };
+  command?: Command<any> | { (): Command<any> };
   commandParameter?: any;
   stopPropagation?: boolean;
   preventDefault?: boolean;
@@ -21,21 +21,23 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
 
   private canExecuteSubscription = Disposable.empty;
 
-  private getCommand(): wx.ICommand<any> {
+  private getCommand(): Command<any> | undefined {
     const cmd = this.props.command;
 
-    return (cmd instanceof Function) ? cmd.apply(null) : cmd;
+    return (cmd instanceof Function) ? cmd() : cmd;
   }
 
   private getParam() {
     const param = this.props.commandParameter;
 
-    return (param instanceof Function) ? param.apply(null) : param;
+    return (param instanceof Function) ? param() : param;
   }
 
   componentWillMount() {
-    if (this.props.command != null) {
-      this.canExecuteSubscription = this.getCommand().canExecuteObservable
+    const cmd = this.getCommand();
+
+    if (cmd != null) {
+      this.canExecuteSubscription = cmd.canExecuteObservable
         .subscribe(() => {
           this.forceUpdate();
         });
@@ -43,37 +45,36 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
   }
 
   componentWillUnmount() {
-    if (this.canExecuteSubscription != null) {
-      this.canExecuteSubscription.dispose();
-      this.canExecuteSubscription = Disposable.empty;
-    }
+    this.canExecuteSubscription = Object.dispose(this.canExecuteSubscription);
   }
 
   render() {
-    const { className, children, rest, props } = this.restProps(x => {
+    const { rest } = this.restProps(x => {
       const { onClick, command, commandParameter, stopPropagation, preventDefault, plain, tooltip, disabled } = x;
       return { onClick, command, commandParameter, stopPropagation, preventDefault, plain, tooltip, disabled };
     });
 
-    const canExecute = (
-      props.disabled !== true &&
-      (props.command == null ?
-        // no command was supplied so check both href and onClick to see if this button is enabled
-        String.isNullOrEmpty(rest.href) === false || props.onClick != null :
-        // use the command to see if this button is enabled
-        this.getCommand().canExecute(this.getParam())
-      )
-    );
+    return this.renderButton(rest);
+  }
+
+  private renderButton(rest: any) {
+    const cmd = this.props.disabled === true ? undefined : this.getCommand();
+
+    const canExecute = cmd == null ?
+      // no command was supplied so check both href and onClick to see if this button is enabled
+      String.isNullOrEmpty(rest.href) === false || this.props.onClick != null :
+      // use the command to see if this button is enabled
+      cmd.canExecute;
 
     const button = (
-      <Button { ...rest } className={ classNames('CommandButton', className, { plain: props.plain }) } disabled={ canExecute !== true } onClick={ e => this.handleClick(e) }>
-        { children }
+      <Button { ...rest } className={ classNames('CommandButton', this.props.className, { plain: this.props.plain }) } disabled={ canExecute !== true } onClick={ e => this.handleClick(e) }>
+        { this.props.children }
       </Button>
     );
 
-    const tooltip = (props.tooltip != null && String.isString(props.tooltip)) ?
-      (<Tooltip id={ `${ rest.id }-tt` }>{ props.tooltip }</Tooltip>) :
-      props.tooltip;
+    const tooltip = (this.props.tooltip != null && String.isString(this.props.tooltip)) ?
+      (<Tooltip id={ `${ this.props.id }-tt` }>{ this.props.tooltip }</Tooltip>) :
+      this.props.tooltip;
 
     if (React.isValidElement<any>(tooltip)) {
       if (tooltip.type === OverlayTrigger) {
@@ -93,7 +94,9 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
   }
 
   private handleClick(e: React.MouseEvent<Button>) {
-    if (this.props.command == null) {
+    const cmd = this.getCommand();
+
+    if (cmd == null) {
       if (this.props.onClick != null) {
         // onClick was supplied so we don't override default click handling unless explicitly defined
         if (this.props.stopPropagation === true) {
@@ -128,7 +131,7 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
         e.preventDefault();
       }
 
-      this.getCommand().execute(this.getParam());
+      cmd.execute(this.getParam());
     }
   }
 }

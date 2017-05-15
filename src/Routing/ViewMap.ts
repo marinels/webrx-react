@@ -1,6 +1,4 @@
-export interface ViewMapper {
-  [key: string]: any;
+export interface ViewMapper extends StringMap<any> {
 }
 
-export const ViewMap = {
-} as ViewMapper;
+export const ViewMap: ViewMapper = {};

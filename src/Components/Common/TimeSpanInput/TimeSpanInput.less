@@ -19,4 +19,12 @@
     // -3 to account for the 3 1px borders
     right: @upDownButtonWidth * 2 + @unitDropdownWidth - 3;
   }
+
+  // this fixes a bug with the z-order of the dropdown w/r to the buttons
+  .input-group-btn {
+    & > .btn-group,
+    & > .btn {
+      z-index: unset;
+    }
+  }
 }

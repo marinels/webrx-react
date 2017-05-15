@@ -7,7 +7,7 @@ import { HttpRequestMethod, ObservableApi } from './ObservableApi';
 export abstract class BaseStore<T extends ObservableApi> {
   public static displayName = 'BaseStore';
 
-  protected logger = Logging.getLogger(BaseStore.displayName);
+  protected readonly logger = Logging.getLogger(BaseStore.displayName);
 
   constructor(public api: T) {
     this.logger.debug('Store Created');

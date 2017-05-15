@@ -33,7 +33,7 @@ export interface Logger {
 }
 
 export abstract class BaseLogger implements Logger {
-  constructor(public name: string, public level: LogLevel | number) {
+  constructor(public readonly name: string, public level: LogLevel | number) {
   }
 
   public isEnabledFor(level: LogLevel | number) {

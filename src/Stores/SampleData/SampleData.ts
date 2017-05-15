@@ -5,7 +5,7 @@ import { BaseSampleDataStore, SampleDataActionSet, SampleDataAction } from './Ba
 export class SampleData {
   protected actions: SampleDataActionSet | undefined;
 
-  constructor(private initializeActions: () => void, protected delay = 0) {
+  constructor(private readonly initializeActions: () => void, protected readonly delay = 0) {
   }
 
   private getActions() {
@@ -36,7 +36,7 @@ export class SampleData {
 
   getObservable<T>(action: string, params?: any) {
     let result: Observable<T>;
-    let sampleDataAction = this.getAction(action);
+    const sampleDataAction = this.getAction(action);
 
     if (sampleDataAction != null) {
       result = sampleDataAction(params)

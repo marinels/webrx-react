@@ -1,7 +1,7 @@
 import { Observable } from 'rx';
 import 'ix';
 
-import { wx } from '../../../WebRx';
+import { ReadOnlyProperty, Command } from '../../../WebRx';
 import { BaseViewModel } from '../../React/BaseViewModel';
 import { BaseRoutableViewModel, isRoutableViewModel, RoutingBreadcrumb } from '../../React/BaseRoutableViewModel';
 import { Manager, Route } from '../../../Routing/RouteManager';
@@ -24,23 +24,23 @@ interface ActivatedComponent {
 export class RouteHandlerViewModel extends BaseViewModel {
   public static displayName = 'RouteHandlerViewModel';
 
-  public currentRoute: wx.IObservableReadOnlyProperty<Route>;
-  public routedComponent: wx.IObservableReadOnlyProperty<any>;
-  public routingBreadcrumbs: wx.IObservableReadOnlyProperty<RoutingBreadcrumb[] | undefined>;
-  public isLoading: wx.IObservableReadOnlyProperty<boolean>;
+  public currentRoute: ReadOnlyProperty<Route>;
+  public routedComponent: ReadOnlyProperty<any>;
+  public routingBreadcrumbs: ReadOnlyProperty<RoutingBreadcrumb[] | undefined>;
+  public isLoading: ReadOnlyProperty<boolean>;
 
-  private loadComponent: wx.ICommand<any>;
+  private loadComponent: Command<any>;
 
   constructor(public routingMap: RouteMapper) {
     super();
 
-    this.currentRoute = wx
+    this.currentRoute = this
       .whenAny(Manager.currentRoute, x => x)
       // a null route will never get processed so we can filter them out back here
       .filter(x => x != null)
       .toProperty();
 
-    const loadComponentParams = wx
+    const loadComponentParams = this
       .whenAny(this.currentRoute, x => x)
       // we also need to filter out null routes here (this should only occur for the first event)
       .filter(x => x != null)
@@ -85,7 +85,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
       // we use publish instead of share so we can kick this engine off at the end of stream composition
       .publish();
 
-    const canLoadComponent = wx
+    const canLoadComponent = this
       .whenAny(loadComponentParams, x => x)
       .map(x => {
         // this condition should always be true, but we put it here just in case
@@ -97,7 +97,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
       // we must share here because we use this Observable in multiple streams
       .share();
 
-    this.loadComponent = wx.asyncCommand(canLoadComponent, (p: LoadComponentParams) => {
+    this.loadComponent = this.command(canLoadComponent, (p: LoadComponentParams) => {
       return this.getObservableResultOrAlert(
         () => {
           // we need to construct an activated component structure so we can send routing state
@@ -118,9 +118,9 @@ export class RouteHandlerViewModel extends BaseViewModel {
     this.routedComponent = this.loadComponent.results
       .toProperty();
 
-    this.routingBreadcrumbs = wx
+    this.routingBreadcrumbs = this
       .whenAny(this.routedComponent, x => x)
-      .map(x => isRoutableViewModel(x) ? wx.whenAny(x.breadcrumbs, y => y) : Observable.of(undefined))
+      .map(x => isRoutableViewModel(x) ? this.whenAny(x.breadcrumbs, y => y) : Observable.of(undefined))
       .switchLatest()
       .toProperty();
 
@@ -139,7 +139,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
       // initially begin in loading mode
       .toProperty(true);
 
-    this.subscribe(wx
+    this.addSubscription(this
       // whenever there are new view model loading params and we can load our view model (which should be always)
       // we can project out just the loading params in preperation for the load command
       .whenAny(loadComponentParams, canLoadComponent, (params, canLoad) => ({ params, canLoad }))
@@ -160,14 +160,14 @@ export class RouteHandlerViewModel extends BaseViewModel {
         .debounce(100),
       'Routing Handler State Changed Error',
       x => {
-        if (this.currentRoute() != null && this.routedComponent() != null) {
-          Manager.navTo(this.currentRoute().path, this.routedComponent().getRoutingState(x), true);
+        if (this.currentRoute.value != null && this.routedComponent.value != null) {
+          Manager.navTo(this.currentRoute.value.path, this.routedComponent.value.getRoutingState(x), true);
         }
       },
     );
 
     // this handles document title changes for any routed component
-    this.subscribe(wx
+    this.addSubscription(this
       // for every routed component
       .whenAny(this.routedComponent, x => x)
       // skip the initial null stream element
@@ -177,7 +177,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
       .subscribe(component => {
         if (isRoutableViewModel(component)) {
           // we have a routable component, so watch the documentTitle observable property
-          this.subscribe(wx
+          this.addSubscription(this
             .whenAny(component.documentTitle, x => {
               if (String.isNullOrEmpty(x)) {
                 // there isn't any title set (BAD) so warn and use a sane default
@@ -217,7 +217,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
     );
 
     // connect the primary observable to allow the routing engine to start processing routes
-    this.subscribe(
+    this.addSubscription(
       loadComponentParams
         .connect(),
     );
@@ -311,7 +311,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
       // our old activator matches our new activator, so return the current view model
       // we perform a null check on our observable property just in case, it should never be null
-      return this.routedComponent == null ? null : this.routedComponent();
+      return this.routedComponent == null ? null : this.routedComponent.value;
     }
     else {
       this.logger.debug(`Loading view model for route '${ next.route.path }'`, next);

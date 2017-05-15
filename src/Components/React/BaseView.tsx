@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { Observable, IDisposable } from 'rx';
 
-import { wx } from '../../WebRx';
-import { Logging } from '../../Utils';
+import { Property, Command } from '../../WebRx';
+import { Alert, Logging, SubMan } from '../../Utils';
 import { BaseViewModel, LifecycleComponentViewModel } from './BaseViewModel';
-import { bindObservableToCommand, bindEventToProperty, bindEventToCommand } from './BindingHelpers';
-import { renderEnumerable, renderConditional, renderNullable, renderLoadable, renderSizedLoadable, renderGridLoadable, focusElement } from './RenderHelpers';
+import { wxr } from './StaticHelpers';
 
 export interface ViewModelProps {
   viewModel: Readonly<BaseViewModel>;
@@ -14,7 +13,7 @@ export interface ViewModelProps {
 export interface BaseViewProps extends React.HTMLProps<any>, ViewModelProps {
 }
 
-export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel extends BaseViewModel> extends React.Component<TViewProps, TViewModel> {
+export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel extends BaseViewModel> extends React.Component<TViewProps, TViewModel> implements IDisposable {
   public static displayName = 'BaseView';
 
   private updateSubscription: IDisposable | undefined;
@@ -22,18 +21,25 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
   // -----------------------------------------
   // these are render helper methods
   // -----------------------------------------
-  protected renderEnumerable = renderEnumerable;
-  protected renderConditional = renderConditional;
-  protected renderNullable = renderNullable;
-  protected renderLoadable = renderLoadable;
-  protected renderSizedLoadable = renderSizedLoadable;
-  protected renderGridLoadable = renderGridLoadable;
-  protected focusElement = focusElement;
+  protected readonly renderEnumerable = wxr.renderEnumerable;
+  protected readonly renderConditional = wxr.renderConditional;
+  protected readonly renderNullable = wxr.renderNullable;
+  protected readonly renderLoadable = wxr.renderLoadable;
+  protected readonly renderSizedLoadable = wxr.renderSizedLoadable;
+  protected readonly renderGridLoadable = wxr.renderGridLoadable;
+  protected readonly focusElement = wxr.focusElement;
 
-  protected logger = Logging.getLogger(this.getDisplayName());
+  // these are Alert helper functions
+  protected readonly createAlert = Alert.create;
+  protected readonly alertForError = Alert.createForError;
+
+  protected readonly logger = Logging.getLogger(this.getDisplayName());
+  protected readonly subs: SubMan;
 
   constructor(props?: TViewProps | undefined, context?: any) {
     super(props, context);
+
+    this.subs = new SubMan();
 
     if (props != null) {
       this.state = props.viewModel as TViewModel;
@@ -54,7 +60,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
       .subscribe(x => {
         this.renderView();
       }, x => {
-        this.state.alertForError(x);
+        this.alertForError(x);
       });
   }
 
@@ -111,7 +117,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
   componentWillUnmount() {
     this.cleanupView();
 
-    this.updateSubscription = Object.dispose(this.updateSubscription);
+    this.dispose();
   }
   // -----------------------------------------
 
@@ -167,6 +173,20 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
   }
   // -----------------------------------------
 
+  protected addSubscription(subscription: IDisposable) {
+    return this.subs.add(subscription);
+  }
+
+  protected addManySubscriptions(...subscriptions: IDisposable[]) {
+    return this.subs.addMany(...subscriptions);
+  }
+
+  public dispose() {
+    this.subs.dispose();
+
+    this.updateSubscription = Object.dispose(this.updateSubscription);
+  }
+
   // -----------------------------------------
   // this is the property destruction helper
   // this functions will remove key, ref, and viewModel props automatically
@@ -194,29 +214,29 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
   /**
    * Binds an observable to a command on the view model
    */
-  protected bindObservableToCommand<TInput, TResult>(observable: Observable<TInput>, commandSelector: (viewModel: Readonly<TViewModel>) => wx.ICommand<TResult>) {
-    return bindObservableToCommand(this.state, observable, commandSelector);
+  protected bindObservableToCommand<TInput, TResult>(observable: Observable<TInput>, commandSelector: (viewModel: Readonly<TViewModel>) => Command<TResult>) {
+    return wxr.bindObservableToCommand(this.state, observable, commandSelector);
   }
 
   /**
    * Binds a DOM event to an observable property on the view model
    */
   protected bindEventToProperty<TValue, TEvent extends Event | React.SyntheticEvent<this>>(
-    targetSelector: (viewModel: Readonly<TViewModel>) => wx.IObservableProperty<TValue>,
+    targetSelector: (viewModel: Readonly<TViewModel>) => Property<TValue>,
     valueSelector?: (eventKey: any, event: TEvent) => TValue,
   ) {
-    return bindEventToProperty(this, this.state, targetSelector, valueSelector);
+    return wxr.bindEventToProperty(this, this.state, targetSelector, valueSelector);
   }
 
   /**
    * Binds a DOM event to an observable command on the view model
    */
   protected bindEventToCommand<TParameter, TEvent extends Event | React.SyntheticEvent<this>>(
-    commandSelector: (viewModel: Readonly<TViewModel>) => wx.ICommand<any>,
+    commandSelector: (viewModel: Readonly<TViewModel>) => Command<any>,
     paramSelector?: (eventKey: any, event: TEvent) => TParameter,
     conditionSelector?: (event: TEvent, eventKey: any) => boolean,
   ) {
-    return bindEventToCommand(this, this.state, commandSelector, paramSelector, conditionSelector);
+    return wxr.bindEventToCommand(this, this.state, commandSelector, paramSelector, conditionSelector);
   }
   // -----------------------------------------
 }

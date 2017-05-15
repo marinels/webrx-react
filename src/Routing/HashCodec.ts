@@ -4,18 +4,24 @@ import deparam = require('jquery-deparam');
 export class HashCodec {
   public static displayName = 'HashCodec';
 
+  public static readonly NormalizePathPattern = '';
+  public static readonly HashPattern = '';
+
   private normalizePath(path: string) {
-    let pattern = /^\/*(\/.*?\/?)\/*$/;
-    let matches = path ? pattern.exec('/' + path) : null;
-    return matches ? matches[1] : '';
+    const matches = String.isNullOrEmpty(path) ?
+      undefined :
+      /^\/*(\/.*?\/?)\/*$/.exec('/' + path);
+
+    return matches == null ? '' : matches[1];
   }
 
   private getPathAndParams(hash: string) {
     let path: string;
     let params: string | undefined;
-    let pattern = /#(\/[^?]*)(\?.*)/g;
 
-    let matches = hash ? pattern.exec(hash) : null;
+    const matches = String.isNullOrEmpty(hash) ?
+      undefined :
+      /#(\/[^?]*)(\?.*)/g.exec(hash);
 
     if (matches) {
       path = matches[1];
@@ -57,12 +63,12 @@ export class HashCodec {
   public decode<T>(hash: string, selector: (path: string, params: string | undefined, state: any) => T) {
     hash = this.santize(hash);
 
-    let { path, params } = this.getPathAndParams(hash);
+    const { path, params } = this.getPathAndParams(hash);
 
-    let state = <Object>{};
+    let state = {};
 
     if (params != null && params.length > 0) {
-      let obj = deparam(params[0] === '?' ? params.substring(1) : params, true);
+      const obj = deparam(params[0] === '?' ? params.substring(1) : params, true);
 
       if (obj) {
         state = obj;

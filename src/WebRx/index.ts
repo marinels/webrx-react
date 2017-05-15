@@ -10,5 +10,5 @@ export * from './WhenAny';
 // import RxJS extensions
 import './Extensions';
 
-// export webrx compatibility patches
-export * from './Compat';
+// export static definitions
+export * from './Static';
