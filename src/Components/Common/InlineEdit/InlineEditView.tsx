@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { findDOMNode } from 'react-dom';
+import { Observable } from 'rx';
 import { Icon } from 'react-fa';
 import * as classNames from 'classnames';
 import { FormGroup, InputGroup, FormControl, Sizes, Popover, OverlayTrigger } from 'react-bootstrap';
@@ -11,20 +12,20 @@ import { InlineEditViewModel } from './InlineEditViewModel';
 
 import './InlineEdit.less';
 
-interface InlineEditProps<T> extends BaseViewProps, BindableProps {
+export interface InlineEditProps extends BaseViewProps, BindableProps {
   controlId?: string;
   inputType?: string;
   placeholder?: string;
   keyboard?: boolean;
   clickToEdit?: boolean;
   bsSize?: Sizes;
-  template?: (x: T, view: InlineEditView) => any;
-  editTemplate?: (x: T, view: InlineEditView) => any;
+  template?: (x: any, view: InlineEditView) => any;
+  editTemplate?: (x: any, view: InlineEditView) => any;
   errorContent?: any | ((viewModel: InlineEditViewModel<any>, view: InlineEditView) => any);
   errorPlacement?: string;
 }
 
-export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditViewModel<any>> {
+export class InlineEditView extends BaseView<InlineEditProps, InlineEditViewModel<any>> {
   public static displayName = 'InlineEditView';
 
   static defaultProps = {
@@ -36,7 +37,9 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
     ),
     errorContent: (
       <div>
-        <div><strong>Sorry, your change was not saved.</strong></div>
+        <div>
+          <strong>Sorry, your change was not saved.</strong>
+        </div>
         <div>Please try again.</div>
       </div>
     ),
@@ -90,7 +93,7 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
         <div className='InlineEditView-errorContent'>
           {
             this.renderConditional(this.props.errorContent instanceof Function, () => {
-              return this.props.errorContent.apply(this, [ this.state, this ]);
+              return this.props.errorContent(this.state, this);
             }, () => this.props.errorContent)
           }
         </div>
@@ -139,10 +142,10 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
     const onKeyDown = this.props.keyboard === true ? (e: React.KeyboardEvent<any>) => this.handleKeyDown(e) : undefined;
 
     return (
-      <BindableInput { ...props } property={ this.state.editValue } onKeyDown={ onKeyDown } disabled={ this.state.save.canExecute(null) === false } >
+      <BindableInput { ...props } property={ this.state.editValue } onKeyDown={ onKeyDown } disabled={ this.state.save.canExecute === false } >
         {
           React.cloneElement(
-            this.props.editTemplate!(this.state.editValue(), this),
+            this.props.editTemplate!(this.state.editValue.value, this),
             { ref: x => this.focusAndSelectControlText(x) },
           )
         }
@@ -157,7 +160,7 @@ export class InlineEditView extends BaseView<InlineEditProps<any>, InlineEditVie
     });
 
     const displayContent = (
-      <span>{ this.props.template!(this.state.value(), this) }</span>
+      <span>{ this.props.template!(this.state.value.value, this) }</span>
     );
 
     return this.renderConditional(

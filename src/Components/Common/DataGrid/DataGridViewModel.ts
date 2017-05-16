@@ -1,7 +1,7 @@
 import { Observable } from 'rx';
 import * as clone from 'clone';
 
-import { wx } from '../../../WebRx';
+import { wx, ObservableOrProperty, ReadOnlyProperty, Property, Command } from '../../../WebRx';
 import { ObjectComparer, SortDirection } from '../../../Utils/Compare';
 import { ListViewModel } from '../List/ListViewModel';
 import { SearchViewModel, SearchRoutingState } from '../Search/SearchViewModel';
@@ -36,30 +36,30 @@ export interface DataGridRoutingState {
 export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRequest, TResult extends ProjectionResult<TData>> extends ListViewModel<TData, DataGridRoutingState> {
   public static displayName = 'BaseDataGridViewModel';
 
-  public search: SearchViewModel;
-  public pager: PagerViewModel;
-  public defaultSortDirection: SortDirection;
+  public readonly search: SearchViewModel;
+  public readonly pager: PagerViewModel;
+  public readonly defaultSortDirection: SortDirection;
 
-  public projectionRequests: wx.IObservableReadOnlyProperty<TRequest>;
-  public projectionResults: wx.IObservableReadOnlyProperty<TResult>;
-  public projectedItems: wx.IObservableReadOnlyProperty<TData[]>;
-  public sortField: wx.IObservableReadOnlyProperty<string | undefined>;
-  public sortDirection: wx.IObservableReadOnlyProperty<SortDirection | undefined>;
-  public isLoading: wx.IObservableReadOnlyProperty<boolean>;
-  public hasProjectionError: wx.IObservableProperty<boolean>;
+  public readonly projectionRequests: ReadOnlyProperty<TRequest>;
+  public readonly projectionResults: ReadOnlyProperty<TResult>;
+  public readonly projectedItems: ReadOnlyProperty<TData[]>;
+  public readonly sortField: ReadOnlyProperty<string | undefined>;
+  public readonly sortDirection: ReadOnlyProperty<SortDirection | undefined>;
+  public readonly isLoading: ReadOnlyProperty<boolean>;
+  public readonly hasProjectionError: ReadOnlyProperty<boolean>;
 
-  public sort: wx.ICommand<SortArgs>;
-  public toggleSortDirection: wx.ICommand<string>;
-  public refresh: wx.ICommand<any>;
-  protected project: wx.ICommand<TResult | undefined>;
+  public readonly sort: Command<SortArgs>;
+  public readonly toggleSortDirection: Command<string>;
+  public readonly refresh: Command<any>;
+  protected readonly project: Command<TResult | undefined>;
 
   constructor(
     requests: Observable<TRequest>,
-    items?: wx.ObservableOrProperty<TData[]>,
-    protected filterer?: (item: TData, regex: RegExp) => boolean,
-    protected comparer = new ObjectComparer<TData>(),
+    items?: ObservableOrProperty<TData[]>,
+    protected readonly filterer?: (item: TData, regex: RegExp) => boolean,
+    protected readonly comparer = new ObjectComparer<TData>(),
     isMultiSelectEnabled?: boolean,
-    isLoading?: wx.ObservableOrProperty<boolean>,
+    isLoading?: ObservableOrProperty<boolean>,
     pagerLimit?: number,
     rateLimit = 100,
     isRoutingEnabled?: boolean,
@@ -70,13 +70,13 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
     this.pager = new PagerViewModel(pagerLimit, this.isRoutingEnabled);
     this.defaultSortDirection = SortDirection.Ascending;
 
-    this.hasProjectionError = wx.property(false);
+    this.hasProjectionError = this.property(false);
 
-    this.sort = wx.asyncCommand((x: SortArgs) => Observable.of(x));
-    this.toggleSortDirection = wx.asyncCommand((x: string) => Observable.of(x));
-    this.refresh = wx.command();
+    this.sort = this.command<SortArgs>();
+    this.toggleSortDirection = this.command<string>();
+    this.refresh = this.command();
 
-    const sortChanged = wx
+    const sortChanged = this
       .whenAny(this.sort.results, x => x);
 
     this.sortField = Observable
@@ -84,7 +84,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
         this.routingState.changed.map(x => x.sortBy),
         sortChanged.map(x => x.field),
       )
-      .map(x => x || this.sortField() || undefined)
+      .map(x => x || this.sortField.value)
       .toProperty();
 
     this.sortDirection = Observable
@@ -92,14 +92,14 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
         this.routingState.changed.map(x => x.sortDir),
         sortChanged.map(x => x.direction),
       )
-      .map(x => x || this.sortDirection() || undefined)
+      .map(x => x || this.sortDirection.value)
       .toProperty();
 
-    this.projectionRequests = wx
+    this.projectionRequests = this
       .whenAny(
         // merge our input requests with our projection requests
         this.getObservableOrAlert(
-          () => wx
+          () => this
             .whenAny(this.getProjectionRequests(), requests, (pr, r) => ({ pr, r }))
             .filter(x => x.pr != null)
             .map(x => Object.assign<TRequest>({}, x.pr, x.r)),
@@ -108,39 +108,28 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
         x => x,
       )
       // filter out null request data
-      .filter(x => x != null)
+      .filterNull()
       .toProperty();
 
-    this.project = wx.asyncCommand((x: TRequest) => {
+    this.project = this.command((x: TRequest) => {
       return this
         .getObservableOrAlert(
-          () => this.getProjectionResult(x)
-            .doOnNext(() => {
-              // reset our projection error flag since we received a valid result
-              this.hasProjectionError(false);
-            })
-            .catch((e) => {
-              // set the projection error flag
-              this.hasProjectionError(true);
-
-              return Observable.empty<TResult>();
-            }),
+          () => this.getProjectionResult(x),
           'Error Projecting Data Grid Results',
         )
         // this ensures that errors still generate a result
         .defaultIfEmpty(undefined);
     });
 
-    this.projectionResults = wx
+    this.projectionResults = this
       .whenAny(this.project.results, x => x)
       // we will get null projection results back if there is an error
       // so just filter these results out of our results observable
-      .filter(x => x != null)
-      .map(x => x!)
+      .filterNull()
       .toProperty();
 
-    if (wx.isProperty(isLoading) === true) {
-      this.isLoading = <wx.IObservableReadOnlyProperty<boolean>>isLoading;
+    if (this.isProperty(isLoading) === true) {
+      this.isLoading = <ReadOnlyProperty<boolean>>isLoading;
     }
     else if (Observable.isObservable(isLoading) === true) {
       this.isLoading = (<Observable<boolean>>isLoading).toProperty(true);
@@ -149,26 +138,25 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
       // setup a default isLoading observable
       this.isLoading = Observable
         .merge(
-          this.project.isExecuting.filter(x => x === true),
+          this.project.isExecutingObservable.filter(x => x === true),
           this.project.results.map(() => false),
         )
         .toProperty(true);
     }
 
-    this.projectedItems = wx
+    this.projectedItems = this
       .whenAny(this.project.results, x => x)
-      .filter(x => x != null)
-      .map(x => x!)
+      .filterNull()
       .do(x => {
         // update global pager state
-        this.pager.itemCount(x.count);
+        this.pager.itemCount.value = x.count;
       })
       // project back down into the item array
       .map(x => x.items)
       .toProperty();
 
     // whenever there is a new request we re-project
-    this.subscribe(wx
+    this.addSubscription(this
       .whenAny(
         this.projectionRequests,
         // whenever a discrete refresh request is made we need to re-project
@@ -183,19 +171,26 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
       .invokeCommand(this.project),
     );
 
-    this.subscribe(
+    this.hasProjectionError = Observable
+      .merge(
+        this.project.results.map(() => false),
+        this.project.thrownErrors.map(() => true),
+      )
+      .toProperty(false);
+
+    this.addSubscription(
       this.toggleSortDirection.results
         .map(x => (<SortArgs>{
-          field: x || this.sortField(),
-          direction: (x === this.sortField()) ?
-            (this.sortDirection() === SortDirection.Descending ? SortDirection.Ascending : SortDirection.Descending) :
-            this.defaultSortDirection,
+          field: x || this.sortField.value,
+          direction: (x === this.sortField.value ?
+            (this.sortDirection.value === SortDirection.Descending ? SortDirection.Ascending : SortDirection.Descending) :
+            this.defaultSortDirection),
         }))
-        .invokeCommand(x => this.sort),
+        .invokeCommand(() => this.sort),
     );
 
-    this.subscribe(
-      wx
+    this.addSubscription(
+      this
         .whenAny(this.sortField, this.sortDirection, (f, d) => ({ f, d }))
         .filter(x => x.f != null && x.d != null)
         .invokeCommand(this.routingStateChanged),
@@ -204,7 +199,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
 
   // create the default projection request structure
   protected getProjectionRequests() {
-    return wx
+    return this
       .whenAny(
         this.search.requests,
         this.pager.offset,
@@ -242,7 +237,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
   }
 
   public isSortedBy(fieldName: string | undefined, direction: SortDirection) {
-    return !String.isNullOrEmpty(fieldName) && fieldName === this.sortField() && direction === this.sortDirection();
+    return !String.isNullOrEmpty(fieldName) && fieldName === this.sortField.value && direction === this.sortDirection.value;
   }
 
   getSearch() {
@@ -253,17 +248,17 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
     state.search = this.search.getRoutingState();
     state.pager = this.pager.getRoutingState();
 
-    if (this.sortField() != null) {
-      state.sortBy = this.sortField();
+    if (this.sortField.value != null) {
+      state.sortBy = this.sortField.value;
     }
 
-    if (this.sortDirection() != null) {
-      state.sortDir = this.sortDirection();
+    if (this.sortDirection.value != null) {
+      state.sortDir = this.sortDirection.value;
     }
   }
 
   loadRoutingState(state: DataGridRoutingState) {
-    const prevState = this.routingState() || <DataGridRoutingState>{};
+    const prevState = this.routingState.value || <DataGridRoutingState>{};
 
     if (state.sortDir == null && prevState.sortDir != null) {
       state.sortDir = SortDirection.Ascending;
@@ -274,7 +269,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
   }
 }
 
-interface ItemsProjectionRequest<TData> extends ProjectionRequest {
+export interface ItemsProjectionRequest<TData> extends ProjectionRequest {
   items: TData[];
 }
 
@@ -285,11 +280,11 @@ export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, Items
     return new DataGridViewModel(wx.property<TData[]>(items));
   }
 
-  private static getItemsRequestObservable<TData>(source: wx.ObservableOrProperty<TData[]>) {
+  private static getItemsRequestObservable<TData>(source: ObservableOrProperty<TData[]>) {
     if (wx.isProperty(source) === true) {
       return wx
-        .whenAny(<wx.IObservableProperty<TData[]>>source, x => x)
-        .filter(x => x != null)
+        .whenAny(<Property<TData[]>>source, x => x)
+        .filterNull()
         .map(items => <ItemsProjectionRequest<TData>>{
           items,
         });
@@ -303,11 +298,11 @@ export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, Items
   }
 
   constructor(
-    items: wx.ObservableOrProperty<TData[]> = wx.property<TData[]>([]),
+    items: ObservableOrProperty<TData[]> = wx.property<TData[]>([]),
     protected filterer?: (item: TData, regex: RegExp) => boolean,
     protected comparer = new ObjectComparer<TData>(),
     isMultiSelectEnabled?: boolean,
-    isLoading?: wx.ObservableOrProperty<boolean>,
+    isLoading?: ObservableOrProperty<boolean>,
     pagerLimit?: number,
     rateLimit = 100,
     isRoutingEnabled?: boolean,

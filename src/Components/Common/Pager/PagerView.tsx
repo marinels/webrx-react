@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Observable } from 'rx';
 import * as classNames from 'classnames';
 import { Pagination, PaginationProps, DropdownButton, MenuItem } from 'react-bootstrap';
 
@@ -38,7 +39,7 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     emptyInfo: 'No Items to Display',
   };
 
-  private renderFunctions: { [ type: string ]: Function } = {
+  private readonly renderFunctions: { [ type: string ]: Function } = {
     info: this.renderInfo,
     controls: this.renderControls,
     limit: this.renderLimit,
@@ -89,15 +90,15 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
   }
 
   private shouldRenderInfo() {
-    return this.props.info === true && (this.state.limit() || 0) > 0;
+    return this.props.info === true && (this.state.limit.value || 0) > 0;
   }
 
   private shouldRenderControls() {
-    return (this.state.pageCount() || 1) > 1;
+    return (this.state.pageCount.value || 1) > 1;
   }
 
   private shouldRenderLimit() {
-    return (this.props.limits || []).length > 1 && (this.state.itemCount() || 0) > 0;
+    return (this.props.limits || []).length > 1 && (this.state.itemCount.value || 0) > 0;
   }
 
   private renderComponent(location: string, type: PagerComponentTypes) {
@@ -112,9 +113,9 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
 
   private renderInfo() {
     return this.renderConditional(this.shouldRenderInfo(), () => (
-      this.renderConditional((this.state.itemCount() || 0) === 0,
+      this.renderConditional((this.state.itemCount.value || 0) === 0,
         () => this.props.emptyInfo,
-        () => `Showing Items ${ this.state.offset() + 1 } through ${ Math.min(this.state.itemCount(), this.state.offset() + (this.state.limit() || 0)) } of ${ this.state.itemCount() }`,
+        () => `Showing Items ${ this.state.offset.value + 1 } through ${ Math.min(this.state.itemCount.value, this.state.offset.value + (this.state.limit.value || 0)) } of ${ this.state.itemCount.value }`,
       )
     ), () => '');
   }
@@ -126,8 +127,8 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     });
 
     return this.renderConditional(this.shouldRenderControls(), () => (
-      <Pagination items={ this.state.pageCount() } activePage={ this.state.selectedPage() } onSelect={ this.bindEventToCommand(x => x.selectPage) }
-        { ...(Object.assign(props, { items: this.state.pageCount(), activePage: this.state.selectedPage() })) }
+      <Pagination items={ this.state.pageCount.value } activePage={ this.state.selectedPage.value } onSelect={ this.bindEventToCommand(x => x.selectPage) }
+        { ...(Object.assign(props, { items: this.state.pageCount.value, activePage: this.state.selectedPage.value })) }
       />
     ), () => '');
   }
@@ -138,7 +139,7 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
         {
           this.props.limits!
             .map((x, i) => (
-              <MenuItem key={ i } eventKey={ x } selected={ this.state.limit() === x }>{x || 'All'}</MenuItem>
+              <MenuItem key={ i } eventKey={ x } selected={ this.state.limit.value === x }>{x || 'All'}</MenuItem>
             ))
         }
       </DropdownButton>
@@ -146,6 +147,6 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
   }
 
   private renderLimitTitle() {
-    return `Items per Page (${ this.state.limit() || 'All' })`;
+    return `Items per Page (${ this.state.limit.value || 'All' })`;
   }
 }

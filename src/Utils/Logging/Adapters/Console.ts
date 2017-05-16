@@ -11,7 +11,7 @@ export class ConsoleLogManager extends DelegateLogManager {
   }
 
   private getColorStyle(bgColor = 'transparent', color = 'black') {
-    return `display: block; border:0; margin: 0; padding: 5px 0; line-height: 19px; background-color: ${bgColor}; color: ${color};`;
+    return `display: block; border:0; margin: 0; padding: 5px 0; line-height: 19px; background-color: ${ bgColor }; color: ${ color };`;
   }
 
   private getStyles(level: LogLevel) {
@@ -40,11 +40,11 @@ export class ConsoleLogManager extends DelegateLogManager {
   }
 
   private logAction(logger: DelegateLogger, level: LogLevel, text: string, args: any[]) {
-    let styles = this.getStyles(level);
+    const styles = this.getStyles(level);
 
     this.logToConsole(
       level,
-      `${styles.length > 0 ? '%c' : ''}[${moment().format('HH:mm:ss.SSS')}][${getLevelName(level)}][${logger.name}] ${text}`,
+      `${ styles.length > 0 ? '%c' : '' }[${ moment().format('HH:mm:ss.SSS') }][${ getLevelName(level) }][${ logger.name }] ${ text }`,
       ...styles,
     );
 

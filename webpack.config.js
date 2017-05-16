@@ -44,11 +44,11 @@ module.exports = Object.assign(clone(webpackCommon), {
   ],
   module: {
     rules: [
-      { test: /\.css$/, use: cssLoader },
-      { test: /\.less$/, use: lessLoader },
-      { test: /moment[\\/]locale/, use: 'file-loader?name=locale/moment/[name].[ext]' },
-      { test: /\.(woff|woff2|ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, use: 'file-loader?name=fonts/[name].[ext]' },
-      { test: /\.tsx?$/, use: 'awesome-typescript-loader' },
+      { test: /\.css$/, loader: cssLoader },
+      { test: /\.less$/, loader: lessLoader },
+      { test: /moment[\\/]locale/, loader: 'file-loader?name=locale/moment/[name].[ext]' },
+      { test: /\.(woff|woff2|ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file-loader?name=fonts/[name].[ext]' },
+      { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
     ],
   },
 });

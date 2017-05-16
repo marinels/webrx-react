@@ -35,7 +35,7 @@ export class RoutingMap {
     this.viewModelMap[path] = activator;
     const menu = this.menuMap[menuName] = this.menuMap[menuName] || <HeaderMenu>{
       id: menuName,
-      header: `${menuName} Demos`,
+      header: `${ menuName } Demos`,
       items: [],
     };
     menu.items.push(<HeaderCommandAction>{ id: path, header: name, uri: this.getUri(path, uri), iconName: iconName || this.defaultIconName, order: menu.items.length });
@@ -100,7 +100,7 @@ const sampleDataSource = <Components.AsyncDataSource<SampleDataSourceRequest, Co
       .timer(2000, 10000)
       .map(x => {
         if (x === 2) {
-          // this will kill this request stream
+          // this will kill this request stream (no longer functional)
           throw new Error('Simulated Request Stream Error');
         }
 
@@ -120,7 +120,7 @@ const sampleDataSource = <Components.AsyncDataSource<SampleDataSourceRequest, Co
         .of(sampleListData)
         // simulate async result delay
         .delay(2000)
-        .doOnNext(x => {
+        .doOnNext(() => {
           const msg = [
             'Simulating Async Data Result...',
             `type = ${ request.type }`,
@@ -208,18 +208,18 @@ routeMap.addRoute('WebRx-React', 'DataGrid', 'Data Grid', (state: any) => {
   Observable
     .of(sampleListData)
     .delay(2000)
-    .do(x => {
+    .do(() => {
       Alert.create('Simulating Delay', 'Delayed Observable Property List Loading', undefined, 1000);
     })
     .subscribe(x => {
-      prop(x);
+      prop.value = x;
     });
 
-  return new Components.DataGridViewModel(prop, (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0);
+  return new Components.DataGridViewModel(prop, (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0);
 });
 routeMap.addRoute('WebRx-React', 'DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: any) => Components.DataGridViewModel.create(...sampleListData));
 routeMap.addRoute('WebRx-React', 'DataGridList', 'DataGrid (List View)', (state: any) =>
-  new Components.DataGridViewModel(Observable.of(sampleListData), (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0, undefined, undefined, undefined, 0),
+  new Components.DataGridViewModel(Observable.of(sampleListData), (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0, undefined, undefined, undefined, 0),
 );
 routeMap.addRoute('WebRx-React', 'DataGridPager', 'DataGrid (Custom Pager)', (state: any) =>
   new Components.DataGridViewModel(Observable.of(sampleListData)),
@@ -228,15 +228,15 @@ routeMap.addRoute('WebRx-React', 'AsyncDataGrid', 'DataGrid (Async)', (state: an
   return new Components.AsyncDataGridViewModel(sampleDataSource, true, true);
 });
 routeMap.addRoute('WebRx-React', 'DataGridRoutingState', 'DataGrid (Routing State)', (state: any) =>
-  new Components.DataGridViewModel(Observable.of(sampleListData), (item, regex) => `${item.name} ${item.requiredBy}`.search(regex) >= 0, undefined, undefined, undefined, undefined, undefined, true),
+  new Components.DataGridViewModel(Observable.of(sampleListData), (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0, undefined, undefined, undefined, undefined, undefined, true),
 );
 routeMap.addRoute('WebRx-React', 'ModalDialog', 'Modal Dialog', (state: any) => {
   // we are simulating a modal being contained within another view model
   return {
     displayName: 'ModalDialogViewModel',
     viewModel: new Components.ModalDialogViewModel(),
-    accept: wx.command(x => Alert.create('Modal Accepted', 'Modal Closed...', 'success')),
-    reject: wx.command(x => Alert.create('Modal Rejected', 'Modal Closed...', 'danger')),
+    accept: wx.command(() => Alert.create('Modal Accepted', 'Modal Closed...', 'success')),
+    reject: wx.command(() => Alert.create('Modal Rejected', 'Modal Closed...', 'danger')),
   };
 });
 routeMap.addRoute('WebRx-React', 'Tabs', 'Tabs', (state: any) => new Components.TabsViewModel());

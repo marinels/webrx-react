@@ -1,7 +1,7 @@
 import { Observable } from 'rx';
 import * as moment from 'moment';
 
-import { wx } from '../../../WebRx';
+import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
 import { BaseViewModel } from '../../React/BaseViewModel';
 
 export enum TimeSpanUnitType {
@@ -48,15 +48,15 @@ export const DefaultParseDelay = 1000;
 export class TimeSpanInputViewModel extends BaseViewModel {
   public static displayName = 'TimeSpanInputViewModel';
 
-  public units: TimeSpanUnit[];
-  public text: wx.IObservableProperty<string>;
-  public unit: wx.IObservableReadOnlyProperty<TimeSpanUnit>;
-  public duration: wx.IObservableReadOnlyProperty<moment.Duration | undefined>;
-  public isValid: wx.IObservableReadOnlyProperty<boolean>;
-  public hasError: wx.IObservableReadOnlyProperty<boolean>;
+  public readonly units: TimeSpanUnit[];
+  public readonly text: Property<string>;
+  public readonly unit: ReadOnlyProperty<TimeSpanUnit>;
+  public readonly duration: ReadOnlyProperty<moment.Duration | undefined>;
+  public readonly isValid: ReadOnlyProperty<boolean>;
+  public readonly hasError: ReadOnlyProperty<boolean>;
 
-  public adjust: wx.ICommand<number>;
-  public setUnit: wx.ICommand<TimeSpanUnit>;
+  public readonly adjust: Command<number>;
+  public readonly setUnit: Command<TimeSpanUnit>;
 
   constructor(
     required = false,
@@ -76,28 +76,44 @@ export class TimeSpanInputViewModel extends BaseViewModel {
       .filter(x => x >= minUnit && x <= maxUnit)
       .map(x => TimeSpanUnits[x]);
 
-    this.adjust = wx.asyncCommand((x: number) => Observable.of(x));
-    this.setUnit = wx.asyncCommand((x: TimeSpanUnit) => Observable.of(x));
+    this.adjust = this.command<number>();
+    this.setUnit = this.command<TimeSpanUnit>();
 
-    this.unit = wx
+    this.unit = this
       .whenAny(this.setUnit.results, x => x)
       .toProperty(TimeSpanUnits[(initialUnit < minUnit || initialUnit > maxUnit) ? minUnit : initialUnit]);
 
-    this.text = wx.property(this.getText(initialValue, this.unit(), precision));
+    this.text = this.property(this.getText(initialValue, this.unit.value, precision));
 
-    this.duration = wx
+    this.duration = this
       .whenAny(this.text, this.unit, (text, unit) => ({ text, unit }))
       .where(x => x.unit != null)
       .debounce(parseDelay)
-      .map(x => ({ duration: this.parse(x.text, x.unit), unit: x.unit }))
+      .map(x => {
+        let duration = this.parse(x.text, x.unit);
+
+        if (duration != null) {
+          if (minValue != null && duration < minValue) {
+            duration = minValue;
+          }
+          else if (maxValue != null && duration > maxValue) {
+            duration = maxValue;
+          }
+        }
+
+        return {
+          duration,
+          unit: x.unit,
+        };
+      })
       .doOnNext(x => {
         // if we have a valid duration then check to see if we need to update the text
         if (x != null) {
           const text = this.getText(x.duration, x.unit, precision);
 
           // if we have new text update and queue a re-rendering
-          if (text.localeCompare(this.text()) !== 0) {
-            this.text(text);
+          if (text.localeCompare(this.text.value) !== 0) {
+            this.text.value = text;
 
             this.notifyChanged();
           }
@@ -106,13 +122,38 @@ export class TimeSpanInputViewModel extends BaseViewModel {
       .map(x => x.duration)
       .toProperty();
 
-    this.isValid = wx
+    this.isValid = this
       .whenAny(this.duration, x => x != null)
       .toProperty();
 
-    this.hasError = wx
+    this.hasError = this
       .whenAny(this.isValid, this.text, (isValid, text) => this.validate(isValid, text, required))
       .toProperty();
+
+    this.addSubscription(
+      this
+        .whenAny(this.unit, x => x)
+        .filterNull()
+        .withLatestFrom(
+          this.whenAny(this.duration, x => x)
+            .filterNull(),
+          (u, d) => ({ u, d }),
+        )
+        .subscribe(x => {
+          this.text.value = this.getText(x.d, x.u, precision);
+        }),
+    );
+
+    this.addSubscription(
+      this.adjust.results
+        .withLatestFrom(
+          this.whenAny(this.duration, this.unit, (d, u) => ({ d, u })),
+          (a, x) => ({ a, d: x.d || moment.duration(0, x.u.key), u: x.u }),
+        )
+        .subscribe(x => {
+          this.text.value = this.getText(x.d.add(x.a, x.u.key), x.u, precision);
+        }),
+    );
   }
 
   private getText(duration: moment.Duration | undefined, unit: TimeSpanUnit | undefined, precision: number) {
@@ -122,7 +163,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
 
     if (duration != null && key != null) {
       const value = duration.as(key);
-      let unitName = this.unit().name;
+      let unitName = this.unit.value.name;
 
       if (value === 1) {
         // trim the trailing 's' from the unit name
@@ -186,4 +227,4 @@ export class TimeSpanInputViewModel extends BaseViewModel {
 
     return duration;
   }
-};
+}

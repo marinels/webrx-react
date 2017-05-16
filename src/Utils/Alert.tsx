@@ -8,9 +8,9 @@ import { AlertCreatedKey, AlertCreated } from '../Events/AlertCreated';
 export class Alert {
   private static displayName = 'Alert';
 
-  private logger = getLogger(Alert.displayName);
+  private readonly logger = getLogger(Alert.displayName);
 
-  constructor(private pubSub: PubSub) {
+  constructor(private readonly pubSub: PubSub) {
   }
 
   public create(content: any, header?: string, style?: string, timeout?: number) {

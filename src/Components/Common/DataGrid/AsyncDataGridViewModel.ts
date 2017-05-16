@@ -1,6 +1,6 @@
 import { Observable } from 'rx';
 
-import { wx } from '../../../WebRx';
+import { ObservableOrProperty } from '../../../WebRx';
 import { BaseDataGridViewModel, ProjectionRequest, ProjectionResult } from './DataGridViewModel';
 
 export interface AsyncDataSource<TRequest extends ProjectionRequest, TResult extends ProjectionResult<any>> {
@@ -25,11 +25,11 @@ export class AsyncDataGridViewModel<TData, TRequest extends ProjectionRequest, T
   public static displayName = 'AsyncDataGridViewModel';
 
   constructor(
-    protected dataSource: AsyncDataSource<TRequest, TResult>,
-    protected enableFilter = false,
-    protected enableSort = false,
+    protected readonly dataSource: AsyncDataSource<TRequest, TResult>,
+    protected readonly enableFilter = false,
+    protected readonly enableSort = false,
     isMultiSelectEnabled?: boolean,
-    isLoading?: wx.ObservableOrProperty<boolean>,
+    isLoading?: ObservableOrProperty<boolean>,
     pagerLimit?: number,
     rateLimit?: number,
     isRoutingEnabled?: boolean,
@@ -38,7 +38,8 @@ export class AsyncDataGridViewModel<TData, TRequest extends ProjectionRequest, T
   }
 
   getProjectionResult(request: TRequest) {
-    return this.selectItem.executeAsync(null)
+    // this will first clear the selected item before fetching the async result
+    return this.selectItem.observeExecution(null)
       .flatMap(() => this.dataSource.getResultAsync(request));
   }
 

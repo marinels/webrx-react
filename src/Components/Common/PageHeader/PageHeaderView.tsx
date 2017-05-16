@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Observable } from 'rx';
 import { Icon, IconStack } from 'react-fa';
 import * as classNames from 'classnames';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
@@ -9,7 +10,7 @@ import { SearchView } from '../Search/SearchView';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import { Sidebar } from './Sidebar';
 import { PageHeaderViewModel } from './PageHeaderViewModel';
-import { HeaderAction, HeaderCommandAction } from '../../React/Actions';
+import { HeaderAction, HeaderCommandAction, HeaderMenu } from '../../React/Actions';
 
 import './PageHeader.less';
 
@@ -49,7 +50,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
     if (item.command == null && String.isNullOrEmpty(item.uri) === false) {
       isDisabled = false;
     }
-    else if (item.command != null && item.command.canExecute(item.commandParameter) === true) {
+    else if (item.command != null && item.command.canExecute === true) {
       isDisabled = false;
     }
 
@@ -122,7 +123,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
 
   private renderBrandButton() {
     const isSidebarEnabled = this.isSidebarEnabled();
-    const active = isSidebarEnabled && this.state.isSidebarVisible();
+    const active = isSidebarEnabled && this.state.isSidebarVisible.value;
     const command = isSidebarEnabled ? this.state.toggleSideBar : undefined;
 
     return (
@@ -180,8 +181,8 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
   }
 
   private renderRoutedMenus() {
-    return this.renderConditional(this.state.navbarMenus().length > 0, () =>
-      this.getOrderedActions(this.state.navbarMenus())
+    return this.renderConditional(this.state.navbarMenus.value.length > 0, () =>
+      this.getOrderedActions(this.state.navbarMenus.value)
         .map(x => {
           return this.renderHeaderMenu(
             x.id,
@@ -197,7 +198,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
     return this.renderHeaderMenu(
       'helpMenu',
       (<Icon name='question-circle' size='2x' />),
-      this.state.helpMenuItems(),
+      this.state.helpMenuItems.value,
       true,
     );
   }
@@ -206,7 +207,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
     return this.renderHeaderMenu(
       'adminMenu',
       (<Icon name='cog' size='2x' />),
-      this.state.adminMenuItems(),
+      this.state.adminMenuItems.value,
       true,
       'hover-spin',
     );
@@ -216,7 +217,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
     return this.renderHeaderMenu(
       'userMenu',
       (<ProfilePicture src={ this.state.userImage } title={ this.state.userDisplayName } iconSize='2x' size={ 30 } />),
-      this.state.userMenuItems(),
+      this.state.userMenuItems.value,
       true,
     );
   }
@@ -230,7 +231,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
   }
 
   private renderRoutedActions() {
-    const visibleActions = this.getVisibleActions(this.state.navbarActions());
+    const visibleActions = this.getVisibleActions(this.state.navbarActions.value);
 
     return (
       <Navbar.Form className='PageHeader-routedActions' pullRight>
@@ -253,13 +254,13 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
 
   private renderSidebar() {
     return (
-      <Sidebar isVisible={ this.state.isSidebarVisible() }
+      <Sidebar isVisible={ this.state.isSidebarVisible.value }
         header={ this.props.brand }
         onHide={ this.bindEventToCommand(x => x.toggleSideBar, () => false) }
       >
         {
           this.renderConditional(this.state.isSidebarVisible, () =>
-            this.getOrderedActions(this.state.sidebarMenus())
+            this.getOrderedActions(this.state.sidebarMenus.value)
               .map(menu => {
                 const visibleActions = this.getVisibleActions(menu.items);
 
@@ -282,7 +283,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
                   </Nav>
                 ));
               })
-              .filter(x => x != null),
+              .filterNull(),
           )
         }
       </Sidebar>

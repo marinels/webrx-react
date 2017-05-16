@@ -3,24 +3,24 @@ import * as classNames from 'classnames';
 import { Panel, PanelProps, ButtonToolbar } from 'react-bootstrap';
 
 import { CommandButton, CommandButtonProps } from '../CommandButton/CommandButton';
-import { renderConditional } from '../../React/RenderHelpers';
+import { wxr } from '../../React';
 
 import './CommonPanel.less';
 
-type Content = ((x: CommonPanel) => any) | any;
-type SectionFormatter = (section: any) => any;
-type ContentSection = 'header' | 'body' | 'footer';
-type ContentType = 'teaser' | 'summary';
+export type CommonPannelContent = ((x: CommonPanel) => any) | any;
+export type CommonPanelSectionFormatter = (section: any) => any;
+export type CommonPanelContentSection = 'header' | 'body' | 'footer';
+export type CommonPanelContentType = 'teaser' | 'summary';
 
 export interface CommonPanelProps extends PanelProps {
-  headerContent?: Content;
+  headerContent?: CommonPannelContent;
   headerActions?: CommandButtonProps[];
-  headerFormat?: SectionFormatter;
-  teaserContent?: Content;
-  summaryContent?: Content;
-  footerContent?: Content;
+  headerFormat?: CommonPanelSectionFormatter;
+  teaserContent?: CommonPannelContent;
+  summaryContent?: CommonPannelContent;
+  footerContent?: CommonPannelContent;
   footerActions?: CommandButtonProps[];
-  footerFormat?: SectionFormatter;
+  footerFormat?: CommonPanelSectionFormatter;
 
   shadow?: boolean;
 }
@@ -29,8 +29,6 @@ export class CommonPanel extends React.Component<CommonPanelProps, any> {
   public static displayName = 'CommonPanel';
 
   static defaultProps = {
-    shadow: false,
-    collapsible: false,
     defaultExpanded: true,
   };
 
@@ -61,35 +59,35 @@ export class CommonPanel extends React.Component<CommonPanelProps, any> {
     );
   }
 
-  private renderContent(content: Content, section: ContentSection, sectionType?: ContentType) {
-    return renderConditional(content != null, () => (
+  private renderContent(content: CommonPannelContent | undefined, section: CommonPanelContentSection, sectionType?: CommonPanelContentType) {
+    return wxr.renderNullable(content, x => (
       <div className={ classNames(`CommonPanel-${ section }Content`, sectionType == null ? null : `CommonPanel-${ sectionType }`) }>
-        { content instanceof Function ? content.apply(this, [ this ]) : content }
+        { x instanceof Function ? x(this) : x }
       </div>
     ));
   }
 
-  private renderActions(actions: CommandButtonProps[], section: ContentSection) {
-    return renderConditional(actions != null && actions.length > 0, () => (
+  private renderActions(actions: CommandButtonProps[] | undefined, section: CommonPanelContentSection) {
+    return wxr.renderNullable(actions, a => (
       <ButtonToolbar className={ `CommonPanel-${ section }Actions` }>
         {
-          actions
+          a
             // strip off the ref prop if it exists
             .map(x => Object.rest(x, undefined, 'ref').rest as any)
             .map(x => (<CommandButton key={ x.id } { ...x } />))
         }
       </ButtonToolbar>
-    ));
+    ), undefined, x => x.length > 0);
   }
 
-  private renderHeaderFooter(content: Content, actions: CommandButtonProps[] = [], section: ContentSection, formatter: (section: any) => any = x => x) {
-    return renderConditional(
+  private renderHeaderFooter(content: CommonPannelContent | undefined, actions: CommandButtonProps[] = [], section: CommonPanelContentSection, formatter: (section: any) => any = x => x) {
+    return wxr.renderConditional(
       content != null || (actions != null && actions.length > 0),
       () => formatter(
         <div className={ `CommonPanel-${ section }` }>
           { this.renderContent(content, section) }
           { this.renderActions(actions, section) }
-        </div>
+        </div>,
       ),
     );
   }

@@ -2,9 +2,9 @@ import * as React from 'react';
 import { Grid, Row, Image } from 'react-bootstrap';
 import * as classNames from 'classnames';
 
-import { wx } from '../../../WebRx';
+import { Property } from '../../../WebRx';
 import { Loading } from '../Loading/Loading';
-import { renderConditional } from '../../React/RenderHelpers';
+import { wxr } from '../../React';
 
 import './Splash.less';
 
@@ -12,7 +12,7 @@ export interface SplashProps extends React.HTMLAttributes<Splash> {
   header: any;
   logo?: string;
   text?: string;
-  progress?: wx.IObservableProperty<number> | number;
+  progress?: Property<number> | number;
   fluid?: boolean;
 }
 
@@ -46,7 +46,7 @@ export class Splash extends React.Component<SplashProps, any> {
   }
 
   private renderLogo() {
-    return renderConditional(this.props.logo != null, () => (
+    return wxr.renderConditional(this.props.logo != null, () => (
       <Image className='Splash-logo' src={this.props.logo} rounded />
     ));
   }

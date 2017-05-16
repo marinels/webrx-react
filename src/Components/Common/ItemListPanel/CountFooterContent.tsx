@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Observable, IDisposable } from 'rx';
 import { Badge } from 'react-bootstrap';
 
-import { renderConditional } from '../../React/RenderHelpers';
+import { wxr } from '../../React';
 
 import './CountFooterContent.less';
 
@@ -11,7 +11,7 @@ export interface CountFooterContentProps extends React.HTMLAttributes<CountFoote
   suffix?: string;
 }
 
-interface CountFooterState {
+export interface CountFooterState {
   length: number;
 }
 
@@ -50,7 +50,7 @@ export class CountFooterContent extends React.Component<CountFooterContentProps,
       <div className='CountFooterContent'>
         <Badge>{ this.state.length || 0 }</Badge>
         {
-          renderConditional(String.isNullOrEmpty(this.props.suffix) === false, () => (
+          wxr.renderConditional(String.isNullOrEmpty(this.props.suffix) === false, () => (
             <span className='CountFooterContent-suffix'>{ this.props.suffix }</span>
           ))
         }

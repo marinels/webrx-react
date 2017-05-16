@@ -1,7 +1,7 @@
 import * as React from 'react';
+import { Observable } from 'rx';
 import * as classNames from 'classnames';
 import * as moment from 'moment';
-import { Observable } from 'rx';
 import { Grid, Row, Col } from 'react-bootstrap';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';
@@ -75,7 +75,7 @@ export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewMode
   }
 
   private renderDimensions() {
-    const dim = this.state.viewportDimensions();
+    const dim = this.state.viewportDimensions.value;
 
     return this.renderConditional(
       (dim == null || dim.width === 0 || dim.height === 0),

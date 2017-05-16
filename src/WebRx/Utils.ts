@@ -1,6 +1,6 @@
 import { Observable, IObserver, Subject, helpers } from 'rx';
 
-import { Property, Command, ObservableOrProperty } from './Interfaces';
+import { Property, Command, ObservableOrPropertyOrValue } from './Interfaces';
 
 // this is a quick patch to prevent isObservable from detecting view models as
 // observables due to the existence of a subscribe function.
@@ -12,11 +12,11 @@ function isViewModel(value: any | undefined) {
   );
 }
 
-export function isObservable(value: any | undefined): value is Observable<any> {
+export function isObservable<T>(value: any | undefined): value is Observable<T> {
   return Observable.isObservable(value) && isViewModel(value) === false;
 }
 
-export function isObserver(value: any | undefined): value is IObserver<any> {
+export function isObserver<T>(value: any | undefined): value is IObserver<T> {
   if (value == null) {
     return false;
   }
@@ -30,7 +30,7 @@ export function isObserver(value: any | undefined): value is IObserver<any> {
   );
 }
 
-export function isSubject(value: any): value is Subject<any> {
+export function isSubject<T>(value: any): value is Subject<T> {
   return isObservable(value) && isObserver(value);
 }
 
@@ -38,15 +38,15 @@ export function asObservable<T>(value: T | Observable<T>) {
   return isObservable(value) ? value : Observable.of(value);
 }
 
-export function isProperty(value: any | undefined): value is Property<any> {
+export function isProperty<T>(value: any | undefined): value is Property<T> {
   if (value == null) {
     return false;
   }
 
-  return isObservable((<Property<any>>value).changed);
+  return isObservable((<Property<T>>value).changed);
 }
 
-export function isCommand(value: any | undefined): value is Command<any> {
+export function isCommand<T>(value: any | undefined): value is Command<T> {
   if (value == null) {
     return false;
   }
@@ -54,7 +54,7 @@ export function isCommand(value: any | undefined): value is Command<any> {
   return isObservable((<Command<any>>value).results);
 }
 
-export function getObservable<T>(observableOrProperty: ObservableOrProperty<T> | T | undefined) {
+export function getObservable<T>(observableOrProperty: ObservableOrPropertyOrValue<T>) {
   if (isProperty(observableOrProperty)) {
     return observableOrProperty.changed.startWith(observableOrProperty.value);
   }
@@ -70,7 +70,7 @@ export function getObservable<T>(observableOrProperty: ObservableOrProperty<T> |
   throw new Error(`Unable to convert '${ observableOrProperty }' to an observable`);
 }
 
-export function getProperty<T>(observableOrProperty: ObservableOrProperty<T> | T | undefined, initialValue?: T) {
+export function getProperty<T>(observableOrProperty: ObservableOrPropertyOrValue<T>, initialValue?: T) {
   if (isProperty(observableOrProperty)) {
     return observableOrProperty;
   }

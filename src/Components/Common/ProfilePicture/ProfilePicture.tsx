@@ -3,7 +3,7 @@ import { Image } from 'react-bootstrap';
 import { Icon, IconSize } from 'react-fa';
 import * as classNames from 'classnames';
 
-import { renderNullable } from '../../React/RenderHelpers';
+import { wxr } from '../../React';
 
 import './ProfilePicture.less';
 
@@ -46,7 +46,7 @@ export class ProfilePicture extends React.Component<ProfilePictureProps, any> {
   }
 
   render() {
-    return renderNullable(
+    return wxr.renderNullable(
       this.getImageSource(),
       x => this.renderImage(x),
       () => this.renderIcon(),

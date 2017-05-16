@@ -3,12 +3,12 @@ import * as classNames from 'classnames';
 import { IDisposable } from  'rx';
 import { ProgressBar } from 'react-bootstrap';
 
-import { wx } from '../../../WebRx';
+import { wx, Property } from '../../../WebRx';
 
 import './Loading.less';
 
 export interface LoadingProps extends React.HTMLAttributes<Loading> {
-  progress?: wx.IObservableProperty<number> | number;
+  progress?: Property<number> | number;
   text?: string;
   fontSize?: number | string;
   componentClass?: any;
@@ -27,8 +27,8 @@ export class Loading extends React.Component<LoadingProps, any> {
 
   componentDidMount() {
     if (wx.isProperty(this.props.progress) === true) {
-      this.changedSubscription = (this.props.progress as wx.IObservableProperty<number>).changed
-        .subscribe(x => { this.forceUpdate(); });
+      this.changedSubscription = (this.props.progress as Property<number>).changed
+        .subscribe(() => { this.forceUpdate(); });
     }
   }
 
@@ -55,7 +55,7 @@ export class Loading extends React.Component<LoadingProps, any> {
 
   private getProgressValue() {
     return wx.isProperty(this.props.progress) === true ?
-      (this.props.progress as wx.IObservableProperty<number>).apply(null) as number :
+      (this.props.progress as Property<number>).value :
       this.props.progress as number;
   }
 }

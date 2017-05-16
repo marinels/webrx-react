@@ -1,4 +1,6 @@
-import { wx } from '../../../WebRx';
+import { Observable } from 'rx';
+
+import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 
 export interface SearchRequest {
@@ -13,22 +15,22 @@ export interface SearchRoutingState {
 export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
   public static displayName = 'SearchViewModel';
 
-  public filter: wx.IObservableProperty<string>;
-  public requests: wx.IObservableReadOnlyProperty<SearchRequest>;
+  public readonly filter: Property<string>;
+  public readonly requests: ReadOnlyProperty<SearchRequest>;
 
-  public search: wx.ICommand<any>;
+  public readonly search: Command<any>;
 
-  constructor(private liveSearchTimeout = 250, private isCaseInsensitive = true, isRoutingEnabled = false) {
+  constructor(private readonly liveSearchTimeout = 250, private readonly isCaseInsensitive = true, isRoutingEnabled = false) {
     super(isRoutingEnabled);
 
-    this.filter = wx.property('');
+    this.filter = this.property('');
 
     // search is executed when a search is to be performed
-    this.search = wx.command();
+    this.search = this.command();
 
-    this.requests = wx
+    this.requests = this
       // project search executions into filter values
-      .whenAny(this.search.results, () => this.filter())
+      .whenAny(this.search.results, () => this.filter.value)
       // then map into a search request with regex
       .map(filter => (<SearchRequest>{
         filter,
@@ -37,7 +39,7 @@ export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
       .toProperty();
 
     if (this.liveSearchTimeout > 0) {
-      this.subscribe(
+      this.addSubscription(
         this.filter.changed
           // debounce on the live search timeout
           .debounce(this.liveSearchTimeout)
@@ -45,7 +47,7 @@ export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
       );
     }
 
-    this.subscribe(this.search.results
+    this.addSubscription(this.search.results
       .invokeCommand(this.routingStateChanged),
     );
   }
@@ -61,12 +63,23 @@ export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
   protected createRegex(filter: string) {
     let regex: RegExp | undefined;
 
-    if (String.isNullOrEmpty(filter) === false) {
+    // prefix a filter with ~ to disable standard regex parsing
+    if (String.isNullOrEmpty(filter) === false && filter[0] !== '~') {
       try {
         regex = new RegExp(filter, this.isCaseInsensitive ? 'i' : undefined);
       }
       catch (e) {
-        // strip any regex syntax characters from the filter and create a "safe" escaped regex
+        // drop out and create a safe regex
+      }
+    }
+
+    if (regex == null) {
+      if (filter[0] === '~' && filter.length > 1) {
+        filter = filter.substr(1);
+      }
+
+      if (String.isNullOrEmpty(filter) === false) {
+        // escape any regex syntax characters from the filter and create a "safe" regex
         // see: http://stackoverflow.com/a/6300234/2789877
         filter = filter.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
         regex = new RegExp(filter, this.isCaseInsensitive ? 'i' : undefined);
@@ -77,18 +90,18 @@ export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
   }
 
   saveRoutingState(state: SearchRoutingState) {
-    if (String.isNullOrEmpty(this.filter()) === false) {
-      state.filter = this.filter();
+    if (String.isNullOrEmpty(this.filter.value) === false) {
+      state.filter = this.filter.value;
     }
   }
 
   loadRoutingState(state: SearchRoutingState) {
-    const prevState = this.routingState() || <SearchRoutingState>{};
+    const prevState = this.routingState.value || <SearchRoutingState>{};
 
     if (state.filter == null && prevState.filter != null) {
       state.filter = '';
     }
 
-    this.filter(state.filter || this.filter() || '');
+    this.filter.value = state.filter || this.filter.value || '';
   }
 }

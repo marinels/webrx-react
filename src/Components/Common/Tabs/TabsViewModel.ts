@@ -1,6 +1,6 @@
 import { Observable } from 'rx';
 
-import { wx } from '../../../WebRx';
+import { ReadOnlyProperty, Command } from '../../../WebRx';
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 
 export interface TabsRoutingState {
@@ -10,77 +10,75 @@ export interface TabsRoutingState {
 export class TabsViewModel<T> extends BaseRoutableViewModel<TabsRoutingState> {
   public static displayName = 'TabsViewModel';
 
-  public tabs: wx.IObservableReadOnlyProperty<T[]>;
-  public selectedTab: wx.IObservableReadOnlyProperty<T>;
-  public selectedIndex: wx.IObservableReadOnlyProperty<number>;
+  public readonly tabs: ReadOnlyProperty<T[]>;
+  public readonly selectedTab: ReadOnlyProperty<T>;
+  public readonly selectedIndex: ReadOnlyProperty<number>;
 
-  public addTab: wx.ICommand<T>;
-  public removeTab: wx.ICommand<T | number>;
-  public selectTab: wx.ICommand<T>;
-  public selectIndex: wx.ICommand<number>;
+  public readonly addTab: Command<T>;
+  public readonly removeTab: Command<T | number>;
+  public readonly selectTab: Command<T>;
+  public readonly selectIndex: Command<number>;
 
   constructor(initialTabs: T[] = [], isRoutingEnabled = false) {
     super(isRoutingEnabled);
 
-    const tabs = wx.property<T[]>([]);
-    this.tabs = <wx.IObservableReadOnlyProperty<T[]>>tabs;
+    const tabs = this.property<T[]>(initialTabs);
+    this.tabs = <ReadOnlyProperty<T[]>>tabs;
 
-    this.addTab = wx.asyncCommand((tab: T) => {
-      tabs(this.tabs().concat(tab));
-      return Observable.of(tab);
+    this.addTab = this.command((tab: T) => {
+      tabs.value = this.tabs.value.concat(tab);
+      return tab;
     });
 
-    this.removeTab = wx.asyncCommand((tab: T | number) => {
-      tabs(
-        Number.isNumeric(tab) ?
-          this.tabs().filter((x, i) => i !== tab) :
-          this.tabs().filter(x => x !== tab),
-      );
-      return Observable.of(tab);
+    this.removeTab = this.command((tab: T | number) => {
+      tabs.value = Number.isNumeric(tab) ?
+        this.tabs.value.filter((x, i) => i !== tab) :
+        this.tabs.value.filter(x => x !== tab);
+      return tab;
     });
 
-    this.selectTab = wx.asyncCommand((x: T) => Observable.of(x));
-    this.selectIndex = wx.asyncCommand((x: number) => Observable.of(x));
+    this.selectTab = this.command<T>();
+    this.selectIndex = this.command<number>();
 
-    this.selectedTab = wx
-      .whenAny(this.selectIndex.results, x => this.tabs()[x])
+    this.selectedTab = this
+      .whenAny(this.selectIndex.results, x => this.tabs.value[x])
       .toProperty();
 
-    this.selectedIndex = wx
+    this.selectedIndex = this
       .whenAny(this.selectIndex.results, x => x)
       .toProperty();
 
-    this.subscribe(this.selectTab.results
-      .map(x => this.tabs().indexOf(x))
+    this.addSubscription(this.selectTab.results
+      .map(x => this.tabs.value.indexOf(x))
       .invokeCommand(this.selectIndex),
     );
 
-    this.subscribe(wx
-      .whenAny(this.tabs.changed, x => ({ i: this.selectedIndex(), l: x.length }))
+    this.addSubscription(this
+      .whenAny(this.tabs.changed, x => ({ i: this.selectedIndex.value, l: x.length }))
       .filter(x => x.l > 0 && (x.i == null || x.i < 0 || x.i >= x.l))
       .map(x => x.l - 1)
       .invokeCommand(this.selectIndex),
     );
 
-    this.subscribe(wx
+    this.addSubscription(this
       .whenAny(this.selectedIndex, x => x)
       .invokeCommand(this.routingStateChanged),
     );
   }
 
   saveRoutingState(state: TabsRoutingState) {
-    if (this.selectedIndex() !== 0) {
-      state.tab = this.selectedIndex();
+    if (this.selectedIndex.value !== 0) {
+      state.tab = this.selectedIndex.value;
     }
   }
 
   loadRoutingState(state: TabsRoutingState) {
-    const prevState = this.routingState() || <TabsRoutingState>{};
+    const prevState = this.routingState.value || <TabsRoutingState>{};
 
     if (state.tab == null && prevState.tab != null) {
       state.tab = 0;
     }
 
-    this.selectIndex.execute(state.tab || this.selectedIndex() || 0);
+    this.selectIndex.execute(state.tab || this.selectedIndex.value || 0);
   }
 }

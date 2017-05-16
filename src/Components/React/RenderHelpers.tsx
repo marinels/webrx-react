@@ -3,7 +3,7 @@ import { findDOMNode } from 'react-dom';
 import { Grid } from 'react-bootstrap';
 import { Enumerable } from 'ix';
 
-import { wx } from '../../WebRx';
+import { Property } from '../../WebRx';
 import { Loading } from '../Common/Loading/Loading';
 import { ValueComparison, ValueComparer } from '../../Utils/Compare';
 
@@ -37,11 +37,11 @@ export function renderEnumerable<T>(
 }
 
 export function renderConditional(
-  condition: wx.IObservableProperty<boolean> | boolean | undefined,
+  condition: Property<boolean> | boolean | undefined,
   trueContent: () => any,
   falseContent: () => any = () => null,
 ) {
-  return (condition == null ? false : (typeof condition === 'boolean' ? condition : condition())) ?
+  return (condition == null ? false : (typeof condition === 'boolean' ? condition : condition.value)) ?
     trueContent() :
     falseContent();
 }
@@ -55,20 +55,18 @@ export function renderNullable<T>(element: T | undefined, notNullContent: (x: T)
 }
 
 export function renderLoadable(
-  isLoading: wx.IObservableProperty<boolean> | boolean | undefined,
+  isLoading: Property<boolean> | boolean | undefined,
   loadingComponent: any,
   loadedComponent?: any,
 ) {
-  const loadingComponentType = typeof loadingComponent;
-
-  if (loadingComponentType === 'string') {
+  if (String.isString(loadingComponent)) {
     const text = loadingComponent;
 
     loadingComponent = () => (
       <Loading text={ text } />
     );
   }
-  else if (loadingComponentType === 'object' && React.isValidElement(loadingComponent) === false) {
+  else if (typeof loadingComponent === 'object' && React.isValidElement(loadingComponent) === false) {
     const props = loadingComponent;
 
     loadingComponent = () => (
@@ -80,7 +78,7 @@ export function renderLoadable(
 }
 
 export function renderSizedLoadable(
-  isLoading: wx.IObservableProperty<boolean> | boolean | undefined,
+  isLoading: Property<boolean> | boolean | undefined,
   text: string,
   fontSize: number | string,
   loadedComponent?: any,
@@ -92,7 +90,7 @@ export function renderSizedLoadable(
 }
 
 export function renderGridLoadable(
-  isLoading: wx.IObservableProperty<boolean> | boolean | undefined,
+  isLoading: Property<boolean> | boolean | undefined,
   text: string,
   fontSize: number | string,
   loadedComponent?: any,

@@ -1,24 +1,3 @@
 {
-  "compileOnSave": false,
-  "compilerOptions": {
-    "baseUrl": ".",
-    "jsx": "react",
-    "module": "commonjs",
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": false,
-    "noImplicitUseStrict": true,
-    "paths": {
-      "rx": [ "node_modules/rx/ts/rx.all" ],
-      "*": [ "src/types/*" ]
-    },
-    "preserveConstEnums": true,
-    "strictNullChecks": true,
-    "target": "es5"
-  },
-  "files": [
-    "src/app.tsx",
-    "src/Components/Demo/index.ts",
-    "test/app.spec.ts"
-  ]
+  "extends": "./tsconfig.dev.json"
 }

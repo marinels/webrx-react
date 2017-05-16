@@ -119,6 +119,7 @@ export class TimeSpan {
 
   // some default formatting values
   public static DefaultDurationHoursPrecision = 1;
+  public static DefaultDurationDaysPrecision = 1;
   public static DefaultDurationHoursPerDay = 8;
 
   /**
@@ -131,7 +132,7 @@ export class TimeSpan {
   /**
    * Standardized days string representation of a duration
    */
-  public static formatDays(value: moment.Duration | undefined, precision = TimeSpan.DefaultDurationHoursPrecision, hoursPerDay = TimeSpan.DefaultDurationHoursPerDay, defaultValue: any = null) {
-    return value == null ? defaultValue : `${ moment.duration((value.asHours() / hoursPerDay), 'days').humanize() }`;
+  public static formatDays(value: moment.Duration | undefined, precision = TimeSpan.DefaultDurationDaysPrecision, hoursPerDay = TimeSpan.DefaultDurationHoursPerDay, defaultValue: any = null) {
+    return value == null ? defaultValue : `${ moment.duration((value.asHours() / hoursPerDay).toFixed(precision), 'days').humanize() }`;
   }
 }

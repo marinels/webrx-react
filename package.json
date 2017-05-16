@@ -1,14 +1,15 @@
 {
   "name": "webrx-react",
-  "version": "0.10.8",
+  "version": "0.11.0",
   "description": "ReactJS + WebRx + RxJS + Bootstrap: MVVM for Single Page Web Applications",
   "scripts": {
     "start": "gulp",
-    "test": "gulp npm:test",
+    "test": "gulp npm:test && npm run tsc-decl",
     "webpack": "webpack",
     "gulp": "gulp",
     "mocha": "mocha",
     "tsc": "tsc",
+    "tsc-decl": "tsc -p tsconfig.build.json",
     "optgulp": "babel gulpfile.babel.js --out-file gulpfile.js",
     "tr": "tsc --traceResolution --noEmit > tsctr.log"
   },
@@ -22,6 +23,8 @@
     "url": "https://github.com/marinels/webrx-react/issues"
   },
   "homepage": "https://github.com/marinels/webrx-react",
+  "main": "./dist/webrx-react.js",
+  "typings": "./dist/ts/webrx-react.d.ts",
   "dependencies": {
     "bootstrap": "^3.3.7",
     "classnames": "^2.2.5",

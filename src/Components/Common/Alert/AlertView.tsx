@@ -27,11 +27,15 @@ export class AlertView extends BaseView<AlertProps, AlertViewModel> {
   }
 
   private renderAlertContent() {
-    return this.renderConditional(String.isString(this.state.content), () => (
-      <div className='Alert-content'>
-        <div className='Alert-text' dangerouslySetInnerHTML={ { __html: this.state.content } }>
+    return this.renderConditional(
+      String.isString(this.state.content),
+      () => (
+        <div className='Alert-content'>
+          <div className='Alert-text' dangerouslySetInnerHTML={ { __html: this.state.content } }>
+          </div>
         </div>
-      </div>
-    ), () => this.state.content);
+      ),
+      () => this.state.content,
+    );
   }
 }

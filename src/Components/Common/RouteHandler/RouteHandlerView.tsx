@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Observable } from 'rx';
 import { Grid, Alert, Breadcrumb } from 'react-bootstrap';
 import { CSSTransitionGroup } from 'react-transition-group';
 import { Icon } from 'react-fa';
@@ -38,11 +39,11 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
   }
 
   private getViewKey() {
-    if (this.state.isLoading() === true) {
+    if (this.state.isLoading.value === true) {
       return SplashKey;
     }
     else {
-      const component = this.state.routedComponent();
+      const component = this.state.routedComponent.value;
 
       if (isRoutableViewModel(component)) {
         return component.getRoutingKey();
@@ -81,7 +82,7 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
       <div { ...rest } className={ classNames('RouteHandler', className) }>
         <CSSTransitionGroup transitionName='view' transitionLeave={ false } transitionEnterTimeout={ 250 }>
           <div className='RouteHandler-viewContainer' key={ key }>
-            <Breadcrumbs items={ this.state.routingBreadcrumbs() } pinnable />
+            <Breadcrumbs items={ this.state.routingBreadcrumbs.value } pinnable />
             { this.renderRoutedView(key) }
           </div>
         </CSSTransitionGroup>
@@ -90,7 +91,7 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
   }
 
   private renderRoutedView(key: string): any {
-    let component = this.state.routedComponent();
+    let component = this.state.routedComponent.value;
 
     let activator = this.props.viewMap[key];
     if (activator == null && key !== SplashKey) {

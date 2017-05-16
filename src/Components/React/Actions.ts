@@ -1,4 +1,4 @@
-import { wx } from '../../WebRx';
+import { wx, Command } from '../../WebRx';
 
 export interface HeaderAction {
   id: any;
@@ -7,7 +7,7 @@ export interface HeaderAction {
 }
 
 export interface HeaderCommandAction extends HeaderAction {
-  command?: wx.ICommand<any>;
+  command?: Command<any>;
   commandParameter?: any;
   visibleWhenDisabled?: boolean;
   iconName?: string | string[];

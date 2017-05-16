@@ -10,5 +10,5 @@ import * as Routing from './Routing';
 import * as Stores from './Stores';
 import * as Components from './Components';
 
-export { wx, Logging, PubSub, Alert, Compare, Moment, SubMan }
-export { Events, Routing, Stores, Components }
+export { wx, Logging, PubSub, Alert, Compare, Moment, SubMan };
+export { Events, Routing, Stores, Components };

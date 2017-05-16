@@ -39,7 +39,7 @@ export class ValueComparer<T> implements Comparer<T> {
       // fallback on a basic equality check
       return a > b ? 1 : -1;
     }
-  };
+  }
 
   public comparison: ValueComparison<T>;
 
@@ -78,7 +78,7 @@ export class ObjectComparer<T> {
     } as FieldComparer<T>;
   }
 
-  private comparers: { [key: string]: FieldComparer<any> } = {};
+  private readonly comparers: { [key: string]: FieldComparer<any> } = {};
 
   constructor(...comparers: FieldComparer<any>[]) {
     for (let i = 0; i < comparers.length; ++i) {
@@ -100,7 +100,7 @@ export class ObjectComparer<T> {
   }
 
   public compare(a: T, b: T, field: string, direction: SortDirection) {
-    let comparer = this.getComparer(field);
+    const comparer = this.getComparer(field);
 
     let result = comparer.compare(this.getValue(a, field, comparer), this.getValue(b, field, comparer));
 

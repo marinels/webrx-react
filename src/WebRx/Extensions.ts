@@ -1,19 +1,16 @@
 import { Observable, IObserver, IDisposable } from 'rx';
 
-import { Property, ReadOnlyProperty, Command } from './Interfaces';
-import { isObserver, isCommand } from './Utils';
-import { property, ObservableProperty } from './Property';
-import { command } from './Command';
-import { whenAny } from './WhenAny';
+import { ReadOnlyProperty, Command } from './Interfaces';
+import { property } from './Property';
 
 declare module 'rx' {
   interface Observable<T> {
     startWith<TOther>(value: TOther): Observable<T | TOther>;
     filterNull<T>(this: Observable<T | undefined | null>): Observable<T>;
-    subscribeWith(observerOrNext?: IObserver<T> | ((value: T) => void), onError?: (exception: any) => void, onCompleted?: () => void): IDisposable;
     toProperty: (initialValue?: T) => ReadOnlyProperty<T>;
     observeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>): Observable<TRet>;
-    invokeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>): IDisposable;
+    invokeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>, observer: IObserver<T>): IDisposable;
+    invokeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>, onNext?: (value: T) => void, onError?: (exception: any) => void, onCompleted?: () => void): IDisposable;
   }
 }
 
@@ -22,22 +19,6 @@ function filterNull<T>(this: Observable<T | undefined | null>) {
     .filter(x => x != null);
 }
 (<any>Observable).prototype.filterNull = filterNull;
-
-function subscribeWith<T>(
-  this: Observable<T>,
-  observerOrNext?: IObserver<T> | ((value: T) => void),
-  onError?: (exception: any) => void,
-  onCompleted?: () => void,
-) {
-  if (isObserver(observerOrNext)) {
-    return this
-      .subscribe(observerOrNext);
-  }
-
-  return this
-    .subscribe(observerOrNext, onError, onCompleted);
-}
-(<any>Observable).prototype.subscribeWith = subscribeWith;
 
 function toProperty<T>(this: Observable<T>, initialValue?: T) {
   return property(initialValue, this);
@@ -54,8 +35,7 @@ function observeCommand<T, TRet>(this: Observable<T>, command: ((x: T) => Comman
     }))
     .debounce(x => {
       return x.command.canExecuteObservable
-        // COMPAT -- canExecute is a function in Compat.ts
-        .startWith(x.command.canExecute())
+        .startWith(x.command.canExecute)
         .filter(y => y);
     })
     .map(x => {
@@ -72,9 +52,11 @@ function invokeCommand<T, TRet>(
   observerOrNext?: IObserver<TRet> | ((value: TRet) => void),
   onError?: (exception: any) => void,
   onCompleted?: () => void,
-) {
-  return this
-    .observeCommand(command)
-    .subscribeWith(observerOrNext, onError, onCompleted);
+): IDisposable {
+  const obs = this
+    .observeCommand(command);
+
+  return obs
+    .subscribe.apply(obs, [ observerOrNext, onError, onCompleted ]);
 }
 (<any>Observable).prototype.invokeCommand = invokeCommand;

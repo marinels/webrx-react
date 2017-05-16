@@ -17,56 +17,42 @@ declare global {
   }
 }
 
-function assign<T>(target: any, ...sources: any[]) {
-  if (target === undefined || target === null) {
+function assign<T>(target: any, ...sources: any[]): T {
+  if (target == null) {
     throw new TypeError('Cannot convert first argument to object');
   }
 
-  let to = Object(target);
+  return sources
+    .filter(x => x != null)
+    .reduce((to, source) => {
+      Object
+        .keys(source)
+        .filter(key => Object.prototype.hasOwnProperty.call(source, key))
+        .forEach(key => {
+          to[key] = source[key];
+        });
 
-  for (let i = 0; i < sources.length; i++) {
-    let nextSource = sources[i] as PropertyDescriptorMap;
-
-    if (nextSource === undefined || nextSource === null) {
-      continue;
-    }
-
-    nextSource = Object(nextSource);
-
-    let keysArray = Object.keys(Object(nextSource));
-
-    for (let nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex++) {
-      let nextKey = keysArray[nextIndex];
-      let desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
-
-      if (desc !== undefined && desc.enumerable) {
-        to[nextKey] = nextSource[nextKey];
-      }
-    }
-  }
-
-  return to as T;
+      return to;
+    }, Object(target));
 }
 
 // this extension solves the Unknown Prop Warning that is experienced in
 // typescript when using Rest and Spread Properties
 // see: https://facebook.github.io/react/warnings/unknown-prop.html
 // see: https://facebook.github.io/react/docs/transferring-props.html
-function rest<TData, TProps>(data: TData, propsCreator?: (x: TData) => TProps, ...omits: string[]) {
-  const rest = <TData>{};
-  const props = propsCreator == null ? <TProps>{} : <TProps>propsCreator.apply(this, [ data ]);
+function rest<TData extends StringMap<any>, TProps>(data: TData, propsCreator?: (x: TData) => TProps, ...omits: string[]) {
+  const props = propsCreator == null ? <TProps>{} : propsCreator(data);
 
-  Object
-    .getOwnPropertyNames(data)
-    .filter(x => props.hasOwnProperty(x) === false && omits.indexOf(x) < 0)
-    .forEach(x => {
-      (<any>rest)[x] = (<any>data)[x];
-    });
+  const rest = Object
+    .keys(data)
+    .filter(key => props.hasOwnProperty(key) === false && omits.indexOf(key) < 0)
+    .reduce((r, key) => {
+      r[key] = data[key];
 
-  return {
-    rest,
-    props,
-  };
+      return r;
+    }, <StringMap<any>>{});
+
+  return { rest, props };
 }
 
 function isDisposable(disposable: any): disposable is IDisposable {
@@ -131,6 +117,9 @@ function getName(source: NamedObject, undefinedValue = 'undefined', isStatic = f
   return undefinedValue;
 }
 
+// NOTE: we can't share code between this an the async variant because
+//       we don't want functions passed in here to evaluate and we don't
+//       want to evaluate all async functions ahead of time.
 function fallback<T>(...values: T[]) {
   return Enumerable
     .fromArray(values)
@@ -141,19 +130,20 @@ function fallback<T>(...values: T[]) {
 function fallbackAsync<T>(...actions: (T | (() => T))[]) {
   return Enumerable
     .fromArray(actions)
-    .map(x => x instanceof Function ? x.apply(this) : x)
+    .map(x => x instanceof Function ? x() : x)
     .filter(x => x != null)
     .firstOrDefault();
 }
 
-interface EnumPropertyDescriptor<T> {
+export interface EnumPropertyDescriptor<T> {
   name: string;
   value: number;
   type: T;
 }
 
 function getEnumPropertyDescriptors<T>(type: any) {
-  return Object.keys(type)
+  return Object
+    .keys(type)
     .map(x => parseInt(x))
     .filter(x => x >= 0)
     .map(value => <EnumPropertyDescriptor<T>>{
@@ -179,8 +169,7 @@ function getEnumValues<T>(type: T) {
  * @returns {string} property name
  */
 function getPropName<T>(p: (x: T) => any): string {
-  const propertyRegEx = /\.([^\.;]+);?\s*\}$/;
-  return (propertyRegEx.exec(p.toString()) || [])[1];
+  return (/\.([^\.;]+);?\s*\}$/.exec(p.toString()) || [])[1];
 }
 
 Object.assign = fallback(Object.assign, assign);
