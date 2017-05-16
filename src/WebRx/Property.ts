@@ -17,6 +17,8 @@ export class ObservableProperty<T> implements Property<T>, IDisposable {
     this.thrownErrorsSubject = new Subject<Error>();
 
     this.sourceSubscription = this.source
+      // seed the observable subscription with the initial value so that
+      // distinctUntilChanged knows what the initial value is
       .startWith(initialValue!)
       .distinctUntilChanged()
       .subscribe(
@@ -54,6 +56,7 @@ export class ObservableProperty<T> implements Property<T>, IDisposable {
 
   get changed() {
     return this.changedSubject
+      // BehaviorSubject fires immediately, so skip the first event
       .skip(1);
   }
 
