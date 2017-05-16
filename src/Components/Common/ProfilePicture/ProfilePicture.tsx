@@ -59,7 +59,7 @@ export class ProfilePicture extends React.Component<ProfilePictureProps, any> {
       return { src, size, responsive, rounded, circle, thumbnail, defaultSrc, defaultIcon, iconSize, style };
     });
 
-    const iconClassNames: ClassDictionary = {
+    const iconClassNames = {
       'ProfilePicture-iconThumbnail': props.thumbnail,
       'ProfilePicture-iconRounded': props.rounded,
     };
