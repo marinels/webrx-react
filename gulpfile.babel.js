@@ -748,7 +748,15 @@ gulp.task('deploy', (done) => {
   runSequence('clean:dist', 'webpack:release:dist', 'dist', 'webpack:release:dist:min', 'dist', done);
 });
 
-gulp.task('deploy:modules', [ 'deploy:modules:less' ]);
+gulp.task('deploy:modules', [ 'deploy:modules:ts', 'deploy:modules:less' ]);
+
+gulp.task('deploy:modules:ts', () => {
+  return gulp
+    .src([
+      path.resolve(config.paths.src, '**', '*.d.ts'),
+    ])
+    .pipe(gulp.dest(__dirname));
+});
 
 gulp.task('deploy:modules:less', () => {
   return gulp
