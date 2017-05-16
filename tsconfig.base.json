@@ -4,6 +4,7 @@
     "baseUrl": ".",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "inlineSources": true,
     "jsx": "react",
     "module": "commonjs",
     "moduleResolution": "node",
@@ -14,6 +15,7 @@
     "noImplicitUseStrict": true,
     "preserveConstEnums": true,
     "removeComments": false,
+    "sourceMap": true,
     "strictNullChecks": true,
     "target": "es5",
 

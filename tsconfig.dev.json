@@ -1,11 +1,9 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "inlineSources": true,
-    "noEmit": true,
     // "noUnusedLocals": true,
     // "noUnusedParameters": true,
-    "sourceMap": true
+    "noEmit": true
   },
   "files": [
     "src/app.tsx",
