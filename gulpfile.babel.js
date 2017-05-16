@@ -327,7 +327,6 @@ function getWebpackConfig(build, uglify, dist) {
     webpackConfig.plugins[0].definitions['process.env'] = {
       'NODE_ENV': JSON.stringify('production'),
     };
-    webpackConfig.plugins.push(new webpack.optimize.DedupePlugin());
 
     if (uglify) {
       webpackConfig.plugins.push(
