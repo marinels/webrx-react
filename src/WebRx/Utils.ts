@@ -2,18 +2,8 @@ import { Observable, IObserver, Subject, helpers } from 'rx';
 
 import { Property, Command, ObservableOrPropertyOrValue } from './Interfaces';
 
-// this is a quick patch to prevent isObservable from detecting view models as
-// observables due to the existence of a subscribe function.
-function isViewModel(value: any | undefined) {
-  return (
-    value != null &&
-    value.isViewModel instanceof Function &&
-    value.isViewModel() === true
-  );
-}
-
 export function isObservable<T>(value: any | undefined): value is Observable<T> {
-  return Observable.isObservable(value) && isViewModel(value) === false;
+  return Observable.isObservable(value);
 }
 
 export function isObserver<T>(value: any | undefined): value is IObserver<T> {
@@ -67,7 +57,7 @@ export function getObservable<T>(observableOrProperty: ObservableOrPropertyOrVal
     return Observable.of(observableOrProperty);
   }
 
-  throw new Error(`Unable to convert '${ observableOrProperty }' to an observable`);
+  return Observable.never<T>();
 }
 
 export function getProperty<T>(observableOrProperty: ObservableOrPropertyOrValue<T>, initialValue?: T) {
@@ -83,12 +73,7 @@ export function getProperty<T>(observableOrProperty: ObservableOrPropertyOrValue
     initialValue = observableOrProperty;
   }
 
-  if (initialValue != null) {
-    // this is technically a immutable readonly property
-    return Observable.never<T>().toProperty(initialValue);
-  }
-
-  throw new Error(`Unable to convert '${ observableOrProperty }' to a property`);
+  return Observable.never<T>().toProperty(initialValue);
 }
 
 export function handleError(e: any, subject: Subject<Error>) {

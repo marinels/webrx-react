@@ -33,9 +33,9 @@ export class PageHeaderViewModel extends BaseViewModel {
     public readonly staticHelpMenuItems: HeaderCommandAction[] = [],
     public readonly staticAdminMenuItems: HeaderCommandAction[] = [],
     public readonly staticUserMenuItems: HeaderCommandAction[] = [],
-    public readonly userImage?: string,
-    public readonly userDisplayName?: string,
-    public readonly homeLink = '#/',
+    public userImage?: string | undefined,
+    public userDisplayName?: string | undefined,
+    public homeLink = '#/',
   ) {
     super();
 

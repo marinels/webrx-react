@@ -327,7 +327,6 @@ function getWebpackConfig(build, uglify, dist) {
     webpackConfig.plugins[0].definitions['process.env'] = {
       'NODE_ENV': JSON.stringify('production'),
     };
-    webpackConfig.plugins.push(new webpack.optimize.DedupePlugin());
 
     if (uglify) {
       webpackConfig.plugins.push(
@@ -550,7 +549,11 @@ gulp.task('watch:webpack', [ 'clean:build', 'index:watch' ], (done) => {
   const webpackConfig = getWebpackConfig(config.builds.debug);
   const uri = `http://${ config.host === '0.0.0.0' ? 'localhost' : config.host }:${ config.port }`;
 
-  webpackConfig.entry['webrx-react'].unshift(`webpack-dev-server/client?${ uri }`, 'webpack/hot/only-dev-server');
+  webpackConfig.entry['webrx-react'] = [
+    `webpack-dev-server/client?${ uri }`,
+    'webpack/hot/only-dev-server',
+    path.resolve(config.paths.src, 'app.tsx'),
+  ];
   webpackConfig.output.path = path.resolve(config.paths.build, config.builds.watch);
   webpackConfig.output.publicPath = config.publicPath;
   // remove ExtractTextPlugin
@@ -743,4 +746,20 @@ gulp.task('dist', () => {
 
 gulp.task('deploy', (done) => {
   runSequence('clean:dist', 'webpack:release:dist', 'dist', 'webpack:release:dist:min', 'dist', done);
+});
+
+gulp.task('deploy:modules', [ 'deploy:modules:ts', 'deploy:modules:less' ]);
+
+gulp.task('deploy:modules:ts', () => {
+  return gulp
+    .src([
+      path.resolve(config.paths.src, '**', '*.d.ts'),
+    ])
+    .pipe(gulp.dest(__dirname));
+});
+
+gulp.task('deploy:modules:less', () => {
+  return gulp
+    .src(path.resolve(config.paths.src, '**', '*.less'))
+    .pipe(gulp.dest(__dirname));
 });
