@@ -562,12 +562,12 @@ gulp.task('watch:webpack', [ 'clean:build', 'index:watch' ], (done) => {
   webpackConfig.watch = true;
 
   webpackConfig.module.rules = [
-    { test: /\.css$/, use: [ 'style-loader', 'css-loader' ] },
-    { test: /\.less$/, use: [ 'style-loader', 'css-loader', 'less-loader' ] },
-    { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, use: 'url-loader?mimetype=application/font-woff' },
-    { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, use: 'url-loader' },
-    { test: /\.(png|jpg|gif)$/, use: 'url-loader' },
-    { test: /\.tsx?$/, use: [ 'react-hot-loader', 'awesome-typescript-loader' ] },
+    { test: /\.css$/, loader: [ 'style-loader', 'css-loader' ] },
+    { test: /\.less$/, loader: [ 'style-loader', 'css-loader', 'less-loader' ] },
+    { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader?mimetype=application/font-woff' },
+    { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader' },
+    { test: /\.(png|jpg|gif)$/, loader: 'url-loader' },
+    { test: /\.tsx?$/, loader: [ 'react-hot-loader', 'awesome-typescript-loader' ] },
   ];
 
   const compiler = webpack(webpackConfig);
