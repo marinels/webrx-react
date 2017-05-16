@@ -549,7 +549,11 @@ gulp.task('watch:webpack', [ 'clean:build', 'index:watch' ], (done) => {
   const webpackConfig = getWebpackConfig(config.builds.debug);
   const uri = `http://${ config.host === '0.0.0.0' ? 'localhost' : config.host }:${ config.port }`;
 
-  webpackConfig.entry['webrx-react'].unshift(`webpack-dev-server/client?${ uri }`, 'webpack/hot/only-dev-server');
+  webpackConfig.entry['webrx-react'] = [
+    `webpack-dev-server/client?${ uri }`,
+    'webpack/hot/only-dev-server',
+    path.resolve(config.paths.src, 'app.tsx'),
+  ];
   webpackConfig.output.path = path.resolve(config.paths.build, config.builds.watch);
   webpackConfig.output.publicPath = config.publicPath;
   // remove ExtractTextPlugin

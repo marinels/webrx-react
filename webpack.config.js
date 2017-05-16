@@ -14,7 +14,7 @@ const lessLoader = ExtractTextPlugin.extract(
 module.exports = Object.assign(clone(webpackCommon), {
   entry: {
     'webrx-react': [
-      path.resolve(__dirname, 'src', 'app.tsx'),
+      path.resolve(__dirname, 'src', 'webrx-react.ts'),
     ],
     vendor: [
       'bootstrap/less/bootstrap.less',
