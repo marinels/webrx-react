@@ -274,8 +274,20 @@ routeMap.addRoute('WebRx-React', 'InlineEdit', 'InlineEdit', (state: any) => {
         if (x.rank === 6) {
           throw new Error('Simulated API Error');
         }
+        else if (x.rank === 8) {
+          throw new Error('Manual');
+        }
 
         return x;
+      })
+      .catch(x => {
+        if (x.message === 'Manual') {
+          editor.setError.execute(true);
+          Alert.createForError(x, 'Manual Error Handling');
+          return Observable.empty();
+        }
+
+        return Observable.throw(x);
       });
   };
 
