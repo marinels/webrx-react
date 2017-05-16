@@ -1,7 +1,7 @@
 import * as React from 'react';
+import { Observable } from 'rx';
 import * as classNames from 'classnames';
 import * as moment from 'moment';
-import { Observable } from 'rx';
 import { Grid, Row, Col } from 'react-bootstrap';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';

@@ -57,13 +57,13 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
       .toProperty();
 
     this.addSubscription(this
-      .whenAny(this.columns.changed, x => null)
+      .whenAny(this.columns.changed, () => null)
       .invokeCommand(this.routingStateChanged),
     );
 
     this.addSubscription(this
       .whenAny(this.component, x => x)
-      .subscribe(x => {
+      .subscribe(() => {
         if (this.pageHeader != null) {
           this.pageHeader.updateDynamicContent();
         }

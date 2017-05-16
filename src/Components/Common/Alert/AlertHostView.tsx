@@ -1,10 +1,12 @@
 import * as React from 'react';
+import { Observable } from 'rx';
 import * as classNames from 'classnames';
 import { CSSTransitionGroup } from 'react-transition-group';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { AlertView } from './AlertView';
 import { AlertHostViewModel } from './AlertHostViewModel';
+import { AlertViewModel } from './AlertViewModel';
 
 import './AlertHost.less';
 

@@ -135,7 +135,7 @@ function fallbackAsync<T>(...actions: (T | (() => T))[]) {
     .firstOrDefault();
 }
 
-interface EnumPropertyDescriptor<T> {
+export interface EnumPropertyDescriptor<T> {
   name: string;
   value: number;
   type: T;

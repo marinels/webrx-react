@@ -1,4 +1,6 @@
-import { ObservableOrProperty } from '../../../WebRx';
+import { Observable } from 'rx';
+
+import { ObservableOrProperty, ReadOnlyProperty } from '../../../WebRx';
 import { BaseItemListPanelViewModel } from './BaseItemListPanelViewModel';
 import { AsyncDataGridViewModel, isAsyncDataSource, AsyncDataSource } from '../DataGrid/AsyncDataGridViewModel';
 import { ProjectionRequest, ProjectionResult } from '../DataGrid/DataGridViewModel';

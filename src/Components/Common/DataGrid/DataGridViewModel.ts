@@ -186,7 +186,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
             (this.sortDirection.value === SortDirection.Descending ? SortDirection.Ascending : SortDirection.Descending) :
             this.defaultSortDirection),
         }))
-        .invokeCommand(x => this.sort),
+        .invokeCommand(() => this.sort),
     );
 
     this.addSubscription(
@@ -269,7 +269,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
   }
 }
 
-interface ItemsProjectionRequest<TData> extends ProjectionRequest {
+export interface ItemsProjectionRequest<TData> extends ProjectionRequest {
   items: TData[];
 }
 

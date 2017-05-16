@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Observable } from 'rx';
 import * as classNames from 'classnames';
 import { Icon } from 'react-fa';
 import { Table, TableProps, OverlayTrigger, OverlayTriggerProps } from 'react-bootstrap';
@@ -15,9 +16,9 @@ import { NavButton } from '../List/NavButton';
 
 import './DataGrid.less';
 
-type ReadonlyDataGridViewModel<TData> = Readonly<DataGridViewModel<TData>>;
+export type ReadonlyDataGridViewModel<TData> = Readonly<DataGridViewModel<TData>>;
 
-type ColumnRenderFunction = (
+export type ColumnRenderFunction = (
   item: any,
   index: number | undefined,
   column: DataGridColumnProps,
@@ -27,7 +28,7 @@ type ColumnRenderFunction = (
   view: DataGridView,
 ) => any;
 
-type ColumnContainerRenderFunction = (
+export type ColumnContainerRenderFunction = (
   content: any,
   item: any,
   index: number,
@@ -177,7 +178,7 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
       'DataGrid-row--selected': view.props.highlightSelected === true && viewModel.selectedItem.value === item,
     });
 
-    const onClick = view.props.selectable !== true ? null : wxr.bindEventToCommand(this, viewModel, x => x.selectItem, x => item);
+    const onClick = view.props.selectable !== true ? null : wxr.bindEventToCommand(this, viewModel, x => x.selectItem, () => item);
 
     return (
       <tr className={ rowClasses } key={ this.rowKeySelector(item, index, columns, viewModel, view) } onClick={ onClick }>

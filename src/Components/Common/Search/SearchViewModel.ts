@@ -1,3 +1,5 @@
+import { Observable } from 'rx';
+
 import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 

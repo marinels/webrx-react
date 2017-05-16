@@ -28,7 +28,7 @@ export class Loading extends React.Component<LoadingProps, any> {
   componentDidMount() {
     if (wx.isProperty(this.props.progress) === true) {
       this.changedSubscription = (this.props.progress as Property<number>).changed
-        .subscribe(x => { this.forceUpdate(); });
+        .subscribe(() => { this.forceUpdate(); });
     }
   }
 

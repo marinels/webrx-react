@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Observable } from 'rx';
 import * as classNames from 'classnames';
 import { Grid } from 'react-bootstrap';
 

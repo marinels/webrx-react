@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Observable } from 'rx';
+import { IDisposable } from 'rx';
 
 import { ObservableOrProperty, Property, Command } from '../../WebRx';
 import { BaseViewModel } from './BaseViewModel';

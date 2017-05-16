@@ -1,0 +1,25 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": ".",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "jsx": "react",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "newLine": "LF",
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": false,
+    "noImplicitUseStrict": true,
+    "preserveConstEnums": true,
+    "removeComments": false,
+    "strictNullChecks": true,
+    "target": "es5",
+
+    "paths": {
+      "rx": [ "node_modules/rx/ts/rx.all" ],
+      "*": [ "src/types/*" ]
+    }
+  }
+}

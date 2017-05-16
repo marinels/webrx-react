@@ -1,13 +1,19 @@
 import { Observable, IDisposable } from 'rx';
 
-import { wx, ObservableOrProperty, Command } from '../../WebRx';
+import { property } from '../../WebRx/Property';
+import { command } from '../../WebRx/Command';
+import { whenAny } from '../../WebRx/WhenAny';
+import { isProperty, isCommand, getObservable, getProperty } from '../../WebRx/Utils';
+import { ObservableOrProperty, Command } from '../../WebRx';
 import { Logging, Alert, SubMan } from '../../Utils';
 import { Manager } from '../../Routing/RouteManager';
+import { getObservableOrAlert, getObservableResultOrAlert, subscribeOrAlert } from './ObservableHelpers';
 import { wxr } from './StaticHelpers';
 
 export interface LifecycleComponentViewModel {
   initializeViewModel(): void;
   loadedViewModel(): void;
+  updatedViewModel(): void;
   cleanupViewModel(): void;
 }
 
@@ -26,24 +32,24 @@ export abstract class BaseViewModel implements IDisposable {
   public static displayName = 'BaseViewModel';
 
   // these are WebRx helper functions (so you don't need to import them every time)
-  protected readonly property = wx.property;
-  protected readonly command = wx.command;
-  protected readonly getObservable = wx.getObservable;
-  protected readonly getProperty = wx.getProperty;
-  protected readonly isProperty = wx.isProperty;
-  protected readonly isCommand = wx.isCommand;
-  protected readonly whenAny = wx.whenAny;
+  protected readonly property = property;
+  protected readonly command = command;
+  protected readonly getObservable = getObservable;
+  protected readonly getProperty = getProperty;
+  protected readonly isProperty = isProperty;
+  protected readonly isCommand = isCommand;
+  protected readonly whenAny = whenAny;
 
   // these are Alert helper functions
   protected readonly createAlert = Alert.create;
   protected readonly alertForError = Alert.createForError;
 
   // these are Observable helper functions
-  protected readonly getObservableOrAlert = wxr.getObservableOrAlert;
-  protected readonly getObservableResultOrAlert = wxr.getObservableResultOrAlert;
-  protected readonly subscribeOrAlert = wxr.subscribeOrAlert;
+  protected readonly getObservableOrAlert = getObservableOrAlert;
+  protected readonly getObservableResultOrAlert = getObservableResultOrAlert;
+  protected readonly subscribeOrAlert = subscribeOrAlert;
 
-  protected readonly logger = Logging.getLogger(this.getDisplayName());
+  protected readonly logger: Logging.Logger = Logging.getLogger(this.getDisplayName());
   private isLoggingMemberObservables = false;
 
   protected readonly subs: SubMan;

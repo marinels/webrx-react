@@ -60,17 +60,17 @@ export class InlineEditViewModel<T> extends BaseViewModel {
 
     this.isEditing = Observable
       .merge(
-        this.edit.results.map(x => true),
-        this.save.results.map(x => false),
-        this.cancel.results.map(x => false),
+        this.edit.results.map(() => true),
+        this.save.results.map(() => false),
+        this.cancel.results.map(() => false),
       )
       .toProperty(false);
 
     this.hasSavingError = Observable
       .merge(
-        this.save.results.map(x => false),
-        this.save.thrownErrors.map(x => true),
-        this.cancel.results.map(x => false),
+        this.save.results.map(() => false),
+        this.save.thrownErrors.map(() => true),
+        this.cancel.results.map(() => false),
       )
       .toProperty(false);
 

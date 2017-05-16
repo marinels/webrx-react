@@ -19,7 +19,10 @@ export class ModalDialogViewModel extends BaseViewModel {
     this.hide = this.command();
 
     this.isVisible = Observable
-      .merge(this.show.results.map(x => true), this.hide.results.map(x => false))
+      .merge(
+        this.show.results.map(() => true),
+        this.hide.results.map(() => false),
+      )
       .toProperty(isVisible);
   }
 

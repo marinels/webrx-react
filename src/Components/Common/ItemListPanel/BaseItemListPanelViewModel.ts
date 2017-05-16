@@ -1,6 +1,9 @@
-import {  } from '../../../WebRx';
+import { Observable } from 'rx';
+
+import { ReadOnlyProperty, Command } from '../../../WebRx';
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 import { BaseDataGridViewModel, ProjectionRequest, ProjectionResult } from '../DataGrid/DataGridViewModel';
+import { SearchViewModel } from '../Search/SearchViewModel';
 
 export abstract class BaseItemListPanelViewModel<TData, TRequest extends ProjectionRequest, TResult extends ProjectionResult<TData>, TGrid extends BaseDataGridViewModel<TData, TRequest, TResult>> extends BaseRoutableViewModel<any> {
   public static displayName = 'BaseItemListPanelViewModel';

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Observable } from 'rx';
 import { Enumerable } from 'ix';
 import { Grid, Row, Col, PageHeader, DropdownButton, MenuItem, Alert } from 'react-bootstrap';
 import * as classNames from 'classnames';

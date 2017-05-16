@@ -1,4 +1,4 @@
-import { Observable, Subject, Scheduler } from  'rx';
+import { Observable, Scheduler } from  'rx';
 
 import { wx, ReadOnlyProperty, Command } from '../WebRx';
 import { Logging } from '../Utils';
@@ -21,7 +21,7 @@ export interface HashManager {
 export const windowLocationHashManager = <HashManager>{
   hashChanged: Observable
     .fromEvent<HashChangeEvent>(window, 'hashchange')
-    .map(x => window.location.hash),
+    .map(() => window.location.hash),
   updateHash: (hash) => {
     window.location.hash = hash;
   },
@@ -30,7 +30,7 @@ export const windowLocationHashManager = <HashManager>{
 // this is a more comprehensive hash manager that does support history replacement
 // however, this hash manager requires at least IE11
 // if support is not detected, then the window location hash manager is used instead
-class HistoryStateHashManager implements HashManager {
+export class HistoryStateHashManager implements HashManager {
   private changeHash: Command<string>;
 
   constructor() {

@@ -61,7 +61,7 @@ export class PageHeaderViewModel extends BaseViewModel {
     this.addSubscription(this
       .whenAny(this.menuItemSelected.results, x => x)
       .filterNull()
-      .map(x => false)
+      .map(() => false)
       .invokeCommand(this.toggleSideBar),
     );
 
@@ -87,7 +87,7 @@ export class PageHeaderViewModel extends BaseViewModel {
 
     this.addSubscription(this
       .whenAny(this.routeHandler.routedComponent, x => x)
-      .subscribe(x => {
+      .subscribe(() => {
         this.updateDynamicContent();
       }),
     );

@@ -1,4 +1,3 @@
-import { Observable } from 'rx';
 import { isProperty, isCommand, isObservable, getObservable, getProperty } from './Utils';
 import { property } from './Property';
 import { command } from './Command';

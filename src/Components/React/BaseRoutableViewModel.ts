@@ -51,7 +51,7 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
 
     this.addSubscription(
       this.routingStateChanged.results
-        .filter(x => this.isRoutingEnabled)
+        .filter(() => this.isRoutingEnabled)
         .debounce(routingStateRateLimit)
         .subscribe(x => {
           pubSub.publish<RoutingStateChanged>(RoutingStateChangedKey, x);

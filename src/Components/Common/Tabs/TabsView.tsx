@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Observable } from 'rx';
 import { Tabs, Tab } from 'react-bootstrap';
 import * as classNames from 'classnames';
 
@@ -8,7 +9,7 @@ import { wxr } from '../../React';
 
 import './Tabs.less';
 
-type ReadonlyTabsViewModel<TData> = Readonly<TabsViewModel<TData>>;
+export type ReadonlyTabsViewModel<TData> = Readonly<TabsViewModel<TData>>;
 
 export class TabRenderTemplate<TData> {
   public static displayName = 'TabViewTemplate';
