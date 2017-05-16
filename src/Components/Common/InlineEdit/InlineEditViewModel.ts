@@ -15,6 +15,7 @@ export class InlineEditViewModel<T> extends BaseViewModel {
   public readonly edit: Command<T>;
   public readonly save: Command<T>;
   public readonly cancel: Command<undefined>;
+  public readonly setError: Command<boolean>;
 
   constructor(
     value?: Property<T> | T,
@@ -50,6 +51,8 @@ export class InlineEditViewModel<T> extends BaseViewModel {
       () => undefined,
     );
 
+    this.setError = this.command<boolean>();
+
     this.editValue = Observable
       .merge(
         this.edit.results,
@@ -71,6 +74,11 @@ export class InlineEditViewModel<T> extends BaseViewModel {
         this.save.results.map(() => false),
         this.save.thrownErrors.map(() => true),
         this.cancel.results.map(() => false),
+      )
+      .startWith(false)
+      .combineLatest(
+        this.setError.results.startWith(false),
+        (hasError, hasManualError) => hasManualError || hasError,
       )
       .toProperty(false);
 

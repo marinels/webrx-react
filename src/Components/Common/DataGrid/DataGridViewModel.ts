@@ -38,7 +38,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
 
   public readonly search: SearchViewModel;
   public readonly pager: PagerViewModel;
-  public readonly defaultSortDirection: SortDirection;
+  public defaultSortDirection: SortDirection;
 
   public readonly projectionRequests: ReadOnlyProperty<TRequest>;
   public readonly projectionResults: ReadOnlyProperty<TResult>;
