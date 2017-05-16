@@ -17,6 +17,7 @@ export class ObservableProperty<T> implements Property<T>, IDisposable {
     this.thrownErrorsSubject = new Subject<Error>();
 
     this.sourceSubscription = this.source
+      .startWith(initialValue!)
       .distinctUntilChanged()
       .subscribe(
         x => {
