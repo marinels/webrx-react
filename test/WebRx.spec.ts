@@ -75,6 +75,17 @@ describe('for WebRx', () => {
       isChanged.should.be.false;
     });
 
+    it('does generate a changed event with no initial value after setting a value', () => {
+      const prop = wx.property<string>();
+      let isChanged = false;
+      prop.changed
+        .observeOn(Scheduler.immediate)
+        .subscribe(() => { isChanged = true; });
+
+      prop.value = 'test';
+      isChanged.should.be.true;
+    });
+
     it('does not generate an initial changed event with an initial value', () => {
       const prop = wx.property('test');
       let isChanged = false;
@@ -104,6 +115,17 @@ describe('for WebRx', () => {
         .subscribe(() => { isChanged = true; });
 
       prop.value = 'test';
+      isChanged.should.be.false;
+    });
+
+    it('does not generate a changed value when a composite value does not change internal values', () => {
+      const prop = wx.property({ val: 'test' });
+      let isChanged = false;
+      prop.changed
+        .observeOn(Scheduler.immediate)
+        .subscribe(() => { isChanged = true; });
+
+      prop.value = { val: 'test' };
       isChanged.should.be.false;
     });
   });
