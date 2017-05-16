@@ -1,6 +1,5 @@
 /.vscode
 /build
-/dist/ts/**/*.js
 /node_modules
 /test
 

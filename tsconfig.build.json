@@ -2,7 +2,7 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "declaration": true,
-    "outDir": "dist/ts"
+    "outDir": "."
   },
   "files": [
     "src/webrx-react.ts"
