@@ -57,7 +57,7 @@ export function getObservable<T>(observableOrProperty: ObservableOrPropertyOrVal
     return Observable.of(observableOrProperty);
   }
 
-  throw new Error(`Unable to convert '${ observableOrProperty }' to an observable`);
+  return Observable.never<T>();
 }
 
 export function getProperty<T>(observableOrProperty: ObservableOrPropertyOrValue<T>, initialValue?: T) {
@@ -73,12 +73,7 @@ export function getProperty<T>(observableOrProperty: ObservableOrPropertyOrValue
     initialValue = observableOrProperty;
   }
 
-  if (initialValue != null) {
-    // this is technically a immutable readonly property
-    return Observable.never<T>().toProperty(initialValue);
-  }
-
-  throw new Error(`Unable to convert '${ observableOrProperty }' to a property`);
+  return Observable.never<T>().toProperty(initialValue);
 }
 
 export function handleError(e: any, subject: Subject<Error>) {
