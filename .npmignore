@@ -3,12 +3,6 @@
 /node_modules
 /test
 
-/.babelrc
-/.gitattributes
-/.gitignore
 /.travis.yml
-/gulpfile.babel.js
 /index.html
 /*.log
-/webpack.common.js
-/webpack.config.js
