@@ -5,6 +5,7 @@
     "outDir": "."
   },
   "files": [
-    "src/webrx-react.ts"
+    "src/webrx-react.ts",
+    "src/Components/Demo/index.ts"
   ]
 }
