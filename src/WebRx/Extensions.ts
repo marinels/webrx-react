@@ -3,6 +3,7 @@ import { Observable, IObserver, IDisposable } from 'rx';
 import { ReadOnlyProperty, Command } from './Interfaces';
 import { property } from './Property';
 
+import 'rx';
 declare module 'rx' {
   interface Observable<T> {
     startWith<TOther>(value: TOther): Observable<T | TOther>;
