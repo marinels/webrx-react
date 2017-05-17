@@ -3,7 +3,7 @@ import { Observable } from 'rx';
 import { Grid } from 'react-bootstrap';
 
 import { BootstrapGuide } from './BootstrapGuide';
-import { BaseView } from '../../React/BaseView';
+import { BaseView } from '../../React';
 import { Splash } from '../Splash/Splash';
 import { AlertHostView } from '../Alert/AlertHostView';
 import { SplashKey } from '../RouteHandler/RouteHandlerViewModel';

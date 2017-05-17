@@ -2,9 +2,8 @@ import * as React from 'react';
 import { Observable } from 'rx';
 import { Tabs, Tab } from 'react-bootstrap';
 
-import { BaseView, BaseViewProps } from '../../React/BaseView';
+import { wxr, BaseView, BaseViewProps } from '../../React';
 import { TabsViewModel } from './TabsViewModel';
-import { wxr } from '../../React';
 
 import './Tabs.less';
 

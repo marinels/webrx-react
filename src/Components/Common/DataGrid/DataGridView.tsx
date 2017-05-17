@@ -3,11 +3,10 @@ import { Observable } from 'rx';
 import { Icon } from 'react-fa';
 import { Table, TableProps, OverlayTrigger, OverlayTriggerProps } from 'react-bootstrap';
 
-import { BaseView, BaseViewProps } from '../../React/BaseView';
+import { wxr, BaseView, BaseViewProps } from '../../React';
 import { SearchView, SearchProps } from '../Search/SearchView';
 import { PagerView, PagerProps } from '../Pager/PagerView';
 import { CommandButton } from '../CommandButton/CommandButton';
-import { wxr } from '../../React';
 import { DataGridViewModel } from './DataGridViewModel';
 import { SortDirection } from '../../../Utils/Compare';
 import { BaseListViewTemplate, ListViewRenderTemplate, ListViewRenderTemplateProps } from '../List/ListView';

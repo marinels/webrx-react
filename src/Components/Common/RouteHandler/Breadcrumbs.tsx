@@ -2,8 +2,7 @@ import * as React from 'react';
 import { Breadcrumb } from 'react-bootstrap';
 import { Icon } from 'react-fa';
 
-import { RoutingBreadcrumb } from '../../React/BaseRoutableViewModel';
-import { wxr } from '../../React';
+import { wxr, RoutingBreadcrumb } from '../../React';
 import { CommandButton } from '../CommandButton/CommandButton';
 
 import './Breadcrumbs.less';

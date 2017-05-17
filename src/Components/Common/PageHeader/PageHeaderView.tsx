@@ -3,13 +3,12 @@ import { Observable } from 'rx';
 import { Icon, IconStack } from 'react-fa';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 
-import { BaseView, BaseViewProps } from '../../React/BaseView';
+import { BaseView, BaseViewProps, HeaderAction, HeaderCommandAction, HeaderMenu } from '../../React';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { SearchView } from '../Search/SearchView';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import { Sidebar } from './Sidebar';
 import { PageHeaderViewModel } from './PageHeaderViewModel';
-import { HeaderAction, HeaderCommandAction, HeaderMenu } from '../../React/Actions';
 
 import './PageHeader.less';
 

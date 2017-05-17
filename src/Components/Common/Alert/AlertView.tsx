@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Alert } from 'react-bootstrap';
 
-import { BaseView, BaseViewProps } from '../../React/BaseView';
+import { BaseView, BaseViewProps } from '../../React';
 import { AlertViewModel } from './AlertViewModel';
 
 import './Alert.less';

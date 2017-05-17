@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Observable } from 'rx';
 import { Pagination, PaginationProps, DropdownButton, MenuItem } from 'react-bootstrap';
 
-import { BaseView, ViewModelProps } from '../../React/BaseView';
+import { BaseView, ViewModelProps } from '../../React';
 import { PagerViewModel, StandardLimits } from './PagerViewModel';
 
 import './Pager.less';

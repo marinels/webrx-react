@@ -5,10 +5,9 @@ import { Icon } from 'react-fa';
 import { ListGroup, ListGroupProps, ListGroupItem } from 'react-bootstrap';
 
 import { wx, ReadOnlyProperty, Command } from '../../../WebRx';
-import { BaseView, ViewModelProps } from '../../React/BaseView';
+import { wxr, BaseView, ViewModelProps } from '../../React';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { ListViewModel } from './ListViewModel';
-import { wxr } from '../../React';
 
 export * from './NavButton';
 

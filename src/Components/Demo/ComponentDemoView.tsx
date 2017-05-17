@@ -3,7 +3,7 @@ import { Observable } from 'rx';
 import { Enumerable } from 'ix';
 import { Grid, Row, Col, PageHeader, DropdownButton, MenuItem, Alert } from 'react-bootstrap';
 
-import { BaseView, BaseViewProps } from '../React/BaseView';
+import { BaseView, BaseViewProps } from '../React';
 import { ComponentDemoViewModel } from './ComponentDemoViewModel';
 import { ViewMap } from './ViewMap';
 import { ViewMap as AppViewMap } from '../../Routing/ViewMap';

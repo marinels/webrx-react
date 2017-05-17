@@ -4,7 +4,7 @@ import { Observable } from 'rx';
 import { Icon } from 'react-fa';
 import { FormGroup, InputGroup, FormControl, Sizes, Popover, OverlayTrigger } from 'react-bootstrap';
 
-import { BaseView, BaseViewProps } from '../../React/BaseView';
+import { BaseView, BaseViewProps } from '../../React';
 import { BindableInput, BindableProps } from '../BindableInput/BindableInput';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { InlineEditViewModel } from './InlineEditViewModel';

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Observable } from 'rx';
 import { CSSTransitionGroup } from 'react-transition-group';
 
-import { BaseView, BaseViewProps } from '../../React/BaseView';
+import { BaseView, BaseViewProps } from '../../React';
 import { AlertView } from './AlertView';
 import { AlertHostViewModel } from './AlertHostViewModel';
 import { AlertViewModel } from './AlertViewModel';

@@ -4,9 +4,7 @@ import { Grid, Alert, Breadcrumb } from 'react-bootstrap';
 import { CSSTransitionGroup } from 'react-transition-group';
 import { Icon } from 'react-fa';
 
-import { BaseView, BaseViewProps } from '../../React/BaseView';
-import { isViewModel } from '../../React/BaseViewModel';
-import { BaseRoutableViewModel, isRoutableViewModel } from '../../React/BaseRoutableViewModel';
+import { BaseRoutableViewModel, BaseView, BaseViewProps, isViewModel, isRoutableViewModel } from '../../React';
 import { RouteHandlerViewModel, SplashKey } from './RouteHandlerViewModel';
 import { Breadcrumbs } from './Breadcrumbs';
 import { CommandButton } from '../CommandButton/CommandButton';

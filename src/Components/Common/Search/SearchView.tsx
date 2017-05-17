@@ -3,7 +3,7 @@ import { Observable } from 'rx';
 import { Icon } from 'react-fa';
 import { FormGroup, InputGroup, FormControl } from 'react-bootstrap';
 
-import { BaseView, BaseViewProps } from '../../React/BaseView';
+import { BaseView, BaseViewProps } from '../../React';
 import { BindableInput } from '../BindableInput/BindableInput';
 import { SearchViewModel } from './SearchViewModel';
 import { CommandButton } from '../CommandButton/CommandButton';

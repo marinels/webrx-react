@@ -3,7 +3,7 @@ import { Observable } from 'rx';
 import * as moment from 'moment';
 import { Grid, Row, Col } from 'react-bootstrap';
 
-import { BaseView, BaseViewProps } from '../../React/BaseView';
+import { BaseView, BaseViewProps } from '../../React';
 import { PageFooterViewModel, ViewportDimensions } from './PageFooterViewModel';
 
 import './PageFooter.less';

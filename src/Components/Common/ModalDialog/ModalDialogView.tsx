@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Observable } from 'rx';
 import { Modal } from 'react-bootstrap';
-import { BaseView, BaseViewProps } from '../../React/BaseView';
+import { BaseView, BaseViewProps } from '../../React';
 
 import { ModalDialogViewModel } from './ModalDialogViewModel';
 
