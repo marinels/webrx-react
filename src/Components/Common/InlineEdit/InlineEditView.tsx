@@ -2,7 +2,6 @@ import * as React from 'react';
 import { findDOMNode } from 'react-dom';
 import { Observable } from 'rx';
 import { Icon } from 'react-fa';
-import * as classNames from 'classnames';
 import { FormGroup, InputGroup, FormControl, Sizes, Popover, OverlayTrigger } from 'react-bootstrap';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';
@@ -108,7 +107,7 @@ export class InlineEditView extends BaseView<InlineEditProps, InlineEditViewMode
     });
 
     return (
-      <FormGroup { ...rest } className={ classNames('InlineEditView', className)}>
+      <FormGroup { ...rest } className={ this.classNames('InlineEditView', className)}>
         <InputGroup>
           {
             this.renderConditional(this.state.hasSavingError, () => (
@@ -166,7 +165,7 @@ export class InlineEditView extends BaseView<InlineEditProps, InlineEditViewMode
     return this.renderConditional(
       props.clickToEdit === true,
       () => (
-        <CommandButton { ...rest } className={ classNames('InlineEditView', className)} bsStyle='link' command={ this.state.edit }>
+        <CommandButton { ...rest } className={ this.classNames('InlineEditView', className)} bsStyle='link' command={ this.state.edit }>
           { displayContent }
         </CommandButton>
       ),

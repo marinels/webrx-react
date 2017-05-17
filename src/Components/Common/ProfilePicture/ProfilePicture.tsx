@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Image } from 'react-bootstrap';
 import { Icon, IconSize } from 'react-fa';
-import * as classNames from 'classnames';
 
 import { wxr } from '../../React';
 
@@ -71,7 +70,7 @@ export class ProfilePicture extends React.Component<ProfilePictureProps, any> {
     });
 
     return (
-      <div { ...rest } className={ classNames('ProfilePicture', 'ProfilePicture-icon', iconClassNames, className) } style={ style }>
+      <div { ...rest } className={ wxr.classNames('ProfilePicture', 'ProfilePicture-icon', iconClassNames, className) } style={ style }>
         <Icon name={ props.defaultIcon! } size={ props.iconSize } />
       </div>
     );
@@ -89,7 +88,7 @@ export class ProfilePicture extends React.Component<ProfilePictureProps, any> {
     });
 
     return (
-      <Image { ...rest } className={ classNames('ProfilePicture', className) } style={ style }
+      <Image { ...rest } className={ wxr.classNames('ProfilePicture', className) } style={ style }
         src={ src } width={ props.size } height={ props.size }
       />
     );

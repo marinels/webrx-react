@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Observable } from 'rx';
 import { Icon } from 'react-fa';
 import { FormGroup, InputGroup, FormControl } from 'react-bootstrap';
-import * as classNames from 'classnames';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { BindableInput } from '../BindableInput/BindableInput';
@@ -34,7 +33,7 @@ export class SearchView extends BaseView<SearchViewProps, SearchViewModel> {
     });
 
     return (
-      <div { ...rest } className={ classNames('Search', className) }>
+      <div { ...rest } className={ this.classNames('Search', className) }>
         <FormGroup className='has-feedback'>
           <BindableInput property={ this.state.filter }>
             <FormControl className='Search-text' type='text' placeholder={ this.props.placeholder }

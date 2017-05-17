@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Observable } from 'rx';
-import * as classNames from 'classnames';
 import { Modal } from 'react-bootstrap';
 import { BaseView, BaseViewProps } from '../../React/BaseView';
 
@@ -34,7 +33,7 @@ export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewM
     });
 
     return this.renderConditional(this.state.isVisible, () => (
-      <Modal { ...rest } className={ classNames('ModalDialog', className) } autoFocus
+      <Modal { ...rest } className={ this.classNames('ModalDialog', className) } autoFocus
         show={ this.state.isVisible.value } onHide={ this.bindEventToCommand(x => x.hide) }
         keyboard={ props.canClose === true } enforceFocus={ props.canClose === false }
         backdrop={ props.canClose === false ? 'static' : true }

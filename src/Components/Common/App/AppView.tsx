@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Observable } from 'rx';
-import * as classNames from 'classnames';
 import { Grid } from 'react-bootstrap';
 
 import { BootstrapGuide } from './BootstrapGuide';
@@ -49,7 +48,7 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
     });
 
     return (
-      <div { ...rest } className={ classNames('App', className) }>
+      <div { ...rest } className={ this.classNames('App', className) }>
         {
           this.renderConditional(this.state.isLoading, () => (
             <i className='preload fa fa-spinner fa-5x fa-pulse' aria-hidden='true'></i>

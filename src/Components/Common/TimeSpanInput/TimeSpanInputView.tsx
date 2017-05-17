@@ -2,9 +2,8 @@ import * as React from 'react';
 import { Observable } from 'rx';
 import { FormGroup, InputGroup, Sizes, FormControl, FormControlProps, DropdownButton, MenuItem, HelpBlock } from 'react-bootstrap';
 import { Icon } from 'react-fa';
-import * as classNames from 'classnames';
 
-import { BaseView, BaseViewProps } from '../../React/BaseView';
+import { wxr, BaseView, BaseViewProps } from '../../React';
 import { BindableInput } from '../BindableInput/BindableInput';
 import { TimeSpanInputViewModel, TimeSpanUnit } from './TimeSpanInputViewModel';
 import { CommandButton } from '../CommandButton/CommandButton';
@@ -24,7 +23,7 @@ export class TimeSpanControl extends React.Component<any, any> {
 
     return (
       <BindableInput property={ props.viewModel.text }>
-        <FormControl { ...rest } className={ classNames('TimeSpanControl', className) } type='text' />
+        <FormControl { ...rest } className={ wxr.classNames('TimeSpanControl', className) } type='text' />
       </BindableInput>
     );
   }
@@ -64,7 +63,7 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInpu
     props.validationState = props.validationState || (this.state.hasError.value ? 'error' : undefined);
 
     return (
-      <FormGroup { ...rest } { ...props } className={ classNames('TimeSpanInput', className) }>
+      <FormGroup { ...rest } { ...props } className={ this.classNames('TimeSpanInput', className) }>
         <InputGroup>
           { this.renderControl() }
           <InputGroup.Button>

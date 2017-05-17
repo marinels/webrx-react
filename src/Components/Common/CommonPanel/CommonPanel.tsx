@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as classNames from 'classnames';
 import { Panel, PanelProps, ButtonToolbar } from 'react-bootstrap';
 
 import { CommandButton, CommandButtonProps } from '../CommandButton/CommandButton';
@@ -38,7 +37,7 @@ export class CommonPanel extends React.Component<CommonPanelProps, any> {
       return { headerContent, headerActions, headerFormat, teaserContent, summaryContent, footerContent, footerActions, footerFormat, shadow };
     });
 
-    const panelClassName = classNames(
+    const panelClassName = wxr.classNames(
       'CommonPanel',
       {
         shadow: props.shadow === true,
@@ -61,7 +60,7 @@ export class CommonPanel extends React.Component<CommonPanelProps, any> {
 
   private renderContent(content: CommonPannelContent | undefined, section: CommonPanelContentSection, sectionType?: CommonPanelContentType) {
     return wxr.renderNullable(content, x => (
-      <div className={ classNames(`CommonPanel-${ section }Content`, sectionType == null ? null : `CommonPanel-${ sectionType }`) }>
+      <div className={ wxr.classNames(`CommonPanel-${ section }Content`, sectionType == null ? null : `CommonPanel-${ sectionType }`) }>
         { x instanceof Function ? x(this) : x }
       </div>
     ));

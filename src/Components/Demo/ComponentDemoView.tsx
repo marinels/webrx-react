@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Observable } from 'rx';
 import { Enumerable } from 'ix';
 import { Grid, Row, Col, PageHeader, DropdownButton, MenuItem, Alert } from 'react-bootstrap';
-import * as classNames from 'classnames';
 
 import { BaseView, BaseViewProps } from '../React/BaseView';
 import { ComponentDemoViewModel } from './ComponentDemoViewModel';
@@ -34,7 +33,7 @@ export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDem
     const cols = this.state.columns.value;
 
     return (
-      <div { ...rest } className={ classNames('ComponentDemo', className) }>
+      <div { ...rest } className={ this.classNames('ComponentDemo', className) }>
         <Grid fluid={ cols === 0 }>
           <Row>
             <Col md={ 12 }>

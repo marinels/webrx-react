@@ -2,6 +2,7 @@ import * as React from 'react';
 import { findDOMNode } from 'react-dom';
 import { Grid } from 'react-bootstrap';
 import { Enumerable } from 'ix';
+import * as classNames from 'classnames';
 
 import { Property } from '../../WebRx';
 import { Loading } from '../Common/Loading/Loading';
@@ -113,3 +114,5 @@ export function focusElement(instance: React.ReactInstance) {
     elem.focus();
   }
 }
+
+export { classNames };

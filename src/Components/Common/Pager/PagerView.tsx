@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Observable } from 'rx';
-import * as classNames from 'classnames';
 import { Pagination, PaginationProps, DropdownButton, MenuItem } from 'react-bootstrap';
 
 import { BaseView, ViewModelProps } from '../../React/BaseView';
@@ -67,7 +66,7 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     });
 
     return (
-      <div { ...pagerProps.rest } className={ classNames('Pager', className) }>
+      <div { ...pagerProps.rest } className={ this.classNames('Pager', className) }>
         {
           this.renderConditional(this.shouldRenderPager(), () => {
             const types = props.order || [];
@@ -105,7 +104,7 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     const className = type == null ? null : `Pager-${ type }`;
 
     return (
-      <div key={ location } className={ classNames(className, `Pager-${ location }`) }>
+      <div key={ location } className={ this.classNames(className, `Pager-${ location }`) }>
         { this.renderConditional(type != null, () => this.renderFunctions[type].apply(this)) }
       </div>
     );

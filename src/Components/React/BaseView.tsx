@@ -5,7 +5,7 @@ import { Property, Command } from '../../WebRx';
 import { ReactSpreadResult } from '../../Extensions/React';
 import { Alert, Logging, SubMan } from '../../Utils';
 import { BaseViewModel, LifecycleComponentViewModel } from './BaseViewModel';
-import { renderEnumerable, renderConditional, renderNullable, renderLoadable, renderSizedLoadable, renderGridLoadable, focusElement } from './RenderHelpers';
+import { renderEnumerable, renderConditional, renderNullable, renderLoadable, renderSizedLoadable, renderGridLoadable, focusElement, classNames } from './RenderHelpers';
 import { wxr } from './StaticHelpers';
 
 export interface ViewModelProps {
@@ -30,6 +30,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
   protected readonly renderSizedLoadable = renderSizedLoadable;
   protected readonly renderGridLoadable = renderGridLoadable;
   protected readonly focusElement = focusElement;
+  protected readonly classNames = classNames;
 
   // these are Alert helper functions
   protected readonly createAlert = Alert.create;

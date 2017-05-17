@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as classNames from 'classnames';
 import { Overlay, Popover, MenuItemProps, PopoverProps } from 'react-bootstrap';
 
 import { wxr } from '../../React';
@@ -29,7 +28,7 @@ export interface ContextMenuState {
 class ContextMenuContainer extends React.Component<PopoverProps, any> {
   render() {
     return (
-      <div className={ classNames('ContextMenu-container', this.props.className) }>
+      <div className={ wxr.classNames('ContextMenu-container', this.props.className) }>
         { this.props.children }
       </div>
     );

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Observable } from 'rx';
-import * as classNames from 'classnames';
 
 import { BaseView, ViewModelProps } from '../../React/BaseView';
 import { DataGridView, DataGridProps, DataGridColumn, DataGridListViewTemplate, DataGridViewType } from '../DataGrid/DataGridView';
@@ -60,7 +59,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
     }
 
     return (
-      <CommonPanel { ...rest } className={ classNames('ItemListPanel', viewType, className) }>
+      <CommonPanel { ...rest } className={ this.classNames('ItemListPanel', viewType, className) }>
         <DataGridView { ...props } viewModel={ this.state.grid } search={ false } pager={ false } fill>
           { children }
         </DataGridView>

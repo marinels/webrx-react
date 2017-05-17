@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Observable } from 'rx';
-import * as classNames from 'classnames';
 import * as moment from 'moment';
 import { Grid, Row, Col } from 'react-bootstrap';
 
@@ -54,7 +53,7 @@ export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewMode
     });
 
     return (
-      <div { ...rest } className={ classNames('PageFooter', className) }>
+      <div { ...rest } className={ this.classNames('PageFooter', className) }>
         <Grid>
           <Row>
             <Col md={12}>

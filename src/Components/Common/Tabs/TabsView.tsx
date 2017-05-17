@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Observable } from 'rx';
 import { Tabs, Tab } from 'react-bootstrap';
-import * as classNames from 'classnames';
 
 import { BaseView, BaseViewProps } from '../../React/BaseView';
 import { TabsViewModel } from './TabsViewModel';
@@ -63,7 +62,7 @@ export class TabsView extends BaseView<TabsProps, TabsViewModel<any>> {
     });
 
     return (
-      <div { ...rest } className={ classNames('Tabs', className) }>
+      <div { ...rest } className={ this.classNames('Tabs', className) }>
         { this.renderTabs() }
       </div>
     );

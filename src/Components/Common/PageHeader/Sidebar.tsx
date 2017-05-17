@@ -1,6 +1,7 @@
 import * as React from 'react';
-import * as classNames from 'classnames';
 import { Modal } from 'react-bootstrap';
+
+import { wxr } from '../../React';
 
 import './Sidebar.less';
 
@@ -25,7 +26,7 @@ export class Sidebar extends React.Component<SidebarProps, any> {
     });
 
     return (
-      <Modal { ...rest } className={ classNames('Sidebar', props.side, className) }
+      <Modal { ...rest } className={ wxr.classNames('Sidebar', props.side, className) }
         onHide={ this.props.onHide } show={ this.props.isVisible } autoFocus keyboard
       >
         <Modal.Header closeButton>
