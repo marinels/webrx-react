@@ -2,7 +2,7 @@ import * as React from 'react';
 import { findDOMNode } from 'react-dom';
 import { Grid } from 'react-bootstrap';
 import { Enumerable } from 'ix';
-import * as classNames from 'classnames';
+import * as classNamesFunc from 'classnames';
 
 import { Property } from '../../WebRx';
 import { Loading } from '../Common/Loading/Loading';
@@ -115,4 +115,7 @@ export function focusElement(instance: React.ReactInstance) {
   }
 }
 
-export { classNames };
+// classNames type defs don't export the internal types so we have to decouple here
+export function classNames(...args: any[]): string {
+  return classNamesFunc.apply(this, arguments);
+}
