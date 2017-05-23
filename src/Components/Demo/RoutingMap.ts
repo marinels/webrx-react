@@ -256,6 +256,17 @@ routeMap.addRoute('WebRx-React', 'AsyncItemListPanel', 'ItemListPanel (Async)', 
   return new Components.AsyncItemListPanelViewModel(sampleDataSource, true, true);
 });
 routeMap.addRoute('WebRx-React', 'InlineEdit', 'InlineEdit', (state: any) => {
+  const editor = new Components.InlineEditViewModel(5);
+
+  editor.save.results
+    // handle post-save results
+    .subscribe(x => {
+      Alert.create(`Saving value change: ${ x }`, 'Inline Editor Demo');
+    });
+
+  return editor;
+});
+routeMap.addRoute('WebRx-React', 'InlineEditObject', 'InlineEdit (Object)', (state: any) => {
   interface SampleUser {
     name: string;
     rank: number;

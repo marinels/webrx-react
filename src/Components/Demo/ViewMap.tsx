@@ -444,12 +444,23 @@ const viewMap: ViewActivatorMap = {
       <Components.DataGridColumn fieldName='requiredBy' header='Required By' sortable className='col-md-4' />
     </Components.ItemListPanelView>
   ),
-  InlineEditViewModel: (viewModel: Components.InlineEditViewModel<any>) => (
-    <Components.InlineEditView style={ ({ margin: 0 }) } viewModel={ viewModel } inputType='number'
-      template={ x => `${ x.rank } of 10` } converter={ x => Number(x) } keyboard clickToEdit
-      valueGetter={ (x: Property<any>) => x.value.rank } valueSetter={ (x: Property<any>, v) => x.value.rank = v }
-    />
-  ),
+  InlineEditViewModel: (viewModel: Components.InlineEditViewModel<any>, componentRoute: string) => {
+    if (componentRoute === 'InlineEditObject') {
+      return (
+        <Components.InlineEditView style={ ({ margin: 0 }) } viewModel={ viewModel } inputType='number'
+          template={ x => `${ x.rank } of 10` } converter={ x => Number(x) } keyboard clickToEdit
+          valueGetter={ (x: Property<any>) => x.value.rank } valueSetter={ (x: Property<any>, v) => x.value.rank = v }
+        />
+      );
+    }
+    else {
+      return (
+        <Components.InlineEditView style={ ({ margin: 0 }) } viewModel={ viewModel } inputType='number'
+          template={ x => `${ x } of 10` } converter={ x => Number(x) } keyboard clickToEdit
+        />
+      );
+    }
+  },
 };
 
 export const ViewMap = viewMap;
