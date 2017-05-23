@@ -19,7 +19,7 @@ export class InlineEditViewModel<T> extends BaseViewModel {
 
   constructor(
     value?: Property<T> | T,
-    protected readonly onSave: (value: T, viewModel: InlineEditViewModel<T>) => Observable<T> = x => Observable.of(x),
+    protected readonly onSave: (value: T, viewModel: InlineEditViewModel<T>) => (T | Observable<T>) = x => x,
   ) {
     super();
 
@@ -37,7 +37,7 @@ export class InlineEditViewModel<T> extends BaseViewModel {
     this.save = this.command(
       () => {
         return Observable
-          .defer(() => this.onSave(this.editValue.value!, this))
+          .defer(() => this.asObservable(this.onSave(this.editValue.value!, this)))
           .doOnError(e => {
             this.alertForError(e, 'Unable to Save');
           });
