@@ -337,6 +337,59 @@ describe('for WebRx', () => {
   });
 
   describe('observable extensions', () => {
+    describe('startWith', () => {
+      it('allows injecting a new type value into an observable', () => {
+        let asserted = false;
+
+        Observable
+          .of('test')
+          .startWith(undefined)
+          .toArray()
+          .subscribe(x => {
+            x.should.eql([ undefined, 'test' ]);
+            asserted = true;
+          });
+
+        asserted.should.be.true;
+      });
+    });
+
+    describe.only('filterNull', () => {
+      it('filters null values from an observable', () => {
+        let asserted = false;
+
+        Observable
+          .of(1, undefined, 2, undefined, undefined, 3, undefined, null, undefined, 4)
+          .filterNull()
+          .toArray()
+          .subscribe(x => {
+            x.should.eql([ 1, 2, 3, 4 ]);
+            asserted = true;
+          });
+
+        asserted.should.be.true;
+      });
+
+      it('allows providing an additional filter for non-null items', () => {
+        let asserted = false;
+
+        Observable
+          .of(1, undefined, 2, undefined, undefined, 3, undefined, null, undefined, 4)
+          .filterNull(x => {
+            x.should.not.be.null;
+
+            return x > 2;
+          })
+          .toArray()
+          .subscribe(x => {
+            x.should.eql([ 3, 4 ]);
+            asserted = true;
+          });
+
+        asserted.should.be.true;
+      });
+    });
+
     describe('toProperty', () => {
       it('creates a property for the observable source without an initial value', () => {
         const obs = Observable.of('test');
