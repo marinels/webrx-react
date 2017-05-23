@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Observable } from 'rx';
-import { Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab,
+import { Col, Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab,
   Well, ListGroup, ListGroupItem, Table, OverlayTrigger, Overlay, Tooltip, Popover,
 } from 'react-bootstrap';
 
@@ -132,6 +132,15 @@ const viewMap: ViewActivatorMap = {
   ),
   ObservableWrapper: () => (
     <Components.ObservableWrapper observableOrProperty={ Observable.timer(0, 1000) } render={ x => (<div>Current Value is { x }</div>) } />
+  ),
+  SearchViewModel: (viewModel: Components.SearchViewModel) => (
+    <Form horizontal>
+      <FormGroup>
+        <Col sm={12}>
+          <Components.SearchView viewModel={ viewModel } />
+        </Col>
+      </FormGroup>
+    </Form>
   ),
   TimeSpanInputViewModel: (viewModel: Components.TimeSpanInputViewModel) => (
     <Form>
