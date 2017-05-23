@@ -11,8 +11,6 @@ import { ListViewModel } from './ListViewModel';
 
 export * from './NavButton';
 
-import './List.less';
-
 export type ReadonlyListViewModel<TData> = Readonly<ListViewModel<TData, any>>;
 
 export interface ListViewRenderTemplateProps {

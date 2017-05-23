@@ -4,8 +4,6 @@ import { Observable, IDisposable } from 'rx';
 import { Enumerable } from 'ix';
 import { Grid, Row, Col } from 'react-bootstrap';
 
-import './BootstrapGuide.less';
-
 export interface BootstrapGuideProps {
 }
 

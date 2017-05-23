@@ -6,8 +6,6 @@ import { Grid, Row, Col } from 'react-bootstrap';
 import { BaseView, BaseViewProps } from '../../React';
 import { PageFooterViewModel, ViewportDimensions } from './PageFooterViewModel';
 
-import './PageFooter.less';
-
 export interface PageFooterProps extends BaseViewProps {
   copyright?: string;
 }

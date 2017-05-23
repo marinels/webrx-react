@@ -4,8 +4,6 @@ import { Icon, IconSize } from 'react-fa';
 
 import { wxr } from '../../React';
 
-import './ProfilePicture.less';
-
 export interface ProfilePictureProps extends React.HTMLAttributes<ProfilePicture> {
   src?: string;
   size?: number;

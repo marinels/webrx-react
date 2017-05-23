@@ -5,8 +5,6 @@ import { BaseView, BaseViewProps } from '../../React';
 
 import { ModalDialogViewModel } from './ModalDialogViewModel';
 
-import './ModalDialog.less';
-
 export interface ModalDialogProps extends BaseViewProps {
   title: any;
   body?: any;

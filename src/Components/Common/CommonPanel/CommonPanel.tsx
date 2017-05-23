@@ -4,8 +4,6 @@ import { Panel, PanelProps, ButtonToolbar } from 'react-bootstrap';
 import { CommandButton, CommandButtonProps } from '../CommandButton/CommandButton';
 import { wxr } from '../../React';
 
-import './CommonPanel.less';
-
 export type CommonPannelContent = ((x: CommonPanel) => any) | any;
 export type CommonPanelSectionFormatter = (section: any) => any;
 export type CommonPanelContentSection = 'header' | 'body' | 'footer';

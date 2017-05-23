@@ -5,8 +5,6 @@ import { Property } from '../../../WebRx';
 import { Loading } from '../Loading/Loading';
 import { wxr } from '../../React';
 
-import './Splash.less';
-
 export interface SplashProps extends React.HTMLAttributes<Splash> {
   header: any;
   logo?: string;

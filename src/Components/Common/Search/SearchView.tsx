@@ -8,8 +8,6 @@ import { BindableInput } from '../BindableInput/BindableInput';
 import { SearchViewModel } from './SearchViewModel';
 import { CommandButton } from '../CommandButton/CommandButton';
 
-import './Search.less';
-
 const EnterKey = 13;
 
 export interface SearchProps {

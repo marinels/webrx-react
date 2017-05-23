@@ -3,8 +3,6 @@ import { Modal } from 'react-bootstrap';
 
 import { wxr } from '../../React';
 
-import './Sidebar.less';
-
 export interface SidebarProps {
   onHide: Function;
   isVisible?: boolean;

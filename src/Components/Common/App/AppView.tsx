@@ -13,8 +13,6 @@ import { PageFooterView, PageFooterProps } from '../PageFooter/PageFooterView';
 import { AppViewModel } from './AppViewModel';
 import { ViewMap, ViewMapper } from '../../../Routing/ViewMap';
 
-import './App.less';
-
 ViewMap[SplashKey] = () => (
   <Splash header='WebRx-React' />
 );

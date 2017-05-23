@@ -7,8 +7,6 @@ import { AlertView } from './AlertView';
 import { AlertHostViewModel } from './AlertHostViewModel';
 import { AlertViewModel } from './AlertViewModel';
 
-import './AlertHost.less';
-
 export interface AlertHostProps extends BaseViewProps {
 }
 

@@ -10,8 +10,6 @@ import { Breadcrumbs } from './Breadcrumbs';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { ViewMapper } from '../../../Routing/ViewMap';
 
-import './RouteHandler.less';
-
 export interface RouteHandlerProps extends BaseViewProps {
   viewMap: ViewMapper;
 }
