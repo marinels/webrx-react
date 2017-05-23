@@ -17,7 +17,7 @@ module.exports = Object.assign(clone(webpackCommon), {
       path.resolve(__dirname, 'src', 'webrx-react.ts'),
     ],
     vendor: [
-      'bootstrap/less/bootstrap.less',
+      path.resolve(__dirname, 'src', 'Style', 'Bootstrap.less'),
       'classnames',
       'clone',
       'ix',
