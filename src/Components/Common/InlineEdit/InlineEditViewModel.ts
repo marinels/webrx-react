@@ -8,7 +8,7 @@ export class InlineEditViewModel<T> extends BaseViewModel {
   public static displayName = 'InlineEditViewModel';
 
   public readonly value: Property<T>;
-  public readonly editValue: ReadOnlyProperty<T | undefined>;
+  public readonly editValue: Property<T | undefined>;
   public readonly isEditing: ReadOnlyProperty<boolean>;
   public readonly hasSavingError: ReadOnlyProperty<boolean>;
 
@@ -29,6 +29,8 @@ export class InlineEditViewModel<T> extends BaseViewModel {
     else {
       this.value = this.property(value);
     }
+
+    this.editValue = this.property<T | undefined>();
 
     this.edit = this.command(() => {
       return clone(this.value.value);
@@ -53,13 +55,17 @@ export class InlineEditViewModel<T> extends BaseViewModel {
 
     this.setError = this.command<boolean>();
 
-    this.editValue = Observable
-      .merge(
-        this.edit.results,
-        this.save.results,
-        this.cancel.results,
-      )
-      .toProperty();
+    this.addSubscription(
+      Observable
+        .merge(
+          this.edit.results,
+          this.save.results.map(x => undefined),
+          this.cancel.results,
+        )
+        .subscribe(x => {
+          this.editValue.value = x;
+        }),
+    );
 
     this.isEditing = Observable
       .merge(
