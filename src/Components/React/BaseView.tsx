@@ -6,7 +6,7 @@ import { ReactSpreadResult } from '../../Extensions/React';
 import { Alert, Logging, SubMan } from '../../Utils';
 import { BaseViewModel, LifecycleComponentViewModel } from './BaseViewModel';
 import { renderEnumerable, renderConditional, renderNullable, renderLoadable, renderSizedLoadable, renderGridLoadable, focusElement, classNames } from './RenderHelpers';
-import { wxr } from './StaticHelpers';
+import { bindObservableToCommand, bindEventToProperty, bindEventToCommand } from './BindingHelpers';
 
 export interface ViewModelProps {
   viewModel: Readonly<BaseViewModel>;
@@ -218,7 +218,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
    * Binds an observable to a command on the view model
    */
   protected bindObservableToCommand<TInput, TResult>(observable: Observable<TInput>, commandSelector: (viewModel: Readonly<TViewModel>) => Command<TResult>) {
-    return wxr.bindObservableToCommand(this.state, observable, commandSelector);
+    return bindObservableToCommand(this.state, observable, commandSelector);
   }
 
   /**
@@ -228,7 +228,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     targetSelector: (viewModel: Readonly<TViewModel>) => Property<TValue>,
     valueSelector?: (eventKey: any, event: TEvent) => TValue,
   ) {
-    return wxr.bindEventToProperty(this, this.state, targetSelector, valueSelector);
+    return bindEventToProperty(this, this.state, targetSelector, valueSelector);
   }
 
   /**
@@ -239,7 +239,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     paramSelector?: (eventKey: any, event: TEvent) => TParameter,
     conditionSelector?: (event: TEvent, eventKey: any) => boolean,
   ) {
-    return wxr.bindEventToCommand(this, this.state, commandSelector, paramSelector, conditionSelector);
+    return bindEventToCommand(this, this.state, commandSelector, paramSelector, conditionSelector);
   }
   // -----------------------------------------
 }

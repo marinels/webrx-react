@@ -24,10 +24,6 @@ export function isSubject<T>(value: any): value is Subject<T> {
   return isObservable(value) && isObserver(value);
 }
 
-export function asObservable<T>(value: T | Observable<T>) {
-  return isObservable(value) ? value : Observable.of(value);
-}
-
 export function isProperty<T>(value: any | undefined): value is Property<T> {
   if (value == null) {
     return false;
@@ -42,6 +38,10 @@ export function isCommand<T>(value: any | undefined): value is Command<T> {
   }
 
   return isObservable((<Command<any>>value).results);
+}
+
+export function asObservable<T>(value: T | Observable<T>) {
+  return isObservable(value) ? value : Observable.of(value);
 }
 
 export function getObservable<T>(observableOrProperty: ObservableOrPropertyOrValue<T>) {

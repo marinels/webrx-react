@@ -3,12 +3,11 @@ import { Observable, IDisposable } from 'rx';
 import { property } from '../../WebRx/Property';
 import { command } from '../../WebRx/Command';
 import { whenAny } from '../../WebRx/WhenAny';
-import { isProperty, isCommand, getObservable, getProperty } from '../../WebRx/Utils';
+import { isObservable, isObserver, isSubject, isProperty, isCommand, asObservable, getObservable, getProperty } from '../../WebRx/Utils';
 import { ObservableOrProperty, Command } from '../../WebRx';
 import { Logging, Alert, SubMan } from '../../Utils';
 import { Manager } from '../../Routing/RouteManager';
-import { getObservableOrAlert, getObservableResultOrAlert, subscribeOrAlert } from './ObservableHelpers';
-import { wxr } from './StaticHelpers';
+import { getObservableOrAlert, getObservableResultOrAlert, subscribeOrAlert, logMemberObservables } from './ObservableHelpers';
 
 export interface LifecycleComponentViewModel {
   initializeViewModel(): void;
@@ -32,12 +31,16 @@ export abstract class BaseViewModel implements IDisposable {
   public static displayName = 'BaseViewModel';
 
   // these are WebRx helper functions (so you don't need to import them every time)
-  protected readonly property = property;
-  protected readonly command = command;
-  protected readonly getObservable = getObservable;
-  protected readonly getProperty = getProperty;
+  protected readonly isObservable = isObservable;
+  protected readonly isObserver = isObserver;
+  protected readonly isSubject = isSubject;
   protected readonly isProperty = isProperty;
   protected readonly isCommand = isCommand;
+  protected readonly asObservable = asObservable;
+  protected readonly getObservable = getObservable;
+  protected readonly getProperty = getProperty;
+  protected readonly property = property;
+  protected readonly command = command;
   protected readonly whenAny = whenAny;
 
   // these are Alert helper functions
@@ -70,7 +73,7 @@ export abstract class BaseViewModel implements IDisposable {
     if (this.logger.level <= Logging.LogLevel.Debug && this.isLoggingMemberObservables === false) {
       this.isLoggingMemberObservables = true;
 
-      this.addManySubscriptions(...wxr.logMemberObservables(this.logger, this));
+      this.addManySubscriptions(...logMemberObservables(this.logger, this));
     }
   }
 
