@@ -51,7 +51,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
   public readonly sort: Command<SortArgs>;
   public readonly toggleSortDirection: Command<string>;
   public readonly refresh: Command<any>;
-  protected readonly project: Command<TResult | undefined>;
+  public readonly project: Command<TResult | undefined>;
 
   constructor(
     requests: Observable<TRequest>,
