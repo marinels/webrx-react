@@ -76,14 +76,21 @@ export function getProperty<T>(observableOrProperty: ObservableOrPropertyOrValue
   return Observable.never<T>().toProperty(initialValue);
 }
 
-export function handleError(e: any, subject: Subject<Error>) {
+export function handleError(e: any, ...optionalParams: any[]) {
   const err = e instanceof Error ? e : new Error(e);
 
-  if (DEBUG) {
+  const subject = isSubject(optionalParams[0]) ?
+    optionalParams.shift() :
+    undefined;
+
+  if (DEBUG || subject == null) {
     // in debug mode we want to emit any webrx errors
+    // if there is no subject receiving the error then we should be emitting to the console
     // tslint:disable-next-line:no-console
-    console.error(err);
+    console.error(err, ...optionalParams);
   }
 
-  subject.onNext(err);
+  if (isSubject<Error>(subject)) {
+    subject.onNext(err);
+  }
 }
