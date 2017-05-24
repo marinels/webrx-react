@@ -34,6 +34,7 @@ export interface WebRxReactStatic {
   renderSizedLoadable: typeof RenderHelpers.renderSizedLoadable;
   renderGridLoadable: typeof RenderHelpers.renderGridLoadable;
   focusElement: typeof RenderHelpers.focusElement;
+  classNames: typeof RenderHelpers.classNames;
 }
 wxr.renderEnumerable = RenderHelpers.renderEnumerable;
 wxr.renderConditional = RenderHelpers.renderConditional;
@@ -42,3 +43,4 @@ wxr.renderLoadable = RenderHelpers.renderLoadable;
 wxr.renderSizedLoadable = RenderHelpers.renderSizedLoadable;
 wxr.renderGridLoadable = RenderHelpers.renderGridLoadable;
 wxr.focusElement = RenderHelpers.focusElement;
+wxr.classNames = RenderHelpers.classNames;

@@ -1,9 +1,9 @@
 import * as React from 'react';
-import * as classNames from 'classnames';
 import { IDisposable, Disposable } from  'rx';
 import { Button, ButtonProps, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import { Command } from '../../../WebRx';
+import { wxr } from '../../React';
 
 import './CommandButton.less';
 
@@ -67,7 +67,7 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
       cmd.canExecute;
 
     const button = (
-      <Button { ...rest } className={ classNames('CommandButton', this.props.className, { plain: this.props.plain }) } disabled={ canExecute !== true } onClick={ e => this.handleClick(e) }>
+      <Button { ...rest } className={ wxr.classNames('CommandButton', this.props.className, { plain: this.props.plain }) } disabled={ canExecute !== true } onClick={ e => this.handleClick(e) }>
         { this.props.children }
       </Button>
     );

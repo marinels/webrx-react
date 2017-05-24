@@ -1,14 +1,12 @@
 import * as React from 'react';
 import { Observable } from 'rx';
-import * as classNames from 'classnames';
 import { Icon } from 'react-fa';
 import { Table, TableProps, OverlayTrigger, OverlayTriggerProps } from 'react-bootstrap';
 
-import { BaseView, BaseViewProps } from '../../React/BaseView';
+import { wxr, BaseView, BaseViewProps } from '../../React';
 import { SearchView, SearchProps } from '../Search/SearchView';
 import { PagerView, PagerProps } from '../Pager/PagerView';
 import { CommandButton } from '../CommandButton/CommandButton';
-import { wxr } from '../../React';
 import { DataGridViewModel } from './DataGridViewModel';
 import { SortDirection } from '../../../Utils/Compare';
 import { BaseListViewTemplate, ListViewRenderTemplate, ListViewRenderTemplateProps } from '../List/ListView';
@@ -165,7 +163,7 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
 
   protected renderDefaultCellContainer(content: any, item: any, index: number, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) {
     content = (
-      <td className={ classNames('DataGrid-cell', column.className) } key={ columnIndex }>
+      <td className={ wxr.classNames('DataGrid-cell', column.className) } key={ columnIndex }>
         { content }
       </td>
     );
@@ -174,7 +172,7 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
   }
 
   protected renderDefaultRowContainer(content: any, item: any, index: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) {
-    const rowClasses = classNames('DataGrid-row', {
+    const rowClasses = wxr.classNames('DataGrid-row', {
       'DataGrid-row--selected': view.props.highlightSelected === true && viewModel.selectedItem.value === item,
     });
 
@@ -189,7 +187,7 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
 
   protected renderDefaultHeaderContainer(content: any, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) {
     content = (
-      <th key={ columnIndex } className={ classNames('DataGrid-column', column.className) } width={ column.width }>
+      <th key={ columnIndex } className={ wxr.classNames('DataGrid-column', column.className) } width={ column.width }>
         { content }
       </th>
     );
@@ -335,7 +333,7 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
   }
 
   protected renderRow(item: TData, index: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) {
-    const rowClasses = classNames('DataGrid-row', {
+    const rowClasses = wxr.classNames('DataGrid-row', {
       'DataGrid-row--selected': view.props.highlightSelected === true && viewModel.selectedItem.value === item,
     });
 
@@ -407,7 +405,7 @@ export class DataGridSearch extends React.Component<DataGridSearchProps, any> {
 
     return wxr.renderConditional(props.grid.canFilter() === true, () => (
       <SearchView { ...rest } viewModel={ props.grid.search }
-        className={ classNames('DataGrid', className, { Table: props.viewType === 'Table' }) }
+        className={ wxr.classNames('DataGrid', className, { Table: props.viewType === 'Table' }) }
       />
     ));
   }
@@ -425,7 +423,7 @@ export class DataGridPager extends React.Component<DataGridPagerProps, any> {
 
     return (
       <PagerView { ...rest } viewModel={ props.grid.pager }
-        className={ classNames('DataGrid', className) }
+        className={ wxr.classNames('DataGrid', className) }
       />
     );
   }
@@ -517,10 +515,10 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
         this.isOnlyView() === true,
         () => React.cloneElement(
           grid,
-          Object.assign({ className: classNames('DataGrid', grid.props.className, className) }, rest),
+          Object.assign({ className: this.classNames('DataGrid', grid.props.className, className) }, rest),
         ),
         () => (
-          <div { ...rest } className={ classNames('DataGrid', className) }>
+          <div { ...rest } className={ this.classNames('DataGrid', className) }>
             {
               this.renderConditional(
                 props.search !== false,

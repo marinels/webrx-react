@@ -1,8 +1,7 @@
 import * as React from 'react';
-import * as classNames from 'classnames';
 import { Alert } from 'react-bootstrap';
 
-import { BaseView, BaseViewProps } from '../../React/BaseView';
+import { BaseView, BaseViewProps } from '../../React';
 import { AlertViewModel } from './AlertViewModel';
 
 import './Alert.less';
@@ -17,7 +16,7 @@ export class AlertView extends BaseView<AlertProps, AlertViewModel> {
     const { className, rest } = this.restProps();
 
     return (
-      <div { ...rest } className={ classNames('Alert', className) }>
+      <div { ...rest } className={ this.classNames('Alert', className) }>
         <Alert bsStyle={ this.state.style } onDismiss={ this.bindEventToCommand(x => x.dismiss) }>
           <div className='Alert-header'>{ this.state.header }</div>
           { this.renderAlertContent() }

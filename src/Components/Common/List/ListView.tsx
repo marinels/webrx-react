@@ -1,15 +1,13 @@
 import * as React from 'react';
 import { Observable } from 'rx';
 import { Enumerable } from 'ix';
-import * as classNames from 'classnames';
 import { Icon } from 'react-fa';
 import { ListGroup, ListGroupProps, ListGroupItem } from 'react-bootstrap';
 
 import { wx, ReadOnlyProperty, Command } from '../../../WebRx';
-import { BaseView, ViewModelProps } from '../../React/BaseView';
+import { wxr, BaseView, ViewModelProps } from '../../React';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { ListViewModel } from './ListViewModel';
-import { wxr } from '../../React';
 
 export * from './NavButton';
 
@@ -397,7 +395,7 @@ export class ListView extends BaseView<ListProps, ListViewModel<any, any>> {
 
     return React.cloneElement(
       list,
-      Object.assign({ className: classNames('List', list.props.className, className) }, rest),
+      Object.assign({ className: this.classNames('List', list.props.className, className) }, rest),
     );
   }
 }

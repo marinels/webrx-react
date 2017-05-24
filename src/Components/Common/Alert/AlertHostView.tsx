@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { Observable } from 'rx';
-import * as classNames from 'classnames';
 import { CSSTransitionGroup } from 'react-transition-group';
 
-import { BaseView, BaseViewProps } from '../../React/BaseView';
+import { BaseView, BaseViewProps } from '../../React';
 import { AlertView } from './AlertView';
 import { AlertHostViewModel } from './AlertHostViewModel';
 import { AlertViewModel } from './AlertViewModel';
@@ -26,7 +25,7 @@ export class AlertHostView extends BaseView<AlertHostProps, AlertHostViewModel> 
     const { className, rest } = this.restProps();
 
     return (
-      <div { ...rest } className={ classNames('AlertHost', className) }>
+      <div { ...rest } className={ this.classNames('AlertHost', className) }>
         <CSSTransitionGroup transitionName='alert' transitionEnterTimeout={ 500 } transitionLeaveTimeout={ 300 }>
           { this.renderAlerts() }
         </CSSTransitionGroup>

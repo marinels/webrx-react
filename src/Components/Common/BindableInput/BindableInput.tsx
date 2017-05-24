@@ -1,6 +1,12 @@
 import * as React from 'react';
 
-import { Property } from '../../../WebRx';
+import { wx, Property } from '../../../WebRx';
+
+export function validateBindableProperty(property: any) {
+  if (wx.isProperty(property) && property.isReadOnly) {
+    wx.handleError('BindableInput bound to ReadOnlyProperty', property);
+  }
+}
 
 export interface BindableProps {
   /**
@@ -44,6 +50,14 @@ export class BindableInput extends React.Component<BindableInputProps, any> {
     valueSetter: (property: Property<any>, value: any) => { property.value = value; },
   };
 
+  componentWillMount() {
+    validateBindableProperty(this.props.property);
+  }
+
+  componentWillReceiveProps(nextProps: BindableInputProps) {
+    validateBindableProperty(nextProps.property);
+  }
+
   render() {
     const { className, children, props, rest } = this.restProps(x => {
       const { property, converter, valueProperty, onChangeProperty, valueGetter, valueSetter } = x;
@@ -51,11 +65,13 @@ export class BindableInput extends React.Component<BindableInputProps, any> {
     });
 
     const bindProps: any = {};
-    const value = props.valueGetter!(props.property);
+    const value = this.getValue();
     // NOTE: react says the value of a bindable control should not be null, but
     //       instead empty string (undefined is ok though, so === is required).
     bindProps[props.valueProperty!] = value === null ? '' : value;
-    bindProps[props.onChangeProperty!] = (e: React.FormEvent<any>) => this.onChange(e);
+    bindProps[props.onChangeProperty!] = (e: React.FormEvent<any>) => {
+      this.setValue(e);
+    };
 
     return React.cloneElement(
       React.Children.only(children),
@@ -63,16 +79,32 @@ export class BindableInput extends React.Component<BindableInputProps, any> {
     );
   }
 
-  protected onChange(e: React.FormEvent<any>) {
-    const target: any = e.target;
-    let value: any = target[this.props.valueProperty!];
-
-    if (this.props.converter != null) {
-      value = this.props.converter(value);
+  protected getValue() {
+    try {
+      return this.props.valueGetter!(this.props.property);
     }
+    catch (e) {
+      wx.handleError(e);
 
-    this.props.valueSetter!(this.props.property, value);
+      return undefined;
+    }
+  }
 
-    this.forceUpdate();
+  protected setValue(event: React.FormEvent<any>) {
+    try {
+      const target: any = event.target;
+      let value: any = target[this.props.valueProperty!];
+
+      if (this.props.converter != null) {
+        value = this.props.converter(value);
+      }
+
+      this.props.valueSetter!(this.props.property, value);
+
+      this.forceUpdate();
+    }
+    catch (e) {
+      wx.handleError(e);
+    }
   }
 }
