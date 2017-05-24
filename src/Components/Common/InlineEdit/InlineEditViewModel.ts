@@ -8,7 +8,7 @@ export class InlineEditViewModel<T> extends BaseViewModel {
   public static displayName = 'InlineEditViewModel';
 
   public readonly value: Property<T>;
-  public readonly editValue: ReadOnlyProperty<T | undefined>;
+  public readonly editValue: Property<T | undefined>;
   public readonly isEditing: ReadOnlyProperty<boolean>;
   public readonly hasSavingError: ReadOnlyProperty<boolean>;
 
@@ -19,7 +19,7 @@ export class InlineEditViewModel<T> extends BaseViewModel {
 
   constructor(
     value?: Property<T> | T,
-    protected readonly onSave: (value: T, viewModel: InlineEditViewModel<T>) => Observable<T> = x => Observable.of(x),
+    protected readonly onSave: (value: T, viewModel: InlineEditViewModel<T>) => (T | Observable<T>) = x => x,
   ) {
     super();
 
@@ -30,6 +30,8 @@ export class InlineEditViewModel<T> extends BaseViewModel {
       this.value = this.property(value);
     }
 
+    this.editValue = this.property<T | undefined>();
+
     this.edit = this.command(() => {
       return clone(this.value.value);
     });
@@ -37,7 +39,7 @@ export class InlineEditViewModel<T> extends BaseViewModel {
     this.save = this.command(
       () => {
         return Observable
-          .defer(() => this.onSave(this.editValue.value!, this))
+          .defer(() => this.asObservable(this.onSave(this.editValue.value!, this)))
           .doOnError(e => {
             this.alertForError(e, 'Unable to Save');
           });
@@ -53,13 +55,17 @@ export class InlineEditViewModel<T> extends BaseViewModel {
 
     this.setError = this.command<boolean>();
 
-    this.editValue = Observable
-      .merge(
-        this.edit.results,
-        this.save.results,
-        this.cancel.results,
-      )
-      .toProperty();
+    this.addSubscription(
+      Observable
+        .merge(
+          this.edit.results,
+          this.save.results.map(x => undefined),
+          this.cancel.results,
+        )
+        .subscribe(x => {
+          this.editValue.value = x;
+        }),
+    );
 
     this.isEditing = Observable
       .merge(

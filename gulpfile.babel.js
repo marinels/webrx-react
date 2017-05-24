@@ -384,7 +384,7 @@ function onWebpackComplete(build, err, stats, omitAssets) {
   }
 
   if (stats) {
-    const jsonStats = stats.toJson() || {};
+    const jsonStats = stats.toJson({ chunkModules: true }) || {};
 
     if (config.quiet === false) {
       if (config.verbose) {

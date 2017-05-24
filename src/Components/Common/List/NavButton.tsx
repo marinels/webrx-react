@@ -1,8 +1,8 @@
 import * as React from 'react';
-import * as classNames from 'classnames';
 import { Icon, IconSize } from 'react-fa';
 
 import { CommandButton, CommandButtonProps } from '../CommandButton/CommandButton';
+import { wxr } from '../../React';
 
 import './NavButton.less';
 
@@ -25,7 +25,7 @@ export class NavButton extends React.Component<NavButtonProps, any> {
     });
 
     return (
-      <CommandButton { ...rest } className={ classNames('NavButton', className) }>
+      <CommandButton { ...rest } className={ wxr.classNames('NavButton', className) }>
         <Icon name='chevron-right' size={ props.iconSize } />
       </CommandButton>
     );

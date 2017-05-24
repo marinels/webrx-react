@@ -1,9 +1,9 @@
 import * as React from 'react';
-import * as classNames from 'classnames';
 import { IDisposable } from  'rx';
 import { ProgressBar } from 'react-bootstrap';
 
 import { wx, Property } from '../../../WebRx';
+import { wxr } from '../../React';
 
 import './Loading.less';
 
@@ -45,7 +45,7 @@ export class Loading extends React.Component<LoadingProps, any> {
     const Component = props.componentClass;
 
     return (
-      <Component { ...rest } className={ classNames('Loading', className) }>
+      <Component { ...rest } className={ wxr.classNames('Loading', className) }>
         <ProgressBar style={({ fontSize: props.fontSize })} active now={ this.getProgressValue() } label={ props.text }>
           { children }
         </ProgressBar>

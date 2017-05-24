@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Observable } from 'rx';
-import { Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab,
+import { Col, Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab,
   Well, ListGroup, ListGroupItem, Table, OverlayTrigger, Overlay, Tooltip, Popover,
 } from 'react-bootstrap';
 
@@ -132,6 +132,15 @@ const viewMap: ViewActivatorMap = {
   ),
   ObservableWrapper: () => (
     <Components.ObservableWrapper observableOrProperty={ Observable.timer(0, 1000) } render={ x => (<div>Current Value is { x }</div>) } />
+  ),
+  SearchViewModel: (viewModel: Components.SearchViewModel) => (
+    <Form horizontal>
+      <FormGroup>
+        <Col sm={12}>
+          <Components.SearchView viewModel={ viewModel } />
+        </Col>
+      </FormGroup>
+    </Form>
   ),
   TimeSpanInputViewModel: (viewModel: Components.TimeSpanInputViewModel) => (
     <Form>
@@ -444,12 +453,23 @@ const viewMap: ViewActivatorMap = {
       <Components.DataGridColumn fieldName='requiredBy' header='Required By' sortable className='col-md-4' />
     </Components.ItemListPanelView>
   ),
-  InlineEditViewModel: (viewModel: Components.InlineEditViewModel<any>) => (
-    <Components.InlineEditView style={ ({ margin: 0 }) } viewModel={ viewModel } inputType='number'
-      template={ x => `${ x.rank } of 10` } converter={ x => Number(x) } keyboard clickToEdit
-      valueGetter={ (x: Property<any>) => x.value.rank } valueSetter={ (x: Property<any>, v) => x.value.rank = v }
-    />
-  ),
+  InlineEditViewModel: (viewModel: Components.InlineEditViewModel<any>, componentRoute: string) => {
+    if (componentRoute === 'InlineEditObject') {
+      return (
+        <Components.InlineEditView style={ ({ margin: 0 }) } viewModel={ viewModel } inputType='number'
+          template={ x => `${ x.rank } of 10` } converter={ x => Number(x) } keyboard clickToEdit
+          valueGetter={ (x: Property<any>) => x.value.rank } valueSetter={ (x: Property<any>, v) => x.value.rank = v }
+        />
+      );
+    }
+    else {
+      return (
+        <Components.InlineEditView style={ ({ margin: 0 }) } viewModel={ viewModel } inputType='number'
+          template={ x => `${ x } of 10` } converter={ x => Number(x) } keyboard clickToEdit
+        />
+      );
+    }
+  },
 };
 
 export const ViewMap = viewMap;

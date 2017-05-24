@@ -1,9 +1,6 @@
 import * as React from 'react';
 import { render } from 'react-dom';
 
-// import all custom styles
-import './Style/App.less';
-
 // import framework API surface
 import './webrx-react';
 

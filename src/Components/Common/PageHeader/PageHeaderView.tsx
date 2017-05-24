@@ -1,16 +1,14 @@
 import * as React from 'react';
 import { Observable } from 'rx';
 import { Icon, IconStack } from 'react-fa';
-import * as classNames from 'classnames';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 
-import { BaseView, BaseViewProps } from '../../React/BaseView';
+import { BaseView, BaseViewProps, HeaderAction, HeaderCommandAction, HeaderMenu } from '../../React';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { SearchView } from '../Search/SearchView';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import { Sidebar } from './Sidebar';
 import { PageHeaderViewModel } from './PageHeaderViewModel';
-import { HeaderAction, HeaderCommandAction, HeaderMenu } from '../../React/Actions';
 
 import './PageHeader.less';
 
@@ -95,7 +93,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
     });
 
     return (
-      <div { ...rest } className={ classNames('PageHeader', className) }>
+      <div { ...rest } className={ this.classNames('PageHeader', className) }>
         <Navbar fixedTop fluid>
           <Navbar.Header>
             <Navbar.Brand>
@@ -137,7 +135,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
     const visibleItems = this.getVisibleActions(items);
 
     return this.renderConditional(visibleItems.length > 0, () => (
-      <NavDropdown id={ id } key={ id } title={ header } noCaret={ noCaret } className={ classNames(`PageHeader-${ id }`, className) }>
+      <NavDropdown id={ id } key={ id } title={ header } noCaret={ noCaret } className={ this.classNames(`PageHeader-${ id }`, className) }>
         {
           visibleItems
             .map(x => (

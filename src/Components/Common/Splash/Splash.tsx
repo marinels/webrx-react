@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Grid, Row, Image } from 'react-bootstrap';
-import * as classNames from 'classnames';
 
 import { Property } from '../../../WebRx';
 import { Loading } from '../Loading/Loading';
@@ -30,7 +29,7 @@ export class Splash extends React.Component<SplashProps, any> {
     });
 
     return (
-      <div { ...rest } className={ classNames('Splash', className) }>
+      <div { ...rest } className={ wxr.classNames('Splash', className) }>
         <Grid fluid={ props.fluid }>
           <Row>
             <div className='Splash-header'>

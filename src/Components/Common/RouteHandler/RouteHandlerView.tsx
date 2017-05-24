@@ -3,11 +3,8 @@ import { Observable } from 'rx';
 import { Grid, Alert, Breadcrumb } from 'react-bootstrap';
 import { CSSTransitionGroup } from 'react-transition-group';
 import { Icon } from 'react-fa';
-import * as classNames from 'classnames';
 
-import { BaseView, BaseViewProps } from '../../React/BaseView';
-import { isViewModel } from '../../React/BaseViewModel';
-import { BaseRoutableViewModel, isRoutableViewModel } from '../../React/BaseRoutableViewModel';
+import { BaseRoutableViewModel, BaseView, BaseViewProps, isViewModel, isRoutableViewModel } from '../../React';
 import { RouteHandlerViewModel, SplashKey } from './RouteHandlerViewModel';
 import { Breadcrumbs } from './Breadcrumbs';
 import { CommandButton } from '../CommandButton/CommandButton';
@@ -79,7 +76,7 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
     const key = this.getViewKey();
 
     return (
-      <div { ...rest } className={ classNames('RouteHandler', className) }>
+      <div { ...rest } className={ this.classNames('RouteHandler', className) }>
         <CSSTransitionGroup transitionName='view' transitionLeave={ false } transitionEnterTimeout={ 250 }>
           <div className='RouteHandler-viewContainer' key={ key }>
             <Breadcrumbs items={ this.state.routingBreadcrumbs.value } pinnable />

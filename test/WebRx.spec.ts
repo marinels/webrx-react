@@ -75,6 +75,17 @@ describe('for WebRx', () => {
       isChanged.should.be.false;
     });
 
+    it('does generate a changed event with no initial value after setting a value', () => {
+      const prop = wx.property<string>();
+      let isChanged = false;
+      prop.changed
+        .observeOn(Scheduler.immediate)
+        .subscribe(() => { isChanged = true; });
+
+      prop.value = 'test';
+      isChanged.should.be.true;
+    });
+
     it('does not generate an initial changed event with an initial value', () => {
       const prop = wx.property('test');
       let isChanged = false;
@@ -104,6 +115,17 @@ describe('for WebRx', () => {
         .subscribe(() => { isChanged = true; });
 
       prop.value = 'test';
+      isChanged.should.be.false;
+    });
+
+    it('does not generate a changed value when a composite value does not change internal values', () => {
+      const prop = wx.property({ val: 'test' });
+      let isChanged = false;
+      prop.changed
+        .observeOn(Scheduler.immediate)
+        .subscribe(() => { isChanged = true; });
+
+      prop.value = { val: 'test' };
       isChanged.should.be.false;
     });
   });
@@ -315,6 +337,59 @@ describe('for WebRx', () => {
   });
 
   describe('observable extensions', () => {
+    describe('startWith', () => {
+      it('allows injecting a new type value into an observable', () => {
+        let asserted = false;
+
+        Observable
+          .of('test')
+          .startWith(undefined)
+          .toArray()
+          .subscribe(x => {
+            x.should.eql([ undefined, 'test' ]);
+            asserted = true;
+          });
+
+        asserted.should.be.true;
+      });
+    });
+
+    describe.only('filterNull', () => {
+      it('filters null values from an observable', () => {
+        let asserted = false;
+
+        Observable
+          .of(1, undefined, 2, undefined, undefined, 3, undefined, null, undefined, 4)
+          .filterNull()
+          .toArray()
+          .subscribe(x => {
+            x.should.eql([ 1, 2, 3, 4 ]);
+            asserted = true;
+          });
+
+        asserted.should.be.true;
+      });
+
+      it('allows providing an additional filter for non-null items', () => {
+        let asserted = false;
+
+        Observable
+          .of(1, undefined, 2, undefined, undefined, 3, undefined, null, undefined, 4)
+          .filterNull(x => {
+            x.should.not.be.null;
+
+            return x > 2;
+          })
+          .toArray()
+          .subscribe(x => {
+            x.should.eql([ 3, 4 ]);
+            asserted = true;
+          });
+
+        asserted.should.be.true;
+      });
+    });
+
     describe('toProperty', () => {
       it('creates a property for the observable source without an initial value', () => {
         const obs = Observable.of('test');

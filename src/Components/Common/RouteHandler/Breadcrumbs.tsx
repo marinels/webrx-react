@@ -1,10 +1,8 @@
 import * as React from 'react';
 import { Breadcrumb } from 'react-bootstrap';
 import { Icon } from 'react-fa';
-import * as classNames from 'classnames';
 
-import { RoutingBreadcrumb } from '../../React/BaseRoutableViewModel';
-import { wxr } from '../../React';
+import { wxr, RoutingBreadcrumb } from '../../React';
 import { CommandButton } from '../CommandButton/CommandButton';
 
 import './Breadcrumbs.less';
@@ -45,7 +43,7 @@ export class Breadcrumbs extends React.Component<BreadcrumbsProps, any> {
         </Breadcrumb.Item>
       ),
       x => x.length === 0 ? null : (
-        <div { ...rest } className={ classNames('Breadcrumbs', 'hidden-xs', className) }>
+        <div { ...rest } className={ wxr.classNames('Breadcrumbs', 'hidden-xs', className) }>
           <div className='Breadcrumbs-container'>
             <Breadcrumb>{ x }</Breadcrumb>
             {

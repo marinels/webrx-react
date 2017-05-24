@@ -7,7 +7,7 @@ import 'rx';
 declare module 'rx' {
   interface Observable<T> {
     startWith<TOther>(value: TOther): Observable<T | TOther>;
-    filterNull<T>(this: Observable<T | undefined | null>): Observable<T>;
+    filterNull<T>(this: Observable<T | undefined | null>, callbackfn?: (value: T, index: number, observable: Observable<T | undefined | null>) => boolean): Observable<T>;
     toProperty: (initialValue?: T) => ReadOnlyProperty<T>;
     observeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>): Observable<TRet>;
     invokeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>, observer: IObserver<T>): IDisposable;
@@ -15,9 +15,15 @@ declare module 'rx' {
   }
 }
 
-function filterNull<T>(this: Observable<T | undefined | null>) {
+function filterNull<T>(this: Observable<T | undefined | null>, callbackfn?: (value: T, index: number, observable: Observable<T | undefined | null>) => boolean) {
   return this
-    .filter(x => x != null);
+    .filter((x, i, o) => {
+      if (x == null) {
+        return false;
+      }
+
+      return callbackfn == null ? true : callbackfn(x, i, o);
+    });
 }
 (<any>Observable).prototype.filterNull = filterNull;
 
