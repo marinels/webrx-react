@@ -1,10 +1,23 @@
 @import './Variables.less';
 @import './Mixins.less';
 
+// this is a special style override to prevent fixed elements from looking offset
+// due to the modal dialog adding scrollbar padding to the backdrop (in an effort
+// to not shift the entire page over to the right). Since fixed page elements are
+// not affected by the body padding, we end up with offset elements. This style
+// override corrects this visual inconsistency.
+// NOTE: this style needs to be outside of our root style because we may not have
+//       control over body styles
+body.modal-open {
+  overflow: auto !important;
+  padding: 0 !important;
+}
+
 .webrx-react {
   @import './Animations.less';
   @import '../Components/Components.less';
 
+  // this improves muted text color to make it a bit more visible (darker)
   .text-muted {
     color: @text-muted;
   }
@@ -14,16 +27,6 @@
     display: inline-block;
     float: none !important;
     vertical-align: middle;
-  }
-
-  // this is a special style override to prevent fixed elements from looking offset
-  // due to the modal dialog adding scrollbar padding to the backdrop (in an effort
-  // to not shift the entire page over to the right). Since fixed page elements are
-  // not affected by the body padding, we end up with offset elements. This style
-  // override corrects this visual inconsistency.
-  body.modal-open {
-    overflow: auto !important;
-    padding: 0 !important;
   }
 
   // this fixes a bug where focused buttons in input groups have cut-off outlines
@@ -82,10 +85,6 @@
   .badge {
     font-weight: normal;
     letter-spacing: 1px;
-  }
-
-  html {
-    color: @body-color;
   }
 
   // this allows text in fa containers to match the rest of the site

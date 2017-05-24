@@ -1,15 +1,26 @@
+@import (reference) './Variables.less';
+
 // namespace all of bootstrap 3 so we can selectively enable these styles
 .bootstrap-3 {
   @import (less) '~bootstrap/dist/css/bootstrap.css';
-}
 
-// stylelint-disable property-no-vendor-prefix
-// we need to replicate some root element styles because with our namespace we
-// will no longer be able to apply styles to html or body tags
-.bootstrap-3 {
-  font-family: sans-serif;
-  margin: 0;
+  // we need to replicate some root element styles because with our namespace we
+  // will no longer be able to apply styles to html or body tags
+  background-color: @body-bg;
+  color: @body-color;
+  font-family: @font-family-sans-serif;
+  font-size: @font-size-base;
+  line-height: @line-height-base;
+
+  // stylelint-disable property-no-vendor-prefix
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
+  // stylelint-enable property-no-vendor-prefix
 }
-// stylelint-enable property-no-vendor-prefix
+
+// this is to attempt a removal of the default body margin which has an effect on
+// how the grid system is layed out
+body {
+  margin: 0;
+}
