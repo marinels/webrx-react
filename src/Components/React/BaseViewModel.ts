@@ -3,7 +3,10 @@ import { Observable, IDisposable } from 'rx';
 import { property } from '../../WebRx/Property';
 import { command } from '../../WebRx/Command';
 import { whenAny } from '../../WebRx/WhenAny';
-import { isObservable, isObserver, isSubject, isProperty, isCommand, asObservable, getObservable, getProperty } from '../../WebRx/Utils';
+import {
+  isObservable, isObserver, isSubject, isProperty, isCommand, asObservable,
+  getObservable, getProperty, handleError,
+} from '../../WebRx/Utils';
 import { ObservableOrProperty, Command } from '../../WebRx';
 import { Logging, Alert, SubMan } from '../../Utils';
 import { Manager } from '../../Routing/RouteManager';
@@ -39,6 +42,7 @@ export abstract class BaseViewModel implements IDisposable {
   protected readonly asObservable = asObservable;
   protected readonly getObservable = getObservable;
   protected readonly getProperty = getProperty;
+  protected readonly handleError = handleError;
   protected readonly property = property;
   protected readonly command = command;
   protected readonly whenAny = whenAny;
