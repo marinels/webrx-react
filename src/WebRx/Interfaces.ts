@@ -1,4 +1,4 @@
-import { Observable, IObserver, IDisposable } from 'rx';
+import { Observable, Observer, Subscription } from 'rxjs';
 
 export interface ReadOnlyProperty<T> {
   readonly changed: Observable<T>;
@@ -32,15 +32,15 @@ export interface Command<T> {
 
   execute(
     parameter?: any,
-    observerOrNext?: IObserver<T>,
+    observerOrNext?: Observer<T>,
     onError?: (exception: any) => void,
     onCompleted?: () => void,
-  ): IDisposable;
+  ): Subscription;
 
   execute(
     parameter?: any,
     onNext?: (value: T) => void,
     onError?: (exception: any) => void,
     onCompleted?: () => void,
-  ): IDisposable;
+  ): Subscription;
 }

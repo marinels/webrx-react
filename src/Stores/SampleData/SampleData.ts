@@ -1,4 +1,4 @@
-import { Observable } from  'rx';
+import { Observable } from  'rxjs';
 
 import { BaseSampleDataStore, SampleDataActionSet, SampleDataAction } from './BaseSampleDataStore';
 
@@ -43,7 +43,7 @@ export class SampleData {
         .delay(this.delay);
     }
     else {
-      result = Observable.throw<T>(new Error(`Sample DataStore Action Not Found: ${ action }`));
+      result = Observable.throw(new Error(`Sample DataStore Action Not Found: ${ action }`));
     }
 
     return result;

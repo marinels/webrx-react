@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 import { CSSTransitionGroup } from 'react-transition-group';
 
 import { BaseView, BaseViewProps } from '../../React';

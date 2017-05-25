@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 import * as moment from 'moment';
 import { Grid, Row, Col } from 'react-bootstrap';
 

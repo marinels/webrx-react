@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 import { Grid } from 'react-bootstrap';
 
 import { updateDefaultPortalContainer } from './NamespacedPortal';

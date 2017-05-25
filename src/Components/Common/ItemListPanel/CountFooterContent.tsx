@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Observable, IDisposable } from 'rx';
+import { Observable, Subscription } from 'rxjs';
 import { Badge } from 'react-bootstrap';
 
 import { wxr } from '../../React';
@@ -20,10 +20,12 @@ export class CountFooterContent extends React.Component<CountFooterContentProps,
     suffix: 'Items',
   };
 
-  private lengthChangedSub: IDisposable | undefined;
+  private lengthChangedSub: Subscription;
 
   constructor(props?: CountFooterContentProps, context?: any) {
     super(props, context);
+
+    this.lengthChangedSub = Subscription.EMPTY;
 
     this.state = {
       length: 0,
@@ -40,7 +42,7 @@ export class CountFooterContent extends React.Component<CountFooterContentProps,
   }
 
   componentWillUnmount() {
-    this.lengthChangedSub = Object.dispose(this.lengthChangedSub);
+    this.lengthChangedSub = Subscription.unsubscribe(this.lengthChangedSub);
   }
 
   render() {

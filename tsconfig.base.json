@@ -20,7 +20,6 @@
     "target": "es5",
 
     "paths": {
-      "rx": [ "node_modules/rx/ts/rx.all" ],
       "*": [ "src/types/*" ]
     }
   }

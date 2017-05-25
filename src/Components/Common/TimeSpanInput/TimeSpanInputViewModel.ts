@@ -1,4 +1,4 @@
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 import * as moment from 'moment';
 
 import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
@@ -88,7 +88,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
     this.duration = this
       .whenAny(this.text, this.unit, (text, unit) => ({ text, unit }))
       .filter(x => x.unit != null)
-      .debounce(parseDelay)
+      .debounceTime(parseDelay)
       .map(x => {
         let duration = this.parse(x.text, x.unit);
 
@@ -106,7 +106,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
           unit: x.unit,
         };
       })
-      .doOnNext(x => {
+      .do(x => {
         // if we have a valid duration then check to see if we need to update the text
         if (x != null) {
           const text = this.getText(x.duration, x.unit, precision);

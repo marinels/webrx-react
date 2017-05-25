@@ -1,4 +1,4 @@
-import { Observable } from 'rx';
+import { Observable, Subscription } from 'rxjs';
 import 'ix';
 
 import { ReadOnlyProperty, Command } from '../../../WebRx';
@@ -121,7 +121,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
           // try and dispose of our current routed component
           // providing it isn't the same component (which should never happen)
           if (prev !== curr) {
-            Object.dispose(prev);
+            Subscription.unsubscribe(prev);
           }
 
           return curr;
@@ -133,7 +133,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
     this.routingBreadcrumbs = this
       .whenAny(this.routedComponent, x => x)
       .map(x => isRoutableViewModel(x) ? this.whenAny(x.breadcrumbs, y => y) : Observable.of(undefined))
-      .switchLatest()
+      .switch()
       .toProperty();
 
     // when a route changes we enter loading mode and wait until the load finishes
@@ -147,7 +147,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
       // only show the loading screen if we are really taking a while to load
       // this will make the initial loading screen appear for at least 500ms as
       // well as prevent really short flashes of the loading screen
-      .debounce(500)
+      .debounceTime(500)
       // initially begin in loading mode
       .toProperty(true);
 
@@ -160,7 +160,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
       // debouce here to prevent loading param flux from hammering the load command
       // this may not be necessary for most components, but a small price to pay if a component
       // performs a lot of routing state changes in a short amount of time
-      .debounce(100)
+      .debounceTime(100)
       .invokeCommand(this.loadComponent),
     );
 
@@ -169,7 +169,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
     // ask the routing manager to navigate to the current route with our updated state
     this.subscribeOrAlert(
       () => PubSub.observe<RoutingStateChanged>(RoutingStateChangedKey)
-        .debounce(100),
+        .debounceTime(100),
       'Routing Handler State Changed Error',
       x => {
         if (this.currentRoute.value != null && this.routedComponent.value != null) {
@@ -185,7 +185,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
       // skip the initial null stream element
       .skip(1)
       // wait for routing to settle down
-      .debounce(100)
+      .debounceTime(100)
       .subscribe(component => {
         if (isRoutableViewModel(component)) {
           // we have a routable component, so watch the documentTitle observable property
@@ -201,7 +201,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
               return x;
             })
             // give rapid title changes a bit to settle down
-            .debounce(100)
+            .debounceTime(100)
             .subscribe(x => {
               this.updateDocumentTitle(component, x);
             }),
@@ -329,7 +329,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
     else {
       this.logger.debug(`Loading view model for route '${ next.route.path }'`, next);
 
-      // create a new view model for the route using the activator function
+      // create a new component for the route using the activator function
       return next.creator(next.route);
     }
   }

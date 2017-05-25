@@ -1,11 +1,9 @@
-import { Observable, Subject, BehaviorSubject, IObserver, IDisposable } from 'rx';
+import { Observable, Subject, BehaviorSubject, Observer, Subscription } from 'rxjs';
 
 import { Command } from './Interfaces';
 import { isObservable, asObservable, handleError } from './Utils';
 
-export class ObservableCommand<T> implements Command<T>, IDisposable {
-  private canExecuteSubscription: IDisposable;
-
+export class ObservableCommand<T> extends Subscription implements Command<T> {
   protected isExecutingSubject: BehaviorSubject<boolean>;
   protected canExecuteSubject: BehaviorSubject<boolean>;
   protected resultsSubject: Subject<T>;
@@ -15,12 +13,14 @@ export class ObservableCommand<T> implements Command<T>, IDisposable {
     protected readonly executeAction: (parameter: any) => Observable<T>,
     canExecute?: Observable<boolean>,
   ) {
-    this.isExecutingSubject = new BehaviorSubject<boolean>(false);
-    this.canExecuteSubject = new BehaviorSubject<boolean>(canExecute == null);
-    this.resultsSubject = new Subject<T>();
-    this.thrownErrorsSubject = new Subject<Error>();
+    super();
 
-    this.canExecuteSubscription = (canExecute || asObservable(true))
+    this.isExecutingSubject = this.addSubscription(new BehaviorSubject<boolean>(false));
+    this.canExecuteSubject = this.addSubscription(new BehaviorSubject<boolean>(canExecute == null));
+    this.resultsSubject = this.addSubscription(new Subject<T>());
+    this.thrownErrorsSubject = this.addSubscription(new Subject<Error>());
+
+    this.add((canExecute || asObservable(true))
       .combineLatest(this.isExecutingSubject, (ce, ie) => ce === true && ie === false)
       .catch(e => {
         handleError(e, this.thrownErrorsSubject);
@@ -28,7 +28,8 @@ export class ObservableCommand<T> implements Command<T>, IDisposable {
         return asObservable(false);
       })
       .distinctUntilChanged()
-      .subscribe(this.canExecuteSubject);
+      .subscribe(this.canExecuteSubject),
+    );
   }
 
   get isExecutingObservable() {
@@ -53,31 +54,31 @@ export class ObservableCommand<T> implements Command<T>, IDisposable {
     return true;
   }
 
-  observeExecution(parameter?: any) {
+  observeExecution(parameter?: any): Observable<T> {
     if (this.canExecute === false) {
-      return Observable.throw<T>(new Error('canExecute currently forbids execution'));
+      return Observable.throw(new Error('canExecute currently forbids execution'));
     }
 
     return Observable
       .of(parameter)
       .do(() => {
-        this.isExecutingSubject.onNext(true);
+        this.isExecutingSubject.next(true);
       })
       .flatMap(x => {
         return this.executeAction(x);
       })
       .do(x => {
-        this.resultsSubject.onNext(x);
+        this.resultsSubject.next(x);
       })
       .do(
         () => {
-          this.isExecutingSubject.onNext(false);
+          this.isExecutingSubject.next(false);
         },
         () => {
-          this.isExecutingSubject.onNext(false);
+          this.isExecutingSubject.next(false);
         },
         () => {
-          this.isExecutingSubject.onNext(false);
+          this.isExecutingSubject.next(false);
         },
       )
       .catch(e => {
@@ -91,24 +92,24 @@ export class ObservableCommand<T> implements Command<T>, IDisposable {
 
   execute(
     parameter?: any,
-    observerOrNext?: IObserver<T>,
+    observerOrNext?: Observer<T>,
     onError?: (exception: any) => void,
     onCompleted?: () => void,
-  ): IDisposable;
+  ): Subscription;
 
   execute(
     parameter?: any,
     onNext?: (value: T) => void,
     onError?: (exception: any) => void,
     onCompleted?: () => void,
-  ): IDisposable;
+  ): Subscription;
 
   execute(
     parameter?: any,
-    observerOrNext?: IObserver<T> | ((value: T) => void),
+    observerOrNext?: Observer<T> | ((value: T) => void),
     onError: (exception: any) => void = e => handleError(e, this.thrownErrorsSubject),
     onCompleted?: () => void,
-  ): IDisposable {
+  ): Subscription {
     const obs = this
       .observeExecution(parameter);
 
@@ -124,14 +125,6 @@ export class ObservableCommand<T> implements Command<T>, IDisposable {
   get thrownErrors() {
     return this.thrownErrorsSubject
       .asObservable();
-  }
-
-  dispose() {
-    this.canExecuteSubscription = Object.dispose(this.canExecuteSubscription);
-    this.canExecuteSubject = Object.dispose(this.canExecuteSubject);
-    this.isExecutingSubject = Object.dispose(this.isExecutingSubject);
-    this.resultsSubject = Object.dispose(this.resultsSubject);
-    this.thrownErrorsSubject = Object.dispose(this.thrownErrorsSubject);
   }
 }
 

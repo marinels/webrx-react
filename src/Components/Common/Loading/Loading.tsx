@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IDisposable } from  'rx';
+import { Subscription } from  'rxjs';
 import { ProgressBar } from 'react-bootstrap';
 
 import { wx, Property } from '../../../WebRx';
@@ -21,7 +21,7 @@ export class Loading extends React.Component<LoadingProps, any> {
     componentClass: 'div',
   };
 
-  private changedSubscription: IDisposable | undefined;
+  private changedSubscription = Subscription.EMPTY;
 
   componentDidMount() {
     if (wx.isProperty(this.props.progress) === true) {
@@ -31,7 +31,7 @@ export class Loading extends React.Component<LoadingProps, any> {
   }
 
   componentWillUnmount() {
-    this.changedSubscription = Object.dispose(this.changedSubscription);
+    this.changedSubscription = Subscription.unsubscribe(this.changedSubscription);
   }
 
   render() {

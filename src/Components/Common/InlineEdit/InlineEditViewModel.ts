@@ -1,4 +1,4 @@
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 import * as clone from 'clone';
 
 import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
@@ -40,8 +40,10 @@ export class InlineEditViewModel<T> extends BaseViewModel {
       () => {
         return Observable
           .defer(() => this.asObservable(this.onSave(this.editValue.value!, this)))
-          .doOnError(e => {
-            this.alertForError(e, 'Unable to Save');
+          .do({
+            error: e => {
+              this.alertForError(e, 'Unable to Save');
+            },
           });
       },
     );

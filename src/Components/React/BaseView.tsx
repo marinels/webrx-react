@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { Observable, IDisposable } from 'rx';
+import { Observable, Subscription } from 'rxjs';
+import { AnonymousSubscription, TeardownLogic } from 'rxjs/Subscription';
 
 import { Property, Command } from '../../WebRx';
 import { ReactSpreadResult } from '../../Extensions/React';
-import { Alert, Logging, SubMan } from '../../Utils';
+import { Alert, Logging } from '../../Utils';
 import { BaseViewModel, LifecycleComponentViewModel } from './BaseViewModel';
 import { renderEnumerable, renderConditional, renderNullable, renderLoadable, renderSizedLoadable, renderGridLoadable, focusElement, classNames } from './RenderHelpers';
 import { bindObservableToCommand, bindEventToProperty, bindEventToCommand } from './BindingHelpers';
@@ -15,10 +16,11 @@ export interface ViewModelProps {
 export interface BaseViewProps extends React.HTMLProps<any>, ViewModelProps {
 }
 
-export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel extends BaseViewModel> extends React.Component<TViewProps, TViewModel> implements IDisposable {
+export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel extends BaseViewModel> extends React.Component<TViewProps, TViewModel> implements AnonymousSubscription {
   public static displayName = 'BaseView';
 
-  private updateSubscription: IDisposable | undefined;
+  private updateSubscription: Subscription;
+  private subscriptions: Subscription;
 
   // -----------------------------------------
   // these are render helper methods
@@ -37,12 +39,12 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
   protected readonly alertForError = Alert.createForError;
 
   protected readonly logger: Logging.Logger = Logging.getLogger(this.getDisplayName());
-  protected readonly subs: SubMan;
 
   constructor(props?: TViewProps | undefined, context?: any) {
     super(props, context);
 
-    this.subs = new SubMan();
+    this.updateSubscription = this.subscriptions = Subscription.EMPTY;
+    this.subscriptions = new Subscription();
 
     if (props != null) {
       this.state = props.viewModel as TViewModel;
@@ -53,18 +55,28 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     this.logger.debug(`${ initial ? '' : 're-' }rendering`);
   }
 
+  private getSubscriptions() {
+    if (this.subscriptions === Subscription.EMPTY) {
+      this.subscriptions = new Subscription();
+    }
+
+    return this.subscriptions;
+  }
+
   private subscribeToUpdates() {
     let updateProps = this.updateOn();
     updateProps.push(this.state.stateChanged.results);
 
     this.updateSubscription = Observable
-      .merge(updateProps)
-      .debounce(this.getRateLimit())
-      .subscribe(() => {
-        this.renderView();
-      }, x => {
-        this.alertForError(x);
-      });
+      .merge(...updateProps)
+      .debounceTime(this.getRateLimit())
+      .subscribe(
+        () => {
+          this.renderView();
+        }, x => {
+          this.alertForError(x);
+        },
+      );
   }
 
   // -----------------------------------------
@@ -91,7 +103,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
 
       // cleanup old view model
       (this.state as any as LifecycleComponentViewModel).cleanupViewModel();
-      this.updateSubscription = Object.dispose(this.updateSubscription);
+      this.updateSubscription = Subscription.unsubscribe(this.updateSubscription);
 
       // set our new view model as the current state and initialize it
       this.state = state;
@@ -120,7 +132,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
   componentWillUnmount() {
     this.cleanupView();
 
-    this.dispose();
+    this.unsubscribe();
   }
   // -----------------------------------------
 
@@ -176,18 +188,17 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
   }
   // -----------------------------------------
 
-  protected addSubscription(subscription: IDisposable) {
-    return this.subs.add(subscription);
+  protected addSubscription<T extends TeardownLogic>(subscription: T) {
+    return this.getSubscriptions().addSubscription(subscription);
   }
 
-  protected addManySubscriptions(...subscriptions: IDisposable[]) {
-    return this.subs.addMany(...subscriptions);
+  protected addSubscriptions<T extends TeardownLogic>(...subscriptions: T[]) {
+    return this.getSubscriptions().addSubscriptions(...subscriptions);
   }
 
-  public dispose() {
-    this.subs.dispose();
-
-    this.updateSubscription = Object.dispose(this.updateSubscription);
+  public unsubscribe() {
+    this.updateSubscription = Subscription.unsubscribe(this.updateSubscription);
+    this.subscriptions = Subscription.unsubscribe(this.subscriptions);
   }
 
   // -----------------------------------------

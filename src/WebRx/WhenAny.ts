@@ -1,4 +1,4 @@
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 
 import { ObservableOrPropertyOrValue } from './Interfaces';
 import { getObservable } from './Utils';
@@ -110,7 +110,7 @@ export function whenAny<TRet>(...args: any[]): Observable<TRet> {
 
   return Observable
     .combineLatest<any, TRet>(
-      args.map(x => getObservable(x)),
+      ...args.map(x => getObservable(x)),
       selector,
     );
 }

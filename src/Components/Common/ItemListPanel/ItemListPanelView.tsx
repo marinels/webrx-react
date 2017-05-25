@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 
 import { BaseView, ViewModelProps } from '../../React';
 import { DataGridView, DataGridProps, DataGridColumn, DataGridListViewTemplate, DataGridViewType } from '../DataGrid/DataGridView';
