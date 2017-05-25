@@ -354,7 +354,7 @@ describe('for WebRx', () => {
       });
     });
 
-    describe.only('filterNull', () => {
+    describe('filterNull', () => {
       it('filters null values from an observable', () => {
         let asserted = false;
 
