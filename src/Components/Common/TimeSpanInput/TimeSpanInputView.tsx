@@ -8,8 +8,6 @@ import { BindableInput } from '../BindableInput/BindableInput';
 import { TimeSpanInputViewModel, TimeSpanUnit } from './TimeSpanInputViewModel';
 import { CommandButton } from '../CommandButton/CommandButton';
 
-import './TimeSpanInput.less';
-
 export interface TimeSpanControlProps extends FormControlProps {
   viewModel: TimeSpanInputViewModel;
 }

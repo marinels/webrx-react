@@ -1,9 +1,94 @@
-@import './Bootstrap.less';
+@import './Variables.less';
+@import './Mixins.less';
 
-html {
-  color: @body-color;
+// this is a special style override to prevent fixed elements from looking offset
+// due to the modal dialog adding scrollbar padding to the backdrop (in an effort
+// to not shift the entire page over to the right). Since fixed page elements are
+// not affected by the body padding, we end up with offset elements. This style
+// override corrects this visual inconsistency.
+// NOTE: this style needs to be outside of our root style because we may not have
+//       control over body styles
+body.modal-open {
+  overflow: auto !important;
+  padding: 0 !important;
 }
 
-.fa-text {
-  font-family: inherit;
+.webrx-react {
+  @import './Animations.less';
+  @import '../Components/Components.less';
+
+  // this improves muted text color to make it a bit more visible (darker)
+  .text-muted {
+    color: @text-muted;
+  }
+
+  // helper styles to simplify creating grid columns that are vertically centered
+  .col-va-middle {
+    display: inline-block;
+    float: none !important;
+    vertical-align: middle;
+  }
+
+  // this fixes a bug where focused buttons in input groups have cut-off outlines
+  .input-group-btn > .btn:focus {
+    z-index: 3;
+  }
+
+  // this fixes a bug where feedback form controls in input groups don't have a
+  // right error border due to negative margining from the input-group buttons.
+  .form-group.has-feedback {
+    &.has-success,
+    &.has-warning,
+    &.has-error {
+      .input-group > input {
+        z-index: 3;
+      }
+    }
+
+    & > .form-control-feedback {
+      z-index: 3;
+    }
+  }
+
+  // default hover background color
+  .btn-default:hover,
+  .table-hover > tbody > tr:hover,
+  .list-group > .list-group-item:hover,
+  .nav > li > a:hover,
+  .dropdown-menu > li > a:hover {
+    background-color: @default-hover-background;
+  }
+
+  // default hover background color for active list items
+  .list-group > .list-group-item.active:hover {
+    background-color: darken(@brand-primary, 10%);
+  }
+
+  // this removes the top and bottom padding for dropdowns
+  // this padding looks strange with a hover background highlight
+  .dropdown-menu {
+    padding: 0;
+  }
+
+  // make list items appear consistently sized across the app
+  .Sidebar .nav,
+  .dropdown-menu {
+    & > li > a {
+      padding: 10px 15px;
+    }
+  }
+
+  // un-bold labels and badges by default
+  // additionally add some space between letters
+  // these elements are much more readable using these styles
+  .label,
+  .badge {
+    font-weight: normal;
+    letter-spacing: 1px;
+  }
+
+  // this allows text in fa containers to match the rest of the site
+  .fa-text {
+    font-family: inherit;
+  }
 }

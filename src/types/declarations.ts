@@ -16,9 +16,6 @@ declare global {
   interface NumberMap<T> {
     [ key: number]: T;
   }
-
-  interface Map<T> extends StringMap<T>, NumberMap<T> {
-  }
 }
 
 // since there are no exports, we must perform an empty export

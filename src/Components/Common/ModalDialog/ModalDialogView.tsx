@@ -5,13 +5,33 @@ import { BaseView, BaseViewProps } from '../../React';
 
 import { ModalDialogViewModel } from './ModalDialogViewModel';
 
-import './ModalDialog.less';
-
 export interface ModalDialogProps extends BaseViewProps {
   title: any;
   body?: any;
   canClose?: boolean;
 }
+
+function applyClassName(modalElem: HTMLElement, className: string) {
+  let elem = modalElem.parentElement;
+  while (elem != null && elem.getAttribute('role') !== 'dialog' && elem.tagName.toLowerCase() !== 'body') {
+    elem = elem.parentElement;
+  }
+
+  if (elem != null) {
+    elem.className = className;
+  }
+}
+
+// this will patch how modals function to inject the style namespace at a resaonable
+// location to ensure proper handling of modals (which exist outside of the app container)
+Modal.defaultProps = Object.assign(
+  {},
+  {
+    onEnter: (x: HTMLElement) => applyClassName(x, 'webrx-react bootstrap-3'),
+    onExited: (x: HTMLElement) => applyClassName(x, ''),
+  },
+  Modal.defaultProps,
+);
 
 export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewModel> {
   public static displayName = 'ModalDialogView';

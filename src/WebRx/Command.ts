@@ -49,6 +49,10 @@ export class ObservableCommand<T> implements Command<T>, IDisposable {
     return this.canExecuteSubject.getValue();
   }
 
+  isCommand() {
+    return true;
+  }
+
   observeExecution(parameter?: any) {
     if (this.canExecute === false) {
       return Observable.throw<T>(new Error('canExecute currently forbids execution'));

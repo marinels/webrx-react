@@ -1,97 +1,26 @@
-@import './Variables.less';
-@import './Mixins.less';
-@import './Animations.less';
+@import (reference) './Variables.less';
 
-.text-muted {
-  color: @text-muted;
+// namespace all of bootstrap 3 so we can selectively enable these styles
+.bootstrap-3 {
+  @import (less) '~bootstrap/dist/css/bootstrap.css';
+
+  // we need to replicate some root element styles because with our namespace we
+  // will no longer be able to apply styles to html or body tags
+  background-color: @body-bg;
+  color: @body-color;
+  font-family: @font-family-sans-serif;
+  font-size: @font-size-base;
+  line-height: @line-height-base;
+
+  // stylelint-disable property-no-vendor-prefix
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  // stylelint-enable property-no-vendor-prefix
 }
 
-// stylelint-disable declaration-block-no-ignored-properties, declaration-no-important
-// helper styles to simplify creating grid columns that are vertically centered
-
-.col-va-middle {
-  display: inline-block;
-  float: none !important;
-  vertical-align: middle;
-}
-// stylelint-enable declaration-block-no-ignored-properties, declaration-no-important
-
-// stylelint-disable selector-no-qualifying-type, declaration-no-important
-
-// this is a special style override to prevent fixed elements from looking offset
-// due to the modal dialog adding scrollbar padding to the backdrop (in an effort
-// to not shift the entire page over to the right). Since fixed page elements are
-// not affected by the body padding, we end up with offset elements. This style
-// override corrects this visual inconsistency.
-
-body.modal-open {
-  overflow: auto !important;
-  padding: 0 !important;
-}
-
-// stylelint-enable selector-no-qualifying-type, declaration-no-important
-
-// this fixes a bug where focused buttons in input groups have cut-off outlines
-
-.input-group-btn > .btn:focus {
-  z-index: 3;
-}
-
-// this fixes a bug where feedback form controls in input groups don't have a
-// right error border due to negative margining from the input-group buttons.
-
-.form-group.has-feedback {
-  &.has-success,
-  &.has-warning,
-  &.has-error {
-    .input-group > input {
-      z-index: 3;
-    }
-  }
-
-  & > .form-control-feedback {
-    z-index: 3;
-  }
-}
-
-// default hover background color
-
-.btn-default:hover,
-.table-hover > tbody > tr:hover,
-.list-group > .list-group-item:hover,
-.nav > li > a:hover,
-.dropdown-menu > li > a:hover {
-  background-color: @default-hover-background;
-}
-
-// default hover background color for active list items
-
-.list-group > .list-group-item.active:hover {
-  background-color: darken(@brand-primary, 10%);
-}
-
-// this removes the top and bottom padding for dropdowns
-// this padding looks strange with a hover background highlight
-
-.dropdown-menu {
-  padding: 0;
-}
-
-// make list items appear consistently sized across the app
-
-.Sidebar .nav,
-.dropdown-menu {
-  & > li > a {
-    padding: 10px 15px;
-  }
-}
-
-// un-bold labels and badges by default
-// additionally add some space between letters
-// these elements are much more readable using these styles
-
-.label,
-.badge {
-  font-weight: normal;
-  letter-spacing: 1px;
+// this is to attempt a removal of the default body margin which has an effect on
+// how the grid system is layed out
+body {
+  margin: 0;
 }

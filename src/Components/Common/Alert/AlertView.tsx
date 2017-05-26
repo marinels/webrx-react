@@ -4,8 +4,6 @@ import { Alert } from 'react-bootstrap';
 import { BaseView, BaseViewProps } from '../../React';
 import { AlertViewModel } from './AlertViewModel';
 
-import './Alert.less';
-
 export interface AlertProps extends BaseViewProps {
 }
 

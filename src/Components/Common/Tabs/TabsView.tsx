@@ -5,8 +5,6 @@ import { Tabs, Tab } from 'react-bootstrap';
 import { wxr, BaseView, BaseViewProps } from '../../React';
 import { TabsViewModel } from './TabsViewModel';
 
-import './Tabs.less';
-
 export type ReadonlyTabsViewModel<TData> = Readonly<TabsViewModel<TData>>;
 
 export class TabRenderTemplate<TData> {

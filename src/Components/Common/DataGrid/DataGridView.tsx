@@ -12,8 +12,6 @@ import { SortDirection } from '../../../Utils/Compare';
 import { BaseListViewTemplate, ListViewRenderTemplate, ListViewRenderTemplateProps } from '../List/ListView';
 import { NavButton } from '../List/NavButton';
 
-import './DataGrid.less';
-
 export type ReadonlyDataGridViewModel<TData> = Readonly<DataGridViewModel<TData>>;
 
 export type ColumnRenderFunction = (

@@ -5,8 +5,6 @@ import { ProgressBar } from 'react-bootstrap';
 import { wx, Property } from '../../../WebRx';
 import { wxr } from '../../React';
 
-import './Loading.less';
-
 export interface LoadingProps extends React.HTMLAttributes<Loading> {
   progress?: Property<number> | number;
   text?: string;

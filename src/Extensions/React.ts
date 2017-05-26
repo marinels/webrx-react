@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import './Object';
-
 export interface ReactSpreadResult<T> {
   className: string;
   children: React.ReactNode;
@@ -32,5 +30,4 @@ function restProps<P, S, T>(this: React.Component<P, S>, propsCreator?: (x: P) =
     children: this.props.children,
   });
 }
-
-React.Component.prototype.restProps = Object.fallback(React.Component.prototype.restProps, restProps);
+React.Component.prototype.restProps = restProps;

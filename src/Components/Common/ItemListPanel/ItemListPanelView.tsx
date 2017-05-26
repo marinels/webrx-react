@@ -6,8 +6,6 @@ import { DataGridView, DataGridProps, DataGridColumn, DataGridListViewTemplate, 
 import { CommonPanel, CommonPanelProps } from '../CommonPanel/CommonPanel';
 import { ItemListPanelViewModel } from './ItemListPanelViewModel';
 
-import './ItemListPanel.less';
-
 export * from './CountFooterContent';
 export * from './ViewAllFooterAction';
 

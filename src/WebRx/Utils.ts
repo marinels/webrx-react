@@ -1,4 +1,4 @@
-import { Observable, IObserver, Subject, helpers } from 'rx';
+import { Observable, IObserver, Subject } from 'rx';
 
 import { Property, Command, ObservableOrPropertyOrValue } from './Interfaces';
 
@@ -11,12 +11,12 @@ export function isObserver<T>(value: any | undefined): value is IObserver<T> {
     return false;
   }
 
-  const obs = <IObserver<any>>value;
+  const obs = <IObserver<T>>value;
 
   return (
-    helpers.isFunction(obs.onNext) &&
-    helpers.isFunction(obs.onError) &&
-    helpers.isFunction(obs.onCompleted)
+    obs.onNext instanceof Function &&
+    obs.onError instanceof Function &&
+    obs.onCompleted instanceof Function
   );
 }
 
@@ -29,7 +29,9 @@ export function isProperty<T>(value: any | undefined): value is Property<T> {
     return false;
   }
 
-  return isObservable((<Property<T>>value).changed);
+  const prop: Property<T> = value;
+
+  return prop.isProperty instanceof Function && prop.isProperty();
 }
 
 export function isCommand<T>(value: any | undefined): value is Command<T> {
@@ -37,7 +39,9 @@ export function isCommand<T>(value: any | undefined): value is Command<T> {
     return false;
   }
 
-  return isObservable((<Command<any>>value).results);
+  const cmd: Command<T> = value;
+
+  return cmd.isCommand instanceof Function && cmd.isCommand();
 }
 
 export function asObservable<T>(value: T | Observable<T>) {
@@ -79,6 +83,7 @@ export function getProperty<T>(observableOrProperty: ObservableOrPropertyOrValue
 export function handleError(e: any, ...optionalParams: any[]) {
   const err = e instanceof Error ? e : new Error(e);
 
+  // trim off the subject if it was provided with the optional params
   const subject = isSubject(optionalParams[0]) ?
     optionalParams.shift() :
     undefined;
@@ -86,11 +91,16 @@ export function handleError(e: any, ...optionalParams: any[]) {
   if (DEBUG || subject == null) {
     // in debug mode we want to emit any webrx errors
     // if there is no subject receiving the error then we should be emitting to the console
-    // tslint:disable-next-line:no-console
-    console.error(err, ...optionalParams);
+    logError(err, ...optionalParams);
   }
 
   if (isSubject<Error>(subject)) {
     subject.onNext(err);
   }
+}
+
+// replace this function to inject your own global error handling
+export function logError(err: Error, ...optionalParams: any[]) {
+  // tslint:disable-next-line:no-console
+  console.error(err, ...optionalParams);
 }

@@ -10,8 +10,6 @@ import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import { Sidebar } from './Sidebar';
 import { PageHeaderViewModel } from './PageHeaderViewModel';
 
-import './PageHeader.less';
-
 export interface PageHeaderProps extends BaseViewProps {
   id?: string;
   brand?: any;

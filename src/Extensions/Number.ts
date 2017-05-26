@@ -1,5 +1,3 @@
-import './Object';
-
 declare global {
   interface NumberConstructor {
     isNumeric(value?: any): boolean;
@@ -11,5 +9,6 @@ declare global {
 function isNumeric(value?: any) {
   return value == null ? false : (value - parseFloat(value) + 1) >= 0;
 }
+Number.isNumeric = isNumeric;
 
-Number.isNumeric = Object.fallback(Number.isNumeric, isNumeric);
+export {};
