@@ -1,6 +1,6 @@
 import {
   isObservable, isObserver, isSubject, isProperty, isCommand, asObservable,
-  getObservable, getProperty, handleError,
+  getObservable, getProperty, handleError, logError,
 } from './Utils';
 import { property } from './Property';
 import { command } from './Command';
@@ -17,6 +17,7 @@ export interface WebRxStatic {
   getObservable: typeof getObservable;
   getProperty: typeof getProperty;
   handleError: typeof handleError;
+  logError: typeof logError;
 
   property: typeof property;
   command: typeof command;
@@ -32,6 +33,7 @@ wx.asObservable = asObservable;
 wx.getObservable = getObservable;
 wx.getProperty = getProperty;
 wx.handleError = handleError;
+wx.logError = logError;
 
 wx.property = property;
 wx.command = command;

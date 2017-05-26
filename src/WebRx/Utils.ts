@@ -79,6 +79,7 @@ export function getProperty<T>(observableOrProperty: ObservableOrPropertyOrValue
 export function handleError(e: any, ...optionalParams: any[]) {
   const err = e instanceof Error ? e : new Error(e);
 
+  // trim off the subject if it was provided with the optional params
   const subject = isSubject(optionalParams[0]) ?
     optionalParams.shift() :
     undefined;
@@ -86,11 +87,16 @@ export function handleError(e: any, ...optionalParams: any[]) {
   if (DEBUG || subject == null) {
     // in debug mode we want to emit any webrx errors
     // if there is no subject receiving the error then we should be emitting to the console
-    // tslint:disable-next-line:no-console
-    console.error(err, ...optionalParams);
+    logError(err, ...optionalParams);
   }
 
   if (isSubject<Error>(subject)) {
     subject.onNext(err);
   }
+}
+
+// replace this function to inject your own global error handling
+export function logError(err: Error, ...optionalParams: any[]) {
+  // tslint:disable-next-line:no-console
+  console.error(err, ...optionalParams);
 }
