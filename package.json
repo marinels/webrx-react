@@ -56,7 +56,7 @@
     "@types/react-bootstrap": "~0.0.49",
     "@types/react-dom": "~15.5.0",
     "@types/react-fa": "~4.1.0",
-    "@types/react-overlays": "^0.6.5",
+    "@types/react-overlays": "~0.6.0",
     "@types/react-transition-group": "~1.1.0",
     "@types/sinon": "~2.1.0",
     "@types/sinon-chai": "~2.7.0",
