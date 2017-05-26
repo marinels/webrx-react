@@ -35,6 +35,7 @@ function assign<T>(target: any, ...sources: any[]): T {
       return to;
     }, Object(target));
 }
+Object.assign = Object.assign || assign;
 
 // this extension solves the Unknown Prop Warning that is experienced in
 // typescript when using Rest and Spread Properties
@@ -54,10 +55,12 @@ function rest<TData extends StringMap<any>, TProps>(data: TData, propsCreator?: 
 
   return { rest, props };
 }
+Object.rest = rest;
 
 function isDisposable(disposable: any): disposable is IDisposable {
   return Disposable.isDisposable(disposable);
 }
+Object.isDisposable = isDisposable;
 
 function dispose<T>(disposable: T) {
   if (isDisposable(disposable)) {
@@ -68,6 +71,7 @@ function dispose<T>(disposable: T) {
 
   return disposable;
 }
+Object.dispose = dispose;
 
 interface NamedObject {
   displayName?: string;
@@ -116,6 +120,7 @@ function getName(source: NamedObject, undefinedValue = 'undefined', isStatic = f
 
   return undefinedValue;
 }
+Object.getName = getName;
 
 // NOTE: we can't share code between this an the async variant because
 //       we don't want functions passed in here to evaluate and we don't
@@ -126,6 +131,7 @@ function fallback<T>(...values: T[]) {
     .filter(x => x != null)
     .firstOrDefault();
 }
+Object.fallback = fallback;
 
 function fallbackAsync<T>(...actions: (T | (() => T))[]) {
   return Enumerable
@@ -134,6 +140,7 @@ function fallbackAsync<T>(...actions: (T | (() => T))[]) {
     .filter(x => x != null)
     .firstOrDefault();
 }
+Object.fallbackAsync = fallbackAsync;
 
 export interface EnumPropertyDescriptor<T> {
   name: string;
@@ -152,16 +159,19 @@ function getEnumPropertyDescriptors<T>(type: any) {
       type: <T><any>value,
     });
 }
+Object.getEnumPropertyDescriptors = getEnumPropertyDescriptors;
 
 function getEnumNames(type: any) {
   return getEnumPropertyDescriptors<any>(type)
     .map(x => x.name);
 }
+Object.getEnumNames = getEnumNames;
 
 function getEnumValues<T>(type: T) {
   return getEnumPropertyDescriptors<T>(type)
     .map(x => x.type);
 }
+Object.getEnumValues = getEnumValues;
 
 /**
  *  Get object property name: http://stackoverflow.com/questions/37048274/typescript-how-to-get-objects-property-name-from-its-value
@@ -171,15 +181,4 @@ function getEnumValues<T>(type: T) {
 function getPropName<T>(p: (x: T) => any): string {
   return (/\.([^\.;]+);?\s*\}$/.exec(p.toString()) || [])[1];
 }
-
-Object.assign = fallback(Object.assign, assign);
-Object.rest = fallback(Object.rest, rest);
-Object.isDisposable = fallback(Object.isDisposable, isDisposable);
-Object.dispose = fallback(Object.dispose, dispose);
-Object.getName = fallback(Object.getName, getName);
-Object.fallback = fallback(Object.fallback, fallback);
-Object.fallbackAsync = fallback(Object.fallbackAsync, fallbackAsync);
-Object.getEnumPropertyDescriptors = fallback(Object.getEnumPropertyDescriptors, getEnumPropertyDescriptors);
-Object.getEnumNames = fallback(Object.getEnumNames, getEnumNames);
-Object.getEnumValues = fallback(Object.getEnumValues, getEnumValues);
-Object.getPropName = fallback(Object.getPropName, getPropName);
+Object.getPropName = getPropName;

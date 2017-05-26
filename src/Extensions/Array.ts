@@ -1,7 +1,5 @@
 import { Enumerable } from 'ix';
 
-import './Object';
-
 declare global {
   interface Array<T> {
     asEnumerable(): Enumerable<T>;
@@ -12,7 +10,7 @@ declare global {
 function asEnumerable<T>(this: T[]) {
   return Enumerable.fromArray(this);
 }
-Array.prototype.asEnumerable = Object.fallback(Array.prototype.asEnumerable, asEnumerable);
+Array.prototype.asEnumerable = asEnumerable;
 
 function filterNull<T>(this: Array<T | undefined | null>, callbackfn?: (value: T, index: number, array: Array<T | undefined | null>) => boolean) {
   return this
