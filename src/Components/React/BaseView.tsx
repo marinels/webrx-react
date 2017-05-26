@@ -50,7 +50,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
   }
 
   private logRender(initial: boolean) {
-    this.logger.debug(`${initial ? '' : 're-'}rendering`);
+    this.logger.debug(`${ initial ? '' : 're-' }rendering`);
   }
 
   private subscribeToUpdates() {
