@@ -45,7 +45,7 @@ export function bindEventToCommand<TViewModel extends BaseViewModel, TParameter,
   paramSelector?: (eventKey: any, event: TEvent) => TParameter,
   conditionSelector?: (event: TEvent, eventKey: any) => boolean,
 ): any { // this needs to be any instead of Function to support React.EventHandler<T>
-  return (eventKey: any, event: Event) => {
+  return (eventKey: any, event: TEvent) => {
     // this ensures that we can still use this function for basic HTML events
     event = event || eventKey;
 
