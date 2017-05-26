@@ -50,7 +50,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
   }
 
   private logRender(initial: boolean) {
-    this.logger.debug(`${initial ? '' : 're-'}rendering`);
+    this.logger.debug(`${ initial ? '' : 're-' }rendering`);
   }
 
   private subscribeToUpdates() {
@@ -228,7 +228,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     targetSelector: (viewModel: Readonly<TViewModel>) => Property<TValue>,
     valueSelector?: (eventKey: any, event: TEvent) => TValue,
   ) {
-    return bindEventToProperty(this, this.state, targetSelector, valueSelector);
+    return bindEventToProperty(this.state, targetSelector, valueSelector);
   }
 
   /**
@@ -239,7 +239,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     paramSelector?: (eventKey: any, event: TEvent) => TParameter,
     conditionSelector?: (event: TEvent, eventKey: any) => boolean,
   ) {
-    return bindEventToCommand(this, this.state, commandSelector, paramSelector, conditionSelector);
+    return bindEventToCommand(this.state, commandSelector, paramSelector, conditionSelector);
   }
   // -----------------------------------------
 }
