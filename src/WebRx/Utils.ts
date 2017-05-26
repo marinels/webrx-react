@@ -1,4 +1,4 @@
-import { Observable, IObserver, Subject, helpers } from 'rx';
+import { Observable, IObserver, Subject } from 'rx';
 
 import { Property, Command, ObservableOrPropertyOrValue } from './Interfaces';
 
@@ -11,12 +11,12 @@ export function isObserver<T>(value: any | undefined): value is IObserver<T> {
     return false;
   }
 
-  const obs = <IObserver<any>>value;
+  const obs = <IObserver<T>>value;
 
   return (
-    helpers.isFunction(obs.onNext) &&
-    helpers.isFunction(obs.onError) &&
-    helpers.isFunction(obs.onCompleted)
+    obs.onNext instanceof Function &&
+    obs.onError instanceof Function &&
+    obs.onCompleted instanceof Function
   );
 }
 
