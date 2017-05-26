@@ -46,6 +46,7 @@
     "@types/chai": "~3.5.0",
     "@types/classnames": "~2.2.0",
     "@types/clone": "~0.1.0",
+    "@types/es6-shim": "~0.31.0",
     "@types/ix.js": "~1.0.0",
     "@types/jquery-deparam": "~1.0.0",
     "@types/jquery-param": "~1.0.0",
