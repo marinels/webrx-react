@@ -1,5 +1,3 @@
-import './Object';
-
 declare global {
   interface StringConstructor {
     isString(value: any): value is string;
@@ -11,10 +9,12 @@ declare global {
 function isString(value: any): value is string {
   return typeof(value) === 'string' || value instanceof String;
 }
+String.isString = isString;
 
 function isNullOrEmpty(value: string | undefined): value is undefined {
   return value == null || value === '';
 }
+String.isNullOrEmpty = isNullOrEmpty;
 
 function stringify(value: any, replacer?: any, space: string | number = 2) {
   let result: string | undefined;
@@ -38,7 +38,6 @@ function stringify(value: any, replacer?: any, space: string | number = 2) {
 
   return result;
 }
+String.stringify = stringify;
 
-String.isString = Object.fallback(String.isString, isString);
-String.isNullOrEmpty = Object.fallback(String.isNullOrEmpty, isNullOrEmpty);
-String.stringify = Object.fallback(String.stringify, stringify);
+export {};

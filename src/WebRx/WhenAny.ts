@@ -108,8 +108,9 @@ export function whenAny<TRet>(...args: any[]): Observable<TRet> {
     };
   }
 
-  return Observable.combineLatest<any, TRet>(
-    args.map(x => getObservable(x)),
-    selector,
-  );
+  return Observable
+    .combineLatest<any, TRet>(
+      args.map(x => getObservable(x)),
+      selector,
+    );
 }

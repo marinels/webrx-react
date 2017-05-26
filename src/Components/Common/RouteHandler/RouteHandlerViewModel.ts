@@ -116,6 +116,18 @@ export class RouteHandlerViewModel extends BaseViewModel {
     });
 
     this.routedComponent = this.loadComponent.results
+      .scan(
+        (prev, curr) => {
+          // try and dispose of our current routed component
+          // providing it isn't the same component (which should never happen)
+          if (prev !== curr) {
+            Object.dispose(prev);
+          }
+
+          return curr;
+        },
+        undefined,
+      )
       .toProperty();
 
     this.routingBreadcrumbs = this
