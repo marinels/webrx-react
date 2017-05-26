@@ -87,7 +87,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
 
     this.duration = this
       .whenAny(this.text, this.unit, (text, unit) => ({ text, unit }))
-      .where(x => x.unit != null)
+      .filter(x => x.unit != null)
       .debounce(parseDelay)
       .map(x => {
         let duration = this.parse(x.text, x.unit);
