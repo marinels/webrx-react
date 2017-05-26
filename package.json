@@ -4,7 +4,7 @@
   "description": "ReactJS + WebRx + RxJS + Bootstrap: MVVM for Single Page Web Applications",
   "scripts": {
     "start": "gulp",
-    "test": "npm run clean-modules && gulp npm:test && npm run build-modules",
+    "test": "npm run clean-modules && npm run optgulp && gulp npm:test && npm run build-modules",
     "webpack": "webpack",
     "gulp": "gulp",
     "mocha": "mocha",
