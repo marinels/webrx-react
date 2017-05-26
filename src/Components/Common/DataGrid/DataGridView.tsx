@@ -174,7 +174,7 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
       'DataGrid-row--selected': view.props.highlightSelected === true && viewModel.selectedItem.value === item,
     });
 
-    const onClick = view.props.selectable !== true ? null : wxr.bindEventToCommand(this, viewModel, x => x.selectItem, () => item);
+    const onClick = view.props.selectable !== true ? null : wxr.bindEventToCommand(viewModel, x => x.selectItem, () => item);
 
     return (
       <tr className={ rowClasses } key={ this.rowKeySelector(item, index, columns, viewModel, view) } onClick={ onClick }>

@@ -5,38 +5,39 @@ import { wx, ObservableOrProperty, ReadOnlyProperty } from '../../../WebRx';
 
 export interface ObservableWrapperProps {
   observableOrProperty: ObservableOrProperty<any>;
-  render: (x: any) => any;
+  render?: (x: any) => any;
 }
 
 export interface ObservableWrapperState {
-  property: ReadOnlyProperty<any>;
-  sub: IDisposable;
+  value: any;
 }
 
 export class ObservableWrapper extends React.Component<ObservableWrapperProps, ObservableWrapperState> {
-  private createProperty() {
-    return wx.isProperty(this.props.observableOrProperty) ?
-      this.props.observableOrProperty as ReadOnlyProperty<any> :
-      (this.props.observableOrProperty as Observable<any>).toProperty();
-  }
+  private static defaultProps = {
+    render: (x: any) => x,
+  };
+
+  private property: ReadOnlyProperty<any>;
+  private subscription: IDisposable;
 
   componentWillMount() {
-    const property = this.createProperty();
-    this.state = {
-      property,
-      sub: property.changed
-        .subscribe(() => {
-          this.forceUpdate();
-        }),
-    };
+    this.property = wx.getObservable(this.props.observableOrProperty)
+      .toProperty();
+    this.subscription = wx
+      .whenAny(this.property, x => x)
+      .subscribe(value => {
+        this.setState({
+          value,
+        });
+      });
   }
 
   componentWillUnmount() {
-    Object.dispose(this.state.property);
-    Object.dispose(this.state.sub);
+    this.property = Object.dispose(this.property);
+    this.subscription = Object.dispose(this.subscription);
   }
 
   render() {
-    return this.props.render(this.state.property.value);
+    return this.props.render!(this.state.value) || null;
   }
 }

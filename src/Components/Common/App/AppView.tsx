@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Observable } from 'rx';
 import { Grid } from 'react-bootstrap';
 
+import { updateDefaultPortalContainer } from './NamespacedPortal';
 import { BootstrapGuide } from './BootstrapGuide';
 import { wxr, BaseView } from '../../React';
 import { Splash } from '../Splash/Splash';
@@ -46,7 +47,7 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
     });
 
     return (
-      <div className='webrx-react bootstrap-3'>
+      <div className='webrx-react bootstrap-3' ref={ x => updateDefaultPortalContainer(x) }>
         <div { ...rest } className={ wxr.classNames('App', className) }>
           {
             this.renderConditional(this.state.isLoading, () => (

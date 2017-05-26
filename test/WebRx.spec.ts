@@ -3,7 +3,7 @@ import { Observable, Subject, BehaviorSubject, Scheduler, Disposable } from 'rx'
 import { should } from './setup';
 import { wx } from '../src/WebRx';
 
-describe('for WebRx', () => {
+describe('WebRx', () => {
   describe('observable properties', () => {
     it('can create a property', () => {
       const prop = wx.property();
