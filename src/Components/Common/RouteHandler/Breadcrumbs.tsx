@@ -5,8 +5,6 @@ import { Icon } from 'react-fa';
 import { wxr, RoutingBreadcrumb } from '../../React';
 import { CommandButton } from '../CommandButton/CommandButton';
 
-import './Breadcrumbs.less';
-
 export interface BreadcrumbsProps extends React.HTMLProps<any> {
   id?: string;
   pinnable?: boolean;

@@ -4,8 +4,6 @@ import { Badge } from 'react-bootstrap';
 
 import { wxr } from '../../React';
 
-import './CountFooterContent.less';
-
 export interface CountFooterContentProps extends React.HTMLAttributes<CountFooterContent> {
   length: Observable<number>;
   suffix?: string;

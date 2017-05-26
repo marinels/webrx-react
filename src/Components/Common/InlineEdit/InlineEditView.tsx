@@ -9,8 +9,6 @@ import { BindableInput, BindableProps } from '../BindableInput/BindableInput';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { InlineEditViewModel } from './InlineEditViewModel';
 
-import './InlineEdit.less';
-
 export interface InlineEditProps extends BaseViewProps, BindableProps {
   controlId?: string;
   inputType?: string;

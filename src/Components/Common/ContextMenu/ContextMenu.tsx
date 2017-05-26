@@ -3,8 +3,6 @@ import { Overlay, Popover, MenuItemProps, PopoverProps } from 'react-bootstrap';
 
 import { wxr } from '../../React';
 
-import './ContextMenu.less';
-
 export interface ContextMenuProps {
   key?: string | number;
   id: string;

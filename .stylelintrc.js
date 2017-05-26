@@ -15,6 +15,9 @@ config.rules = Object.assign(config.rules, {
 
   // we want cleaner code appearance, so empty lines between nested styles are required
   'rule-empty-line-before': [ 'always-multi-line', { 'except': [ 'first-nested' ], 'ignore': [ 'after-comment' ] } ],
+
+  // similar to the above rule
+  'at-rule-empty-line-before': [ 'always', { 'except': [ 'after-same-name', 'first-nested' ], 'ignore': [ 'after-comment' ] } ],
 });
 
 module.exports = config;

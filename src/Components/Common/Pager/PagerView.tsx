@@ -5,8 +5,6 @@ import { Pagination, PaginationProps, DropdownButton, MenuItem } from 'react-boo
 import { BaseView, ViewModelProps } from '../../React';
 import { PagerViewModel, StandardLimits } from './PagerViewModel';
 
-import './Pager.less';
-
 export interface PagerProps extends PaginationProps {
   info?: boolean;
   limits?: number[];

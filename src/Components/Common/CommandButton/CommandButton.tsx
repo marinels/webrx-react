@@ -5,8 +5,6 @@ import { Button, ButtonProps, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Command } from '../../../WebRx';
 import { wxr } from '../../React';
 
-import './CommandButton.less';
-
 export interface CommandButtonProps extends ButtonProps {
   command?: Command<any> | { (): Command<any> };
   commandParameter?: any;
