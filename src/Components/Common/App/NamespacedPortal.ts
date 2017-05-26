@@ -8,7 +8,7 @@ declare module 'react-bootstrap' {
 }
 
 export function updateDefaultPortalContainer(container: React.ReactInstance) {
-  if (Portal.defaultProps == null || Portal.defaultProps.container == null) {
+  if (Portal.defaultProps == null || Portal.defaultProps.container !== container) {
     Portal.defaultProps = Object.assign({}, Portal.defaultProps, { container });
   }
 }
