@@ -29,7 +29,9 @@ export function isProperty<T>(value: any | undefined): value is Property<T> {
     return false;
   }
 
-  return isObservable((<Property<T>>value).changed);
+  const prop: Property<T> = value;
+
+  return prop.isProperty instanceof Function && prop.isProperty();
 }
 
 export function isCommand<T>(value: any | undefined): value is Command<T> {
@@ -37,7 +39,9 @@ export function isCommand<T>(value: any | undefined): value is Command<T> {
     return false;
   }
 
-  return isObservable((<Command<any>>value).results);
+  const cmd: Command<T> = value;
+
+  return cmd.isCommand instanceof Function && cmd.isCommand();
 }
 
 export function asObservable<T>(value: T | Observable<T>) {

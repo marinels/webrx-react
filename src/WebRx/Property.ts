@@ -65,6 +65,10 @@ export class ObservableProperty<T> implements Property<T>, IDisposable {
       .asObservable();
   }
 
+  isProperty() {
+    return true;
+  }
+
   dispose() {
     this.sourceSubscription = Object.dispose(this.sourceSubscription);
     this.changedSubject = Object.dispose(this.changedSubject);

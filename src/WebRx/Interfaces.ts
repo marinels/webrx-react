@@ -5,6 +5,8 @@ export interface ReadOnlyProperty<T> {
   readonly thrownErrors: Observable<Error>;
   readonly isReadOnly: boolean;
   readonly value: T;
+
+  isProperty(): boolean;
 }
 
 export interface Property<T> extends ReadOnlyProperty<T> {
@@ -23,6 +25,8 @@ export interface Command<T> {
   readonly thrownErrors: Observable<Error>;
   readonly isExecuting: boolean;
   readonly canExecute: boolean;
+
+  isCommand(): boolean;
 
   observeExecution(parameter?: any): Observable<T>;
 
