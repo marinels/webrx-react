@@ -29,6 +29,8 @@ export interface AppProps extends PageHeaderProps, PageFooterProps {
 export class AppView extends BaseView<AppProps, AppViewModel> {
   public static displayName = 'AppView';
 
+  public static updateDefaultPortalContainer = updateDefaultPortalContainer;
+
   static defaultProps = {
     viewMap: ViewMap,
     guide: DEBUG,
