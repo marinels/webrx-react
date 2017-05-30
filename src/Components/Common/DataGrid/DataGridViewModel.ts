@@ -155,6 +155,16 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
       .map(x => x.items)
       .toProperty();
 
+    this.addSubscription(this
+      .whenAny(
+        this.search.requests,
+        this.sortField,
+        this.sortDirection,
+        () => 1,
+      )
+      .invokeCommand(this.pager.selectPage),
+    );
+
     // whenever there is a new request we re-project
     this.addSubscription(this
       .whenAny(
