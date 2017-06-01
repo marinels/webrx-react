@@ -2,7 +2,7 @@ declare global {
   interface NumberConstructor {
     isNumber(value: any): value is number;
     isNumeric(value: any): boolean;
-    isInt(value: number): boolean;
+    isInt(value: any): boolean;
   }
 }
 
