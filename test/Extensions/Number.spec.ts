@@ -2,7 +2,7 @@ import { should } from '../setup';
 
 import '../../src/Extensions/Number';
 
-describe.only('Number Extensions', () => {
+describe('Number Extensions', () => {
   describe('Number.isNumber', () => {
     it('should return true for an integer', () => {
       Number.isNumber(1).should.be.true;
