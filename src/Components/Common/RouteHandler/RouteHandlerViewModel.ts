@@ -284,7 +284,8 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
     // if our route was null (should never happen) always return a null value
     // otherwise merge the route with the activator to create the RoutedActivator
-    return route == null ? undefined : Object.assign<RoutedComponentActivator>({ route }, activator);
+    // we default to the route path, but allow the activator to override that path
+    return route == null ? undefined : Object.assign<RoutedComponentActivator>({ route, path: route.path }, activator);
   }
 
   private handleRedirect(activator: RoutedComponentActivator | undefined) {
