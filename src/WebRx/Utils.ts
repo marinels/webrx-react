@@ -77,7 +77,7 @@ export function getProperty<T>(observableOrProperty: ObservableOrPropertyOrValue
     initialValue = observableOrProperty;
   }
 
-  return Observable.never<T>().toProperty(initialValue);
+  return new Subject<T>().toProperty(initialValue);
 }
 
 export function handleError(e: any, ...optionalParams: any[]) {
