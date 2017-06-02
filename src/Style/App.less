@@ -40,9 +40,11 @@ body.modal-open {
     &.has-success,
     &.has-warning,
     &.has-error {
+      // stylelint-disable selector-max-specificity
       .input-group > input {
         z-index: 3;
       }
+      // stylelint-enable selector-max-specificity
     }
 
     & > .form-control-feedback {
