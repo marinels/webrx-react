@@ -6,6 +6,7 @@ export interface ComponentActivator {
 }
 
 export interface RoutedComponentActivator extends ComponentActivator {
+  path: string;
   route: Route;
 }
 
