@@ -1,14 +1,16 @@
-import { Observable, Subject, IDisposable } from 'rx';
+import { Observable, Subject, Subscription } from 'rxjs';
 
 import { Logger, getLogger } from './Logging';
 
-export class PubSub implements IDisposable {
+export class PubSub extends Subscription {
   public static displayName = 'PubSub';
 
   private readonly logger: Logger;
   private map: StringMap<Subject<any>>;
 
   constructor() {
+    super();
+
     this.logger = getLogger(PubSub.displayName);
     this.map = {};
   }
@@ -19,6 +21,7 @@ export class PubSub implements IDisposable {
     if (subject == null) {
       subject = new Subject<T>();
       this.map[key] = subject;
+      this.add(subject);
     }
 
     return subject;
@@ -41,16 +44,7 @@ export class PubSub implements IDisposable {
   }
 
   public publish<T>(key: string, arg: T) {
-    this.getSubject<T>(key).onNext(arg);
-  }
-
-  dispose() {
-    Object
-      .keys(this.map)
-      .map(x => this.map[x])
-      .forEach(x => x.dispose());
-
-    this.map = {};
+    this.getSubject<T>(key).next(arg);
   }
 }
 

@@ -1,7 +1,6 @@
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 
 import { Property, Command } from '../../../WebRx';
-
 import { BaseViewModel } from '../../React/BaseViewModel';
 
 export class ModalDialogViewModel extends BaseViewModel {

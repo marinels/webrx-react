@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { IDisposable } from 'rx';
+import { Subscription } from 'rxjs';
 
-import { ObservableOrProperty, Property, Command } from '../../WebRx';
+import { ObservableOrProperty, Property, Command, isCommand, getObservable } from '../../WebRx';
 import { BaseViewModel } from './BaseViewModel';
 
 /**
@@ -9,10 +9,10 @@ import { BaseViewModel } from './BaseViewModel';
  */
 export function bindObservableToCommand<TViewModel extends BaseViewModel, TInput, TResult>(
   viewModel: Readonly<TViewModel>,
-  observable: ObservableOrProperty<TInput>,
+  observableOrProperty: ObservableOrProperty<TInput>,
   commandSelector: (viewModel: Readonly<TViewModel>) => Command<TResult>,
-) {
-  return viewModel.bindObservable(observable, x => x.invokeCommand(commandSelector(viewModel)));
+): Subscription {
+  return viewModel.addSubscription(getObservable(observableOrProperty).invokeCommand(commandSelector(viewModel)));
 }
 
 /**
@@ -27,8 +27,8 @@ export function bindEventToProperty<TViewModel extends BaseViewModel, TValue, TE
     // this ensures that we can still use this function for basic HTML events
     event = event || eventKey;
 
-    const prop = targetSelector(viewModel) as Property<TValue>;
-    const value = (valueSelector == null ? eventKey : valueSelector(eventKey, event)) as TValue;
+    const prop = targetSelector(viewModel);
+    const value: TValue = (valueSelector == null ? eventKey : valueSelector(eventKey, event));
 
     prop.value = value;
   };
@@ -47,13 +47,15 @@ export function bindEventToCommand<TViewModel extends BaseViewModel, TParameter,
     // this ensures that we can still use this function for basic HTML events
     event = event || eventKey;
 
-    const param = (paramSelector == null ? eventKey : paramSelector(eventKey, event)) as TParameter;
-    const canExecute = conditionSelector == null || (conditionSelector(event, eventKey) as boolean);
+    const param: TParameter = (paramSelector == null ? eventKey : paramSelector(eventKey, event));
+    const canExecute = conditionSelector == null || conditionSelector(event, eventKey);
 
     if (canExecute) {
-      const cmd = commandSelector(viewModel) as Command<any>;
+      const cmd = commandSelector(viewModel);
 
-      cmd.execute(param);
+      if (isCommand(cmd)) {
+        cmd.execute(param);
+      }
     }
   };
 }

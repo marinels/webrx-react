@@ -1,3 +1,5 @@
+import { Subscription } from 'rxjs';
+
 import { should } from '../setup';
 import { PubSub } from '../../src/Utils/PubSub';
 
@@ -7,7 +9,7 @@ describe('PubSub', () => {
     let called = false;
     const handle = pubsub.subscribe('test', () => called = true);
     should.exist(handle);
-    should.exist(handle.dispose);
+    handle.should.be.instanceOf(Subscription);
     pubsub.publish('test', undefined);
     called.should.be.true;
   });
@@ -66,7 +68,7 @@ describe('PubSub', () => {
     let pubsub = new PubSub();
     let called = false;
     let handle = pubsub.subscribe('test', () => called = true);
-    handle.dispose();
+    handle.unsubscribe();
     pubsub.publish('test', undefined);
     called.should.eql(false);
   });
@@ -92,7 +94,7 @@ describe('PubSub', () => {
     let handle2 = pubsub.subscribe('test', () => called2 = true);
     should.exist(handle1);
     should.exist(handle2);
-    handle1.dispose();
+    handle1.unsubscribe();
     pubsub.publish('test', undefined);
     called1.should.eql(false);
     called2.should.eql(true);

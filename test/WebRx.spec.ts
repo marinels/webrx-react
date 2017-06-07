@@ -1,4 +1,4 @@
-import { Observable, Subject, BehaviorSubject, Scheduler, Disposable } from 'rx';
+import { Observable, Subject, BehaviorSubject, Scheduler, Subscription } from 'rxjs';
 
 import { should } from './setup';
 import { wx } from '../src/WebRx';
@@ -61,7 +61,7 @@ describe('WebRx', () => {
       const prop = wx.property('', subj);
 
       prop.value.should.eql(subj.getValue());
-      subj.onNext('test2');
+      subj.next('test2');
       prop.value.should.eql(subj.getValue());
     });
 
@@ -69,7 +69,6 @@ describe('WebRx', () => {
       const prop = wx.property<string>();
       let isChanged = false;
       prop.changed
-        .observeOn(Scheduler.immediate)
         .subscribe(() => { isChanged = true; });
 
       isChanged.should.be.false;
@@ -79,7 +78,6 @@ describe('WebRx', () => {
       const prop = wx.property<string>();
       let isChanged = false;
       prop.changed
-        .observeOn(Scheduler.immediate)
         .subscribe(() => { isChanged = true; });
 
       prop.value = 'test';
@@ -90,7 +88,6 @@ describe('WebRx', () => {
       const prop = wx.property('test');
       let isChanged = false;
       prop.changed
-        .observeOn(Scheduler.immediate)
         .subscribe(() => { isChanged = true; });
 
       isChanged.should.be.false;
@@ -100,7 +97,6 @@ describe('WebRx', () => {
       const prop = wx.property('test1');
       let isChanged = false;
       prop.changed
-        .observeOn(Scheduler.immediate)
         .subscribe(() => { isChanged = true; });
 
       prop.value = 'test2';
@@ -111,22 +107,20 @@ describe('WebRx', () => {
       const prop = wx.property('test');
       let isChanged = false;
       prop.changed
-        .observeOn(Scheduler.immediate)
         .subscribe(() => { isChanged = true; });
 
       prop.value = 'test';
       isChanged.should.be.false;
     });
 
-    it('does not generate a changed value when a composite value does not change internal values', () => {
+    it('generates a changed value when a composite value does not change internal values', () => {
       const prop = wx.property({ val: 'test' });
       let isChanged = false;
       prop.changed
-        .observeOn(Scheduler.immediate)
         .subscribe(() => { isChanged = true; });
 
       prop.value = { val: 'test' };
-      isChanged.should.be.false;
+      isChanged.should.be.true;
     });
   });
 
@@ -239,7 +233,7 @@ describe('WebRx', () => {
       let isExecutionPrevented = false;
       const result = new BehaviorSubject('');
       const cmd = wx.command(x => {
-        result.onNext(x);
+        result.next(x);
 
         return x;
       });
@@ -303,10 +297,10 @@ describe('WebRx', () => {
 
       should.not.exist(result);
 
-      subj1.onNext('test1');
+      subj1.next('test1');
       should.not.exist(result);
 
-      subj2.onNext('test2');
+      subj2.next('test2');
       should.exist(result);
 
       result!.should.eql([ 'test1', 'test2' ]);
@@ -325,12 +319,12 @@ describe('WebRx', () => {
       result!.should.eql([ 'test1', 'test2' ]);
 
       result = undefined;
-      subj1.onNext('test3');
+      subj1.next('test3');
       should.exist(result);
       result!.should.eql([ 'test3', 'test2' ]);
 
       result = undefined;
-      subj2.onNext('test4');
+      subj2.next('test4');
       should.exist(result);
       result!.should.eql([ 'test3', 'test4' ]);
     });

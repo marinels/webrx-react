@@ -1,6 +1,6 @@
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 
-import { ObservableOrProperty } from '../../../WebRx';
+import { wx, ObservableOrProperty } from '../../../WebRx';
 import { BaseDataGridViewModel, ProjectionRequest, ProjectionResult } from './DataGridViewModel';
 
 export interface AsyncDataSource<TRequest extends ProjectionRequest, TResult extends ProjectionResult<any>> {
@@ -13,7 +13,7 @@ export interface BasicAsyncDataSource<TRequest extends ProjectionRequest, TData>
 
 export function isAsyncDataSource(source: any): source is AsyncDataSource<any, any> {
   const dataSource = <AsyncDataSource<any, any>>source;
-  if (dataSource != null && Observable.isObservable(dataSource.requests) && dataSource.getResultAsync instanceof Function) {
+  if (dataSource != null && wx.isObservable(dataSource.requests) && dataSource.getResultAsync instanceof Function) {
     return true;
   }
   else {

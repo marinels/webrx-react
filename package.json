@@ -39,8 +39,7 @@
     "react-bootstrap": "^0.31.0",
     "react-dom": "~15.5.0",
     "react-fa": "^4.1.2",
-    "rx": "^4.1.0",
-    "rx-dom": "^7.0.3"
+    "rxjs": "^5.0.0"
   },
   "devDependencies": {
     "@types/chai": "~3.5.0",

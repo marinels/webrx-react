@@ -1,4 +1,4 @@
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 import * as clone from 'clone';
 
 import { wx, ObservableOrProperty, ReadOnlyProperty, Property, Command } from '../../../WebRx';
@@ -131,7 +131,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
     if (this.isProperty(isLoading) === true) {
       this.isLoading = <ReadOnlyProperty<boolean>>isLoading;
     }
-    else if (Observable.isObservable(isLoading) === true) {
+    else if (wx.isObservable(isLoading) === true) {
       this.isLoading = (<Observable<boolean>>isLoading).toProperty(true);
     }
     else {
@@ -177,7 +177,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
       // ignore the (first) null requests
       .filter(x => x != null)
       // debounce on input projection requests
-      .debounce(rateLimit)
+      .debounceTime(rateLimit)
       .invokeCommand(this.project),
     );
 

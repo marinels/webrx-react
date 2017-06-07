@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 import { Tabs, Tab } from 'react-bootstrap';
 
 import { wxr, BaseView, BaseViewProps } from '../../React';

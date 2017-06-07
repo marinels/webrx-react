@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 import { Icon, IconStack } from 'react-fa';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 

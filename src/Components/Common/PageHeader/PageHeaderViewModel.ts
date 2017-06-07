@@ -1,4 +1,4 @@
-import { Observable } from 'rx';
+import { Observable, Subscription } from 'rxjs';
 
 import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
 import { BaseViewModel } from '../../React/BaseViewModel';
@@ -6,12 +6,11 @@ import { BaseRoutableViewModel, isRoutableViewModel } from '../../React/BaseRout
 import { HeaderAction, HeaderCommandAction, HeaderMenu, isHeaderCommandAction } from '../../React/Actions';
 import { RouteHandlerViewModel } from '../RouteHandler/RouteHandlerViewModel';
 import { SearchViewModel } from '../Search/SearchViewModel';
-import { SubMan } from '../../../Utils/SubMan';
 
 export class PageHeaderViewModel extends BaseViewModel {
   public static displayName = 'PageHeaderViewModel';
 
-  private dynamicSubs: SubMan;
+  private dynamicSubscriptions: Subscription;
 
   public search: SearchViewModel | undefined;
   public readonly sidebarMenus: Property<HeaderMenu[]>;
@@ -39,7 +38,7 @@ export class PageHeaderViewModel extends BaseViewModel {
   ) {
     super();
 
-    this.dynamicSubs = new SubMan();
+    this.dynamicSubscriptions = Subscription.EMPTY;
 
     this.sidebarMenus = this.property<HeaderMenu[]>();
     this.navbarMenus = this.property<HeaderMenu[]>();
@@ -93,6 +92,12 @@ export class PageHeaderViewModel extends BaseViewModel {
     );
   }
 
+  unsubscribe() {
+    super.unsubscribe();
+
+    this.dynamicSubscriptions = Subscription.unsubscribe(this.dynamicSubscriptions);
+  }
+
   public updateDynamicContent() {
     let component = this.routeHandler.routedComponent.value;
 
@@ -106,7 +111,7 @@ export class PageHeaderViewModel extends BaseViewModel {
     }
 
     // dispose any existing subscriptions to header actions
-    this.dynamicSubs.dispose();
+    this.dynamicSubscriptions = Subscription.unsubscribe(this.dynamicSubscriptions);
 
     // add our header actions
     this.addItems(this.sidebarMenus, this.staticSidebarMenus, component, x => x.getSidebarMenus);
@@ -137,10 +142,12 @@ export class PageHeaderViewModel extends BaseViewModel {
 
     // now that our list is populated with our header actions, subscribe to the
     // canExecute observable to manage the disabled status of any header action
-    this.dynamicSubs.add(
+    this.dynamicSubscriptions = new Subscription();
+
+    this.dynamicSubscriptions.add(
       Observable
         .merge(
-          list.value
+          ...list.value
             .map((x: HeaderAction) => isHeaderCommandAction(x) ? x : undefined)
             .filterNull()
             .map(x => x.command!.canExecuteObservable),

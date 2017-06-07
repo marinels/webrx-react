@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Observable, IDisposable } from 'rx';
+import { Observable, Subscription } from 'rxjs';
 
 import { wx, ObservableOrProperty, ReadOnlyProperty } from '../../../WebRx';
 
@@ -18,7 +18,7 @@ export class ObservableWrapper extends React.Component<ObservableWrapperProps, O
   };
 
   private property: ReadOnlyProperty<any>;
-  private subscription: IDisposable;
+  private subscription: Subscription;
 
   componentWillMount() {
     this.property = wx.getObservable(this.props.observableOrProperty)
@@ -33,8 +33,8 @@ export class ObservableWrapper extends React.Component<ObservableWrapperProps, O
   }
 
   componentWillUnmount() {
-    this.property = Object.dispose(this.property);
-    this.subscription = Object.dispose(this.subscription);
+    this.property = Subscription.unsubscribe(this.property);
+    this.subscription = Subscription.unsubscribe(this.subscription);
   }
 
   render() {

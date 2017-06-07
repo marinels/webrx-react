@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 import { Enumerable } from 'ix';
 import { Grid, Row, Col, PageHeader, DropdownButton, MenuItem, Alert } from 'react-bootstrap';
 

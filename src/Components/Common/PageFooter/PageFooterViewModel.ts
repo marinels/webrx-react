@@ -1,4 +1,4 @@
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 
 import { ReadOnlyProperty, Command } from '../../../WebRx';
 import { BaseViewModel } from '../../React/BaseViewModel';
@@ -23,7 +23,7 @@ export class PageFooterViewModel extends BaseViewModel {
     this.viewportDimensions = this
       .whenAny(this.viewportDimensionsChanged.results, x => x)
       .filterNull()
-      .debounce(100)
+      .debounceTime(100)
       .toProperty();
   }
 }

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { findDOMNode } from 'react-dom';
-import { Observable, IDisposable } from 'rx';
+import { Observable, Subscription } from 'rxjs';
 import { Enumerable } from 'ix';
 import { Grid, Row, Col } from 'react-bootstrap';
 
@@ -8,7 +8,7 @@ export interface BootstrapGuideProps {
 }
 
 export class BootstrapGuide extends React.Component<BootstrapGuideProps, any> {
-  private mouseMoveSub: IDisposable | undefined;
+  private mouseMoveSub = Subscription.EMPTY;
 
   componentDidMount() {
     const guide = findDOMNode(this.refs['guide']) as HTMLDivElement;
@@ -19,7 +19,7 @@ export class BootstrapGuide extends React.Component<BootstrapGuideProps, any> {
 
       this.mouseMoveSub = Observable
         .fromEvent(document, 'mousemove')
-        .doOnNext((e: MouseEvent) => {
+        .do((e: MouseEvent) => {
           guide.style.visibility = e.shiftKey === true ? 'visible' : 'hidden';
         })
         .filter((e: MouseEvent) => e.shiftKey === true)
@@ -38,7 +38,7 @@ export class BootstrapGuide extends React.Component<BootstrapGuideProps, any> {
   }
 
   componentWillUnmount() {
-    this.mouseMoveSub = Object.dispose(this.mouseMoveSub);
+    this.mouseMoveSub = Subscription.unsubscribe(this.mouseMoveSub);
   }
 
   render() {

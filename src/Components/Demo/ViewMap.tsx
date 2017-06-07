@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 import { Col, Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab,
   Well, ListGroup, ListGroupItem, Table, OverlayTrigger, Overlay, Tooltip, Popover,
 } from 'react-bootstrap';

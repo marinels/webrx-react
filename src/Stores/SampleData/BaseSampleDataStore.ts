@@ -1,4 +1,4 @@
-import { Observable } from  'rx';
+import { Observable } from  'rxjs';
 
 import { Default as alert } from '../../Utils/Alert';
 

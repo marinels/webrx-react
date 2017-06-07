@@ -1,29 +1,30 @@
-import { Observable, IDisposable } from 'rx';
+import { Observable, Subscription } from 'rxjs';
 
 import { wx } from '../../WebRx';
 import { Alert, Logging } from '../../Utils';
 
-export function logObservable(logger: Logging.Logger, observable: Observable<any>, name: string) {
-  return observable.subscribe(
-    x => {
-      if (x instanceof Object) {
-        let value = Object.getName(x);
+export function logObservable(logger: Logging.Logger, observable: Observable<any>, name: string): Subscription {
+  return observable
+    .subscribe(
+      x => {
+        if (x instanceof Object) {
+          let value = Object.getName(x);
 
-        if (value === 'Object') {
-          value = '';
+          if (value === 'Object') {
+            value = '';
+          }
+
+          logger.debug(`${ name } = ${ value }`, x);
         }
-
-        logger.debug(`${ name } = ${ value }`, x);
-      }
-      else {
-        logger.debug(`${ name } = ${ x }`);
-      }
-    },
-    e => logger.error(`${ name }: ${ e }`),
-  );
+        else {
+          logger.debug(`${ name } = ${ x }`);
+        }
+      },
+      e => logger.error(`${ name }: ${ e }`),
+    );
 }
 
-export function logMemberObservables(logger: Logging.Logger, source: StringMap<any>) {
+export function logMemberObservables(logger: Logging.Logger, source: StringMap<any>): Subscription[] {
   return Object
     .keys(source)
     .map(key => ({ key, member: source[key] }))
@@ -76,7 +77,7 @@ export function subscribeOrAlert<T, TError>(
   style?: string,
   timeout?: number,
   errorFormatter?: (e: TError) => string,
-) {
+): Subscription {
   return getObservableOrAlert(
     observableFactory,
     header,

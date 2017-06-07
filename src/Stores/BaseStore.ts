@@ -1,4 +1,4 @@
-import { Observable, DOM as rxdom } from 'rx-dom';
+import { Observable, AjaxRequest } from 'rxjs';
 
 import {  } from '../WebRx';
 import { Logging } from '../Utils';
@@ -13,12 +13,12 @@ export abstract class BaseStore<T extends ObservableApi> {
     this.logger.debug('Store Created');
   }
 
-  protected getObservable<T>(action: string, params?: any, options?: rxdom.AjaxSettings, baseUri?: string): Observable<T> {
+  protected getObservable<T>(action: string, params?: any, options?: AjaxRequest, baseUri?: string): Observable<T> {
     return this.api
       .getObservable<T>(action, params, options, baseUri);
   }
 
-  protected postObservable<T>(action: string, data?: any, params?: any, options?: rxdom.AjaxSettings, baseUri?: string): Observable<T> {
+  protected postObservable<T>(action: string, data?: any, params?: any, options?: AjaxRequest, baseUri?: string): Observable<T> {
     return this.api
       .postObservable<T>(action, data, params, options, baseUri);
   }

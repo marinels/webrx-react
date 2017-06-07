@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IDisposable, Disposable } from  'rx';
+import { Subscription } from  'rxjs';
 import { Button, ButtonProps, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import { Command } from '../../../WebRx';
@@ -17,7 +17,7 @@ export interface CommandButtonProps extends ButtonProps {
 export class CommandButton extends React.Component<CommandButtonProps, any> {
   public static displayName = 'CommandButton';
 
-  private canExecuteSubscription = Disposable.empty;
+  private canExecuteSubscription = Subscription.EMPTY;
 
   private getCommand(): Command<any> | undefined {
     const cmd = this.props.command;
@@ -43,7 +43,7 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
   }
 
   componentWillUnmount() {
-    this.canExecuteSubscription = Object.dispose(this.canExecuteSubscription);
+    this.canExecuteSubscription = Subscription.unsubscribe(this.canExecuteSubscription);
   }
 
   render() {

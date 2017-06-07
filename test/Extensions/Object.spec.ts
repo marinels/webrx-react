@@ -1,5 +1,4 @@
 import { should } from '../setup';
-import { Disposable } from 'rx';
 
 import '../../src/Extensions/Object';
 
@@ -74,30 +73,6 @@ describe('Object Extensions', () => {
       let result = Object.assign(target, { s1: 4 }, {}, { s3: 56 });
       should.exist(result);
       result.should.eql({ t1: 123, s1: 4, s3: 56 });
-    });
-  });
-
-  describe('Object.Dispose', () => {
-    it('Can dispose a undefined object', () => {
-      should.not.exist(Object.dispose(undefined));
-    });
-
-    it('Can dispose a non-null object that is not disposable', () => {
-      const disposable = <any>{};
-      const disposed = Object.dispose(disposable);
-      should.exist(disposed);
-      disposed.should.eql(disposable);
-      disposable.test = 'test';
-      disposed.should.eql(disposable);
-    });
-
-    it('Can dispose a disposable', () => {
-      let isDisposed = false;
-      const disposable = Disposable.create(() => isDisposed = true);
-      const disposed = Object.dispose(disposable);
-      should.exist(disposed);
-      disposed.should.eql(Disposable.empty);
-      isDisposed.should.be.true;
     });
   });
 

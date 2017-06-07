@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 import { Icon } from 'react-fa';
 import { Table, TableProps, OverlayTrigger, OverlayTriggerProps } from 'react-bootstrap';
 

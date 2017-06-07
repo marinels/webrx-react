@@ -1,12 +1,9 @@
-import { IDisposable, Disposable } from 'rx';
 import { Enumerable } from 'ix';
 
 declare global {
   interface ObjectConstructor {
     assign<T>(target: any, ...sources: any[]): T;
     rest<TData, TProps>(data: TData, propsCreator?: (x: TData) => TProps, ...omits: string[]): { rest: TData, props: TProps };
-    isDisposable(disposable: any): disposable is IDisposable;
-    dispose<T>(disposable: T): T;
     getName(source: any, undefinedValue?: string): string;
     fallback<T>(...values: T[]): T;
     fallbackAsync<T>(...actions: (T | (() => T))[]): T;
@@ -56,22 +53,6 @@ function rest<TData extends StringMap<any>, TProps>(data: TData, propsCreator?: 
   return { rest, props };
 }
 Object.rest = rest;
-
-function isDisposable(disposable: any): disposable is IDisposable {
-  return Disposable.isDisposable(disposable);
-}
-Object.isDisposable = isDisposable;
-
-function dispose<T>(disposable: T) {
-  if (isDisposable(disposable)) {
-    disposable.dispose();
-
-    return <T><any>Disposable.empty;
-  }
-
-  return disposable;
-}
-Object.dispose = dispose;
 
 interface NamedObject {
   displayName?: string;
