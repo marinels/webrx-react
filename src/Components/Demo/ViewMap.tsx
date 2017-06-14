@@ -82,6 +82,7 @@ const treeTemplate = new Components.TreeViewTemplate<SampleTreeData>(
 
     return Observable.of(false);
   },
+  true,
 );
 
 const viewMap: ViewActivatorMap = {
