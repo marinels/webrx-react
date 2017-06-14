@@ -228,6 +228,14 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
     });
   }
 
+  protected renderDefaultTemplateContainer(content: any, item: TreeNode<TData>, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) {
+    return wxr.renderConditional(
+      view.props.selectable === true && this.clickToExpand !== true,
+      () => this.renderSelectableTemplateContainer(content, item, data, index, viewModel, view),
+      () => this.renderStandardTemplateContainer(content, item, data, index, viewModel, view),
+    );
+  }
+
   initialize(viewModel: ReadonlyListViewModel<TData>, view: ListView) {
     this.nodes = wx
       .whenAny(viewModel.items, x => x || [])
