@@ -41,19 +41,27 @@ export abstract class BaseListViewTemplate<TItem, TData, TView extends React.Com
     this.renderTemplateContainer = renderTemplateContainer || this.renderDefaultTemplateContainer;
   }
 
+  protected renderStandardTemplateContainer(content: any, item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) {
+    return (
+      <div className='List-templateContainer'>
+        { content }
+      </div>
+    );
+  }
+
+  protected renderSelectableTemplateContainer(content: any, item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) {
+    return (
+      <CommandButton className='List-templateContainer' block plain command={ viewModel.selectItem } commandParameter={ data } >
+        { content }
+      </CommandButton>
+    );
+  }
+
   protected renderDefaultTemplateContainer(content: any, item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) {
     return wxr.renderConditional(
       view.props.selectable === true,
-      () => (
-        <CommandButton className='List-templateContainer' block plain command={ viewModel.selectItem } commandParameter={ data } >
-          { content }
-        </CommandButton>
-      ),
-      () => (
-        <div className='List-templateContainer'>
-          { content }
-        </div>
-      ),
+      () => this.renderSelectableTemplateContainer(content, item, data, index, viewModel, view),
+      () => this.renderStandardTemplateContainer(content, item, data, index, viewModel, view),
     );
   }
 
@@ -211,13 +219,25 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
   ) {
     super(renderItem, renderItemActions, keySelector, renderTemplateContainer);
 
-    this.toggleNode = wx.command((x: TreeNode<TData>) => {
-      if (x != null) {
-        x.isExpanded = !x.isExpanded;
+    this.toggleNode = wx.command((x: { node?: TreeNode<TData>, data?: TData, index?: number, viewModel?: ReadonlyListViewModel<TData>, view?: ListView }) => {
+      if (x.node != null) {
+        x.node.isExpanded = !x.node.isExpanded;
+
+        if (x.index != null && x.viewModel != null && x.view != null && x.view.props.selectable === true) {
+          x.viewModel.selectItem.execute(this.getItemData(x.node, x.index, x.viewModel, x.view));
+        }
       }
 
-      return x;
+      return x.node;
     });
+  }
+
+  protected renderDefaultTemplateContainer(content: any, item: TreeNode<TData>, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: ListView) {
+    return wxr.renderConditional(
+      view.props.selectable === true && this.clickToExpand !== true,
+      () => this.renderSelectableTemplateContainer(content, item, data, index, viewModel, view),
+      () => this.renderStandardTemplateContainer(content, item, data, index, viewModel, view),
+    );
   }
 
   initialize(viewModel: ReadonlyListViewModel<TData>, view: ListView) {
@@ -270,7 +290,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
       wxr.renderConditional(
         this.clickToExpand === true,
         () => (
-          <CommandButton key='content' className='List-itemContainer' plain command={ this.toggleNode } commandParameter={ node }>
+          <CommandButton key='content' className='List-itemContainer' plain command={ this.toggleNode } commandParameter={ ({ node, data, index, viewModel, view }) }>
             { React.isValidElement<{ children?: React.ReactNode }>(content) ? content.props.children : content }
           </CommandButton>
         ),
@@ -292,7 +312,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
       <div key='expander' className='TreeNode-expander'>
         {
           wxr.renderConditional(node.nodes.length > 0, () => (
-            <CommandButton plain command={ this.toggleNode } commandParameter={ node }>
+            <CommandButton plain command={ this.toggleNode } commandParameter={ ({ node }) }>
               <Icon name={ node.isExpanded === true ? 'minus-square-o' : 'plus-square-o' } size='lg' fixedWidth />
             </CommandButton>
           ), () => (
