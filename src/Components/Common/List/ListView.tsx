@@ -41,19 +41,27 @@ export abstract class BaseListViewTemplate<TItem, TData, TView extends React.Com
     this.renderTemplateContainer = renderTemplateContainer || this.renderDefaultTemplateContainer;
   }
 
+  protected renderStandardTemplateContainer(content: any, item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) {
+    return (
+      <div className='List-templateContainer'>
+        { content }
+      </div>
+    );
+  }
+
+  protected renderSelectableTemplateContainer(content: any, item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) {
+    return (
+      <CommandButton className='List-templateContainer' block plain command={ viewModel.selectItem } commandParameter={ data } >
+        { content }
+      </CommandButton>
+    );
+  }
+
   protected renderDefaultTemplateContainer(content: any, item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) {
     return wxr.renderConditional(
       view.props.selectable === true,
-      () => (
-        <CommandButton className='List-templateContainer' block plain command={ viewModel.selectItem } commandParameter={ data } >
-          { content }
-        </CommandButton>
-      ),
-      () => (
-        <div className='List-templateContainer'>
-          { content }
-        </div>
-      ),
+      () => this.renderSelectableTemplateContainer(content, item, data, index, viewModel, view),
+      () => this.renderStandardTemplateContainer(content, item, data, index, viewModel, view),
     );
   }
 
