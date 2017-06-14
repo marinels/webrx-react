@@ -130,9 +130,16 @@ export class TimeSpan {
   }
 
   /**
+   * Convert a duration into a work day duration based on a number of hours per work day
+   */
+  public static getWorkDaysDuration(value: moment.Duration, hoursPerDay = TimeSpan.DefaultDurationHoursPerDay, precision = TimeSpan.DefaultDurationDaysPrecision) {
+    return moment.duration(parseFloat((value.asHours() / hoursPerDay).toFixed(precision)), 'days');
+  }
+
+  /**
    * Standardized days string representation of a duration
    */
-  public static formatDays(value: moment.Duration | undefined, precision = TimeSpan.DefaultDurationDaysPrecision, hoursPerDay = TimeSpan.DefaultDurationHoursPerDay, defaultValue: any = null) {
-    return value == null ? defaultValue : `${ moment.duration(parseFloat((value.asHours() / hoursPerDay).toFixed(precision)), 'days').humanize() }`;
+  public static formatDays(value: moment.Duration | undefined, defaultValue: any = null) {
+    return value == null ? defaultValue : value.humanize();
   }
 }
