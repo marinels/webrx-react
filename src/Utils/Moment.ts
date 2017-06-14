@@ -133,6 +133,6 @@ export class TimeSpan {
    * Standardized days string representation of a duration
    */
   public static formatDays(value: moment.Duration | undefined, precision = TimeSpan.DefaultDurationDaysPrecision, hoursPerDay = TimeSpan.DefaultDurationHoursPerDay, defaultValue: any = null) {
-    return value == null ? defaultValue : `${ moment.duration((value.asHours() / hoursPerDay).toFixed(precision), 'days').humanize() }`;
+    return value == null ? defaultValue : `${ moment.duration(parseFloat((value.asHours() / hoursPerDay).toFixed(precision)), 'days').humanize() }`;
   }
 }
