@@ -99,7 +99,7 @@
     "through": "^2.3.8",
     "tslint": "^5.0.0",
     "tslint-config-unional": "^0.7.0",
-    "typescript": "~2.2.0",
+    "typescript": "~2.3.0",
     "url-loader": "^0.5.8",
     "vinyl": "^2.0.1",
     "webpack": "^2.3.3",
