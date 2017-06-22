@@ -56,7 +56,11 @@ export class InlineEditView extends BaseView<InlineEditProps, InlineEditViewMode
     }
   }
 
-  private focusAndSelectControlText(component: Element) {
+  private focusAndSelectControlText(component: Element | null) {
+    if (component == null) {
+      return;
+    }
+
     const control = findDOMNode(component) as HTMLInputElement;
 
     if (control != null) {

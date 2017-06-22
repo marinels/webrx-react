@@ -107,8 +107,8 @@ export function renderGridLoadable(
  * Focus a react instance upon mounting
  * i.e., <Elem ref={ (x: React.ReactInstance) => this.focusElement(x) } />
  */
-export function focusElement(instance: React.ReactInstance) {
-  const elem = findDOMNode<HTMLElement>(instance);
+export function focusElement(instance: React.ReactInstance | undefined) {
+  const elem = instance == null ? null : findDOMNode<HTMLElement>(instance);
 
   if (elem != null) {
     elem.focus();
