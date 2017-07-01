@@ -44,9 +44,17 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { viewMap, guide, brand, branduri, alerts, header, footer, copyright } = x;
-      return { viewMap, guide, brand, branduri, alerts, header, footer, copyright };
+      const { viewMap, guide, brand, branduri, alerts, header, footer, copyright, copyrightYear, copyrightUri, footerContent, hideDimensions } = x;
+      return { viewMap, guide, brand, branduri, alerts, header, footer, copyright, copyrightYear, copyrightUri, footerContent, hideDimensions };
     });
+
+    const footerProps = {
+      copyright: props.copyright,
+      copyrightYear: props.copyrightYear,
+      copyrightUri: props.copyrightUri,
+      footerContent: props.footerContent,
+      hideDimensions: props.hideDimensions,
+    };
 
     return (
       <div className='webrx-react bootstrap-3' ref={ x => updateDefaultPortalContainer(x) }>
@@ -68,7 +76,7 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
                 }
                 { this.renderConditional(props.header, () => (<PageHeaderView viewModel={ this.state.header } brand={ props.brand } branduri={ props.branduri } />)) }
                 <RouteHandlerView viewModel={ this.state.routeHandler } viewMap={ props.viewMap! } />
-                { this.renderConditional(props.footer, () => (<PageFooterView viewModel={ this.state.footer } copyright={ props.copyright } />)) }
+                { this.renderConditional(props.footer, () => (<PageFooterView viewModel={ this.state.footer } { ...footerProps } />)) }
               </div>
             ))
           }
