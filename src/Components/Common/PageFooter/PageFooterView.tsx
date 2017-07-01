@@ -7,7 +7,11 @@ import { BaseView, BaseViewProps } from '../../React';
 import { PageFooterViewModel, ViewportDimensions } from './PageFooterViewModel';
 
 export interface PageFooterProps extends BaseViewProps {
-  copyright?: string;
+  copyright?: string | boolean;
+  copyrightYear?: number | string;
+  copyrightUri?: string;
+  footerContent?: any;
+  hideDimensions?: boolean;
 }
 
 export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewModel> {
@@ -46,28 +50,78 @@ export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewMode
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { copyright } = x;
-      return { copyright };
+      const { copyright, copyrightYear, copyrightUri, footerContent, hideDimensions } = x;
+      return { copyright, copyrightYear, copyrightUri, footerContent, hideDimensions };
     });
+
+    const copyright = this.renderConditional(
+      props.copyright !== false,
+      () => (
+        <span className='PageFooter-text'>
+          { `© ${ this.renderCopyrightYear() } `}
+          { this.renderCopyrightText() }
+        </span>
+      ),
+    );
+
+    const dimensions = this.renderConditional(
+      props.hideDimensions !== true,
+      () => (
+        <span className='PageFooter-viewport PageFooter-text text-muted'>
+          { this.renderDimensions() }
+        </span>
+      ),
+    );
 
     return (
       <div { ...rest } className={ this.classNames('PageFooter', className) }>
         <Grid>
           <Row>
-            <Col md={12}>
+            <Col md={ 12 }>
               <div className='PageFooter-container'>
-                <span className='PageFooter-text'>
-                  { `© ${ moment().format('YYYY') }${ String.isNullOrEmpty(props.copyright) ? '' : ` ${ props.copyright }` }` }
-                </span>
-                <span className='PageFooter-spacer'> | </span>
-                <span ref='viewport' className='PageFooter-viewport PageFooter-text text-muted'>
-                  { this.renderDimensions() }
-                </span>
+                { copyright }
+                {
+                  this.renderConditional(
+                    copyright != null && dimensions != null,
+                    () => (<span className='PageFooter-spacer text-muted'> | </span>),
+                  )
+                }
+                { dimensions }
               </div>
             </Col>
           </Row>
+          {
+            this.renderNullable(
+              props.footerContent,
+              x => (
+                <Row>
+                  <Col md={ 12 }>
+                    <div className='PageFooter-container'>{ x }</div>
+                  </Col>
+                </Row>
+              ),
+            )
+          }
         </Grid>
       </div>
+    );
+  }
+
+  private renderCopyrightYear() {
+    return this.renderNullable(
+      this.props.copyrightYear,
+      x => x,
+      () => moment().format('YYYY'),
+    );
+  }
+
+  private renderCopyrightText() {
+    return this.renderNullable(
+      this.props.copyrightUri,
+      x => (
+        <a href={ x }>{ this.props.copyright || '' }</a>
+      ),
+      () => this.props.copyright || '',
     );
   }
 
