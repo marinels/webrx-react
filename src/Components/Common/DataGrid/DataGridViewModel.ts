@@ -324,7 +324,11 @@ export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, Items
     let items = request.items || [];
 
     if (this.filterer != null && request.regex != null) {
-      items = clone(items).filter(x => this.filterer!(x, request.regex!));
+      if (items.length > 0 && !(items[0] instanceof Object)) {
+        items = clone(items);
+      }
+
+      items = items.filter(x => this.filterer!(x, request.regex!));
     }
 
     const count = items.length;
