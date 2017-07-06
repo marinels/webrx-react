@@ -107,12 +107,16 @@ export function renderGridLoadable(
  * Focus a react instance upon mounting
  * i.e., <Elem ref={ (x: React.ReactInstance) => this.focusElement(x) } />
  */
-export function focusElement(instance: React.ReactInstance | undefined) {
-  const elem = instance == null ? null : findDOMNode<HTMLElement>(instance);
+export function focusElement<T extends HTMLElement = HTMLElement>(instance: React.ReactInstance | undefined) {
+  const elem = instance == null ? null : findDOMNode<T>(instance);
 
   if (elem != null) {
     elem.focus();
+
+    return elem;
   }
+
+  return undefined;
 }
 
 // classNames type defs don't export the internal types so we have to decouple here
