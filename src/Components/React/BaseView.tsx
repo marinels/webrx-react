@@ -228,8 +228,14 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
   /**
    * Binds an observable to a command on the view model
    */
-  protected bindObservableToCommand<TInput, TResult>(observable: Observable<TInput>, commandSelector: (viewModel: Readonly<TViewModel>) => Command<TResult>) {
-    return bindObservableToCommand(this.state, observable, commandSelector);
+  protected bindObservableToCommand<TInput, TResult>(
+    observable: Observable<TInput>,
+    commandSelector: (viewModel: Readonly<TViewModel>) => Command<TResult>,
+    onNext?: (value: TInput) => void,
+    onError?: (exception: any) => void,
+    onCompleted?: () => void,
+  ) {
+    return bindObservableToCommand(this.state, observable, commandSelector, onNext, onError, onCompleted);
   }
 
   /**
@@ -245,12 +251,15 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
   /**
    * Binds a DOM event to an observable command on the view model
    */
-  protected bindEventToCommand<TParameter, TEvent extends Event | React.SyntheticEvent<this>>(
-    commandSelector: (viewModel: Readonly<TViewModel>) => Command<any>,
+  protected bindEventToCommand<TParameter, TCommand, TEvent extends Event | React.SyntheticEvent<this>>(
+    commandSelector: (viewModel: Readonly<TViewModel>) => Command<TCommand>,
     paramSelector?: (eventKey: any, event: TEvent) => TParameter,
     conditionSelector?: (event: TEvent, eventKey: any) => boolean,
+    onNext?: (value: TCommand) => void,
+    onError?: (exception: any) => void,
+    onCompleted?: () => void,
   ) {
-    return bindEventToCommand(this.state, commandSelector, paramSelector, conditionSelector);
+    return bindEventToCommand(this.state, commandSelector, paramSelector, conditionSelector, onNext, onError, onCompleted);
   }
   // -----------------------------------------
 }

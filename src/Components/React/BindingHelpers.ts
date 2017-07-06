@@ -11,8 +11,14 @@ export function bindObservableToCommand<TViewModel extends BaseViewModel, TInput
   viewModel: Readonly<TViewModel>,
   observableOrProperty: ObservableOrProperty<TInput>,
   commandSelector: (viewModel: Readonly<TViewModel>) => Command<TResult>,
+  onNext?: (value: TInput) => void,
+  onError?: (exception: any) => void,
+  onCompleted?: () => void,
 ): Subscription {
-  return viewModel.addSubscription(getObservable(observableOrProperty).invokeCommand(commandSelector(viewModel)));
+  return viewModel.addSubscription(
+    getObservable(observableOrProperty)
+      .invokeCommand(commandSelector(viewModel), onNext, onError, onCompleted),
+  );
 }
 
 /**
@@ -37,11 +43,14 @@ export function bindEventToProperty<TViewModel extends BaseViewModel, TValue, TE
 /**
  * Binds a DOM event to an observable command on the view model
  */
-export function bindEventToCommand<TViewModel extends BaseViewModel, TParameter, TEvent extends Event | React.SyntheticEvent<any>>(
+export function bindEventToCommand<TViewModel extends BaseViewModel, TParameter, TCommand, TEvent extends Event | React.SyntheticEvent<any>>(
   viewModel: Readonly<TViewModel>,
-  commandSelector: (viewModel: Readonly<TViewModel>) => Command<any>,
+  commandSelector: (viewModel: Readonly<TViewModel>) => Command<TCommand>,
   paramSelector?: (eventKey: any, event: TEvent) => TParameter,
   conditionSelector?: (event: TEvent, eventKey: any) => boolean,
+  onNext?: (value: TCommand) => void,
+  onError?: (exception: any) => void,
+  onCompleted?: () => void,
 ): any { // this needs to be any instead of Function to support React.EventHandler<T>
   return (eventKey: any, event: TEvent) => {
     // this ensures that we can still use this function for basic HTML events
@@ -54,7 +63,7 @@ export function bindEventToCommand<TViewModel extends BaseViewModel, TParameter,
       const cmd = commandSelector(viewModel);
 
       if (isCommand(cmd)) {
-        cmd.execute(param);
+        cmd.execute(param, onNext, onError, onCompleted);
       }
     }
   };
