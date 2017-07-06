@@ -132,7 +132,7 @@ export type ExecutionAction<T> = (parameter: any) => (T | Observable<T>);
 
 export function command<T>(): Command<T>;
 export function command<T>(execute: ExecutionAction<T>): Command<T>;
-export function command<T>(canExecute: Observable<boolean>, execute: ExecutionAction<T>): Command<T>;
+export function command<T>(canExecute: Observable<boolean>, execute?: ExecutionAction<T>): Command<T>;
 export function command<T>(execute: ExecutionAction<T>, canExecute: Observable<boolean>): Command<T>;
 export function command<T>(arg1?: ExecutionAction<T> | Observable<boolean>, arg2?: ExecutionAction<T> | Observable<boolean>): Command<T> {
   let canExecute: Observable<boolean> | undefined;
