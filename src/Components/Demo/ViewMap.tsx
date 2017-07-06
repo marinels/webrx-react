@@ -9,6 +9,8 @@ import { Logging, Alert } from '../../Utils';
 import { wxr } from '../React';
 import { SampleData, SampleTreeData } from './RoutingMap';
 import * as Components from '../Common';
+import { TodoListView } from './TodoList/TodoListView';
+import { TodoListViewModel } from './TodoList/TodoListViewModel';
 
 export interface ViewActivator {
   (component: any, componentRoute: string | undefined): any;
@@ -471,6 +473,9 @@ const viewMap: ViewActivatorMap = {
       );
     }
   },
+  TodoListViewModel: (viewModel: TodoListViewModel) => (
+    <TodoListView style={({ padding: 20 })} viewModel={ viewModel } shadow />
+  ),
 };
 
 export const ViewMap = viewMap;

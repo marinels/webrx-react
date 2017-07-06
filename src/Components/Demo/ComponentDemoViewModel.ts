@@ -252,6 +252,13 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   getSidebarMenus() {
     return <HeaderMenu[]>[
       {
+        id: 'sidebar-demos',
+        header: 'Integration Demos',
+        items: [
+          { id: 'todolist', header: 'Todo List', uri: '#/demo/todolist', iconName: 'list' },
+        ],
+      },
+      {
         id: 'sidebar-1',
         header: 'Section 1',
         items: [

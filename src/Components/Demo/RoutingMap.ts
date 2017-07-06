@@ -4,6 +4,7 @@ import { wx } from '../../WebRx';
 import { Alert, Compare } from '../../Utils';
 import { HeaderMenu, HeaderCommandAction } from '../React';
 import * as Components from '../Common';
+import { TodoListViewModel } from './TodoList/TodoListViewModel';
 
 export interface ViewModelActivator {
   (state: any): any;
@@ -313,5 +314,7 @@ routeMap.addRoute('WebRx-React', 'InlineEditObject', 'InlineEdit (Object)', (sta
 
   return editor;
 });
+
+routeMap.viewModelMap['todolist'] = () => new TodoListViewModel();
 
 export const RouteMap = routeMap;
