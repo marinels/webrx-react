@@ -26,8 +26,8 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
 
   render() {
     const { className, children, rest, props } = this.restProps(x => {
-      const { fill, viewTemplate, search, pager, loadingContent, selectable, highlightSelected, checkmarkSelected } = x;
-      return { fill, viewTemplate, search, pager, loadingContent, selectable, highlightSelected, checkmarkSelected };
+      const { fill, viewTemplate, search, pager, loadingContent, selectable, highlightSelected, checkmarkSelected, emptyContent } = x;
+      return { fill, viewTemplate, search, pager, loadingContent, selectable, highlightSelected, checkmarkSelected, emptyContent };
     });
 
     if ((props.search || false) !== false && this.state.grid.canFilter() === false) {
