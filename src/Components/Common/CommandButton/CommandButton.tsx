@@ -129,7 +129,11 @@ export class CommandButton extends React.Component<CommandButtonProps, any> {
         e.preventDefault();
       }
 
-      cmd.execute(this.getParam());
+      cmd.execute(this.getParam(), () => {
+        if (this.props.onClick != null) {
+          this.props.onClick(e);
+        }
+      });
     }
   }
 }
