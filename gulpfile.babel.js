@@ -92,6 +92,7 @@ const config = {
     test: path.resolve(__dirname, 'test'),
     build: args.buildPath,
     dist: args.distPath,
+    docs: path.resolve(__dirname, 'docs'),
   },
 };
 
@@ -187,6 +188,14 @@ gulp.task('clean:build', () => {
 
 gulp.task('clean:dist', () => {
   const target = config.paths.dist;
+
+  log('Cleaning', util.colors.magenta(target));
+
+  del.sync([ target ], { force: true });
+});
+
+gulp.task('clean:docs', () => {
+  const target = config.paths.docs;
 
   log('Cleaning', util.colors.magenta(target));
 
@@ -683,6 +692,34 @@ gulp.task('dist', () => {
 
 gulp.task('deploy', (done) => {
   runSequence('clean:dist', 'webpack:release:dist', 'dist', 'webpack:release:dist:min', 'dist', done);
+});
+
+gulp.task('deploy:docs', [ 'clean:docs' ], () => {
+  const webpackConfig = getWebpackConfig(config.builds.release, true, false);
+
+  // we don't want to emit source maps
+  delete webpackConfig.devtool;
+
+  // remove CommonsChunkPlugin and ExtractTextPlugin
+  webpackConfig.plugins.splice(1, 2);
+
+  // set up the entry and output for github docs
+  webpackConfig.entry = {
+    app: path.resolve(__dirname, 'src', 'app.tsx'),
+  };
+  webpackConfig.output = {
+    path: path.join(__dirname, 'docs'),
+    filename: 'app.js',
+  };
+
+  // we aren't using ExtractTextPlugin so just use the normal loaders
+  webpackConfig.module.rules.splice(0, 2,
+    { test: /\.css$/, loader: [ 'style-loader', 'css-loader' ] },
+    { test: /\.less$/, loader: [ 'style-loader', 'css-loader', 'less-loader' ] }
+  );
+
+  return webpackStream(webpackConfig, webpack)
+    .pipe(gulp.dest(webpackConfig.output.path));
 });
 
 gulp.task('deploy:modules', [ 'deploy:modules:ts', 'deploy:modules:less' ]);
