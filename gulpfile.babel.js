@@ -320,7 +320,6 @@ function getWebpackConfig(build, uglify, dist) {
     if (uglify) {
       webpackConfig.plugins.push(
         new webpack.optimize.UglifyJsPlugin({
-          minimize: true,
           comments: false,
           compress: {
             warnings: false,
