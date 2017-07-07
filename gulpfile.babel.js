@@ -324,6 +324,7 @@ function getWebpackConfig(build, uglify, dist) {
           compress: {
             warnings: false,
           },
+          sourceMap: true,
         })
       );
     }
