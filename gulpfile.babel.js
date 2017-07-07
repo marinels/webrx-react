@@ -546,15 +546,15 @@ gulp.task('watch:webpack', [ 'clean:build' ], (done) => {
   const webpackConfig = getWebpackConfig(config.builds.debug);
   const uri = `http://${ config.host === '0.0.0.0' ? 'localhost' : config.host }:${ config.port }`;
 
-  webpackConfig.entry['webrx-react'] = [
-    `webpack-dev-server/client?${ uri }`,
-    'webpack/hot/only-dev-server',
-    path.resolve(config.paths.src, 'app.tsx'),
-  ];
-  webpackConfig.output.path = path.resolve(config.paths.build, config.builds.watch);
-  webpackConfig.output.publicPath = config.publicPath;
-  // remove ExtractTextPlugin
-  webpackConfig.plugins.pop();
+  webpackConfig.entry = {
+    app: [
+      `webpack-dev-server/client?${ uri }`,
+      'webpack/hot/only-dev-server',
+      path.resolve(config.paths.src, 'app.tsx'),
+    ],
+  };
+  // remove CommonsChunkPlugin and ExtractTextPlugin
+  webpackConfig.plugins.splice(1, 2);
   // eslint-disable-next-line id-match
   webpackConfig.plugins[0].definitions.WEBPACK_DEV_SERVER = true;
   webpackConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
