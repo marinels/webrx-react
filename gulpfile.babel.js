@@ -14,10 +14,8 @@ import mkdirp from 'mkdirp';
 import gulp from 'gulp';
 import minimist from 'minimist';
 import mocha from 'gulp-mocha';
-import open from 'gulp-open';
 import path from 'path';
 import plumber from 'gulp-plumber';
-import replace from 'gulp-replace';
 import runSequence from 'run-sequence';
 import stylelint from 'gulp-stylelint';
 import through from 'through';
@@ -25,6 +23,7 @@ import tslint from 'gulp-tslint';
 import util from 'gulp-util';
 import webpack from 'webpack';
 import webpackStream from 'webpack-stream-fixed';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 import webpackConfigTemplate from './webpack.config';
 import webpackConfigTestTemplate from './test/webpack.config';
@@ -89,7 +88,6 @@ const config = {
   files: {
     webpack: 'webpack.config.js',
     stats: 'stats.json',
-    index: 'index.html',
   },
   paths: {
     src: path.resolve(__dirname, 'src'),
@@ -162,9 +160,6 @@ Tasks:
   ${ util.colors.cyan('gulp watch:mocha') } will start webpack in ${ util.colors.magenta('watch') } mode, and run all tests after any detected change
   ${ util.colors.cyan('gulp watch:lint') } will watch source files for changes and run ${ util.colors.cyan('lint') } after any detected change
   ${ util.colors.cyan('gulp watch:dist') } will watch source files for changes and run ${ util.colors.cyan('dist') } after any detected change
-
-  ${ util.colors.cyan('gulp index') } will copy (and transform) the ${ util.colors.magenta(config.files.index) } file for builds
-       ${ [ 'debug', 'release', 'watch', 'all' ].map((x) => util.colors.cyan(`index:${ x }`)).join(', ') }
 
   ${ util.colors.cyan('gulp browser') } will open a browser window for a build
        ${ [ 'debug', 'release', 'watch' ].map((x) => util.colors.cyan(`browser:${ x }`)).join(', ') }
@@ -340,6 +335,14 @@ function getWebpackConfig(build, uglify, dist) {
       );
     }
   }
+
+  webpackConfig.plugins.push(
+    new HtmlWebpackPlugin({
+      template: './src/index.ejs',
+      filename: 'index.html',
+      hash: true,
+    })
+  );
 
   webpackConfig.profile = config.profile;
 
@@ -545,7 +548,7 @@ gulp.task('mocha:run', () => {
 
 gulp.task('watch', [ 'watch:webpack' ]);
 
-gulp.task('watch:webpack', [ 'clean:build', 'index:watch' ], (done) => {
+gulp.task('watch:webpack', [ 'clean:build' ], (done) => {
   const webpackConfig = getWebpackConfig(config.builds.debug);
   const uri = `http://${ config.host === '0.0.0.0' ? 'localhost' : config.host }:${ config.port }`;
 
@@ -588,8 +591,8 @@ gulp.task('watch:webpack', [ 'clean:build', 'index:watch' ], (done) => {
       done = null;
 
       log('[webpack-dev-server]', `Listening at ${ util.colors.magenta(`${ config.host }:${ config.port }`) }`);
-      log('[webpack-dev-server]', util.colors.magenta(`${ uri }/${ config.files.index }`));
-      log('[webpack-dev-server]', util.colors.magenta(`${ uri }/webpack-dev-server/${ config.files.index }`));
+      log('[webpack-dev-server]', util.colors.magenta(`${ uri }/index.html`));
+      log('[webpack-dev-server]', util.colors.magenta(`${ uri }/webpack-dev-server/index.html`));
 
       return;
     }
@@ -669,40 +672,6 @@ gulp.task('watch:dist', [ 'clean:build', 'clean:dist' ], () => {
     .pipe(through((file) => {
       util.log('Deployed', util.colors.magenta(file.path));
     }));
-});
-
-gulp.task('index', [ 'index:all' ]);
-gulp.task('index:all', [ 'index:debug', 'index:release', 'index:watch' ]);
-
-gulp.task('index:debug', [ 'clean:build' ], () => {
-  const target = path.resolve(config.paths.build, config.builds.debug);
-
-  log('Transforming', util.colors.magenta(path.resolve(target, config.files.index)));
-
-  gulp
-    .src(config.files.index)
-    .pipe(gulp.dest(target));
-});
-
-gulp.task('index:release', [ 'clean:build' ], () => {
-  const target = path.resolve(config.paths.build, config.builds.release);
-
-  log('Transforming', util.colors.magenta(path.resolve(target, config.files.index)));
-
-  gulp
-    .src(config.files.index)
-    .pipe(gulp.dest(target));
-});
-
-gulp.task('index:watch', [ 'clean:build' ], () => {
-  const target = path.resolve(config.paths.build, config.builds.watch);
-
-  log('Transforming', util.colors.magenta(path.resolve(target, config.files.index)));
-
-  gulp
-    .src(config.files.index)
-    .pipe(replace(/.*stylesheet.*/g, ''))
-    .pipe(gulp.dest(target));
 });
 
 gulp.task('browser', [ 'browser:watch' ]);
