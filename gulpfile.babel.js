@@ -69,8 +69,6 @@ const options = {
 
 const args = minimist(process.argv, options);
 
-const webpackAnalyzeUri = 'http://webpack.github.io/analyse/';
-
 const config = {
   verbose: args.verbose,
   quiet: args.quiet,
@@ -109,7 +107,7 @@ if (config.verbose) {
 }
 
 // Default build task
-gulp.task('default', [ 'browser' ]);
+gulp.task('default', [ 'watch' ]);
 // Default test task
 gulp.task('test', (done) => {
   runSequence('lint', 'mocha', done);
@@ -139,7 +137,7 @@ Command Line Overrides:
 Run ${ util.colors.cyan('gulp --tasks') } to see complete task hierarchy
 
 Tasks:
-  ${ util.colors.cyan('gulp') } will build a ${ util.colors.yellow('debug') } bundle, start a webpack development server, and open a browser window
+  ${ util.colors.cyan('gulp') } will build a ${ util.colors.yellow('debug') } bundle and start a webpack development server
   ${ util.colors.cyan('gulp test') } will build a ${ util.colors.yellow('test') } bundle and run mocha against the tests (alias for ${ util.colors.cyan('gulp mocha') })
   ${ util.colors.cyan('gulp help') } will print this help text
   ${ util.colors.cyan('gulp config') } will print the gulp build configuration
@@ -160,10 +158,6 @@ Tasks:
   ${ util.colors.cyan('gulp watch:mocha') } will start webpack in ${ util.colors.magenta('watch') } mode, and run all tests after any detected change
   ${ util.colors.cyan('gulp watch:lint') } will watch source files for changes and run ${ util.colors.cyan('lint') } after any detected change
   ${ util.colors.cyan('gulp watch:dist') } will watch source files for changes and run ${ util.colors.cyan('dist') } after any detected change
-
-  ${ util.colors.cyan('gulp browser') } will open a browser window for a build
-       ${ [ 'debug', 'release', 'watch' ].map((x) => util.colors.cyan(`browser:${ x }`)).join(', ') }
-  ${ util.colors.cyan('gulp browser:stats') } will open a browser window to ${ util.colors.underline.blue(webpackAnalyzeUri) }
 
   ${ util.colors.cyan('gulp dist') } will deploy release bundles to ${ util.colors.magenta(config.paths.dist) }
 
@@ -672,32 +666,6 @@ gulp.task('watch:dist', [ 'clean:build', 'clean:dist' ], () => {
     .pipe(through((file) => {
       util.log('Deployed', util.colors.magenta(file.path));
     }));
-});
-
-gulp.task('browser', [ 'browser:watch' ]);
-
-gulp.task('browser:debug', [ 'webpack:debug', 'index:debug' ], () => {
-  gulp
-    .src('')
-    .pipe(open({ uri: path.resolve(config.paths.build, config.builds.debug, config.files.index) }));
-});
-
-gulp.task('browser:release', [ 'webpack:release', 'index:release' ], () => {
-  gulp
-    .src('')
-    .pipe(open({ uri: path.resolve(config.paths.build, config.builds.release, config.files.index) }));
-});
-
-gulp.task('browser:watch', [ 'watch:webpack', 'index:watch' ], () => {
-  gulp
-    .src('')
-    .pipe(open({ uri: `http://${ config.host === '0.0.0.0' ? 'localhost' : config.host }:${ config.port }` }));
-});
-
-gulp.task('browser:stats', () => {
-  gulp
-    .src('')
-    .pipe(open({ uri: webpackAnalyzeUri }));
 });
 
 gulp.task('dist', () => {
