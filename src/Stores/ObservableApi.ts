@@ -1,4 +1,4 @@
-import { Observable, DOM as rxdom } from 'rx-dom';
+import { Observable, AjaxRequest, AjaxError } from 'rxjs';
 import * as clone from 'clone';
 import param = require('jquery-param');
 
@@ -165,7 +165,7 @@ export class ObservableApi {
     };
   }
 
-  public getRequest<T>(action: string, url: string, method = HttpRequestMethod.GET, params?: any, data?: any, options?: rxdom.AjaxSettings) {
+  public getRequest<T>(action: string, url: string, method = HttpRequestMethod.GET, params?: any, data?: any, options?: AjaxRequest) {
     this.logger.debug(`getRequest: [${ method }] ${ action }`, { url, params, data, options });
 
     url = ObservableApi.getUriFromParams(url, params);
@@ -174,7 +174,7 @@ export class ObservableApi {
 
     const body = data == null ? undefined : String.stringify(data, null, 2);
 
-    options = Object.assign<rxdom.AjaxSettings>(<rxdom.AjaxSettings>{
+    options = Object.assign<AjaxRequest>(<AjaxRequest>{
       headers: ObservableApi.defaultHeaders,
       async: true,
       body,
@@ -182,7 +182,7 @@ export class ObservableApi {
       url,
     }, options);
 
-    return rxdom
+    return Observable
       .ajax(options)
       .map(x => {
         try {
@@ -192,17 +192,17 @@ export class ObservableApi {
           throw x;
         }
       })
-      .doOnNext(x => {
+      .do(x => {
         this.logger.info(`API Result: ${ action } (${ url })`, x);
       })
-      .catch((x: rxdom.AjaxErrorResponse) => {
+      .catch((x: AjaxError) => {
         this.logger.error(`API  ERROR: ${ action } (${ url })`, x);
 
-        return Observable.throw<T>(this.getError(x.xhr, url));
+        return <Observable<T>>Observable.throw(this.getError(x.xhr, url));
       });
   }
 
-  public getObservableResult<T>(action: string, params?: any, data?: any, method?: HttpRequestMethod, options?: rxdom.AjaxSettings, baseUri?: string) {
+  public getObservableResult<T>(action: string, params?: any, data?: any, method?: HttpRequestMethod, options?: AjaxRequest, baseUri?: string) {
     return Observable
       .defer(() => {
         // use sampleData if it has been defined
@@ -212,11 +212,11 @@ export class ObservableApi {
       });
   }
 
-  public getObservable<T>(action: string, params?: any, options?: rxdom.AjaxSettings, baseUri?: string) {
+  public getObservable<T>(action: string, params?: any, options?: AjaxRequest, baseUri?: string) {
     return this.getObservableResult<T>(action, params, undefined, HttpRequestMethod.GET, options, baseUri);
   }
 
-  public postObservable<T>(action: string, data?: any, params?: any, options?: rxdom.AjaxSettings, baseUri?: string) {
+  public postObservable<T>(action: string, data?: any, params?: any, options?: AjaxRequest, baseUri?: string) {
     return this.getObservableResult<T>(action, params, data, HttpRequestMethod.POST, options, baseUri);
   }
 

@@ -1,36 +1,79 @@
-import { Observable, IObserver, IDisposable } from 'rx';
+import { Subscription, AnonymousSubscription, TeardownLogic } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
+import { Observer } from 'rxjs';
+import { IScheduler } from 'rxjs/Scheduler';
+import { startWith } from 'rxjs/operator/startWith';
 
 import { ReadOnlyProperty, Command } from './Interfaces';
+import { isSubscription } from './Utils';
 import { property } from './Property';
 
-import 'rx';
-declare module 'rx' {
-  interface Observable<T> {
-    startWith<TOther>(value: TOther): Observable<T | TOther>;
-    filterNull<T>(this: Observable<T | undefined | null>, callbackfn?: (value: T, index: number, observable: Observable<T | undefined | null>) => boolean): Observable<T>;
-    toProperty: (initialValue?: T) => ReadOnlyProperty<T>;
-    observeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>): Observable<TRet>;
-    invokeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>, observer: IObserver<T>): IDisposable;
-    invokeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>, onNext?: (value: T) => void, onError?: (exception: any) => void, onCompleted?: () => void): IDisposable;
+declare module 'rxjs/Subscription' {
+  interface Subscription {
+    addSubscription<T extends TeardownLogic>(subscription: T): T;
+    addSubscriptions<T extends TeardownLogic>(...subscriptions: T[]): T[];
+  }
+
+  namespace Subscription {
+    function unsubscribe<T>(subscription: T, unsubscribedValue?: T): T;
   }
 }
 
-function filterNull<T>(this: Observable<T | undefined | null>, callbackfn?: (value: T, index: number, observable: Observable<T | undefined | null>) => boolean) {
+function addSubscription<T extends TeardownLogic>(this: Subscription, subscription: T) {
+  this.add(subscription);
+
+  return subscription;
+}
+Subscription.prototype.addSubscription = addSubscription;
+
+function addSubscriptions<T extends TeardownLogic>(this: Subscription, ...subscriptions: T[]) {
+  return subscriptions
+      .map(x => this.addSubscription(x));
+}
+Subscription.prototype.addSubscriptions = addSubscriptions;
+
+function unsubscribe<T>(subscription: T, unsubscribedValue = Subscription.EMPTY) {
+  if (isSubscription(subscription)) {
+    subscription.unsubscribe();
+
+    return unsubscribedValue;
+  }
+
+  return subscription;
+}
+Subscription.unsubscribe = unsubscribe;
+
+declare module 'rxjs/Observable' {
+  interface Observable<T> {
+    filterNull<T>(this: Observable<T | undefined | null>, callbackfn?: (value: T, index: number) => boolean): Observable<T>;
+    toProperty: (initialValue?: T) => ReadOnlyProperty<T>;
+    observeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>): Observable<TRet>;
+    invokeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>, observer: Observer<T>): Subscription;
+    invokeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>, onNext?: (value: T) => void, onError?: (exception: any) => void, onCompleted?: () => void): Subscription;
+  }
+}
+
+declare module 'rxjs/operator/startWith' {
+  function startWith<T, TOther>(this: Observable<T>, value: TOther, scheduler?: IScheduler): Observable<T | TOther>;
+  function startWith<T, TOther>(this: Observable<T>, ...array: Array<TOther | IScheduler>): Observable<T | TOther>;
+}
+
+function filterNull<T>(this: Observable<T | undefined | null>, callbackfn?: (value: T, index: number) => boolean) {
   return this
-    .filter((x, i, o) => {
+    .filter((x, i) => {
       if (x == null) {
         return false;
       }
 
-      return callbackfn == null ? true : callbackfn(x, i, o);
+      return callbackfn == null ? true : callbackfn(x, i);
     });
 }
-(<any>Observable).prototype.filterNull = filterNull;
+Observable.prototype.filterNull = filterNull;
 
 function toProperty<T>(this: Observable<T>, initialValue?: T) {
   return property(initialValue, this);
 }
-(<any>Observable).prototype.toProperty = toProperty;
+Observable.prototype.toProperty = toProperty;
 
 function observeCommand<T, TRet>(this: Observable<T>, command: ((x: T) => Command<TRet>) | Command<TRet>) {
   // see the ReactiveUI project for the inspiration behind this function:
@@ -51,19 +94,19 @@ function observeCommand<T, TRet>(this: Observable<T>, command: ((x: T) => Comman
     })
     .switch();
 }
-(<any>Observable).prototype.observeCommand = observeCommand;
+Observable.prototype.observeCommand = observeCommand;
 
 function invokeCommand<T, TRet>(
   this: Observable<T>,
   command: ((x: T) => Command<TRet>) | Command<TRet>,
-  observerOrNext?: IObserver<TRet> | ((value: TRet) => void),
+  observerOrNext?: Observer<TRet> | ((value: TRet) => void),
   onError?: (exception: any) => void,
   onCompleted?: () => void,
-): IDisposable {
+): Subscription {
   const obs = this
     .observeCommand(command);
 
   return obs
     .subscribe.apply(obs, [ observerOrNext, onError, onCompleted ]);
 }
-(<any>Observable).prototype.invokeCommand = invokeCommand;
+Observable.prototype.invokeCommand = invokeCommand;

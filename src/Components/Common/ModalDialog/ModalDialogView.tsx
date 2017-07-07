@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 import { Modal, ModalProps } from 'react-bootstrap';
 import { BaseView, ViewModelProps } from '../../React';
 

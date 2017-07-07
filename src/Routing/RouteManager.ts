@@ -1,4 +1,4 @@
-import { Observable, Scheduler } from  'rx';
+import { Observable, Scheduler } from  'rxjs';
 
 import { wx, ReadOnlyProperty, Command } from '../WebRx';
 import { Logging } from '../Utils';
@@ -87,7 +87,7 @@ export class RouteManager {
 
     this.currentRoute = this.hashManager.hashChanged
       .startWith(window.location.hash)
-      .debounce(100)
+      .debounceTime(100)
       .distinctUntilChanged()
       .map(x => {
         const route = hashCodec.decode(x, (path, params, state) => <Route>{ path, params, state });

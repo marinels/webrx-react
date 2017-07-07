@@ -1,4 +1,4 @@
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 
 import { ReadOnlyProperty, Command } from '../../../WebRx';
 import { BaseViewModel } from '../../React/BaseViewModel';
@@ -53,7 +53,7 @@ export class AlertHostViewModel extends BaseViewModel {
             .map(x => x.alert);
         })
         .do(x => {
-          x.dispose();
+          x.unsubscribe();
         })
         .invokeCommand(removeAlert),
     );

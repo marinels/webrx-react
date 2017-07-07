@@ -1,11 +1,17 @@
 import * as React from 'react';
 import { render } from 'react-dom';
 
+// import our namespaced bootstrap styles
+import './Style/Bootstrap.less';
+
 // import framework API surface
 import './webrx-react';
 
 // import the App view and view model
 import { AppViewModel, AppView } from './Components';
+
+// import the demo framework and demos
+import './Components/Demo';
 
 // grab the DOM entry point
 const container = document.getElementById('app');

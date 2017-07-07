@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 
 import { BaseView, ViewModelProps } from '../../React';
 import { DataGridView, DataGridProps, DataGridColumn, DataGridListViewTemplate, DataGridViewType } from '../DataGrid/DataGridView';
@@ -26,8 +26,8 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
 
   render() {
     const { className, children, rest, props } = this.restProps(x => {
-      const { fill, viewTemplate, search, pager, loadingContent, selectable, highlightSelected, checkmarkSelected } = x;
-      return { fill, viewTemplate, search, pager, loadingContent, selectable, highlightSelected, checkmarkSelected };
+      const { fill, viewTemplate, search, pager, loadingContent, selectable, highlightSelected, checkmarkSelected, emptyContent } = x;
+      return { fill, viewTemplate, search, pager, loadingContent, selectable, highlightSelected, checkmarkSelected, emptyContent };
     });
 
     if ((props.search || false) !== false && this.state.grid.canFilter() === false) {

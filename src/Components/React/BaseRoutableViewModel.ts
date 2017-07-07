@@ -1,4 +1,4 @@
-import { Observable, IDisposable } from 'rx';
+import { Observable } from 'rxjs';
 
 import { ReadOnlyProperty, Property, Command } from '../../WebRx';
 import { BaseViewModel } from './BaseViewModel';
@@ -52,7 +52,7 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
     this.addSubscription(
       this.routingStateChanged.results
         .filter(() => this.isRoutingEnabled)
-        .debounce(routingStateRateLimit)
+        .debounceTime(routingStateRateLimit)
         .subscribe(x => {
           pubSub.publish<RoutingStateChanged>(RoutingStateChangedKey, x);
         }),

@@ -1,11 +1,9 @@
-import { Observable, Subject, BehaviorSubject, IDisposable } from 'rx';
+import { Observable, Subject, BehaviorSubject, Subscription } from 'rxjs';
 
 import { Property } from './Interfaces';
 import { isSubject, handleError } from './Utils';
 
-export class ObservableProperty<T> implements Property<T>, IDisposable {
-  private sourceSubscription: IDisposable;
-
+export class ObservableProperty<T> extends Subscription implements Property<T> {
   protected changedSubject: BehaviorSubject<T>;
   protected thrownErrorsSubject: Subject<Error>;
 
@@ -13,24 +11,28 @@ export class ObservableProperty<T> implements Property<T>, IDisposable {
     initialValue?: T,
     protected source: Observable<T> = new Subject<T>(),
   ) {
-    this.changedSubject = new BehaviorSubject<T>(initialValue!);
-    this.thrownErrorsSubject = new Subject<Error>();
+    super();
 
-    this.sourceSubscription = this.source
-      // seed the observable subscription with the initial value so that
-      // distinctUntilChanged knows what the initial value is
-      .startWith(initialValue!)
-      .distinctUntilChanged()
-      .subscribe(
-        x => {
-          if (this.isNewValue(x)) {
-            this.changedSubject.onNext(x);
-          }
-        },
-        e => {
-          handleError(e, this.thrownErrorsSubject);
-        },
-      );
+    this.changedSubject = this.addSubscription(new BehaviorSubject<T>(initialValue!));
+    this.thrownErrorsSubject = this.addSubscription(new Subject<Error>());
+
+    this.add(
+      this.source
+        // seed the observable subscription with the initial value so that
+        // distinctUntilChanged knows what the initial value is
+        .startWith(initialValue!)
+        .distinctUntilChanged()
+        .subscribe(
+          x => {
+            if (this.isNewValue(x)) {
+              this.changedSubject.next(x);
+            }
+          },
+          e => {
+            handleError(e, this.thrownErrorsSubject);
+          },
+        ),
+    );
   }
 
   protected isNewValue(newValue: T) {
@@ -47,7 +49,7 @@ export class ObservableProperty<T> implements Property<T>, IDisposable {
 
   set value(newValue: T) {
     if (isSubject(this.source)) {
-      this.source.onNext(newValue);
+      this.source.next(newValue);
     }
     else {
       throw new Error('attempt to write to a read-only observable property');
@@ -67,12 +69,6 @@ export class ObservableProperty<T> implements Property<T>, IDisposable {
 
   isProperty() {
     return true;
-  }
-
-  dispose() {
-    this.sourceSubscription = Object.dispose(this.sourceSubscription);
-    this.changedSubject = Object.dispose(this.changedSubject);
-    this.thrownErrorsSubject = Object.dispose(this.thrownErrorsSubject);
   }
 }
 

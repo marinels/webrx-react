@@ -1,4 +1,4 @@
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 
 import { ObservableOrProperty, ReadOnlyProperty } from '../../../WebRx';
 import { BaseItemListPanelViewModel } from './BaseItemListPanelViewModel';

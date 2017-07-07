@@ -1,4 +1,4 @@
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 
 import { ReadOnlyProperty, Property, Command } from '../../WebRx';
 import { Route } from '../../Routing/RouteManager';
@@ -85,12 +85,12 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     // we are essentially projecting the demo title and passing it up the chain
     this.addSubscription(this
       .whenAny(this.component, x => x)
-      .debounce(100)
+      .debounceTime(100)
       .subscribe(component => {
         if (isRoutableViewModel(component)) {
           this.addSubscription(this
             .whenAny(component.documentTitle, x => String.isNullOrEmpty(x) ? Object.getName(component) : x)
-            .debounce(100)
+            .debounceTime(100)
             .map(x => `Demo: ${ x }`)
             .invokeCommand(this.updateDocumentTitle),
           );
@@ -251,6 +251,13 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
 
   getSidebarMenus() {
     return <HeaderMenu[]>[
+      {
+        id: 'sidebar-demos',
+        header: 'Integration Demos',
+        items: [
+          { id: 'todolist', header: 'Todo List', uri: '#/demo/todolist', iconName: 'list' },
+        ],
+      },
       {
         id: 'sidebar-1',
         header: 'Section 1',

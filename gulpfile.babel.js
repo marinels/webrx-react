@@ -14,10 +14,8 @@ import mkdirp from 'mkdirp';
 import gulp from 'gulp';
 import minimist from 'minimist';
 import mocha from 'gulp-mocha';
-import open from 'gulp-open';
 import path from 'path';
 import plumber from 'gulp-plumber';
-import replace from 'gulp-replace';
 import runSequence from 'run-sequence';
 import stylelint from 'gulp-stylelint';
 import through from 'through';
@@ -25,6 +23,7 @@ import tslint from 'gulp-tslint';
 import util from 'gulp-util';
 import webpack from 'webpack';
 import webpackStream from 'webpack-stream-fixed';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 import webpackConfigTemplate from './webpack.config';
 import webpackConfigTestTemplate from './test/webpack.config';
@@ -70,8 +69,6 @@ const options = {
 
 const args = minimist(process.argv, options);
 
-const webpackAnalyzeUri = 'http://webpack.github.io/analyse/';
-
 const config = {
   verbose: args.verbose,
   quiet: args.quiet,
@@ -89,13 +86,13 @@ const config = {
   files: {
     webpack: 'webpack.config.js',
     stats: 'stats.json',
-    index: 'index.html',
   },
   paths: {
     src: path.resolve(__dirname, 'src'),
     test: path.resolve(__dirname, 'test'),
     build: args.buildPath,
     dist: args.distPath,
+    docs: path.resolve(__dirname, 'docs'),
   },
 };
 
@@ -111,7 +108,7 @@ if (config.verbose) {
 }
 
 // Default build task
-gulp.task('default', [ 'browser' ]);
+gulp.task('default', [ 'watch' ]);
 // Default test task
 gulp.task('test', (done) => {
   runSequence('lint', 'mocha', done);
@@ -141,7 +138,7 @@ Command Line Overrides:
 Run ${ util.colors.cyan('gulp --tasks') } to see complete task hierarchy
 
 Tasks:
-  ${ util.colors.cyan('gulp') } will build a ${ util.colors.yellow('debug') } bundle, start a webpack development server, and open a browser window
+  ${ util.colors.cyan('gulp') } will build a ${ util.colors.yellow('debug') } bundle and start a webpack development server
   ${ util.colors.cyan('gulp test') } will build a ${ util.colors.yellow('test') } bundle and run mocha against the tests (alias for ${ util.colors.cyan('gulp mocha') })
   ${ util.colors.cyan('gulp help') } will print this help text
   ${ util.colors.cyan('gulp config') } will print the gulp build configuration
@@ -162,13 +159,6 @@ Tasks:
   ${ util.colors.cyan('gulp watch:mocha') } will start webpack in ${ util.colors.magenta('watch') } mode, and run all tests after any detected change
   ${ util.colors.cyan('gulp watch:lint') } will watch source files for changes and run ${ util.colors.cyan('lint') } after any detected change
   ${ util.colors.cyan('gulp watch:dist') } will watch source files for changes and run ${ util.colors.cyan('dist') } after any detected change
-
-  ${ util.colors.cyan('gulp index') } will copy (and transform) the ${ util.colors.magenta(config.files.index) } file for builds
-       ${ [ 'debug', 'release', 'watch', 'all' ].map((x) => util.colors.cyan(`index:${ x }`)).join(', ') }
-
-  ${ util.colors.cyan('gulp browser') } will open a browser window for a build
-       ${ [ 'debug', 'release', 'watch' ].map((x) => util.colors.cyan(`browser:${ x }`)).join(', ') }
-  ${ util.colors.cyan('gulp browser:stats') } will open a browser window to ${ util.colors.underline.blue(webpackAnalyzeUri) }
 
   ${ util.colors.cyan('gulp dist') } will deploy release bundles to ${ util.colors.magenta(config.paths.dist) }
 
@@ -198,6 +188,14 @@ gulp.task('clean:build', () => {
 
 gulp.task('clean:dist', () => {
   const target = config.paths.dist;
+
+  log('Cleaning', util.colors.magenta(target));
+
+  del.sync([ target ], { force: true });
+});
+
+gulp.task('clean:docs', () => {
+  const target = config.paths.docs;
 
   log('Cleaning', util.colors.magenta(target));
 
@@ -331,15 +329,23 @@ function getWebpackConfig(build, uglify, dist) {
     if (uglify) {
       webpackConfig.plugins.push(
         new webpack.optimize.UglifyJsPlugin({
-          minimize: true,
           comments: false,
           compress: {
             warnings: false,
           },
+          sourceMap: true,
         })
       );
     }
   }
+
+  webpackConfig.plugins.push(
+    new HtmlWebpackPlugin({
+      template: './src/index.ejs',
+      filename: 'index.html',
+      hash: true,
+    })
+  );
 
   webpackConfig.profile = config.profile;
 
@@ -545,19 +551,19 @@ gulp.task('mocha:run', () => {
 
 gulp.task('watch', [ 'watch:webpack' ]);
 
-gulp.task('watch:webpack', [ 'clean:build', 'index:watch' ], (done) => {
+gulp.task('watch:webpack', [ 'clean:build' ], (done) => {
   const webpackConfig = getWebpackConfig(config.builds.debug);
   const uri = `http://${ config.host === '0.0.0.0' ? 'localhost' : config.host }:${ config.port }`;
 
-  webpackConfig.entry['webrx-react'] = [
-    `webpack-dev-server/client?${ uri }`,
-    'webpack/hot/only-dev-server',
-    path.resolve(config.paths.src, 'app.tsx'),
-  ];
-  webpackConfig.output.path = path.resolve(config.paths.build, config.builds.watch);
-  webpackConfig.output.publicPath = config.publicPath;
-  // remove ExtractTextPlugin
-  webpackConfig.plugins.pop();
+  webpackConfig.entry = {
+    app: [
+      `webpack-dev-server/client?${ uri }`,
+      'webpack/hot/only-dev-server',
+      path.resolve(config.paths.src, 'app.tsx'),
+    ],
+  };
+  // remove CommonsChunkPlugin and ExtractTextPlugin
+  webpackConfig.plugins.splice(1, 2);
   // eslint-disable-next-line id-match
   webpackConfig.plugins[0].definitions.WEBPACK_DEV_SERVER = true;
   webpackConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
@@ -588,8 +594,8 @@ gulp.task('watch:webpack', [ 'clean:build', 'index:watch' ], (done) => {
       done = null;
 
       log('[webpack-dev-server]', `Listening at ${ util.colors.magenta(`${ config.host }:${ config.port }`) }`);
-      log('[webpack-dev-server]', util.colors.magenta(`${ uri }/${ config.files.index }`));
-      log('[webpack-dev-server]', util.colors.magenta(`${ uri }/webpack-dev-server/${ config.files.index }`));
+      log('[webpack-dev-server]', util.colors.magenta(`${ uri }/index.html`));
+      log('[webpack-dev-server]', util.colors.magenta(`${ uri }/webpack-dev-server/index.html`));
 
       return;
     }
@@ -671,66 +677,6 @@ gulp.task('watch:dist', [ 'clean:build', 'clean:dist' ], () => {
     }));
 });
 
-gulp.task('index', [ 'index:all' ]);
-gulp.task('index:all', [ 'index:debug', 'index:release', 'index:watch' ]);
-
-gulp.task('index:debug', [ 'clean:build' ], () => {
-  const target = path.resolve(config.paths.build, config.builds.debug);
-
-  log('Transforming', util.colors.magenta(path.resolve(target, config.files.index)));
-
-  gulp
-    .src(config.files.index)
-    .pipe(gulp.dest(target));
-});
-
-gulp.task('index:release', [ 'clean:build' ], () => {
-  const target = path.resolve(config.paths.build, config.builds.release);
-
-  log('Transforming', util.colors.magenta(path.resolve(target, config.files.index)));
-
-  gulp
-    .src(config.files.index)
-    .pipe(gulp.dest(target));
-});
-
-gulp.task('index:watch', [ 'clean:build' ], () => {
-  const target = path.resolve(config.paths.build, config.builds.watch);
-
-  log('Transforming', util.colors.magenta(path.resolve(target, config.files.index)));
-
-  gulp
-    .src(config.files.index)
-    .pipe(replace(/.*stylesheet.*/g, ''))
-    .pipe(gulp.dest(target));
-});
-
-gulp.task('browser', [ 'browser:watch' ]);
-
-gulp.task('browser:debug', [ 'webpack:debug', 'index:debug' ], () => {
-  gulp
-    .src('')
-    .pipe(open({ uri: path.resolve(config.paths.build, config.builds.debug, config.files.index) }));
-});
-
-gulp.task('browser:release', [ 'webpack:release', 'index:release' ], () => {
-  gulp
-    .src('')
-    .pipe(open({ uri: path.resolve(config.paths.build, config.builds.release, config.files.index) }));
-});
-
-gulp.task('browser:watch', [ 'watch:webpack', 'index:watch' ], () => {
-  gulp
-    .src('')
-    .pipe(open({ uri: `http://${ config.host === '0.0.0.0' ? 'localhost' : config.host }:${ config.port }` }));
-});
-
-gulp.task('browser:stats', () => {
-  gulp
-    .src('')
-    .pipe(open({ uri: webpackAnalyzeUri }));
-});
-
 gulp.task('dist', () => {
   const target = path.resolve(config.paths.dist);
 
@@ -746,6 +692,34 @@ gulp.task('dist', () => {
 
 gulp.task('deploy', (done) => {
   runSequence('clean:dist', 'webpack:release:dist', 'dist', 'webpack:release:dist:min', 'dist', done);
+});
+
+gulp.task('deploy:docs', [ 'clean:docs' ], () => {
+  const webpackConfig = getWebpackConfig(config.builds.release, true, false);
+
+  // we don't want to emit source maps
+  delete webpackConfig.devtool;
+
+  // remove CommonsChunkPlugin and ExtractTextPlugin
+  webpackConfig.plugins.splice(1, 2);
+
+  // set up the entry and output for github docs
+  webpackConfig.entry = {
+    app: path.resolve(__dirname, 'src', 'app.tsx'),
+  };
+  webpackConfig.output = {
+    path: path.join(__dirname, 'docs'),
+    filename: 'app.js',
+  };
+
+  // we aren't using ExtractTextPlugin so just use the normal loaders
+  webpackConfig.module.rules.splice(0, 2,
+    { test: /\.css$/, loader: [ 'style-loader', 'css-loader' ] },
+    { test: /\.less$/, loader: [ 'style-loader', 'css-loader', 'less-loader' ] }
+  );
+
+  return webpackStream(webpackConfig, webpack)
+    .pipe(gulp.dest(webpackConfig.output.path));
 });
 
 gulp.task('deploy:modules', [ 'deploy:modules:ts', 'deploy:modules:less' ]);

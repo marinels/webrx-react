@@ -1,9 +1,10 @@
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 
 import { wx } from '../../WebRx';
 import { Alert, Compare } from '../../Utils';
 import { HeaderMenu, HeaderCommandAction } from '../React';
 import * as Components from '../Common';
+import { TodoListViewModel } from './TodoList/TodoListViewModel';
 
 export interface ViewModelActivator {
   (state: any): any;
@@ -108,7 +109,7 @@ const sampleDataSource = <Components.AsyncDataSource<SampleDataSourceRequest, Co
           type: `param ${ x }`,
         };
       })
-      .doOnNext(x => {
+      .do(x => {
         Alert.create('Input Param Changed', `type = ${ x.type }`, undefined, 1000);
       }),
     getResultAsync: (request) => {
@@ -120,7 +121,7 @@ const sampleDataSource = <Components.AsyncDataSource<SampleDataSourceRequest, Co
         .of(sampleListData)
         // simulate async result delay
         .delay(2000)
-        .doOnNext(() => {
+        .do(() => {
           const msg = [
             'Simulating Async Data Result...',
             `type = ${ request.type }`,
@@ -313,5 +314,7 @@ routeMap.addRoute('WebRx-React', 'InlineEditObject', 'InlineEdit (Object)', (sta
 
   return editor;
 });
+
+routeMap.viewModelMap['todolist'] = () => new TodoListViewModel();
 
 export const RouteMap = routeMap;

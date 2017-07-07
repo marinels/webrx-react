@@ -1,0 +1,44 @@
+@import (reference) '../../../Style/App.less';
+
+@todo-spacing: 10px;
+
+.TodoList {
+  .List-row {
+    height: @button-height + @todo-spacing;
+
+    .TodoList-removeButton {
+      visibility: hidden;
+    }
+
+    &:hover .TodoList-removeButton {
+      visibility: visible;
+    }
+  }
+
+  // .TodoList-completedItem {
+  //   background-color: lighten(@brand-success, 30%);
+  // }
+
+  .List-itemActions {
+    padding-right: @todo-spacing;
+  }
+
+  .panel-body {
+    padding: @todo-spacing;
+  }
+
+  .TodoList-teaser {
+    margin: 0;
+  }
+
+  .TodoItem {
+    span {
+      margin-right: @todo-spacing;
+      vertical-align: middle;
+    }
+
+    &.completed > .TodoItem-content {
+      text-decoration: line-through;
+    }
+  }
+}

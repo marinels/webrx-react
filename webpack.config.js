@@ -29,8 +29,7 @@ module.exports = Object.assign(clone(webpackCommon), {
       'react-bootstrap',
       'react-dom',
       'react-fa',
-      'rx',
-      'rx-dom',
+      'rxjs',
     ],
   },
   output: {

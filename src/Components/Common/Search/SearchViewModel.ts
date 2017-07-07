@@ -1,4 +1,4 @@
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 
 import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
@@ -42,7 +42,7 @@ export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
       this.addSubscription(
         this.filter.changed
           // debounce on the live search timeout
-          .debounce(this.liveSearchTimeout)
+          .debounceTime(this.liveSearchTimeout)
           .invokeCommand(this.search),
       );
     }

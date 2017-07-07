@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { findDOMNode } from 'react-dom';
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 import { Icon } from 'react-fa';
 import { FormGroup, InputGroup, FormControl, Sizes, Popover, OverlayTrigger } from 'react-bootstrap';
 
@@ -147,7 +147,7 @@ export class InlineEditView extends BaseView<InlineEditProps, InlineEditViewMode
         {
           React.cloneElement(
             this.props.editTemplate!(this.state.editValue.value, this),
-            { ref: x => this.focusAndSelectControlText(x) },
+            { ref: (x: Element | null) => this.focusAndSelectControlText(x) },
           )
         }
       </BindableInput>

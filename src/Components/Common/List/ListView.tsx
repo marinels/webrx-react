@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Observable } from 'rx';
+import { Observable, Subscription } from 'rxjs';
 import { Enumerable } from 'ix';
 import { Icon } from 'react-fa';
 import { ListGroup, ListGroupProps, ListGroupItem } from 'react-bootstrap';
@@ -243,7 +243,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
   initialize(viewModel: ReadonlyListViewModel<TData>, view: ListView) {
     this.nodes = wx
       .whenAny(viewModel.items, x => x || [])
-      .flatMapLatest(
+      .switchMap(
         x => this.autoExpand(x, viewModel, view),
         (nodes, autoExpand) => ({ nodes, autoExpand }),
       )
@@ -265,8 +265,8 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
   }
 
   cleanup(viewModel: ReadonlyListViewModel<TData>, view: ListView) {
-    this.nodes = Object.dispose(this.nodes);
-    this.items = Object.dispose(this.items);
+    this.nodes = Subscription.unsubscribe(this.nodes);
+    this.items = Subscription.unsubscribe(this.items);
   }
 
   getClassName() {

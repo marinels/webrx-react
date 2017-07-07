@@ -1,4 +1,5 @@
-import { Observable, IDisposable } from 'rx';
+import { Observable, Subscription } from 'rxjs';
+import { TeardownLogic } from 'rxjs/Subscription';
 
 import { property } from '../../WebRx/Property';
 import { command } from '../../WebRx/Command';
@@ -8,7 +9,7 @@ import {
   getObservable, getProperty, handleError,
 } from '../../WebRx/Utils';
 import { ObservableOrProperty, Command } from '../../WebRx';
-import { Logging, Alert, SubMan } from '../../Utils';
+import { Logging, Alert } from '../../Utils';
 import { Manager } from '../../Routing/RouteManager';
 import { getObservableOrAlert, getObservableResultOrAlert, subscribeOrAlert, logMemberObservables } from './ObservableHelpers';
 
@@ -30,7 +31,7 @@ export function isViewModel(source: any): source is BaseViewModel {
   }
 }
 
-export abstract class BaseViewModel implements IDisposable {
+export abstract class BaseViewModel extends Subscription {
   public static displayName = 'BaseViewModel';
 
   // these are WebRx helper functions (so you don't need to import them every time)
@@ -59,11 +60,11 @@ export abstract class BaseViewModel implements IDisposable {
   protected readonly logger: Logging.Logger = Logging.getLogger(this.getDisplayName());
   private isLoggingMemberObservables = false;
 
-  protected readonly subs: SubMan;
   public readonly stateChanged: Command<any>;
 
   constructor() {
-    this.subs = new SubMan();
+    super();
+
     this.stateChanged = this.command();
   }
 
@@ -77,7 +78,7 @@ export abstract class BaseViewModel implements IDisposable {
     if (this.logger.level <= Logging.LogLevel.Debug && this.isLoggingMemberObservables === false) {
       this.isLoggingMemberObservables = true;
 
-      this.addManySubscriptions(...logMemberObservables(this.logger, this));
+      this.addSubscriptions(...logMemberObservables(this.logger, this));
     }
   }
 
@@ -113,14 +114,6 @@ export abstract class BaseViewModel implements IDisposable {
     this.stateChanged.execute(arg);
   }
 
-  protected addSubscription(subscription: IDisposable) {
-    return this.subs.add(subscription);
-  }
-
-  protected addManySubscriptions(...subscriptions: IDisposable[]) {
-    return this.subs.addMany(...subscriptions);
-  }
-
   protected navTo(path: string, state?: any, replace = false, uriEncode = false) {
     Manager.navTo(path, state, replace, uriEncode);
   }
@@ -129,13 +122,5 @@ export abstract class BaseViewModel implements IDisposable {
     return true;
   }
 
-  public dispose() {
-    this.subs.dispose();
-  }
-
   public getDisplayName() { return Object.getName(this); }
-
-  public bindObservable<T>(observable: ObservableOrProperty<T>, subscriptionSelector: (x: Observable<T>) => IDisposable) {
-    return this.addSubscription(subscriptionSelector(this.getObservable(observable)));
-  }
 }

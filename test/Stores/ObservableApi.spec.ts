@@ -1,4 +1,4 @@
-import { Observable, DOM as rxdom } from 'rx-dom';
+import { Observable, AjaxRequest } from 'rxjs';
 
 import { should, fail, logger, sandbox, sinon } from '../setup';
 import { wx } from '../../src/WebRx';
@@ -12,8 +12,8 @@ describe('ObservableApi', () => {
   const body = String.stringify(data, null, 2);
   const params = { param1: 'param1 value' };
   const uriParams = 'param1=param1+value';
-  const options = <rxdom.AjaxSettings>{
-    xmlHttpRequest: () => {
+  const options: AjaxRequest = {
+    createXHR: () => {
       const xhr = new XMLHttpRequest();
 
       xhr.timeout = 1;
@@ -31,7 +31,7 @@ describe('ObservableApi', () => {
       const result = api.getObservableResult(action, params, data, HttpRequestMethod.GET, options, baseUriOverride);
 
       should.exist(result);
-      Observable.isObservable(result).should.be.true;
+      wx.isObservable(result).should.be.true;
 
       result.subscribe();
       stub.should.have.been.calledOnce;
@@ -45,7 +45,7 @@ describe('ObservableApi', () => {
       const result = api.getObservableResult(action, params, data, HttpRequestMethod.POST, options, baseUriOverride);
 
       should.exist(result);
-      Observable.isObservable(result).should.be.true;
+      wx.isObservable(result).should.be.true;
 
       result.subscribe();
       stub.should.have.been.calledOnce;
@@ -62,12 +62,12 @@ describe('ObservableApi', () => {
       };
       const response = { response: true };
       const request = Observable.of(response);
-      const stub = sandbox.stub(rxdom, 'ajax').callsFake(() => request);
+      const stub = sandbox.stub(Observable, 'ajax').callsFake(() => request);
 
       const result = api.getObservableResult(action, params, data, HttpRequestMethod.GET);
 
       should.exist(result);
-      Observable.isObservable(result).should.be.true;
+      wx.isObservable(result).should.be.true;
 
       result.subscribe();
       stub.should.have.been.calledOnce;
@@ -84,12 +84,12 @@ describe('ObservableApi', () => {
       };
       const response = { response: true };
       const request = Observable.of(response);
-      const stub = sandbox.stub(rxdom, 'ajax').callsFake(() => request);
+      const stub = sandbox.stub(Observable, 'ajax').callsFake(() => request);
 
       const result = api.getObservableResult(action, params, data, HttpRequestMethod.POST);
 
       should.exist(result);
-      Observable.isObservable(result).should.be.true;
+      wx.isObservable(result).should.be.true;
 
       result.subscribe();
       stub.should.have.been.calledOnce;
@@ -99,12 +99,12 @@ describe('ObservableApi', () => {
     it('omits null param values from the uri', () => {
       const response = { response: true };
       const request = Observable.of(response);
-      const stub = sandbox.stub(rxdom, 'ajax').callsFake(() => request);
+      const stub = sandbox.stub(Observable, 'ajax').callsFake(() => request);
 
       const result = api.getObservableResult(action, { param1: 'param1 value', param2: null, param3: undefined });
 
       should.exist(result);
-      Observable.isObservable(result).should.be.true;
+      wx.isObservable(result).should.be.true;
 
       result.subscribe();
       stub.should.have.been.calledOnce;

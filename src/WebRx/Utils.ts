@@ -1,27 +1,38 @@
-import { Observable, IObserver, Subject } from 'rx';
+import { AnonymousSubscription } from 'rxjs/Subscription';
+import { Observable, Observer, Subject, Subscription } from 'rxjs';
 
 import { Property, Command, ObservableOrPropertyOrValue } from './Interfaces';
 
-export function isObservable<T>(value: any | undefined): value is Observable<T> {
-  return Observable.isObservable(value);
-}
-
-export function isObserver<T>(value: any | undefined): value is IObserver<T> {
+export function isSubscription(value: any | undefined): value is AnonymousSubscription {
   if (value == null) {
     return false;
   }
 
-  const obs = <IObserver<T>>value;
+  const sub: AnonymousSubscription = value;
+
+  return sub.unsubscribe instanceof Function;
+}
+
+export function isObservable<T>(value: any | undefined): value is Observable<T> {
+  return value instanceof Observable;
+}
+
+export function isObserver<T>(value: any | undefined): value is Observer<T> {
+  if (value == null) {
+    return false;
+  }
+
+  const obs: Observer<T> = value;
 
   return (
-    obs.onNext instanceof Function &&
-    obs.onError instanceof Function &&
-    obs.onCompleted instanceof Function
+    obs.next instanceof Function &&
+    obs.error instanceof Function &&
+    obs.complete instanceof Function
   );
 }
 
 export function isSubject<T>(value: any): value is Subject<T> {
-  return isObservable(value) && isObserver(value);
+  return value instanceof Subject;
 }
 
 export function isProperty<T>(value: any | undefined): value is Property<T> {
@@ -95,7 +106,7 @@ export function handleError(e: any, ...optionalParams: any[]) {
   }
 
   if (isSubject<Error>(subject)) {
-    subject.onNext(err);
+    subject.next(err);
   }
 }
 

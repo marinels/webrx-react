@@ -1,4 +1,4 @@
-import { Observable, BehaviorSubject, TestScheduler } from 'rx';
+import { Observable, BehaviorSubject, TestScheduler } from 'rxjs';
 
 import { should, sandbox } from './setup';
 
@@ -71,7 +71,7 @@ describe('Sanity Tests', () => {
 
   describe('for Rx', () => {
     it('Can access Rx', () => {
-      const source = Observable.return(1);
+      const source = Observable.of(1);
 
       should.exist(source);
       source.subscribe(x => {
@@ -80,15 +80,73 @@ describe('Sanity Tests', () => {
       });
     });
 
-    it('can schedule observables', () => {
+    it('can defer processing an observable value using the TestScheduler', () => {
       const result = new BehaviorSubject(0);
-      const scheduler = new TestScheduler();
+      const scheduler = new TestScheduler((a, b) => a === b);
 
-      Observable.of(1).observeOn(scheduler).subscribe(result);
-      result.getValue().should.eql(0);
+      Observable
+        .of(1)
+        .observeOn(scheduler)
+        .subscribe(result);
+      result.value.should.eql(0);
 
-      scheduler.advanceBy(1);
-      result.getValue().should.eql(1);
+      scheduler.flush();
+      result.value.should.eql(1);
+    });
+
+    it('can defer processing multiple observable values using the TestScheduler', () => {
+      const source = new BehaviorSubject(0);
+      const result = new BehaviorSubject(0);
+      const scheduler = new TestScheduler((a, b) => a === b);
+
+      source
+        .observeOn(scheduler)
+        .subscribe(result);
+      result.value.should.eql(0);
+
+      source.next(1);
+      source.next(2);
+      source.next(3);
+      result.value.should.eql(0);
+
+      scheduler.flush();
+      result.value.should.eql(source.value);
+    });
+
+    it('can use the TestScheduler to pause midway through an observable', () => {
+      const result = new BehaviorSubject('0');
+      const scheduler = new TestScheduler((a, b) => a === b);
+
+      scheduler
+        .createColdObservable('-1-2-3-|')
+        .subscribe(result);
+
+      scheduler.frame.should.eql(0);
+      result.value.should.eql('0', `frame ${ scheduler.frame }`);
+
+      scheduler.advancedTo(9);
+      scheduler.frame.should.eql(9);
+      result.value.should.eql('0', `frame ${ scheduler.frame }`);
+
+      scheduler.advancedTo(10);
+      scheduler.frame.should.eql(10);
+      result.value.should.eql('1', `frame ${ scheduler.frame }`);
+
+      scheduler.advancedTo(29);
+      scheduler.frame.should.eql(29);
+      result.value.should.eql('1', `frame ${ scheduler.frame }`);
+
+      scheduler.advancedTo(50);
+      scheduler.frame.should.eql(50);
+      result.value.should.eql('3', `frame ${ scheduler.frame }`);
+
+      scheduler.advancedTo(70);
+      scheduler.frame.should.eql(70);
+      result.value.should.eql('3', `frame ${ scheduler.frame }`);
+
+      scheduler.advancedTo(1000);
+      scheduler.frame.should.eql(1000);
+      result.value.should.eql('3', `frame ${ scheduler.frame }`);
     });
 
     it('can simulate time for long running observables', (done) => {

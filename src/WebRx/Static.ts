@@ -1,6 +1,6 @@
 import {
-  isObservable, isObserver, isSubject, isProperty, isCommand, asObservable,
-  getObservable, getProperty, handleError, logError,
+  isSubscription, isObservable, isObserver, isSubject, isProperty, isCommand,
+  asObservable, getObservable, getProperty, handleError, logError,
 } from './Utils';
 import { property } from './Property';
 import { command } from './Command';
@@ -8,6 +8,7 @@ import { whenAny } from './WhenAny';
 
 export let wx = <WebRxStatic>{};
 export interface WebRxStatic {
+  isSubscription: typeof isSubscription;
   isObservable: typeof isObservable;
   isObserver: typeof isObserver;
   isSubject: typeof isSubject;
@@ -24,6 +25,7 @@ export interface WebRxStatic {
   whenAny: typeof whenAny;
 }
 
+wx.isSubscription = isSubscription;
 wx.isObservable = isObservable;
 wx.isObserver = isObserver;
 wx.isSubject = isSubject;
