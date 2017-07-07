@@ -2,5 +2,5 @@
 build/
 dist/
 node_modules/
-package.json
 gulpfile.js
+webrx-react.js
