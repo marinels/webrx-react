@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { render } from 'react-dom';
 
+// import our namespaced bootstrap styles
+import './Style/Bootstrap.less';
+
 // import framework API surface
 import './webrx-react';
 
