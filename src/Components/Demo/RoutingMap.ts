@@ -315,6 +315,7 @@ routeMap.addRoute('webrx-react', 'InlineEditObject', 'InlineEdit (Object)', (sta
   return editor;
 });
 
+routeMap.viewModelMap['help'] = () => 'Help';
 routeMap.viewModelMap['todolist'] = () => new TodoListViewModel();
 
 export const RouteMap = routeMap;
