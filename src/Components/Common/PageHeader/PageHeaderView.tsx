@@ -21,7 +21,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
 
   static defaultProps = {
     id: 'page-header',
-    brand: 'WebRx-React Rocks!!!',
+    brand: 'webrx-react Rocks!!!',
   };
 
   updateOn() {

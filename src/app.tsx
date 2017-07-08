@@ -19,7 +19,7 @@ const container = document.getElementById('app');
 if (container) {
   render(
     <AppView viewModel={ new AppViewModel(true, true, true) } alerts header footer
-      copyright='WebRx-React' copyrightUri='https://github.com/marinels/webrx-react'
+      copyright='webrx-react' copyrightUri='https://github.com/marinels/webrx-react'
       footerContent={
         (
           <span>
