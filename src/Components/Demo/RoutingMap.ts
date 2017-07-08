@@ -197,13 +197,13 @@ routeMap.addRoute('React', 'CommonPanelTable', 'Common Panel (Table)', (state: a
 routeMap.addRoute('React', 'CommonPanelTest', 'Common Panel (Test)', (state: any) => 'CommonPanelTest');
 routeMap.addRoute('React', 'ObservableWrapper', 'Observable Wrapper', (state: any) => 'ObservableWrapper');
 
-routeMap.addRoute('WebRx-React', 'Search', 'Search', (state: any) => new Components.SearchViewModel());
-routeMap.addRoute('WebRx-React', 'TimeSpanInput', 'Time Span Input', (state: any) => new Components.TimeSpanInputViewModel(true, Components.TimeSpanUnitType.Seconds));
-routeMap.addRoute('WebRx-React', 'List', 'List', (state: any) => new Components.ListViewModel(Observable.of(sampleListData), false, false));
-routeMap.addRoute('WebRx-React', 'ListCmd', 'List (Command)', (state: any) => new Components.ListViewModel(Observable.of(sampleListData), false, false));
-routeMap.addRoute('WebRx-React', 'Tree', 'Tree', (state: any) => new Components.ListViewModel(wx.property(sampleTreeData), true, false));
-routeMap.addRoute('WebRx-React', 'PanelList', 'Panel List', (state: any) => new Components.ListViewModel(wx.property(sampleListData), true, false));
-routeMap.addRoute('WebRx-React', 'DataGrid', 'Data Grid', (state: any) => {
+routeMap.addRoute('webrx-react', 'Search', 'Search', (state: any) => new Components.SearchViewModel());
+routeMap.addRoute('webrx-react', 'TimeSpanInput', 'Time Span Input', (state: any) => new Components.TimeSpanInputViewModel(true, Components.TimeSpanUnitType.Seconds));
+routeMap.addRoute('webrx-react', 'List', 'List', (state: any) => new Components.ListViewModel(Observable.of(sampleListData), false, false));
+routeMap.addRoute('webrx-react', 'ListCmd', 'List (Command)', (state: any) => new Components.ListViewModel(Observable.of(sampleListData), false, false));
+routeMap.addRoute('webrx-react', 'Tree', 'Tree', (state: any) => new Components.ListViewModel(wx.property(sampleTreeData), true, false));
+routeMap.addRoute('webrx-react', 'PanelList', 'Panel List', (state: any) => new Components.ListViewModel(wx.property(sampleListData), true, false));
+routeMap.addRoute('webrx-react', 'DataGrid', 'Data Grid', (state: any) => {
   const prop = wx.property<SampleData[]>();
 
   // simulate delayed loading
@@ -219,20 +219,20 @@ routeMap.addRoute('WebRx-React', 'DataGrid', 'Data Grid', (state: any) => {
 
   return new Components.DataGridViewModel(prop, (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0);
 });
-routeMap.addRoute('WebRx-React', 'DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: any) => Components.DataGridViewModel.create(...sampleListData));
-routeMap.addRoute('WebRx-React', 'DataGridList', 'DataGrid (List View)', (state: any) =>
+routeMap.addRoute('webrx-react', 'DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: any) => Components.DataGridViewModel.create(...sampleListData));
+routeMap.addRoute('webrx-react', 'DataGridList', 'DataGrid (List View)', (state: any) =>
   new Components.DataGridViewModel(Observable.of(sampleListData), (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0, undefined, undefined, undefined, 0),
 );
-routeMap.addRoute('WebRx-React', 'DataGridPager', 'DataGrid (Custom Pager)', (state: any) =>
+routeMap.addRoute('webrx-react', 'DataGridPager', 'DataGrid (Custom Pager)', (state: any) =>
   new Components.DataGridViewModel(Observable.of(sampleListData)),
 );
-routeMap.addRoute('WebRx-React', 'AsyncDataGrid', 'DataGrid (Async)', (state: any) => {
+routeMap.addRoute('webrx-react', 'AsyncDataGrid', 'DataGrid (Async)', (state: any) => {
   return new Components.AsyncDataGridViewModel(sampleDataSource, true, true);
 });
-routeMap.addRoute('WebRx-React', 'DataGridRoutingState', 'DataGrid (Routing State)', (state: any) =>
+routeMap.addRoute('webrx-react', 'DataGridRoutingState', 'DataGrid (Routing State)', (state: any) =>
   new Components.DataGridViewModel(Observable.of(sampleListData), (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0, undefined, undefined, undefined, undefined, undefined, true),
 );
-routeMap.addRoute('WebRx-React', 'ModalDialog', 'Modal Dialog', (state: any) => {
+routeMap.addRoute('webrx-react', 'ModalDialog', 'Modal Dialog', (state: any) => {
   // we are simulating a modal being contained within another view model
   return {
     displayName: 'ModalDialogViewModel',
@@ -241,23 +241,23 @@ routeMap.addRoute('WebRx-React', 'ModalDialog', 'Modal Dialog', (state: any) => 
     reject: wx.command(() => Alert.create('Modal Rejected', 'Modal Closed...', 'danger')),
   };
 });
-routeMap.addRoute('WebRx-React', 'Tabs', 'Tabs', (state: any) => new Components.TabsViewModel());
-routeMap.addRoute('WebRx-React', 'StaticTabs', 'Static Tabs', (state: any) => new Components.TabsViewModel());
-routeMap.addRoute('WebRx-React', 'ItemListPanel', 'Item List Panel', (state: any) =>
+routeMap.addRoute('webrx-react', 'Tabs', 'Tabs', (state: any) => new Components.TabsViewModel());
+routeMap.addRoute('webrx-react', 'StaticTabs', 'Static Tabs', (state: any) => new Components.TabsViewModel());
+routeMap.addRoute('webrx-react', 'ItemListPanel', 'Item List Panel', (state: any) =>
   new Components.ItemListPanelViewModel(wx.property(sampleListData), (x, r) => r.test(x.name)),
 );
-routeMap.addRoute('WebRx-React', 'ListItemListPanel', 'Item List Panel (List)', (state: any) =>
+routeMap.addRoute('webrx-react', 'ListItemListPanel', 'Item List Panel (List)', (state: any) =>
   new Components.ItemListPanelViewModel(Observable.of(sampleListData), (x, r) => r.test(x.name)),
 );
-routeMap.addRoute('WebRx-React', 'TreeItemListPanel', 'Item List Panel (Tree)', (state: any) =>
+routeMap.addRoute('webrx-react', 'TreeItemListPanel', 'Item List Panel (Tree)', (state: any) =>
   new Components.ItemListPanelViewModel(Observable.of(sampleTreeData), (node, regexp) => {
     return Components.filterHierarchical(node, regexp, x => regexp.test(x.name));
   }, undefined, undefined, undefined, 0),
 );
-routeMap.addRoute('WebRx-React', 'AsyncItemListPanel', 'ItemListPanel (Async)', (state: any) => {
+routeMap.addRoute('webrx-react', 'AsyncItemListPanel', 'ItemListPanel (Async)', (state: any) => {
   return new Components.AsyncItemListPanelViewModel(sampleDataSource, true, true);
 });
-routeMap.addRoute('WebRx-React', 'InlineEdit', 'InlineEdit', (state: any) => {
+routeMap.addRoute('webrx-react', 'InlineEdit', 'InlineEdit', (state: any) => {
   const editor = new Components.InlineEditViewModel(5);
 
   editor.save.results
@@ -268,7 +268,7 @@ routeMap.addRoute('WebRx-React', 'InlineEdit', 'InlineEdit', (state: any) => {
 
   return editor;
 });
-routeMap.addRoute('WebRx-React', 'InlineEditObject', 'InlineEdit (Object)', (state: any) => {
+routeMap.addRoute('webrx-react', 'InlineEditObject', 'InlineEdit (Object)', (state: any) => {
   interface SampleUser {
     name: string;
     rank: number;
@@ -315,6 +315,7 @@ routeMap.addRoute('WebRx-React', 'InlineEditObject', 'InlineEdit (Object)', (sta
   return editor;
 });
 
+routeMap.viewModelMap['help'] = () => 'Help';
 routeMap.viewModelMap['todolist'] = () => new TodoListViewModel();
 
 export const RouteMap = routeMap;

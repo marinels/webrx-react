@@ -714,8 +714,8 @@ gulp.task('deploy:docs', [ 'clean:docs' ], () => {
 
   // we aren't using ExtractTextPlugin so just use the normal loaders
   webpackConfig.module.rules.splice(0, 2,
-    { test: /\.css$/, loader: [ 'style-loader', 'css-loader' ] },
-    { test: /\.less$/, loader: [ 'style-loader', 'css-loader', 'less-loader' ] }
+    { test: /\.css$/, loader: 'style-loader!css-loader' },
+    { test: /\.less$/, loader: 'style-loader!css-loader!less-loader' }
   );
 
   return webpackStream(webpackConfig, webpack)

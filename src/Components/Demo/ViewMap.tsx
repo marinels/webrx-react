@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Observable } from 'rxjs';
+import { Icon } from 'react-fa';
 import { Col, Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab,
   Well, ListGroup, ListGroupItem, Table, OverlayTrigger, Overlay, Tooltip, Popover,
 } from 'react-bootstrap';
@@ -90,7 +91,7 @@ const treeTemplate = new Components.TreeViewTemplate<SampleTreeData>(
 const viewMap: ViewActivatorMap = {
   Loading: () => <Components.Loading text='Standard Loader...' />,
   SizedLoading: (c, cr) => wxr.renderSizedLoadable(true, '50px Loader...', 50),
-  Splash: () => <Components.Splash fluid header='WebRx-React Demo' logo='http://placehold.it/100x100?text=Logo' />,
+  Splash: () => <Components.Splash fluid header='webrx-react Demo' logo='http://placehold.it/100x100?text=Logo' />,
   CommandButton: () => (
     <Form>
       <FormGroup bsSize='large' style={({ marginBottom: 0 })}>
@@ -476,6 +477,35 @@ const viewMap: ViewActivatorMap = {
   TodoListViewModel: (viewModel: TodoListViewModel) => (
     <TodoListView style={({ padding: 20 })} viewModel={ viewModel } shadow />
   ),
+  Help: () => {
+    const helpStyle: (top?: number, left?: number, textAlign?: string, zIndex?: number) => React.CSSProperties = (top = 0, left = 0, textAlign = 'center', zIndex = 1000) => ({
+      display: 'inline-block',
+      position: 'absolute',
+      textAlign,
+      zIndex,
+      top,
+      left,
+    });
+
+    const helpItem = (text: string, top = 0, left = 0, iconName = 'arrow-up', textAlign = 'center', zIndex = 1000) => (
+      <div style={ helpStyle(top, left, textAlign, zIndex) }>
+        <div>
+          <Icon name={ iconName } />
+        </div>
+        <div>{ text }</div>
+      </div>
+    );
+
+    return (
+      <div>
+        { helpItem('Click to reveal the sidebar menu', 50, 10) }
+        { helpItem('A todo list example in the sidebar menu', 100, 350, 'arrow-left', 'left') }
+        { helpItem('Some simple react component demos', 50, 330) }
+        { helpItem('Some webrx-react component demos', 10, 690, 'arrow-left', 'left', 1039) }
+        { helpItem('Simulate bootstrap grid size', 100, 1190, 'arrow-right', 'right') }
+      </div>
+    );
+  },
 };
 
 export const ViewMap = viewMap;

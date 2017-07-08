@@ -41,11 +41,19 @@ export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDem
             </Col>
           </Row>
           <Row>
-            <Col md={ cols === 0 ? 12 : cols }>
-              <div className='ComponentDemo-view'>
-                { this.renderComponentView() }
-              </div>
-            </Col>
+            {
+              this.renderConditional(
+                this.state.componentRoute.value === 'help',
+                () => this.renderComponentView(),
+                () => (
+                  <Col md={ cols === 0 ? 12 : cols }>
+                    <div className='ComponentDemo-view'>
+                      { this.renderComponentView() }
+                    </div>
+                  </Col>
+                ),
+              )
+            }
           </Row>
         </Grid>
         <Grid className='ComponentDemo-footer'>
@@ -66,10 +74,13 @@ export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDem
   }
 
   private renderHeader() {
-    return (
-      <PageHeader>
-        <span>{ `${ this.getComponentName() } Demo` }</span>
-      </PageHeader>
+    return this.renderConditional(
+      this.state.componentRoute.value !== 'help',
+      () => (
+        <PageHeader>
+          <span>{ `${ this.getComponentName() } Demo` }</span>
+        </PageHeader>
+      ),
     );
   }
 
