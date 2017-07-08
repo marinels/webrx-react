@@ -115,7 +115,11 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   }
 
   private getComponentRoute(state: ComponentDemoRoutingState) {
-    return state == null ? undefined : state.route.match[1];
+    if (state == null || state.route == null || Array.isArray(state.route.match) === false || state.route.match.length < 2) {
+      return undefined;
+    }
+
+    return state.route.match[1];
   }
 
   private getViewModel(state: ComponentDemoRoutingState) {
@@ -187,59 +191,38 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   }
 
   saveRoutingState(state: ComponentDemoRoutingState): any {
+    // this will ensure we use a sane routing path when changing routing state
     state.route = <Route>{
-      path: `/demo/${ this.componentRoute.value }`,
+      path: `/demo/${ this.componentRoute.value || '' }`,
     };
 
     if (this.columns.value !== 12) {
       state.columns = this.columns.value;
     }
 
-    const component = this.component.value;
-
-    if (isRoutableViewModel(component)) {
-      Object.assign(state, component.getRoutingState('demo'));
+    if (isRoutableViewModel(this.component.value)) {
+      Object.assign(state, this.component.value.getRoutingState('demo'));
     }
   }
 
   loadRoutingState(state: ComponentDemoRoutingState) {
-    const prevState = this.routingState.value || <ComponentDemoRoutingState>{};
-    const componentRoute = this.getComponentRoute(state);
-
-    if (String.isNullOrEmpty(componentRoute) === true) {
-      // if we have no component route then choose the first one
-      const uri = RouteMap.menus
-        .asEnumerable()
-        .selectMany(x => x.items.asEnumerable().map(y => y.uri))
-        .filter(x => String.isNullOrEmpty(x) === false)
-        .firstOrDefault();
-
-      if (!String.isNullOrEmpty(uri)) {
-        type t = typeof uri;
-      }
-      else {
-        type t = typeof uri;
-      }
-      if (!String.isNullOrEmpty(uri)) {
-        // providing there exists at least one component route, navigate to it
-        this.navTo(uri, undefined, true);
-      }
+    // if there is no route, then route to help view
+    if (this.getComponentRoute(state) == null) {
+      this.navTo('#/demo/help');
+      return;
     }
-    else {
-      if (state.columns == null && prevState.columns != null) {
-        // if colums were previously specified, but omitted in the current routing state
-        // then "reset" the columns to 12
-        state.columns = 12;
-      }
 
-      // update the columns from the state, fallback on existing columns, then two 12 as the default
-      this.columns.value = state.columns || (this.columns.value == null ? 12 : this.columns.value);
+    // if colums were previously specified, but omitted in the current routing state
+    // then "reset" the columns to 12
+    if (state.columns == null && (this.routingState.value || {}).columns != null) {
+      state.columns = 12;
+    }
 
-      const component = this.component.value;
+    // update the columns from the state, fallback on existing columns, then to 12 as the default
+    this.columns.value = state.columns || this.columns.value || 12;
 
-      if (isRoutableViewModel(component)) {
-        component.setRoutingState(state);
-      }
+    if (isRoutableViewModel(this.component.value)) {
+      this.component.value.setRoutingState(state);
     }
   }
 
