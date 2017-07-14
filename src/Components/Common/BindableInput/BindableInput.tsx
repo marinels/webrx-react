@@ -33,7 +33,7 @@ export interface BindableProps {
   valueSetter?: (property: any, value: any) => void;
 }
 
-export interface BindableInputProps extends React.HTMLAttributes<BindableInput>, BindableProps {
+export interface BindableInputProps extends React.AllHTMLAttributes<BindableInput>, BindableProps {
   /**
    * input property (or value)
    */
