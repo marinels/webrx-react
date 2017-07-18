@@ -8,6 +8,9 @@ import { ReadOnlyProperty, Command } from './Interfaces';
 import { isSubscription } from './Utils';
 import { property } from './Property';
 
+// we can disable shadowed variables here since we are performing type augmentations
+// tslint:disable no-shadowed-variable
+
 declare module 'rxjs/Subscription' {
   interface Subscription {
     addSubscription<T extends TeardownLogic>(subscription: T): T;
