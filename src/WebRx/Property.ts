@@ -75,13 +75,13 @@ export function property<T>(
 
 export function property<T>(
   initialValue?: T,
-  compare?: (x: T, y: T) => boolean,
+  compare?: boolean | ((x: T, y: T) => boolean),
   source?: Observable<T>,
 ): Property<T>;
 
 export function property<T>(
   initialValue?: T,
-  compare?: (x: T, y: T) => boolean,
+  compare?: boolean | ((x: T, y: T) => boolean),
   keySelector?: (x: T) => any,
   source?: Observable<T>,
 ): Property<T>;
@@ -99,7 +99,14 @@ export function property<T>(...args: any[]): Property<T> {
     source = arg;
   }
   else {
-    compare = arg;
+    // if arg is true, then we use the default comparator function
+
+    if (arg === false) {
+      compare = () => false;
+    }
+    else if (arg instanceof Function) {
+      compare = arg;
+    }
   }
 
   arg = args.shift();
