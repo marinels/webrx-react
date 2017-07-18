@@ -341,7 +341,7 @@ function getWebpackConfig(build, uglify, dist) {
 
   webpackConfig.plugins.push(
     new HtmlWebpackPlugin({
-      template: './src/index.ejs',
+      template: build === config.builds.test ? './test/index.ejs' : './src/index.ejs',
       filename: 'index.html',
       hash: true,
     })
