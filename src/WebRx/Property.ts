@@ -1,7 +1,7 @@
 import { Observable, Subject, BehaviorSubject, Subscription } from 'rxjs';
 
 import { Property } from './Interfaces';
-import { isSubject, handleError } from './Utils';
+import { isObservable, isSubject, handleError } from './Utils';
 
 export class ObservableProperty<T> extends Subscription implements Property<T> {
   protected changedSubject: BehaviorSubject<T>;
@@ -9,6 +9,8 @@ export class ObservableProperty<T> extends Subscription implements Property<T> {
 
   constructor(
     initialValue?: T,
+    compare?: (x: T, y: T) => boolean,
+    keySelector?: (x: T) => any,
     protected source: Observable<T> = new Subject<T>(),
   ) {
     super();
@@ -21,22 +23,16 @@ export class ObservableProperty<T> extends Subscription implements Property<T> {
         // seed the observable subscription with the initial value so that
         // distinctUntilChanged knows what the initial value is
         .startWith(initialValue!)
-        .distinctUntilChanged()
+        .distinctUntilChanged(compare!, keySelector!)
         .subscribe(
           x => {
-            if (this.isNewValue(x)) {
-              this.changedSubject.next(x);
-            }
+            this.changedSubject.next(x);
           },
           e => {
             handleError(e, this.thrownErrorsSubject);
           },
         ),
     );
-  }
-
-  protected isNewValue(newValue: T) {
-    return newValue !== this.value;
   }
 
   get isReadOnly() {
@@ -75,6 +71,51 @@ export class ObservableProperty<T> extends Subscription implements Property<T> {
 export function property<T>(
   initialValue?: T,
   source?: Observable<T>,
-): Property<T> {
-  return new ObservableProperty(initialValue, source);
+): Property<T>;
+
+export function property<T>(
+  initialValue?: T,
+  compare?: (x: T, y: T) => boolean,
+  source?: Observable<T>,
+): Property<T>;
+
+export function property<T>(
+  initialValue?: T,
+  compare?: (x: T, y: T) => boolean,
+  keySelector?: (x: T) => any,
+  source?: Observable<T>,
+): Property<T>;
+
+export function property<T>(...args: any[]): Property<T> {
+  const initialValue: T = args.shift();
+
+  let compare: undefined | ((x: T, y: T) => boolean);
+  let keySelector: undefined | ((x: T) => any);
+  let source: undefined | Observable<T>;
+
+  let arg = args.shift();
+
+  if (isObservable<T>(arg)) {
+    source = arg;
+  }
+  else {
+    compare = arg;
+  }
+
+  arg = args.shift();
+
+  if (isObservable<T>(arg)) {
+    source = arg;
+  }
+  else {
+    keySelector = arg;
+  }
+
+  arg = args.shift();
+
+  if (isObservable<T>(arg)) {
+    source = arg;
+  }
+
+  return new ObservableProperty(initialValue, compare, keySelector, source);
 }
