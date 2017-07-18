@@ -46,7 +46,7 @@ Subscription.unsubscribe = unsubscribe;
 declare module 'rxjs/Observable' {
   interface Observable<T> {
     filterNull<T>(this: Observable<T | undefined | null>, callbackfn?: (value: T, index: number) => boolean): Observable<T>;
-    toProperty: (initialValue?: T) => ReadOnlyProperty<T>;
+    toProperty(initialValue?: T, compare?: boolean | ((x: T, y: T) => boolean), keySelector?: (x: T) => any): ReadOnlyProperty<T>;
     observeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>): Observable<TRet>;
     invokeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>, observer: Observer<T>): Subscription;
     invokeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>, onNext?: (value: T) => void, onError?: (exception: any) => void, onCompleted?: () => void): Subscription;
@@ -70,8 +70,8 @@ function filterNull<T>(this: Observable<T | undefined | null>, callbackfn?: (val
 }
 Observable.prototype.filterNull = filterNull;
 
-function toProperty<T>(this: Observable<T>, initialValue?: T) {
-  return property(initialValue, this);
+function toProperty<T>(this: Observable<T>, initialValue?: T, compare?: boolean | ((x: T, y: T) => boolean), keySelector?: (x: T) => any) {
+  return property(initialValue, compare, keySelector, this);
 }
 Observable.prototype.toProperty = toProperty;
 
