@@ -54,7 +54,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     this.component = this
       .whenAny(this.routingState, this.reRender.results.startWith(null), x => x)
       .map(x => this.getViewModel(x))
-      .toProperty();
+      .toProperty(undefined, false);
 
     this.addSubscription(this
       .whenAny(this.columns.changed, () => null)

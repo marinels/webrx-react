@@ -22,7 +22,7 @@ export class TabsViewModel<T> extends BaseRoutableViewModel<TabsRoutingState> {
   constructor(initialTabs: T[] = [], isRoutingEnabled = false) {
     super(isRoutingEnabled);
 
-    const tabs = this.property<T[]>(initialTabs);
+    const tabs = this.property<T[]>(initialTabs, false);
     this.tabs = <ReadOnlyProperty<T[]>>tabs;
 
     this.addTab = this.command((tab: T) => {

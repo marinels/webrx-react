@@ -204,7 +204,7 @@ routeMap.addRoute('webrx-react', 'ListCmd', 'List (Command)', (state: any) => ne
 routeMap.addRoute('webrx-react', 'Tree', 'Tree', (state: any) => new Components.ListViewModel(wx.property(sampleTreeData), true, false));
 routeMap.addRoute('webrx-react', 'PanelList', 'Panel List', (state: any) => new Components.ListViewModel(wx.property(sampleListData), true, false));
 routeMap.addRoute('webrx-react', 'DataGrid', 'Data Grid', (state: any) => {
-  const prop = wx.property<SampleData[]>();
+  const prop = wx.property<SampleData[]>(undefined, false);
 
   // simulate delayed loading
   Observable
