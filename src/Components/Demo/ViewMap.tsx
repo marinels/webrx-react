@@ -12,14 +12,9 @@ import { SampleData, SampleTreeData } from './RoutingMap';
 import * as Components from '../Common';
 import { TodoListView } from './TodoList/TodoListView';
 import { TodoListViewModel } from './TodoList/TodoListViewModel';
-
-export interface ViewActivator {
-  (component: any, componentRoute: string | undefined): any;
-}
-
-export interface ViewActivatorMap {
-  [key: string]: ViewActivator;
-}
+import { ComponentDemoViewModel } from './ComponentDemoViewModel';
+import { ComponentDemoView, ViewActivatorMap } from './ComponentDemoView';
+import { ViewMap as AppViewMap } from '../../Routing/ViewMap';
 
 const logger = Logging.getLogger('Demo.ViewMap');
 
@@ -508,4 +503,7 @@ const viewMap: ViewActivatorMap = {
   },
 };
 
-export const ViewMap = viewMap;
+// inject the component demo into the app view map
+AppViewMap['ComponentDemoViewModel'] = (viewModel: ComponentDemoViewModel) => (
+  <ComponentDemoView viewModel={ viewModel } viewMap={ viewMap } />
+);

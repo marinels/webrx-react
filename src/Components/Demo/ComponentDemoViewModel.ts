@@ -6,14 +6,52 @@ import { HeaderCommandAction, HeaderMenu } from '../React/Actions';
 import { BaseRoutableViewModel, isRoutableViewModel, RoutingBreadcrumb } from '../React/BaseRoutableViewModel';
 import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
 import { Current as App } from '../Common/App/AppViewModel';
-import { RouteMap, ViewModelActivator } from './RoutingMap';
-import { RouteMap as AppRouteMap } from '../../Routing/RoutingMap';
 
-// inject the demo infrastructure into the app routing and view maps
-AppRouteMap['/'] = { path: '/demo/' };
-AppRouteMap['^/demo$'] = { path: '/demo/' };
-// setup the demo route path pattern
-AppRouteMap['^/demo/(.*)?'] = { path: '/demo', creator: () => new ComponentDemoViewModel() };
+export interface ViewModelActivator {
+  (state: any): any;
+}
+
+export interface ViewModelActivatorMap {
+  [key: string]: ViewModelActivator;
+}
+
+export interface MenuMap {
+  [key: string]: HeaderMenu;
+}
+
+export class RoutingMap {
+  public static displayName = 'RoutingMap';
+
+  public viewModelMap: ViewModelActivatorMap = {};
+  public menuMap: MenuMap = {};
+
+  constructor(private baseUri = '#/demo', private defaultIconName = 'flask') {
+  }
+
+  public addRoute(menuName: string, path: string, name: string, activator: ViewModelActivator, uri?: string, iconName?: string) {
+    if (/^\w+$/.test(path)) {
+      uri = uri || path;
+      path = `^${ path }$`;
+    }
+
+    this.viewModelMap[path] = activator;
+    const menu = this.menuMap[menuName] = this.menuMap[menuName] || <HeaderMenu>{
+      id: menuName,
+      header: `${ menuName } Demos`,
+      items: [],
+    };
+    menu.items.push(<HeaderCommandAction>{ id: path, header: name, uri: this.getUri(path, uri), iconName: iconName || this.defaultIconName, order: menu.items.length });
+  }
+
+  public getUri(path: string, uri?: string) {
+    return `${ this.baseUri }/${ uri || path }`;
+  }
+
+  public get menus() {
+    return Object.getOwnPropertyNames(this.menuMap)
+      .map(x => this.menuMap[x]);
+  }
+}
 
 export interface ComponentDemoRoutingState {
   route: Route;
@@ -34,7 +72,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   public readonly setColumns: Command<number>;
   public readonly reRender: Command<any>;
 
-  constructor() {
+  constructor(protected readonly routeMap: RoutingMap) {
     super(true);
 
     this.componentRoute = this.property<string>();
@@ -142,17 +180,17 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
         this.logger.debug(`Loading Component for "${ componentRoute }"...`);
 
         // try and load our component from the component map using a static route
-        activator = RouteMap.viewModelMap[componentRoute];
+        activator = this.routeMap.viewModelMap[componentRoute];
 
         // if no static route was found then we can attempt an expression route
         if (activator == null) {
           // project out the first expression route match (path, match, and activator)
-          let result = Object.keys(RouteMap.viewModelMap)
+          let result = Object.keys(this.routeMap.viewModelMap)
             .filter(x => x != null && x.length > 0 && x[0] === '^')
             .map(x => ({ path: x, regex: new RegExp(x, 'i') }))
             .map(x => ({ path: x.path, match: x.regex.exec(componentRoute) }))
             .filter(x => x.match != null)
-            .map(x => ({ path: x.path, match: x.match!, activator: RouteMap.viewModelMap[x.path] }))
+            .map(x => ({ path: x.path, match: x.match!, activator: this.routeMap.viewModelMap[x.path] }))
             .asEnumerable()
             .firstOrDefault();
 
@@ -260,7 +298,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   }
 
   getNavbarMenus() {
-    return RouteMap.menus
+    return this.routeMap.menus
       .concat(<HeaderMenu>{
         id: `${ this.demoAlertItem.id }-menu`,
         header: 'Sample Routed Menu',

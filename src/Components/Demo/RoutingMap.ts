@@ -5,52 +5,8 @@ import { Alert, Compare } from '../../Utils';
 import { HeaderMenu, HeaderCommandAction } from '../React';
 import * as Components from '../Common';
 import { TodoListViewModel } from './TodoList/TodoListViewModel';
-
-export interface ViewModelActivator {
-  (state: any): any;
-}
-
-export interface ViewModelActivatorMap {
-  [key: string]: ViewModelActivator;
-}
-
-export interface MenuMap {
-  [key: string]: HeaderMenu;
-}
-
-export class RoutingMap {
-  public static displayName = 'RoutingMap';
-
-  public viewModelMap: ViewModelActivatorMap = {};
-  public menuMap: MenuMap = {};
-
-  constructor(private baseUri = '#/demo', private defaultIconName = 'flask') {
-  }
-
-  public addRoute(menuName: string, path: string, name: string, activator: ViewModelActivator, uri?: string, iconName?: string) {
-    if (/^\w+$/.test(path)) {
-      uri = uri || path;
-      path = `^${ path }$`;
-    }
-
-    this.viewModelMap[path] = activator;
-    const menu = this.menuMap[menuName] = this.menuMap[menuName] || <HeaderMenu>{
-      id: menuName,
-      header: `${ menuName } Demos`,
-      items: [],
-    };
-    menu.items.push(<HeaderCommandAction>{ id: path, header: name, uri: this.getUri(path, uri), iconName: iconName || this.defaultIconName, order: menu.items.length });
-  }
-
-  public getUri(path: string, uri?: string) {
-    return `${ this.baseUri }/${ uri || path }`;
-  }
-
-  public get menus() {
-    return Object.getOwnPropertyNames(this.menuMap)
-      .map(x => this.menuMap[x]);
-  }
-}
+import { RouteMap as AppRouteMap } from '../../Routing/RoutingMap';
+import { ComponentDemoViewModel, RoutingMap } from './ComponentDemoViewModel';
 
 const routeMap = new RoutingMap();
 
@@ -318,4 +274,8 @@ routeMap.addRoute('webrx-react', 'InlineEditObject', 'InlineEdit (Object)', (sta
 routeMap.viewModelMap['help'] = () => 'Help';
 routeMap.viewModelMap['todolist'] = () => new TodoListViewModel();
 
-export const RouteMap = routeMap;
+// inject the demo infrastructure into the app routing and view maps
+AppRouteMap['/'] = { path: '/demo/' };
+AppRouteMap['^/demo$'] = { path: '/demo/' };
+// setup the demo route path pattern
+AppRouteMap['^/demo/(.*)?'] = { path: '/demo', creator: () => new ComponentDemoViewModel(routeMap) };

@@ -5,16 +5,19 @@ import { Grid, Row, Col, PageHeader, DropdownButton, MenuItem, Alert } from 'rea
 
 import { BaseView, BaseViewProps } from '../React';
 import { ComponentDemoViewModel } from './ComponentDemoViewModel';
-import { ViewMap } from './ViewMap';
-import { ViewMap as AppViewMap } from '../../Routing/ViewMap';
 
 import './ComponentDemo.less';
 
-AppViewMap['ComponentDemoViewModel'] = (viewModel: ComponentDemoViewModel) => (
-  <ComponentDemoView viewModel={ viewModel } />
-);
+export interface ViewActivator {
+  (component: any, componentRoute: string | undefined): any;
+}
+
+export interface ViewActivatorMap {
+  [key: string]: ViewActivator;
+}
 
 export interface ComponentDemoProps extends BaseViewProps {
+  viewMap: ViewActivatorMap;
 }
 
 export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDemoViewModel> {
@@ -28,7 +31,10 @@ export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDem
   }
 
   render() {
-    const { className, rest } = this.restProps();
+    const { className, rest } = this.restProps(x => {
+      const { viewMap } = x;
+      return { viewMap };
+    });
 
     const cols = this.state.columns.value;
 
@@ -92,7 +98,7 @@ export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDem
     if (component != null) {
       this.logger.debug(`Loading View for "${ componentName }"...`);
 
-      const activator = ViewMap[componentName];
+      const activator = this.props.viewMap[componentName];
 
       if (activator != null) {
         view = activator(component, this.state.componentRoute.value);
