@@ -83,7 +83,7 @@ const treeTemplate = new Components.TreeViewTemplate<SampleTreeData>(
   true,
 );
 
-const viewMap: ViewActivatorMap = {
+export const demoViewMap: ViewActivatorMap = {
   Loading: () => <Components.Loading text='Standard Loader...' />,
   SizedLoading: (c, cr) => wxr.renderSizedLoadable(true, '50px Loader...', 50),
   Splash: () => <Components.Splash fluid header='webrx-react Demo' logo='http://placehold.it/100x100?text=Logo' />,
@@ -505,5 +505,5 @@ const viewMap: ViewActivatorMap = {
 
 // inject the component demo into the app view map
 AppViewMap['ComponentDemoViewModel'] = (viewModel: ComponentDemoViewModel) => (
-  <ComponentDemoView viewModel={ viewModel } viewMap={ viewMap } />
+  <ComponentDemoView viewModel={ viewModel } viewMap={ demoViewMap } />
 );
