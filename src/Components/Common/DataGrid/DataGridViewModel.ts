@@ -109,7 +109,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
       )
       // filter out null request data
       .filterNull()
-      .toProperty();
+      .toProperty(undefined, false);
 
     this.project = this.command((x: TRequest) => {
       return this
@@ -126,7 +126,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
       // we will get null projection results back if there is an error
       // so just filter these results out of our results observable
       .filterNull()
-      .toProperty();
+      .toProperty(undefined, false);
 
     if (this.isProperty(isLoading) === true) {
       this.isLoading = <ReadOnlyProperty<boolean>>isLoading;
@@ -153,7 +153,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
       })
       // project back down into the item array
       .map(x => x.items)
-      .toProperty();
+      .toProperty(undefined, false);
 
     this.addSubscription(this
       .whenAny(
@@ -287,13 +287,13 @@ export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, Items
   public static displayName = 'DataGridViewModel';
 
   public static create<TData>(...items: TData[]) {
-    return new DataGridViewModel(wx.property<TData[]>(items));
+    return new DataGridViewModel(wx.property<TData[]>(items, false));
   }
 
   private static getItemsRequestObservable<TData>(source: ObservableOrProperty<TData[]>) {
     if (wx.isProperty(source) === true) {
       return wx
-        .whenAny(<Property<TData[]>>source, x => x)
+        .whenAny(source, x => x)
         .filterNull()
         .map(items => <ItemsProjectionRequest<TData>>{
           items,
@@ -308,7 +308,7 @@ export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, Items
   }
 
   constructor(
-    items: ObservableOrProperty<TData[]> = wx.property<TData[]>([]),
+    items: ObservableOrProperty<TData[]> = wx.property<TData[]>([], false),
     protected filterer?: (item: TData, regex: RegExp) => boolean,
     protected comparer = new ObjectComparer<TData>(),
     isMultiSelectEnabled?: boolean,

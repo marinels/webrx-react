@@ -341,7 +341,7 @@ function getWebpackConfig(build, uglify, dist) {
 
   webpackConfig.plugins.push(
     new HtmlWebpackPlugin({
-      template: './src/index.ejs',
+      template: build === config.builds.test ? './test/index.ejs' : './src/index.ejs',
       filename: 'index.html',
       hash: true,
     })
@@ -637,12 +637,14 @@ gulp.task('watch:mocha', [ 'clean:build' ], () => {
   return webpackWatcherStream(webpackConfig, config.builds.test)
     .pipe(gulp.dest(webpackConfig.output.path))
     .pipe(through((file) => {
-      log('Testing', util.colors.magenta(file.path), '...');
+      if (/\.js$/.test(file.path)) {
+        log('Testing', util.colors.magenta(file.path), '...');
 
-      gulp
-        .src(file.path, { read: false })
-        .pipe(plumber())
-        .pipe(mocha({ reporter }));
+        gulp
+          .src(file.path, { read: false })
+          .pipe(plumber())
+          .pipe(mocha({ reporter }));
+      }
     }));
 });
 

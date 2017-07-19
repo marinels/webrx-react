@@ -75,7 +75,12 @@ export function getObservable<T>(observableOrProperty: ObservableOrPropertyOrVal
   return Observable.never<T>();
 }
 
-export function getProperty<T>(observableOrProperty: ObservableOrPropertyOrValue<T>, initialValue?: T) {
+export function getProperty<T>(
+  observableOrProperty: ObservableOrPropertyOrValue<T>,
+  initialValue?: T,
+  compare?: boolean | ((x: T, y: T) => boolean),
+  keySelector?: (x: T) => any,
+) {
   if (isProperty(observableOrProperty)) {
     return observableOrProperty;
   }
@@ -88,7 +93,7 @@ export function getProperty<T>(observableOrProperty: ObservableOrPropertyOrValue
     initialValue = observableOrProperty;
   }
 
-  return new Subject<T>().toProperty(initialValue);
+  return new Subject<T>().toProperty(initialValue, compare, keySelector);
 }
 
 export function handleError(e: any, ...optionalParams: any[]) {

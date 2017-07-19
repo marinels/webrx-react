@@ -42,7 +42,7 @@ export class AlertHostViewModel extends BaseViewModel {
         },
         undefined,
       )
-      .toProperty([]);
+      .toProperty([], false);
 
     this.addSubscription(
       addAlert.results

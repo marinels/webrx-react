@@ -40,12 +40,12 @@ export class PageHeaderViewModel extends BaseViewModel {
 
     this.dynamicSubscriptions = Subscription.EMPTY;
 
-    this.sidebarMenus = this.property<HeaderMenu[]>();
-    this.navbarMenus = this.property<HeaderMenu[]>();
-    this.navbarActions = this.property<HeaderCommandAction[]>();
-    this.helpMenuItems = this.property<HeaderCommandAction[]>();
-    this.adminMenuItems = this.property<HeaderCommandAction[]>();
-    this.userMenuItems = this.property<HeaderCommandAction[]>();
+    this.sidebarMenus = this.property<HeaderMenu[]>(undefined, false);
+    this.navbarMenus = this.property<HeaderMenu[]>(undefined, false);
+    this.navbarActions = this.property<HeaderCommandAction[]>(undefined, false);
+    this.helpMenuItems = this.property<HeaderCommandAction[]>(undefined, false);
+    this.adminMenuItems = this.property<HeaderCommandAction[]>(undefined, false);
+    this.userMenuItems = this.property<HeaderCommandAction[]>(undefined, false);
 
     this.toggleSideBar = this.command((isVisible: boolean) => {
       return Object.fallback(isVisible, !this.isSidebarVisible.value);

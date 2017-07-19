@@ -6,6 +6,6 @@
     "noEmit": true
   },
   "files": [
-    "src/app.tsx"
+    "./app.spec.ts"
   ]
 }

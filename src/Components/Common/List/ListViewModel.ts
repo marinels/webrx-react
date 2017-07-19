@@ -29,7 +29,7 @@ export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<T
   public static displayName = 'ListViewModel';
 
   public static create<TData>(...items: TData[]) {
-    return new ListViewModel(wx.property<TData[]>(items));
+    return new ListViewModel(wx.property<TData[]>(items, false));
   }
 
   public readonly listItems: ReadOnlyProperty<TData[]>;
@@ -40,7 +40,7 @@ export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<T
   protected readonly toggleSelection: Command<TData>;
 
   constructor(
-    items: ObservableOrProperty<TData[]> = wx.property<TData[]>([]),
+    items: ObservableOrProperty<TData[]> = wx.property<TData[]>([], false),
     public readonly isMultiSelectEnabled = false,
     isRoutingEnabled?: boolean,
   ) {
@@ -50,7 +50,7 @@ export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<T
       this.listItems = <ReadOnlyProperty<TData[]>>items;
     }
     else {
-      this.listItems = (<Observable<TData[]>>items).toProperty([]);
+      this.listItems = (<Observable<TData[]>>items).toProperty([], false);
     }
 
     this.items = this.listItems;
