@@ -7,7 +7,7 @@ export class ItemListPanelViewModel<TData> extends BaseItemListPanelViewModel<TD
   public static displayName = 'ItemListPanelViewModel';
 
   public static create<TData>(...items: TData[]) {
-    return new ItemListPanelViewModel(wx.property(items));
+    return new ItemListPanelViewModel(wx.property(items, false));
   }
 
   constructor(

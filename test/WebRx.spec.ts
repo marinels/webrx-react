@@ -122,6 +122,19 @@ describe('WebRx', () => {
       prop.value = { val: 'test' };
       isChanged.should.be.true;
     });
+
+    it('can generate change events for internally changed properties', () => {
+      const prop = wx.property([ { val: 'test1' }, { val: 'test2' } ], (a, b) => false);
+      let isChanged = false;
+      prop.changed
+        .subscribe(() => { isChanged = true; });
+
+      const val = prop.value;
+      val[1].val = 'test3';
+      prop.value = val;
+      isChanged.should.be.true;
+      prop.value[1].val.should.eql('test3');
+    });
   });
 
   describe('observable commands', () => {

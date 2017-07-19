@@ -10,7 +10,7 @@ import './webrx-react';
 // import the App view and view model
 import { AppViewModel, AppView } from './Components';
 
-// import the demo framework and demos
+// import the demos
 import './Components/Demo';
 
 // grab the DOM entry point

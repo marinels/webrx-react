@@ -251,7 +251,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
         return x.nodes
           .map((node, i) => this.getNode(node, i, 0, viewModel, view, x.autoExpand));
       })
-      .toProperty();
+      .toProperty(undefined, false);
 
     this.items = wx
       .whenAny(this.nodes, this.toggleNode.results.startWith(undefined), x => x || [])
@@ -261,7 +261,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
           viewModel.stateChanged.execute();
         }
       })
-      .toProperty([]);
+      .toProperty([], false);
   }
 
   cleanup(viewModel: ReadonlyListViewModel<TData>, view: ListView) {
