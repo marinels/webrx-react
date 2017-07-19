@@ -15,7 +15,7 @@ import { AppViewModel } from './AppViewModel';
 import { ViewMap, ViewMapper } from '../../../Routing/ViewMap';
 
 ViewMap[SplashKey] = () => (
-  <Splash header='WebRx-React' />
+  <Splash header='webrx-react' />
 );
 
 export interface AppProps extends PageHeaderProps, PageFooterProps {
