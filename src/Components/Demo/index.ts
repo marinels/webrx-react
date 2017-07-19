@@ -1,2 +1,2 @@
-import './RoutingMap';
-import './ViewMap';
+export * from './RoutingMap';
+export * from './ViewMap';
