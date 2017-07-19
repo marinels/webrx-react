@@ -1,4 +1,4 @@
-import './advanceToAugmentation';
+import './augmentations';
 import './setup';
 
 import './Sanity.spec';

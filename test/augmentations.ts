@@ -1,5 +1,8 @@
 import { VirtualTimeScheduler } from 'rxjs/scheduler/VirtualTimeScheduler';
 
+// we can disable shadowed variables here since we are performing type augmentations
+// tslint:disable no-shadowed-variable
+
 declare module 'rxjs/scheduler/VirtualTimeScheduler' {
   interface VirtualTimeScheduler {
     advancedTo(frame: number): void;
