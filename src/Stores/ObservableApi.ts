@@ -184,14 +184,14 @@ export class ObservableApi {
 
     return Observable
       .ajax(options)
-      .map(x => x.response)
+      .map(x => <T>x.response)
       .do(x => {
         this.logger.info(`API Result: ${ action } (${ url })`, x);
       })
-      .catch((x: AjaxError) => {
+      .catch<T, T>((x: AjaxError) => {
         this.logger.error(`API  ERROR: ${ action } (${ url })`, x);
 
-        return <Observable<T>>Observable.throw(this.getError(x.xhr, url));
+        return Observable.throw(this.getError(x.xhr, url));
       });
   }
 
