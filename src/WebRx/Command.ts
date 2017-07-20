@@ -67,25 +67,22 @@ export class ObservableCommand<T> extends Subscription implements Command<T> {
       .flatMap(x => {
         return this.executeAction(x);
       })
-      .do(x => {
-        this.resultsSubject.next(x);
-      })
       .do(
-        () => {
+        x => {
+          this.resultsSubject.next(x);
+
           this.isExecutingSubject.next(false);
         },
-        () => {
+        e => {
+          // capture the error, but don't swallow it
+          handleError(e, this.thrownErrorsSubject);
+
           this.isExecutingSubject.next(false);
         },
         () => {
           this.isExecutingSubject.next(false);
         },
       )
-      .catch(e => {
-        handleError(e, this.thrownErrorsSubject);
-
-        return Observable.empty<T>();
-      })
       // this will prevent execution if nobody is subscribing to the result
       .share();
   }
@@ -107,7 +104,7 @@ export class ObservableCommand<T> extends Subscription implements Command<T> {
   execute(
     parameter?: any,
     observerOrNext?: Observer<T> | ((value: T) => void),
-    onError: (exception: any) => void = e => handleError(e, this.thrownErrorsSubject),
+    onError: (exception: any) => void = () => { return; },
     onCompleted?: () => void,
   ): Subscription {
     const obs = this
