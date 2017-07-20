@@ -97,7 +97,20 @@ export function getProperty<T>(
 }
 
 export function handleError(e: any, ...optionalParams: any[]) {
-  const err = e instanceof Error ? e : new Error(e);
+  let err: Error;
+
+  if (e instanceof Error) {
+    err = e;
+  }
+  else if (String.isString(e)) {
+    err = new Error(e);
+  }
+  else if (String.isString(e.message) || String.isString(e.Message)) {
+    err = new Error(e.message || e.Message);
+  }
+  else {
+    err = new Error('Undefined Error');
+  }
 
   // trim off the subject if it was provided with the optional params
   const subject = isSubject(optionalParams[0]) ?
