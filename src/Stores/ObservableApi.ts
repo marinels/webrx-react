@@ -184,14 +184,7 @@ export class ObservableApi {
 
     return Observable
       .ajax(options)
-      .map(x => {
-        try {
-          return <T>JSON.parse(x.response);
-        }
-        catch (e) {
-          throw x;
-        }
-      })
+      .map(x => x.response)
       .do(x => {
         this.logger.info(`API Result: ${ action } (${ url })`, x);
       })
