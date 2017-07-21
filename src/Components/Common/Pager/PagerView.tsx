@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Observable } from 'rxjs';
-import { Pagination, PaginationProps, DropdownButton, MenuItem } from 'react-bootstrap';
+import { Pagination, PaginationProps, DropdownButton, DropdownButtonProps, MenuItem } from 'react-bootstrap';
 
 import { BaseView, ViewModelProps } from '../../React';
 import { PagerViewModel, StandardLimits } from './PagerViewModel';
@@ -8,6 +8,7 @@ import { PagerViewModel, StandardLimits } from './PagerViewModel';
 export interface PagerProps extends PaginationProps {
   info?: boolean;
   limits?: number[];
+  dropdownProps?: DropdownButtonProps;
   order?: PagerComponentTypes[];
   emptyInfo?: string;
 }
@@ -54,8 +55,8 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { info, limits, order, emptyInfo } = x;
-      return { info, limits, order, emptyInfo };
+      const { info, limits, dropdownProps, order, emptyInfo } = x;
+      return { info, limits, dropdownProps, order, emptyInfo };
     });
 
     const pagerProps = Object.rest(rest, x => {
@@ -132,7 +133,7 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
 
   private renderLimit() {
     return this.renderConditional(this.shouldRenderLimit(), () => (
-      <DropdownButton id={ this.props.id || 'pager-limit-selector' } title={ this.renderLimitTitle() } onSelect={ this.bindEventToProperty(x => x.limit) }>
+      <DropdownButton id={ this.props.id || 'pager-limit-selector' } { ...this.props.dropdownProps } title={ this.renderLimitTitle() } onSelect={ this.bindEventToProperty(x => x.limit) }>
         {
           this.props.limits!
             .map((x, i) => (
