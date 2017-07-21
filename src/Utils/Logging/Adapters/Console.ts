@@ -3,6 +3,38 @@ import * as moment from 'moment';
 import { LogLevel, getLevelName, DefaultLogLevel } from '../LogLevel';
 import { DelegateLogManager, DelegateLogger } from './Delegate';
 
+// cleanup the console logging functions for legacy IE browsers
+// see: https://stackoverflow.com/a/5539378/2789877
+function sanitizeConsoleFunctions() {
+  let consoleObject: StringMap<any> = console;
+
+  // if console is missing for whatever reason, stub in an empty object
+  // we will supply dummy logging functions for it
+  // this should never be possible
+  if (consoleObject == null) {
+    (<any>window).console = consoleObject = {};
+  }
+
+  // if we don't have access to bind, then we can stub in a dummy function
+  // this should never be possible
+  const dummy = Function.prototype.bind != null ? undefined : () => { return; };
+
+  // ensure we at least have a dummy console.log function
+  consoleObject['log'] = consoleObject['log'] || dummy;
+
+  // scan all used logging functions for necessary sanitization
+  [ 'log', 'debug', 'info', 'warn', 'error' ]
+    .filter(x => consoleObject[x] == null || typeof consoleObject[x] === 'object')
+    .forEach(x => {
+      // if the logging function doesn't exist then default to console.log
+      if (consoleObject[x] == null) {
+        consoleObject[x] = consoleObject['log'];
+      }
+
+      consoleObject[x] = Function.prototype.call.bind(consoleObject[x], consoleObject);
+    });
+}
+
 export class ConsoleLogManager extends DelegateLogManager {
   constructor(defaultLevel: LogLevel) {
     super((manager: ConsoleLogManager) => {
@@ -75,5 +107,7 @@ export class ConsoleLogManager extends DelegateLogManager {
   }
   // tslint:enable:no-console
 }
+
+sanitizeConsoleFunctions();
 
 export const Default = new ConsoleLogManager(DefaultLogLevel);
