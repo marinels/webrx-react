@@ -230,6 +230,8 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
 
   protected abstract getProjectionResult(request: TRequest): Observable<TResult>;
 
+  // NOTE: this is a bit dangerous since we're overriding an inherited local
+  //       member with a property getter.
   get items() {
     return this.projectedItems;
   }
