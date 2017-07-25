@@ -24,7 +24,7 @@ export class TodoListViewModel extends BaseRoutableViewModel<TodoListRoutingStat
     this.newItemContent = this.property('');
 
     this.addItem = this.command(
-      this.whenAny(this.newItemContent, x => String.isNullOrEmpty(x) === false)
+      this.whenAny(this.newItemContent, x => String.isNullOrEmpty(x) === false),
     );
 
     this.removeItem = this.command<TodoItemViewModel>();
@@ -65,6 +65,7 @@ export class TodoListViewModel extends BaseRoutableViewModel<TodoListRoutingStat
     this.list = new ItemListPanelViewModel(
       todoListItems,
       (x, regexp) => x.filter(regexp),
+      undefined,
       undefined,
       undefined,
       undefined,

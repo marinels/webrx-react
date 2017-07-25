@@ -1,5 +1,4 @@
-import { Portal } from 'react-overlays';
-import 'react-bootstrap';
+import { Portal } from 'react-bootstrap';
 
 declare module 'react-bootstrap' {
   interface PortalProps {
