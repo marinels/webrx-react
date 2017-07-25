@@ -11,7 +11,7 @@ export class ConsoleLogManager extends DelegateLogManager {
 
     // this is an added protection for IE9 to support console.log even if the
     // developer tools are not active.
-    if (window.console == null) {
+    if (typeof window !== 'undefined' && window != null && window.console == null) {
       (<any>window).console = {
         log: function() { return; },
       };
