@@ -37,7 +37,10 @@ export class ValueComparer<T> implements Comparer<T> {
     }
     else {
       // fallback on a basic equality check
-      return a > b ? 1 : -1;
+      const c = <any>a - <any>b;
+
+      // it's possible that our basic check failed, so default to zero
+      return (c == null || isNaN(c)) ? 0 : c;
     }
   }
 
