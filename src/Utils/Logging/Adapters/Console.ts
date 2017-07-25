@@ -3,43 +3,19 @@ import * as moment from 'moment';
 import { LogLevel, getLevelName, DefaultLogLevel } from '../LogLevel';
 import { DelegateLogManager, DelegateLogger } from './Delegate';
 
-// cleanup the console logging functions for legacy IE browsers
-// see: https://stackoverflow.com/a/5539378/2789877
-function sanitizeConsoleFunctions() {
-  let consoleObject: StringMap<any> = console;
-
-  // if console is missing for whatever reason, stub in an empty object
-  // we will supply dummy logging functions for it
-  // this should never be possible
-  if (consoleObject == null) {
-    (<any>window).console = consoleObject = {};
-  }
-
-  // if we don't have access to bind, then we can stub in a dummy function
-  // this should never be possible
-  const dummy = Function.prototype.bind != null ? undefined : () => { return; };
-
-  // ensure we at least have a dummy console.log function
-  consoleObject['log'] = consoleObject['log'] || dummy;
-
-  // scan all used logging functions for necessary sanitization
-  [ 'log', 'debug', 'info', 'warn', 'error' ]
-    .filter(x => consoleObject[x] == null || typeof consoleObject[x] === 'object')
-    .forEach(x => {
-      // if the logging function doesn't exist then default to console.log
-      if (consoleObject[x] == null) {
-        consoleObject[x] = consoleObject['log'];
-      }
-
-      consoleObject[x] = Function.prototype.call.bind(consoleObject[x], consoleObject);
-    });
-}
-
 export class ConsoleLogManager extends DelegateLogManager {
   constructor(defaultLevel: LogLevel) {
     super((manager: ConsoleLogManager) => {
       return (logger, level, text, args) => manager.logAction(logger, level, text, args);
     }, defaultLevel);
+
+    // this is an added protection for IE9 to support console.log even if the
+    // developer tools are not active.
+    if (typeof window !== 'undefined' && window != null && window.console == null) {
+      (<any>window).console = {
+        log: function() { return; },
+      };
+    }
   }
 
   private getColorStyle(bgColor = 'transparent', color = 'black') {
@@ -87,27 +63,55 @@ export class ConsoleLogManager extends DelegateLogManager {
     }
   }
 
-  // tslint:disable:no-console
-  private logToConsole(level: LogLevel, message: any, ...formatting: string[]) {
-    if (level >= LogLevel.Error) {
-      console.error(message, ...formatting);
+  private getLogFunction(level: LogLevel): Function {
+    const noop = function() { return; };
+
+    const coerceLogFunction = function(fn: undefined | typeof console.log) {
+      if (fn == null) {
+        fn = console.log;
+      }
+
+      if (fn == null) {
+        return noop;
+      }
+
+      if (fn instanceof Function) {
+        return fn;
+      }
+
+      return function(message?: any, ...optionalParams: any[]) {
+        // try and log the message if we can
+        if (!String.isNullOrEmpty(message)) {
+          fn!(message);
+        }
+      };
+    };
+
+    if (console == null) {
+      return noop;
+    }
+    else if (level >= LogLevel.Error) {
+      return coerceLogFunction(console.error);
     }
     else if (level >= LogLevel.Warn) {
-      console.warn(message, ...formatting);
+      return coerceLogFunction(console.warn);
     }
     else if (level >= LogLevel.Info) {
-      console.info(message, ...formatting);
+      return coerceLogFunction(console.info);
     }
     else if (level >= LogLevel.Debug) {
-      console.debug(message, ...formatting);
+      return coerceLogFunction(console.debug);
     }
     else {
-      console.log(message, ...formatting);
+      return coerceLogFunction(console.log);
     }
   }
-  // tslint:enable:no-console
-}
 
-sanitizeConsoleFunctions();
+  public logToConsole(level: LogLevel, message: any, ...formatting: string[]) {
+    const fn = this.getLogFunction(level);
+
+    fn(message, ...formatting);
+  }
+}
 
 export const Default = new ConsoleLogManager(DefaultLogLevel);
