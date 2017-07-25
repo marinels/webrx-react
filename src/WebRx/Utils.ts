@@ -2,6 +2,8 @@ import { AnonymousSubscription } from 'rxjs/Subscription';
 import { Observable, Observer, Subject, Subscription } from 'rxjs';
 
 import { Property, Command, ObservableOrPropertyOrValue } from './Interfaces';
+import { LogLevel } from '../Utils/Logging/LogLevel';
+import { Default as ConsoleLogger } from '../Utils/Logging/Adapters/Console';
 
 export function isSubscription(value: any | undefined): value is AnonymousSubscription {
   if (value == null) {
@@ -130,6 +132,5 @@ export function handleError(e: any, ...optionalParams: any[]) {
 
 // replace this function to inject your own global error handling
 export function logError(err: Error, ...optionalParams: any[]) {
-  // tslint:disable-next-line:no-console
-  console.error(err, ...optionalParams);
+  ConsoleLogger.logToConsole(LogLevel.Error, err, ...optionalParams);
 }
