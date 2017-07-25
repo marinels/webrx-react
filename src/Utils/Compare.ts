@@ -18,9 +18,9 @@ export interface Comparer<T> {
 export class ValueComparer<T> implements Comparer<T> {
   public static displayName = 'ValueComparer';
 
-  public static DefaultComparison<T>(a: T, b: T) {
-    if (a == null && b == null) {
-      // both are null, so equality is zero
+  public static DefaultComparison(a: any, b: any) {
+    if (a === b || (a == null && b == null)) {
+      // both are null or the same, so equality is zero
       return 0;
     }
     else if (a == null || b == null) {
