@@ -14,6 +14,7 @@ export class ItemListPanelViewModel<TData> extends BaseItemListPanelViewModel<TD
     items?: ObservableOrProperty<TData[]>,
     filterer?: (item: TData, regex: RegExp) => boolean,
     comparer?: ObjectComparer<TData>,
+    preFilter?: (items: TData[]) => TData[],
     isMultiSelectEnabled?: boolean,
     isLoading?: ObservableOrProperty<boolean>,
     pagerLimit?: number,
@@ -21,7 +22,7 @@ export class ItemListPanelViewModel<TData> extends BaseItemListPanelViewModel<TD
     isRoutingEnabled?: boolean,
   ) {
     super(
-      new DataGridViewModel<TData>(items, filterer, comparer, isMultiSelectEnabled, isLoading, pagerLimit, rateLimit, isRoutingEnabled),
+      new DataGridViewModel<TData>(items, filterer, comparer, preFilter, isMultiSelectEnabled, isLoading, pagerLimit, rateLimit, isRoutingEnabled),
       isRoutingEnabled,
     );
   }
