@@ -18,9 +18,9 @@ export interface Comparer<T> {
 export class ValueComparer<T> implements Comparer<T> {
   public static displayName = 'ValueComparer';
 
-  public static DefaultComparison<T>(a: T, b: T) {
-    if (a == null && b == null) {
-      // both are null, so equality is zero
+  public static DefaultComparison(a: any, b: any) {
+    if (a === b || (a == null && b == null)) {
+      // both are null or the same, so equality is zero
       return 0;
     }
     else if (a == null || b == null) {
@@ -37,7 +37,10 @@ export class ValueComparer<T> implements Comparer<T> {
     }
     else {
       // fallback on a basic equality check
-      return a > b ? 1 : -1;
+      const c = <any>a - <any>b;
+
+      // it's possible that our basic check failed, so default to zero
+      return (c == null || isNaN(c)) ? 0 : c;
     }
   }
 
