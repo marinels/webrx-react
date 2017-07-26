@@ -177,7 +177,7 @@ demoRoutingMap.addRoute('webrx-react', 'DataGrid', 'Data Grid', (state: any) => 
 });
 demoRoutingMap.addRoute('webrx-react', 'DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: any) => Components.DataGridViewModel.create(...sampleListData));
 demoRoutingMap.addRoute('webrx-react', 'DataGridList', 'DataGrid (List View)', (state: any) =>
-  new Components.DataGridViewModel(Observable.of(sampleListData), (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0, undefined, undefined, undefined, 0),
+  new Components.DataGridViewModel(Observable.of(sampleListData), (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0, undefined, undefined, undefined, undefined, 0),
 );
 demoRoutingMap.addRoute('webrx-react', 'DataGridPager', 'DataGrid (Custom Pager)', (state: any) =>
   new Components.DataGridViewModel(Observable.of(sampleListData)),
@@ -186,7 +186,7 @@ demoRoutingMap.addRoute('webrx-react', 'AsyncDataGrid', 'DataGrid (Async)', (sta
   return new Components.AsyncDataGridViewModel(sampleDataSource, true, true);
 });
 demoRoutingMap.addRoute('webrx-react', 'DataGridRoutingState', 'DataGrid (Routing State)', (state: any) =>
-  new Components.DataGridViewModel(Observable.of(sampleListData), (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0, undefined, undefined, undefined, undefined, undefined, true),
+  new Components.DataGridViewModel(Observable.of(sampleListData), (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0, undefined, undefined, undefined, undefined, undefined, undefined, true),
 );
 demoRoutingMap.addRoute('webrx-react', 'ModalDialog', 'Modal Dialog', (state: any) => {
   // we are simulating a modal being contained within another view model
@@ -205,11 +205,11 @@ demoRoutingMap.addRoute('webrx-react', 'ItemListPanel', 'Item List Panel', (stat
 demoRoutingMap.addRoute('webrx-react', 'ListItemListPanel', 'Item List Panel (List)', (state: any) =>
   new Components.ItemListPanelViewModel(Observable.of(sampleListData), (x, r) => r.test(x.name)),
 );
-demoRoutingMap.addRoute('webrx-react', 'TreeItemListPanel', 'Item List Panel (Tree)', (state: any) =>
-  new Components.ItemListPanelViewModel(Observable.of(sampleTreeData), (node, regexp) => {
+demoRoutingMap.addRoute('webrx-react', 'TreeItemListPanel', 'Item List Panel (Tree)', (state: any) => {
+  return new Components.ItemListPanelViewModel(Observable.of(sampleTreeData), (node, regexp) => {
     return Components.filterHierarchical(node, regexp, x => regexp.test(x.name));
-  }, undefined, undefined, undefined, 0),
-);
+  }, undefined, undefined, undefined, undefined, 0);
+});
 demoRoutingMap.addRoute('webrx-react', 'AsyncItemListPanel', 'ItemListPanel (Async)', (state: any) => {
   return new Components.AsyncItemListPanelViewModel(sampleDataSource, true, true);
 });

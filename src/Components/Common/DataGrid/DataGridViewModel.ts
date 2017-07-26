@@ -230,6 +230,8 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
 
   protected abstract getProjectionResult(request: TRequest): Observable<TResult>;
 
+  // NOTE: this is a bit dangerous since we're overriding an inherited local
+  //       member with a property getter.
   get items() {
     return this.projectedItems;
   }
@@ -311,6 +313,7 @@ export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, Items
     items: ObservableOrProperty<TData[]> = wx.property<TData[]>([], false),
     protected filterer?: (item: TData, regex: RegExp) => boolean,
     protected comparer = new ObjectComparer<TData>(),
+    protected preFilter: (items: TData[]) => TData[] = x => clone(x),
     isMultiSelectEnabled?: boolean,
     isLoading?: ObservableOrProperty<boolean>,
     pagerLimit?: number,
@@ -323,12 +326,10 @@ export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, Items
   getProjectionResult(request: ItemsProjectionRequest<TData>) {
     let items = request.items || [];
 
-    if (this.filterer != null && request.regex != null) {
-      if (items.length > 0 && !(items[0] instanceof Object)) {
-        items = clone(items);
-      }
-
-      items = items.filter(x => this.filterer!(x, request.regex!));
+    if (this.filterer != null && request.regex != null && items.length > 0) {
+      items = this
+        .preFilter(items)
+        .filter(x => this.filterer!(x, request.regex!));
     }
 
     const count = items.length;
