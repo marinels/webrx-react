@@ -4,17 +4,23 @@ import { LogLevel, getLevelName, DefaultLogLevel } from '../LogLevel';
 import { DelegateLogManager, DelegateLogger } from './Delegate';
 
 export class ConsoleLogManager extends DelegateLogManager {
+  private static readonly dummyConsole = {
+    log: function() { return; },
+  };
+
   constructor(defaultLevel: LogLevel) {
     super((manager: ConsoleLogManager) => {
       return (logger, level, text, args) => manager.logAction(logger, level, text, args);
     }, defaultLevel);
 
+    this.sanitizeConsoleObject();
+  }
+
+  private sanitizeConsoleObject() {
     // this is an added protection for IE9 to support console.log even if the
     // developer tools are not active.
     if (typeof window !== 'undefined' && window != null && window.console == null) {
-      (<any>window).console = {
-        log: function() { return; },
-      };
+      (<any>window).console = ConsoleLogManager.dummyConsole;
     }
   }
 
@@ -23,43 +29,49 @@ export class ConsoleLogManager extends DelegateLogManager {
   }
 
   private getStyles(level: LogLevel) {
-    let styles: string[] = [];
+    const styles: string[] = [];
 
-    if (level >= LogLevel.Fatal) {
-      // do nothing
-    }
-    else if (level >= LogLevel.Error) {
-      // do nothing
-    }
-    else if (level >= LogLevel.Warn) {
-      // do nothing
-    }
-    else if (level >= LogLevel.Info) {
-      styles.push(this.getColorStyle('lightblue'));
-    }
-    else if (level >= LogLevel.Debug) {
-      styles.push(this.getColorStyle('lightcyan'));
-    }
-    else {
-      styles.push(this.getColorStyle());
+    if ((<any>window).chrome != null) {
+      if (level >= LogLevel.Fatal) {
+        // do nothing
+      }
+      else if (level >= LogLevel.Error) {
+        // do nothing
+      }
+      else if (level >= LogLevel.Warn) {
+        // do nothing
+      }
+      else if (level >= LogLevel.Info) {
+        styles.push(this.getColorStyle('lightblue'));
+      }
+      else if (level >= LogLevel.Debug) {
+        styles.push(this.getColorStyle('lightcyan'));
+      }
+      else {
+        styles.push(this.getColorStyle());
+      }
     }
 
     return styles;
   }
 
   private logAction(logger: DelegateLogger, level: LogLevel, text: string, args: any[]) {
-    const styles = this.getStyles(level);
+    try {
+      const styles = this.getStyles(level);
 
-    this.logToConsole(
-      level,
-      `${ styles.length > 0 ? '%c' : '' }[${ moment().format('HH:mm:ss.SSS') }][${ getLevelName(level) }][${ logger.name }] ${ text }`,
-      ...styles,
-    );
+      this.logToConsole(
+        level,
+        `${ styles.length > 0 ? '%c' : '' }[${ moment().format('HH:mm:ss.SSS') }][${ getLevelName(level) }][${ logger.name }] ${ text }`,
+        ...styles,
+      );
 
-    if (args != null && args.length > 0) {
-      args.forEach(x => {
-        this.logToConsole(level, x);
-      });
+      if (args != null && args.length > 0) {
+        args.forEach(x => {
+          this.logToConsole(level, x);
+        });
+      }
+    } catch (e) {
+      // do nothing
     }
   }
 
@@ -108,9 +120,16 @@ export class ConsoleLogManager extends DelegateLogManager {
   }
 
   public logToConsole(level: LogLevel, message: any, ...formatting: string[]) {
-    const fn = this.getLogFunction(level);
+    try {
+      const fn = this.getLogFunction(level);
 
-    fn(message, ...formatting);
+      const consoleRef = console === ConsoleLogManager.dummyConsole ? undefined : console;
+
+      fn.apply(consoleRef, [ message ].concat(formatting));
+    }
+    catch (e) {
+      // do nothing
+    }
   }
 }
 
