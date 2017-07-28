@@ -76,7 +76,14 @@ export class ObservableApi {
     }
   }
 
-  private getError(xhr: XMLHttpRequest, uri: string) {
+  private getError(xhr?: XMLHttpRequest, uri: string = '') {
+    if (xhr == null) {
+      return {
+        message: 'Invalid XMLHttpRequest (null)',
+        uri,
+      };
+    }
+
     const code = xhr.status > 0 ? xhr.status : null;
     const reason = String.isNullOrEmpty(xhr.statusText) ? null : xhr.statusText;
     const response = String.isNullOrEmpty(xhr.response) ? null : xhr.response;
