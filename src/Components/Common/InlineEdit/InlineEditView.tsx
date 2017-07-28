@@ -147,7 +147,7 @@ export class InlineEditView extends BaseView<InlineEditProps, InlineEditViewMode
         {
           React.cloneElement(
             this.props.editTemplate!(this.state.editValue.value, this),
-            { ref: x => this.focusAndSelectControlText(x) },
+            { ref: (x: Element | null) => this.focusAndSelectControlText(x) },
           )
         }
       </BindableInput>
