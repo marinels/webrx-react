@@ -1,6 +1,8 @@
 import { Observable, IObserver, Subject } from 'rx';
 
 import { Property, Command, ObservableOrPropertyOrValue } from './Interfaces';
+import { LogLevel } from '../Utils/Logging/LogLevel';
+import { Default as ConsoleLogger } from '../Utils/Logging/Adapters/Console';
 
 export function isObservable<T>(value: any | undefined): value is Observable<T> {
   return Observable.isObservable(value);
@@ -81,7 +83,20 @@ export function getProperty<T>(observableOrProperty: ObservableOrPropertyOrValue
 }
 
 export function handleError(e: any, ...optionalParams: any[]) {
-  const err = e instanceof Error ? e : new Error(e);
+  let err: Error;
+
+  if (e instanceof Error) {
+    err = e;
+  }
+  else if (String.isString(e)) {
+    err = new Error(e);
+  }
+  else if (String.isString(e.message) || String.isString(e.Message)) {
+    err = new Error(e.message || e.Message);
+  }
+  else {
+    err = new Error('Undefined Error');
+  }
 
   // trim off the subject if it was provided with the optional params
   const subject = isSubject(optionalParams[0]) ?
@@ -101,6 +116,5 @@ export function handleError(e: any, ...optionalParams: any[]) {
 
 // replace this function to inject your own global error handling
 export function logError(err: Error, ...optionalParams: any[]) {
-  // tslint:disable-next-line:no-console
-  console.error(err, ...optionalParams);
+  ConsoleLogger.logToConsole(LogLevel.Error, err, ...optionalParams);
 }
