@@ -185,7 +185,7 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
 
   protected renderDefaultHeaderContainer(content: any, column: DataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) {
     content = (
-      <th key={ columnIndex } className={ wxr.classNames('DataGrid-column', column.className) } width={ column.width }>
+      <th key={ columnIndex } className={ wxr.classNames('DataGrid-column', column.className) } style={ ({ width: column.width }) }>
         { content }
       </th>
     );
