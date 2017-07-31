@@ -1,37 +1,43 @@
 import { Observable } from 'rxjs';
 
-import { Property, Command } from '../../../WebRx';
+import { ObservableOrProperty, ReadOnlyProperty, Command } from '../../../WebRx';
 import { BaseViewModel } from '../../React/BaseViewModel';
 
-export class ModalDialogViewModel extends BaseViewModel {
+export class ModalDialogViewModel<T> extends BaseViewModel {
   public static displayName = 'ModalDialogViewModel';
 
-  public readonly isVisible: Property<boolean>;
+  public readonly context: ReadOnlyProperty<T>;
+  public readonly isVisible: ReadOnlyProperty<boolean>;
 
-  public readonly show: Command<any>;
-  public readonly hide: Command<any>;
+  public readonly show: Command<boolean>;
+  public readonly hide: Command<boolean>;
 
-  constructor(isVisible = false) {
+  constructor(
+    context: ObservableOrProperty<T>,
+  ) {
     super();
 
-    this.show = this.command();
-    this.hide = this.command();
+    this.show = this.command(() => true);
+    this.hide = this.command(() => false);
+
+    this.context = this.getProperty(context, undefined, false);
 
     this.isVisible = Observable
       .merge(
-        this.show.results.map(() => true),
-        this.hide.results.map(() => false),
+        this.whenAny(this.context, x => x != null),
+        this.show.results,
+        this.hide.results,
       )
-      .toProperty(isVisible);
+      .toProperty(false);
   }
 
-  public hideOnExecute<T>(command: Command<T>) {
+  public hideOnExecute<TResult>(command: Command<TResult>) {
     if (command != null) {
       this.addSubscription(
         Observable
           .merge(
-            command.results.map(() => null),
-            command.thrownErrors.map(() => null),
+            command.results.map(() => undefined),
+            command.thrownErrors.map(() => undefined),
           )
           .take(1)
           .invokeCommand(this.hide),

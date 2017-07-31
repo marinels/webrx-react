@@ -11,7 +11,7 @@ export interface ModalDialogProps extends ViewModelProps, Partial<ModalProps> {
   canClose?: boolean;
 }
 
-export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewModel> {
+export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewModel<{}>> {
   public static displayName = 'ModalDialogView';
 
   static defaultProps = {
@@ -51,7 +51,7 @@ export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewM
           {
             this.renderConditional(
               (this.props.title instanceof Function) === true,
-              () => this.props.title.apply(null),
+              () => this.props.title(),
               () => this.props.title,
             )
           }
@@ -66,7 +66,7 @@ export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewM
         {
           this.renderConditional(
             (this.props.body instanceof Function) === true,
-            () => this.props.body.apply(null),
+            () => this.props.body(),
             () => this.props.body,
           )
         }
