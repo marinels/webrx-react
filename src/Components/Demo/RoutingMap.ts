@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import * as moment from 'moment';
 
 import { wx } from '../../WebRx';
 import { Alert, Compare } from '../../Utils';
@@ -189,12 +190,14 @@ demoRoutingMap.addRoute('webrx-react', 'DataGridRoutingState', 'DataGrid (Routin
   new Components.DataGridViewModel(Observable.of(sampleListData), (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0, undefined, undefined, undefined, undefined, undefined, undefined, true),
 );
 demoRoutingMap.addRoute('webrx-react', 'ModalDialog', 'Modal Dialog', (state: any) => {
+  const createContext = wx.command<string>(x => `[${ moment().format() }] ${ x }`);
   // we are simulating a modal being contained within another view model
   return {
     displayName: 'ModalDialogViewModel',
-    viewModel: new Components.ModalDialogViewModel(),
-    accept: wx.command(() => Alert.create('Modal Accepted', 'Modal Closed...', 'success')),
-    reject: wx.command(() => Alert.create('Modal Rejected', 'Modal Closed...', 'danger')),
+    viewModel: new Components.ModalDialogViewModel(createContext.results),
+    createContext,
+    accept: wx.command(x => Alert.create(x, 'Modal Accepted', 'success')),
+    reject: wx.command(x => Alert.create(x, 'Modal Rejected', 'danger')),
   };
 });
 demoRoutingMap.addRoute('webrx-react', 'Tabs', 'Tabs', (state: any) => new Components.TabsViewModel());
