@@ -13,7 +13,7 @@ export class ItemListPanelViewModel<TData> extends BaseItemListPanelViewModel<TD
   constructor(
     items?: ObservableOrProperty<TData[]>,
     filterer?: (item: TData, regex: RegExp) => boolean,
-    comparer?: ObjectComparer<TData>,
+    comparer?: string | ObjectComparer<TData>,
     preFilter?: (items: TData[]) => TData[],
     isMultiSelectEnabled?: boolean,
     isLoading?: ObservableOrProperty<boolean>,
