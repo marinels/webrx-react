@@ -20,17 +20,17 @@ export interface SampleTreeData extends SampleData, Components.HierarchicalItems
 }
 
 const sampleListData = <SampleData[]>[
-  { name: 'test 1', requiredBy: 'now' },
-  { name: 'test 2', requiredBy: 'tomorrow' },
-  { name: 'test 3', requiredBy: 'yesterday' },
-  { name: 'test 4', requiredBy: 'test4' },
-  { name: 'test 5', requiredBy: 'test5' },
-  { name: 'test 6', requiredBy: 'test6' },
-  { name: 'test 7', requiredBy: 'test7' },
-  { name: 'test 8', requiredBy: 'test8' },
-  { name: 'test 9', requiredBy: 'test9' },
-  { name: 'test 10', requiredBy: 'test10' },
-  { name: 'test 11', requiredBy: 'test11' },
+  { cat: 'test', name: 'test 1', requiredBy: 'now' },
+  { cat: 'test', name: 'test 2', requiredBy: 'tomorrow' },
+  { cat: 'test', name: 'test 3', requiredBy: 'yesterday' },
+  { cat: 'test', name: 'test 4', requiredBy: 'test4' },
+  { cat: 'test', name: 'test 5', requiredBy: 'test5' },
+  { cat: 'test', name: 'test 6', requiredBy: 'test6' },
+  { cat: 'test', name: 'test 7', requiredBy: 'test7' },
+  { cat: 'test', name: 'test 8', requiredBy: 'test8' },
+  { cat: 'test', name: 'test 9', requiredBy: 'test9' },
+  { cat: 'test', name: 'test 10', requiredBy: 'test10' },
+  { cat: 'test', name: 'test 11', requiredBy: 'test11' },
 ].map((x, i) => Object.assign<SampleData>(x, { id: i + 1 }));
 
 const sampleTreeData = sampleListData
@@ -200,7 +200,7 @@ demoRoutingMap.addRoute('webrx-react', 'ModalDialog', 'Modal Dialog', (state: an
 demoRoutingMap.addRoute('webrx-react', 'Tabs', 'Tabs', (state: any) => new Components.TabsViewModel());
 demoRoutingMap.addRoute('webrx-react', 'StaticTabs', 'Static Tabs', (state: any) => new Components.TabsViewModel());
 demoRoutingMap.addRoute('webrx-react', 'ItemListPanel', 'Item List Panel', (state: any) =>
-  new Components.ItemListPanelViewModel(wx.property(sampleListData), (x, r) => r.test(x.name)),
+  new Components.ItemListPanelViewModel(wx.property(sampleListData), (x, r) => r.test(x.name), 'id'),
 );
 demoRoutingMap.addRoute('webrx-react', 'ListItemListPanel', 'Item List Panel (List)', (state: any) =>
   new Components.ItemListPanelViewModel(Observable.of(sampleListData), (x, r) => r.test(x.name)),

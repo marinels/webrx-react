@@ -1,4 +1,4 @@
-import { Comparer as IxComparer } from 'ix';
+import { Enumerable, Comparer as IxComparer } from 'ix';
 
 export interface Comparable<T> {
   compareTo(other: T): number;
@@ -17,6 +17,8 @@ export interface Comparer<T> {
 
 export class ValueComparer<T> implements Comparer<T> {
   public static displayName = 'ValueComparer';
+
+  public static Default: ValueComparer<any> = new ValueComparer<any>();
 
   public static DefaultComparison(a: any, b: any) {
     if (a === b || (a == null && b == null)) {
@@ -37,21 +39,14 @@ export class ValueComparer<T> implements Comparer<T> {
     }
     else {
       // fallback on a basic equality check
-      const c = <any>a - <any>b;
+      const c: number | undefined = a - b;
 
       // it's possible that our basic check failed, so default to zero
       return (c == null || isNaN(c)) ? 0 : c;
     }
   }
 
-  public comparison: ValueComparison<T>;
-
-  constructor(comparison?: ValueComparison<T>) {
-    if (comparison == null) {
-      comparison = ValueComparer.DefaultComparison;
-    }
-
-    this.comparison = comparison;
+  constructor(public readonly comparison: ValueComparison<T> = ValueComparer.DefaultComparison) {
   }
 
   compare(a: T, b: T) {
@@ -64,53 +59,94 @@ export enum SortDirection {
   Descending = 2,
 }
 
-export interface FieldComparer<T> extends Comparer<T> {
+export type FieldValueSelector<TObj, TValue> = (source: TObj, field: string) => TValue;
+
+export interface FieldSelector<TObj, TValue> {
   field: string;
-  valueSelector?: (source: any, field: string) => T;
+  valueSelector?: FieldValueSelector<TObj, TValue>;
 }
 
-export class ObjectComparer<T> {
+export interface FieldComparer<TObj, TValue> extends FieldSelector<TObj, TValue>, Comparer<TValue> {
+}
+
+export class ObjectComparer<T extends StringMap<any>> {
   public static displayName = 'ObjectComparer';
   public static DefaultComparerKey = '';
 
-  public static createFieldComparer<T>(field: string, compare: ValueComparison<T>, valueSelector?: (source: any, field: string) => T) {
+  public static createFieldComparer<TObj, TValue>(field: string, compare: ValueComparison<TValue>, valueSelector?: (source: TObj, field: string) => TValue) {
     return {
       field,
       compare: compare,
       valueSelector,
-    } as FieldComparer<T>;
+    } as FieldComparer<TObj, TValue>;
   }
 
-  private readonly comparers: { [key: string]: FieldComparer<any> } = {};
+  public readonly comparerMap: StringMap<FieldComparer<T, any>>;
+  public readonly defaultComparer: FieldComparer<T, any> | undefined;
 
-  constructor(...comparers: FieldComparer<any>[]) {
-    for (let i = 0; i < comparers.length; ++i) {
-      let comparer = comparers[i];
-      this.comparers[comparer.field] = comparer;
+  constructor(defaultSortField: string | undefined, ...comparers: FieldComparer<T, any>[]);
+  constructor(...comparers: FieldComparer<T, any>[]);
+  constructor(...args: any[]) {
+    const comparers: FieldComparer<T, any>[] = args;
+    const defaultSortField = (args[0] == null || !String.isNullOrEmpty(args[0])) ? args.shift() : undefined;
+
+    this.comparerMap = {};
+
+    this.comparerMap[ObjectComparer.DefaultComparerKey] = ObjectComparer
+      .createFieldComparer(ObjectComparer.DefaultComparerKey, ValueComparer.DefaultComparison);
+
+    comparers
+      .forEach(x => this.comparerMap[x.field] = x);
+
+    if (defaultSortField != null) {
+      this.defaultComparer = this.getComparer(defaultSortField);
+    }
+  }
+
+  public getComparer(field?: string) {
+    let comparer = this.comparerMap[field || ObjectComparer.DefaultComparerKey] ||
+      this.comparerMap[ObjectComparer.DefaultComparerKey];
+
+    if (String.isNullOrEmpty(comparer.field) && !String.isNullOrEmpty(field)) {
+      comparer = Object.assign<FieldComparer<T, any>>({}, comparer, { field });
     }
 
-    if (this.getComparer() == null) {
-      this.comparers[ObjectComparer.DefaultComparerKey] = ObjectComparer.createFieldComparer(ObjectComparer.DefaultComparerKey, ValueComparer.DefaultComparison);
-    }
+    return comparer;
   }
 
-  private getComparer(field?: string) {
-    return this.comparers[field || ObjectComparer.DefaultComparerKey] || this.comparers[ObjectComparer.DefaultComparerKey];
+  public getCompare(comparer: Comparer<any>) {
+    return comparer.compare || ValueComparer.DefaultComparison;
   }
 
-  private getValue(source: any, field: string, comparer: FieldComparer<any>) {
-    return comparer.valueSelector == null ? source[field] : comparer.valueSelector(source, field);
+  public getValue(source: T, comparer: FieldComparer<T, any>) {
+    return comparer.valueSelector == null ?
+      source[comparer.field] :
+      comparer.valueSelector(source, comparer.field);
   }
 
-  public compare(a: T, b: T, field: string, direction: SortDirection) {
+  public sortEnumerable(source: Enumerable<T>, field: string, direction: SortDirection) {
     const comparer = this.getComparer(field);
+    const defaultComparer = this.defaultComparer;
 
-    let result = comparer.compare(this.getValue(a, field, comparer), this.getValue(b, field, comparer));
+    if (direction === SortDirection.Ascending) {
+      const orderedSource = source = source
+        .orderBy(x => this.getValue(x, comparer), this.getCompare(comparer));
 
-    if (direction === SortDirection.Descending) {
-      result *= -1;
+      if (defaultComparer != null) {
+        source = orderedSource
+          .thenBy(x => this.getValue(x, defaultComparer), this.getCompare(defaultComparer));
+      }
+    }
+    else if (direction === SortDirection.Descending) {
+      const orderedSource = source = source
+        .orderByDescending(x => this.getValue(x, comparer), comparer.compare);
+
+      if (defaultComparer != null) {
+        source = orderedSource
+          .thenByDescending(x => this.getValue(x, defaultComparer), this.getCompare(defaultComparer));
+      }
     }
 
-    return result;
+    return source;
   }
 }
