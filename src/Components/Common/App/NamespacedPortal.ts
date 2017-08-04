@@ -1,10 +1,16 @@
 import * as React from 'react';
 import { PortalProps } from 'react-bootstrap';
-import { Portal } from 'react-overlays';
+import { Portal, Modal } from 'react-overlays';
 
-export function updateDefaultPortalContainer(container: React.ReactInstance | null) {
-  const portalClass: React.ComponentClass<Portal.PortalProps> = Portal;
-  if (container != null && (portalClass.defaultProps == null || portalClass.defaultProps.container !== container)) {
-    portalClass.defaultProps = Object.assign({}, portalClass.defaultProps, { container });
+export function updateDefaultContainer(container: React.ReactInstance | null) {
+  if (container != null) {
+    updateDefaultContainerProp(container, Portal);
+    updateDefaultContainerProp(container, Modal);
+  }
+}
+
+export function updateDefaultContainerProp(container: React.ReactInstance, componentClass: React.ComponentClass<Portal.PortalProps>) {
+  if (componentClass.defaultProps == null || componentClass.defaultProps.container !== container) {
+    componentClass.defaultProps = Object.assign({}, componentClass.defaultProps, { container });
   }
 }
