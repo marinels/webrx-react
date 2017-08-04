@@ -23,6 +23,7 @@ export interface RoutingBreadcrumb {
   href: string;
   target?: string;
   title?: string;
+  tooltip?: any;
 }
 
 export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel {
