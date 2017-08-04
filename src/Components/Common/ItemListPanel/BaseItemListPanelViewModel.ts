@@ -8,11 +8,21 @@ import { SearchViewModel } from '../Search/SearchViewModel';
 export abstract class BaseItemListPanelViewModel<TData, TRequest extends ProjectionRequest, TResult extends ProjectionResult<TData>, TGrid extends BaseDataGridViewModel<TData, TRequest, TResult>> extends BaseRoutableViewModel<any> {
   public static displayName = 'BaseItemListPanelViewModel';
 
+  public readonly toggleIsExpanded: Command<boolean>;
+
+  public readonly isExpanded: ReadOnlyProperty<boolean>;
+
   constructor(
     public readonly grid: TGrid,
     isRoutingEnabled?: boolean,
   ) {
     super(isRoutingEnabled);
+
+    this.toggleIsExpanded = this.command<boolean>();
+
+    this.isExpanded = this.toggleIsExpanded.results
+      .scan((a, x) => x || !a, undefined)
+      .toProperty();
   }
 
   public get isLoading() {

@@ -18,9 +18,16 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
   static defaultProps = {
   };
 
+  constructor(props?: ItemListPanelProps, context?: any) {
+    super(props, context);
+
+    this.state.toggleIsExpanded.execute(this.props.defaultExpanded || CommonPanel.defaultProps.defaultExpanded);
+  }
+
   updateOn() {
     return [
       this.state.isLoading.changed,
+      this.state.isExpanded.changed,
     ];
   }
 
@@ -36,28 +43,32 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
 
     const viewType: DataGridViewType = props.viewTemplate instanceof DataGridListViewTemplate ? 'List' : 'Table';
 
+    const searchComponent = this.state.isExpanded.value !== true ?
+      undefined :
+      this.renderConditional(
+        React.isValidElement(props.search),
+        () => props.search,
+        () => (
+          <DataGridView.Search { ...(props.search === true ? {} : props.search) }
+            grid={ this.state.grid } viewType={ viewType } fill
+            onClick={ e => { e.stopPropagation(); } }
+          />
+        ),
+      );
+
     if ((props.search || false) !== false && this.props.headerFormat == null && this.state.isLoading.value === false) {
       rest.headerFormat = (header: any) => (
         <div>
           { header }
-          {
-            this.renderConditional(
-              React.isValidElement(props.search),
-              () => props.search,
-              () => (
-                <DataGridView.Search { ...(props.search === true ? {} : props.search) }
-                  grid={ this.state.grid } viewType={ viewType } fill
-                  onClick={ e => { e.stopPropagation(); } }
-                />
-              ),
-            )
-          }
+          { this.renderNullable(searchComponent, x => x) }
         </div>
       );
     }
 
     return (
-      <CommonPanel { ...rest } className={ this.classNames('ItemListPanel', viewType, className) }>
+      <CommonPanel { ...rest } className={ this.classNames('ItemListPanel', viewType, className) }
+        onSelect={ this.bindEventToCommand(x => x.toggleIsExpanded) }
+      >
         <DataGridView { ...props } viewModel={ this.state.grid } search={ false } pager={ false } fill>
           { children }
         </DataGridView>
