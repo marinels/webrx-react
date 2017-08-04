@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { Tooltip } from 'react-bootstrap';
 
 import { ReadOnlyProperty, Property, Command } from '../../WebRx';
 import { Route } from '../../Routing/RouteManager';
@@ -113,9 +114,9 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
 
     // simulate some breadcrumbs
     this.updateRoutingBreadcrumbs.execute(<RoutingBreadcrumb[]>[
-      { key: 1, content: 'Here', href: '#/demo' },
-      { key: 2, content: 'Are', href: '#/demo' },
-      { key: 3, content: 'Some', href: '#/demo' },
+      { key: 1, content: 'Here', href: '#/demo', title: 'title-based tooltips supported' },
+      { key: 2, content: 'Are', href: '#/demo', tooltip: 'simple string tooltip overlays' },
+      { key: 3, content: 'Some', href: '#/demo', tooltip: { id: 'demo-tt', placement: 'top', children: 'custom props-based tooltip overlays' } },
       { key: 4, content: 'Breadcrumbs', href: '#/demo' },
     ]);
 
