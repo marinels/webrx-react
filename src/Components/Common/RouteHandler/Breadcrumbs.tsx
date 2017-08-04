@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Breadcrumb } from 'react-bootstrap';
+import { Breadcrumb, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { Icon } from 'react-fa';
 
 import { wxr, RoutingBreadcrumb } from '../../React';
@@ -35,11 +35,29 @@ export class Breadcrumbs extends React.Component<BreadcrumbsProps, any> {
 
     return wxr.renderEnumerable(
       items,
-      (x, i, a) => (
-        <Breadcrumb.Item key={ x.key } active={ i === a.length - 1 } href={ x.href } title={ x.title } target={ x.target }>
-          { x.content }
-        </Breadcrumb.Item>
-      ),
+      (x, i, a) => {
+        const tooltip = wxr.renderConditional(
+          String.isString(x.tooltip),
+          () => (<Tooltip id={ `${ this.props.id || x.key }-tt` } placement='top'>{ x.tooltip }</Tooltip>),
+          () => x.tooltip == null ? undefined : (<Tooltip id={ `${ this.props.id || x.key }-tt` } { ...x.tooltip } />),
+        );
+
+        const breadcrumb = (
+          <Breadcrumb.Item key={ x.key } active={ i === a.length - 1 } href={ x.href } title={ x.title } target={ x.target }>
+            { x.content }
+          </Breadcrumb.Item>
+        );
+
+        return wxr.renderConditional(
+          React.isValidElement<any>(tooltip),
+          () => (
+            <OverlayTrigger key={ breadcrumb.key || undefined } placement={ tooltip.props.placement } overlay={ tooltip } >
+              { breadcrumb }
+            </OverlayTrigger>
+          ),
+          () => breadcrumb,
+        );
+      },
       x => x.length === 0 ? null : (
         <div { ...rest } className={ wxr.classNames('Breadcrumbs', 'hidden-xs', className) }>
           <div className='Breadcrumbs-container'>
