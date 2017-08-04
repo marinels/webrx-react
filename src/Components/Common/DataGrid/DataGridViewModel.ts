@@ -36,6 +36,8 @@ export interface DataGridRoutingState {
 export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRequest, TResult extends ProjectionResult<TData>> extends ListViewModel<TData, DataGridRoutingState> {
   public static displayName = 'BaseDataGridViewModel';
 
+  protected readonly comparer: ObjectComparer<TData>;
+
   public readonly search: SearchViewModel;
   public readonly pager: PagerViewModel;
   public defaultSortDirection: SortDirection;
@@ -57,7 +59,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
     requests: Observable<TRequest>,
     items?: ObservableOrProperty<TData[]>,
     protected readonly filterer?: (item: TData, regex: RegExp) => boolean,
-    protected readonly comparer = new ObjectComparer<TData>(),
+    comparer: string | ObjectComparer<TData> = new ObjectComparer<TData>(),
     isMultiSelectEnabled?: boolean,
     isLoading?: ObservableOrProperty<boolean>,
     pagerLimit?: number,
@@ -65,6 +67,13 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
     isRoutingEnabled?: boolean,
   ) {
     super(items, isMultiSelectEnabled, isRoutingEnabled);
+
+    if (String.isString(comparer)) {
+      this.comparer = new ObjectComparer<TData>(comparer);
+    }
+    else {
+      this.comparer = comparer;
+    }
 
     this.search = new SearchViewModel(undefined, undefined, this.isRoutingEnabled);
     this.pager = new PagerViewModel(pagerLimit, this.isRoutingEnabled);
@@ -311,8 +320,8 @@ export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, Items
 
   constructor(
     items: ObservableOrProperty<TData[]> = wx.property<TData[]>([], false),
-    protected filterer?: (item: TData, regex: RegExp) => boolean,
-    protected comparer = new ObjectComparer<TData>(),
+    filterer?: (item: TData, regex: RegExp) => boolean,
+    comparer?: string | ObjectComparer<TData>,
     protected preFilter: (items: TData[]) => TData[] = x => clone(x),
     isMultiSelectEnabled?: boolean,
     isLoading?: ObservableOrProperty<boolean>,
@@ -324,21 +333,26 @@ export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, Items
   }
 
   getProjectionResult(request: ItemsProjectionRequest<TData>) {
-    let items = request.items || [];
+    let source = this
+      .preFilter(request.items || [])
+      .asEnumerable();
 
-    if (this.filterer != null && request.regex != null && items.length > 0) {
-      items = this
-        .preFilter(items)
-        .filter(x => this.filterer!(x, request.regex!));
+    const filterer = this.filterer;
+    const comparer = this.comparer;
+    const regex = request.regex;
+    const sortField = request.sortField;
+    const sortDirection = request.sortDirection;
+
+    if (filterer != null && regex != null && source.any()) {
+      source = source.filter(x => filterer(x, regex));
     }
 
+    if (comparer != null && !String.isNullOrEmpty(sortField) && sortDirection != null) {
+      source = comparer.sortEnumerable(source, sortField, sortDirection);
+    }
+
+    let items = source.toArray();
     const count = items.length;
-
-    if (this.comparer != null && String.isNullOrEmpty(request.sortField) === false && request.sortDirection != null) {
-      items = items.sort((a, b) => {
-        return this.comparer.compare(a, b, request.sortField!, request.sortDirection!);
-      });
-    }
 
     const offset = request.offset || 0;
     const limit = request.limit || items.length;

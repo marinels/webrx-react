@@ -249,6 +249,7 @@ export const demoViewMap: ViewActivatorMap = {
             <Tooltip id={ `${ x.id }-id-tt` }>{ `Cells support tooltips: ${ x.id }` }</Tooltip>
           ) }
         />,
+        <Components.DataGridColumn key='cat' fieldName='cat' header='Category' sortable />,
         <Components.DataGridColumn key='name' fieldName='name' header='Name' sortable
           tooltip={ (x: SampleData, index, column) => {
             if (x == null) {
@@ -413,6 +414,8 @@ export const demoViewMap: ViewActivatorMap = {
           footerContent={ (<Components.CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
           footerActions={[ { id: 'viewall', bsStyle: 'primary', command: wx.command(x => Alert.create(x, 'View All Pressed')), commandParameter: 'ItemListPanel', children: (<Components.ViewAllFooterAction suffix='Things' />) } ]}
         >
+          <Components.DataGridColumn key='id' fieldName='id' header='ID' sortable />,
+          <Components.DataGridColumn key='cat' fieldName='cat' header='Category' sortable />,
           <Components.DataGridColumn fieldName='name' header='Name' sortable className='col-md-8' />
           <Components.DataGridColumn fieldName='requiredBy' header='Required By' sortable className='col-md-4' />
           <Components.NavDataGridColumn buttonProps={ (x: SampleData) => ({ href: `#/name/${ x.name }` }) } />
