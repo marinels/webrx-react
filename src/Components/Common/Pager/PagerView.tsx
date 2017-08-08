@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Row, Col } from 'react-bootstrap';
 import { Observable } from 'rxjs';
 import { Pagination, PaginationProps, DropdownButton, DropdownButtonProps, MenuItem } from 'react-bootstrap';
 
@@ -64,18 +65,27 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
       return { activePage, boundaryLinks, bsSize, bsStyle, bsClass, buttonComponentClass, ellipsis, first, items, last, maxButtons, next, onSelect, prev };
     });
 
-    return (
-      <div { ...pagerProps.rest } className={ this.classNames('Pager', className) }>
-        {
-          this.renderConditional(this.shouldRenderPager(), () => {
-            const types = props.order || [];
+    return this.renderConditional(
+      this.shouldRenderPager(),
+      () => {
+        const types = props.order || [];
 
-            return ComponentLocations
-              .map((location, i) => ({ location, type: types[i] }))
-              .map(x => this.renderComponent(x.location, x.type));
-          })
-        }
-      </div>
+        return (
+          <div { ...pagerProps.rest } className={ this.classNames('Pager', className) }>
+            <Row>
+              <Col className='Pager-col Pager-col-left' sm={ 4 }>
+                { this.renderComponent(types[0]) }
+              </Col>
+              <Col className='Pager-col Pager-col-center' sm={ 4 }>
+                { this.renderComponent(types[1]) }
+              </Col>
+              <Col className='Pager-col Pager-col-right' sm={ 4 }>
+                { this.renderComponent(types[2]) }
+              </Col>
+            </Row>
+          </div>
+        );
+      },
     );
   }
 
@@ -99,22 +109,20 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     return (this.props.limits || []).length > 1 && (this.state.itemCount.value || 0) > 0;
   }
 
-  private renderComponent(location: string, type: PagerComponentTypes) {
-    const className = type == null ? null : `Pager-${ type }`;
-
-    return (
-      <div key={ location } className={ this.classNames(className, `Pager-${ location }`) }>
-        { this.renderConditional(type != null, () => this.renderFunctions[type].apply(this)) }
-      </div>
-    );
+  private renderComponent(type: PagerComponentTypes | undefined) {
+    return this.renderNullable(type, x => this.renderFunctions[x].apply(this));
   }
 
   private renderInfo() {
     return this.renderConditional(this.shouldRenderInfo(), () => (
-      this.renderConditional((this.state.itemCount.value || 0) === 0,
-        () => this.props.emptyInfo,
-        () => `Showing Items ${ this.state.offset.value + 1 } through ${ Math.min(this.state.itemCount.value, this.state.offset.value + (this.state.limit.value || 0)) } of ${ this.state.itemCount.value }`,
-      )
+      <div className='Pager-info'>
+          {
+            this.renderConditional((this.state.itemCount.value || 0) === 0,
+              () => this.props.emptyInfo,
+              () => `Showing Items ${ this.state.offset.value + 1 } through ${ Math.min(this.state.itemCount.value, this.state.offset.value + (this.state.limit.value || 0)) } of ${ this.state.itemCount.value }`,
+            )
+          }
+      </div>
     ), () => '');
   }
 

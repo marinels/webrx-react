@@ -6,10 +6,17 @@
     border-radius: 0;
   }
 
+  // responsive tables add their own bootstrap styles that we can't override without styles
+  .table-responsive {
+    border: 0;
+    margin: 0;
+  }
+
   // we need set the top/bottom border for a table since it isn't rendered when
   // inside a panel
   .table {
-    border: 0 solid #ddd;
+    border-color: #ddd;
+    border-style: solid;
     border-width: 1px 0;
   }
 
@@ -25,12 +32,8 @@
     margin-top: 10px;
   }
 
-  // add a bottom margin and shift the drop down to the left slightly
+  // add a margin around the pager since it is contained within the item list panel
   .Pager {
-    margin-bottom: 5px;
-
-    & > .Pager-limit {
-      padding-right: 5px;
-    }
+    margin: 5px;
   }
 }
