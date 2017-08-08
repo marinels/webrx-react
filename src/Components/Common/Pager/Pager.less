@@ -1,32 +1,38 @@
+@import (reference) '../../../Style/App.less';
+
 .Pager {
-  display: table;
-  table-layout: fixed;
-  width: 100%;
-
-  .Pager-left,
-  .Pager-center,
-  .Pager-right {
-    display: table-cell;
-    vertical-align: middle;
-  }
-
-  .Pager-left {
-    text-align: left;
-  }
-
-  .Pager-center {
+  // center align text by default (for mobile)
+  .Pager-col {
     text-align: center;
   }
 
-  .Pager-right {
-    text-align: right;
+  // boost the line height of the info component so it aligns vertically with the other parts
+  .Pager-info {
+    line-height: @button-height;
   }
 
-  .Pager-controls {
-    line-height: 0;
+  // remove the default pagination component margin
+  .pagination {
+    margin: 0;
+  }
 
-    .pagination {
-      margin: 0;
+  // these styles capture non-mobile screens
+  @media (min-width: @screen-sm-min) {
+    // we only apply this in non-mobile because the extra height in mobile is desired
+    .Pager-col {
+      height: @button-height;
+    }
+
+    .Pager-col-left {
+      text-align: left;
+    }
+
+    .Pager-col-center {
+      text-align: center;
+    }
+
+    .Pager-col-right {
+      text-align: right;
     }
   }
 }
