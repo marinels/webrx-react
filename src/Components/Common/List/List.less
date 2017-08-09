@@ -47,8 +47,11 @@
     width: 100%;
   }
 
-  .List-templateContainer.btn {
+  // disable background transitions for button containers in a list view template
+  .List-templateContainer.btn,
+  .List-itemContainer.btn {
     background-color: transparent;
+    box-shadow: none;
     transition: none;
   }
 
