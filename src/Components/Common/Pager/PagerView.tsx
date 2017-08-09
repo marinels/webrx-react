@@ -31,7 +31,7 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     next: true,
     last: true,
     boundaryLinks: true,
-    maxButtons: 5,
+    maxButtons: 3,
     info: true,
     limits: StandardLimits,
     order: StandardPagerComponentOrder,
