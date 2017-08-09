@@ -73,13 +73,13 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
         return (
           <div { ...pagerProps.rest } className={ this.classNames('Pager', className) }>
             <Row>
-              <Col className='Pager-col Pager-col-left' sm={ 4 }>
+              <Col className='Pager-col Pager-col-left' md={ 4 }>
                 { this.renderComponent(types[0]) }
               </Col>
-              <Col className='Pager-col Pager-col-center' sm={ 4 }>
+              <Col className='Pager-col Pager-col-center' md={ 4 }>
                 { this.renderComponent(types[1]) }
               </Col>
-              <Col className='Pager-col Pager-col-right' sm={ 4 }>
+              <Col className='Pager-col Pager-col-right' md={ 4 }>
                 { this.renderComponent(types[2]) }
               </Col>
             </Row>
