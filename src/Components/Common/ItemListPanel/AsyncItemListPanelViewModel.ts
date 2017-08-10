@@ -5,11 +5,11 @@ import { BaseItemListPanelViewModel } from './BaseItemListPanelViewModel';
 import { AsyncDataGridViewModel, isAsyncDataSource, AsyncDataSource } from '../DataGrid/AsyncDataGridViewModel';
 import { ProjectionRequest, ProjectionResult } from '../DataGrid/DataGridViewModel';
 
-export class AsyncItemListPanelViewModel<TData, TRequest extends ProjectionRequest, TResult extends ProjectionResult<TData>> extends BaseItemListPanelViewModel<TData, TRequest, TResult, AsyncDataGridViewModel<TData, TRequest, TResult>> {
+export class AsyncItemListPanelViewModel<TData, TItem, TRequest extends ProjectionRequest, TResult extends ProjectionResult<TItem>> extends BaseItemListPanelViewModel<TData, TItem, TRequest, TResult, AsyncDataGridViewModel<TData, TItem, TRequest, TResult>> {
   public static displayName = 'AsyncItemListPanelViewModel';
 
   constructor(
-    dataSourceOrViewModel: AsyncDataSource<TRequest, TResult> | AsyncDataGridViewModel<TData, TRequest, TResult>,
+    dataSourceOrViewModel: AsyncDataSource<TRequest, TResult> | AsyncDataGridViewModel<TData, TItem, TRequest, TResult>,
     enableFilter?: boolean,
     enableSort?: boolean,
     isMultiSelectEnabled?: boolean,
@@ -19,7 +19,16 @@ export class AsyncItemListPanelViewModel<TData, TRequest extends ProjectionReque
     isRoutingEnabled?: boolean,
   ) {
     const grid = isAsyncDataSource(dataSourceOrViewModel) ?
-      new AsyncDataGridViewModel<TData, TRequest, TResult>(dataSourceOrViewModel, enableFilter, enableSort, isMultiSelectEnabled, isLoading, pagerLimit, rateLimit, isRoutingEnabled) :
+      new AsyncDataGridViewModel<TData, TItem, TRequest, TResult>(
+        dataSourceOrViewModel,
+        enableFilter,
+        enableSort,
+        isMultiSelectEnabled,
+        isLoading,
+        pagerLimit,
+        rateLimit,
+        isRoutingEnabled,
+      ) :
       dataSourceOrViewModel;
 
     super(grid, isRoutingEnabled);
@@ -36,6 +45,6 @@ export class AsyncItemListPanelViewModel<TData, TRequest extends ProjectionReque
   }
 }
 
-export class BasicAsyncItemListPanelViewModel<TData, TRequest extends ProjectionRequest> extends AsyncItemListPanelViewModel<TData, TRequest, ProjectionResult<TData>> {
-  public static displayName = 'BasicAsyncItemListPanelViewModel';
+export class SimpleAsyncItemListPanelViewModel<TData, TRequest extends ProjectionRequest> extends AsyncItemListPanelViewModel<TData, TData, TRequest, ProjectionResult<TData>> {
+  public static displayName = 'SimpleAsyncItemListPanelViewModel';
 }

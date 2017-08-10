@@ -156,10 +156,10 @@ demoRoutingMap.addRoute('React', 'ObservableWrapper', 'Observable Wrapper', (sta
 
 demoRoutingMap.addRoute('webrx-react', 'Search', 'Search', (state: any) => new Components.SearchViewModel());
 demoRoutingMap.addRoute('webrx-react', 'TimeSpanInput', 'Time Span Input', (state: any) => new Components.TimeSpanInputViewModel(true, Components.TimeSpanUnitType.Seconds));
-demoRoutingMap.addRoute('webrx-react', 'List', 'List', (state: any) => new Components.ListViewModel(Observable.of(sampleListData), false, false));
-demoRoutingMap.addRoute('webrx-react', 'ListCmd', 'List (Command)', (state: any) => new Components.ListViewModel(Observable.of(sampleListData), false, false));
-demoRoutingMap.addRoute('webrx-react', 'Tree', 'Tree', (state: any) => new Components.ListViewModel(wx.property(sampleTreeData), true, false));
-demoRoutingMap.addRoute('webrx-react', 'PanelList', 'Panel List', (state: any) => new Components.ListViewModel(wx.property(sampleListData), true, false));
+demoRoutingMap.addRoute('webrx-react', 'List', 'List', (state: any) => new Components.ListViewModel(Observable.of(sampleListData), x => x, false, false));
+demoRoutingMap.addRoute('webrx-react', 'ListCmd', 'List (Command)', (state: any) => new Components.ListViewModel(Observable.of(sampleListData), x => x, false, false));
+demoRoutingMap.addRoute('webrx-react', 'Tree', 'Tree', (state: any) => new Components.ListViewModel(wx.property(sampleTreeData), x => x, true, false));
+demoRoutingMap.addRoute('webrx-react', 'PanelList', 'Panel List', (state: any) => new Components.ListViewModel(wx.property(sampleListData), x => x, true, false));
 demoRoutingMap.addRoute('webrx-react', 'DataGrid', 'Data Grid', (state: any) => {
   const prop = wx.property<SampleData[]>(undefined, false);
 
@@ -174,20 +174,22 @@ demoRoutingMap.addRoute('webrx-react', 'DataGrid', 'Data Grid', (state: any) => 
       prop.value = x;
     });
 
-  return new Components.DataGridViewModel(prop, (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0);
+  return new Components.DataGridViewModel(prop, x => x, (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0);
 });
-demoRoutingMap.addRoute('webrx-react', 'DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: any) => Components.DataGridViewModel.create(...sampleListData));
+demoRoutingMap.addRoute('webrx-react', 'DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: any) =>
+  new Components.DataGridViewModel(Observable.of(sampleListData), x => x),
+);
 demoRoutingMap.addRoute('webrx-react', 'DataGridList', 'DataGrid (List View)', (state: any) =>
-  new Components.DataGridViewModel(Observable.of(sampleListData), (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0, undefined, undefined, undefined, undefined, 0),
+  new Components.DataGridViewModel(Observable.of(sampleListData), x => x, (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0, undefined, undefined, undefined, undefined, 0),
 );
 demoRoutingMap.addRoute('webrx-react', 'DataGridPager', 'DataGrid (Custom Pager)', (state: any) =>
-  new Components.DataGridViewModel(Observable.of(sampleListData)),
+  new Components.DataGridViewModel(Observable.of(sampleListData), x => x),
 );
 demoRoutingMap.addRoute('webrx-react', 'AsyncDataGrid', 'DataGrid (Async)', (state: any) => {
   return new Components.AsyncDataGridViewModel(sampleDataSource, true, true);
 });
 demoRoutingMap.addRoute('webrx-react', 'DataGridRoutingState', 'DataGrid (Routing State)', (state: any) =>
-  new Components.DataGridViewModel(Observable.of(sampleListData), (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0, undefined, undefined, undefined, undefined, undefined, undefined, true),
+  new Components.DataGridViewModel(Observable.of(sampleListData), x => x, (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0, undefined, undefined, undefined, undefined, undefined, true),
 );
 demoRoutingMap.addRoute('webrx-react', 'ModalDialog', 'Modal Dialog', (state: any) => {
   const createContext = wx.command<string>(x => `[${ moment().format() }] ${ x }`);
@@ -203,13 +205,13 @@ demoRoutingMap.addRoute('webrx-react', 'ModalDialog', 'Modal Dialog', (state: an
 demoRoutingMap.addRoute('webrx-react', 'Tabs', 'Tabs', (state: any) => new Components.TabsViewModel());
 demoRoutingMap.addRoute('webrx-react', 'StaticTabs', 'Static Tabs', (state: any) => new Components.TabsViewModel());
 demoRoutingMap.addRoute('webrx-react', 'ItemListPanel', 'Item List Panel', (state: any) =>
-  new Components.ItemListPanelViewModel(wx.property(sampleListData), (x, r) => r.test(x.name), 'id'),
+  new Components.ItemListPanelViewModel(wx.property(sampleListData), x => x, (x, r) => r.test(x.name), 'id'),
 );
 demoRoutingMap.addRoute('webrx-react', 'ListItemListPanel', 'Item List Panel (List)', (state: any) =>
-  new Components.ItemListPanelViewModel(Observable.of(sampleListData), (x, r) => r.test(x.name)),
+  new Components.ItemListPanelViewModel(Observable.of(sampleListData), x => x, (x, r) => r.test(x.name)),
 );
 demoRoutingMap.addRoute('webrx-react', 'TreeItemListPanel', 'Item List Panel (Tree)', (state: any) => {
-  return new Components.ItemListPanelViewModel(Observable.of(sampleTreeData), (node, regexp) => {
+  return new Components.ItemListPanelViewModel(Observable.of(sampleTreeData), x => x, (node, regexp) => {
     return Components.filterHierarchical(node, regexp, x => regexp.test(x.name));
   }, undefined, undefined, undefined, undefined, 0);
 });

@@ -12,7 +12,7 @@ export * from './ViewAllFooterAction';
 export interface ItemListPanelProps extends CommonPanelProps, DataGridProps, ViewModelProps {
 }
 
-export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPanelViewModel<any>> {
+export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPanelViewModel<any, any>> {
   public static displayName = 'ItemListPanelView';
 
   static defaultProps = {

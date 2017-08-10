@@ -5,7 +5,7 @@ import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 import { BaseDataGridViewModel, ProjectionRequest, ProjectionResult } from '../DataGrid/DataGridViewModel';
 import { SearchViewModel } from '../Search/SearchViewModel';
 
-export abstract class BaseItemListPanelViewModel<TData, TRequest extends ProjectionRequest, TResult extends ProjectionResult<TData>, TGrid extends BaseDataGridViewModel<TData, TRequest, TResult>> extends BaseRoutableViewModel<any> {
+export abstract class BaseItemListPanelViewModel<TData, TItem, TRequest extends ProjectionRequest, TResult extends ProjectionResult<TItem>, TGrid extends BaseDataGridViewModel<TData, TItem, TRequest, TResult>> extends BaseRoutableViewModel<any> {
   public static displayName = 'BaseItemListPanelViewModel';
 
   public readonly toggleIsExpanded: Command<boolean>;

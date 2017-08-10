@@ -4,7 +4,7 @@ import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
 import { Route } from '../../../Routing/RouteManager';
 import { BaseViewModel } from '../../React/BaseViewModel';
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
-import { ItemListPanelViewModel } from '../../Common/ItemListPanel/ItemListPanelViewModel';
+import { SimpleItemListPanelViewModel } from '../../Common/ItemListPanel/ItemListPanelViewModel';
 
 export interface TodoListRoutingState {
 }
@@ -16,7 +16,7 @@ export class TodoListViewModel extends BaseRoutableViewModel<TodoListRoutingStat
   public addItem: Command<any>;
   public removeItem: Command<TodoItemViewModel>;
 
-  public list: ItemListPanelViewModel<TodoItemViewModel>;
+  public list: SimpleItemListPanelViewModel<TodoItemViewModel>;
 
   constructor() {
     super(true);
@@ -62,10 +62,9 @@ export class TodoListViewModel extends BaseRoutableViewModel<TodoListRoutingStat
         [],
       );
 
-    this.list = new ItemListPanelViewModel(
+    this.list = new SimpleItemListPanelViewModel(
       todoListItems,
       (x, regexp) => x.filter(regexp),
-      undefined,
       undefined,
       undefined,
       undefined,

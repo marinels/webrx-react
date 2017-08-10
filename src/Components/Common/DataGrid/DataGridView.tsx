@@ -12,7 +12,7 @@ import { SortDirection } from '../../../Utils/Compare';
 import { BaseListViewTemplate, ListViewRenderTemplate, ListViewRenderTemplateProps } from '../List/ListView';
 import { NavButton } from '../List/NavButton';
 
-export type ReadonlyDataGridViewModel<TData> = Readonly<DataGridViewModel<TData>>;
+export type ReadonlyDataGridViewModel<TItem> = Readonly<DataGridViewModel<any, TItem>>;
 
 export type ColumnRenderFunction = (
   item: any,
@@ -66,7 +66,7 @@ export class NavDataGridColumn extends React.Component<NavDataGridColumnProps, a
     header: '',
     className: 'navColumn',
     width: 1,
-    renderCell: (item: any, index: number, column: NavDataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: DataGridViewModel<any>, view: DataGridView) => {
+    renderCell: (item: any, index: number, column: NavDataGridColumnProps, columnIndex: number, columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<any>, view: DataGridView) => {
       const props = wxr.renderNullable(column.buttonProps, buttonProps => buttonProps(item, index, column, columnIndex, columns, viewModel, view));
 
       return (
@@ -90,10 +90,10 @@ export class DataGridListViewTemplate<TData> extends BaseListViewTemplate<TData,
     renderTemplateContainer?: (content: any, item: TData, index: number, viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) => any,
   ) {
     super(
-      renderItem == null ? undefined : (item, data, index, viewModel: DataGridViewModel<TData>, view) => renderItem(data, index, viewModel, view),
-      renderItemActions == null ? undefined : (item, data, index, viewModel: DataGridViewModel<TData>, view) => renderItemActions(data, index, viewModel, view),
-      keySelector == null ? undefined : (item, data, index, viewModel: DataGridViewModel<TData>, view) => keySelector(data, index, viewModel, view),
-      renderTemplateContainer == null ? undefined : (content, item, data, index, viewModel: DataGridViewModel<TData>, view) => renderTemplateContainer(content, data, index, viewModel, view),
+      renderItem == null ? undefined : (item, data, index, viewModel: ReadonlyDataGridViewModel<TData>, view) => renderItem(data, index, viewModel, view),
+      renderItemActions == null ? undefined : (item, data, index, viewModel: ReadonlyDataGridViewModel<TData>, view) => renderItemActions(data, index, viewModel, view),
+      keySelector == null ? undefined : (item, data, index, viewModel: ReadonlyDataGridViewModel<TData>, view) => keySelector(data, index, viewModel, view),
+      renderTemplateContainer == null ? undefined : (content, item, data, index, viewModel: ReadonlyDataGridViewModel<TData>, view) => renderTemplateContainer(content, data, index, viewModel, view),
     );
   }
 
@@ -198,7 +198,7 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
       .toArray(view.props.children) || [];
 
     if (this.enableAutomaticColumns === true && columns.length === 0) {
-      const items = (viewModel.items.value || []);
+      const items = (viewModel.data.value || []);
 
       if (items.length > 0 && items[0] != null) {
         // auto-generate columns
@@ -386,7 +386,7 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
 export type DataGridViewType = 'Table' | 'List';
 
 export interface DataGridComponentProps {
-  grid: Readonly<DataGridViewModel<any>>;
+  grid: ReadonlyDataGridViewModel<any>;
   viewType: DataGridViewType;
   fill?: boolean;
 }
@@ -438,7 +438,7 @@ export interface DataGridProps extends ListViewRenderTemplateProps {
 export interface DataGridViewProps extends DataGridProps, BaseViewProps {
 }
 
-export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<any>> {
+export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<any, any>> {
   public static displayName = 'DataGridView';
 
   public static Search = DataGridSearch;

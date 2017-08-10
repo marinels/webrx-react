@@ -1,7 +1,8 @@
+import { Iterable } from 'ix';
 import { Observable } from 'rxjs';
 import * as clone from 'clone';
 
-import { wx, ObservableLike, ReadOnlyProperty, Property, Command } from '../../../WebRx';
+import { wx, IterableLike, ObservableLike, ReadOnlyProperty, Property, Command } from '../../../WebRx';
 import { ObjectComparer, SortDirection } from '../../../Utils/Compare';
 import { ListViewModel } from '../List/ListViewModel';
 import { SearchViewModel, SearchRoutingState } from '../Search/SearchViewModel';
@@ -21,8 +22,8 @@ export interface ProjectionRequest {
   sortDirection?: SortDirection;
 }
 
-export interface ProjectionResult<TData> {
-  items: TData[];
+export interface ProjectionResult<TItem> {
+  items: TItem[];
   count: number;
 }
 
@@ -33,10 +34,10 @@ export interface DataGridRoutingState {
   pager: PagerRoutingState;
 }
 
-export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRequest, TResult extends ProjectionResult<TData>> extends ListViewModel<TData, DataGridRoutingState> {
+export abstract class BaseDataGridViewModel<TData, TItem, TRequest extends ProjectionRequest, TResult extends ProjectionResult<TItem>> extends ListViewModel<TData, TItem, DataGridRoutingState> {
   public static displayName = 'BaseDataGridViewModel';
 
-  protected readonly comparer: ObjectComparer<TData>;
+  protected readonly comparer: ObjectComparer<TItem>;
 
   public readonly search: SearchViewModel;
   public readonly pager: PagerViewModel;
@@ -44,7 +45,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
 
   public readonly projectionRequests: ReadOnlyProperty<TRequest>;
   public readonly projectionResults: ReadOnlyProperty<TResult>;
-  public readonly projectedItems: ReadOnlyProperty<TData[]>;
+  public readonly projectedItems: ReadOnlyProperty<TItem[]>;
   public readonly sortField: ReadOnlyProperty<string | undefined>;
   public readonly sortDirection: ReadOnlyProperty<SortDirection | undefined>;
   public readonly isLoading: ReadOnlyProperty<boolean>;
@@ -56,20 +57,20 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
   public readonly project: Command<TResult | undefined>;
 
   constructor(
-    requests: Observable<TRequest>,
-    items?: ObservableLike<TData[]>,
-    protected readonly filterer?: (item: TData, regex: RegExp) => boolean,
-    comparer: string | ObjectComparer<TData> = new ObjectComparer<TData>(),
+    data: ObservableLike<IterableLike<TData>>,
+    requestSelector: (items: ObservableLike<TData[]>) => Observable<TRequest>,
+    protected readonly filterer?: (item: TItem, regex: RegExp) => boolean,
+    comparer: ObjectComparer<TItem> | string = new ObjectComparer<TItem>(),
     isMultiSelectEnabled?: boolean,
     isLoading?: ObservableLike<boolean>,
     pagerLimit?: number,
     rateLimit = 100,
     isRoutingEnabled?: boolean,
   ) {
-    super(items, isMultiSelectEnabled, isRoutingEnabled);
+    super(data, undefined, isMultiSelectEnabled, isRoutingEnabled);
 
     if (String.isString(comparer)) {
-      this.comparer = new ObjectComparer<TData>(comparer);
+      this.comparer = new ObjectComparer<TItem>(comparer);
     }
     else {
       this.comparer = comparer;
@@ -103,6 +104,10 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
       )
       .map(x => x || this.sortDirection.value)
       .toProperty();
+
+    const requests = requestSelector(
+      this.whenAny(this.data, x => x),
+    );
 
     this.projectionRequests = this
       .whenAny(
@@ -239,14 +244,8 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
 
   protected abstract getProjectionResult(request: TRequest): Observable<TResult>;
 
-  // NOTE: this is a bit dangerous since we're overriding an inherited local
-  //       member with a property getter.
-  get items() {
+  get itemsSource() {
     return this.projectedItems;
-  }
-
-  public get allItems() {
-    return this.listItems;
   }
 
   public canFilter() {
@@ -290,81 +289,114 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
   }
 }
 
-export interface ItemsProjectionRequest<TData> extends ProjectionRequest {
-  items: TData[];
+export interface ItemsProjectionRequest<T> extends ProjectionRequest {
+  items: T[];
 }
 
-export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, ItemsProjectionRequest<TData>, ProjectionResult<TData>> {
+export function getItemsProjectionRequest<T>(source: ObservableLike<T[]>) {
+  if (wx.isProperty(source) === true) {
+    return wx
+      .whenAny(source, x => x)
+      .filterNull()
+      .map(items => <ItemsProjectionRequest<T>>{
+        items,
+      });
+  }
+  else {
+    return (<Observable<T[]>>source)
+      .map(items => <ItemsProjectionRequest<T>>{
+        items,
+      });
+  }
+}
+
+export class DataGridViewModel<TData, TItem> extends BaseDataGridViewModel<TData, TItem, ItemsProjectionRequest<TData>, ProjectionResult<TItem>> {
   public static displayName = 'DataGridViewModel';
 
-  public static create<T>(...items: T[]) {
-    return new DataGridViewModel(wx.property<T[]>(items, false));
-  }
+    constructor(
+      data: ObservableLike<IterableLike<TData>>,
+      protected readonly listItemSelector: (item: TData) => TItem,
+      filterer?: (item: TItem, regex: RegExp) => boolean,
+      comparer?: string | ObjectComparer<TItem>,
+      isMultiSelectEnabled?: boolean,
+      isLoading?: ObservableLike<boolean>,
+      pagerLimit?: number,
+      rateLimit = 100,
+      isRoutingEnabled?: boolean,
+    ) {
+      super(
+        data,
+        getItemsProjectionRequest,
+        filterer,
+        comparer,
+        isMultiSelectEnabled,
+        isLoading,
+        pagerLimit,
+        rateLimit,
+        isRoutingEnabled,
+      );
+    }
 
-  private static getItemsRequestObservable<T>(source: ObservableLike<T[]>) {
-    if (wx.isProperty(source) === true) {
-      return wx
-        .whenAny(source, x => x)
-        .filterNull()
-        .map(items => <ItemsProjectionRequest<T>>{
+    getProjectionResult(request: ItemsProjectionRequest<TData>) {
+      let source = Iterable
+        .from(request.items || [])
+        .map(x => this.listItemSelector(x));
+
+      const filterer = this.filterer;
+      const comparer = this.comparer;
+      const regex = request.regex;
+      const sortField = request.sortField;
+      const sortDirection = request.sortDirection;
+
+      if (filterer != null && regex != null && source.some(x => true)) {
+        source = source.filter(x => filterer(x, regex));
+      }
+
+      if (comparer != null && !String.isNullOrEmpty(sortField) && sortDirection != null) {
+        source = comparer.sortIterable(source, sortField, sortDirection);
+      }
+
+      let items = source.toArray();
+      const count = items.length;
+
+      const offset = request.offset || 0;
+      const limit = request.limit || items.length;
+
+      if (offset > 0 || (request.limit || 0) > 0) {
+        items = items.slice(offset || 0, Math.min(items.length, offset + limit));
+      }
+
+      return Observable
+        .of(<ProjectionResult<TItem>>{
           items,
+          count,
         });
     }
-    else {
-      return (<Observable<T[]>>source)
-        .map(items => <ItemsProjectionRequest<T>>{
-          items,
-        });
-    }
-  }
+}
+
+export class SimpleDataGridViewModel<TData> extends DataGridViewModel<TData, TData> {
+  public static displayName = 'SimpleDataGridViewModel';
 
   constructor(
-    items: ObservableLike<TData[]> = wx.property<TData[]>([], false),
+    data: ObservableLike<IterableLike<TData>>,
     filterer?: (item: TData, regex: RegExp) => boolean,
-    comparer?: string | ObjectComparer<TData>,
-    protected preFilter: (items: TData[]) => TData[] = x => clone(x),
+    comparer = new ObjectComparer<TData>(),
     isMultiSelectEnabled?: boolean,
     isLoading?: ObservableLike<boolean>,
     pagerLimit?: number,
     rateLimit = 100,
     isRoutingEnabled?: boolean,
   ) {
-    super(DataGridViewModel.getItemsRequestObservable(items), items, filterer, comparer, isMultiSelectEnabled, isLoading, pagerLimit, rateLimit, isRoutingEnabled);
-  }
-
-  getProjectionResult(request: ItemsProjectionRequest<TData>) {
-    let source = this
-      .preFilter(request.items || [])
-      .asIterable();
-
-    const filterer = this.filterer;
-    const comparer = this.comparer;
-    const regex = request.regex;
-    const sortField = request.sortField;
-    const sortDirection = request.sortDirection;
-
-    if (filterer != null && regex != null && source.some(x => true)) {
-      source = source.filter(x => filterer(x, regex));
-    }
-
-    if (comparer != null && !String.isNullOrEmpty(sortField) && sortDirection != null) {
-      source = comparer.sortIterable(source, sortField, sortDirection);
-    }
-
-    let items = source.toArray();
-    const count = items.length;
-
-    const offset = request.offset || 0;
-    const limit = request.limit || items.length;
-
-    if (offset > 0 || (request.limit || 0) > 0) {
-      items = items.slice(offset || 0, Math.min(items.length, offset + limit));
-    }
-
-    return Observable
-      .of(<ProjectionResult<TData>>{
-        items,
-        count,
-      });
+    super(
+      data,
+      x => clone(x),
+      filterer,
+      comparer,
+      isMultiSelectEnabled,
+      isLoading,
+      pagerLimit,
+      rateLimit,
+      isRoutingEnabled,
+    );
   }
 }

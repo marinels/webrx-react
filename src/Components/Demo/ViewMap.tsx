@@ -192,7 +192,7 @@ export const demoViewMap: ViewActivatorMap = {
       </div>
     );
   },
-  ListViewModel: (viewModel: Components.ListViewModel<any, any>, componentRoute: string) => {
+  ListViewModel: (viewModel: Components.ListViewModel<any, any, any>, componentRoute: string) => {
     switch (componentRoute) {
       case 'List':
         return (
@@ -216,7 +216,7 @@ export const demoViewMap: ViewActivatorMap = {
         return null;
     }
   },
-  DataGridViewModel: (viewModel: Components.DataGridViewModel<any>, componentRoute: string) => {
+  DataGridViewModel: (viewModel: Components.SimpleDataGridViewModel<any>, componentRoute: string) => {
     let view: Components.DataGridViewTemplate<SampleData> | undefined;
     let columns: any;
     let pager: any = true;
@@ -283,7 +283,7 @@ export const demoViewMap: ViewActivatorMap = {
       </Components.DataGridView>
     );
   },
-  AsyncDataGridViewModel: (viewModel: Components.AsyncDataGridViewModel<any, any, any>) => (
+  AsyncDataGridViewModel: (viewModel: Components.AsyncDataGridViewModel<any, any, any, any>) => (
     <Components.DataGridView viewModel={ viewModel } pager={ ({ limits: [ 1, 5, 10, null ] }) }>
       <Components.DataGridColumn key='name' fieldName='name' header='Name' sortable />
       <Components.DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 } />
@@ -406,7 +406,7 @@ export const demoViewMap: ViewActivatorMap = {
       </Components.CommonPanel>
     </div>
   ),
-  ItemListPanelViewModel: (viewModel: Components.ItemListPanelViewModel<any>, componentRoute: string) => {
+  ItemListPanelViewModel: (viewModel: Components.SimpleItemListPanelViewModel<any>, componentRoute: string) => {
     if (componentRoute === 'ItemListPanel') {
       return (
         <Components.ItemListPanelView viewModel={viewModel} headerContent='Sample Grid Data' collapsible pager search
@@ -445,7 +445,7 @@ export const demoViewMap: ViewActivatorMap = {
       );
     }
   },
-  AsyncItemListPanelViewModel: (viewModel: Components.AsyncItemListPanelViewModel<any, any, any>) => (
+  AsyncItemListPanelViewModel: (viewModel: Components.AsyncItemListPanelViewModel<any, any, any, any>) => (
     <Components.ItemListPanelView viewModel={viewModel} headerContent='Sample Data' collapsible pager
       headerActions={[ { id: 'viewall', bsStyle: 'primary', command: wx.command(x => Alert.create(x, 'View All Pressed')), commandParameter: 'AsyncItemListPanel', children: (<Components.ViewAllFooterAction suffix='Things' />) } ]}
       footerContent={ (<Components.CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }

@@ -8,7 +8,7 @@ export interface AsyncDataSource<TRequest extends ProjectionRequest, TResult ext
   getResultAsync(request: TRequest): Observable<TResult>;
 }
 
-export interface BasicAsyncDataSource<TRequest extends ProjectionRequest, TData> extends AsyncDataSource<TRequest, ProjectionResult<TData>> {
+export interface SimpleAsyncDataSource<TRequest extends ProjectionRequest, TData> extends AsyncDataSource<TRequest, ProjectionResult<TData>> {
 }
 
 export function isAsyncDataSource(source: any): source is AsyncDataSource<any, any> {
@@ -21,11 +21,11 @@ export function isAsyncDataSource(source: any): source is AsyncDataSource<any, a
   }
 }
 
-export class AsyncDataGridViewModel<TData, TRequest extends ProjectionRequest, TResult extends ProjectionResult<TData>> extends BaseDataGridViewModel<TData, TRequest, TResult> {
+export class AsyncDataGridViewModel<TData, TItem, TRequest extends ProjectionRequest, TResult extends ProjectionResult<TItem>> extends BaseDataGridViewModel<TData, TItem, TRequest, TResult> {
   public static displayName = 'AsyncDataGridViewModel';
 
   constructor(
-    protected readonly dataSource: AsyncDataSource<TRequest, TResult>,
+    protected readonly asyncDataSource: AsyncDataSource<TRequest, TResult>,
     protected readonly enableFilter = false,
     protected readonly enableSort = false,
     isMultiSelectEnabled?: boolean,
@@ -34,13 +34,23 @@ export class AsyncDataGridViewModel<TData, TRequest extends ProjectionRequest, T
     rateLimit?: number,
     isRoutingEnabled?: boolean,
   ) {
-    super(dataSource.requests, undefined, undefined, undefined, isMultiSelectEnabled, isLoading, pagerLimit, rateLimit, isRoutingEnabled);
+    super(
+      Observable.never<TData[]>(),
+      () => asyncDataSource.requests,
+      undefined,
+      undefined,
+      isMultiSelectEnabled,
+      isLoading,
+      pagerLimit,
+      rateLimit,
+      isRoutingEnabled,
+    );
   }
 
   getProjectionResult(request: TRequest) {
     // this will first clear the selected item before fetching the async result
     return this.selectItem.observeExecution(null)
-      .flatMap(() => this.dataSource.getResultAsync(request));
+      .flatMap(() => this.asyncDataSource.getResultAsync(request));
   }
 
   canFilter() {
@@ -52,6 +62,6 @@ export class AsyncDataGridViewModel<TData, TRequest extends ProjectionRequest, T
   }
 }
 
-export class BasicAsyncDataGridViewModel<TData, TRequest extends ProjectionRequest> extends AsyncDataGridViewModel<TData, TRequest, ProjectionResult<TData>> {
-  public static displayName = 'BasicAsyncDataGridViewModel';
+export class SimpleAsyncDataGridViewModel<TData, TRequest extends ProjectionRequest> extends AsyncDataGridViewModel<TData, TData, TRequest, ProjectionResult<TData>> {
+  public static displayName = 'SimpleAsyncDataGridViewModel';
 }

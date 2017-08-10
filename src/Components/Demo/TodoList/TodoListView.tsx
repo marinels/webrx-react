@@ -53,7 +53,7 @@ export class TodoListView extends BaseView<TodoListProps, TodoListViewModel> {
   }
 
   private renderEmptyContent() {
-    if (this.state.list.grid.allItems.value.length > 0) {
+    if (this.state.list.grid.hasItems.value === false) {
       return 'No todo items to show.';
     }
 
