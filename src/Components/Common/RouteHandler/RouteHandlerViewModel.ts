@@ -10,6 +10,7 @@ import { PubSub } from '../../../Utils';
 import { RoutingStateChangedKey, RoutingStateChanged } from '../../../Events/RoutingStateChanged';
 
 export const SplashKey = 'Splash';
+export const DefaultKey = '*';
 
 interface LoadComponentParams {
   prev: RoutedComponentActivator;
@@ -278,7 +279,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
         this.logger.warn(`No activator for '${ route.path }', falling back to default route`, route);
 
         // fallback on to the default route (this could also be null)
-        activator = Object.assign({ creator: () => undefined }, this.routingMap['*']);
+        activator = Object.assign({ creator: () => undefined }, this.routingMap[DefaultKey]);
       }
     }
 
