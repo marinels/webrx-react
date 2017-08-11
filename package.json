@@ -71,7 +71,7 @@
     "eslint": "^4.4.1",
     "eslint-config-strict": "^14.0.0",
     "eslint-plugin-filenames": "^1.1.0",
-    "extract-text-webpack-plugin": "^2.1.0",
+    "extract-text-webpack-plugin": "^3.0.0",
     "file-loader": "^0.11.1",
     "gulp": "^3.9.1",
     "gulp-eslint": "^4.0.0",
@@ -90,7 +90,7 @@
     "run-sequence": "^2.1.0",
     "sinon": "^3.2.0",
     "sinon-chai": "^2.9.0",
-    "style-loader": "^0.17.0",
+    "style-loader": "^0.18.2",
     "stylelint": "^8.0.0",
     "stylelint-config-suitcss": "^11.0.0",
     "through": "^2.3.8",
@@ -99,7 +99,7 @@
     "typescript": "~2.3.0",
     "url-loader": "^0.5.8",
     "vinyl": "^2.0.1",
-    "webpack": "^2.3.3",
+    "webpack": "^3.5.3",
     "webpack-dev-server": "^2.4.2",
     "webpack-stream-fixed": "^3.2.2"
   }
