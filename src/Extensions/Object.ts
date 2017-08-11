@@ -3,7 +3,7 @@ import { Enumerable } from 'ix';
 declare global {
   interface ObjectConstructor {
     assign<T>(target: any, ...sources: any[]): T;
-    rest<TData, TProps>(data: TData, propsCreator?: (x: TData) => TProps, ...omits: string[]): { rest: TData, props: TProps };
+    rest<TData extends StringMap<any>, TProps>(data: TData, propsCreator?: (x: TData) => TProps, ...omits: string[]): { rest: TData, props: TProps };
     getName(source: any, undefinedValue?: string): string;
     fallback<T>(...values: T[]): T;
     fallbackAsync<T>(...actions: (T | (() => T))[]): T;
@@ -41,16 +41,16 @@ Object.assign = Object.assign || assign;
 function rest<TData extends StringMap<any>, TProps>(data: TData, propsCreator?: (x: TData) => TProps, ...omits: string[]) {
   const props = propsCreator == null ? <TProps>{} : propsCreator(data);
 
-  const rest = Object
+  const restParams = Object
     .keys(data)
     .filter(key => props.hasOwnProperty(key) === false && omits.indexOf(key) < 0)
     .reduce((r, key) => {
       r[key] = data[key];
 
       return r;
-    }, <StringMap<any>>{});
+    }, <TData>{});
 
-  return { rest, props };
+  return { rest: restParams, props };
 }
 Object.rest = rest;
 
