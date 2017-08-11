@@ -267,7 +267,11 @@ export class RouteHandlerViewModel extends BaseViewModel {
           // if we found a regex match route then set the match properties on the route
           route.match = result.match;
 
-          this.logger.debug(`Matched RegExp Routing Path '${ route.path }' with '${ result.key }' ('${ result.activator.path }')`, route);
+          const activatorPath = result.activator != null && result.activator.path != null ?
+            ` ('${ result.activator.path }')` :
+            '';
+
+          this.logger.debug(`Matched RegExp Routing Path '${ route.path }' with '${ result.key }'${ activatorPath }`, route);
 
           activator = result.activator;
         }
