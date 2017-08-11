@@ -10,6 +10,7 @@ import { PubSub } from '../../../Utils';
 import { RoutingStateChangedKey, RoutingStateChanged } from '../../../Events/RoutingStateChanged';
 
 export const SplashKey = 'Splash';
+export const DefaultKey = '*';
 
 interface LoadComponentParams {
   prev: RoutedComponentActivator;
@@ -266,7 +267,11 @@ export class RouteHandlerViewModel extends BaseViewModel {
           // if we found a regex match route then set the match properties on the route
           route.match = result.match;
 
-          this.logger.debug(`Matched RegExp Routing Path '${ route.path }' with '${ result.key }' ('${ result.activator.path }')`, route);
+          const activatorPath = result.activator != null && result.activator.path != null ?
+            ` ('${ result.activator.path }')` :
+            '';
+
+          this.logger.debug(`Matched RegExp Routing Path '${ route.path }' with '${ result.key }'${ activatorPath }`, route);
 
           activator = result.activator;
         }
@@ -278,7 +283,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
         this.logger.warn(`No activator for '${ route.path }', falling back to default route`, route);
 
         // fallback on to the default route (this could also be null)
-        activator = this.routingMap['*'];
+        activator = Object.assign({ creator: () => undefined }, this.routingMap[DefaultKey]);
       }
     }
 

@@ -5,7 +5,7 @@ import { CSSTransitionGroup } from 'react-transition-group';
 import { Icon } from 'react-fa';
 
 import { BaseRoutableViewModel, BaseView, BaseViewProps, isViewModel, isRoutableViewModel } from '../../React';
-import { RouteHandlerViewModel, SplashKey } from './RouteHandlerViewModel';
+import { RouteHandlerViewModel, SplashKey, DefaultKey } from './RouteHandlerViewModel';
 import { Breadcrumbs } from './Breadcrumbs';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { ViewMapper } from '../../../Routing/ViewMap';
@@ -20,8 +20,8 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
   constructor(props?: RouteHandlerProps, context?: any) {
     super(props, context);
 
-    if (this.props.viewMap['*'] == null) {
-      this.props.viewMap['*'] = () => this.renderError('View Not Found');
+    if (this.props.viewMap[DefaultKey] == null) {
+      this.props.viewMap[DefaultKey] = () => this.renderError('View Not Found');
     }
 
     if (this.props.viewMap[''] == null) {
@@ -90,7 +90,7 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
 
     let activator = this.props.viewMap[key];
     if (activator == null && key !== SplashKey) {
-      activator = this.props.viewMap['*'];
+      activator = this.props.viewMap[DefaultKey];
     }
 
     let view: any = activator;

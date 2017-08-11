@@ -6,7 +6,7 @@ import { ObjectComparer } from '../../../Utils/Compare';
 export class ItemListPanelViewModel<TData> extends BaseItemListPanelViewModel<TData, ProjectionRequest, ProjectionResult<TData>, DataGridViewModel<TData>> {
   public static displayName = 'ItemListPanelViewModel';
 
-  public static create<TData>(...items: TData[]) {
+  public static create<T>(...items: T[]) {
     return new ItemListPanelViewModel(wx.property(items, false));
   }
 
