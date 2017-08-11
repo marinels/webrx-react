@@ -4,12 +4,12 @@ import {  } from '../WebRx';
 import { Logging } from '../Utils';
 import { ObservableApi } from './ObservableApi';
 
-export abstract class BaseStore<T extends ObservableApi> {
+export abstract class BaseStore<TApi extends ObservableApi> {
   public static displayName = 'BaseStore';
 
   protected readonly logger: Logging.Logger = Logging.getLogger(BaseStore.displayName);
 
-  constructor(public api: T) {
+  constructor(public api: TApi) {
     this.logger.debug('Store Created');
   }
 
