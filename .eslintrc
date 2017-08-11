@@ -11,6 +11,11 @@
     // separation of variable declarations and logic makes source code more readable
     "newline-after-var": [ 2, "always" ],
 
+    // JUSTIFICATION: code cleanliness
+    // sometimes long lines look better split up on separate lines
+    "array-element-newline": [ "off" ],
+    "array-bracket-newline": [ "off" ],
+
     "linebreak-style": [ 2, "unix" ]
   }
 }
