@@ -28,8 +28,8 @@ export function filterHierarchical<T extends HierarchicalItemsSource<T>>(
 export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<TRoutingState> {
   public static displayName = 'ListViewModel';
 
-  public static create<TData>(...items: TData[]) {
-    return new ListViewModel(wx.property<TData[]>(items, false));
+  public static create<T>(...items: T[]) {
+    return new ListViewModel(wx.property<T[]>(items, false));
   }
 
   public readonly listItems: ReadOnlyProperty<TData[]>;

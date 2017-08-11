@@ -297,22 +297,22 @@ export interface ItemsProjectionRequest<TData> extends ProjectionRequest {
 export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, ItemsProjectionRequest<TData>, ProjectionResult<TData>> {
   public static displayName = 'DataGridViewModel';
 
-  public static create<TData>(...items: TData[]) {
-    return new DataGridViewModel(wx.property<TData[]>(items, false));
+  public static create<T>(...items: T[]) {
+    return new DataGridViewModel(wx.property<T[]>(items, false));
   }
 
-  private static getItemsRequestObservable<TData>(source: ObservableOrProperty<TData[]>) {
+  private static getItemsRequestObservable<T>(source: ObservableOrProperty<T[]>) {
     if (wx.isProperty(source) === true) {
       return wx
         .whenAny(source, x => x)
         .filterNull()
-        .map(items => <ItemsProjectionRequest<TData>>{
+        .map(items => <ItemsProjectionRequest<T>>{
           items,
         });
     }
     else {
-      return (<Observable<TData[]>>source)
-        .map(items => <ItemsProjectionRequest<TData>>{
+      return (<Observable<T[]>>source)
+        .map(items => <ItemsProjectionRequest<T>>{
           items,
         });
     }
