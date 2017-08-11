@@ -278,7 +278,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
         this.logger.warn(`No activator for '${ route.path }', falling back to default route`, route);
 
         // fallback on to the default route (this could also be null)
-        activator = this.routingMap['*'];
+        activator = Object.assign({ creator: () => undefined }, this.routingMap['*']);
       }
     }
 
