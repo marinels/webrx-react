@@ -20,7 +20,9 @@ export class ModalDialogViewModel<T> extends BaseViewModel {
     this.show = this.command(() => true);
     this.hide = this.command(() => false);
 
-    this.context = this.getProperty(context, undefined, false);
+    // any context observable result will generate a new context property changed event
+    this.context = this.getObservable(context)
+      .toProperty(undefined, false);
 
     this.isVisible = Observable
       .merge(
