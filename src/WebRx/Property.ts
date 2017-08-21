@@ -102,6 +102,7 @@ export function property<T>(...args: any[]): Property<T> {
     // if arg is true, then we use the default comparator function
 
     if (arg === false) {
+      // this results in every value being interpreted as a new value
       compare = () => false;
     }
     else if (arg instanceof Function) {
