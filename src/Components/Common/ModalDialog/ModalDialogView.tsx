@@ -6,8 +6,9 @@ import { BaseView, ViewModelProps } from '../../React';
 import { ModalDialogViewModel } from './ModalDialogViewModel';
 
 export interface ModalDialogProps extends ViewModelProps, Partial<ModalProps> {
-  title: any;
+  title?: any;
   body?: any;
+  footer?: any;
   canClose?: boolean;
 }
 
@@ -16,6 +17,7 @@ export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewM
 
   static defaultProps = {
     canClose: false,
+    footer: (view: ModalDialogView) => view.props.children,
   };
 
   updateOn() {
@@ -26,8 +28,8 @@ export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewM
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { title, body, canClose }  = x;
-      return { title, body, canClose };
+      const { title, body, footer, canClose }  = x;
+      return { title, body, footer, canClose };
     });
 
     return this.renderConditional(this.state.isVisible, () => (
@@ -45,40 +47,49 @@ export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewM
   }
 
   private renderHeader() {
-    return (
-      <Modal.Header closeButton={ this.props.canClose === true }>
+    const titleContent = this.renderNullable(
+      this.props.title,
+      title => (
         <Modal.Title>
-          {
-            this.renderConditional(
-              (this.props.title instanceof Function) === true,
-              () => this.props.title(),
-              () => this.props.title,
-            )
-          }
+          { title instanceof Function ? title(this) : title }
         </Modal.Title>
-      </Modal.Header>
+      ),
+    );
+
+    return this.renderConditional(
+      titleContent != null || this.props.canClose === true,
+      () => (
+        <Modal.Header closeButton={ this.props.canClose === true }>
+          { titleContent }
+        </Modal.Header>
+      ),
     );
   }
 
   private renderBody() {
-    return this.renderConditional(this.props.body != null, () => (
-      <Modal.Body>
-        {
-          this.renderConditional(
-            (this.props.body instanceof Function) === true,
-            () => this.props.body(),
-            () => this.props.body,
-          )
-        }
-      </Modal.Body>
-    ));
+    return this.renderNullable(
+      this.props.body,
+      body => (
+        <Modal.Body>
+          { body instanceof Function ? body(this) : body }
+        </Modal.Body>
+      ),
+    );
   }
 
   private renderFooter() {
-    return this.renderConditional(this.props.children != null, () => (
-      <Modal.Footer>
-        { this.props.children }
-      </Modal.Footer>
-    ));
+    return this.renderNullable(
+      this.props.footer,
+      footer => {
+        return this.renderNullable(
+          footer instanceof Function ? footer(this) : footer,
+          footerContent => (
+            <Modal.Footer>
+              { footerContent }
+            </Modal.Footer>
+          ),
+        );
+      },
+    );
   }
 }
