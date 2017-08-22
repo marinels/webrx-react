@@ -2,15 +2,15 @@ import { Iterable } from 'ix';
 
 declare global {
   interface Array<T> {
-    asEnumerable(): Iterable<T>;
+    asIterable(): Iterable<T>;
     filterNull<TFiltered>(this: Array<TFiltered | undefined | null>, callbackfn?: (value: TFiltered, index: number, array: Array<T | undefined | null>) => boolean): Array<TFiltered>;
   }
 }
 
-function asEnumerable<T>(this: T[]) {
+function asIterable<T>(this: T[]) {
   return Iterable.from(this);
 }
-Array.prototype.asEnumerable = asEnumerable;
+Array.prototype.asIterable = asIterable;
 
 function filterNull<T>(this: Array<T | undefined | null>, callbackfn?: (value: T, index: number, array: Array<T | undefined | null>) => boolean) {
   return (<Array<T>>this)

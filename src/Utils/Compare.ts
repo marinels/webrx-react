@@ -125,7 +125,7 @@ export class ObjectComparer<T extends StringMap<any>> {
       comparer.valueSelector(source, comparer.field);
   }
 
-  public sortEnumerable(source: Iterable<T>, field: string, direction: SortDirection = SortDirection.Ascending) {
+  public sortIterable(source: Iterable<T>, field: string, direction: SortDirection = SortDirection.Ascending) {
     const comparer = this.getComparer(field);
     const defaultComparer = this.defaultComparer;
 

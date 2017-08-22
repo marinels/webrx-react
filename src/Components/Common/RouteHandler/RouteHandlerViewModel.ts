@@ -256,7 +256,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
       if (activator == null) {
         const result = Object
           .keys(this.routingMap)
-          .asEnumerable()
+          .asIterable()
           .filter(x => x != null && x.length > 0 && x[0] === '^')
           .map(x => ({ key: x, match: new RegExp(x, 'i').exec(route.path) }))
           .filter(x => x.match != null)

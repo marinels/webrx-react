@@ -335,7 +335,7 @@ export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, Items
   getProjectionResult(request: ItemsProjectionRequest<TData>) {
     let source = this
       .preFilter(request.items || [])
-      .asEnumerable();
+      .asIterable();
 
     const filterer = this.filterer;
     const comparer = this.comparer;
@@ -348,7 +348,7 @@ export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, Items
     }
 
     if (comparer != null && !String.isNullOrEmpty(sortField) && sortDirection != null) {
-      source = comparer.sortEnumerable(source, sortField, sortDirection);
+      source = comparer.sortIterable(source, sortField, sortDirection);
     }
 
     let items = source.toArray();

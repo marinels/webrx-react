@@ -27,7 +27,7 @@ wxr.bindEventToProperty = BindingHelpers.bindEventToProperty;
 wxr.bindEventToCommand = BindingHelpers.bindEventToCommand;
 
 export interface WebRxReactStatic {
-  renderEnumerable: typeof RenderHelpers.renderEnumerable;
+  renderIterable: typeof RenderHelpers.renderIterable;
   renderConditional: typeof RenderHelpers.renderConditional;
   renderNullable: typeof RenderHelpers.renderNullable;
   renderLoadable: typeof RenderHelpers.renderLoadable;
@@ -36,7 +36,7 @@ export interface WebRxReactStatic {
   focusElement: typeof RenderHelpers.focusElement;
   classNames: typeof RenderHelpers.classNames;
 }
-wxr.renderEnumerable = RenderHelpers.renderEnumerable;
+wxr.renderIterable = RenderHelpers.renderIterable;
 wxr.renderConditional = RenderHelpers.renderConditional;
 wxr.renderNullable = RenderHelpers.renderNullable;
 wxr.renderLoadable = RenderHelpers.renderLoadable;

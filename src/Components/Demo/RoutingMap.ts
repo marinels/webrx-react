@@ -92,7 +92,7 @@ const sampleDataSource = <Components.AsyncDataSource<SampleDataSourceRequest, Co
         })
         .map(x => {
           let query = x
-            .asEnumerable();
+            .asIterable();
 
           if (String.isNullOrEmpty(request.filter) === false) {
             if (request.filter === 'error') {

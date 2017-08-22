@@ -6,7 +6,7 @@ import { Property, Command } from '../../WebRx';
 import { ReactSpreadResult } from '../../Extensions/React';
 import { Alert, Logging } from '../../Utils';
 import { BaseViewModel, LifecycleComponentViewModel } from './BaseViewModel';
-import { renderEnumerable, renderConditional, renderNullable, renderLoadable, renderSizedLoadable, renderGridLoadable, focusElement, classNames } from './RenderHelpers';
+import { renderIterable, renderConditional, renderNullable, renderLoadable, renderSizedLoadable, renderGridLoadable, focusElement, classNames } from './RenderHelpers';
 import { bindObservableToCommand, bindEventToProperty, bindEventToCommand } from './BindingHelpers';
 
 export interface ViewModelProps {
@@ -25,7 +25,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
   // -----------------------------------------
   // these are render helper methods
   // -----------------------------------------
-  protected readonly renderEnumerable = renderEnumerable;
+  protected readonly renderIterable = renderIterable;
   protected readonly renderConditional = renderConditional;
   protected readonly renderNullable = renderNullable;
   protected readonly renderLoadable = renderLoadable;
