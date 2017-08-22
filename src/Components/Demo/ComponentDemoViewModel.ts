@@ -187,12 +187,12 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
         if (activator == null) {
           // project out the first expression route match (path, match, and activator)
           let result = Object.keys(this.routeMap.viewModelMap)
+            .asIterable()
             .filter(x => x != null && x.length > 0 && x[0] === '^')
             .map(x => ({ path: x, regex: new RegExp(x, 'i') }))
             .map(x => ({ path: x.path, match: x.regex.exec(componentRoute) }))
             .filter(x => x.match != null)
             .map(x => ({ path: x.path, match: x.match!, activator: this.routeMap.viewModelMap[x.path] }))
-            .asIterable()
             .first();
 
           if (result != null) {

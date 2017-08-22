@@ -187,7 +187,7 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
             x.items,
           );
         })
-        .filter(x => x != null),
+        .filterNull(),
     );
   }
 

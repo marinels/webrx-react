@@ -184,7 +184,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
         x => x,
       )
       // ignore the (first) null requests
-      .filter(x => x != null)
+      .filterNull()
       // debounce on input projection requests
       .debounceTime(rateLimit)
       .invokeCommand(this.project),
