@@ -193,7 +193,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
             .filter(x => x.match != null)
             .map(x => ({ path: x.path, match: x.match!, activator: this.routeMap.viewModelMap[x.path] }))
             .asEnumerable()
-            .firstOrDefault();
+            .first();
 
           if (result != null) {
             // if we found an expression route match, assign our activator

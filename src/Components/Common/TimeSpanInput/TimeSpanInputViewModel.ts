@@ -211,7 +211,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
             const parsedUnit = this.units
               .filter(x => x.key != null && x.key.localeCompare(unitName) === 0)
               .asEnumerable()
-              .singleOrDefault();
+              .single();
 
             if (parsedUnit != null) {
               // if the unit type is valid process the value

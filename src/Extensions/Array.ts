@@ -1,14 +1,14 @@
-import { Enumerable } from 'ix';
+import { Iterable } from 'ix';
 
 declare global {
   interface Array<T> {
-    asEnumerable(): Enumerable<T>;
+    asEnumerable(): Iterable<T>;
     filterNull<TFiltered>(this: Array<TFiltered | undefined | null>, callbackfn?: (value: TFiltered, index: number, array: Array<T | undefined | null>) => boolean): Array<TFiltered>;
   }
 }
 
 function asEnumerable<T>(this: T[]) {
-  return Enumerable.fromArray(this);
+  return Iterable.from(this);
 }
 Array.prototype.asEnumerable = asEnumerable;
 

@@ -47,8 +47,8 @@ export class PageHeaderViewModel extends BaseViewModel {
     this.adminMenuItems = this.property<HeaderCommandAction[]>(undefined, false);
     this.userMenuItems = this.property<HeaderCommandAction[]>(undefined, false);
 
-    this.toggleSideBar = this.command((isVisible: boolean) => {
-      return Object.fallback(isVisible, !this.isSidebarVisible.value);
+    this.toggleSideBar = this.command((isVisible?: boolean) => {
+      return isVisible == null ? this.isSidebarVisible.value : isVisible;
     });
 
     this.isSidebarVisible = this

@@ -18,6 +18,13 @@
     "sourceMap": true,
     "strictNullChecks": true,
     "target": "es5",
+    "lib": [
+      "dom",
+      "es5",
+      "scripthost",
+      "es2015.promise",
+      "esnext.asynciterable"
+    ],
 
     "paths": {
       "*": [ "src/types/*" ]

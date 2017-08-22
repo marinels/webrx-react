@@ -1,12 +1,10 @@
-import { Enumerable } from 'ix';
+import { Iterable } from 'ix';
 
 declare global {
   interface ObjectConstructor {
     assign<T>(target: any, ...sources: any[]): T;
     rest<TData extends StringMap<any>, TProps>(data: TData, propsCreator?: (x: TData) => TProps, ...omits: string[]): { rest: TData, props: TProps };
     getName(source: any, undefinedValue?: string): string;
-    fallback<T>(...values: T[]): T;
-    fallbackAsync<T>(...actions: (T | (() => T))[]): T;
     getEnumPropertyDescriptors<T>(type: any): EnumPropertyDescriptor<T>[];
     getEnumNames(type: any): string[];
     getEnumValues<T>(type: any): T[];
@@ -102,26 +100,6 @@ function getName(source: NamedObject, undefinedValue = 'undefined', isStatic = f
   return undefinedValue;
 }
 Object.getName = getName;
-
-// NOTE: we can't share code between this an the async variant because
-//       we don't want functions passed in here to evaluate and we don't
-//       want to evaluate all async functions ahead of time.
-function fallback<T>(...values: T[]) {
-  return Enumerable
-    .fromArray(values)
-    .filter(x => x != null)
-    .firstOrDefault();
-}
-Object.fallback = fallback;
-
-function fallbackAsync<T>(...actions: (T | (() => T))[]) {
-  return Enumerable
-    .fromArray(actions)
-    .map(x => x instanceof Function ? x() : x)
-    .filter(x => x != null)
-    .firstOrDefault();
-}
-Object.fallbackAsync = fallbackAsync;
 
 export interface EnumPropertyDescriptor<T> {
   name: string;

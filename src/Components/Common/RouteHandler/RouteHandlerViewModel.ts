@@ -256,12 +256,12 @@ export class RouteHandlerViewModel extends BaseViewModel {
       if (activator == null) {
         const result = Object
           .keys(this.routingMap)
+          .asEnumerable()
           .filter(x => x != null && x.length > 0 && x[0] === '^')
           .map(x => ({ key: x, match: new RegExp(x, 'i').exec(route.path) }))
           .filter(x => x.match != null)
           .map(x => ({ key: x.key, match: x.match!, activator: this.routingMap[x.key] }))
-          .asEnumerable()
-          .firstOrDefault();
+          .first();
 
         if (result != null) {
           // if we found a regex match route then set the match properties on the route

@@ -343,7 +343,7 @@ export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, Items
     const sortField = request.sortField;
     const sortDirection = request.sortDirection;
 
-    if (filterer != null && regex != null && source.any()) {
+    if (filterer != null && regex != null && source.some(x => true)) {
       source = source.filter(x => filterer(x, regex));
     }
 

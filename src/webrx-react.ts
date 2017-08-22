@@ -1,7 +1,8 @@
+/// <reference path="./types/declarations.d.ts" />
+
 // import all custom styles
 import './Style/App.less';
 
-import './types/declarations';
 import './types/augmentations';
 
 import './Extensions';

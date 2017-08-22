@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { findDOMNode } from 'react-dom';
 import { Grid } from 'react-bootstrap';
-import { Enumerable } from 'ix';
+import { Iterable } from 'ix';
 import * as classNamesFunc from 'classnames';
 
 import { Property } from '../../WebRx';
@@ -9,30 +9,35 @@ import { Loading } from '../Common/Loading/Loading';
 import { ValueComparison, ValueComparer } from '../../Utils/Compare';
 
 export function renderEnumerable<T>(
-  source: T[] | Enumerable<T> | undefined,
+  source: T[] | Iterable<T> | undefined,
   selector: (item: T, index: number, items: T[]) => any = item => item,
   projector: (items: T[]) => any = items => items,
   sortKey?: (item: T) => any,
   sortComparer: ValueComparison<T> = ValueComparer.DefaultComparison,
   defaultSelector: () => T | undefined = () => undefined,
 ) {
+  let iterable: Iterable<T>;
+
   if (source == null) {
-    source = Enumerable.empty<T>();
+    iterable = Iterable.empty<T>();
   }
   else if (Array.isArray(source)) {
-    source = source.asEnumerable();
+    iterable = source.asEnumerable();
+  }
+  else {
+    iterable = source;
   }
 
   if (sortKey != null) {
-    source = source
+    iterable = iterable
       .orderBy(sortKey, sortComparer);
   }
 
   return projector(
-    source
+    iterable
       .defaultIfEmpty(defaultSelector())
-      .filter(x => x != null)
-      .toArray()
+      .filterNull()
+      .toArray<T>()
       .map((x, i, a) => selector(x, i, a)),
   );
 }
