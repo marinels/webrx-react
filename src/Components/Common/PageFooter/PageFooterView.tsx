@@ -54,7 +54,7 @@ export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewMode
       return { copyright, copyrightYear, copyrightUri, footerContent, hideDimensions };
     });
 
-    const copyright = this.renderConditional(
+    const copyrightContent = this.renderConditional(
       props.copyright !== false,
       () => (
         <span className='PageFooter-text'>
@@ -79,10 +79,10 @@ export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewMode
           <Row>
             <Col md={ 12 }>
               <div className='PageFooter-container'>
-                { copyright }
+                { copyrightContent }
                 {
                   this.renderConditional(
-                    copyright != null && dimensions != null,
+                    copyrightContent != null && dimensions != null,
                     () => (<span className='PageFooter-spacer text-muted'> | </span>),
                   )
                 }

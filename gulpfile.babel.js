@@ -428,23 +428,26 @@ function webpackBuild(build, webpackConfig, callback) {
 
   log('Bundling', util.colors.yellow(build), 'Build:', util.colors.magenta(target));
 
-  return webpackStream(webpackConfig, webpack, (err, stats) => {
-    if (callback) {
-      callback(err, stats);
+  return webpackStream(
+    webpackConfig,
+    webpack,
+    (err, stats) => {
+      if (callback) {
+        callback(err, stats);
 
-      return;
-    }
+        return;
+      }
 
-    onWebpackComplete(build, err, stats);
+      onWebpackComplete(build, err, stats);
 
-    if (webpackConfig.watch !== true && (err || (stats.compilation.errors || []).length)) {
-      // this is required for external scripts to handle webpack errors
-      // eslint-disable-next-line no-process-exit
-      process.exit(1);
-    }
-  })
-  // this is required to swallow webpack-stream errors (we handle them on our own)
-  .on('error', () => null);
+      if (webpackConfig.watch !== true && (err || (stats.compilation.errors || []).length)) {
+        // this is required for external scripts to handle webpack errors
+        // eslint-disable-next-line no-process-exit
+        process.exit(1);
+      }
+    })
+    // this is required to swallow webpack-stream errors (we handle them on our own)
+    .on('error', () => null);
 }
 
 function webpackWatcherStream(webpackConfig, build) {

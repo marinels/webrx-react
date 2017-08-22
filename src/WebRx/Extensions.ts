@@ -35,11 +35,11 @@ function addSubscriptions<T extends TeardownLogic>(this: Subscription, ...subscr
 }
 Subscription.prototype.addSubscriptions = addSubscriptions;
 
-function unsubscribe<T>(subscription: T, unsubscribedValue = Subscription.EMPTY) {
+function unsubscribe<T>(subscription: T, unsubscribedValue?: T): T {
   if (isSubscription(subscription)) {
     subscription.unsubscribe();
 
-    return unsubscribedValue;
+    return unsubscribedValue || <any>Subscription.EMPTY;
   }
 
   return subscription;
@@ -48,7 +48,7 @@ Subscription.unsubscribe = unsubscribe;
 
 declare module 'rxjs/Observable' {
   interface Observable<T> {
-    filterNull<T>(this: Observable<T | undefined | null>, callbackfn?: (value: T, index: number) => boolean): Observable<T>;
+    filterNull<TFiltered>(this: Observable<TFiltered | undefined | null>, callbackfn?: (value: TFiltered, index: number) => boolean): Observable<TFiltered>;
     toProperty(initialValue?: T, compare?: boolean | ((x: T, y: T) => boolean), keySelector?: (x: T) => any): ReadOnlyProperty<T>;
     observeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>): Observable<TRet>;
     invokeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>, observer: Observer<T>): Subscription;
@@ -61,8 +61,8 @@ declare module 'rxjs/operator/startWith' {
   function startWith<T, TOther>(this: Observable<T>, ...array: Array<TOther | IScheduler>): Observable<T | TOther>;
 }
 
-function filterNull<T>(this: Observable<T | undefined | null>, callbackfn?: (value: T, index: number) => boolean) {
-  return this
+function filterNull<T>(this: Observable<T | undefined | null>, callbackfn?: (value: T, index: number) => boolean): Observable<T> {
+  return (<Observable<T>>this)
     .filter((x, i) => {
       if (x == null) {
         return false;

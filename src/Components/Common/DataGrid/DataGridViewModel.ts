@@ -184,7 +184,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
         x => x,
       )
       // ignore the (first) null requests
-      .filter(x => x != null)
+      .filterNull()
       // debounce on input projection requests
       .debounceTime(rateLimit)
       .invokeCommand(this.project),
@@ -335,7 +335,7 @@ export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, Items
   getProjectionResult(request: ItemsProjectionRequest<TData>) {
     let source = this
       .preFilter(request.items || [])
-      .asEnumerable();
+      .asIterable();
 
     const filterer = this.filterer;
     const comparer = this.comparer;
@@ -343,12 +343,12 @@ export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, Items
     const sortField = request.sortField;
     const sortDirection = request.sortDirection;
 
-    if (filterer != null && regex != null && source.any()) {
+    if (filterer != null && regex != null && source.some(x => true)) {
       source = source.filter(x => filterer(x, regex));
     }
 
     if (comparer != null && !String.isNullOrEmpty(sortField) && sortDirection != null) {
-      source = comparer.sortEnumerable(source, sortField, sortDirection);
+      source = comparer.sortIterable(source, sortField, sortDirection);
     }
 
     let items = source.toArray();

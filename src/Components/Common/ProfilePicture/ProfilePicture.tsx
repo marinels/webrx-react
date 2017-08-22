@@ -61,14 +61,14 @@ export class ProfilePicture extends React.Component<ProfilePictureProps, any> {
       'ProfilePicture-iconRounded': props.rounded,
     };
 
-    const style = Object.assign({}, props.style, {
+    const iconStyle = Object.assign({}, props.style, {
       width: props.size,
       height: props.size,
       lineHeight: `${ props.size }px`,
     });
 
     return (
-      <div { ...rest } className={ wxr.classNames('ProfilePicture', 'ProfilePicture-icon', iconClassNames, className) } style={ style }>
+      <div { ...rest } className={ wxr.classNames('ProfilePicture', 'ProfilePicture-icon', iconClassNames, className) } style={ iconStyle }>
         <Icon name={ props.defaultIcon! } size={ props.iconSize } />
       </div>
     );
@@ -80,13 +80,13 @@ export class ProfilePicture extends React.Component<ProfilePictureProps, any> {
       return { size, defaultSrc, defaultIcon, iconSize, style };
     });
 
-    const style = Object.assign({}, props.style, {
+    const imageStyle = Object.assign({}, props.style, {
       width: this.props.responsive === true ? null : props.size,
       height: this.props.responsive === true ? null : props.size,
     });
 
     return (
-      <Image { ...rest } className={ wxr.classNames('ProfilePicture', className) } style={ style }
+      <Image { ...rest } className={ wxr.classNames('ProfilePicture', className) } style={ imageStyle }
         src={ src } width={ props.size } height={ props.size }
       />
     );

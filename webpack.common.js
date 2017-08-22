@@ -12,9 +12,6 @@ module.exports = {
   resolve: {
     extensions: [ '.ts', '.tsx', '.webpack.js', '.web.js', '.js' ],
     alias: {
-      // the ix package uses Ix to refer to l2o for some reason
-      // eslint-disable-next-line id-length
-      Ix: 'ix/l2o',
     },
   },
   // failOnError: true,

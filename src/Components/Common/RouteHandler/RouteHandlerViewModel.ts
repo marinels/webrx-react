@@ -38,13 +38,13 @@ export class RouteHandlerViewModel extends BaseViewModel {
     this.currentRoute = this
       .whenAny(Manager.currentRoute, x => x)
       // a null route will never get processed so we can filter them out back here
-      .filter(x => x != null)
+      .filterNull()
       .toProperty();
 
     const loadComponentParams = this
       .whenAny(this.currentRoute, x => x)
       // we also need to filter out null routes here (this should only occur for the first event)
-      .filter(x => x != null)
+      .filterNull()
       .map(x => {
         // load the routed activator from our routing map
         return this.getActivator(x);
@@ -254,14 +254,13 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
       // if there is no directly mapped route, check for a RegExp route
       if (activator == null) {
-        const result = Object
-          .keys(this.routingMap)
+        const result = Object.keys(this.routingMap)
+          .asIterable()
           .filter(x => x != null && x.length > 0 && x[0] === '^')
           .map(x => ({ key: x, match: new RegExp(x, 'i').exec(route.path) }))
           .filter(x => x.match != null)
           .map(x => ({ key: x.key, match: x.match!, activator: this.routingMap[x.key] }))
-          .asEnumerable()
-          .firstOrDefault();
+          .first();
 
         if (result != null) {
           // if we found a regex match route then set the match properties on the route

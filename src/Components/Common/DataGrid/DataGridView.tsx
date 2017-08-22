@@ -253,7 +253,7 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
       <tr>
         {
           columns
-            .asEnumerable()
+            .asIterable()
             .map((x, i) => this.renderColumnHeader(x, i, columns, viewModel, view))
             .defaultIfEmpty(this.renderEmptyColumns(viewModel, view))
             .toArray()
@@ -316,7 +316,7 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
 
   protected renderRows(columns: DataGridColumnProps[], viewModel: ReadonlyDataGridViewModel<TData>, view: DataGridView) {
     return (viewModel.projectedItems.value || [])
-      .asEnumerable()
+      .asIterable()
       .map((x, i) => this.renderRow(x, i, columns, viewModel, view))
       .defaultIfEmpty(
         <tr key='rows-empty'>
@@ -336,7 +336,7 @@ export class DataGridTableViewTemplate<TData> implements DataGridViewTemplate<TD
     });
 
     const rowContent = (columns || [])
-      .asEnumerable()
+      .asIterable()
       .map((x, i) => this.renderCell(item, index, x, i, columns, viewModel, view))
       .defaultIfEmpty(this.renderEmptyColumns(viewModel, view))
       .toArray();

@@ -1,4 +1,4 @@
-import { Enumerable, Comparer as IxComparer } from 'ix';
+import { Iterable } from 'ix';
 
 export interface Comparable<T> {
   compareTo(other: T): number;
@@ -8,7 +8,8 @@ export function isComparable<T>(obj: any): obj is Comparable<T> {
   return (<Comparable<T>>obj).compareTo instanceof Function;
 }
 
-export interface ValueComparison<T> extends IxComparer<T, T> {
+export interface ValueComparison<T> {
+  (a: T, B: T): number;
 }
 
 export interface Comparer<T> {
@@ -124,13 +125,14 @@ export class ObjectComparer<T extends StringMap<any>> {
       comparer.valueSelector(source, comparer.field);
   }
 
-  public sortEnumerable(source: Enumerable<T>, field: string, direction: SortDirection) {
+  public sortIterable(source: Iterable<T>, field: string, direction: SortDirection = SortDirection.Ascending) {
     const comparer = this.getComparer(field);
     const defaultComparer = this.defaultComparer;
 
     if (direction === SortDirection.Ascending) {
-      const orderedSource = source = source
+      const orderedSource = source
         .orderBy(x => this.getValue(x, comparer), this.getCompare(comparer));
+      source = orderedSource;
 
       if (defaultComparer != null) {
         source = orderedSource
@@ -138,8 +140,9 @@ export class ObjectComparer<T extends StringMap<any>> {
       }
     }
     else if (direction === SortDirection.Descending) {
-      const orderedSource = source = source
+      const orderedSource = source
         .orderByDescending(x => this.getValue(x, comparer), comparer.compare);
+      source = orderedSource;
 
       if (defaultComparer != null) {
         source = orderedSource
