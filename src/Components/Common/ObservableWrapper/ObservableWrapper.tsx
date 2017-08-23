@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { Observable, Subscription } from 'rxjs';
 
-import { wx, ObservableOrProperty, ReadOnlyProperty } from '../../../WebRx';
+import { wx, ObservableLike, ReadOnlyProperty } from '../../../WebRx';
 
 export interface ObservableWrapperProps {
-  observableOrProperty: ObservableOrProperty<any>;
+  ObservableLike: ObservableLike<any>;
   render?: (x: any) => any;
 }
 
@@ -21,7 +21,7 @@ export class ObservableWrapper extends React.Component<ObservableWrapperProps, O
   private subscription: Subscription;
 
   componentWillMount() {
-    this.property = wx.getObservable(this.props.observableOrProperty)
+    this.property = wx.getObservable(this.props.ObservableLike)
       .toProperty();
     this.subscription = wx
       .whenAny(this.property, x => x)

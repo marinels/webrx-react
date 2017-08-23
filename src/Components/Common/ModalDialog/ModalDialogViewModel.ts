@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-import { ObservableOrProperty, ReadOnlyProperty, Command } from '../../../WebRx';
+import { ObservableLike, ReadOnlyProperty, Command } from '../../../WebRx';
 import { BaseViewModel } from '../../React/BaseViewModel';
 
 export class ModalDialogViewModel<T> extends BaseViewModel {
@@ -13,7 +13,7 @@ export class ModalDialogViewModel<T> extends BaseViewModel {
   public readonly hide: Command<boolean>;
 
   constructor(
-    context: ObservableOrProperty<T>,
+    context: ObservableLike<T>,
   ) {
     super();
 

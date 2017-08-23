@@ -1,7 +1,7 @@
 import { AnonymousSubscription } from 'rxjs/Subscription';
 import { Observable, Observer, Subject, Subscription } from 'rxjs';
 
-import { Property, Command, ObservableOrPropertyOrValue } from './Interfaces';
+import { Property, Command, ObservableLike } from './Interfaces';
 import { LogLevel } from '../Utils/Logging/LogLevel';
 import { Default as ConsoleLogger } from '../Utils/Logging/Adapters/Console';
 
@@ -61,38 +61,48 @@ export function asObservable<T>(value: T | Observable<T>) {
   return isObservable(value) ? value : Observable.of(value);
 }
 
-export function getObservable<T>(observableOrProperty: ObservableOrPropertyOrValue<T>) {
-  if (isProperty(observableOrProperty)) {
-    return observableOrProperty.changed.startWith(observableOrProperty.value);
+export function getObservable<T>(
+  observableLike: ObservableLike<T>,
+) {
+  if (isProperty(observableLike)) {
+    return observableLike.changed.startWith(observableLike.value);
   }
 
-  if (isObservable(observableOrProperty)) {
-    return observableOrProperty;
+  if (isCommand(observableLike)) {
+    return observableLike.results;
   }
 
-  if (observableOrProperty != null) {
-    return Observable.of(observableOrProperty);
+  if (isObservable(observableLike)) {
+    return observableLike;
+  }
+
+  if (observableLike != null) {
+    return Observable.of(observableLike);
   }
 
   return Observable.never<T>();
 }
 
 export function getProperty<T>(
-  observableOrProperty: ObservableOrPropertyOrValue<T>,
+  observableLike: ObservableLike<T>,
   initialValue?: T,
   compare?: boolean | ((x: T, y: T) => boolean),
   keySelector?: (x: T) => any,
 ) {
-  if (isProperty(observableOrProperty)) {
-    return observableOrProperty;
+  if (isProperty(observableLike)) {
+    return observableLike;
   }
 
-  if (isObservable(observableOrProperty)) {
-    return observableOrProperty.toProperty(initialValue);
+  if (isCommand(observableLike)) {
+    return observableLike.results.toProperty(initialValue);
   }
 
-  if (initialValue == null && observableOrProperty != null) {
-    initialValue = observableOrProperty;
+  if (isObservable(observableLike)) {
+    return observableLike.toProperty(initialValue);
+  }
+
+  if (initialValue == null && observableLike != null) {
+    initialValue = observableLike;
   }
 
   return new Subject<T>().toProperty(initialValue, compare, keySelector);

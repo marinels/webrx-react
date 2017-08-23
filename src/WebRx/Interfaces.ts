@@ -13,10 +13,7 @@ export interface Property<T> extends ReadOnlyProperty<T> {
   value: T;
 }
 
-export type ObservableOrProperty<T> = Observable<T> | Property<T>;
-export type OOP<T> = ObservableOrProperty<T>;
-export type ObservableOrPropertyOrValue<T> = ObservableOrProperty<T> | T;
-export type OOPOV<T> = ObservableOrPropertyOrValue<T>;
+export type ObservableLike<T> = Observable<T> | Property<T> | Command<T> | T;
 
 export interface Command<T> {
   readonly isExecutingObservable: Observable<boolean>;

@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-import { ReadOnlyProperty, ObservableOrProperty } from '../../../WebRx';
+import { ReadOnlyProperty, ObservableLike } from '../../../WebRx';
 import { BaseViewModel } from '../../React/BaseViewModel';
 import { AlertHostViewModel } from '../Alert/AlertHostViewModel';
 import { PageHeaderViewModel } from '../PageHeader/PageHeaderViewModel';
@@ -23,7 +23,7 @@ export class AppViewModel extends BaseViewModel {
 
   public readonly isLoading: ReadOnlyProperty<boolean>;
 
-  constructor(alerts = false, header = false, footer = false, isLoading?: ObservableOrProperty<boolean>, routingMap = RouteMap) {
+  constructor(alerts = false, header = false, footer = false, isLoading?: ObservableLike<boolean>, routingMap = RouteMap) {
     super();
 
     if (alerts === true) {
