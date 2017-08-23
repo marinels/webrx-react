@@ -9,14 +9,14 @@ import { BaseViewModel } from './BaseViewModel';
  */
 export function bindObservableToCommand<TViewModel extends BaseViewModel, TInput, TResult>(
   viewModel: Readonly<TViewModel>,
-  ObservableLike: ObservableLike<TInput>,
+  observableLike: ObservableLike<TInput>,
   commandSelector: (viewModel: Readonly<TViewModel>) => Command<TResult>,
   onNext?: (value: TInput) => void,
   onError?: (exception: any) => void,
   onCompleted?: () => void,
 ): Subscription {
   return viewModel.addSubscription(
-    getObservable(ObservableLike)
+    getObservable(observableLike)
       .invokeCommand(commandSelector(viewModel), onNext, onError, onCompleted),
   );
 }

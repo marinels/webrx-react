@@ -130,7 +130,7 @@ export const demoViewMap: ViewActivatorMap = {
     </div>
   ),
   ObservableWrapper: () => (
-    <Components.ObservableWrapper ObservableLike={ Observable.timer(0, 1000) } render={ x => (<div>Current Value is { x }</div>) } />
+    <Components.ObservableWrapper observable={ Observable.timer(0, 1000) } render={ x => (<div>Current Value is { x }</div>) } />
   ),
   SearchViewModel: (viewModel: Components.SearchViewModel) => (
     <Form horizontal>
