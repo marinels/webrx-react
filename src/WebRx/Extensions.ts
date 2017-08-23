@@ -1,5 +1,6 @@
 import { Subscription, AnonymousSubscription, TeardownLogic } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
+import { PartialObserver } from 'rxjs/Observer';
 import { Observer } from 'rxjs';
 import { IScheduler } from 'rxjs/Scheduler';
 import { startWith } from 'rxjs/operator/startWith';
@@ -51,8 +52,8 @@ declare module 'rxjs/Observable' {
     filterNull<TFiltered>(this: Observable<TFiltered | undefined | null>, callbackfn?: (value: TFiltered, index: number) => boolean): Observable<TFiltered>;
     toProperty(initialValue?: T, compare?: boolean | ((x: T, y: T) => boolean), keySelector?: (x: T) => any): ReadOnlyProperty<T>;
     observeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>): Observable<TRet>;
-    invokeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>, observer: Observer<T>): Subscription;
-    invokeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>, onNext?: (value: T) => void, onError?: (exception: any) => void, onCompleted?: () => void): Subscription;
+    invokeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>, observer: PartialObserver<T>): Subscription;
+    invokeCommand<TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>, next?: (value: T) => void, error?: (error: any) => void, complete?: () => void): Subscription;
   }
 }
 
@@ -102,14 +103,14 @@ Observable.prototype.observeCommand = observeCommand;
 function invokeCommand<T, TRet>(
   this: Observable<T>,
   command: ((x: T) => Command<TRet>) | Command<TRet>,
-  observerOrNext?: Observer<TRet> | ((value: TRet) => void),
-  onError?: (exception: any) => void,
-  onCompleted?: () => void,
+  observerOrNext?: PartialObserver<TRet> | ((value: TRet) => void),
+  error?: (error: any) => void,
+  complete?: () => void,
 ): Subscription {
   const obs = this
     .observeCommand(command);
 
   return obs
-    .subscribe.apply(obs, [ observerOrNext, onError, onCompleted ]);
+    .subscribe.apply(obs, [ observerOrNext, error, complete ]);
 }
 Observable.prototype.invokeCommand = invokeCommand;

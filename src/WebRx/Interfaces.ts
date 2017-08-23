@@ -1,4 +1,5 @@
 import { Observable, Observer, Subscription } from 'rxjs';
+import { PartialObserver } from 'rxjs/Observer';
 
 export interface ReadOnlyProperty<T> {
   readonly changed: Observable<T>;
@@ -29,15 +30,13 @@ export interface Command<T> {
 
   execute(
     parameter?: any,
-    observerOrNext?: Observer<T>,
-    onError?: (exception: any) => void,
-    onCompleted?: () => void,
+    observer?: PartialObserver<T>,
   ): Subscription;
 
   execute(
     parameter?: any,
-    onNext?: (value: T) => void,
-    onError?: (exception: any) => void,
-    onCompleted?: () => void,
+    next?: (value: T) => void,
+    error?: (error: any) => void,
+    complete?: () => void,
   ): Subscription;
 }
