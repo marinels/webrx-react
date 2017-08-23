@@ -8,7 +8,7 @@ import {
   isObservable, isObserver, isSubject, isProperty, isCommand, asObservable,
   getObservable, getProperty, handleError,
 } from '../../WebRx/Utils';
-import { ObservableOrProperty, Command } from '../../WebRx';
+import { ObservableLike, Command } from '../../WebRx';
 import { Logging, Alert } from '../../Utils';
 import { Manager } from '../../Routing/RouteManager';
 import { getObservableOrAlert, getObservableResultOrAlert, subscribeOrAlert, logMemberObservables } from './ObservableHelpers';

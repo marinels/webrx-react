@@ -1,4 +1,4 @@
-import { wx, ObservableOrProperty } from '../../../WebRx';
+import { wx, ObservableLike } from '../../../WebRx';
 import { BaseItemListPanelViewModel } from './BaseItemListPanelViewModel';
 import { DataGridViewModel, ProjectionRequest, ProjectionResult } from '../DataGrid/DataGridViewModel';
 import { ObjectComparer } from '../../../Utils/Compare';
@@ -11,12 +11,12 @@ export class ItemListPanelViewModel<TData> extends BaseItemListPanelViewModel<TD
   }
 
   constructor(
-    items?: ObservableOrProperty<TData[]>,
+    items?: ObservableLike<TData[]>,
     filterer?: (item: TData, regex: RegExp) => boolean,
     comparer?: string | ObjectComparer<TData>,
     preFilter?: (items: TData[]) => TData[],
     isMultiSelectEnabled?: boolean,
-    isLoading?: ObservableOrProperty<boolean>,
+    isLoading?: ObservableLike<boolean>,
     pagerLimit?: number,
     rateLimit?: number,
     isRoutingEnabled?: boolean,

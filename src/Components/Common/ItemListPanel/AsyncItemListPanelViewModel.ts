@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-import { ObservableOrProperty, ReadOnlyProperty } from '../../../WebRx';
+import { ObservableLike, ReadOnlyProperty } from '../../../WebRx';
 import { BaseItemListPanelViewModel } from './BaseItemListPanelViewModel';
 import { AsyncDataGridViewModel, isAsyncDataSource, AsyncDataSource } from '../DataGrid/AsyncDataGridViewModel';
 import { ProjectionRequest, ProjectionResult } from '../DataGrid/DataGridViewModel';
@@ -13,7 +13,7 @@ export class AsyncItemListPanelViewModel<TData, TRequest extends ProjectionReque
     enableFilter?: boolean,
     enableSort?: boolean,
     isMultiSelectEnabled?: boolean,
-    isLoading?: ObservableOrProperty<boolean>,
+    isLoading?: ObservableLike<boolean>,
     pagerLimit?: number,
     rateLimit?: number,
     isRoutingEnabled?: boolean,
