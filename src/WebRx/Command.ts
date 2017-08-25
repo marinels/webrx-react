@@ -1,8 +1,8 @@
 import { Observable, Subject, BehaviorSubject, Subscription } from 'rxjs';
 import { PartialObserver } from 'rxjs/Observer';
 
-import { Command } from './Interfaces';
-import { isObservable, ObservableOrValue, asObservable, handleError } from './Utils';
+import { Command, ObservableOrValue } from './Interfaces';
+import { isObservable, asObservable, handleError } from './Utils';
 
 export type ExecutionAction<T> = (parameter: any) => ObservableOrValue<T>;
 
