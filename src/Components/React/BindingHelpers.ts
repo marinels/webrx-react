@@ -15,7 +15,7 @@ export function bindObservableToCommand<TViewModel extends BaseViewModel, TInput
   onError?: (exception: any) => void,
   onCompleted?: () => void,
 ): Subscription {
-  return viewModel.addSubscription(
+  return (<TViewModel>viewModel).addSubscription(
     getObservable(observableLike)
       .invokeCommand(commandSelector(viewModel), onNext, onError, onCompleted),
   );
