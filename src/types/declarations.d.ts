@@ -16,5 +16,4 @@ declare global {
   }
 }
 
-// import missing ix operators
-import 'ix/types/add/iterable-operators/orderby';
+export {};

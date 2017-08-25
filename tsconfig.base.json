@@ -2,13 +2,16 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": ".",
+    "downlevelIteration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "importHelpers": true,
     "inlineSources": true,
     "jsx": "react",
     "module": "commonjs",
     "moduleResolution": "node",
     "newLine": "LF",
+    "noEmitHelpers": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": false,
@@ -27,6 +30,7 @@
     ],
 
     "paths": {
+      "ix/*": [ "node_modules/ix/types/*" ],
       "*": [ "src/types/*" ]
     }
   }

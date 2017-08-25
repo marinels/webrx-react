@@ -1,9 +1,12 @@
+import { isIterable, isAsyncIterable } from 'ix/internal/isiterable';
 import { AnonymousSubscription } from 'rxjs/Subscription';
 import { Observable, Observer, Subject, Subscription } from 'rxjs';
 
-import { Property, Command, ObservableLike } from './Interfaces';
+import { Property, Command, IterableLike, AsyncIterableLike, ObservableOrValue, ObservableLike } from './Interfaces';
 import { LogLevel } from '../Utils/Logging/LogLevel';
 import { Default as ConsoleLogger } from '../Utils/Logging/Adapters/Console';
+
+export { isIterable, isAsyncIterable };
 
 export function isSubscription(value: any): value is AnonymousSubscription {
   if (value == null) {
@@ -56,8 +59,6 @@ export function isCommand<T>(value: any): value is Command<T> {
 
   return cmd.isCommand instanceof Function && cmd.isCommand();
 }
-
-export type ObservableOrValue<T> = T | Observable<T>;
 
 export function asObservable<T>(value: ObservableOrValue<T>) {
   return isObservable(value) ? value : Observable.of(value);
