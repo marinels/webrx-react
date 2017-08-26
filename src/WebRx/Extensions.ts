@@ -9,7 +9,7 @@ import { Observer } from 'rxjs';
 import { IScheduler } from 'rxjs/Scheduler';
 import { startWith } from 'rxjs/operator/startWith';
 
-import { ReadOnlyProperty, Command } from './Interfaces';
+import { ReadOnlyProperty, Command, Property } from './Interfaces';
 import { isSubscription } from './Utils';
 import { property } from './Property';
 
@@ -56,7 +56,7 @@ export function filterNullObservable<T>(this: Observable<T | undefined | null>, 
     });
 }
 
-export function toProperty<T>(this: Observable<T>, initialValue?: T, compare?: boolean | ((x: T, y: T) => boolean), keySelector?: (x: T) => any) {
+export function toProperty<T>(this: Observable<T>, initialValue?: T, compare?: boolean | ((x: T, y: T) => boolean), keySelector?: (x: T) => any): Property<T> {
   return property(initialValue, compare, keySelector, this);
 }
 
