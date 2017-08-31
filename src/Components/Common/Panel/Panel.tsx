@@ -13,7 +13,7 @@ export interface PanelItemProps<T extends PanelItemContext = PanelItemContext> {
   itemStyle?: PanelItemProp<React.CSSProperties, T>;
 }
 
-export interface PanelProps extends PanelItemProps {
+export interface PanelProps extends React.HTMLAttributes<PanelProps>, PanelItemProps {
   componentClass?: React.ReactType;
 }
 

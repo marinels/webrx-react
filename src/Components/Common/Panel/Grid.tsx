@@ -126,7 +126,7 @@ export class GridLayoutDefinition {
   }
 }
 
-export interface GridProps extends React.HTMLAttributes<GridProps>, PanelProps {
+export interface GridProps extends PanelProps {
   border?: boolean;
 }
 

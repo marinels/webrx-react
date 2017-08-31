@@ -28,7 +28,7 @@ export interface ItemsPresenterTemplateProps {
   itemTemplate?: (item: {}, index: number) => React.ReactNode;
 }
 
-export interface ItemsPresenterProps extends ItemsPresenterTemplateProps {
+export interface ItemsPresenterProps extends React.HTMLAttributes<ItemsPresenterProps>, ItemsPresenterTemplateProps {
   itemsSource: IterableLike<{}>;
 }
 

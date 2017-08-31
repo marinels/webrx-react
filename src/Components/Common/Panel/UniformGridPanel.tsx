@@ -15,7 +15,7 @@ export interface UniformColumnItemProps {
   columnStyle?: PanelItemProp<React.CSSProperties, GridColumnContext>;
 }
 
-export interface UniformGridPanelProps extends React.HTMLAttributes<UniformGridPanelProps>, PanelProps, UniformRowItemProps, UniformColumnItemProps {
+export interface UniformGridPanelProps extends PanelProps, UniformRowItemProps, UniformColumnItemProps {
   columns: number;
   rows: number;
   firstColumn?: number;

@@ -33,7 +33,7 @@ export interface TreeItemRenderProps {
   startExpanded?: boolean;
 }
 
-export interface TreeItemProps extends TreeItemSourceProps, TreeItemRenderProps, ItemsPresenterTemplateProps {
+export interface TreeItemProps extends React.HTMLAttributes<TreeItemProps>, TreeItemSourceProps, TreeItemRenderProps, ItemsPresenterTemplateProps {
   /**
    * the item that this tree node represents
    */

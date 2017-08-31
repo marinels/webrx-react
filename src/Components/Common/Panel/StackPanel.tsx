@@ -8,7 +8,7 @@ export enum StackPanelOrientation {
   Vertical,
 }
 
-export interface StackPanelProps extends React.HTMLAttributes<StackPanelProps>, PanelProps {
+export interface StackPanelProps extends PanelProps {
   orientation?: StackPanelOrientation | 'Horizontal' | 'Vertical';
 }
 
