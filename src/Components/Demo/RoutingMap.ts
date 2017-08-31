@@ -20,7 +20,7 @@ export interface SampleData {
 export interface SampleTreeData extends SampleData, Components.HierarchicalItemsSource<SampleTreeData> {
 }
 
-const sampleListData = <SampleData[]>[
+export const sampleListData = <SampleData[]>[
   { cat: 'test', name: 'test 1', requiredBy: 'now' },
   { cat: 'test', name: 'test 2', requiredBy: 'tomorrow' },
   { cat: 'test', name: 'test 3', requiredBy: 'yesterday' },
@@ -34,7 +34,7 @@ const sampleListData = <SampleData[]>[
   { cat: 'test', name: 'test 11', requiredBy: 'test11' },
 ].map((x, i) => Object.assign<SampleData>(x, { id: i + 1 }));
 
-const sampleTreeData = sampleListData
+export const sampleTreeData = sampleListData
   .map(x => Object
     .assign<SampleTreeData>({
       items: sampleListData
