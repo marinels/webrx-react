@@ -192,6 +192,59 @@ export const demoViewMap: ViewActivatorMap = {
       </div>
     );
   },
+  GridPanel: () => (
+    <Components.Grid border style={({ height: 400 })}>
+      <Components.Grid.Rows>
+        <Components.RowDefinition height={ 100 } />
+        <Components.RowDefinition height={ 200 } />
+        <Components.RowDefinition />
+      </Components.Grid.Rows>
+      <Components.Grid.Columns itemClassName={ ctx => `Col-${ ctx.column }` } itemStyle={({ verticalAlign: 'middle' })}>
+        <Components.ColumnDefinition width={ 200 } />
+        <Components.ColumnDefinition width='2*' />
+        <Components.ColumnDefinition />
+      </Components.Grid.Columns>
+      <div data-grid-row={ 0 } data-grid-column={ 0 }>(0, 0): [ 200px width, 100px height ]</div>
+      <div data-grid-row={ 0 } data-grid-column={ 1 }>(1, 0): [ 2x stretch width, 100px height ]</div>
+      <div data-grid-row={ 0 } data-grid-column={ 2 }>(2, 0): [ 1x stretch width, 100px height ]</div>
+      <div data-grid-row={ 1 } data-grid-column={ 0 }>(0, 1): [ 200px width, 200px height ]</div>
+      <div data-grid-row={ 1 } data-grid-column={ 1 }>(1, 1): [ 2x stretch width, 200px height ]</div>
+      <div data-grid-row={ 1 } data-grid-column={ 2 }>(2, 1): [ 1x stretch width, 200px height ]</div>
+      <div data-grid-row={ 2 } data-grid-column={ 0 }>(0, 2): [ 200px width, 1x stretch height ]</div>
+      <div data-grid-row={ 2 } data-grid-column={ 1 }>(1, 2): [ 2x stretch width, 1x stretch height ]</div>
+      <div data-grid-row={ 2 } data-grid-column={ 2 }>(2, 2): [ 1x stretch width, 1x stretch height ]</div>
+    </Components.Grid>
+  ),
+  StackPanel: () => (
+    <div>
+      <Components.StackPanel orientation='Horizontal'>
+        <Label>Item 1</Label>
+        <Label>Item 2</Label>
+        <Label>Item 3</Label>
+      </Components.StackPanel>
+      <Components.StackPanel>
+        <Label>Item 1</Label>
+        <Label>Item 2</Label>
+        <Label>Item 3</Label>
+      </Components.StackPanel>
+    </div>
+  ),
+  UniformGridPanel: () => (
+    <Components.UniformGridPanel rows={ 3 } columns={ 2 } border renderEmptyRows
+      columnStyle={({ height: 50, verticalAlign: 'middle' })}
+    >
+      <Label key={ 1 }>Item 1</Label>
+      <Label key={ 2 }>Item 2</Label>
+      <Label key={ 3 }>Item 3</Label>
+    </Components.UniformGridPanel>
+  ),
+  WrapPanel: () => (
+    <Components.WrapPanel>
+      <Label>Item 1</Label>
+      <Label>Item 2</Label>
+      <Label>Item 3</Label>
+    </Components.WrapPanel>
+  ),
   ItemsViewModel: (viewModel: Components.ItemsViewModel<{}>, componentRoute: string) => {
     switch (componentRoute) {
       case 'ItemsWrap':
