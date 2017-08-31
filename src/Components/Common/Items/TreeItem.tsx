@@ -31,6 +31,11 @@ export interface TreeItemRenderProps {
    * set the isExpanded intial state
    */
   startExpanded?: boolean;
+
+  expandedIconName?: string;
+  collapsedIconName?: string;
+
+  expanderIconTemplate?: (isExpanded: boolean, expandedIconName?: string, collapsedIconName?: string) => React.ReactNode;
 }
 
 export interface TreeItemProps extends React.HTMLAttributes<TreeItemProps>, TreeItemSourceProps, TreeItemRenderProps, ItemsPresenterTemplateProps {
@@ -55,6 +60,9 @@ export class TreeItem extends React.Component<TreeItemProps, TreeItemState> {
     depth: 0,
   };
 
+  public static defaultExpandedIconName = 'minus-square-o';
+  public static defaultCollapsedIconName = 'plus-square-o';
+
   public static defaultItemsTemplate(items: IterableLike<{}> | undefined, view: TreeItem) {
     return (view.state.isExpanded === false || items == null) ? false : (
       <ItemsPresenter
@@ -69,6 +77,9 @@ export class TreeItem extends React.Component<TreeItemProps, TreeItemState> {
               itemsSource={ view.props.itemsSource }
               depth={ (view.props.depth || 0) + 1 }
               startExpanded={ view.props.startExpanded }
+              expandedIconName={ view.props.expandedIconName }
+              collapsedIconName={ view.props.collapsedIconName }
+              expanderIconTemplate={ view.props.expanderIconTemplate }
               viewTemplate={ view.props.viewTemplate }
               itemsPanelTemplate={ view.props.itemsPanelTemplate }
               itemTemplate={ view.props.itemTemplate }
@@ -78,6 +89,18 @@ export class TreeItem extends React.Component<TreeItemProps, TreeItemState> {
           return React.cloneElement(treeItem, { key: treeItem.key || index });
         }}
       />
+    );
+  }
+
+  public static defaultExpanderIconTemplate(
+    isExpanded: boolean,
+    expandedIconName = TreeItem.defaultExpandedIconName,
+    collapsedIconName = TreeItem.defaultCollapsedIconName,
+  ) {
+    const iconName = isExpanded === true ? expandedIconName : collapsedIconName;
+
+    return (
+      <Icon name={ iconName } size='lg' fixedWidth />
     );
   }
 
@@ -144,6 +167,10 @@ export class TreeItem extends React.Component<TreeItemProps, TreeItemState> {
       .toArray();
   }
 
+  protected renderExpanderIcon() {
+    return (this.props.expanderIconTemplate || TreeItem.defaultExpanderIconTemplate)(this.state.isExpanded, this.props.expandedIconName, this.props.collapsedIconName);
+  }
+
   protected renderExpander(items: IterableLike<{}> | undefined) {
     const isEmpty = items == null || Iterable
       .from(items)
@@ -151,7 +178,7 @@ export class TreeItem extends React.Component<TreeItemProps, TreeItemState> {
 
     return isEmpty ? false : (
       <Button bsStyle='link' onClick={ () => this.toggleExpansion() }>
-        <Icon name={ this.state.isExpanded === true ? 'minus-square-o' : 'plus-square-o' } size='lg' fixedWidth />
+        { this.renderExpanderIcon() }
       </Button>
     );
   }

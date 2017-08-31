@@ -49,11 +49,14 @@ export class TreeView extends React.Component<TreeProps> {
         item={ item }
         index={ index }
         itemsSource={ this.props.itemsSource }
+        itemsTemplate={ this.props.itemsTemplate }
         startExpanded={ this.props.startExpanded }
+        expandedIconName={ this.props.expandedIconName }
+        collapsedIconName={ this.props.collapsedIconName }
+        expanderIconTemplate={ this.props.expanderIconTemplate }
         viewTemplate={ this.props.viewTemplate }
         itemsPanelTemplate={ this.props.itemsPanelTemplate }
         itemTemplate={ this.props.itemTemplate }
-        itemsTemplate={ this.props.itemsTemplate }
       />
     );
 
