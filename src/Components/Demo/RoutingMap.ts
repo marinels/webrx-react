@@ -156,6 +156,12 @@ demoRoutingMap.addRoute('React', 'ObservableWrapper', 'Observable Wrapper', (sta
 
 demoRoutingMap.addRoute('webrx-react', 'Search', 'Search', (state: any) => new Components.SearchViewModel());
 demoRoutingMap.addRoute('webrx-react', 'TimeSpanInput', 'Time Span Input', (state: any) => new Components.TimeSpanInputViewModel(true, Components.TimeSpanUnitType.Seconds));
+demoRoutingMap.addRoute('webrx-react', 'Items', 'Items (default)', (state: any) => new Components.ItemsViewModel(sampleListData));
+demoRoutingMap.addRoute('webrx-react', 'ItemsWrap', 'Items (Wrap)', (state: any) => new Components.ItemsViewModel(sampleListData));
+demoRoutingMap.addRoute('webrx-react', 'ItemsUGrid', 'Items (U-Grid)', (state: any) => new Components.ItemsViewModel(sampleListData));
+demoRoutingMap.addRoute('webrx-react', 'ItemsHStack', 'Items (H-Stack)', (state: any) => new Components.ItemsViewModel(sampleListData));
+demoRoutingMap.addRoute('webrx-react', 'ItemsGrid', 'Items (Grid)', (state: any) => new Components.ItemsViewModel(sampleListData));
+demoRoutingMap.addRoute('webrx-react', 'ItemsTree', 'Items (Tree)', (state: any) => new Components.ItemsViewModel(sampleTreeData));
 demoRoutingMap.addRoute('webrx-react', 'List', 'List', (state: any) => new Components.ListViewModel(Observable.of(sampleListData), false, false));
 demoRoutingMap.addRoute('webrx-react', 'ListCmd', 'List (Command)', (state: any) => new Components.ListViewModel(Observable.of(sampleListData), false, false));
 demoRoutingMap.addRoute('webrx-react', 'Tree', 'Tree', (state: any) => new Components.ListViewModel(wx.property(sampleTreeData), true, false));

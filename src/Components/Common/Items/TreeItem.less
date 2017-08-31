@@ -1,0 +1,34 @@
+@import (reference) '../../../Style/App.less';
+
+.TreeItem {
+  & > .TreeItem-Header,
+  & > .TreeItem-Expansion {
+    display: table;
+    width: 100%;
+
+    & > * {
+      display: table-cell;
+    }
+
+    & > .TreeItem-Indent,
+    & > .btn,
+    & > .TreeItem-Expander {
+      width: @button-height;
+    }
+  }
+
+  & > .TreeItem-Header {
+    & > .TreeItem-HeaderContent {
+      text-align: left;
+    }
+
+    & > .TreeItem-Expander {
+      vertical-align: middle;
+
+      & > .btn {
+        color: inherit;
+        padding: 0;
+      }
+    }
+  }
+}

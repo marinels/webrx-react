@@ -1,0 +1,18 @@
+@import (reference) '../../../Style/App.less';
+
+.Tree {
+  background-color: @list-group-bg;
+
+  .TreeItem > .TreeItem-Header:hover {
+    background: @default-hover-background;
+  }
+
+  .TreeItem > .TreeItem-Header {
+    border-bottom: 1px solid @list-group-border;
+    padding: 5px 0;
+  }
+
+  & > .Panel > .Panel-Item:last-child .TreeItem-Header {
+    border: none;
+  }
+}

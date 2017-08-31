@@ -1,0 +1,62 @@
+@import (reference) '../../../Style/App.less';
+
+.Panel {
+  &.WrapPanel {
+    white-space: normal;
+
+    & > div {
+      display: inline-block;
+    }
+  }
+
+  &.StackPanel {
+    &.StackPanel-Horizontal {
+      display: inline-block;
+      white-space: nowrap;
+
+      & > div {
+        display: inline-block;
+        vertical-align: top;
+      }
+    }
+
+    &.StackPanel-Vertical {
+      text-align: center;
+
+      & > div {
+        display: block;
+      }
+    }
+  }
+
+  &.Grid {
+    display: table;
+    empty-cells: show;
+    height: 100%;
+    table-layout: fixed;
+    text-align: center;
+    width: 100%;
+
+    & > .Grid-Row {
+      display: table-row;
+
+      & > .Grid-Column {
+        display: table-cell;
+      }
+    }
+
+    &.Grid-Border {
+      border-collapse: collapse;
+
+      & > .Grid-Row > .Grid-Column {
+        border: 1px solid gray;
+      }
+    }
+
+    &.Grid-Uniform {
+      & > .Grid-Row > .Grid-Column {
+        width: 1px;
+      }
+    }
+  }
+}

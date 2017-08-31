@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Observable } from 'rxjs';
 import { Icon } from 'react-fa';
 import { Col, Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab,
-  Well, ListGroup, ListGroupItem, Table, OverlayTrigger, Overlay, Tooltip, Popover,
+  Well, ListGroup, ListGroupItem, Table, OverlayTrigger, Overlay, Tooltip, Popover, Label,
 } from 'react-bootstrap';
 
 import { wx, Property, Command } from '../../WebRx';
@@ -20,7 +20,7 @@ const logger = Logging.getLogger('Demo.ViewMap');
 
 const sampleDataTemplate = (x: SampleData) => {
   return (
-    <div>
+    <div key={ x.id }>
       <div>
         <span>Name: </span><span>{ x.name }</span>
       </div>
@@ -191,6 +191,84 @@ export const demoViewMap: ViewActivatorMap = {
         </div>
       </div>
     );
+  },
+  ItemsViewModel: (viewModel: Components.ItemsViewModel<{}>, componentRoute: string) => {
+    switch (componentRoute) {
+      case 'ItemsWrap':
+        return (
+          <Components.ItemsView
+            viewModel={ viewModel }
+            itemsPanelTemplate={ x => (<Components.WrapPanel>{ x }</Components.WrapPanel>) }
+            itemTemplate={ (x: SampleData) => (<Label key={ x.id } style={({ marginRight: 5 })}>{ `name = ${ x.name }, requiredBy = ${ x.requiredBy }` }</Label>) }
+          />
+        );
+      case 'ItemsUGrid':
+        return (
+          <Components.ItemsView
+            style={({ height: 400 })}
+            viewModel={ viewModel }
+            itemsPanelTemplate={ x => (
+              <Components.UniformGridPanel rows={ 4 } columns={ 4 } firstColumn={ 1 } border renderEmptyRows>
+                { x }
+              </Components.UniformGridPanel>
+            ) }
+            itemTemplate={ sampleDataTemplate }
+          />
+        );
+      case 'ItemsHStack':
+        return (
+          <Components.ItemsView
+            viewModel={ viewModel }
+            itemsPanelTemplate={ x => (<Components.StackPanel orientation='Horizontal'>{ x }</Components.StackPanel>) }
+            itemTemplate={ (x: SampleData) => (<Label key={ x.id } style={({ marginRight: 5 })}>{ `name = ${ x.name }, requiredBy = ${ x.requiredBy }` }</Label>) }
+          />
+        );
+      case 'ItemsGrid':
+        return (
+          <Components.ItemsView
+            style={({ height: 400 })}
+            viewModel={ viewModel }
+            itemsPanelTemplate={ x => (
+              <Components.Grid border>
+                <Components.Grid.Rows>
+                  <Components.RowDefinition height={ 100 } />
+                  <Components.RowDefinition height={ 200 } />
+                  <Components.RowDefinition />
+                </Components.Grid.Rows>
+                <Components.Grid.Columns>
+                  <Components.ColumnDefinition width={ 100 } />
+                  <Components.ColumnDefinition width='2*' />
+                  <Components.ColumnDefinition />
+                </Components.Grid.Columns>
+                { x }
+              </Components.Grid>
+            ) }
+            itemTemplate={ (x: SampleData, i: number) => {
+              const row = Math.floor(i / 3) % 3;
+              const col = (row + i) % 3;
+
+              return (
+                <div key={ i } data-grid-row={ row } data-grid-column={ col }>{ x.name }</div>
+              );
+            } }
+          />
+        );
+      case 'ItemsTree':
+        return (
+          <Components.TreeView
+            viewModel={ viewModel }
+            itemsSource={ (x: SampleTreeData) => x.items }
+            itemTemplate={ (x: SampleTreeData) => sampleDataTemplate(x) }
+          />
+        );
+      default:
+        return (
+          <Components.ItemsView
+            viewModel={ viewModel }
+            itemTemplate={ (x: SampleData) => x.name }
+          />
+        );
+    }
   },
   ListViewModel: (viewModel: Components.ListViewModel<any, any>, componentRoute: string) => {
     switch (componentRoute) {
