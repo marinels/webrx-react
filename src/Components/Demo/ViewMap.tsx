@@ -8,7 +8,7 @@ import { Col, Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel,
 import { wx, Property, Command } from '../../WebRx';
 import { Logging, Alert } from '../../Utils';
 import { wxr } from '../React';
-import { SampleData, SampleTreeData } from './RoutingMap';
+import { SampleData, SampleTreeData, sampleTreeData } from './RoutingMap';
 import * as Components from '../Common';
 import { TodoListView } from './TodoList/TodoListView';
 import { TodoListViewModel } from './TodoList/TodoListViewModel';
@@ -244,6 +244,29 @@ export const demoViewMap: ViewActivatorMap = {
       <Label>Item 2</Label>
       <Label>Item 3</Label>
     </Components.WrapPanel>
+  ),
+  TreeItem: () => (
+    <Components.TreeItem
+      item={ sampleTreeData[0] }
+      index={ 0 }
+      itemsSource={ (x: SampleTreeData) => x.items }
+      itemTemplate={ (x: SampleTreeData) => x.name }
+      startExpanded
+    />
+  ),
+  TreeItemPresenter: () => (
+    <Components.ItemsPresenter
+      itemsSource={ sampleTreeData }
+      itemTemplate={ (item: SampleTreeData, i) => (
+        <Components.TreeItem
+          item={ item }
+          index={ i }
+          itemsSource={ (x: SampleTreeData) => x.items }
+          itemTemplate={ (x: SampleTreeData) => x.name }
+          startExpanded
+        />
+      )}
+    />
   ),
   ItemsViewModel: (viewModel: Components.ItemsViewModel<{}>, componentRoute: string) => {
     switch (componentRoute) {
