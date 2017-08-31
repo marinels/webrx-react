@@ -18,7 +18,7 @@ export interface ReactSpreadResult<T> {
 // You may omit any of the className, children, props, or rest props from the return value
 // you may additionally choose to omit any properties by name from the rest
 // object that is returned (like 'children' for example).
-function restPropsStatic<P, T>(props: P, propsCreator?: (x: P) => T, ...omits: string[]) {
+export function restPropsStatic<P, T>(props: P, propsCreator?: (x: P) => T, ...omits: string[]) {
   const result = Object.rest(props, propsCreator, ...omits.concat('key', 'ref', 'className', 'children'));
 
   return Object.assign<ReactSpreadResult<T>>(result, {
@@ -27,7 +27,7 @@ function restPropsStatic<P, T>(props: P, propsCreator?: (x: P) => T, ...omits: s
   });
 }
 
-function restProps<P, T>(this: React.Component<P>, propsCreator?: (x: P) => T, ...omits: string[]) {
+export function restProps<P, T>(this: React.Component<P>, propsCreator?: (x: P) => T, ...omits: string[]) {
   return restPropsStatic(this.props, propsCreator, ...omits);
 }
 
