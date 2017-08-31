@@ -91,8 +91,8 @@ export class TreeItem extends React.Component<TreeItemProps, TreeItemState> {
 
   render() {
     const { className, props, rest, children } = this.restProps(x => {
-      const { item, index, itemsSource, itemsTemplate, depth, startExpanded, viewTemplate, itemsPanelTemplate, itemTemplate } = x;
-      return { item, index, itemsSource, itemsTemplate, depth, startExpanded, viewTemplate, itemsPanelTemplate, itemTemplate };
+      const { item, index, itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate } = x;
+      return { item, index, itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate };
     });
 
     const header = this.renderHeader();

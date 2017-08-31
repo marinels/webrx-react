@@ -27,8 +27,8 @@ export class TreeView extends React.Component<TreeProps> {
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { itemsSource, startExpanded, viewTemplate, itemsPanelTemplate, itemTemplate } = x;
-      return { itemsSource, startExpanded, viewTemplate, itemsPanelTemplate, itemTemplate };
+      const { itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate } = x;
+      return { itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate };
     });
 
     return (

@@ -42,7 +42,7 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
   }
 
   render() {
-    const { columns, rows, firstColumn, border, renderEmptyRows, emptyTemplate, ...rest } = this.props;
+    const { columns, rows, firstColumn, border, renderEmptyRows, emptyTemplate, rowClassName, rowStyle, columnClassName, columnStyle, ...rest } = this.props;
 
     const bordered = { 'Grid-Border': border === true };
 
