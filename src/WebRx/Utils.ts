@@ -65,7 +65,7 @@ export function asObservable<T>(value: ObservableOrValue<T>) {
 }
 
 export function getObservable<T>(
-  observableLike: ObservableLike<T>,
+  observableLike: ObservableLike<T> | undefined,
 ) {
   if (isProperty(observableLike)) {
     return observableLike.changed.startWith(observableLike.value);
@@ -87,7 +87,7 @@ export function getObservable<T>(
 }
 
 export function getProperty<T>(
-  observableLike: ObservableLike<T>,
+  observableLike: ObservableLike<T> | undefined,
   initialValue?: T,
   compare?: boolean | ((x: T, y: T) => boolean),
   keySelector?: (x: T) => any,
