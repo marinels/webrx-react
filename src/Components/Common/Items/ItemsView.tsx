@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Iterable } from 'ix';
+import { Observable } from 'rxjs';
 
 import { wxr, BaseView, BaseViewProps } from '../../React';
 import { ItemsViewModel } from './ItemsViewModel';
