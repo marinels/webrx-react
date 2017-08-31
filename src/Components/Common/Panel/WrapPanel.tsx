@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { PanelProps, Panel } from './Panel';
 
-export interface WrapPanelProps extends PanelProps {
+export interface WrapPanelProps extends React.HTMLAttributes<WrapPanelProps>, PanelProps {
 }
 
 export class WrapPanel extends Panel<WrapPanelProps> {

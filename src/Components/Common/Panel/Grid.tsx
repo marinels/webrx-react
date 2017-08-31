@@ -2,22 +2,34 @@ import * as React from 'react';
 import { Iterable } from 'ix';
 
 import { wxr } from '../../React';
-import { PanelProps, Panel } from './Panel';
+import { PanelItemContext, PanelItemProp, PanelItemProps, PanelProps, Panel } from './Panel';
 
-export interface RowDefinitionProps {
+export interface GridRowContext extends PanelItemContext {
+  row: number;
+}
+
+export interface GridColumnContext extends GridRowContext {
+  column: number;
+}
+
+export interface GridLayoutElementProps<T extends GridRowContext = GridRowContext> extends PanelItemProps<T> {
+}
+
+export interface RowDefinitionProps extends GridLayoutElementProps {
   height?: number;
 }
 
 export class RowDefinition extends React.Component<RowDefinitionProps> {
 }
 
-export interface GridRowDefinitionsProps {
+export interface GridRowDefinitionsProps extends GridLayoutElementProps {
+  children?: React.ReactElement<RowDefinitionProps> | Array<React.ReactElement<RowDefinitionProps>>;
 }
 
 export class GridRowDefinitions extends React.Component<GridRowDefinitionsProps> {
 }
 
-export interface ColumnDefinitionProps {
+export interface ColumnDefinitionProps extends GridLayoutElementProps<GridColumnContext> {
   width?: number | string;
 }
 
@@ -27,20 +39,23 @@ export class ColumnDefinition extends React.Component<ColumnDefinitionProps> {
   };
 }
 
-export interface GridColumnDefinitionsProps {
-  border?: boolean;
+export interface GridColumnDefinitionsProps extends GridLayoutElementProps<GridColumnContext> {
+  children?: React.ReactElement<ColumnDefinitionProps> | Array<React.ReactElement<ColumnDefinitionProps>>;
 }
 
 export class GridColumnDefinitions extends React.Component<GridColumnDefinitionsProps> {
 }
 
+export type GridLayoutDefinitionGroupElement = React.ReactElement<GridRowDefinitionsProps | GridColumnDefinitionsProps>;
 export type GridLayoutDefinitionElement = React.ReactElement<RowDefinitionProps | ColumnDefinitionProps>;
 
 export class GridLayoutDefinition {
   public readonly amount: number | undefined;
   public readonly stretch: boolean;
+  public readonly itemClassName: PanelItemProp<string, GridRowContext | GridColumnContext> | undefined;
+  public readonly itemStyle: PanelItemProp<React.CSSProperties, GridRowContext | GridColumnContext> | undefined;
 
-  constructor(definition?: GridLayoutDefinitionElement) {
+  constructor(definition?: GridLayoutDefinitionElement, definitionGroup?: GridLayoutDefinitionGroupElement) {
     let { val, type } = this.getLayoutParam(definition);
     let { amount, stretch } = this.getAmountAndStretch(val);
 
@@ -54,6 +69,21 @@ export class GridLayoutDefinition {
 
     this.amount = amount;
     this.stretch = stretch;
+
+    if (definitionGroup != null) {
+      this.itemClassName = definitionGroup.props.itemClassName;
+      this.itemStyle = definitionGroup.props.itemStyle;
+    }
+
+    if (definition != null) {
+      if (definition.props.itemClassName != null) {
+        this.itemClassName = definition.props.itemClassName;
+      }
+
+      if (definition.props.itemStyle != null) {
+        this.itemStyle = definition.props.itemStyle;
+      }
+    }
   }
 
   protected getAmountAndStretch(val: string | number | undefined) {
@@ -96,7 +126,7 @@ export class GridLayoutDefinition {
   }
 }
 
-export interface GridProps extends PanelProps {
+export interface GridProps extends React.HTMLAttributes<GridProps>, PanelProps {
   border?: boolean;
 }
 
@@ -117,7 +147,6 @@ export class Grid extends Panel<GridProps> {
   renderItems() {
     const { children, rows, cols } = this.getLayout();
 
-    // TODO: write grid layout handler (build grid and slot item templates into cells)
     return Iterable
       .range(0, rows.length)
       .map(row => {
@@ -136,19 +165,22 @@ export class Grid extends Panel<GridProps> {
   protected renderRow(row: number, rows: Array<GridLayoutDefinition>, colItems: React.ReactNode) {
     const def = rows[row];
 
-    const layoutStyle = {
+    const itemClassName = Panel.getPanelItemPropValue(def.itemClassName, { row, index: row });
+    const itemStyle = Panel.getPanelItemPropValue(def.itemStyle, { row, index: row });
+
+    const layoutStyle = Object.assign({}, itemStyle, {
       height: this.getCellLayoutValue(def),
-    };
+    });
 
     return (
-      <div className='Grid-Row' style={ layoutStyle } data-grid-row={ row } key={ `${ row }` }>
+      <div className={ wxr.classNames('Grid-Row', itemClassName) } style={ layoutStyle } data-grid-row={ row } key={ `${ row }` }>
         { colItems }
       </div>
     );
   }
 
-  protected renderColumn(row: number, col: number, rows: Array<GridLayoutDefinition>, cols: Array<GridLayoutDefinition>, children: Array<React.ReactChild>) {
-    const def = cols[col];
+  protected renderColumn(row: number, column: number, rows: Array<GridLayoutDefinition>, cols: Array<GridLayoutDefinition>, children: Array<React.ReactChild>) {
+    const def = cols[column];
     const cellItems: Array<React.ReactChild> = [];
 
     let index = 0;
@@ -157,7 +189,7 @@ export class Grid extends Panel<GridProps> {
       const childProps = child != null && child.props != null ? child.props : undefined;
       const desiredRow = (childProps == null ? undefined : childProps['data-grid-row']) || 0;
       const desiredCol = (childProps == null ? undefined : childProps['data-grid-column']) || 0;
-      if (desiredRow === row && desiredCol === col) {
+      if (desiredRow === row && desiredCol === column) {
         const cellItem = React.isValidElement(child) ?
           React.cloneElement(child as any, { 'data-grid-row': undefined, 'data-grid-column': undefined }) :
           child;
@@ -169,12 +201,15 @@ export class Grid extends Panel<GridProps> {
       }
     }
 
-    const layoutStyle = {
+    const itemClassName = Panel.getPanelItemPropValue(def.itemClassName, { row, column, index });
+    const itemStyle = Panel.getPanelItemPropValue(def.itemStyle, { row, column, index });
+
+    const layoutStyle = Object.assign({}, itemStyle, {
       width: this.getCellLayoutValue(def),
-    };
+    });
 
     return (
-      <div className='Grid-Column' style={ layoutStyle } data-grid-column={ col } key={ `${ row }.${ col }` }>
+      <div className={ wxr.classNames('Grid-Column', itemClassName) } style={ layoutStyle } data-grid-column={ column } key={ `${ row }.${ column }` }>
         { super.renderItems(cellItems) }
       </div>
     );
@@ -186,8 +221,8 @@ export class Grid extends Panel<GridProps> {
 
   protected getLayout() {
     const children = React.Children.toArray(this.props.children);
-    let rows: GridRowDefinitions | undefined;
-    let cols: GridColumnDefinitions | undefined;
+    let rows: React.ReactElement<GridRowDefinitionsProps> | undefined;
+    let cols: React.ReactElement<GridColumnDefinitionsProps> | undefined;
 
     let index = 0;
     while (index < children.length) {
@@ -217,11 +252,15 @@ export class Grid extends Panel<GridProps> {
     };
   }
 
-  protected getLayoutDefinitions(elem: GridRowDefinitions | GridColumnDefinitions | undefined) {
+  protected getLayoutDefinitions(elem: GridLayoutDefinitionGroupElement | undefined) {
     if (elem == null) {
       return [ new GridLayoutDefinition() ];
     }
 
-    return React.Children.map(elem.props.children, (x: any) => new GridLayoutDefinition(x));
+    return React.Children.map(
+      elem.props.children,
+      (x: GridLayoutDefinitionElement) => {
+        return new GridLayoutDefinition(x, elem);
+      });
   }
 }

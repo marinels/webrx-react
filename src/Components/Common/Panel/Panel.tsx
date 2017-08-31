@@ -2,7 +2,18 @@ import * as React from 'react';
 
 import { wxr } from '../../React';
 
-export interface PanelProps {
+export interface PanelItemContext {
+  index: number;
+}
+
+export type PanelItemProp<TValue, TContext extends PanelItemContext = PanelItemContext> = TValue | ((context: TContext) => TValue);
+
+export interface PanelItemProps<T extends PanelItemContext = PanelItemContext> {
+  itemClassName?: PanelItemProp<string, T>;
+  itemStyle?: PanelItemProp<React.CSSProperties, T>;
+}
+
+export interface PanelProps extends PanelItemProps {
   componentClass?: React.ReactType;
 }
 
@@ -11,10 +22,18 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
 
   public static defaultComponentClass = 'div';
 
+  public static getPanelItemPropValue<TValue, TContext extends PanelItemContext>(prop: PanelItemProp<TValue, TContext> | undefined, context: TContext) {
+    if (prop instanceof Function) {
+      return prop(context);
+    }
+
+    return prop;
+  }
+
   protected renderPanel(panelClassName?: string, panelProps?: PanelProps) {
     const { className, props, rest } = React.Component.restProps(panelProps || this.props, x => {
-      const { componentClass } = x;
-      return { componentClass };
+      const { componentClass, itemClassName, itemStyle } = x;
+      return { componentClass, itemClassName, itemStyle };
     });
 
     return (
@@ -40,8 +59,12 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
     Component: React.ReactType,
   ) {
     const key = this.getItemKey(itemTemplate, index);
+    const className = wxr.classNames('Panel-Item', Panel.getPanelItemPropValue(this.props.itemClassName, { index }));
+    const style = Panel.getPanelItemPropValue(this.props.itemStyle, { index });
     return (
-      <Component key={ key } className='Panel-Item'>{ itemTemplate }</Component>
+      <Component key={ key } className={ className } style={ style }>
+        { itemTemplate }
+      </Component>
     );
   }
 
