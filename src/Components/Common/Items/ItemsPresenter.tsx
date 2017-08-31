@@ -5,8 +5,6 @@ import { IterableLike } from '../../../WebRx';
 import { wxr } from '../../React';
 import { Panel, StackPanel } from '../Panel';
 
-export * from './TreeItem';
-
 export interface ItemsPresenterTemplateProps {
   /**
    * template that wraps the entire control.
