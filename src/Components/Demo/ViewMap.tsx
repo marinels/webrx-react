@@ -8,7 +8,7 @@ import { Col, Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel,
 import { wx, Property, Command } from '../../WebRx';
 import { Logging, Alert } from '../../Utils';
 import { wxr } from '../React';
-import { SampleData, SampleTreeData, sampleTreeData } from './RoutingMap';
+import { SampleData, SampleTreeData, sampleListData, sampleTreeData } from './RoutingMap';
 import * as Components from '../Common';
 import { TodoListView } from './TodoList/TodoListView';
 import { TodoListViewModel } from './TodoList/TodoListViewModel';
@@ -192,6 +192,19 @@ export const demoViewMap: ViewActivatorMap = {
       </div>
     );
   },
+  ItemsPanel: () => (
+    <Components.ItemsPresenter>
+      <Label>Item 1</Label>
+      <Label>Item 2</Label>
+      <Label>Item 3</Label>
+    </Components.ItemsPresenter>
+  ),
+  ItemsPanelBound: () => (
+    <Components.ItemsPresenter
+      itemsSource={ sampleListData }
+      itemTemplate={ (x: SampleData) => x.name }
+    />
+  ),
   GridPanel: () => (
     <Components.Grid border style={({ height: 400 })}>
       <Components.Grid.Rows>
