@@ -35,7 +35,7 @@ export class ItemsPresenter extends React.Component<ItemsPresenterProps> {
 
   public static defaultItemTemplate(item: {}, index: number) {
     return (
-      <div key={ index }>{ item.toString() }</div>
+      <div key={ index }>{ item }</div>
     );
   }
 
