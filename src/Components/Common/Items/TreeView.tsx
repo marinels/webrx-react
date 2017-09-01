@@ -12,19 +12,6 @@ export interface TreeProps extends ItemsProps, TreeItemSourceProps, TreeItemRend
 export class TreeView extends React.Component<TreeProps> {
   public static displayName = 'TreeView';
 
-  public static defaultTreeViewTemplate(itemsPanel: React.ReactNode, itemPresenter: ItemsPresenter): JSX.Element | null | false {
-    const { className, props, rest } = itemPresenter.restProps(x => {
-      const { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate } = x;
-      return { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate };
-    });
-
-    return (
-      <div { ...rest } className={ wxr.classNames('Tree', className) }>
-        { itemsPanel }
-      </div>
-    );
-  }
-
   render() {
     const { className, props, rest } = this.restProps(x => {
       const { itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate } = x;
@@ -33,8 +20,10 @@ export class TreeView extends React.Component<TreeProps> {
 
     return (
       <ItemsView
+        { ...rest }
+        className={ wxr.classNames('Tree', className) }
         viewModel={ this.props.viewModel }
-        viewTemplate={ TreeView.defaultTreeViewTemplate }
+        viewTemplate={ this.props.viewTemplate }
         itemsPanelTemplate={ this.props.itemsPanelTemplate }
         itemTemplate={ (item: {}, index: number) => {
           return this.renderItem(item, index);
@@ -54,7 +43,6 @@ export class TreeView extends React.Component<TreeProps> {
         expandedIconName={ this.props.expandedIconName }
         collapsedIconName={ this.props.collapsedIconName }
         expanderIconTemplate={ this.props.expanderIconTemplate }
-        viewTemplate={ this.props.viewTemplate }
         itemsPanelTemplate={ this.props.itemsPanelTemplate }
         itemTemplate={ this.props.itemTemplate }
       />

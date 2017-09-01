@@ -1,7 +1,11 @@
 @import (reference) '../../../Style/App.less';
 
-.Tree {
-  background-color: @list-group-bg;
+.Items.Tree {
+  & .Panel-Item {
+    background: none;
+    border: none;
+    padding: 0;
+  }
 
   .TreeItem > .TreeItem-Header:hover {
     background: @default-hover-background;
@@ -12,7 +16,11 @@
     padding: 5px 0;
   }
 
-  & > .Panel > .Panel-Item:last-child .TreeItem-Header {
+  // stylelint-disable selector-max-specificity
+  // sadly we need this much specificity to accurately select the last child at
+  // depth 0 of this tree view
+  & > .ItemsPresenter > .Panel > .Panel-Item:last-child .TreeItem-Header {
     border: none;
   }
+  // stylelint-enable selector-max-specificity
 }
