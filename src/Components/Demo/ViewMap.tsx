@@ -360,6 +360,7 @@ export const demoViewMap: ViewActivatorMap = {
           <Components.ItemsView
             viewModel={ viewModel }
             itemTemplate={ (x: SampleData) => sampleDataTemplate(x) }
+            itemStyle={({ textAlign: 'left' })}
           />
         );
     }

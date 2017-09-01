@@ -164,7 +164,7 @@ demoRoutingMap.addRoute('React', 'ObservableWrapper', 'Observable Wrapper', (sta
 
 demoRoutingMap.addRoute('webrx-react', 'Search', 'Search', (state: any) => new Components.SearchViewModel());
 demoRoutingMap.addRoute('webrx-react', 'TimeSpanInput', 'Time Span Input', (state: any) => new Components.TimeSpanInputViewModel(true, Components.TimeSpanUnitType.Seconds));
-demoRoutingMap.addRoute('webrx-react', 'Items', 'Items (default)', (state: any) => new Components.ItemsViewModel(sampleListData));
+demoRoutingMap.addRoute('webrx-react', 'ItemsList', 'Items (List)', (state: any) => new Components.ItemsViewModel(sampleListData));
 demoRoutingMap.addRoute('webrx-react', 'ItemsWrap', 'Items (Wrap)', (state: any) => new Components.ItemsViewModel(sampleListData));
 demoRoutingMap.addRoute('webrx-react', 'ItemsUGrid', 'Items (Uniform Grid)', (state: any) => new Components.ItemsViewModel(sampleListData));
 demoRoutingMap.addRoute('webrx-react', 'ItemsHStack', 'Items (Horizontal Stack)', (state: any) => new Components.ItemsViewModel(sampleListData));
