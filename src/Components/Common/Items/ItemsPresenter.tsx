@@ -3,7 +3,7 @@ import { Iterable } from 'ix';
 
 import { IterableLike } from '../../../WebRx';
 import { wxr } from '../../React';
-import { Panel, StackPanel } from '../Panel';
+import { Panel, StackPanel, PanelItemProps } from '../Panel';
 
 export interface ItemsPresenterTemplateProps {
   /**
@@ -18,7 +18,7 @@ export interface ItemsPresenterTemplateProps {
    * this template can control how items are rendered next to one another
    * (i.e., wrapping, stack, grid, etc...)
    */
-  itemsPanelTemplate?: (itemTemplates: Array<React.ReactNode>) => React.ReactNode;
+  itemsPanelTemplate?: (itemTemplates: Array<React.ReactNode>, itemsPresenter: ItemsPresenter) => React.ReactNode;
 
   /**
    * template to render each item
@@ -26,7 +26,7 @@ export interface ItemsPresenterTemplateProps {
   itemTemplate?: (item: {}, index: number) => React.ReactNode;
 }
 
-export interface ItemsPresenterProps extends React.HTMLAttributes<ItemsPresenterProps>, ItemsPresenterTemplateProps {
+export interface ItemsPresenterProps extends React.HTMLAttributes<ItemsPresenterProps>, ItemsPresenterTemplateProps, PanelItemProps {
   itemsSource?: IterableLike<{}>;
 }
 
@@ -39,16 +39,18 @@ export class ItemsPresenter extends React.Component<ItemsPresenterProps> {
     );
   }
 
-  public static defaultPanelTemplate(itemTemplates: Array<React.ReactNode>) {
+  public static defaultPanelTemplate(itemTemplates: Array<React.ReactNode>, itemsPresenter: ItemsPresenter) {
     return (
-      <StackPanel>{ itemTemplates }</StackPanel>
+      <StackPanel itemClassName={ itemsPresenter.props.itemClassName } itemStyle={ itemsPresenter.props.itemStyle }>
+        { itemTemplates }
+      </StackPanel>
     );
   }
 
-  public static defaultViewTemplate(itemsPanel: React.ReactNode, itemPresenter: ItemsPresenter) {
-    const { className, props, rest } = itemPresenter.restProps(x => {
-      const { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate } = x;
-      return { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate };
+  public static defaultViewTemplate(itemsPanel: React.ReactNode, itemsPresenter: ItemsPresenter) {
+    const { className, props, rest } = itemsPresenter.restProps(x => {
+      const { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle } = x;
+      return { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle };
     });
 
     return (
@@ -92,7 +94,7 @@ export class ItemsPresenter extends React.Component<ItemsPresenterProps> {
     const template = this.props.itemsPanelTemplate || ItemsPresenter.defaultPanelTemplate;
     const { items, itemTemplates } = this.renderItemTemplates();
 
-    return template(itemTemplates);
+    return template(itemTemplates, this);
   }
 
   protected renderViewTemplate(): JSX.Element | null | false {

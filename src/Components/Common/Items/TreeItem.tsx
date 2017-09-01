@@ -6,6 +6,7 @@ import { Icon } from 'react-fa';
 import { IterableLike } from '../../../WebRx';
 import { wxr } from '../../React';
 import { ItemsPresenterProps, ItemsPresenterTemplateProps, ItemsPresenter } from './ItemsPresenter';
+import { PanelItemProps } from '../Panel/Panel';
 
 export type RecursiveItemsSource<T> = (item: T) => (IterableLike<T> | undefined);
 
@@ -38,7 +39,7 @@ export interface TreeItemRenderProps {
   expanderIconTemplate?: (isExpanded: boolean, expandedIconName?: string, collapsedIconName?: string) => React.ReactNode;
 }
 
-export interface TreeItemProps extends React.HTMLAttributes<TreeItemProps>, TreeItemSourceProps, TreeItemRenderProps, ItemsPresenterTemplateProps {
+export interface TreeItemProps extends React.HTMLAttributes<TreeItemProps>, TreeItemSourceProps, TreeItemRenderProps, ItemsPresenterTemplateProps, PanelItemProps {
   /**
    * the item that this tree node represents
    */
@@ -83,11 +84,15 @@ export class TreeItem extends React.Component<TreeItemProps, TreeItemState> {
               viewTemplate={ view.props.viewTemplate }
               itemsPanelTemplate={ view.props.itemsPanelTemplate }
               itemTemplate={ view.props.itemTemplate }
+              itemClassName={ view.props.itemClassName }
+              itemStyle={ view.props.itemStyle }
             />
           );
 
           return React.cloneElement(treeItem, { key: treeItem.key || index });
         }}
+        itemClassName={ view.props.itemClassName }
+        itemStyle={ view.props.itemStyle }
       />
     );
   }
@@ -114,8 +119,8 @@ export class TreeItem extends React.Component<TreeItemProps, TreeItemState> {
 
   render() {
     const { className, props, rest, children } = this.restProps(x => {
-      const { item, index, itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate } = x;
-      return { item, index, itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate };
+      const { item, index, itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle } = x;
+      return { item, index, itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle };
     });
 
     const header = this.renderHeader();

@@ -14,8 +14,8 @@ export class TreeView extends React.Component<TreeProps> {
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate } = x;
-      return { itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate };
+      const { itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle } = x;
+      return { itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle };
     });
 
     return (
@@ -28,6 +28,8 @@ export class TreeView extends React.Component<TreeProps> {
         itemTemplate={ (item: {}, index: number) => {
           return this.renderItem(item, index);
         }}
+        itemClassName={ this.props.itemClassName }
+        itemStyle={ this.props.itemStyle }
       />
     );
   }
@@ -45,6 +47,8 @@ export class TreeView extends React.Component<TreeProps> {
         expanderIconTemplate={ this.props.expanderIconTemplate }
         itemsPanelTemplate={ this.props.itemsPanelTemplate }
         itemTemplate={ this.props.itemTemplate }
+        itemClassName={ this.props.itemClassName }
+        itemStyle={ this.props.itemStyle }
       />
     );
 

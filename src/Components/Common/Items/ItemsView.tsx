@@ -4,10 +4,10 @@ import { Observable } from 'rxjs';
 
 import { wxr, BaseView, BaseViewProps } from '../../React';
 import { ItemsViewModel } from './ItemsViewModel';
-import { Panel, StackPanel } from '../Panel';
+import { Panel, StackPanel, PanelItemProps } from '../Panel';
 import { ItemsPresenter, ItemsPresenterTemplateProps } from './ItemsPresenter';
 
-export interface ItemsProps extends BaseViewProps, ItemsPresenterTemplateProps {
+export interface ItemsProps extends BaseViewProps, ItemsPresenterTemplateProps, PanelItemProps {
 }
 
 export class ItemsView extends BaseView<ItemsProps, ItemsViewModel<{}>> {
@@ -21,8 +21,8 @@ export class ItemsView extends BaseView<ItemsProps, ItemsViewModel<{}>> {
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { viewTemplate, itemsPanelTemplate, itemTemplate } = x;
-      return { viewTemplate, itemsPanelTemplate, itemTemplate };
+      const { viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle } = x;
+      return { viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle };
     });
 
     return (
@@ -32,6 +32,8 @@ export class ItemsView extends BaseView<ItemsProps, ItemsViewModel<{}>> {
           viewTemplate={ props.viewTemplate }
           itemsPanelTemplate={ props.itemsPanelTemplate }
           itemTemplate={ props.itemTemplate }
+          itemClassName={ props.itemClassName }
+          itemStyle={ props.itemStyle }
         />
       </div>
     );
