@@ -72,8 +72,8 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
               this.renderEmpty(row, column, index, component) :
               itemTemplates[index];
 
-            const item = (itemTemplate != null && React.isValidElement(itemTemplate)) ?
-              React.cloneElement<any, any>(itemTemplate, { key: UniformGridPanel.generateKey(row, column) }) :
+            const item = (itemTemplate != null && React.isValidElement<any>(itemTemplate)) ?
+              React.cloneElement(itemTemplate, { key: UniformGridPanel.generateKey(row, column) }) :
               itemTemplate;
 
             const colClassName = Panel.getPanelItemPropValue(this.props.columnClassName, { row, column, index: row });

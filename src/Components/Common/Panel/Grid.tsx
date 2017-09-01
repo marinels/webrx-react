@@ -190,8 +190,8 @@ export class Grid extends Panel<GridProps> {
       const desiredRow = (childProps == null ? undefined : childProps['data-grid-row']) || 0;
       const desiredCol = (childProps == null ? undefined : childProps['data-grid-column']) || 0;
       if (desiredRow === row && desiredCol === column) {
-        const cellItem = React.isValidElement(child) ?
-          React.cloneElement(child as any, { 'data-grid-row': undefined, 'data-grid-column': undefined }) :
+        const cellItem = React.isValidElement<any>(child) ?
+          React.cloneElement(child, { 'data-grid-row': undefined, 'data-grid-column': undefined }) :
           child;
         cellItems.push(cellItem);
         children.splice(index, 1);
