@@ -1,16 +1,31 @@
 @import (reference) '../../../Style/App.less';
 
 .Items.Tree {
-  & .Panel-Item {
-    background: none;
-    border: none;
+  // disable default padding
+  .Panel-Item {
     padding: 0;
   }
 
+  // disable default hover effect
+  .Panel.Grid .Grid-Column,
+  .Panel.StackPanel .Panel-Item,
+  .Panel.WrapPanel .Panel-Item {
+    &:hover {
+      background: none;
+    }
+  }
+
+  // disable default separators
+  .Panel.StackPanel .Panel-Item {
+    border: none;
+  }
+
+  // tree item hover
   .TreeItem > .TreeItem-Header:hover {
     background: @default-hover-background;
   }
 
+  // tree item border and padding
   .TreeItem > .TreeItem-Header {
     border-bottom: 1px solid @list-group-border;
     padding: 5px 0;

@@ -4,14 +4,29 @@
   background-color: @list-group-bg;
 
   .Panel-Item {
-    border-bottom: 1px solid @list-group-border;
     padding: 5px;
+  }
 
+  // hover
+  .Panel.Grid .Grid-Column,
+  .Panel.StackPanel .Panel-Item,
+  .Panel.WrapPanel .Panel-Item {
     &:hover {
       background: @default-hover-background;
     }
+  }
 
-    &:last-child {
+  // separators
+  .Panel.StackPanel {
+    &.StackPanel-Vertical .Panel-Item {
+      border-bottom: 1px solid @list-group-border;
+    }
+
+    &.StackPanel-Horizontal .Panel-Item {
+      border-right: 1px solid @list-group-border;
+    }
+
+    .Panel-Item:last-child {
       border: none;
     }
   }
