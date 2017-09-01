@@ -50,8 +50,6 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
   }
 
   renderItems() {
-    const component = this.props.componentClass || Panel.defaultComponentClass;
-
     const itemTemplates = super.renderItems();
 
     let index = 0;
@@ -69,7 +67,7 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
             const isAfterLastItem = index >= itemTemplates.length;
 
             const itemTemplate = (isBeforeFirstItem || isAfterLastItem) ?
-              this.renderEmpty(row, column, index, component) :
+              this.renderEmpty(row, column, index) :
               itemTemplates[index];
 
             const item = (itemTemplate != null && React.isValidElement<any>(itemTemplate)) ?
@@ -105,11 +103,10 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
       .toArray();
   }
 
-  protected renderEmpty(row: number, column: number, index: number, component: React.ReactType) {
+  protected renderEmpty(row: number, column: number, index: number) {
     return this.renderItem(
       (this.props.emptyTemplate || UniformGridPanel.defaultEmptyTemplate)(row, column),
       index,
-      component,
     );
   }
 }
