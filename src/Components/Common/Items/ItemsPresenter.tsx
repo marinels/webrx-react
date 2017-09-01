@@ -27,7 +27,7 @@ export interface ItemsPresenterTemplateProps {
 }
 
 export interface ItemsPresenterProps extends React.HTMLAttributes<ItemsPresenterProps>, ItemsPresenterTemplateProps {
-  itemsSource: IterableLike<{}>;
+  itemsSource?: IterableLike<{}>;
 }
 
 export class ItemsPresenter extends React.Component<ItemsPresenterProps> {
@@ -64,6 +64,13 @@ export class ItemsPresenter extends React.Component<ItemsPresenterProps> {
 
   protected renderItemTemplates() {
     const template = this.props.itemTemplate || ItemsPresenter.defaultItemTemplate;
+
+    if (this.props.itemsSource == null) {
+      return {
+        items: undefined,
+        itemTemplates: React.Children.toArray(this.props.children),
+      };
+    }
 
     const items = Iterable
       .from(this.props.itemsSource)
