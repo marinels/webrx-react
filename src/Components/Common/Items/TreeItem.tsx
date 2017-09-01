@@ -168,7 +168,9 @@ export class TreeItem extends React.Component<TreeItemProps, TreeItemState> {
   }
 
   protected renderExpanderIcon() {
-    return (this.props.expanderIconTemplate || TreeItem.defaultExpanderIconTemplate)(this.state.isExpanded, this.props.expandedIconName, this.props.collapsedIconName);
+    const template = (this.props.expanderIconTemplate || TreeItem.defaultExpanderIconTemplate);
+
+    return template(this.state.isExpanded, this.props.expandedIconName, this.props.collapsedIconName);
   }
 
   protected renderExpander(items: IterableLike<{}> | undefined) {
