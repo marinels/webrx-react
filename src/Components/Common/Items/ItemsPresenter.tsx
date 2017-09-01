@@ -71,9 +71,11 @@ export class ItemsPresenter extends React.Component<ItemsPresenterProps> {
 
     const itemTemplates = items
       .map<React.ReactNode>((x, i) => {
-        const item = template.apply(this, [ x, i, items ]);
+        const item = template(x, i);
 
-        return React.cloneElement(item, { key: item.key || i });
+        return (item != null && React.isValidElement<any>(item)) ?
+          React.cloneElement(item, { key: item.key || i }) :
+          item;
       });
 
     return { items, itemTemplates };
@@ -83,13 +85,13 @@ export class ItemsPresenter extends React.Component<ItemsPresenterProps> {
     const template = this.props.itemsPanelTemplate || ItemsPresenter.defaultPanelTemplate;
     const { items, itemTemplates } = this.renderItemTemplates();
 
-    return template.apply(this, [ itemTemplates, items ]);
+    return template(itemTemplates);
   }
 
   protected renderViewTemplate(): JSX.Element | null | false {
     const template = this.props.viewTemplate || ItemsPresenter.defaultViewTemplate;
     const itemsPanel = this.renderPanelTemplate();
 
-    return template.apply(this, [ itemsPanel, this ]);
+    return template(itemsPanel, this);
   }
 }
