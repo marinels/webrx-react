@@ -217,12 +217,12 @@ export const demoViewMap: ViewActivatorMap = {
   ),
   StackPanel: () => (
     <div>
-      <Components.StackPanel orientation='Horizontal'>
+      <Components.StackPanel orientation='Horizontal' itemStyle={({ marginRight: 5 })}>
         <Label>Item 1</Label>
         <Label>Item 2</Label>
         <Label>Item 3</Label>
       </Components.StackPanel>
-      <Components.StackPanel>
+      <Components.StackPanel itemStyle={({ marginBottom: 5 })}>
         <Label>Item 1</Label>
         <Label>Item 2</Label>
         <Label>Item 3</Label>
@@ -239,7 +239,7 @@ export const demoViewMap: ViewActivatorMap = {
     </Components.UniformGridPanel>
   ),
   WrapPanel: () => (
-    <Components.WrapPanel>
+    <Components.WrapPanel itemStyle={({ marginRight: 5 })}>
       <Label>Item 1</Label>
       <Label>Item 2</Label>
       <Label>Item 3</Label>
@@ -284,7 +284,10 @@ export const demoViewMap: ViewActivatorMap = {
             style={({ height: 400 })}
             viewModel={ viewModel }
             itemsPanelTemplate={ x => (
-              <Components.UniformGridPanel rows={ 4 } columns={ 4 } firstColumn={ 1 } border renderEmptyRows>
+              <Components.UniformGridPanel
+                rows={ 4 } columns={ 4 } firstColumn={ 1 } border renderEmptyRows
+                columnStyle={({ verticalAlign: 'middle' })}
+              >
                 { x }
               </Components.UniformGridPanel>
             ) }
@@ -311,7 +314,7 @@ export const demoViewMap: ViewActivatorMap = {
                   <Components.RowDefinition height={ 200 } />
                   <Components.RowDefinition />
                 </Components.Grid.Rows>
-                <Components.Grid.Columns>
+                <Components.Grid.Columns itemStyle={({ verticalAlign: 'middle' })}>
                   <Components.ColumnDefinition width={ 100 } />
                   <Components.ColumnDefinition width='2*' />
                   <Components.ColumnDefinition />
@@ -335,13 +338,15 @@ export const demoViewMap: ViewActivatorMap = {
             viewModel={ viewModel }
             itemsSource={ (x: SampleTreeData) => x.items }
             itemTemplate={ (x: SampleTreeData) => sampleDataTemplate(x) }
+            expandedIconName='caret-down'
+            collapsedIconName='caret-right'
           />
         );
       default:
         return (
           <Components.ItemsView
             viewModel={ viewModel }
-            itemTemplate={ (x: SampleData) => x.name }
+            itemTemplate={ (x: SampleData) => sampleDataTemplate(x) }
           />
         );
     }
