@@ -71,7 +71,9 @@ export class ItemsPresenter extends React.Component<ItemsPresenterProps> {
 
     const itemTemplates = items
       .map<React.ReactNode>((x, i) => {
-        return template.apply(this, [ x, i, items ]);
+        const item = template.apply(this, [ x, i, items ]);
+
+        return React.cloneElement(item, { key: item.key || i });
       });
 
     return { items, itemTemplates };
