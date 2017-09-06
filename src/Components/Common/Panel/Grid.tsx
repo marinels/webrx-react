@@ -87,13 +87,13 @@ export interface GridColumnDefinitionsProps extends GridLayoutElementProps<GridC
 export class GridColumnDefinitions extends React.Component<GridColumnDefinitionsProps> {
 }
 
-type GridLayoutDefinitionGroupElement = React.ReactElement<GridRowDefinitionsProps | GridColumnDefinitionsProps>;
-type GridLayoutDefinitionElement = React.ReactElement<RowDefinitionProps | ColumnDefinitionProps>;
+export type GridLayoutDefinitionGroupElement = React.ReactElement<GridRowDefinitionsProps | GridColumnDefinitionsProps>;
+export type GridLayoutDefinitionElement = React.ReactElement<RowDefinitionProps | ColumnDefinitionProps>;
 
 /**
  * this class is used internally to compute the grid layout metadata
  */
-class GridLayoutDefinition {
+export class GridLayoutDefinition {
   public readonly amount: number | undefined;
   public readonly stretch: boolean;
   public readonly itemClassName: PanelItemProp<string, GridRowContext | GridColumnContext> | undefined;
