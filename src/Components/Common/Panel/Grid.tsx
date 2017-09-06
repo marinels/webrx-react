@@ -224,8 +224,9 @@ export class Grid extends Panel<GridProps> {
   protected renderRow(row: number, rows: Array<GridLayoutDefinition>, colItems: React.ReactNode) {
     const def = rows[row];
 
-    const itemClassName = Panel.getPanelItemPropValue(def.itemClassName, { row, index: row });
-    const itemStyle = Panel.getPanelItemPropValue(def.itemStyle, { row, index: row });
+    const context = { row, index: row };
+    const itemClassName = Panel.getPanelItemPropValue(def.itemClassName, context);
+    const itemStyle = Panel.getPanelItemPropValue(def.itemStyle, context);
 
     const layoutStyle = Object.assign({}, itemStyle, {
       height: this.getCellLayoutValue(def),
@@ -260,8 +261,9 @@ export class Grid extends Panel<GridProps> {
       }
     }
 
-    const itemClassName = Panel.getPanelItemPropValue(def.itemClassName, { row, column, index });
-    const itemStyle = Panel.getPanelItemPropValue(def.itemStyle, { row, column, index });
+    const context = { row, column, index };
+    const itemClassName = Panel.getPanelItemPropValue(def.itemClassName, context);
+    const itemStyle = Panel.getPanelItemPropValue(def.itemStyle, context);
 
     const layoutStyle = Object.assign({}, itemStyle, {
       width: this.getCellLayoutValue(def),

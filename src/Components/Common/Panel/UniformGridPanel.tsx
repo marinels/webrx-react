@@ -107,8 +107,9 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
               React.cloneElement(itemTemplate, { key: UniformGridPanel.generateKey(row, column) }) :
               itemTemplate;
 
-            const colClassName = Panel.getPanelItemPropValue(this.props.columnClassName, { row, column, index: row });
-            const colStyle = Panel.getPanelItemPropValue(this.props.columnStyle, { row, column, index: row });
+            const context = { row, column, index: row };
+            const colClassName = Panel.getPanelItemPropValue(this.props.columnClassName, context);
+            const colStyle = Panel.getPanelItemPropValue(this.props.columnStyle, context);
 
             if (isBeforeFirstItem === false) {
               index = index + 1;
@@ -124,8 +125,9 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
       })
       .filterNull()
       .map((cols, row) => {
-        const rowClassName = Panel.getPanelItemPropValue(this.props.rowClassName, { row, index: row });
-        const rowStyle = Panel.getPanelItemPropValue(this.props.rowStyle, { row, index: row });
+        const context = { row, index: row };
+        const rowClassName = Panel.getPanelItemPropValue(this.props.rowClassName, context);
+        const rowStyle = Panel.getPanelItemPropValue(this.props.rowStyle, context);
 
         return (
           <div key={ row } className={ wxr.classNames('Grid-Row', rowClassName) } style={ rowStyle }>
