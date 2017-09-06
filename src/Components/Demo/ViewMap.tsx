@@ -299,6 +299,7 @@ export const demoViewMap: ViewActivatorMap = {
             itemsPanelTemplate={ x => (
               <Components.UniformGridPanel
                 rows={ 4 } columns={ 4 } firstColumn={ 1 } border renderEmptyRows
+                rowStyle={({ height: 100 })}
                 columnStyle={({ verticalAlign: 'middle' })}
               >
                 { x }
