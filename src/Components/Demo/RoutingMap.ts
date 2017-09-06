@@ -156,6 +156,9 @@ demoRoutingMap.addRoute('React', 'UniformGridPanel', 'Uniform Grid Panel', (stat
 demoRoutingMap.addRoute('React', 'WrapPanel', 'Wrap Panel', (state: any) => 'WrapPanel');
 demoRoutingMap.addRoute('React', 'TreeItem', 'Tree Item', (state: any) => 'TreeItem');
 demoRoutingMap.addRoute('React', 'TreeItemPresenter', 'Tree Item Presenter', (state: any) => 'TreeItemPresenter');
+demoRoutingMap.addRoute('React', 'HorizontalTreeItemPresenter', 'Tree Item Presenter (Horizontal)', (state: any) => 'HorizontalTreeItemPresenter');
+demoRoutingMap.addRoute('React', 'HorizontalItemsTreeItemPresenter', 'Tree Item Presenter (Horizontal Root)', (state: any) => 'HorizontalItemsTreeItemPresenter');
+demoRoutingMap.addRoute('React', 'HorizontalRootTreeItemPresenter', 'Tree Item Presenter (Horizontal Items)', (state: any) => 'HorizontalRootTreeItemPresenter');
 demoRoutingMap.addRoute('React', 'CommonPanel', 'Common Panel', (state: any) => 'CommonPanel');
 demoRoutingMap.addRoute('React', 'CommonPanelList', 'Common Panel (List)', (state: any) => 'CommonPanelList');
 demoRoutingMap.addRoute('React', 'CommonPanelTable', 'Common Panel (Table)', (state: any) => 'CommonPanelTable');

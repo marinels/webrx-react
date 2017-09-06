@@ -281,6 +281,49 @@ export const demoViewMap: ViewActivatorMap = {
       )}
     />
   ),
+  HorizontalTreeItemPresenter: () => (
+    <Components.ItemsPresenter
+      itemsSource={ sampleTreeData }
+      itemsPanelTemplate={ x => <Components.StackPanel orientation='Horizontal'>{ x }</Components.StackPanel> }
+      itemTemplate={ (item: SampleTreeData, i) => (
+        <Components.TreeItem
+          item={ item }
+          index={ i }
+          itemsSource={ (x: SampleTreeData) => x.items }
+          itemsPanelTemplate={ x => <Components.StackPanel orientation='Horizontal'>{ x }</Components.StackPanel> }
+          itemTemplate={ (x: SampleTreeData) => x.name }
+        />
+      )}
+    />
+  ),
+  HorizontalItemsTreeItemPresenter: () => (
+    <Components.ItemsPresenter
+      itemsSource={ sampleTreeData }
+      itemTemplate={ (item: SampleTreeData, i) => (
+        <Components.TreeItem
+          item={ item }
+          index={ i }
+          itemsSource={ (x: SampleTreeData) => x.items }
+          itemsPanelTemplate={ x => <Components.StackPanel orientation='Horizontal'>{ x }</Components.StackPanel> }
+          itemTemplate={ (x: SampleTreeData) => x.name }
+        />
+      )}
+    />
+  ),
+  HorizontalRootTreeItemPresenter: () => (
+    <Components.ItemsPresenter
+      itemsSource={ sampleTreeData }
+      itemsPanelTemplate={ x => <Components.StackPanel orientation='Horizontal'>{ x }</Components.StackPanel> }
+      itemTemplate={ (item: SampleTreeData, i) => (
+        <Components.TreeItem
+          item={ item }
+          index={ i }
+          itemsSource={ (x: SampleTreeData) => x.items }
+          itemTemplate={ (x: SampleTreeData) => x.name }
+        />
+      )}
+    />
+  ),
   ItemsViewModel: (viewModel: Components.ItemsViewModel<{}>, componentRoute: string) => {
     switch (componentRoute) {
       case 'ItemsWrap':
