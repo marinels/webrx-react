@@ -9,7 +9,11 @@ export enum StackPanelOrientation {
 }
 
 export interface StackPanelProps extends PanelProps {
-  orientation?: StackPanelOrientation | 'Horizontal' | 'Vertical';
+  /**
+   * define which direction this stack panel expands
+   * NOTE: you can use the StackPanelOrientation enum or just the string representation
+   */
+  orientation?: StackPanelOrientation | keyof typeof StackPanelOrientation;
 }
 
 export class StackPanel extends Panel<StackPanelProps> {
