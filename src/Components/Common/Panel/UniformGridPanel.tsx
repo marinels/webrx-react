@@ -3,7 +3,7 @@ import { Iterable } from 'ix';
 
 import { wxr } from '../../React';
 import { PanelProps, Panel, PanelItemProp } from './Panel';
-import { GridRowContext, GridColumnContext } from './Grid';
+import { GridRowContext, GridColumnContext, GridRenderProps } from './Grid';
 
 export interface UniformRowItemProps {
   /**
@@ -29,7 +29,7 @@ export interface UniformColumnItemProps {
   columnStyle?: PanelItemProp<React.CSSProperties, GridColumnContext>;
 }
 
-export interface UniformGridPanelProps extends PanelProps, UniformRowItemProps, UniformColumnItemProps {
+export interface UniformGridPanelProps extends PanelProps, UniformRowItemProps, UniformColumnItemProps, GridRenderProps {
   /**
    * number of columns in the grid
    */
@@ -44,7 +44,6 @@ export interface UniformGridPanelProps extends PanelProps, UniformRowItemProps, 
    * which column index to start rendering panel items within (in the first row)
    */
   firstColumn?: number;
-  border?: boolean;
 
   /**
    * True to render rows which have no corresponding panel items to render

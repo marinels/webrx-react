@@ -167,8 +167,14 @@ export class GridLayoutDefinition {
   }
 }
 
-export interface GridProps extends PanelProps {
+export interface GridRenderProps {
+  /**
+   * true to display a border around grid cells
+   */
   border?: boolean;
+}
+
+export interface GridProps extends PanelProps, GridRenderProps {
 }
 
 export class Grid extends Panel<GridProps> {
