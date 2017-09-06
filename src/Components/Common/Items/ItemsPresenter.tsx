@@ -27,6 +27,10 @@ export interface ItemsPresenterTemplateProps {
 }
 
 export interface ItemsPresenterProps extends React.HTMLAttributes<ItemsPresenterProps>, ItemsPresenterTemplateProps, PanelItemProps {
+  /**
+   * data source of items to render
+   * if omitted then component children is used in place
+   */
   itemsSource?: IterableLike<{}>;
 }
 

@@ -17,7 +17,8 @@ export interface TreeItemSourceProps {
   itemsSource: RecursiveItemsSource<{}>;
 
   /**
-   * template to render each items belonging to the bound item
+   * template to render each item belonging to the bound item
+   * use this template to define your own items presenter template
    */
   itemsTemplate?: (items: IterableLike<{}> | undefined) => React.ReactNode;
 }
@@ -25,6 +26,7 @@ export interface TreeItemSourceProps {
 export interface TreeItemRenderProps {
   /**
    * tree node depth (defaults to 0)
+   * this should not be assigned unless defining your own itemsTemplate
    */
   depth?: number;
 
@@ -33,9 +35,22 @@ export interface TreeItemRenderProps {
    */
   startExpanded?: boolean;
 
+  /**
+   * override the default expanded icon name
+   * default is a '-' in a rounded square
+   */
   expandedIconName?: string;
+
+  /**
+   * override the default collapsed icon name
+   * default is a '+' in a rounded square
+   */
   collapsedIconName?: string;
 
+  /**
+   * Override the expander icon template
+   * default behaviour is to render an icon using the expandedIconName and collapsedIconName
+   */
   expanderIconTemplate?: (isExpanded: boolean, expandedIconName?: string, collapsedIconName?: string) => React.ReactNode;
 }
 
@@ -53,6 +68,9 @@ export interface TreeItemProps extends React.HTMLAttributes<TreeItemProps>, Tree
 }
 
 export interface TreeItemState {
+  /**
+   * true if the tree item is expanded
+   */
   isExpanded: boolean;
 }
 

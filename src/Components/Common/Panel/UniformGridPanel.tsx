@@ -6,21 +6,55 @@ import { PanelProps, Panel, PanelItemProp } from './Panel';
 import { GridRowContext, GridColumnContext } from './Grid';
 
 export interface UniformRowItemProps {
+  /**
+   * apply custom row class name to the corresponding panel item
+   */
   rowClassName?: PanelItemProp<string, GridRowContext>;
+
+  /**
+   * apply custom row style to the corresponding panel item
+   */
   rowStyle?: PanelItemProp<React.CSSProperties, GridRowContext>;
 }
 
 export interface UniformColumnItemProps {
+  /**
+   * apply custom column class name to the corresponding panel item
+   */
   columnClassName?: PanelItemProp<string, GridColumnContext>;
+
+  /**
+   * apply custom column style to the corresponding panel item
+   */
   columnStyle?: PanelItemProp<React.CSSProperties, GridColumnContext>;
 }
 
 export interface UniformGridPanelProps extends PanelProps, UniformRowItemProps, UniformColumnItemProps {
+  /**
+   * number of columns in the grid
+   */
   columns: number;
+
+  /**
+   * number of rows in the grid
+   */
   rows: number;
+
+  /**
+   * which column index to start rendering panel items within (in the first row)
+   */
   firstColumn?: number;
   border?: boolean;
+
+  /**
+   * True to render rows which have no corresponding panel items to render
+   */
   renderEmptyRows?: boolean;
+
+  /**
+   * template to render an empty panel item cell
+   * default template renders an &nbsp; block
+   */
   emptyTemplate?: (row: number, column: number) => React.ReactNode;
 }
 

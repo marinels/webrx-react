@@ -1,6 +1,8 @@
 @import (reference) '../../../Style/App.less';
 
 .TreeItem {
+  // setup header and expansion blocks as css tables that expand horizontally
+  // blocks within the tables become the table cells
   & > .TreeItem-Header,
   & > .TreeItem-Expansion {
     display: table;
@@ -26,6 +28,8 @@
     & > .TreeItem-Expander {
       vertical-align: middle;
 
+      // don't use default bootstrap styles for the expander button
+      // removing the padding allows the button to appear in the proper center
       & > .btn {
         color: inherit;
         padding: 0;

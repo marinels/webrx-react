@@ -4,45 +4,86 @@ import { Iterable } from 'ix';
 import { wxr } from '../../React';
 import { PanelItemContext, PanelItemProp, PanelItemProps, PanelProps, Panel } from './Panel';
 
+/**
+ * a row context only knows about its row number
+ * NOTE: the inherited index always has the same value as the row
+ */
 export interface GridRowContext extends PanelItemContext {
   row: number;
 }
 
+/**
+ * a column context knows both its row number and column number
+ * the index represents the index of the panel item being rendered
+ */
 export interface GridColumnContext extends GridRowContext {
   column: number;
 }
 
+/**
+ * a layout element represents props for a component that helps define
+ * the grid layout (i.e. GridRowDefinitions and RowDefinition)
+ */
 export interface GridLayoutElementProps<T extends GridRowContext = GridRowContext> extends PanelItemProps<T> {
 }
 
+/**
+ * a row layout element with a height prop
+ */
 export interface RowDefinitionProps extends GridLayoutElementProps {
   height?: number;
 }
 
+/**
+ * a component to define a grid row, optionally with a static height value
+ * if height is omitted, height will auto stretch to consume available space
+ */
 export class RowDefinition extends React.Component<RowDefinitionProps> {
 }
 
+/**
+ * a row collection layout element to define row layout elements as children
+ */
 export interface GridRowDefinitionsProps extends GridLayoutElementProps {
   children?: React.ReactElement<RowDefinitionProps> | Array<React.ReactElement<RowDefinitionProps>>;
 }
 
+/**
+ * a component to define the row layout component collection
+ */
 export class GridRowDefinitions extends React.Component<GridRowDefinitionsProps> {
 }
 
+/**
+ * a column layout element with a width prop
+ * width can be a ratio represented as a string (i.e., '1*' for 1 unit)
+ * NOTE: if using multiple stretch columns, the number of units used
+ * becomes the divisor (i.e., '1*', '2*', '4*' to denote 1/7, 2/7, 4/7)
+ */
 export interface ColumnDefinitionProps extends GridLayoutElementProps<GridColumnContext> {
   width?: number | string;
 }
 
+/**
+ * a component to define a grid column, optionally with a width value
+ * if width is omitted, width will auto stretch to consume '1*' of space
+ */
 export class ColumnDefinition extends React.Component<ColumnDefinitionProps> {
   static defaultProps = {
     width: '*',
   };
 }
 
+/**
+ * a column collection layout element to define column layout elements as children
+ */
 export interface GridColumnDefinitionsProps extends GridLayoutElementProps<GridColumnContext> {
   children?: React.ReactElement<ColumnDefinitionProps> | Array<React.ReactElement<ColumnDefinitionProps>>;
 }
 
+/**
+ * a component to define the column layout component collection
+ */
 export class GridColumnDefinitions extends React.Component<GridColumnDefinitionsProps> {
 }
 
@@ -133,8 +174,17 @@ export interface GridProps extends PanelProps {
 export class Grid extends Panel<GridProps> {
   public static displayName = 'Grid';
 
-  public static Columns = GridColumnDefinitions;
+  /**
+   * Use this component to define your Row collection
+   * i.e., <Grid.Rows><RowDefinition /></Grid.Rows>
+   */
   public static Rows = GridRowDefinitions;
+
+  /**
+   * Use this component to define your Column collection
+   * i.e., <Grid.Columns><ColumnDefinition /></Grid.Columns>
+   */
+  public static Columns = GridColumnDefinitions;
 
   render() {
     const { border, ...rest } = this.props;

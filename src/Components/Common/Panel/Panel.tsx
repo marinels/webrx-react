@@ -2,14 +2,33 @@ import * as React from 'react';
 
 import { wxr } from '../../React';
 
+/**
+ * A panel item context is metadata passed to a panel item to give some
+ * context as to where in the container it is being rendered.
+ */
 export interface PanelItemContext {
   index: number;
 }
 
+/**
+ * panel item prop can be statically assigned or dynamically determined
+ * based on a provided item context
+ */
 export type PanelItemProp<TValue, TContext extends PanelItemContext = PanelItemContext> = TValue | ((context: TContext) => TValue);
 
+/**
+ * panel item props allow component to inject props to the rendered
+ * block structure.
+ */
 export interface PanelItemProps<T extends PanelItemContext = PanelItemContext> {
+  /**
+   * apply custom class name to the corresponding panel item
+   */
   itemClassName?: PanelItemProp<string, T>;
+
+  /**
+   * apply custom style to the corresponding panel item
+   */
   itemStyle?: PanelItemProp<React.CSSProperties, T>;
 }
 
