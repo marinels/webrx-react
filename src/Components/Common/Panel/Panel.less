@@ -28,10 +28,6 @@
     // display elements as blocks (one per line, centered and stretching horizontally)
     &.StackPanel-Vertical {
       text-align: center;
-
-      & > div {
-        display: block;
-      }
     }
   }
 
@@ -40,7 +36,6 @@
   // NOTE: fixed layout is required to support discrete layout dimensions
   &.Grid {
     display: table;
-    empty-cells: show;
     height: 100%;
     table-layout: fixed;
     text-align: center;
