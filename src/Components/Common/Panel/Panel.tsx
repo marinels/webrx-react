@@ -38,8 +38,6 @@ export interface PanelProps extends React.HTMLAttributes<PanelProps>, PanelItemP
 export abstract class Panel<TProps extends PanelProps> extends React.Component<TProps> {
   public static displayName = 'Panel';
 
-  public static defaultComponentClass = 'div';
-
   public static getPanelItemPropValue<TValue, TContext extends PanelItemContext>(prop: PanelItemProp<TValue, TContext> | undefined, context: TContext) {
     if (prop instanceof Function) {
       return prop(context);
