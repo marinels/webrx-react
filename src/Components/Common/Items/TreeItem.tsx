@@ -104,6 +104,7 @@ export class TreeItem extends React.Component<TreeItemProps, TreeItemState> {
               itemTemplate={ view.props.itemTemplate }
               itemClassName={ view.props.itemClassName }
               itemStyle={ view.props.itemStyle }
+              itemProps={ view.props.itemProps }
             />
           );
 
@@ -111,6 +112,7 @@ export class TreeItem extends React.Component<TreeItemProps, TreeItemState> {
         }}
         itemClassName={ view.props.itemClassName }
         itemStyle={ view.props.itemStyle }
+        itemProps={ view.props.itemProps }
       />
     );
   }
@@ -137,8 +139,8 @@ export class TreeItem extends React.Component<TreeItemProps, TreeItemState> {
 
   render() {
     const { className, props, rest, children } = this.restProps(x => {
-      const { item, index, itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle } = x;
-      return { item, index, itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle };
+      const { item, index, itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps } = x;
+      return { item, index, itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps };
     });
 
     const header = this.renderHeader();

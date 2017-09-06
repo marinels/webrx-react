@@ -14,8 +14,8 @@ export class TreeView extends React.Component<TreeProps> {
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle } = x;
-      return { itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle };
+      const { itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps } = x;
+      return { itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps };
     });
 
     return (
@@ -23,13 +23,14 @@ export class TreeView extends React.Component<TreeProps> {
         { ...rest }
         className={ wxr.classNames('Tree', className) }
         viewModel={ this.props.viewModel }
-        viewTemplate={ this.props.viewTemplate }
-        itemsPanelTemplate={ this.props.itemsPanelTemplate }
+        viewTemplate={ props.viewTemplate }
+        itemsPanelTemplate={ props.itemsPanelTemplate }
         itemTemplate={ (item: {}, index: number) => {
           return this.renderItem(item, index);
         }}
-        itemClassName={ this.props.itemClassName }
-        itemStyle={ this.props.itemStyle }
+        itemClassName={ props.itemClassName }
+        itemStyle={ props.itemStyle }
+        itemProps={ props.itemProps }
       />
     );
   }
@@ -49,6 +50,7 @@ export class TreeView extends React.Component<TreeProps> {
         itemTemplate={ this.props.itemTemplate }
         itemClassName={ this.props.itemClassName }
         itemStyle={ this.props.itemStyle }
+        itemProps={ this.props.itemProps }
       />
     );
 

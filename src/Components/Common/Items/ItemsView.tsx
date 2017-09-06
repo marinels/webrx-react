@@ -21,8 +21,8 @@ export class ItemsView extends BaseView<ItemsProps, ItemsViewModel<{}>> {
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle } = x;
-      return { viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle };
+      const { viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps } = x;
+      return { viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps };
     });
 
     return (
@@ -34,6 +34,7 @@ export class ItemsView extends BaseView<ItemsProps, ItemsViewModel<{}>> {
           itemTemplate={ props.itemTemplate }
           itemClassName={ props.itemClassName }
           itemStyle={ props.itemStyle }
+          itemProps={ props.itemProps }
         />
       </div>
     );

@@ -30,6 +30,11 @@ export interface PanelItemProps<T extends PanelItemContext = PanelItemContext> {
    * apply custom style to the corresponding panel item
    */
   itemStyle?: PanelItemProp<React.CSSProperties, T>;
+
+  /**
+   * apply custom props to the corresponding panel item
+   */
+  itemProps?: PanelItemProp<{}, T>;
 }
 
 export interface PanelProps extends React.HTMLAttributes<PanelProps>, PanelItemProps {
@@ -48,8 +53,8 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
 
   protected renderPanel(panelClassName?: string, panelProps?: PanelProps) {
     const { className, props, rest } = React.Component.restProps(panelProps || this.props, x => {
-      const { itemClassName, itemStyle } = x;
-      return { itemClassName, itemStyle };
+      const { itemClassName, itemStyle, itemProps } = x;
+      return { itemClassName, itemStyle, itemProps };
     });
 
     return (
@@ -75,8 +80,9 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
     const key = this.getItemKey(itemTemplate, index);
     const className = wxr.classNames('Panel-Item', Panel.getPanelItemPropValue(this.props.itemClassName, { index }));
     const style = Panel.getPanelItemPropValue(this.props.itemStyle, { index });
+    const props = Panel.getPanelItemPropValue(this.props.itemProps, { index }) || {};
     return (
-      <div key={ key } className={ className } style={ style }>
+      <div key={ key } className={ className } style={ style } { ...props }>
         { itemTemplate }
       </div>
     );

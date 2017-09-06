@@ -98,6 +98,7 @@ class GridLayoutDefinition {
   public readonly stretch: boolean;
   public readonly itemClassName: PanelItemProp<string, GridRowContext | GridColumnContext> | undefined;
   public readonly itemStyle: PanelItemProp<React.CSSProperties, GridRowContext | GridColumnContext> | undefined;
+  public readonly itemProps: PanelItemProp<{}, GridRowContext | GridColumnContext> | undefined;
 
   constructor(definition?: GridLayoutDefinitionElement, definitionGroup?: GridLayoutDefinitionGroupElement) {
     let { val, type } = this.getLayoutParam(definition);
@@ -117,6 +118,7 @@ class GridLayoutDefinition {
     if (definitionGroup != null) {
       this.itemClassName = definitionGroup.props.itemClassName;
       this.itemStyle = definitionGroup.props.itemStyle;
+      this.itemProps = definitionGroup.props.itemProps;
     }
 
     if (definition != null) {
@@ -126,6 +128,10 @@ class GridLayoutDefinition {
 
       if (definition.props.itemStyle != null) {
         this.itemStyle = definition.props.itemStyle;
+      }
+
+      if (definition.props.itemProps != null) {
+        this.itemProps = definition.props.itemProps;
       }
     }
   }
@@ -227,13 +233,14 @@ export class Grid extends Panel<GridProps> {
     const context = { row, index: row };
     const itemClassName = Panel.getPanelItemPropValue(def.itemClassName, context);
     const itemStyle = Panel.getPanelItemPropValue(def.itemStyle, context);
+    const itemProps = Panel.getPanelItemPropValue(def.itemProps, context) || {};
 
     const layoutStyle = Object.assign({}, itemStyle, {
       height: this.getCellLayoutValue(def),
     });
 
     return (
-      <div className={ wxr.classNames('Grid-Row', itemClassName) } style={ layoutStyle } data-grid-row={ row } key={ `${ row }` }>
+      <div className={ wxr.classNames('Grid-Row', itemClassName) } style={ layoutStyle } data-grid-row={ row } key={ `${ row }` } { ...itemProps }>
         { colItems }
       </div>
     );
@@ -264,13 +271,14 @@ export class Grid extends Panel<GridProps> {
     const context = { row, column, index };
     const itemClassName = Panel.getPanelItemPropValue(def.itemClassName, context);
     const itemStyle = Panel.getPanelItemPropValue(def.itemStyle, context);
+    const itemProps = Panel.getPanelItemPropValue(def.itemProps, context) || {};
 
     const layoutStyle = Object.assign({}, itemStyle, {
       width: this.getCellLayoutValue(def),
     });
 
     return (
-      <div className={ wxr.classNames('Grid-Column', itemClassName) } style={ layoutStyle } data-grid-column={ column } key={ `${ row }.${ column }` }>
+      <div className={ wxr.classNames('Grid-Column', itemClassName) } style={ layoutStyle } data-grid-column={ column } key={ `${ row }.${ column }` } { ...itemProps }>
         { super.renderItems(cellItems) }
       </div>
     );
