@@ -95,7 +95,7 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
   renderItems() {
     const itemTemplates = super.renderItems();
 
-    let index = 0;
+    let index = 0 - this.props.firstColumn!;
     return Iterable
       .range(0, this.props.rows)
       .map(row => {
@@ -106,7 +106,7 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
         return Iterable
           .range(0, this.props.columns)
           .map(column => {
-            const isBeforeFirstItem = row === 0 && column < this.props.firstColumn!;
+            const isBeforeFirstItem = index < 0;
             const isAfterLastItem = index >= itemTemplates.length;
 
             const itemTemplate = (isBeforeFirstItem || isAfterLastItem) ?
@@ -117,14 +117,10 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
               React.cloneElement(itemTemplate, { key: UniformGridPanel.generateKey(row, column) }) :
               itemTemplate;
 
-            const context = { row, column, index: row };
+            const context = { row, column, index: index++ };
             const colClassName = Panel.getPanelItemPropValue(this.props.columnClassName, context);
             const colStyle = Panel.getPanelItemPropValue(this.props.columnStyle, context);
             const colProps = Panel.getPanelItemPropValue(this.props.columnProps, context) || {};
-
-            if (isBeforeFirstItem === false) {
-              index = index + 1;
-            }
 
             return (
               <div key={ UniformGridPanel.generateKey(row, column) } className={ wxr.classNames('Grid-Column', colClassName) } style={ colStyle } { ...colProps }>
@@ -136,7 +132,7 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
       })
       .filterNull()
       .map((cols, row) => {
-        const context = { row, index: row };
+        const context = { row, index };
         const rowClassName = Panel.getPanelItemPropValue(this.props.rowClassName, context);
         const rowStyle = Panel.getPanelItemPropValue(this.props.rowStyle, context);
         const rowProps = Panel.getPanelItemPropValue(this.props.rowProps, context) || {};
