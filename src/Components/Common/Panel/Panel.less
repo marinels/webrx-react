@@ -1,8 +1,9 @@
 @import (reference) '../../../Style/App.less';
 
 .Panel {
-  // display elements inline, but wrap within the container (normal)
+  // display elements inline left aligned, but wrap within the container (normal)
   &.WrapPanel {
+    text-align: left;
     white-space: normal;
 
     & > div {
@@ -11,10 +12,11 @@
   }
 
   &.StackPanel {
-    // display elements inline, and do not wrap within the container
+    // display elements inline left aligned, and do not wrap within the container
     // we also make the container inline-block so that they can be stacked
     &.StackPanel-Horizontal {
       display: inline-block;
+      text-align: left;
       white-space: nowrap;
 
       // vertical alignment to the top ensures tall items do not alter

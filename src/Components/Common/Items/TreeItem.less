@@ -1,6 +1,10 @@
 @import (reference) '../../../Style/App.less';
 
 .TreeItem {
+  // left align tree items by default
+  // this helps visually if a horizontal stack panel is used for the items panel
+  text-align: left;
+
   // setup header and expansion blocks as css tables that expand horizontally
   // blocks within the tables become the table cells
   & > .TreeItem-Header,
