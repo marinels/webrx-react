@@ -13,7 +13,10 @@ import { ReadOnlyProperty, Command, Property } from './Interfaces';
 import { isSubscription } from './Utils';
 import { property } from './Property';
 
-export function filterNullIterable<TFiltered>(this: Iterable<TFiltered | undefined | null>, callbackfn?: (value: TFiltered, index: number) => boolean): Iterable<TFiltered> {
+export function filterNullIterable<TFiltered>(
+  this: Iterable<TFiltered | undefined | null>,
+  callbackfn?: (value: TFiltered, index: number) => boolean,
+): Iterable<TFiltered> {
   return (<Iterable<TFiltered>>this)
     .filter((x, i) => {
       if (x == null) {
@@ -30,7 +33,7 @@ export function addSubscription<T extends TeardownLogic>(this: Subscription, sub
   return subscription;
 }
 
-export function addSubscriptions<T extends TeardownLogic>(this: Subscription, ...subscriptions: T[]): T[] {
+export function addSubscriptions<T extends TeardownLogic>(this: Subscription, ...subscriptions: T[]): Array<T> {
   return subscriptions
     .map(x => this.addSubscription(x));
 }
@@ -45,7 +48,10 @@ export function unsubscribeStatic<T>(subscription: T, unsubscribedValue?: T): T 
   return subscription;
 }
 
-export function filterNullObservable<T>(this: Observable<T | undefined | null>, callbackfn?: (value: T, index: number) => boolean): Observable<T> {
+export function filterNullObservable<T>(
+  this: Observable<T | undefined | null>,
+  callbackfn?: (value: T, index: number) => boolean,
+): Observable<T> {
   return (<Observable<T>>this)
     .filter((x, i) => {
       if (x == null) {
@@ -56,11 +62,19 @@ export function filterNullObservable<T>(this: Observable<T | undefined | null>, 
     });
 }
 
-export function toProperty<T>(this: Observable<T>, initialValue?: T, compare?: boolean | ((x: T, y: T) => boolean), keySelector?: (x: T) => any): Property<T> {
+export function toProperty<T>(
+  this: Observable<T>,
+  initialValue?: T,
+  compare?: boolean | ((x: T, y: T) => boolean),
+  keySelector?: (x: T) => any,
+): Property<T> {
   return property(initialValue, compare, keySelector, this);
 }
 
-export function observeCommand<T, TRet>(this: Observable<T>, command: ((x: T) => Command<TRet>) | Command<TRet>) {
+export function observeCommand<T, TRet>(
+  this: Observable<T>,
+  command: ((x: T) => Command<TRet>) | Command<TRet>,
+): Observable<TRet> {
   // see the ReactiveUI project for the inspiration behind this function:
   // https://github.com/reactiveui/ReactiveUI/blob/master/src/ReactiveUI/ReactiveCommand.cs#L1078
   return this
@@ -80,8 +94,18 @@ export function observeCommand<T, TRet>(this: Observable<T>, command: ((x: T) =>
     .switch();
 }
 
-export function invokeCommand<T, TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>, observer: PartialObserver<T>): Subscription;
-export function invokeCommand<T, TRet>(command: ((parameter: T) => Command<TRet>) | Command<TRet>, next?: (value: T) => void, error?: (error: any) => void, complete?: () => void): Subscription;
+export function invokeCommand<T, TRet>(
+  this: Observable<T>,
+  command: ((parameter: T) => Command<TRet>) | Command<TRet>,
+  observer: PartialObserver<T>,
+): Subscription;
+export function invokeCommand<T, TRet>(
+  this: Observable<T>,
+  command: ((parameter: T) => Command<TRet>) | Command<TRet>,
+  next?: (value: T) => void,
+  error?: (error: any) => void,
+  complete?: () => void,
+): Subscription;
 export function invokeCommand<T, TRet>(
   this: Observable<T>,
   command: ((x: T) => Command<TRet>) | Command<TRet>,

@@ -1,22 +1,12 @@
-declare global {
-  interface StringConstructor {
-    isString(value: any): value is string;
-    isNullOrEmpty(value: string | null | undefined): value is undefined;
-    stringify(value: any, replacer?: any, space?: string | number): string | undefined;
-  }
-}
-
-function isString(value: any): value is string {
+export function isString(value: any): value is string {
   return typeof(value) === 'string' || value instanceof String;
 }
-String.isString = isString;
 
-function isNullOrEmpty(value: string | undefined): value is undefined {
+export function isNullOrEmpty(value: string | undefined): value is undefined {
   return value == null || value === '';
 }
-String.isNullOrEmpty = isNullOrEmpty;
 
-function stringify(value: any, replacer?: any, space: string | number = 2) {
+export function stringify(value: any, replacer?: any, space: string | number = 2): string | undefined {
   let result: string | undefined;
 
   if (value != null) {
@@ -38,6 +28,15 @@ function stringify(value: any, replacer?: any, space: string | number = 2) {
 
   return result;
 }
-String.stringify = stringify;
 
-export {};
+declare global {
+  interface StringConstructor {
+    isString: typeof isString;
+    isNullOrEmpty: typeof isNullOrEmpty;
+    stringify: typeof stringify;
+  }
+}
+
+String.isString = isString;
+String.isNullOrEmpty = isNullOrEmpty;
+String.stringify = stringify;

@@ -1,18 +1,13 @@
 import { Iterable } from 'ix';
 
-declare global {
-  interface Array<T> {
-    asIterable(): Iterable<T>;
-    filterNull<TFiltered>(this: Array<TFiltered | undefined | null>, callbackfn?: (value: TFiltered, index: number, array: Array<T | undefined | null>) => boolean): Array<TFiltered>;
-  }
-}
-
-function asIterable<T>(this: T[]) {
+export function asIterable<T>(this: Array<T>): Iterable<T> {
   return Iterable.from(this);
 }
-Array.prototype.asIterable = asIterable;
 
-function filterNull<T>(this: Array<T | undefined | null>, callbackfn?: (value: T, index: number, array: Array<T | undefined | null>) => boolean) {
+export function filterNull<T>(
+  this: Array<T | undefined | null>,
+  callbackfn?: (value: T, index: number, array: Array<T | undefined | null>) => boolean,
+): Array<T> {
   return (<Array<T>>this)
     .filter((x, i, a) => {
       if (x == null) {
@@ -22,4 +17,13 @@ function filterNull<T>(this: Array<T | undefined | null>, callbackfn?: (value: T
       return callbackfn == null ? true : callbackfn(x, i, a);
     });
 }
+
+declare global {
+  interface Array<T> {
+    asIterable: typeof asIterable;
+    filterNull: typeof filterNull;
+  }
+}
+
+Array.prototype.asIterable = asIterable;
 Array.prototype.filterNull = filterNull;
