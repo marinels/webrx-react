@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import * as clone from 'clone';
 
-import { wx, ObservableOrProperty, ReadOnlyProperty, Property, Command } from '../../../WebRx';
+import { wx, ObservableLike, ReadOnlyProperty, Property, Command } from '../../../WebRx';
 import { ObjectComparer, SortDirection } from '../../../Utils/Compare';
 import { ListViewModel } from '../List/ListViewModel';
 import { SearchViewModel, SearchRoutingState } from '../Search/SearchViewModel';
@@ -57,11 +57,11 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
 
   constructor(
     requests: Observable<TRequest>,
-    items?: ObservableOrProperty<TData[]>,
+    items?: ObservableLike<TData[]>,
     protected readonly filterer?: (item: TData, regex: RegExp) => boolean,
     comparer: string | ObjectComparer<TData> = new ObjectComparer<TData>(),
     isMultiSelectEnabled?: boolean,
-    isLoading?: ObservableOrProperty<boolean>,
+    isLoading?: ObservableLike<boolean>,
     pagerLimit?: number,
     rateLimit = 100,
     isRoutingEnabled?: boolean,
@@ -184,7 +184,7 @@ export abstract class BaseDataGridViewModel<TData, TRequest extends ProjectionRe
         x => x,
       )
       // ignore the (first) null requests
-      .filter(x => x != null)
+      .filterNull()
       // debounce on input projection requests
       .debounceTime(rateLimit)
       .invokeCommand(this.project),
@@ -301,7 +301,7 @@ export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, Items
     return new DataGridViewModel(wx.property<T[]>(items, false));
   }
 
-  private static getItemsRequestObservable<T>(source: ObservableOrProperty<T[]>) {
+  private static getItemsRequestObservable<T>(source: ObservableLike<T[]>) {
     if (wx.isProperty(source) === true) {
       return wx
         .whenAny(source, x => x)
@@ -319,12 +319,12 @@ export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, Items
   }
 
   constructor(
-    items: ObservableOrProperty<TData[]> = wx.property<TData[]>([], false),
+    items: ObservableLike<TData[]> = wx.property<TData[]>([], false),
     filterer?: (item: TData, regex: RegExp) => boolean,
     comparer?: string | ObjectComparer<TData>,
     protected preFilter: (items: TData[]) => TData[] = x => clone(x),
     isMultiSelectEnabled?: boolean,
-    isLoading?: ObservableOrProperty<boolean>,
+    isLoading?: ObservableLike<boolean>,
     pagerLimit?: number,
     rateLimit = 100,
     isRoutingEnabled?: boolean,
@@ -335,7 +335,7 @@ export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, Items
   getProjectionResult(request: ItemsProjectionRequest<TData>) {
     let source = this
       .preFilter(request.items || [])
-      .asEnumerable();
+      .asIterable();
 
     const filterer = this.filterer;
     const comparer = this.comparer;
@@ -343,12 +343,12 @@ export class DataGridViewModel<TData> extends BaseDataGridViewModel<TData, Items
     const sortField = request.sortField;
     const sortDirection = request.sortDirection;
 
-    if (filterer != null && regex != null && source.any()) {
+    if (filterer != null && regex != null && source.some(x => true)) {
       source = source.filter(x => filterer(x, regex));
     }
 
     if (comparer != null && !String.isNullOrEmpty(sortField) && sortDirection != null) {
-      source = comparer.sortEnumerable(source, sortField, sortDirection);
+      source = comparer.sortIterable(source, sortField, sortDirection);
     }
 
     let items = source.toArray();

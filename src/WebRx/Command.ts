@@ -1,7 +1,10 @@
-import { Observable, Subject, BehaviorSubject, Observer, Subscription } from 'rxjs';
+import { Observable, Subject, BehaviorSubject, Subscription } from 'rxjs';
+import { PartialObserver } from 'rxjs/Observer';
 
-import { Command } from './Interfaces';
+import { Command, ObservableOrValue } from './Interfaces';
 import { isObservable, asObservable, handleError } from './Utils';
+
+export type ExecutionAction<T> = (parameter: any) => ObservableOrValue<T>;
 
 export class ObservableCommand<T> extends Subscription implements Command<T> {
   protected isExecutingSubject: BehaviorSubject<boolean>;
@@ -10,7 +13,7 @@ export class ObservableCommand<T> extends Subscription implements Command<T> {
   protected thrownErrorsSubject: Subject<Error>;
 
   constructor(
-    protected readonly executeAction: (parameter: any) => Observable<T>,
+    protected readonly executeAction: ExecutionAction<T>,
     canExecute?: Observable<boolean>,
   ) {
     super();
@@ -65,7 +68,7 @@ export class ObservableCommand<T> extends Subscription implements Command<T> {
         this.isExecutingSubject.next(true);
       })
       .flatMap(x => {
-        return this.executeAction(x);
+        return asObservable(this.executeAction(x));
       })
       .do(
         x => {
@@ -89,29 +92,27 @@ export class ObservableCommand<T> extends Subscription implements Command<T> {
 
   execute(
     parameter?: any,
-    observerOrNext?: Observer<T>,
-    onError?: (exception: any) => void,
-    onCompleted?: () => void,
+    observer?: PartialObserver<T>,
   ): Subscription;
 
   execute(
     parameter?: any,
-    onNext?: (value: T) => void,
-    onError?: (exception: any) => void,
-    onCompleted?: () => void,
+    next?: (value: T) => void,
+    error?: (error: any) => void,
+    complete?: () => void,
   ): Subscription;
 
   execute(
     parameter?: any,
-    observerOrNext?: Observer<T> | ((value: T) => void),
-    onError: (exception: any) => void = () => { return; },
-    onCompleted?: () => void,
+    observerOrNext?: PartialObserver<T> | ((value: T) => void),
+    error: (error: any) => void = () => { return; },
+    complete?: () => void,
   ): Subscription {
     const obs = this
       .observeExecution(parameter);
 
     return obs
-      .subscribe.apply(obs, [ observerOrNext, onError, onCompleted ]);
+      .subscribe.apply(obs, [ observerOrNext, error, complete ]);
   }
 
   get results() {
@@ -124,8 +125,6 @@ export class ObservableCommand<T> extends Subscription implements Command<T> {
       .asObservable();
   }
 }
-
-export type ExecutionAction<T> = (parameter: any) => (T | Observable<T>);
 
 export function command<T>(): Command<T>;
 export function command<T>(execute: ExecutionAction<T>): Command<T>;
@@ -157,5 +156,5 @@ export function command<T>(arg1?: ExecutionAction<T> | Observable<boolean>, arg2
     }
   }
 
-  return new ObservableCommand((parameter: any) => asObservable(execute(parameter)), canExecute);
+  return new ObservableCommand((parameter: any) => execute(parameter), canExecute);
 }

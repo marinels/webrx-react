@@ -2,13 +2,13 @@ import * as React from 'react';
 import { Observable } from 'rxjs';
 import { Icon } from 'react-fa';
 import { Col, Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab,
-  Well, ListGroup, ListGroupItem, Table, OverlayTrigger, Overlay, Tooltip, Popover,
+  Well, ListGroup, ListGroupItem, Table, OverlayTrigger, Overlay, Tooltip, Popover, Label,
 } from 'react-bootstrap';
 
 import { wx, Property, Command } from '../../WebRx';
 import { Logging, Alert } from '../../Utils';
 import { wxr } from '../React';
-import { SampleData, SampleTreeData } from './RoutingMap';
+import { SampleData, SampleTreeData, sampleListData, sampleTreeData } from './RoutingMap';
 import * as Components from '../Common';
 import { TodoListView } from './TodoList/TodoListView';
 import { TodoListViewModel } from './TodoList/TodoListViewModel';
@@ -20,7 +20,7 @@ const logger = Logging.getLogger('Demo.ViewMap');
 
 const sampleDataTemplate = (x: SampleData) => {
   return (
-    <div>
+    <div key={ x.id }>
       <div>
         <span>Name: </span><span>{ x.name }</span>
       </div>
@@ -130,7 +130,7 @@ export const demoViewMap: ViewActivatorMap = {
     </div>
   ),
   ObservableWrapper: () => (
-    <Components.ObservableWrapper observableOrProperty={ Observable.timer(0, 1000) } render={ x => (<div>Current Value is { x }</div>) } />
+    <Components.ObservableWrapper observable={ Observable.timer(0, 1000) } render={ x => (<div>Current Value is { x }</div>) } />
   ),
   SearchViewModel: (viewModel: Components.SearchViewModel) => (
     <Form horizontal>
@@ -191,6 +191,223 @@ export const demoViewMap: ViewActivatorMap = {
         </div>
       </div>
     );
+  },
+  ItemsPanel: () => (
+    <Components.ItemsPresenter>
+      <Label>Item 1</Label>
+      <Label>Item 2</Label>
+      <Label>Item 3</Label>
+    </Components.ItemsPresenter>
+  ),
+  ItemsPanelBound: () => (
+    <Components.ItemsPresenter
+      itemsSource={ sampleListData }
+      itemTemplate={ (x: SampleData) => x.name }
+    />
+  ),
+  GridPanel: () => (
+    <Components.Grid border style={({ height: 400 })}>
+      <Components.Grid.Rows>
+        <Components.RowDefinition height={ 100 } />
+        <Components.RowDefinition height={ 200 } />
+        <Components.RowDefinition />
+      </Components.Grid.Rows>
+      <Components.Grid.Columns itemClassName={ ctx => `Col-${ ctx.column }` } itemStyle={({ verticalAlign: 'middle' })}>
+        <Components.ColumnDefinition width={ 200 } />
+        <Components.ColumnDefinition width='2*' />
+        <Components.ColumnDefinition />
+      </Components.Grid.Columns>
+      <div data-grid-row={ 0 } data-grid-column={ 0 }>(0, 0): [ 200px width, 100px height ]</div>
+      <div data-grid-row={ 0 } data-grid-column={ 1 }>(1, 0): [ 2x stretch width, 100px height ]</div>
+      <div data-grid-row={ 0 } data-grid-column={ 2 }>(2, 0): [ 1x stretch width, 100px height ]</div>
+      <div data-grid-row={ 1 } data-grid-column={ 0 }>(0, 1): [ 200px width, 200px height ]</div>
+      <div data-grid-row={ 1 } data-grid-column={ 1 }>(1, 1): [ 2x stretch width, 200px height ]</div>
+      <div data-grid-row={ 1 } data-grid-column={ 2 }>(2, 1): [ 1x stretch width, 200px height ]</div>
+      <div data-grid-row={ 2 } data-grid-column={ 0 }>(0, 2): [ 200px width, 1x stretch height ]</div>
+      <div data-grid-row={ 2 } data-grid-column={ 1 }>(1, 2): [ 2x stretch width, 1x stretch height ]</div>
+      <div data-grid-row={ 2 } data-grid-column={ 2 }>(2, 2): [ 1x stretch width, 1x stretch height ]</div>
+    </Components.Grid>
+  ),
+  StackPanel: () => (
+    <div>
+      <Components.StackPanel orientation='Horizontal' itemStyle={({ marginRight: 5 })}>
+        <Label>Item 1</Label>
+        <Label>Item 2</Label>
+        <Label>Item 3</Label>
+      </Components.StackPanel>
+      <Components.StackPanel itemStyle={({ marginBottom: 5 })}>
+        <Label>Item 1</Label>
+        <Label>Item 2</Label>
+        <Label>Item 3</Label>
+      </Components.StackPanel>
+    </div>
+  ),
+  UniformGridPanel: () => (
+    <Components.UniformGridPanel rows={ 3 } columns={ 2 } border renderEmptyRows
+      columnStyle={({ height: 50, verticalAlign: 'middle' })}
+    >
+      <Label key={ 1 }>Item 1</Label>
+      <Label key={ 2 }>Item 2</Label>
+      <Label key={ 3 }>Item 3</Label>
+    </Components.UniformGridPanel>
+  ),
+  WrapPanel: () => (
+    <Components.WrapPanel itemStyle={({ marginRight: 5 })}>
+      <Label>Item 1</Label>
+      <Label>Item 2</Label>
+      <Label>Item 3</Label>
+    </Components.WrapPanel>
+  ),
+  TreeItem: () => (
+    <Components.TreeItem
+      item={ sampleTreeData[0] }
+      index={ 0 }
+      itemsSource={ (x: SampleTreeData) => x.items }
+      itemTemplate={ (x: SampleTreeData) => x.name }
+      startExpanded
+    />
+  ),
+  TreeItemPresenter: () => (
+    <Components.ItemsPresenter
+      itemsSource={ sampleTreeData }
+      itemTemplate={ (item: SampleTreeData, i) => (
+        <Components.TreeItem
+          item={ item }
+          index={ i }
+          itemsSource={ (x: SampleTreeData) => x.items }
+          itemTemplate={ (x: SampleTreeData) => x.name }
+          startExpanded
+        />
+      )}
+    />
+  ),
+  HorizontalTreeItemPresenter: () => (
+    <Components.ItemsPresenter
+      itemsSource={ sampleTreeData }
+      itemsPanelTemplate={ x => <Components.StackPanel orientation='Horizontal'>{ x }</Components.StackPanel> }
+      itemTemplate={ (item: SampleTreeData, i) => (
+        <Components.TreeItem
+          item={ item }
+          index={ i }
+          itemsSource={ (x: SampleTreeData) => x.items }
+          itemsPanelTemplate={ x => <Components.StackPanel orientation='Horizontal'>{ x }</Components.StackPanel> }
+          itemTemplate={ (x: SampleTreeData) => x.name }
+        />
+      )}
+    />
+  ),
+  HorizontalItemsTreeItemPresenter: () => (
+    <Components.ItemsPresenter
+      itemsSource={ sampleTreeData }
+      itemTemplate={ (item: SampleTreeData, i) => (
+        <Components.TreeItem
+          item={ item }
+          index={ i }
+          itemsSource={ (x: SampleTreeData) => x.items }
+          itemsPanelTemplate={ x => <Components.StackPanel orientation='Horizontal'>{ x }</Components.StackPanel> }
+          itemTemplate={ (x: SampleTreeData) => x.name }
+        />
+      )}
+    />
+  ),
+  HorizontalRootTreeItemPresenter: () => (
+    <Components.ItemsPresenter
+      itemsSource={ sampleTreeData }
+      itemsPanelTemplate={ x => <Components.StackPanel orientation='Horizontal'>{ x }</Components.StackPanel> }
+      itemTemplate={ (item: SampleTreeData, i) => (
+        <Components.TreeItem
+          item={ item }
+          index={ i }
+          itemsSource={ (x: SampleTreeData) => x.items }
+          itemTemplate={ (x: SampleTreeData) => x.name }
+        />
+      )}
+    />
+  ),
+  ItemsViewModel: (viewModel: Components.ItemsViewModel<{}>, componentRoute: string) => {
+    switch (componentRoute) {
+      case 'ItemsWrap':
+        return (
+          <Components.ItemsView
+            viewModel={ viewModel }
+            itemsPanelTemplate={ x => (<Components.WrapPanel>{ x }</Components.WrapPanel>) }
+            itemTemplate={ (x: SampleData) => (<Label key={ x.id } style={({ marginRight: 5 })}>{ `name = ${ x.name }, requiredBy = ${ x.requiredBy }` }</Label>) }
+          />
+        );
+      case 'ItemsUGrid':
+        return (
+          <Components.ItemsView
+            style={({ height: 400 })}
+            viewModel={ viewModel }
+            itemsPanelTemplate={ x => (
+              <Components.UniformGridPanel
+                rows={ 4 } columns={ 4 } firstColumn={ 1 } border renderEmptyRows
+                rowStyle={({ height: 100 })}
+                columnStyle={({ verticalAlign: 'middle' })}
+              >
+                { x }
+              </Components.UniformGridPanel>
+            ) }
+            itemTemplate={ sampleDataTemplate }
+          />
+        );
+      case 'ItemsHStack':
+        return (
+          <Components.ItemsView
+            viewModel={ viewModel }
+            itemsPanelTemplate={ x => (<Components.StackPanel orientation='Horizontal'>{ x }</Components.StackPanel>) }
+            itemTemplate={ (x: SampleData) => (<Label key={ x.id } style={({ marginRight: 5 })}>{ `name = ${ x.name }, requiredBy = ${ x.requiredBy }` }</Label>) }
+          />
+        );
+      case 'ItemsGrid':
+        return (
+          <Components.ItemsView
+            style={({ height: 400 })}
+            viewModel={ viewModel }
+            itemsPanelTemplate={ x => (
+              <Components.Grid border>
+                <Components.Grid.Rows>
+                  <Components.RowDefinition height={ 100 } />
+                  <Components.RowDefinition height={ 200 } />
+                  <Components.RowDefinition />
+                </Components.Grid.Rows>
+                <Components.Grid.Columns itemStyle={({ verticalAlign: 'middle' })}>
+                  <Components.ColumnDefinition width={ 100 } />
+                  <Components.ColumnDefinition width='2*' />
+                  <Components.ColumnDefinition />
+                </Components.Grid.Columns>
+                { x }
+              </Components.Grid>
+            ) }
+            itemTemplate={ (x: SampleData, i: number) => {
+              const row = Math.floor(i / 3) % 3;
+              const col = (row + i) % 3;
+
+              return (
+                <div key={ i } data-grid-row={ row } data-grid-column={ col }>{ x.name }</div>
+              );
+            } }
+          />
+        );
+      case 'ItemsTree':
+        return (
+          <Components.TreeView
+            viewModel={ viewModel }
+            itemsSource={ (x: SampleTreeData) => x.items }
+            itemTemplate={ (x: SampleTreeData) => sampleDataTemplate(x) }
+            expandedIconName='caret-down'
+            collapsedIconName='caret-right'
+          />
+        );
+      default:
+        return (
+          <Components.ItemsView
+            viewModel={ viewModel }
+            itemTemplate={ (x: SampleData) => sampleDataTemplate(x) }
+            itemStyle={({ textAlign: 'left' })}
+          />
+        );
+    }
   },
   ListViewModel: (viewModel: Components.ListViewModel<any, any>, componentRoute: string) => {
     switch (componentRoute) {
@@ -289,12 +506,12 @@ export const demoViewMap: ViewActivatorMap = {
       <Components.DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 } />
     </Components.DataGridView>
   ),
-  ModalDialogViewModel: (data: { viewModel: Readonly<Components.ModalDialogViewModel>, accept: Command<any>, reject: Command<any> }) => (
+  ModalDialogViewModel: (data: { viewModel: Readonly<Components.ModalDialogViewModel<string>>, createContext: Command<string>, accept: Command<any>, reject: Command<any> }) => (
     <div>
-      <Button onClick={ wxr.bindEventToCommand(data.viewModel, x => x.show) }>Show Confirmation Dialog</Button>
-      <Components.ModalDialogView viewModel={ data.viewModel } title='Demo Modal Confirmation Dialog' body='You can put custom content here' bsSize='lg'>
-        <Components.CommandButton bsStyle='primary' command={ data.viewModel.hideOnExecute(data.accept) }>Accept</Components.CommandButton>
-        <Components.CommandButton bsStyle='danger' command={ data.viewModel.hideOnExecute(data.reject) }>Reject</Components.CommandButton>
+      <Button onClick={ wxr.bindEventToCommand(data.viewModel, x => data.createContext, () => 'You can put custom content here') }>Show Confirmation Dialog</Button>
+      <Components.ModalDialogView viewModel={ data.viewModel } title='Demo Modal Confirmation Dialog' body={ () => data.viewModel.context.value } bsSize='lg'>
+        <Components.CommandButton bsStyle='primary' command={ data.viewModel.hideOnExecute(data.accept) } commandParameter={ () => data.viewModel.context.value }>Accept</Components.CommandButton>
+        <Components.CommandButton bsStyle='danger' command={ data.viewModel.hideOnExecute(data.reject) } commandParameter={ () => data.viewModel.context.value }>Reject</Components.CommandButton>
         <Components.CommandButton bsStyle='default' command={ data.viewModel.hide }>Cancel</Components.CommandButton>
       </Components.ModalDialogView>
     </div>

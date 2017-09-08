@@ -1,0 +1,33 @@
+@import (reference) '../../../Style/App.less';
+
+.Items {
+  background-color: @list-group-bg;
+
+  .Panel-Item {
+    padding: 5px;
+  }
+
+  // hover
+  .Panel.Grid .Grid-Column,
+  .Panel.StackPanel .Panel-Item,
+  .Panel.WrapPanel .Panel-Item {
+    &:hover {
+      background: @default-hover-background;
+    }
+  }
+
+  // separators
+  .Panel.StackPanel {
+    &.StackPanel-Vertical .Panel-Item {
+      border-bottom: 1px solid @list-group-border;
+    }
+
+    &.StackPanel-Horizontal .Panel-Item {
+      border-right: 1px solid @list-group-border;
+    }
+
+    .Panel-Item:last-child {
+      border: none;
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Observable } from 'rxjs';
-import { Enumerable } from 'ix';
+import { Iterable } from 'ix';
 import { Grid, Row, Col, PageHeader, DropdownButton, MenuItem, Alert } from 'react-bootstrap';
 
 import { BaseView, BaseViewProps } from '../React';
@@ -126,7 +126,7 @@ export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDem
         onSelect={ this.bindEventToProperty(x => x.columns) }
       >
         {
-          Enumerable
+          Iterable
             .range(1, 13)
             .reverse()
             .map(x => x % 13)

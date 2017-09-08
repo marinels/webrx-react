@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Observable, Subscription } from 'rxjs';
-import { Enumerable } from 'ix';
+import { Iterable } from 'ix';
 import { Icon } from 'react-fa';
 import { ListGroup, ListGroupProps, ListGroupItem } from 'react-bootstrap';
 
@@ -150,7 +150,7 @@ export abstract class BaseListViewTemplate<TItem, TData, TView extends React.Com
         {
           (this.getItems(viewModel, view) || [])
             .map((x, i) => this.renderRow(x, i, viewModel, view))
-            .asEnumerable()
+            .asIterable()
             .defaultIfEmpty(
               <ListGroupItem key='empty' className='List-empty text-muted'>
                 { this.renderEmptyContent(viewModel, view) }
@@ -352,9 +352,9 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
     return expandedNodes;
   }
 
-  protected flattenNodes(nodes: Enumerable<TreeNode<TData>>): Enumerable<TreeNode<TData>> {
+  protected flattenNodes(nodes: Iterable<TreeNode<TData>>): Iterable<TreeNode<TData>> {
     return nodes
-      .selectMany(x => this.flattenNodes(x.nodes.asEnumerable()))
+      .flatMap<TreeNode<TData>, TreeNode<TData>>(x => this.flattenNodes(x.nodes.asIterable()))
       .concat(nodes);
   }
 }

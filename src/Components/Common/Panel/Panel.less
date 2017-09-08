@@ -1,0 +1,75 @@
+@import (reference) '../../../Style/App.less';
+
+.Panel {
+  // display elements inline left aligned, but wrap within the container (normal)
+  &.WrapPanel {
+    text-align: left;
+    white-space: normal;
+
+    & > div {
+      display: inline-block;
+    }
+  }
+
+  &.StackPanel {
+    // display elements inline left aligned, and do not wrap within the container
+    // we also make the container inline-block so that they can be stacked
+    &.StackPanel-Horizontal {
+      display: inline-block;
+      text-align: left;
+      white-space: nowrap;
+
+      // vertical alignment to the top ensures tall items do not alter
+      // the layout of less tall items
+      & > div {
+        display: inline-block;
+        vertical-align: top;
+      }
+    }
+
+    // display elements as blocks (one per line, centered and stretching horizontally)
+    &.StackPanel-Vertical {
+      text-align: center;
+    }
+  }
+
+  // grids emulate a table layout, stretching both horizontally and vertically
+  // content is centered horizontally by default
+  // NOTE: fixed layout is required to support discrete layout dimensions
+  &.Grid {
+    display: table;
+    height: 100%;
+    table-layout: fixed;
+    text-align: center;
+    width: 100%;
+
+    // rows and columns layout the grid
+    & > .Grid-Row {
+      display: table-row;
+
+      & > .Grid-Column {
+        display: table-cell;
+      }
+    }
+
+    // if the grid is boredered, show borders around cells
+    // (collapse stacked borders)
+    &.Grid-Border {
+      border-collapse: collapse;
+
+      & > .Grid-Row > .Grid-Column {
+        border: 1px solid gray;
+      }
+    }
+
+    // uniform grids ensure that all cells have the same width, 1px in a
+    // fixed layout means that all cells expand horizontally with equal weight
+    // NOTE: we can't necessarily control uniform height because it
+    //       would depend on the container block supporting the proper height first
+    &.Grid-Uniform {
+      & > .Grid-Row > .Grid-Column {
+        width: 1px;
+      }
+    }
+  }
+}

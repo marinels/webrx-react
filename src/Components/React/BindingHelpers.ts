@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subscription } from 'rxjs';
 
-import { ObservableOrProperty, Property, Command, isCommand, getObservable } from '../../WebRx';
+import { ObservableLike, Property, Command, isCommand, getObservable } from '../../WebRx';
 import { BaseViewModel } from './BaseViewModel';
 
 /**
@@ -9,14 +9,14 @@ import { BaseViewModel } from './BaseViewModel';
  */
 export function bindObservableToCommand<TViewModel extends BaseViewModel, TInput, TResult>(
   viewModel: Readonly<TViewModel>,
-  observableOrProperty: ObservableOrProperty<TInput>,
+  observableLike: ObservableLike<TInput>,
   commandSelector: (viewModel: Readonly<TViewModel>) => Command<TResult>,
   onNext?: (value: TInput) => void,
   onError?: (exception: any) => void,
   onCompleted?: () => void,
 ): Subscription {
-  return viewModel.addSubscription(
-    getObservable(observableOrProperty)
+  return (<TViewModel>viewModel).addSubscription(
+    getObservable(observableLike)
       .invokeCommand(commandSelector(viewModel), onNext, onError, onCompleted),
   );
 }

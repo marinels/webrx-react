@@ -1,0 +1,45 @@
+@import (reference) '../../../Style/App.less';
+
+.TreeItem {
+  // left align tree items by default
+  // this helps visually if a horizontal stack panel is used for the items panel
+  text-align: left;
+
+  // setup header and expansion blocks as css tables that expand horizontally
+  // blocks within the tables become the table cells
+  & > .TreeItem-Header,
+  & > .TreeItem-Expansion {
+    display: table;
+    width: 100%;
+
+    & > * {
+      display: table-cell;
+    }
+  }
+
+  & > .TreeItem-Header {
+    // fixed width for indent and expander blocks
+    & > .TreeItem-Indent,
+    & > .TreeItem-Expander {
+      width: @button-height;
+    }
+
+    // vertically and horizontally center the expander button
+    & > .TreeItem-Expander {
+      text-align: center;
+      vertical-align: middle;
+
+      // don't use default bootstrap styles for the expander button
+      // removing the padding allows the button to appear in the proper center
+      & > .btn {
+        color: inherit;
+        padding: 0;
+      }
+    }
+
+    // left align all header content by default
+    & > .TreeItem-HeaderContent {
+      text-align: left;
+    }
+  }
+}

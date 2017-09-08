@@ -1,4 +1,12 @@
+import { Iterable } from 'ix';
+import { AsyncIterableInput } from 'ix/asynciterable/from';
 import { Observable, Observer, Subscription } from 'rxjs';
+import { PartialObserver } from 'rxjs/Observer';
+
+export type IterableLike<T> = Iterable<T> | ArrayLike<T>;
+export type AsyncIterableLike<T> = AsyncIterableInput<T>;
+export type ObservableOrValue<T> = T | Observable<T>;
+export type ObservableLike<T> = Observable<T> | Property<T> | Command<T> | T;
 
 export interface ReadOnlyProperty<T> {
   readonly changed: Observable<T>;
@@ -12,11 +20,6 @@ export interface ReadOnlyProperty<T> {
 export interface Property<T> extends ReadOnlyProperty<T> {
   value: T;
 }
-
-export type ObservableOrProperty<T> = Observable<T> | Property<T>;
-export type OOP<T> = ObservableOrProperty<T>;
-export type ObservableOrPropertyOrValue<T> = ObservableOrProperty<T> | T;
-export type OOPOV<T> = ObservableOrPropertyOrValue<T>;
 
 export interface Command<T> {
   readonly isExecutingObservable: Observable<boolean>;
@@ -32,15 +35,13 @@ export interface Command<T> {
 
   execute(
     parameter?: any,
-    observerOrNext?: Observer<T>,
-    onError?: (exception: any) => void,
-    onCompleted?: () => void,
+    observer?: PartialObserver<T>,
   ): Subscription;
 
   execute(
     parameter?: any,
-    onNext?: (value: T) => void,
-    onError?: (exception: any) => void,
-    onCompleted?: () => void,
+    next?: (value: T) => void,
+    error?: (error: any) => void,
+    complete?: () => void,
   ): Subscription;
 }

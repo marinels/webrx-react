@@ -33,7 +33,7 @@ export class Breadcrumbs extends React.Component<BreadcrumbsProps, any> {
   render() {
     const { children, className, ref, pinnable, items, ...rest } = this.props;
 
-    return wxr.renderEnumerable(
+    return wxr.renderIterable(
       items,
       (x, i, a) => {
         const tooltip = wxr.renderConditional(

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { findDOMNode } from 'react-dom';
 import { Observable, Subscription } from 'rxjs';
-import { Enumerable } from 'ix';
+import { Iterable } from 'ix';
 import { Grid, Row, Col } from 'react-bootstrap';
 
 export interface BootstrapGuideProps {
@@ -47,9 +47,9 @@ export class BootstrapGuide extends React.Component<BootstrapGuideProps, any> {
         <Grid>
           <Row>
             {
-              Enumerable
+              Iterable
                 .range(1, 12)
-                .select(x => (
+                .map(x => (
                   <Col key={ x } className='BootstrapGuide-col' xs={ 1 }>
                     <div className='BootstrapGuide-block'>{ `Col ${ x }` }</div>
                   </Col>

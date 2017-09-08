@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-import { wx, ObservableOrProperty } from '../../../WebRx';
+import { wx, ObservableLike } from '../../../WebRx';
 import { BaseDataGridViewModel, ProjectionRequest, ProjectionResult } from './DataGridViewModel';
 
 export interface AsyncDataSource<TRequest extends ProjectionRequest, TResult extends ProjectionResult<any>> {
@@ -29,7 +29,7 @@ export class AsyncDataGridViewModel<TData, TRequest extends ProjectionRequest, T
     protected readonly enableFilter = false,
     protected readonly enableSort = false,
     isMultiSelectEnabled?: boolean,
-    isLoading?: ObservableOrProperty<boolean>,
+    isLoading?: ObservableLike<boolean>,
     pagerLimit?: number,
     rateLimit?: number,
     isRoutingEnabled?: boolean,

@@ -1,5 +1,3 @@
-// tslint:disable:no-unused-variable
-
 declare global {
   // webpack defines
   const DEBUG: boolean;
@@ -18,5 +16,4 @@ declare global {
   }
 }
 
-// since there are no exports, we must perform an empty export
 export {};
