@@ -15,9 +15,8 @@
   // we need set the top/bottom border for a table since it isn't rendered when
   // inside a panel
   .table {
-    border-color: #ddd;
-    border-style: solid;
-    border-width: 1px 0;
+    background-color: transparent;
+    border: 0;
   }
 
   // add padding to the search component for a non-collapsible panel
@@ -32,8 +31,10 @@
     margin-top: 10px;
   }
 
-  // add a margin around the pager since it is contained within the item list panel
+  // add padding around the pager since it is contained within the item list panel
   .Pager {
-    margin: 5px;
+    border-top: 1px solid @table-border-color;
+    margin: 0;
+    padding: 5px;
   }
 }
