@@ -1,6 +1,6 @@
 {
   "name": "webrx-react",
-  "version": "0.14.0",
+  "version": "0.14.0-rc8",
   "description": "ReactJS + WebRx + RxJS + Bootstrap: MVVM for Single Page Web Applications",
   "scripts": {
     "start": "gulp",
