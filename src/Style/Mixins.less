@@ -25,11 +25,7 @@
 
 .border-radiuses (@topright: 0, @bottomright: 0, @bottomleft: 0, @topleft: 0) {
   background-clip: padding-box;
-
-  border-bottom-left-radius: @bottomleft;
-  border-bottom-right-radius: @bottomright;
-  border-top-left-radius: @topleft;
-  border-top-right-radius: @topright;
+  border-radius: @topleft @topright @bottomright @bottomleft;
 }
 
 .opacity (@opacity: 0.5) {
