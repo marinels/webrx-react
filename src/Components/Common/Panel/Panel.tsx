@@ -43,6 +43,8 @@ export interface PanelProps extends React.HTMLAttributes<PanelProps>, PanelItemP
 export abstract class Panel<TProps extends PanelProps> extends React.Component<TProps> {
   public static displayName = 'Panel';
 
+  public static defaultComponentClass = 'div';
+
   public static getPanelItemPropValue<TValue, TContext extends PanelItemContext>(prop: PanelItemProp<TValue, TContext> | undefined, context: TContext) {
     if (prop instanceof Function) {
       return prop(context);
@@ -51,40 +53,45 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
     return prop;
   }
 
-  protected renderPanel(panelClassName?: string, panelProps?: PanelProps) {
+  protected renderPanel(panelClassName?: string, panelProps?: PanelProps, componentClass?: React.ReactType) {
     const { className, props, rest } = React.Component.restProps(panelProps || this.props, x => {
       const { itemClassName, itemStyle, itemProps } = x;
       return { itemClassName, itemStyle, itemProps };
     });
 
+    const Component = componentClass || Panel.defaultComponentClass;
+
     return (
-      <div { ...rest } className={ wxr.classNames('Panel', panelClassName, className) }>
+      <Component { ...rest } className={ wxr.classNames('Panel', panelClassName, className) }>
         { this.renderItems() }
-      </div>
+      </Component>
     );
   }
 
-  protected renderItems(children?: React.ReactNode) {
+  protected renderItems(children?: React.ReactNode, componentClass?: React.ReactType) {
     const props: PanelProps = this.props;
 
     return React.Children
       .map(children || this.props.children, (x, i) => {
-        return this.renderItem(x, i);
+        return this.renderItem(x, i, componentClass);
       });
   }
 
   protected renderItem(
     itemTemplate: React.ReactNode,
     index: number,
+    componentClass?: React.ReactType,
   ) {
     const key = this.getItemKey(itemTemplate, index);
     const className = wxr.classNames('Panel-Item', Panel.getPanelItemPropValue(this.props.itemClassName, { index }));
     const style = Panel.getPanelItemPropValue(this.props.itemStyle, { index });
     const props = Panel.getPanelItemPropValue(this.props.itemProps, { index }) || {};
+    const Component = componentClass || Panel.defaultComponentClass;
+
     return (
-      <div key={ key } className={ className } style={ style } { ...props }>
+      <Component key={ key } className={ className } style={ style } { ...props }>
         { itemTemplate }
-      </div>
+      </Component>
     );
   }
 
