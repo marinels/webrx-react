@@ -17,6 +17,12 @@ export interface PanelItemContext {
 export type PanelItemProp<TValue, TContext extends PanelItemContext = PanelItemContext> = TValue | ((context: TContext) => TValue);
 
 /**
+ * panel items can be wrapped in a different component
+ * this allows composing new items with an existing panel
+ */
+export type PanelItemWrapper = (item: JSX.Element, index: number) => JSX.Element;
+
+/**
  * panel item props allow component to inject props to the rendered
  * block structure.
  */
@@ -35,6 +41,11 @@ export interface PanelItemProps<T extends PanelItemContext = PanelItemContext> {
    * apply custom props to the corresponding panel item
    */
   itemProps?: PanelItemProp<{}, T>;
+
+  /**
+   * apply a custom component wrapper to the item
+   */
+  itemWrapper?: PanelItemWrapper;
 }
 
 export interface PanelProps extends React.HTMLAttributes<PanelProps>, PanelItemProps {
@@ -53,10 +64,14 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
     return prop;
   }
 
+  public static getWrappedPanelItem(wrapper: PanelItemWrapper | undefined, index: number, item: JSX.Element): JSX.Element {
+    return wrapper == null ? item : wrapper(item, index);
+  }
+
   protected renderPanel(panelClassName?: string, panelProps?: PanelProps, componentClass?: React.ReactType) {
     const { className, props, rest } = React.Component.restProps(panelProps || this.props, x => {
-      const { itemClassName, itemStyle, itemProps } = x;
-      return { itemClassName, itemStyle, itemProps };
+      const { itemClassName, itemStyle, itemProps, itemWrapper } = x;
+      return { itemClassName, itemStyle, itemProps, itemWrapper };
     });
 
     const Component = componentClass || Panel.defaultComponentClass;
@@ -88,10 +103,14 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
     const props = Panel.getPanelItemPropValue(this.props.itemProps, { index }) || {};
     const Component = componentClass || Panel.defaultComponentClass;
 
-    return (
-      <Component key={ key } className={ className } style={ style } { ...props }>
-        { itemTemplate }
-      </Component>
+    return Panel.getWrappedPanelItem(
+      this.props.itemWrapper,
+      index,
+      (
+        <Component key={ key } className={ className } style={ style } { ...props }>
+          { itemTemplate }
+        </Component>
+      ),
     );
   }
 

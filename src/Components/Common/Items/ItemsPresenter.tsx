@@ -45,7 +45,12 @@ export class ItemsPresenter extends React.Component<ItemsPresenterProps> {
 
   public static defaultPanelTemplate(itemTemplates: Array<React.ReactNode>, itemsPresenter: ItemsPresenter) {
     return (
-      <StackPanel itemClassName={ itemsPresenter.props.itemClassName } itemStyle={ itemsPresenter.props.itemStyle } itemProps={ itemsPresenter.props.itemProps }>
+      <StackPanel
+        itemClassName={ itemsPresenter.props.itemClassName }
+        itemStyle={ itemsPresenter.props.itemStyle }
+        itemProps={ itemsPresenter.props.itemProps }
+        itemWrapper={ itemsPresenter.props.itemWrapper }
+      >
         { itemTemplates }
       </StackPanel>
     );
@@ -53,8 +58,8 @@ export class ItemsPresenter extends React.Component<ItemsPresenterProps> {
 
   public static defaultViewTemplate(itemsPanel: React.ReactNode, itemsPresenter: ItemsPresenter) {
     const { className, props, rest } = itemsPresenter.restProps(x => {
-      const { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps } = x;
-      return { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps };
+      const { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, itemWrapper } = x;
+      return { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, itemWrapper };
     });
 
     return (
