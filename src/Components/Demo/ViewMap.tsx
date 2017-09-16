@@ -205,6 +205,20 @@ export const demoViewMap: ViewActivatorMap = {
       itemTemplate={ (x: SampleData) => x.name }
     />
   ),
+  ListGroupPanel: () => (
+    <Components.ListGroupPanel>
+      <Label>Item 1</Label>
+      <Label>Item 2</Label>
+      <Label>Item 3</Label>
+    </Components.ListGroupPanel>
+  ),
+  ListGroupPanelBound: () => (
+    <Components.ItemsPresenter
+      itemsSource={ sampleListData }
+      itemTemplate={ sampleDataTemplate }
+      itemsPanelTemplate={ x => (<Components.ListGroupPanel>{ x }</Components.ListGroupPanel>) }
+    />
+  ),
   GridPanel: () => (
     <Components.Grid border style={({ height: 400 })}>
       <Components.Grid.Rows>
