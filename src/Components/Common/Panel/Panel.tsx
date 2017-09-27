@@ -70,8 +70,8 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
     return wrapper == null ? item : wrapper(item, index);
   }
 
-  protected renderPanel(panelClassName?: string, panelProps?: PanelProps, componentClass?: React.ReactType) {
-    const { className, props, rest } = React.Component.restProps(panelProps || this.props, x => {
+  protected renderPanel(panelClassName?: string, panelProps?: PanelProps, componentClass?: React.ReactType): JSX.Element {
+    const { className, children, props, rest } = React.Component.restProps(panelProps || this.props, x => {
       const { itemClassName, itemStyle, itemProps, itemWrapper } = x;
       return { itemClassName, itemStyle, itemProps, itemWrapper };
     });
@@ -80,7 +80,7 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
 
     return (
       <Component { ...rest } className={ wxr.classNames('Panel', panelClassName, className) }>
-        { this.renderItems() }
+        { this.renderItems(children) }
       </Component>
     );
   }
