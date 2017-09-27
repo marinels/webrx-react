@@ -7,7 +7,10 @@ import { ItemsViewModel } from './ItemsViewModel';
 import { Panel, StackPanel, PanelItemProps } from '../Panel';
 import { ItemsPresenter, ItemsPresenterTemplateProps } from './ItemsPresenter';
 
-export interface ItemsProps extends BaseViewProps, ItemsPresenterTemplateProps, PanelItemProps {
+export interface ItemsRenderProps extends ItemsPresenterTemplateProps, PanelItemProps {
+}
+
+export interface ItemsProps extends BaseViewProps, ItemsRenderProps {
 }
 
 export class ItemsView extends BaseView<ItemsProps, ItemsViewModel<{}>> {
