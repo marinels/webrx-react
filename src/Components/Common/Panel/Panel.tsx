@@ -10,6 +10,8 @@ export interface PanelItemContext {
   index: number;
 }
 
+export type PanelFragment = React.ReactChild | false;
+
 /**
  * panel item prop can be statically assigned or dynamically determined
  * based on a provided item context
@@ -20,7 +22,7 @@ export type PanelItemProp<TValue, TContext extends PanelItemContext = PanelItemC
  * panel items can be wrapped in a different component
  * this allows composing new items with an existing panel
  */
-export type PanelItemWrapper = (item: JSX.Element, index: number) => JSX.Element;
+export type PanelItemWrapper = (item: PanelFragment, index: number) => PanelFragment;
 
 /**
  * panel item props allow component to inject props to the rendered
@@ -64,7 +66,7 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
     return prop;
   }
 
-  public static getWrappedPanelItem(wrapper: PanelItemWrapper | undefined, index: number, item: JSX.Element): JSX.Element {
+  public static getWrappedPanelItem(wrapper: PanelItemWrapper | undefined, index: number, item: PanelFragment): PanelFragment {
     return wrapper == null ? item : wrapper(item, index);
   }
 
@@ -93,10 +95,10 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
   }
 
   protected renderItem(
-    itemTemplate: React.ReactNode,
+    itemTemplate: PanelFragment,
     index: number,
     componentClass?: React.ReactType,
-  ) {
+  ): PanelFragment {
     const key = this.getItemKey(itemTemplate, index);
     const className = wxr.classNames('Panel-Item', Panel.getPanelItemPropValue(this.props.itemClassName, { index }));
     const style = Panel.getPanelItemPropValue(this.props.itemStyle, { index });
@@ -115,7 +117,7 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
   }
 
   protected getItemKey(
-    itemTemplate: React.ReactNode,
+    itemTemplate: PanelFragment,
     index: number,
   ) {
     let key: any = index;

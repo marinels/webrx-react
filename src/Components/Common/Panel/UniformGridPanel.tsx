@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Iterable } from 'ix';
 
 import { wxr } from '../../React';
-import { PanelProps, Panel, PanelItemProp } from './Panel';
+import { PanelProps, Panel, PanelItemProp, PanelFragment } from './Panel';
 import { GridRowContext, GridColumnContext, GridRenderProps } from './Grid';
 
 export interface UniformRowItemProps {
@@ -64,7 +64,7 @@ export interface UniformGridPanelProps extends PanelProps, UniformRowItemProps, 
    * template to render an empty panel item cell
    * default template renders an &nbsp; block
    */
-  emptyTemplate?: (row: number, column: number) => React.ReactNode;
+  emptyTemplate?: (row: number, column: number) => PanelFragment;
 }
 
 export class UniformGridPanel extends Panel<UniformGridPanelProps> {
@@ -78,7 +78,7 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
     return `${ row }.${ column }`;
   }
 
-  public static defaultEmptyTemplate(row: number, column: number) {
+  public static defaultEmptyTemplate(row: number, column: number): PanelFragment {
     return (
       <div key={ UniformGridPanel.generateKey(row, column) } className='Grid-Empty'>&nbsp;</div>
     );
