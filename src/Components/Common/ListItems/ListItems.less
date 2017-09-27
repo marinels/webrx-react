@@ -1,0 +1,12 @@
+@import (reference) '../../../Style/App.less';
+
+.Items.ListItems {
+  .TablePanel tr,
+  &.TreeItems .TreeItem > .TreeItem-Header {
+    &.Selected {
+      background-color: @list-group-active-bg;
+      border-color: @list-group-active-border;
+      color: @list-group-active-color;
+    }
+  }
+}
