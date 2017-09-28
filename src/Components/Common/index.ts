@@ -46,7 +46,7 @@ export * from './Panel';
 export * from './Items/ItemsPresenter';
 export * from './Items/ItemsView';
 export * from './Items/TreeItem';
-export * from './Items/TreeView';
+export * from './Items/TreeItemsView';
 export * from './List/ListView';
 export * from './DataGrid/DataGridView';
 export * from './ItemListPanel/ItemListPanelView';

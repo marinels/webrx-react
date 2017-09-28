@@ -9,8 +9,8 @@ import { ItemsPresenter } from './ItemsPresenter';
 export interface TreeProps extends ItemsProps, TreeItemSourceProps, TreeItemRenderProps {
 }
 
-export class TreeView extends React.Component<TreeProps> {
-  public static displayName = 'TreeView';
+export class TreeItemsView extends React.Component<TreeProps> {
+  public static displayName = 'TreeItemsView';
 
   render() {
     const { className, props, rest } = this.restProps(x => {
@@ -21,7 +21,7 @@ export class TreeView extends React.Component<TreeProps> {
     return (
       <ItemsView
         { ...rest }
-        className={ wxr.classNames('Tree', className) }
+        className={ wxr.classNames('TreeItems', className) }
         viewModel={ this.props.viewModel }
         viewTemplate={ props.viewTemplate }
         itemsPanelTemplate={ props.itemsPanelTemplate }
@@ -31,7 +31,6 @@ export class TreeView extends React.Component<TreeProps> {
         itemClassName={ props.itemClassName }
         itemStyle={ props.itemStyle }
         itemProps={ props.itemProps }
-        itemWrapper={ props.itemWrapper }
       />
     );
   }
