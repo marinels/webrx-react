@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Iterable } from 'ix';
 
 import { wxr } from '../../React';
-import { PanelProps, Panel, PanelItemProp } from './Panel';
+import { PanelProps, Panel, PanelItemProp, PanelFragment } from './Panel';
 import { GridRowContext, GridColumnContext, GridRenderProps } from './Grid';
 
 export interface UniformRowItemProps {
@@ -64,7 +64,7 @@ export interface UniformGridPanelProps extends PanelProps, UniformRowItemProps, 
    * template to render an empty panel item cell
    * default template renders an &nbsp; block
    */
-  emptyTemplate?: (row: number, column: number) => React.ReactNode;
+  emptyTemplate?: (row: number, column: number) => PanelFragment;
 }
 
 export class UniformGridPanel extends Panel<UniformGridPanelProps> {
@@ -78,7 +78,7 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
     return `${ row }.${ column }`;
   }
 
-  public static defaultEmptyTemplate(row: number, column: number) {
+  public static defaultEmptyTemplate(row: number, column: number): PanelFragment {
     return (
       <div key={ UniformGridPanel.generateKey(row, column) } className='Grid-Empty'>&nbsp;</div>
     );
@@ -92,8 +92,8 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
     return this.renderPanel(wxr.classNames('Grid', 'Grid-Uniform', bordered), rest);
   }
 
-  renderItems() {
-    const itemTemplates = super.renderItems();
+  renderItems(children?: React.ReactNode, items?: Array<{}>, componentClass?: React.ReactType) {
+    const itemTemplates = super.renderItems(children, items, componentClass);
 
     let index = 0 - this.props.firstColumn!;
     return Iterable
@@ -149,6 +149,7 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
   protected renderEmpty(row: number, column: number, index: number) {
     return this.renderItem(
       (this.props.emptyTemplate || UniformGridPanel.defaultEmptyTemplate)(row, column),
+      undefined,
       index,
     );
   }

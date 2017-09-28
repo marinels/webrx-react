@@ -9,19 +9,19 @@ import { ItemsPresenter } from './ItemsPresenter';
 export interface TreeProps extends ItemsProps, TreeItemSourceProps, TreeItemRenderProps {
 }
 
-export class TreeView extends React.Component<TreeProps> {
-  public static displayName = 'TreeView';
+export class TreeItemsView extends React.Component<TreeProps> {
+  public static displayName = 'TreeItemsView';
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps } = x;
-      return { itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps };
+      const { itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, itemWrapper } = x;
+      return { itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, itemWrapper };
     });
 
     return (
       <ItemsView
         { ...rest }
-        className={ wxr.classNames('Tree', className) }
+        className={ wxr.classNames('TreeItems', className) }
         viewModel={ this.props.viewModel }
         viewTemplate={ props.viewTemplate }
         itemsPanelTemplate={ props.itemsPanelTemplate }
@@ -51,6 +51,7 @@ export class TreeView extends React.Component<TreeProps> {
         itemClassName={ this.props.itemClassName }
         itemStyle={ this.props.itemStyle }
         itemProps={ this.props.itemProps }
+        itemWrapper={ this.props.itemWrapper }
       />
     );
 
