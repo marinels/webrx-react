@@ -13,6 +13,7 @@ export const demoRoutingMap = new RoutingMap();
 
 export interface SampleData {
   id: number;
+  cat: string;
   name: string;
   requiredBy: string;
 }
