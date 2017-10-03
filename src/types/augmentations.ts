@@ -1,5 +1,8 @@
 // tslint:disable:no-unused-variable no-shadowed-variable
 
+// include additional imports
+import './imports';
+
 // this is a patch for a bug in react-overlays that prevents modals from functioning properly
 // see: https://github.com/react-bootstrap/react-overlays/issues/188
 import { Modal } from 'react-overlays';
@@ -14,6 +17,3 @@ Modal.prototype.componentWillMount = function() {
 Modal.prototype.componentDidMount = function() {
   this._isMounted = true;
 };
-
-// include additional imports
-import './imports';
