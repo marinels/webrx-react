@@ -52,8 +52,7 @@
     "react-fa": "^5.0.0",
     "react-overlays": "^0.7.0",
     "react-transition-group": "^2.0.0",
-    "rxjs": "^5.0.0",
-    "typescript": "^2.0.0"
+    "rxjs": "^5.0.0"
   },
   "devDependencies": {
     "@types/chai": "^4.0.0",
@@ -98,6 +97,7 @@
     "through": "^2.0.0",
     "tslint": "^5.0.0",
     "tslint-config-unional": "^0.8.0",
+    "typescript": "^2.0.0",
     "url-loader": "^0.5.0",
     "vinyl": "^2.0.0",
     "webpack": "^3.0.0",
