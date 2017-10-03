@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Observable } from 'rxjs';
 import { Modal, ModalProps } from 'react-bootstrap';
-import { BaseView, ViewModelProps } from '../../React';
 
+import { BaseView, ViewModelProps } from '../../React';
 import { ModalDialogViewModel } from './ModalDialogViewModel';
 
 export interface ModalDialogProps extends ViewModelProps, Partial<ModalProps> {
