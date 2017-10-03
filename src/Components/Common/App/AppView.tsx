@@ -57,7 +57,7 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
     };
 
     return (
-      <div className='webrx-react bootstrap-3' ref={ x => updateDefaultContainer(x) }>
+      <div className='webrx-react bootstrap-3' ref={ updateDefaultContainer }>
         <div { ...rest } className={ wxr.classNames('App', className) }>
           {
             this.renderConditional(this.state.isLoading, () => (

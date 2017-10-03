@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { PortalProps } from 'react-bootstrap';
 import { Portal, Modal } from 'react-overlays';
 
 export function updateDefaultContainer(container: React.ReactInstance | null) {
