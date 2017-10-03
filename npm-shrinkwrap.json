@@ -259,11 +259,6 @@
       "from": "tslib@>=1.7.1 <2.0.0",
       "resolved": "https://registry.npmjs.org/tslib/-/tslib-1.7.1.tgz"
     },
-    "typescript": {
-      "version": "2.5.3",
-      "from": "typescript@2.5.3",
-      "resolved": "https://registry.npmjs.org/typescript/-/typescript-2.5.3.tgz"
-    },
     "ua-parser-js": {
       "version": "0.7.14",
       "from": "ua-parser-js@>=0.7.9 <0.8.0",
