@@ -120,7 +120,7 @@ export function invokeCommand<T, TRet>(
     .subscribe.apply(obs, [ observerOrNext, error, complete ]);
 }
 
-declare module 'ix/types/iterable' {
+declare module 'ix/iterable' {
   interface IterableX<T> {
     filterNull: typeof filterNullIterable;
   }

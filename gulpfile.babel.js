@@ -579,7 +579,7 @@ gulp.task('watch:webpack', [ 'clean:build' ], (done) => {
     { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader?mimetype=application/font-woff' },
     { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader' },
     { test: /\.(png|jpg|gif)$/, loader: 'url-loader' },
-    { test: /\.tsx?$/, loader: [ 'react-hot-loader', 'awesome-typescript-loader' ] },
+    { test: /\.tsx?$/, loader: [ 'react-hot-loader/webpack', 'awesome-typescript-loader' ] },
   ];
 
   const compiler = webpack(webpackConfig);
