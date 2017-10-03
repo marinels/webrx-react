@@ -30,7 +30,6 @@
     ],
 
     "paths": {
-      "ix/*": [ "node_modules/ix/types/*" ],
       "*": [ "src/types/*" ]
     }
   }
