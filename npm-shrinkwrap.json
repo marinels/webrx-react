@@ -1,6 +1,6 @@
 {
   "name": "webrx-react",
-  "version": "0.15.0",
+  "version": "0.15.0-rc7",
   "dependencies": {
     "@types/classnames": {
       "version": "2.2.3",
