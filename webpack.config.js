@@ -31,6 +31,7 @@ module.exports = Object.assign(clone(webpackCommon), {
       'react-overlays',
       'react-transition-group',
       'rxjs',
+      'tslib',
       './src/types/imports',
     ],
   },
