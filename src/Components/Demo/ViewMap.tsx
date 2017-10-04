@@ -205,6 +205,20 @@ export const demoViewMap: ViewActivatorMap = {
       itemTemplate={ (x: SampleData) => x.name }
     />
   ),
+  ListGroupPanel: () => (
+    <Components.ListGroupPanel>
+      <Label>Item 1</Label>
+      <Label>Item 2</Label>
+      <Label>Item 3</Label>
+    </Components.ListGroupPanel>
+  ),
+  ListGroupPanelBound: () => (
+    <Components.ItemsPresenter
+      itemsSource={ sampleListData }
+      itemTemplate={ sampleDataTemplate }
+      itemsPanelTemplate={ x => (<Components.ListGroupPanel>{ x }</Components.ListGroupPanel>) }
+    />
+  ),
   GridPanel: () => (
     <Components.Grid border style={({ height: 400 })}>
       <Components.Grid.Rows>
@@ -391,7 +405,7 @@ export const demoViewMap: ViewActivatorMap = {
         );
       case 'ItemsTree':
         return (
-          <Components.TreeView
+          <Components.TreeItemsView
             viewModel={ viewModel }
             itemsSource={ (x: SampleTreeData) => x.items }
             itemTemplate={ (x: SampleTreeData) => sampleDataTemplate(x) }
@@ -407,6 +421,65 @@ export const demoViewMap: ViewActivatorMap = {
             itemStyle={({ textAlign: 'left' })}
           />
         );
+    }
+  },
+  ListItemsViewModel: (viewModel: Components.ListItemsViewModel<{}>, componentRoute: string) => {
+    const a: React.ReactElement<Components.ListGroupPanelProps> = (<Components.ListGroupPanel />);
+    switch (componentRoute) {
+      case 'ListItemsDefault':
+        return (
+          <Components.ListItemsView
+            viewModel={ viewModel }
+            itemTemplate={ (x: SampleData) => sampleDataTemplate(x) }
+          >
+            <Components.ListGroupView />
+          </Components.ListItemsView>
+        );
+      case 'ListItemsListGroup':
+        return (
+          <Components.ListItemsView
+            viewModel={ viewModel }
+            view={ (<Components.ListGroupView />) }
+            itemTemplate={ (x: SampleData) => sampleDataTemplate(x) }
+          />
+        );
+      case 'ListItemsGrid':
+        return (
+          <Components.ListItemsView
+            viewModel={ viewModel }
+            view={(
+              <Components.GridView>
+                <Components.GridViewColumn header='Id' cellTemplate={ (x: SampleData) => x.id } />
+                <Components.GridViewColumn header='Category' cellTemplate={ (x: SampleData) => x.cat } />
+                <Components.GridViewColumn header='Name' cellTemplate={ (x: SampleData) => x.name } />
+                <Components.GridViewColumn header='Required By' cellTemplate={ (x: SampleData) => (<div>{ x.requiredBy }</div>) } />
+              </Components.GridView>
+            )}
+          />
+        );
+      case 'ListItemsGridAuto':
+        return (
+          <Components.ListItemsView
+            viewModel={ viewModel }
+            view={(
+              <Components.GridView />
+            )}
+          />
+        );
+      case 'ListItemsTree':
+        return (
+          <Components.ListItemsView
+            viewModel={ viewModel }
+            itemTemplate={ (x: SampleTreeData) => sampleDataTemplate(x) }
+            view={(
+              <Components.TreeView
+                itemsSource={ (x: SampleTreeData) => x.items }
+              />
+            )}
+          />
+        );
+      default:
+        return null;
     }
   },
   ListViewModel: (viewModel: Components.ListViewModel<any, any>, componentRoute: string) => {

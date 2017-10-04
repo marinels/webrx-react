@@ -10,11 +10,19 @@ export interface PanelItemContext {
   index: number;
 }
 
+export type PanelFragment = React.ReactChild | false;
+
 /**
  * panel item prop can be statically assigned or dynamically determined
  * based on a provided item context
  */
 export type PanelItemProp<TValue, TContext extends PanelItemContext = PanelItemContext> = TValue | ((context: TContext) => TValue);
+
+/**
+ * panel items can be wrapped in a different component
+ * this allows composing new items with an existing panel
+ */
+export type PanelItemWrapper = (fragment: PanelFragment, item: {} | undefined, index: number) => PanelFragment;
 
 /**
  * panel item props allow component to inject props to the rendered
@@ -35,6 +43,11 @@ export interface PanelItemProps<T extends PanelItemContext = PanelItemContext> {
    * apply custom props to the corresponding panel item
    */
   itemProps?: PanelItemProp<{}, T>;
+
+  /**
+   * apply a custom component wrapper to the item
+   */
+  itemWrapper?: PanelItemWrapper;
 }
 
 export interface PanelProps extends React.HTMLAttributes<PanelProps>, PanelItemProps {
@@ -42,6 +55,8 @@ export interface PanelProps extends React.HTMLAttributes<PanelProps>, PanelItemP
 
 export abstract class Panel<TProps extends PanelProps> extends React.Component<TProps> {
   public static displayName = 'Panel';
+
+  public static defaultComponentClass = 'div';
 
   public static getPanelItemPropValue<TValue, TContext extends PanelItemContext>(prop: PanelItemProp<TValue, TContext> | undefined, context: TContext) {
     if (prop instanceof Function) {
@@ -51,45 +66,65 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
     return prop;
   }
 
-  protected renderPanel(panelClassName?: string, panelProps?: PanelProps) {
-    const { className, props, rest } = React.Component.restProps(panelProps || this.props, x => {
-      const { itemClassName, itemStyle, itemProps } = x;
-      return { itemClassName, itemStyle, itemProps };
+  public static getWrappedPanelItem(wrapper: PanelItemWrapper | undefined, item: {} | undefined, index: number, fragment: PanelFragment): PanelFragment {
+    return wrapper == null ? fragment : wrapper(fragment, item, index);
+  }
+
+  protected renderPanel(panelClassName?: string, panelProps?: PanelProps, componentClass?: React.ReactType): JSX.Element {
+    const { className, children, props, rest } = React.Component.restProps(panelProps || this.props, x => {
+      const { itemClassName, itemStyle, itemProps, itemWrapper } = x;
+      return { itemClassName, itemStyle, itemProps, itemWrapper };
     });
 
+    const Component = componentClass || Panel.defaultComponentClass;
+
     return (
-      <div { ...rest } className={ wxr.classNames('Panel', panelClassName, className) }>
-        { this.renderItems() }
-      </div>
+      <Component { ...rest } className={ wxr.classNames('Panel', panelClassName, className) }>
+        { this.renderItems(children) }
+      </Component>
     );
   }
 
-  protected renderItems(children?: React.ReactNode) {
+  protected renderItems(children?: React.ReactNode, items?: Array<{}>, componentClass?: React.ReactType) {
     const props: PanelProps = this.props;
 
     return React.Children
       .map(children || this.props.children, (x, i) => {
-        return this.renderItem(x, i);
+        return this.renderItem(x, items == null ? undefined : items[i], i, componentClass);
       });
   }
 
   protected renderItem(
-    itemTemplate: React.ReactNode,
+    itemTemplate: PanelFragment,
+    item: {} | undefined,
     index: number,
-  ) {
-    const key = this.getItemKey(itemTemplate, index);
+    componentClass?: React.ReactType,
+  ): PanelFragment {
+    const key = this.getItemKey(itemTemplate, item, index);
     const className = wxr.classNames('Panel-Item', Panel.getPanelItemPropValue(this.props.itemClassName, { index }));
     const style = Panel.getPanelItemPropValue(this.props.itemStyle, { index });
-    const props = Panel.getPanelItemPropValue(this.props.itemProps, { index }) || {};
-    return (
-      <div key={ key } className={ className } style={ style } { ...props }>
-        { itemTemplate }
-      </div>
+    const props: {} | undefined = Panel.getPanelItemPropValue(this.props.itemProps, { index }) || {};
+    const Component = componentClass == null ? Panel.defaultComponentClass : componentClass;
+
+    const fragment = Component === '' && React.isValidElement<any>(itemTemplate) ?
+      React.cloneElement(itemTemplate, { key, className, style, ...props }) :
+      (
+        <Component key={ key } className={ className } style={ style } { ...props }>
+          { itemTemplate }
+        </Component>
+      );
+
+    return Panel.getWrappedPanelItem(
+      this.props.itemWrapper,
+      item,
+      index,
+      fragment,
     );
   }
 
   protected getItemKey(
-    itemTemplate: React.ReactNode,
+    itemTemplate: PanelFragment,
+    item: {} | undefined,
     index: number,
   ) {
     let key: any = index;

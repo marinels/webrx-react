@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Iterable } from 'ix';
 
 import { wxr } from '../../React';
-import { PanelItemContext, PanelItemProp, PanelItemProps, PanelProps, Panel } from './Panel';
+import { PanelItemContext, PanelItemProp, PanelItemProps, PanelItemWrapper, PanelProps, Panel } from './Panel';
 
 /**
  * a row context only knows about its row number
@@ -99,6 +99,7 @@ export class GridLayoutDefinition {
   public readonly itemClassName: PanelItemProp<string, GridRowContext | GridColumnContext> | undefined;
   public readonly itemStyle: PanelItemProp<React.CSSProperties, GridRowContext | GridColumnContext> | undefined;
   public readonly itemProps: PanelItemProp<{}, GridRowContext | GridColumnContext> | undefined;
+  public readonly itemWrapper: PanelItemWrapper | undefined;
 
   constructor(definition?: GridLayoutDefinitionElement, definitionGroup?: GridLayoutDefinitionGroupElement) {
     let { val, type } = this.getLayoutParam(definition);
@@ -119,6 +120,7 @@ export class GridLayoutDefinition {
       this.itemClassName = definitionGroup.props.itemClassName;
       this.itemStyle = definitionGroup.props.itemStyle;
       this.itemProps = definitionGroup.props.itemProps;
+      this.itemWrapper = definitionGroup.props.itemWrapper;
     }
 
     if (definition != null) {
@@ -132,6 +134,10 @@ export class GridLayoutDefinition {
 
       if (definition.props.itemProps != null) {
         this.itemProps = definition.props.itemProps;
+      }
+
+      if (definition.props.itemWrapper != null) {
+        this.itemWrapper = definition.props.itemWrapper;
       }
     }
   }
@@ -209,25 +215,26 @@ export class Grid extends Panel<GridProps> {
     return this.renderPanel(wxr.classNames('Grid', bordered), rest);
   }
 
-  renderItems() {
+  renderItems(allChildren?: React.ReactNode, items?: Array<{}>, componentClass?: React.ReactType) {
     const { children, rows, cols } = this.getLayout();
 
     return Iterable
       .range(0, rows.length)
       .map(row => {
+        const item = items == null ? undefined : items[row];
         const colItems = Iterable
           .range(0, cols.length)
           .map(col => {
-            return this.renderColumn(row, col, rows, cols, children);
+            return this.renderColumn(row, col, rows, cols, children, item);
           })
           .toArray();
 
-        return this.renderRow(row, rows, colItems);
+        return this.renderRow(row, rows, colItems, item);
       })
       .toArray();
   }
 
-  protected renderRow(row: number, rows: Array<GridLayoutDefinition>, colItems: React.ReactNode) {
+  protected renderRow(row: number, rows: Array<GridLayoutDefinition>, colItems: React.ReactNode, item: {} | undefined) {
     const def = rows[row];
 
     const context = { row, index: row };
@@ -239,14 +246,19 @@ export class Grid extends Panel<GridProps> {
       height: this.getCellLayoutValue(def),
     });
 
-    return (
-      <div className={ wxr.classNames('Grid-Row', itemClassName) } style={ layoutStyle } data-grid-row={ row } key={ `${ row }` } { ...itemProps }>
-        { colItems }
-      </div>
+    return Panel.getWrappedPanelItem(
+      def.itemWrapper,
+      item,
+      row,
+      (
+        <div className={ wxr.classNames('Grid-Row', itemClassName) } style={ layoutStyle } data-grid-row={ row } key={ `${ row }` } { ...itemProps }>
+          { colItems }
+        </div>
+      ),
     );
   }
 
-  protected renderColumn(row: number, column: number, rows: Array<GridLayoutDefinition>, cols: Array<GridLayoutDefinition>, children: Array<React.ReactChild>) {
+  protected renderColumn(row: number, column: number, rows: Array<GridLayoutDefinition>, cols: Array<GridLayoutDefinition>, children: Array<React.ReactChild>, item: {} | undefined) {
     const def = cols[column];
     const cellItems: Array<React.ReactChild> = [];
 
@@ -277,10 +289,15 @@ export class Grid extends Panel<GridProps> {
       width: this.getCellLayoutValue(def),
     });
 
-    return (
-      <div className={ wxr.classNames('Grid-Column', itemClassName) } style={ layoutStyle } data-grid-column={ column } key={ `${ row }.${ column }` } { ...itemProps }>
-        { super.renderItems(cellItems) }
-      </div>
+    return Panel.getWrappedPanelItem(
+      def.itemWrapper,
+      item,
+      column,
+      (
+        <div className={ wxr.classNames('Grid-Column', itemClassName) } style={ layoutStyle } data-grid-column={ column } key={ `${ row }.${ column }` } { ...itemProps }>
+          { super.renderItems(cellItems) }
+        </div>
+      ),
     );
   }
 

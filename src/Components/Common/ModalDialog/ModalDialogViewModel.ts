@@ -38,10 +38,12 @@ export class ModalDialogViewModel<T> extends BaseViewModel {
       this.addSubscription(
         Observable
           .merge(
-            command.results.map(() => undefined),
-            command.thrownErrors.map(() => undefined),
+            this.isVisible.changed,
+            command.results.map(() => false),
+            command.thrownErrors.map(() => false),
           )
-          .take(1)
+          .distinctUntilChanged()
+          .filter(x => x === false)
           .invokeCommand(this.hide),
       );
     }

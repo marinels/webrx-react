@@ -4,6 +4,9 @@ import { Observable, Subscription } from 'rxjs';
 import { Iterable } from 'ix';
 import { Grid, Row, Col } from 'react-bootstrap';
 
+// the offset is needed to prevent the guide from interfering with mouse clicks
+export const BootstrapGuideOffset = 5;
+
 export interface BootstrapGuideProps {
 }
 
@@ -27,11 +30,11 @@ export class BootstrapGuide extends React.Component<BootstrapGuideProps, any> {
           guide.style.top = `${ this.calculateTop(guide, e) }px`;
 
           if (hline != null) {
-            hline.style.top = `${ e.pageY }px`;
+            hline.style.top = `${ Math.max(0, e.pageY - BootstrapGuideOffset) }px`;
           }
 
           if (vline != null) {
-            vline.style.left = `${ e.pageX }px`;
+            vline.style.left = `${ Math.max(0, e.pageX - BootstrapGuideOffset) }px`;
           }
         });
     }
@@ -65,6 +68,6 @@ export class BootstrapGuide extends React.Component<BootstrapGuideProps, any> {
   }
 
   private calculateTop(guide: HTMLDivElement, e: MouseEvent) {
-    return Math.max(0, e.clientY - guide.clientHeight);
+    return Math.max(0, e.clientY - guide.clientHeight - BootstrapGuideOffset);
   }
 }

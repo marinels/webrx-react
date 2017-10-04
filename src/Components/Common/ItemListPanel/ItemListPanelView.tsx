@@ -50,7 +50,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
         () => props.search,
         () => (
           <DataGridView.Search { ...(props.search === true ? {} : props.search) }
-            grid={ this.state.grid } viewType={ viewType } fill
+            grid={ this.state.grid } viewType={ viewType }
             onClick={ e => { e.stopPropagation(); } }
           />
         ),

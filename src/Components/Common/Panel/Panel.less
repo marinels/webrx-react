@@ -11,6 +11,11 @@
     }
   }
 
+  &.ListGroupPanel {
+    // disable the default react-bootstrap margin for ListGroup
+    margin: 0;
+  }
+
   &.StackPanel {
     // display elements inline left aligned, and do not wrap within the container
     // we also make the container inline-block so that they can be stacked
@@ -31,6 +36,10 @@
     &.StackPanel-Vertical {
       text-align: center;
     }
+  }
+
+  &.TablePanel {
+    margin: 0;
   }
 
   // grids emulate a table layout, stretching both horizontally and vertically

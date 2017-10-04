@@ -7,7 +7,10 @@ import { ItemsViewModel } from './ItemsViewModel';
 import { Panel, StackPanel, PanelItemProps } from '../Panel';
 import { ItemsPresenter, ItemsPresenterTemplateProps } from './ItemsPresenter';
 
-export interface ItemsProps extends BaseViewProps, ItemsPresenterTemplateProps, PanelItemProps {
+export interface ItemsRenderProps extends ItemsPresenterTemplateProps, PanelItemProps {
+}
+
+export interface ItemsProps extends BaseViewProps, ItemsRenderProps {
 }
 
 export class ItemsView extends BaseView<ItemsProps, ItemsViewModel<{}>> {
@@ -21,8 +24,8 @@ export class ItemsView extends BaseView<ItemsProps, ItemsViewModel<{}>> {
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps } = x;
-      return { viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps };
+      const { viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, itemWrapper } = x;
+      return { viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, itemWrapper };
     });
 
     return (
@@ -35,6 +38,7 @@ export class ItemsView extends BaseView<ItemsProps, ItemsViewModel<{}>> {
           itemClassName={ props.itemClassName }
           itemStyle={ props.itemStyle }
           itemProps={ props.itemProps }
+          itemWrapper={ props.itemWrapper }
         />
       </div>
     );

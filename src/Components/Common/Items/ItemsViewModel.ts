@@ -18,4 +18,14 @@ export class ItemsViewModel<T> extends BaseViewModel {
       .map(x => Iterable.from(x))
       .toProperty(Iterable.empty<T>(), false);
   }
+
+  public getItems() {
+    return Iterable
+      .from(this.source.value);
+  }
+
+  public getItemAt(index: number) {
+    return this.getItems()
+      .elementAt(index);
+  }
 }
