@@ -1,6 +1,22 @@
 // tslint:disable:no-shadowed-variable
 
 import * as React from 'react';
+import { Iterable } from 'ix';
+
+export function trimPropsStatic<T extends StringMap<any>>(props: T): T {
+  return Iterable
+    .from(Object.keys(props))
+    .reduce(
+      (p, x) => {
+        if (p[x] === undefined) {
+          delete p[x];
+        }
+
+        return p;
+      },
+      props,
+    );
+}
 
 export interface ReactSpreadResult<T> {
   className: string;
@@ -52,9 +68,11 @@ declare module 'react' {
   }
 
   namespace Component {
+    let trimProps: typeof trimPropsStatic;
     let restProps: typeof restPropsStatic;
   }
 }
 
 React.Component.prototype.restProps = restProps;
+React.Component.trimProps = trimPropsStatic;
 React.Component.restProps = restPropsStatic;
