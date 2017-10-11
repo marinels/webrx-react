@@ -92,8 +92,8 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
     return this.renderPanel(wxr.classNames('Grid', 'Grid-Uniform', bordered), rest);
   }
 
-  renderItems(children?: React.ReactNode, items?: Array<{}>, componentClass?: React.ReactType) {
-    const itemTemplates = super.renderItems(children, items, componentClass);
+  renderItems(children?: React.ReactNode, componentClass?: React.ReactType) {
+    const itemTemplates = super.renderItems(children, componentClass);
 
     let index = 0 - this.props.firstColumn!;
     return Iterable
@@ -149,7 +149,6 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
   protected renderEmpty(row: number, column: number, index: number) {
     return this.renderItem(
       (this.props.emptyTemplate || UniformGridPanel.defaultEmptyTemplate)(row, column),
-      undefined,
       index,
     );
   }

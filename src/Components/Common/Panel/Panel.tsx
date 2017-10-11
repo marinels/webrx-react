@@ -85,22 +85,21 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
     );
   }
 
-  protected renderItems(children?: React.ReactNode, items?: Array<{}>, componentClass?: React.ReactType) {
+  protected renderItems(children?: React.ReactNode, componentClass?: React.ReactType) {
     const props: PanelProps = this.props;
 
     return React.Children
       .map(children || this.props.children, (x, i) => {
-        return this.renderItem(x, items == null ? undefined : items[i], i, componentClass);
+        return this.renderItem(x, i, componentClass);
       });
   }
 
   protected renderItem(
     itemTemplate: PanelFragment,
-    item: {} | undefined,
     index: number,
     componentClass?: React.ReactType,
   ): PanelFragment {
-    const key = this.getItemKey(itemTemplate, item, index);
+    const key = this.getItemKey(itemTemplate, index);
     const className = wxr.classNames('Panel-Item', Panel.getPanelItemPropValue(this.props.itemClassName, { index }));
     const style = Panel.getPanelItemPropValue(this.props.itemStyle, { index });
     const props: {} | undefined = Panel.getPanelItemPropValue(this.props.itemProps, { index }) || {};
@@ -124,7 +123,6 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
 
   protected getItemKey(
     itemTemplate: PanelFragment,
-    item: {} | undefined,
     index: number,
   ) {
     let key: any = index;

@@ -215,26 +215,25 @@ export class Grid extends Panel<GridProps> {
     return this.renderPanel(wxr.classNames('Grid', bordered), rest);
   }
 
-  renderItems(allChildren?: React.ReactNode, items?: Array<{}>, componentClass?: React.ReactType) {
+  renderItems(allChildren?: React.ReactNode, componentClass?: React.ReactType) {
     const { children, rows, cols } = this.getLayout();
 
     return Iterable
       .range(0, rows.length)
       .map(row => {
-        const item = items == null ? undefined : items[row];
         const colItems = Iterable
           .range(0, cols.length)
           .map(col => {
-            return this.renderColumn(row, col, rows, cols, children, item);
+            return this.renderColumn(row, col, rows, cols, children);
           })
           .toArray();
 
-        return this.renderRow(row, rows, colItems, item);
+        return this.renderRow(row, rows, colItems);
       })
       .toArray();
   }
 
-  protected renderRow(row: number, rows: Array<GridLayoutDefinition>, colItems: React.ReactNode, item: {} | undefined) {
+  protected renderRow(row: number, rows: Array<GridLayoutDefinition>, colItems: React.ReactNode) {
     const def = rows[row];
 
     const context = { row, index: row };
@@ -258,7 +257,7 @@ export class Grid extends Panel<GridProps> {
     );
   }
 
-  protected renderColumn(row: number, column: number, rows: Array<GridLayoutDefinition>, cols: Array<GridLayoutDefinition>, children: Array<React.ReactChild>, item: {} | undefined) {
+  protected renderColumn(row: number, column: number, rows: Array<GridLayoutDefinition>, cols: Array<GridLayoutDefinition>, children: Array<React.ReactChild>) {
     const def = cols[column];
     const cellItems: Array<React.ReactChild> = [];
 

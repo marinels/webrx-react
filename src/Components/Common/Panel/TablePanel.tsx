@@ -24,9 +24,9 @@ export class TablePanel extends Panel<TablePanelProps> {
     return this.renderPanel('TablePanel', rest, Table);
   }
 
-  renderItems(children?: React.ReactNode, items?: Array<{}>, componentClass?: React.ReactType) {
+  renderItems(children?: React.ReactNode, componentClass?: React.ReactType) {
     const fragments: Array<PanelFragment> = [];
-    const itemTemplates = super.renderItems(children, items, componentClass || '');
+    const itemTemplates = super.renderItems(children, componentClass || '');
 
     if (this.props.header != null) {
       fragments.push(
