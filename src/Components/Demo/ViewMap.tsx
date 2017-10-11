@@ -430,7 +430,7 @@ export const demoViewMap: ViewActivatorMap = {
         return (
           <Components.ListItemsView
             viewModel={ viewModel }
-            itemTemplate={ (x: SampleData) => sampleDataTemplate(x) }
+            itemTemplate={ sampleDataTemplate }
           >
             <Components.ListGroupView />
           </Components.ListItemsView>
@@ -440,7 +440,7 @@ export const demoViewMap: ViewActivatorMap = {
           <Components.ListItemsView
             viewModel={ viewModel }
             view={ (<Components.ListGroupView />) }
-            itemTemplate={ (x: SampleData) => sampleDataTemplate(x) }
+            itemTemplate={ sampleDataTemplate }
           />
         );
       case 'ListItemsGrid':
@@ -470,7 +470,7 @@ export const demoViewMap: ViewActivatorMap = {
         return (
           <Components.ListItemsView
             viewModel={ viewModel }
-            itemTemplate={ (x: SampleTreeData) => sampleDataTemplate(x) }
+            itemTemplate={ sampleDataTemplate }
             view={(
               <Components.TreeView
                 itemsSource={ (x: SampleTreeData) => x.items }
