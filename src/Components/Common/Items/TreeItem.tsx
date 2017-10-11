@@ -15,12 +15,26 @@ export interface TreeItemSourceProps {
    * function to produce the recursive items source for the provided item
    */
   itemsSource: RecursiveItemsSource<{}>;
+}
+
+export interface TreeItemTemplateProps {
+  /**
+   * Override the expander icon template
+   * default behaviour is to render an icon using the expandedIconName and collapsedIconName
+   */
+  expanderIconTemplate?: (isExpanded: boolean, expandedIconName?: string, collapsedIconName?: string) => PanelFragment;
+
+  /**
+   * Override the header template
+   * compose a custom header out of the subcomponents
+   */
+  headerTemplate?: (item: {}, index: number, indent: Array<PanelFragment>, expander: PanelFragment, headerContent: PanelFragment, view: TreeItem) => PanelFragment;
 
   /**
    * template to render each item belonging to the bound item
    * use this template to define your own items presenter template
    */
-  itemsTemplate?: (items: IterableLike<{}> | undefined) => PanelFragment;
+  itemsTemplate?: (items: IterableLike<{}> | undefined, view: TreeItem) => PanelFragment;
 }
 
 export interface TreeItemRenderProps {
@@ -46,15 +60,12 @@ export interface TreeItemRenderProps {
    * default is a '+' in a rounded square
    */
   collapsedIconName?: string;
-
-  /**
-   * Override the expander icon template
-   * default behaviour is to render an icon using the expandedIconName and collapsedIconName
-   */
-  expanderIconTemplate?: (isExpanded: boolean, expandedIconName?: string, collapsedIconName?: string) => PanelFragment;
 }
 
-export interface TreeItemProps extends React.HTMLAttributes<TreeItemProps>, TreeItemSourceProps, TreeItemRenderProps, ItemsPresenterTemplateProps, PanelItemProps {
+export interface TreeItemFacadeProps extends TreeItemSourceProps, TreeItemTemplateProps, TreeItemRenderProps, ItemsPresenterTemplateProps, PanelItemProps {
+}
+
+export interface TreeItemProps extends React.HTMLAttributes<TreeItemProps>, TreeItemSourceProps, TreeItemTemplateProps, TreeItemRenderProps, ItemsPresenterTemplateProps, PanelItemProps {
   /**
    * the item that this tree node represents
    */
@@ -82,6 +93,50 @@ export class TreeItem extends React.Component<TreeItemProps, TreeItemState> {
   public static defaultExpandedIconName = 'minus-square-o';
   public static defaultCollapsedIconName = 'plus-square-o';
 
+  public static generateKey(fragment: PanelFragment, index: number) {
+    if (React.isValidElement(fragment) && fragment.key != null) {
+      return fragment.key;
+    }
+
+    return index;
+  }
+
+  public static renderTreeItem(item: {}, index: number, props: TreeItemFacadeProps) {
+    return (
+      <TreeItem
+        key={ index }
+        item={ item }
+        index={ index }
+        itemsSource={ props.itemsSource }
+        expanderIconTemplate={ props.expanderIconTemplate }
+        headerTemplate={ props.headerTemplate }
+        itemsTemplate={ props.itemsTemplate }
+        depth={ props.depth == null ? 0 : (props.depth + 1) }
+        startExpanded={ props.startExpanded }
+        expandedIconName={ props.expandedIconName }
+        collapsedIconName={ props.collapsedIconName }
+        viewTemplate={ props.viewTemplate }
+        itemsPanelTemplate={ props.itemsPanelTemplate }
+        itemTemplate={ props.itemTemplate }
+        itemClassName={ props.itemClassName }
+        itemStyle={ props.itemStyle }
+        itemProps={ props.itemProps }
+      />
+    );
+  }
+
+  public static defaultHeaderTemplate(item: {}, index: number, indent: Array<PanelFragment>, expander: PanelFragment, headerContent: PanelFragment, view: TreeItem) {
+    return (
+      <div className='TreeItem-Header'>
+        { indent }
+        <div className='TreeItem-Expander'>
+          { expander }
+        </div>
+        <div className='TreeItem-HeaderContent'>{ headerContent }</div>
+      </div>
+    );
+  }
+
   public static defaultItemsTemplate(items: IterableLike<{}> | undefined, view: TreeItem) {
     return (view.state.isExpanded === false || items == null) ? false : (
       <ItemsPresenter
@@ -89,27 +144,7 @@ export class TreeItem extends React.Component<TreeItemProps, TreeItemState> {
         viewTemplate={ view.props.viewTemplate }
         itemsPanelTemplate={ view.props.itemsPanelTemplate }
         itemTemplate={ (item: {}, index: number) => {
-          const treeItem = (
-            <TreeItem
-              item={ item }
-              index={ index }
-              itemsSource={ view.props.itemsSource }
-              depth={ (view.props.depth || 0) + 1 }
-              startExpanded={ view.props.startExpanded }
-              expandedIconName={ view.props.expandedIconName }
-              collapsedIconName={ view.props.collapsedIconName }
-              expanderIconTemplate={ view.props.expanderIconTemplate }
-              viewTemplate={ view.props.viewTemplate }
-              itemsPanelTemplate={ view.props.itemsPanelTemplate }
-              itemTemplate={ view.props.itemTemplate }
-              itemClassName={ view.props.itemClassName }
-              itemStyle={ view.props.itemStyle }
-              itemProps={ view.props.itemProps }
-              itemWrapper={ view.props.itemWrapper }
-            />
-          );
-
-          return React.cloneElement(treeItem, { key: treeItem.key || index });
+          return TreeItem.renderTreeItem(item, index, view.props);
         }}
         itemClassName={ view.props.itemClassName }
         itemStyle={ view.props.itemStyle }
@@ -140,33 +175,21 @@ export class TreeItem extends React.Component<TreeItemProps, TreeItemState> {
 
   render() {
     const { className, props, rest, children } = this.restProps(x => {
-      const { item, index, itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, itemWrapper } = x;
-      return { item, index, itemsSource, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, expanderIconTemplate, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, itemWrapper };
+      const { item, index, itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps } = x;
+      return { item, index, itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps };
     });
 
-    const header = this.renderHeader();
-    const key = this.getKey(header);
+    const headerContent = this.renderHeaderContent();
+    const key = TreeItem.generateKey(headerContent, this.props.index);
     const items = this.props.itemsSource(this.props.item);
+    const indent = this.renderIndent();
+    const expander = this.renderExpander(items);
+    const header = this.renderHeader(indent, expander, headerContent);
     const treeItems = this.renderItems(items);
 
     return (
       <div key={ key } { ...rest } className={ wxr.classNames('TreeItem', className) }>
-        {
-          Panel.getWrappedPanelItem(
-            this.props.itemWrapper,
-            props.item,
-            props.index,
-            (
-              <div className='TreeItem-Header'>
-                { this.renderIndent() }
-                <div className='TreeItem-Expander'>
-                  { this.renderExpander(items) }
-                </div>
-                <div className='TreeItem-HeaderContent'>{ header }</div>
-              </div>
-            ),
-          )
-        }
+        { header }
         {
           treeItems && (
             <div className='TreeItem-Expansion'>
@@ -186,17 +209,13 @@ export class TreeItem extends React.Component<TreeItemProps, TreeItemState> {
     });
   }
 
-  protected getKey(header: any) {
-    return (header != null ? header.key : undefined) || this.props.index;
-  }
-
   protected renderIndent() {
     return Iterable
       .range(0, this.props.depth || 0)
       .map((x, i) => {
         return (
           <div key={ i } className='TreeItem-Indent'></div>
-        ) as PanelFragment | boolean;
+        ) as PanelFragment | false;
       })
       .defaultIfEmpty(false)
       .toArray();
@@ -220,15 +239,21 @@ export class TreeItem extends React.Component<TreeItemProps, TreeItemState> {
     );
   }
 
-  protected renderHeader() {
+  protected renderHeaderContent() {
     const itemTemplate = this.props.itemTemplate || ItemsPresenter.defaultItemTemplate;
 
     return itemTemplate(this.props.item, this.props.index);
   }
 
+  protected renderHeader(indent: Array<PanelFragment>, expander: PanelFragment, headerContent: PanelFragment) {
+    const template = this.props.headerTemplate || TreeItem.defaultHeaderTemplate;
+
+    return template(this.props.item, this.props.index, indent, expander, headerContent, this);
+  }
+
   protected renderItems(items: IterableLike<{}> | undefined): PanelFragment {
-    return this.props.itemsTemplate == null ?
-      TreeItem.defaultItemsTemplate(items, this) :
-      this.props.itemsTemplate(items);
+    const template = this.props.itemsTemplate || TreeItem.defaultItemsTemplate;
+
+    return template(items, this);
   }
 }

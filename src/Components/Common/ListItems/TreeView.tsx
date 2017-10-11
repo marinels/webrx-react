@@ -2,8 +2,11 @@ import * as React from 'react';
 import * as classNames from 'classnames';
 
 import { TreeItemsView } from '../Items/TreeItemsView';
-import { TreeItemSourceProps, TreeItemRenderProps } from '../Items/TreeItem';
+import { ItemsPresenter } from '../Items/ItemsPresenter';
+import { TreeItem, TreeItemSourceProps, TreeItemRenderProps } from '../Items/TreeItem';
 import { ListItemsViewTemplate, ListItemsViewTemplateProps } from './ListItemsViewTemplate';
+import { StackPanel } from '../Panel/StackPanel';
+import { PanelFragment, PanelItemContext } from '../Panel/Panel';
 import { ListItemsViewModel } from './ListItemsViewModel';
 
 export interface TreeViewProps extends ListItemsViewTemplateProps, TreeItemSourceProps, TreeItemRenderProps {
@@ -21,22 +24,24 @@ export class TreeView extends ListItemsViewTemplate<TreeViewProps> {
       <TreeItemsView
         className={ className }
         viewModel={ this.getListItems() }
-        itemWrapper={
-          (itemTemplate, item, index) => {
-            return this.renderListItem(
-              itemTemplate,
-              item!,
-              (isSelected, elem) => {
-                return {
-                  className: classNames({ 'Selected': isSelected }, elem.props.className),
-                };
-              },
-            );
-          }
-        }
+        headerTemplate={ this.renderHeader.bind(this) }
         { ...this.getItemsRenderProps() }
         { ...React.Component.trimProps(rest) }
       />
+    );
+  }
+
+  protected renderHeader(item: {}, index: number, indent: Array<PanelFragment>, expander: PanelFragment, headerContent: PanelFragment, view: TreeItem) {
+    const fragment = TreeItem.defaultHeaderTemplate(item, index, indent, expander, headerContent, view);
+
+    return this.renderListItem(
+      fragment,
+      item,
+      (isSelected, elem) => {
+        return {
+          className: classNames({ 'Selected': isSelected }, elem.props.className),
+        };
+      },
     );
   }
 }

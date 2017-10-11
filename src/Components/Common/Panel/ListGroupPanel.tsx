@@ -2,9 +2,9 @@ import * as React from 'react';
 import { ListGroup, ListGroupProps, ListGroupItem } from 'react-bootstrap';
 
 import { wxr } from '../../React';
-import { PanelItemProps, Panel } from './Panel';
+import { PanelItemProps, PanelTemplateProps, Panel } from './Panel';
 
-export interface ListGroupPanelProps extends ListGroupProps, PanelItemProps {
+export interface ListGroupPanelProps extends ListGroupProps, PanelItemProps, PanelTemplateProps {
 }
 
 export class ListGroupPanel extends Panel<ListGroupPanelProps> {

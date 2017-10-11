@@ -22,7 +22,7 @@ export type PanelItemProp<TValue, TContext extends PanelItemContext = PanelItemC
  * panel items can be wrapped in a different component
  * this allows composing new items with an existing panel
  */
-export type PanelItemWrapper = (fragment: PanelFragment, item: {} | undefined, index: number) => PanelFragment;
+export type PanelItemTemplate<TContext extends PanelItemContext = PanelItemContext> = (fragment: PanelFragment, context: TContext) => PanelFragment;
 
 /**
  * panel item props allow component to inject props to the rendered
@@ -43,14 +43,16 @@ export interface PanelItemProps<T extends PanelItemContext = PanelItemContext> {
    * apply custom props to the corresponding panel item
    */
   itemProps?: PanelItemProp<{}, T>;
-
-  /**
-   * apply a custom component wrapper to the item
-   */
-  itemWrapper?: PanelItemWrapper;
 }
 
-export interface PanelProps extends React.HTMLAttributes<PanelProps>, PanelItemProps {
+export interface PanelTemplateProps<T extends PanelItemContext = PanelItemContext> {
+  /**
+   * apply a custom template to the renderd panel item
+   */
+  itemTemplate?: PanelItemTemplate<T>;
+}
+
+export interface PanelProps extends React.HTMLAttributes<PanelProps>, PanelItemProps, PanelTemplateProps {
 }
 
 export abstract class Panel<TProps extends PanelProps> extends React.Component<TProps> {
@@ -58,7 +60,7 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
 
   public static defaultComponentClass = 'div';
 
-  public static getPanelItemPropValue<TValue, TContext extends PanelItemContext>(prop: PanelItemProp<TValue, TContext> | undefined, context: TContext) {
+  public static getPanelItemPropValue<TValue, TContext extends PanelItemContext>(prop: (PanelItemProp<TValue, TContext>) | undefined, context: TContext) {
     if (prop instanceof Function) {
       return prop(context);
     }
@@ -66,14 +68,10 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
     return prop;
   }
 
-  public static getWrappedPanelItem(wrapper: PanelItemWrapper | undefined, item: {} | undefined, index: number, fragment: PanelFragment): PanelFragment {
-    return wrapper == null ? fragment : wrapper(fragment, item, index);
-  }
-
   protected renderPanel(panelClassName?: string, panelProps?: PanelProps, componentClass?: React.ReactType): JSX.Element {
     const { className, children, props, rest } = React.Component.restProps(panelProps || this.props, x => {
-      const { itemClassName, itemStyle, itemProps, itemWrapper } = x;
-      return { itemClassName, itemStyle, itemProps, itemWrapper };
+      const { itemClassName, itemStyle, itemProps, itemTemplate } = x;
+      return { itemClassName, itemStyle, itemProps, itemTemplate };
     });
 
     const Component = componentClass || Panel.defaultComponentClass;
@@ -99,10 +97,12 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
     index: number,
     componentClass?: React.ReactType,
   ): PanelFragment {
+    const context = { index };
     const key = this.getItemKey(itemTemplate, index);
-    const className = wxr.classNames('Panel-Item', Panel.getPanelItemPropValue(this.props.itemClassName, { index }));
-    const style = Panel.getPanelItemPropValue(this.props.itemStyle, { index });
-    const props: {} | undefined = Panel.getPanelItemPropValue(this.props.itemProps, { index }) || {};
+    const className = wxr.classNames('Panel-Item', Panel.getPanelItemPropValue(this.props.itemClassName, context));
+    const style = Panel.getPanelItemPropValue(this.props.itemStyle, context);
+    const props: {} | undefined = Panel.getPanelItemPropValue(this.props.itemProps, context) || {};
+    const template = this.props.itemTemplate;
     const Component = componentClass == null ? Panel.defaultComponentClass : componentClass;
 
     const fragment = Component === '' && React.isValidElement<any>(itemTemplate) ?
@@ -113,12 +113,11 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
         </Component>
       );
 
-    return Panel.getWrappedPanelItem(
-      this.props.itemWrapper,
-      item,
-      index,
-      fragment,
-    );
+    if (template == null) {
+      return fragment;
+    }
+
+    return template(fragment, context);
   }
 
   protected getItemKey(
