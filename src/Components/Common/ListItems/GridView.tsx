@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Iterable } from 'ix';
 import * as classNames from 'classnames';
 import { Table } from 'react-bootstrap';
 
@@ -8,6 +9,7 @@ import { ItemsPresenter } from '../Items/ItemsPresenter';
 import { ListItemsViewTemplate, ListItemsViewTemplateProps } from './ListItemsViewTemplate';
 import { PanelFragment } from '../Panel/Panel';
 import { TablePanel } from '../Panel/TablePanel';
+import { ContentTooltip } from '../ContentTooltip/ContentTooltip';
 import { ListItemsViewModel } from './ListItemsViewModel';
 
 export interface GridViewColumnProps {
@@ -19,7 +21,10 @@ export interface GridViewColumnProps {
   field?: string;
   header?: PanelFragment;
   headerTemplate?: (header: PanelFragment | undefined) => PanelFragment;
+  headerTooltipTemplate?: PanelFragment | ((column: GridViewColumn, content: React.ReactElement<any>) => PanelFragment | undefined);
   cellTemplate?: (item: {}, field: string | undefined) => PanelFragment;
+  cellTooltipTemplate?: (item: {}, field: string | undefined, content: React.ReactElement<any>) => PanelFragment | undefined;
+  id?: string;
   width?: number | string;
 }
 
@@ -30,9 +35,27 @@ export class GridViewColumn extends React.Component<GridViewColumnProps> {
     width: 1,
   };
 
-  public static renderItemField(item: StringMap<any>, field: string | undefined): PanelFragment {
+  public static canRenderHeader(column: React.ReactChild) {
+    return (
+      React.isValidElement<GridViewColumnProps>(column) &&
+      column.type === GridViewColumn &&
+      (column.props.header != null || column.props.field != null)
+    );
+  }
+
+  public static sanitizeFragment(content?: PanelFragment) {
+    if (content == null) {
+      return (
+        <span>&nbsp;</span>
+      );
+    }
+
+    return content;
+  }
+
+  public static renderItemField(item: StringMap<any>, field: string | undefined): PanelFragment | undefined {
     if (String.isNullOrEmpty(field)) {
-      return '';
+      return undefined;
     }
 
     return item[field];
@@ -50,23 +73,81 @@ export class GridViewColumn extends React.Component<GridViewColumnProps> {
     const template = this.props.headerTemplate || ((header: PanelFragment | undefined) => header);
     const headerOrField = this.props.header || this.props.field;
 
-    return (headerOrField == null && this.props.headerTemplate == null) ?
-      null :
-      (
-        <th style={ ({ width: this.props.width }) }>
-          { template(headerOrField) }
-        </th>
-      );
+    const content = (headerOrField == null && this.props.headerTemplate == null) ?
+      undefined :
+      template(headerOrField);
+
+    const headerContent = (
+      <div className='GridViewColumn-headerContent'>
+        { GridViewColumn.sanitizeFragment(content) }
+      </div>
+    );
+
+    const tooltipContent = this.renderHeaderTooltip(headerContent);
+
+    return (
+      <th style={ ({ width: this.props.width }) }>
+        { this.renderTooltip(tooltipContent, headerContent) }
+      </th>
+    );
+  }
+
+  protected renderHeaderTooltip(context: React.ReactElement<any>) {
+    if (this.props.headerTooltipTemplate instanceof Function) {
+      return this.props.headerTooltipTemplate(this, context);
+    }
+
+    return this.props.headerTooltipTemplate;
   }
 
   protected renderCell() {
     const template = this.props.cellTemplate ||
       ((item: {}, field: string | undefined) => GridViewColumn.renderItemField(item, field));
 
+    const content = template(this.props.item!, this.props.field);
+
+    const cellContent = (
+      <div className='GridViewColumn-cellContent'>
+        { GridViewColumn.sanitizeFragment(content) }
+      </div>
+    );
+
+    const tooltipContent = this.renderCellTooltip(cellContent);
+
     return (
       <td style={ ({ width: this.props.width }) }>
-        { template(this.props.item!, this.props.field) }
+        { this.renderTooltip(tooltipContent, cellContent) }
       </td>
+    );
+  }
+
+  protected renderCellTooltip(context: React.ReactElement<any>) {
+    if (this.props.cellTooltipTemplate == null) {
+      return undefined;
+    }
+
+    return this.props.cellTooltipTemplate(this.props.item!, this.props.field, context);
+  }
+
+  protected renderTooltip(content: PanelFragment | undefined, context: React.ReactElement<any>) {
+    if (content == null) {
+      return context;
+    }
+
+    const id = this.props.id || this.props.field;
+
+    if (React.isValidElement<any>(content) && content.type === ContentTooltip) {
+      const child = (
+        content.props.context == null &&
+        React.Children.count(content.props.children) === 0
+      ) ? context : undefined;
+      return React.cloneElement(content, { id, ...content.props }, child);
+    }
+
+    return (
+      <ContentTooltip id={ id } content={ content }>
+        { context }
+      </ContentTooltip>
     );
   }
 }
@@ -86,14 +167,17 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
       return { fill, listItems, itemsRenderProps };
     });
 
+    const itemsProps = this.getItemsRenderProps();
+
+    itemsProps.itemsPanelTemplate = itemsProps.itemsPanelTemplate || this.renderTablePanel.bind(this);
+    itemsProps.itemTemplate = itemsProps.itemTemplate || this.renderTableRow.bind(this);
+
     return (
       <ItemsView
-        className={ className }
+        className={ classNames('Grid', className) }
         viewModel={ this.getListItems() }
-        itemsPanelTemplate={ this.renderTablePanel.bind(this) }
-        itemTemplate={ this.renderTableRow.bind(this) }
-        { ...this.getItemsRenderProps() }
-        { ...rest }
+        { ...itemsProps }
+        { ...React.Component.trimProps(rest) }
       />
     );
   }
@@ -117,10 +201,13 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
         return undefined;
       }
 
-      return Object.keys(item)
+      return Iterable
+        .from(Object.keys(item))
+        .orderBy(x => x)
         .map(x => (
           <GridViewColumn key={ x } field={ x } />
-        ));
+        ))
+        .toArray();
     }
 
     return React.Children.toArray(this.props.children);
@@ -129,11 +216,23 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
   protected renderTableHeaderRow() {
     const columns = this.getColumnDefinitions();
 
-    return columns == null ? undefined : (
-      <tr>
-        { columns }
-      </tr>
-    );
+    if (columns == null) {
+      return undefined;
+    }
+
+    const renderHeaders = Iterable
+      .from(columns)
+      .some(x => GridViewColumn.canRenderHeader(x));
+
+    if (renderHeaders) {
+      return (
+        <tr>
+          { columns }
+        </tr>
+      );
+    }
+
+    return undefined;
   }
 
   protected renderTableRow(item: {}, index: number) {
@@ -151,11 +250,6 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
               this.logger.warn('Invalid Column', x);
               return '';
             })
-        }
-        {
-          React.Children.map(this.props.children, (col: React.ReactElement<GridViewColumnProps>) => {
-            return React.cloneElement<GridViewColumnProps, any>(col, { item });
-          })
         }
       </tr>,
       item,
