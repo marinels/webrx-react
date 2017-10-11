@@ -91,8 +91,8 @@ export class ItemsPresenter extends React.Component<ItemsPresenterProps> {
       .map<PanelFragment>((x, i) => {
         const item = template(x, i);
 
-        return (item != null && React.isValidElement<any>(item)) ?
-          React.cloneElement(item, { key: item.key || i }) :
+        return (item != null && React.isValidElement<any>(item) && item.key == null) ?
+          React.cloneElement(item, { key: i }) :
           item;
       });
 
