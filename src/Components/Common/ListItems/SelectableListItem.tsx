@@ -72,6 +72,7 @@ export class SelectableListItem extends React.Component<SelectableListItemProps,
         Iterable
           .from(this.props.listItems.selectedItems.value)
           .startWith(this.props.item)
+          .filterNull()
           .distinct()
           .toArray(),
       );
