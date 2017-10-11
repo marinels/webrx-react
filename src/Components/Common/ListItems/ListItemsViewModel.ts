@@ -34,6 +34,7 @@ export class ListItemsViewModel<T> extends ItemsViewModel<T> {
         this.selectItem.results.map(x => [ x ]),
         this.selectItems.results,
       )
+      .map(x => x.filterNull())
       .toProperty([], (a, b) => Iterable.from(a).sequenceEqual(Iterable.from(b)));
 
     this.selectedIndicies = Observable
@@ -41,6 +42,7 @@ export class ListItemsViewModel<T> extends ItemsViewModel<T> {
         this.selectIndex.results.map(x => [ x ]),
         this.selectIndicies.results,
       )
+      .map(x => x.filterNull())
       .toProperty([], (a, b) => Iterable.from(a).sequenceEqual(Iterable.from(b)));
 
     this.selectedItem = this
@@ -55,6 +57,10 @@ export class ListItemsViewModel<T> extends ItemsViewModel<T> {
       this
         .whenAny(this.selectRange, x => x)
         .map(range => {
+          if (range.from == null || range.to == null) {
+            return [];
+          }
+
           if (range.from === range.to) {
             return [ range.from ];
           }

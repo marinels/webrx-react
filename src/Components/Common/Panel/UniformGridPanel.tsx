@@ -3,7 +3,9 @@ import { Iterable } from 'ix';
 
 import { wxr } from '../../React';
 import { PanelProps, Panel, PanelItemProp, PanelFragment } from './Panel';
-import { GridRowContext, GridColumnContext, GridRenderProps } from './Grid';
+import { GridRowContext, GridColumnContext, GridLayoutDefinition } from './GridLayout';
+import { GridRenderProps } from './Grid';
+
 
 export interface UniformRowItemProps {
   /**
@@ -74,13 +76,9 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
     firstColumn: 0,
   };
 
-  public static generateKey(row: number, column: number) {
-    return `${ row }.${ column }`;
-  }
-
   public static defaultEmptyTemplate(row: number, column: number): PanelFragment {
     return (
-      <div key={ UniformGridPanel.generateKey(row, column) } className='Grid-Empty'>&nbsp;</div>
+      <div key={ GridLayoutDefinition.generateKey(row, column) } className='Grid-Empty'>&nbsp;</div>
     );
   }
 
@@ -92,8 +90,8 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
     return this.renderPanel(wxr.classNames('Grid', 'Grid-Uniform', bordered), rest);
   }
 
-  renderItems(children?: React.ReactNode, items?: Array<{}>, componentClass?: React.ReactType) {
-    const itemTemplates = super.renderItems(children, items, componentClass);
+  renderItems(children?: React.ReactNode, componentClass?: React.ReactType) {
+    const itemTemplates = super.renderItems(children, componentClass);
 
     let index = 0 - this.props.firstColumn!;
     return Iterable
@@ -114,7 +112,7 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
               itemTemplates[index];
 
             const item = (itemTemplate != null && React.isValidElement<any>(itemTemplate)) ?
-              React.cloneElement(itemTemplate, { key: UniformGridPanel.generateKey(row, column) }) :
+              React.cloneElement(itemTemplate, { key: GridLayoutDefinition.generateKey(row, column) }) :
               itemTemplate;
 
             const context = { row, column, index: index++ };
@@ -123,7 +121,7 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
             const colProps = Panel.getPanelItemPropValue(this.props.columnProps, context) || {};
 
             return (
-              <div key={ UniformGridPanel.generateKey(row, column) } className={ wxr.classNames('Grid-Column', colClassName) } style={ colStyle } { ...colProps }>
+              <div key={ GridLayoutDefinition.generateKey(row, column) } className={ wxr.classNames('Grid-Column', colClassName) } style={ colStyle } { ...colProps }>
                 { item }
               </div>
             );
@@ -138,7 +136,7 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
         const rowProps = Panel.getPanelItemPropValue(this.props.rowProps, context) || {};
 
         return (
-          <div key={ row } className={ wxr.classNames('Grid-Row', rowClassName) } style={ rowStyle } { ...rowProps }>
+          <div key={ GridLayoutDefinition.generateKey(row) } className={ wxr.classNames('Grid-Row', rowClassName) } style={ rowStyle } { ...rowProps }>
             { cols }
           </div>
         );
@@ -149,7 +147,6 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
   protected renderEmpty(row: number, column: number, index: number) {
     return this.renderItem(
       (this.props.emptyTemplate || UniformGridPanel.defaultEmptyTemplate)(row, column),
-      undefined,
       index,
     );
   }

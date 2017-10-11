@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Row, Col } from 'react-bootstrap';
+import { Grid, Row, Col } from 'react-bootstrap';
 import { Observable } from 'rxjs';
 import { Pagination, PaginationProps, DropdownButton, DropdownButtonProps, MenuItem } from 'react-bootstrap';
 
@@ -17,7 +17,7 @@ export interface PagerProps extends PaginationProps {
 export interface PagerViewProps extends PagerProps, ViewModelProps {
 }
 
-export type PagerComponentTypes = 'info' | 'controls' | 'limit';
+export type PagerComponentTypes = 'info' | 'controls' | 'limit' | undefined;
 export const StandardPagerComponentOrder: PagerComponentTypes[] = [ 'info', 'controls', 'limit' ];
 
 const ComponentLocations = [ 'left', 'center', 'right' ];
@@ -67,25 +67,45 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
 
     return this.renderConditional(
       this.shouldRenderPager(),
-      () => {
-        const types = props.order || [];
+      () => (
+        <div { ...pagerProps.rest } className={ this.classNames('Pager', className) }>
+          <Grid fluid>
+            { this.renderComponents() }
+          </Grid>
+        </div>
+      ),
+    );
+  }
 
-        return (
-          <div { ...pagerProps.rest } className={ this.classNames('Pager', className) }>
-            <Row>
-              <Col className='Pager-col Pager-col-left' md={ 4 }>
-                { this.renderComponent(types[0]) }
-              </Col>
-              <Col className='Pager-col Pager-col-center' md={ 4 }>
-                { this.renderComponent(types[1]) }
-              </Col>
-              <Col className='Pager-col Pager-col-right' md={ 4 }>
-                { this.renderComponent(types[2]) }
-              </Col>
-            </Row>
-          </div>
-        );
-      },
+  protected isEmpty() {
+    return (this.state.itemCount.value || 0) === 0;
+  }
+
+  protected renderComponents() {
+    if (this.props.info === true && this.isEmpty()) {
+      return (
+        <Row>
+          <Col className='Pager-col'>
+            { this.renderInfo() }
+          </Col>
+        </Row>
+      );
+    }
+
+    const types = this.props.order || [];
+
+    return (
+      <Row>
+        <Col className='Pager-col Pager-col-left' md={ 4 }>
+          { this.renderComponent(types[0]) }
+        </Col>
+        <Col className='Pager-col Pager-col-center' md={ 4 }>
+          { this.renderComponent(types[1]) }
+        </Col>
+        <Col className='Pager-col Pager-col-right' md={ 4 }>
+          { this.renderComponent(types[2]) }
+        </Col>
+      </Row>
     );
   }
 
@@ -117,7 +137,8 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     return this.renderConditional(this.shouldRenderInfo(), () => (
       <div className='Pager-info'>
           {
-            this.renderConditional((this.state.itemCount.value || 0) === 0,
+            this.renderConditional(
+              this.isEmpty(),
               () => this.props.emptyInfo,
               () => `Showing Items ${ this.state.offset.value + 1 } through ${ Math.min(this.state.itemCount.value, this.state.offset.value + (this.state.limit.value || 0)) } of ${ this.state.itemCount.value }`,
             )
