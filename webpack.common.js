@@ -12,6 +12,7 @@ module.exports = {
   resolve: {
     extensions: [ '.ts', '.tsx', '.webpack.js', '.web.js', '.js' ],
     alias: {
+      'moment$': 'moment/moment',
     },
   },
   // failOnError: true,
