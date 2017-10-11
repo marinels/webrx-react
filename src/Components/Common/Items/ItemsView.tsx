@@ -32,6 +32,7 @@ export class ItemsView extends BaseView<ItemsProps, ItemsViewModel<{}>> {
       <div { ...rest } className={ wxr.classNames('Items', className) }>
         <ItemsPresenter
           itemsSource={ this.state.source.value }
+          itemsSource={ this.state.getItemsSource() }
           viewTemplate={ props.viewTemplate }
           itemsPanelTemplate={ props.itemsPanelTemplate }
           itemTemplate={ props.itemTemplate }

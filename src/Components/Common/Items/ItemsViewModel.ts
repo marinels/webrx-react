@@ -24,6 +24,10 @@ export class ItemsViewModel<T> extends BaseViewModel {
       .toProperty();
   }
 
+  public getItemsSource() {
+    return this.source.value;
+  }
+
   public getItems() {
     return Iterable
       .from(this.source.value);
