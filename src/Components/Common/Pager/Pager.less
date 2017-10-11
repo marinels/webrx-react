@@ -3,6 +3,8 @@
 .Pager {
   // center align text by default (for mobile)
   .Pager-col {
+    padding-left: 0;
+    padding-right: 0;
     text-align: center;
   }
 
@@ -21,9 +23,12 @@
     // we only apply this in non-mobile because the extra height in mobile is desired
     .Pager-col {
       height: @button-height;
+      padding-left: @grid-gutter-width / 2;
+      padding-right: @grid-gutter-width / 2;
     }
 
     .Pager-col-left {
+      padding-left: 0;
       text-align: left;
     }
 
@@ -32,6 +37,7 @@
     }
 
     .Pager-col-right {
+      padding-right: 0;
       text-align: right;
     }
   }
