@@ -6,7 +6,7 @@ import { PartialObserver } from 'rxjs/Observer';
 export type IterableLike<T> = Iterable<T> | ArrayLike<T>;
 export type AsyncIterableLike<T> = AsyncIterableInput<T>;
 export type ObservableOrValue<T> = T | Observable<T>;
-export type ObservableLike<T> = Observable<T> | Property<T> | Command<T> | T;
+export type ObservableLike<T> = ObservableOrValue<T> | Property<T> | Command<T>;
 
 export interface ReadOnlyProperty<T> {
   readonly changed: Observable<T>;
