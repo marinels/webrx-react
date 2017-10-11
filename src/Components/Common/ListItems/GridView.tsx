@@ -163,11 +163,11 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
 
   render() {
     const { className, rest } = this.restProps(x => {
-      const { fill, listItems, itemsRenderProps } = x;
-      return { fill, listItems, itemsRenderProps };
+      const { fill, listItems, itemsProps } = x;
+      return { fill, listItems, itemsProps };
     });
 
-    const itemsProps = this.getItemsRenderProps();
+    const itemsProps = this.getItemsProps();
 
     itemsProps.itemsPanelTemplate = itemsProps.itemsPanelTemplate || this.renderTablePanel.bind(this);
     itemsProps.itemTemplate = itemsProps.itemTemplate || this.renderTableRow.bind(this);

@@ -14,7 +14,7 @@ export interface ListItemsViewTemplateProps extends React.HTMLProps<ListItemsVie
    * internal passthru property
    * DO NOT SET, this property is assigned automatically by the ListItemsView
    */
-  itemsRenderProps?: ItemsFacadeProps;
+  itemsProps?: ItemsFacadeProps;
 }
 
 export abstract class ListItemsViewTemplate<T extends ListItemsViewTemplateProps> extends React.Component<T> {
@@ -22,8 +22,8 @@ export abstract class ListItemsViewTemplate<T extends ListItemsViewTemplateProps
     return this.props.listItems as Readonly<ListItemsViewModel<{}>>;
   }
 
-  protected getItemsRenderProps() {
-    return this.props.itemsRenderProps as ItemsFacadeProps;
+  protected getItemsProps() {
+    return this.props.itemsProps as ItemsFacadeProps;
   }
 
   protected renderListItem(itemTemplate: React.ReactNode, item: {}, selectedProps?: SelectedPropsFunction) {
