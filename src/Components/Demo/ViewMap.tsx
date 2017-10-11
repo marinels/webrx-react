@@ -428,18 +428,13 @@ export const demoViewMap: ViewActivatorMap = {
     switch (componentRoute) {
       case 'ListItemsDefault':
         return (
-          <Components.ListItemsView
-            viewModel={ viewModel }
-            itemTemplate={ sampleDataTemplate }
-          >
-            <Components.ListGroupView />
-          </Components.ListItemsView>
+          <Components.ListItemsView viewModel={ viewModel } />
         );
       case 'ListItemsListGroup':
         return (
           <Components.ListItemsView
             viewModel={ viewModel }
-            view={ (<Components.ListGroupView />) }
+            view={ (<Components.ListGroupView itemsProps={({ viewTemplate: x => (<div style={({ padding: 10, backgroundColor: 'blue' })}>{ x }</div>) })} />) }
             itemTemplate={ sampleDataTemplate }
           />
         );
