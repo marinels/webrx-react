@@ -29,6 +29,7 @@ export * from './Loading/Loading';
 export * from './ProfilePicture/ProfilePicture';
 export * from './CommonPanel/CommonPanel';
 export * from './ObservableWrapper/ObservableWrapper';
+export * from './ContentTooltip/ContentTooltip';
 
 // Views
 export * from './InlineEdit/InlineEditView';

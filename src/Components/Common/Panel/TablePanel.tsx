@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { Table, TableProps } from 'react-bootstrap';
 
+import { PanelItemProps, PanelTemplateProps, Panel, PanelFragment } from './Panel';
 
-import { PanelItemProps, Panel, PanelFragment } from './Panel';
-
-export interface TablePanelProps extends TableProps, PanelItemProps {
+export interface TablePanelProps extends TableProps, PanelItemProps, PanelTemplateProps {
   header?: PanelFragment;
 }
 
@@ -24,9 +23,9 @@ export class TablePanel extends Panel<TablePanelProps> {
     return this.renderPanel('TablePanel', rest, Table);
   }
 
-  renderItems(children?: React.ReactNode, items?: Array<{}>, componentClass?: React.ReactType) {
+  renderItems(children?: React.ReactNode, componentClass?: React.ReactType) {
     const fragments: Array<PanelFragment> = [];
-    const itemTemplates = super.renderItems(children, items, componentClass || '');
+    const itemTemplates = super.renderItems(children, componentClass || '');
 
     if (this.props.header != null) {
       fragments.push(

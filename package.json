@@ -1,6 +1,6 @@
 {
   "name": "webrx-react",
-  "version": "0.15.0",
+  "version": "0.15.1",
   "description": "ReactJS + WebRx + RxJS + Bootstrap: MVVM for Single Page Web Applications",
   "scripts": {
     "start": "gulp",
@@ -98,7 +98,7 @@
     "tslint": "^5.0.0",
     "tslint-config-unional": "^0.8.0",
     "typescript": "^2.0.0",
-    "url-loader": "^0.5.0",
+    "url-loader": "^0.6.0",
     "vinyl": "^2.0.0",
     "webpack": "^3.0.0",
     "webpack-dev-server": "^2.0.0",

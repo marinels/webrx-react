@@ -2,9 +2,9 @@ import * as React from 'react';
 import { ListGroup, ListGroupProps, ListGroupItem } from 'react-bootstrap';
 
 import { wxr } from '../../React';
-import { PanelItemProps, Panel } from './Panel';
+import { PanelItemProps, PanelTemplateProps, Panel } from './Panel';
 
-export interface ListGroupPanelProps extends ListGroupProps, PanelItemProps {
+export interface ListGroupPanelProps extends ListGroupProps, PanelItemProps, PanelTemplateProps {
 }
 
 export class ListGroupPanel extends Panel<ListGroupPanelProps> {
@@ -14,7 +14,7 @@ export class ListGroupPanel extends Panel<ListGroupPanelProps> {
     return this.renderPanel('ListGroupPanel', this.props, ListGroup);
   }
 
-  renderItems(children?: React.ReactNode, items?: Array<{}>, componentClass?: React.ReactType) {
-    return super.renderItems(children, items, componentClass || ListGroupItem);
+  renderItems(children?: React.ReactNode, componentClass?: React.ReactType) {
+    return super.renderItems(children, componentClass || ListGroupItem);
   }
 }

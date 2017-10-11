@@ -113,10 +113,12 @@ export function renderGridLoadable(
  * i.e., <Elem ref={ (x: React.ReactInstance) => this.focusElement(x) } />
  */
 export function focusElement<T extends HTMLElement = HTMLElement>(instance: React.ReactInstance | undefined) {
-  const elem = instance == null ? null : findDOMNode<T>(instance);
+  const elem = instance == null ? null : findDOMNode(instance) as T;
 
   if (elem != null) {
-    elem.focus();
+    if (elem.focus instanceof Function) {
+      elem.focus();
+    }
 
     return elem;
   }

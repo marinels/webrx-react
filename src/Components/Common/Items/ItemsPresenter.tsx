@@ -26,7 +26,7 @@ export interface ItemsPresenterTemplateProps {
   itemTemplate?: (item: {}, index: number) => PanelFragment;
 }
 
-export interface ItemsPresenterProps extends React.HTMLAttributes<ItemsPresenterProps>, ItemsPresenterTemplateProps, PanelItemProps {
+export interface ItemsPresenterSourceProps {
   /**
    * data source of items to render
    * if omitted then component children is used in place
@@ -34,12 +34,15 @@ export interface ItemsPresenterProps extends React.HTMLAttributes<ItemsPresenter
   itemsSource?: IterableLike<{}>;
 }
 
+export interface ItemsPresenterProps extends React.HTMLAttributes<ItemsPresenterProps>, ItemsPresenterTemplateProps, ItemsPresenterSourceProps, PanelItemProps {
+}
+
 export class ItemsPresenter extends React.Component<ItemsPresenterProps> {
   public static displayName = 'ItemsPresenter';
 
   public static defaultItemTemplate(item: {}, index: number) {
     return (
-      <div key={ index }>{ item }</div>
+      <div key={ index }>{ String.stringify(item) }</div>
     );
   }
 
@@ -49,7 +52,6 @@ export class ItemsPresenter extends React.Component<ItemsPresenterProps> {
         itemClassName={ itemsPresenter.props.itemClassName }
         itemStyle={ itemsPresenter.props.itemStyle }
         itemProps={ itemsPresenter.props.itemProps }
-        itemWrapper={ itemsPresenter.props.itemWrapper }
       >
         { itemTemplates }
       </StackPanel>
@@ -58,8 +60,8 @@ export class ItemsPresenter extends React.Component<ItemsPresenterProps> {
 
   public static defaultViewTemplate(itemsPanel: PanelFragment, itemsPresenter: ItemsPresenter) {
     const { className, props, rest } = itemsPresenter.restProps(x => {
-      const { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, itemWrapper } = x;
-      return { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, itemWrapper };
+      const { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps } = x;
+      return { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps };
     });
 
     return (
@@ -91,8 +93,8 @@ export class ItemsPresenter extends React.Component<ItemsPresenterProps> {
       .map<PanelFragment>((x, i) => {
         const item = template(x, i);
 
-        return (item != null && React.isValidElement<any>(item)) ?
-          React.cloneElement(item, { key: item.key || i }) :
+        return (item != null && React.isValidElement<any>(item) && item.key == null) ?
+          React.cloneElement(item, { key: i }) :
           item;
       });
 

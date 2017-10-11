@@ -428,19 +428,14 @@ export const demoViewMap: ViewActivatorMap = {
     switch (componentRoute) {
       case 'ListItemsDefault':
         return (
-          <Components.ListItemsView
-            viewModel={ viewModel }
-            itemTemplate={ (x: SampleData) => sampleDataTemplate(x) }
-          >
-            <Components.ListGroupView />
-          </Components.ListItemsView>
+          <Components.ListItemsView viewModel={ viewModel } />
         );
       case 'ListItemsListGroup':
         return (
           <Components.ListItemsView
             viewModel={ viewModel }
-            view={ (<Components.ListGroupView />) }
-            itemTemplate={ (x: SampleData) => sampleDataTemplate(x) }
+            view={ (<Components.ListGroupView itemsProps={({ viewTemplate: x => (<div style={({ padding: 10, backgroundColor: 'blue' })}>{ x }</div>) })} />) }
+            itemTemplate={ sampleDataTemplate }
           />
         );
       case 'ListItemsGrid':
@@ -470,7 +465,7 @@ export const demoViewMap: ViewActivatorMap = {
         return (
           <Components.ListItemsView
             viewModel={ viewModel }
-            itemTemplate={ (x: SampleTreeData) => sampleDataTemplate(x) }
+            itemTemplate={ sampleDataTemplate }
             view={(
               <Components.TreeView
                 itemsSource={ (x: SampleTreeData) => x.items }
