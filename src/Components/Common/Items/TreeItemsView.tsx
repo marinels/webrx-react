@@ -20,7 +20,6 @@ export class TreeItemsView extends React.Component<TreeProps> {
 
     return (
       <ItemsView
-        { ...rest }
         className={ wxr.classNames('TreeItems', className) }
         viewModel={ this.props.viewModel }
         viewTemplate={ props.viewTemplate }
@@ -31,6 +30,7 @@ export class TreeItemsView extends React.Component<TreeProps> {
         itemClassName={ props.itemClassName }
         itemStyle={ props.itemStyle }
         itemProps={ props.itemProps }
+        { ...React.Component.trimProps(rest) }
       />
     );
   }

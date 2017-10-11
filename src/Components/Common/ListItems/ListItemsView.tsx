@@ -27,7 +27,7 @@ export class ListItemsView extends BaseView<ListItemsProps, ListItemsViewModel<{
     }
 
     const viewProps: ListItemsViewTemplateProps = {
-      itemsRenderProps: rest,
+      itemsRenderProps: React.Component.trimProps(rest),
       listItems: this.state,
       className: classNames('ListItems', className, props.view.props.className),
     };

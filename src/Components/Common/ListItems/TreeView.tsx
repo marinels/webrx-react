@@ -35,7 +35,7 @@ export class TreeView extends ListItemsViewTemplate<TreeViewProps> {
           }
         }
         { ...this.getItemsRenderProps() }
-        { ...rest }
+        { ...React.Component.trimProps(rest) }
       />
     );
   }

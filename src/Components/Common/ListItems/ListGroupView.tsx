@@ -23,7 +23,7 @@ export class ListGroupView extends ListItemsViewTemplate<ListGroupViewProps> {
         viewModel={ this.getListItems() }
         itemsPanelTemplate={ this.renderListItemPanel.bind(this) }
         { ...this.getItemsRenderProps() }
-        { ...rest }
+        { ...React.Component.trimProps(rest) }
       />
     );
   }

@@ -36,8 +36,8 @@ export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewM
       <Modal className={ this.classNames('ModalDialog', className) } autoFocus
         keyboard={ props.canClose === true } enforceFocus={ props.canClose === false }
         backdrop={ props.canClose === false ? 'static' : true }
-        { ...rest }
         show={ this.state.isVisible.value } onHide={ this.bindEventToCommand(x => x.hide) }
+        { ...React.Component.trimProps(rest) }
       >
         { this.renderHeader() }
         { this.renderBody() }
