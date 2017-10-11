@@ -167,16 +167,16 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
       return { fill, listItems, itemsProps };
     });
 
-    const itemsProps = this.getItemsProps();
+    const props = this.getItemsProps();
 
-    itemsProps.itemsPanelTemplate = itemsProps.itemsPanelTemplate || this.renderTablePanel.bind(this);
-    itemsProps.itemTemplate = itemsProps.itemTemplate || this.renderTableRow.bind(this);
+    props.itemsPanelTemplate = props.itemsPanelTemplate || this.renderTablePanel.bind(this);
+    props.itemTemplate = props.itemTemplate || this.renderTableRow.bind(this);
 
     return (
       <ItemsView
         className={ classNames('Grid', className) }
         viewModel={ this.getListItems() }
-        { ...itemsProps }
+        { ...props }
         { ...React.Component.trimProps(rest) }
       />
     );
