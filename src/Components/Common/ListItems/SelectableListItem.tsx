@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { ListGroupItemProps } from 'react-bootstrap';
 
 import { wx } from '../../../WebRx';
+import { compare } from '../../../Utils/Compare';
 import { ListItemsViewModel } from './ListItemsViewModel';
 
 export type SelectedPropsFunction = (isSelected: boolean, elem: React.ReactElement<React.HTMLAttributes<any>>) => {};
@@ -73,7 +74,7 @@ export class SelectableListItem extends React.Component<SelectableListItemProps,
           .from(this.props.listItems.selectedItems.value)
           .startWith(this.props.item)
           .filterNull()
-          .distinct()
+          .distinct(undefined, compare)
           .toArray(),
       );
     }
