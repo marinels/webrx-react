@@ -6,9 +6,14 @@ import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 export const StandardLimits = [ 10, 25, 0 ];
 export const AlwaysPagedLimits = StandardLimits.filter(x => x != null && x > 0);
 
-export interface PagerRoutingState {
+export interface PageRequest {
+  offset: number;
   limit: number;
+}
+
+export interface PagerRoutingState {
   page: number;
+  limit: number;
 }
 
 export class PagerViewModel extends BaseRoutableViewModel<PagerRoutingState> {
@@ -19,6 +24,7 @@ export class PagerViewModel extends BaseRoutableViewModel<PagerRoutingState> {
   public readonly selectedPage: ReadOnlyProperty<number>;
   public readonly pageCount: ReadOnlyProperty<number>;
   public readonly offset: ReadOnlyProperty<number>;
+  public readonly requests: ReadOnlyProperty<PageRequest>;
 
   public readonly selectPage: Command<number>;
 
@@ -47,6 +53,17 @@ export class PagerViewModel extends BaseRoutableViewModel<PagerRoutingState> {
       // if we have a valid page then calculate the offset (default limit to zero to result in a zero offset)
       .map(x => (x.sp != null && x.sp > 0) ? (x.sp - 1) * (x.l || 0) : 0)
       .toProperty(0);
+
+    this.requests = this
+      .whenAny(
+        this.offset,
+        this.limit,
+        (offset, limit) => ({
+          offset,
+          limit,
+        }),
+      )
+      .toProperty();
 
     this.addSubscription(this
       .whenAny(this.selectedPage, this.limit, (sp, l) => ({ sp, l }))
