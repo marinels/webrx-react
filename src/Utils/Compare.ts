@@ -16,10 +16,10 @@ export interface Comparer<T> {
   compare: ValueComparison<T>;
 }
 
-export class ValueComparer<T> implements Comparer<T> {
+export class ValueComparer<T = any> implements Comparer<T> {
   public static displayName = 'ValueComparer';
 
-  public static Default: ValueComparer<any> = new ValueComparer<any>();
+  public static readonly Default = new ValueComparer();
 
   public static DefaultComparison(a: any, b: any) {
     if (a === b || (a == null && b == null)) {
@@ -29,6 +29,10 @@ export class ValueComparer<T> implements Comparer<T> {
     else if (a == null || b == null) {
       // only one is null, non-null takes higher value
       return a == null ? -1 : 1;
+    }
+    else if (typeof a === 'object' || typeof b === 'object') {
+      // if either side is an object then we have failed referencial equality (first compare)
+      return -1;
     }
     else if (isComparable(a)) {
       // implements Comparable
@@ -55,6 +59,10 @@ export class ValueComparer<T> implements Comparer<T> {
   }
 }
 
+export function compare(a: any, b: any) {
+  return ValueComparer.DefaultComparison(a, b) === 0;
+}
+
 export enum SortDirection {
   Ascending = 1,
   Descending = 2,
@@ -74,10 +82,10 @@ export class ObjectComparer<T extends StringMap<any>> {
   public static displayName = 'ObjectComparer';
   public static DefaultComparerKey = '';
 
-  public static createFieldComparer<TObj, TValue>(field: string, compare: ValueComparison<TValue>, valueSelector?: (source: TObj, field: string) => TValue) {
+  public static createFieldComparer<TObj, TValue>(field: string, comparison: ValueComparison<TValue>, valueSelector?: (source: TObj, field: string) => TValue) {
     return {
       field,
-      compare: compare,
+      compare: comparison,
       valueSelector,
     } as FieldComparer<TObj, TValue>;
   }
