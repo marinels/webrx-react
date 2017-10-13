@@ -9,6 +9,7 @@ export type ExecutionAction<T> = (parameter: any) => ObservableOrValue<T>;
 export class ObservableCommand<T> extends Subscription implements Command<T> {
   protected isExecutingSubject: BehaviorSubject<boolean>;
   protected canExecuteSubject: BehaviorSubject<boolean>;
+  protected requestsSubject: Subject<T>;
   protected resultsSubject: Subject<T>;
   protected thrownErrorsSubject: Subject<Error>;
 
@@ -20,6 +21,7 @@ export class ObservableCommand<T> extends Subscription implements Command<T> {
 
     this.isExecutingSubject = this.addSubscription(new BehaviorSubject<boolean>(false));
     this.canExecuteSubject = this.addSubscription(new BehaviorSubject<boolean>(canExecute == null));
+    this.requestsSubject = this.addSubscription(new Subject<T>());
     this.resultsSubject = this.addSubscription(new Subject<T>());
     this.thrownErrorsSubject = this.addSubscription(new Subject<Error>());
 
@@ -64,7 +66,8 @@ export class ObservableCommand<T> extends Subscription implements Command<T> {
 
     return Observable
       .of(parameter)
-      .do(() => {
+      .do(x => {
+        this.requestsSubject.next(x);
         this.isExecutingSubject.next(true);
       })
       .flatMap(x => {
@@ -113,6 +116,11 @@ export class ObservableCommand<T> extends Subscription implements Command<T> {
 
     return obs
       .subscribe.apply(obs, [ observerOrNext, error, complete ]);
+  }
+
+  get requests() {
+    return this.requestsSubject
+      .asObservable();
   }
 
   get results() {
