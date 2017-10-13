@@ -1,7 +1,7 @@
 import { Iterable } from 'ix';
 
-export function isObject(obj: any): obj is {} {
-  return typeof obj === 'object';
+export function isObject(value: any): value is {} {
+  return typeof value === 'object' || value instanceof Object;
 }
 
 export function trim(obj: any, trimNull = true) {
