@@ -18,7 +18,7 @@ export class ItemsView extends BaseView<ItemsProps, ItemsViewModel<{}>> {
 
   updateOn() {
     return [
-      this.state.source.changed,
+      this.state.getItemsSourceProperty().changed,
     ];
   }
 
