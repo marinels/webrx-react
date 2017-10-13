@@ -2,13 +2,8 @@ import { Observable } from  'rxjs';
 
 import { Default as alert } from '../../Utils/Alert';
 
-export interface SampleDataAction {
-  (params: any): Observable<any>;
-}
-
-export interface SampleDataActionSet {
-  [ action: string ]: SampleDataAction;
-}
+export type SampleDataAction = (params: any) => Observable<any>;
+export type SampleDataActionSet = StringMap<SampleDataAction>;
 
 export abstract class BaseSampleDataStore {
   public abstract getActions(): SampleDataActionSet;
