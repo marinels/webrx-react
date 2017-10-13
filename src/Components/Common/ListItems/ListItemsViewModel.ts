@@ -107,16 +107,29 @@ export class ListItemsViewModel<T> extends ItemsViewModel<T> {
   }
 
   protected getItemsForIndicies(indicies: IterableLike<number>): Array<T> | undefined {
+    const source = Iterable
+      .from(indicies);
+
+    if (source.isEmpty()) {
+      return [];
+    }
+
     const set = this.getItems()
       .toArray();
 
-    return Iterable
-      .from(indicies)
+    return source
       .map(x => set[x])
       .toArray();
   }
 
   protected getIndiciesForItems(items: IterableLike<T>): Array<number> | undefined {
+    const source = Iterable
+      .from(items);
+
+    if (source.isEmpty()) {
+      return [];
+    }
+
     const set = this.getItems()
       .toArray();
 
