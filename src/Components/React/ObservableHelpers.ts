@@ -1,3 +1,4 @@
+import { Iterable } from 'ix';
 import { Observable, Subscription } from 'rxjs';
 
 import { wx } from '../../WebRx';
@@ -7,10 +8,13 @@ export function logObservable(logger: Logging.Logger, observable: Observable<any
   return observable
     .subscribe(
       x => {
-        if (Object.isObject(x)) {
+        if (x == null) {
+          logger.debug(name);
+        }
+        else if (Object.isObject(x)) {
           let value = Object.getName(x);
 
-          if (Object.isObject(value)) {
+          if (value === 'Object') {
             value = '';
           }
 
@@ -25,17 +29,22 @@ export function logObservable(logger: Logging.Logger, observable: Observable<any
 }
 
 export function logMemberObservables(logger: Logging.Logger, source: StringMap<any>): Subscription[] {
-  return Object
-    .keys(source)
+  return Iterable
+    .from(Object.keys(source))
     .map(key => ({ key, member: source[key] }))
-    .map(x => ({
-      key: wx.isCommand(x.member) ? `<${ x.key }>` : x.key,
-      observable: wx.isCommand(x.member) ?
-        x.member.results :
-        ((wx.isObservable(x.member) || wx.isProperty(x.member)) ? wx.getObservable(x.member) : undefined),
-    }))
-    .filter(x => x.observable != null)
-    .map(x => logObservable(logger, x.observable!, x.key));
+    .filter(x => wx.isObservable(x.member) || wx.isProperty(x.member) || wx.isCommand(x.member))
+    .flatMap(x => {
+      if (wx.isCommand(x.member)) {
+        return [
+          { key: `<${ x.key }>...`, observable: x.member.requests },
+          { key: `<${ x.key }>`, observable: x.member.results },
+        ];
+      }
+
+      return [ { key: x.key, observable: wx.getObservable(x.member) } ];
+    })
+    .map(x => logObservable(logger, x.observable!, x.key))
+    .toArray();
 }
 
 export function getObservableOrAlert<T, TError>(
