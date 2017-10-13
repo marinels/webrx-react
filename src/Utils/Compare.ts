@@ -30,7 +30,7 @@ export class ValueComparer<T = any> implements Comparer<T> {
       // only one is null, non-null takes higher value
       return a == null ? -1 : 1;
     }
-    else if (typeof a === 'object' || typeof b === 'object') {
+    else if (Object.isObject(a) || Object.isObject(b)) {
       // if either side is an object then we have failed referencial equality (first compare)
       return -1;
     }

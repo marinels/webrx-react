@@ -121,7 +121,7 @@ export class ObservableApi {
           message = response;
         }
       }
-      else if (typeof response === 'object') {
+      else if (Object.isObject(response)) {
         responseObject = response;
       }
 
