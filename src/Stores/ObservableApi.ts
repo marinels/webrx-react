@@ -23,17 +23,7 @@ export class ObservableApi {
   };
 
   public static getNonNullParams(params?: any) {
-    if (params == null) {
-      return null;
-    }
-
-    for (const key in params) {
-      if (params[key] == null) {
-        delete params[key];
-      }
-    }
-
-    return params;
+    return Object.trim(params);
   }
 
   public static getUriFromParams(uri: string, params: any) {
