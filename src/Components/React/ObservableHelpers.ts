@@ -7,10 +7,10 @@ export function logObservable(logger: Logging.Logger, observable: Observable<any
   return observable
     .subscribe(
       x => {
-        if (x instanceof Object) {
+        if (Object.isObject(x)) {
           let value = Object.getName(x);
 
-          if (value === 'Object') {
+          if (Object.isObject(value)) {
             value = '';
           }
 
