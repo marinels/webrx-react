@@ -30,6 +30,8 @@ export class ListGroupView extends ListItemsViewTemplate<ListGroupViewProps> {
   }
 
   protected renderListItemPanel(itemTemplates: Array<React.ReactNode>, itemsPresenter: ItemsPresenter, items: Array<{}> | undefined) {
+    // items = items || this.getListItems().getItems().toArray();
+
     return (
       <ListGroupPanel fill={ this.props.fill } itemTemplate={ (f, c) => this.renderPanelItem(f, c, items) }>
         { itemTemplates }
