@@ -15,32 +15,17 @@ export interface SelectableListItemProps {
   selectedProps?: SelectedPropsFunction;
 }
 
-export interface SelectableListItemState {
-  isSelected: boolean;
-}
-
-export class SelectableListItem extends React.Component<SelectableListItemProps, SelectableListItemState> {
+export class SelectableListItem extends React.Component<SelectableListItemProps> {
   static defaultProps = {
     selectedProps: () => ({}),
   };
 
   private isSelectedSubscription: Subscription | undefined;
 
-  constructor(props?: SelectableListItemProps, context?: any) {
-    super(props, context);
-
-    this.state = {
-      isSelected: false,
-    };
-  }
-
   componentDidMount() {
     this.isSelectedSubscription = wx
       .whenAny(this.props.listItems.selectedItems, x => x)
-      .map(x => x.indexOf(this.props.item) >= 0)
-      .startWith(false)
-      .distinctUntilChanged()
-      .subscribe(isSelected => this.setState({ isSelected }));
+      .subscribe(() => this.forceUpdate());
   }
 
   componentWillUnmount() {
@@ -54,10 +39,20 @@ export class SelectableListItem extends React.Component<SelectableListItemProps,
     return React.cloneElement(elem, this.getListItemProps(elem));
   }
 
+  protected getIsSelected() {
+    const items = this.props.listItems.selectedItems.value;
+
+    if (items == null) {
+      return false;
+    }
+
+    return items.indexOf(this.props.item) >= 0;
+  }
+
   protected getListItemProps(elem: React.ReactElement<any>): ListGroupItemProps {
     return Object.assign<ListGroupItemProps>(
       {},
-      this.props.selectedProps!(this.state.isSelected, elem),
+      this.props.selectedProps!(this.getIsSelected(), elem),
       {
         onClick: this.handleClick.bind(this),
       },
