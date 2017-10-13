@@ -1,4 +1,5 @@
 import { Observable } from  'rxjs';
+import * as clone from 'clone';
 
 import { BaseSampleDataStore, SampleDataActionSet, SampleDataAction } from './BaseSampleDataStore';
 
@@ -8,7 +9,7 @@ export class SampleData {
   constructor(private readonly initializeActions: () => void, protected readonly delay = 0) {
   }
 
-  private getActions() {
+  protected getActions() {
     if (this.actions == null) {
       this.actions = {};
 
@@ -22,30 +23,32 @@ export class SampleData {
     return this.getActions()[action];
   }
 
-  public addDataStore(data: BaseSampleDataStore, name?: string): void {
+  public addDataStore(data: BaseSampleDataStore, name: string): void {
     Object.assign(this.getActions(), data.getActions());
 
-    if (String.isNullOrEmpty(name) === false) {
-      (<any>this)[<string>name] = data;
-    }
+    (<StringMap<any>>this)[name] = data;
   }
 
   public addAction(action: string, dataAction: SampleDataAction) {
     this.getActions()[action] = dataAction;
   }
 
-  getObservable<T>(action: string, params?: any) {
-    let result: Observable<T>;
-    const sampleDataAction = this.getAction(action);
+  public getData<T, TData = any>(name: string, selector: (data: TData) => T) {
+    const data: TData | undefined = (<StringMap<any>>this)[name];
 
-    if (sampleDataAction != null) {
-      result = sampleDataAction(params)
-        .delay(this.delay);
-    }
-    else {
-      result = Observable.throw(new Error(`Sample DataStore Action Not Found: ${ action }`));
-    }
+    return data == null ? undefined : clone(selector(data));
+  }
 
-    return result;
+  public getObservable<T>(action: string, params?: any): Observable<T> {
+    return Observable
+      .of(this.getAction(action))
+      .delay(this.delay)
+      .flatMap(sampleDataAction => {
+        if (sampleDataAction == null) {
+          return Observable.throw(new Error(`Sample DataStore Action Not Found: ${ action }`));
+        }
+
+        return sampleDataAction(params);
+      });
   }
 }

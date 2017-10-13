@@ -1,9 +1,8 @@
 import { Observable, AjaxRequest, AjaxError } from 'rxjs';
-import * as clone from 'clone';
 import param = require('jquery-param');
 
-import '../Extensions/String';
 import { Logging } from '../Utils';
+import { Manager } from '../Routing/RouteManager';
 import { SampleData } from './SampleData/SampleData';
 
 export enum HttpRequestMethod {
@@ -14,6 +13,15 @@ export enum HttpRequestMethod {
   PATCH,
 }
 
+export interface ObservableApiError {
+  uri?: string;
+  message: string;
+  messageDetail?: string;
+  code?: number;
+  reason?: string;
+  response?: any;
+}
+
 export class ObservableApi {
   public static displayName = 'ObservableApi';
 
@@ -22,51 +30,41 @@ export class ObservableApi {
     'Content-Type': 'application/json',
   };
 
-  public static getNonNullParams(params?: any) {
-    return Object.trim(params);
+  public static sanitizeUri(uri: string) {
+    // first check if our provided uri is already prepped for params
+    if (uri.indexOf('?') >= 0) {
+      // it has been prepped, so check to see if the last character is an '&'
+      if (uri[uri.length - 1] !== '&') {
+        // no '&' at the end, so append one
+        return uri + '&';
+      }
+    }
+    else {
+      // it hasn't been prepped so just append a '?'
+      return uri + '?';
+    }
+
+    // uri is already sane, just return it
+    return uri;
   }
 
   public static getUriFromParams(uri: string, params: any) {
     // first filter out any empty/null params
-    params = this.getNonNullParams(params);
+    params = Object.trim(params);
 
-    if (params == null) {
-      // if we have no params to append then just return the provided uri verbatim
-      return uri;
+    // sanitize the uri
+    uri = ObservableApi.sanitizeUri(uri);
+
+    // if we have parameters to append then append the encoded params
+    if (params != null && Object.keys(params).length > 0) {
+      return uri + param(params);
     }
 
-    // only append params if there are any to append
-    if (Object.getOwnPropertyNames(params).length > 0) {
-      // first check if our provided uri is already prepped for params
-      if (uri.indexOf('?') >= 0) {
-        // it has been prepped, so check to see if the last character is an '&'
-        if (uri[uri.length - 1] !== '&') {
-          // no '&' at the end, so append one
-          uri += '&';
-        }
-      }
-      else {
-        // it hasn't been prepped so just append a '?'
-        uri += '?';
-      }
-
-      // finally append our params to the uri
-      uri += param(params);
-    }
-
+    // otherwise return the sanitized uri as is
     return uri;
   }
 
-  private readonly logger = Logging.getLogger(ObservableApi.displayName);
-  protected sampleData: SampleData;
-
-  constructor(public baseUri?: string) {
-    if (String.isNullOrEmpty(this.baseUri) && window != null && window.location != null) {
-      this.baseUri = (window.location.origin || 'http://localhost') + (window.location.pathname || '/');
-    }
-  }
-
-  private getError(xhr?: XMLHttpRequest, uri: string = '') {
+  public static getError(xhr: XMLHttpRequest | undefined, uri: string, logger: Logging.Logger): ObservableApiError {
     if (xhr == null) {
       return {
         message: 'Invalid XMLHttpRequest (null)',
@@ -74,9 +72,9 @@ export class ObservableApi {
       };
     }
 
-    const code = xhr.status > 0 ? xhr.status : null;
-    const reason = String.isNullOrEmpty(xhr.statusText) ? null : xhr.statusText;
-    const response = String.isNullOrEmpty(xhr.response) ? null : xhr.response;
+    const code = xhr.status > 0 ? xhr.status : undefined;
+    const reason = String.isNullOrEmpty(xhr.statusText) ? undefined : xhr.statusText;
+    const response = String.isNullOrEmpty(xhr.response) ? undefined : xhr.response;
     let message: string | undefined;
     let messageDetail: string | undefined;
 
@@ -103,7 +101,7 @@ export class ObservableApi {
     else if (response != null) {
       // something came back in the response, so let's try and extract an error
 
-      if (String.isNullOrEmpty(xhr.responseURL) === false) {
+      if (!String.isNullOrEmpty(xhr.responseURL)) {
         // the responseURL will be more trustworth than our passed in parameter
         uri = xhr.responseURL;
       }
@@ -116,7 +114,7 @@ export class ObservableApi {
           responseObject = JSON.parse(response);
         }
         catch (e) {
-          this.logger.debug('Unable to parse response', response, e);
+          logger.debug('Unable to parse response', response, e);
           // JSON parsing didn't work, fallback on straight assignment
           message = response;
         }
@@ -138,7 +136,7 @@ export class ObservableApi {
           message = String.stringify(response, null, 2);
         }
         catch (e) {
-          this.logger.warn('Unable to stringify response', response);
+          logger.warn('Unable to stringify response', response, e);
 
           // last ditch effort, just call toString on the object
           message = response.toString();
@@ -147,27 +145,34 @@ export class ObservableApi {
     }
     else {
       // we can't detect what type of error this is, so log the xhr and return a generic message
-      this.logger.error('Invalid XHR Error', xhr);
+      logger.error('Invalid XHR Error', xhr);
 
       message = 'Invalid Response from API Host';
     }
 
+    // message should always be non-null by this point, but just in case have a valid fallback
+    if (message == null) {
+      logger.error('Unable to extract error message', xhr);
+
+      message = 'Unknown Error';
+    }
+
     return {
+      uri,
+      message,
+      messageDetail,
       code,
       reason,
       response,
-      message,
-      messageDetail,
-      uri,
     };
   }
 
-  public getRequest<T>(action: string, url: string, method = HttpRequestMethod.GET, params?: any, data?: any, options?: AjaxRequest) {
-    this.logger.debug(`getRequest: [${ method }] ${ action }`, { url, params, data, options });
+  public static getRequest<T>(action: string, url: string, logger: Logging.Logger, method = HttpRequestMethod.GET, params?: any, data?: any, options?: AjaxRequest) {
+    logger.debug(`getRequest: [${ method }] ${ action }`, { url, params, data, options });
 
     url = ObservableApi.getUriFromParams(url, params);
 
-    this.logger.info(`API Request: ${ action } (${ url })`, data);
+    logger.info(`API Request: ${ action } (${ url })`, data);
 
     const body = data == null ? undefined : String.stringify(data, null, 2);
 
@@ -183,13 +188,30 @@ export class ObservableApi {
       .ajax(options)
       .map(x => <T>x.response)
       .do(x => {
-        this.logger.info(`API Result: ${ action } (${ url })`, x);
+        logger.info(`API Result: ${ action } (${ url })`, x);
       })
       .catch<T, T>((x: AjaxError) => {
-        this.logger.error(`API  ERROR: ${ action } (${ url })`, x);
+        logger.error(`API  ERROR: ${ action } (${ url })`, x);
 
-        return Observable.throw(this.getError(x.xhr, url));
+        return Observable.throw(ObservableApi.getError(x.xhr, url, logger));
       });
+  }
+
+  protected readonly logger = Logging.getLogger(ObservableApi.displayName);
+  protected readonly baseUri: string;
+
+  constructor(public readonly path: string, public readonly base?: string, protected readonly sampleData?: SampleData) {
+    if (String.isNullOrEmpty(base) && window != null && window.location != null) {
+      this.base = (window.location.origin || 'http://localhost') + (window.location.pathname || '/');
+    }
+
+    this.logger.name += ': ' + path;
+
+    this.baseUri = normalizePath(`${ this.base }/${ path }`);
+  }
+
+  public getRequest<T>(action: string, url: string, method = HttpRequestMethod.GET, params?: any, data?: any, options?: AjaxRequest) {
+    return ObservableApi.getRequest<T>(action, url, this.logger, method, params, data, options);
   }
 
   public getObservableResult<T>(action: string, params?: any, data?: any, method?: HttpRequestMethod, options?: AjaxRequest, baseUri?: string) {
@@ -210,9 +232,11 @@ export class ObservableApi {
     return this.getObservableResult<T>(action, params, data, HttpRequestMethod.POST, options, baseUri);
   }
 
-  public getSampleData(name: string, selector: (data: any) => any) {
-    const sampleData = (<any>this.sampleData || {})[name];
+  public getSampleData<T, TData = any>(name: string, selector: (data: TData) => T) {
+    if (this.sampleData == null) {
+      return undefined;
+    }
 
-    return sampleData == null ? null : clone(selector(sampleData));
+    return this.sampleData.getData(name, selector);
   }
 }
