@@ -28,12 +28,19 @@ export class GridView extends ListItemsViewTemplate<GridFacadeProps> {
   public static displayName = 'GridView';
 
   private readonly logger: Logging.Logger = Logging.getLogger(GridView.displayName);
+  private columns: Array<React.ReactChild> | undefined;
 
   render() {
     const { className, rest } = this.restProps(x => {
       const { fill, headerTemplate, cellTemplate, listItems, itemsProps } = x;
       return { fill, headerTemplate, cellTemplate, listItems, itemsProps };
     });
+
+    this.columns = this.getColumnDefinitions();
+
+    if (this.columns == null) {
+      return null;
+    }
 
     const props = this.getItemsProps();
 
@@ -82,14 +89,12 @@ export class GridView extends ListItemsViewTemplate<GridFacadeProps> {
   }
 
   protected renderTableHeaderRow() {
-    const columns = this.getColumnDefinitions();
-
-    if (columns == null) {
+    if (this.columns == null) {
       return undefined;
     }
 
     const renderHeaders = Iterable
-      .from(columns)
+      .from(this.columns)
       .some(x => GridViewColumn.canRenderHeader(x));
 
     if (renderHeaders) {
@@ -100,7 +105,7 @@ export class GridView extends ListItemsViewTemplate<GridFacadeProps> {
       return (
         <tr>
           {
-            columns
+            this.columns
               .map(x => {
                 if (React.isValidElement(x)) {
                   return React.cloneElement<GridViewColumnProps, any>(x, props);
