@@ -1,5 +1,28 @@
 import { Iterable } from 'ix';
 
+export function isObject(obj: any): obj is {} {
+  return typeof obj === 'object';
+}
+
+export function trim(obj: any, trimNull = true) {
+  if (isObject(obj)) {
+    return Iterable
+      .from(Object.keys(obj))
+      .reduce(
+        (o: any, x) => {
+          if ((trimNull && o[x] === null) || o[x] === undefined) {
+            delete o[x];
+          }
+
+          return o;
+        },
+        obj,
+      );
+  }
+
+  return obj;
+}
+
 export function assign<T>(target: any, ...sources: any[]): T {
   if (target == null) {
     target = {};
@@ -144,6 +167,8 @@ export function getPropName<T>(p: (x: T) => any): string {
 
 declare global {
   interface ObjectConstructor {
+    isObject: typeof isObject;
+    trim: typeof trim;
     assign: typeof assign;
     rest: typeof rest;
     getName: typeof getName;
@@ -154,6 +179,8 @@ declare global {
   }
 }
 
+Object.isObject = isObject;
+Object.trim = trim;
 Object.assign = Object.assign || assign;
 Object.rest = rest;
 Object.getName = getName;
