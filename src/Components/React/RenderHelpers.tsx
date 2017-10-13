@@ -72,7 +72,7 @@ export function renderLoadable(
       <Loading text={ text } />
     );
   }
-  else if (typeof loadingComponent === 'object' && React.isValidElement(loadingComponent) === false) {
+  else if (Object.isObject(loadingComponent) && React.isValidElement(loadingComponent) === false) {
     const props = loadingComponent;
 
     loadingComponent = () => (

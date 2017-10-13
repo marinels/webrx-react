@@ -3,19 +3,8 @@
 import * as React from 'react';
 import { Iterable } from 'ix';
 
-export function trimPropsStatic<T extends StringMap<any>>(props: T): T {
-  return Iterable
-    .from(Object.keys(props))
-    .reduce(
-      (p, x) => {
-        if (p[x] === undefined) {
-          delete p[x];
-        }
-
-        return p;
-      },
-      props,
-    );
+export function trimPropsStatic<T>(props: T): T {
+  return Object.trim(props, false);
 }
 
 export interface ReactSpreadResult<T> {
