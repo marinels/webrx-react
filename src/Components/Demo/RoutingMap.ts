@@ -44,10 +44,10 @@ export const sampleTreeData = sampleListData
           .assign<SampleTreeData>({
             items: sampleListData
               .slice(0, 3)
-              .map(z => Object.assign<SampleTreeData>({}, z)),
-          }, y),
+              .map(z => Object.assign<SampleTreeData>({}, z, { name: x.name + ' (2)' })),
+          }, y, { name: x.name + ' (1)' }),
         ),
-    }, x),
+    }, x, { name: x.name + ' (0)' }),
   );
 
 interface SampleDataSourceRequest extends Components.ProjectionRequest {

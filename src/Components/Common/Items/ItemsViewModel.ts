@@ -24,13 +24,17 @@ export class ItemsViewModel<T> extends BaseViewModel {
       .toProperty();
   }
 
+  public getItemsSourceProperty(): ReadOnlyProperty<IterableLike<T>> {
+    return this.source;
+  }
+
   public getItemsSource() {
-    return this.source.value;
+    return this.getItemsSourceProperty().value;
   }
 
   public getItems() {
     return Iterable
-      .from(this.source.value);
+      .from(this.getItemsSource());
   }
 
   public getItemAt(index: number) {
