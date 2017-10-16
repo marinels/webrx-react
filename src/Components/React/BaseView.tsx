@@ -63,22 +63,6 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     return this.subscriptions;
   }
 
-  private subscribeToUpdates() {
-    let updateProps = this.updateOn();
-    updateProps.push(this.viewModel.stateChanged.results);
-
-    this.updateSubscription = Observable
-      .merge(...updateProps)
-      .debounceTime(this.getRateLimit())
-      .subscribe(
-        () => {
-          this.renderView();
-        }, x => {
-          this.alertForError(x);
-        },
-      );
-  }
-
   private replaceViewModel(next: Readonly<BaseViewModel>) {
     // WARN: horrible hack ahead
 
@@ -205,6 +189,23 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     // do nothing by default
   }
   // -----------------------------------------
+
+  protected subscribeToUpdates() {
+    const updateProps = this.updateOn();
+
+    updateProps.push(this.viewModel.stateChanged.results);
+
+    this.updateSubscription = Observable
+      .merge(...updateProps)
+      .debounceTime(this.getRateLimit())
+      .subscribe(
+        () => {
+          this.renderView();
+        }, x => {
+          this.alertForError(x);
+        },
+      );
+  }
 
   // -----------------------------------------
   // these overridable view functions
