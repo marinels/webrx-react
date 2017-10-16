@@ -25,8 +25,8 @@ export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDem
 
   updateOn() {
     return [
-      this.state.columns.changed,
-      this.state.component.changed,
+      this.viewModel.columns.changed,
+      this.viewModel.component.changed,
     ];
   }
 
@@ -36,7 +36,7 @@ export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDem
       return { viewMap };
     });
 
-    const cols = this.state.columns.value;
+    const cols = this.viewModel.columns.value;
 
     return (
       <div { ...rest } className={ this.classNames('ComponentDemo', className) }>
@@ -49,7 +49,7 @@ export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDem
           <Row>
             {
               this.renderConditional(
-                this.state.componentRoute.value === 'help',
+                this.viewModel.componentRoute.value === 'help',
                 () => this.renderComponentView(),
                 () => (
                   <Col md={ cols === 0 ? 12 : cols }>
@@ -74,14 +74,14 @@ export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDem
   }
 
   private getComponentName() {
-    return this.state.component.value == null ?
+    return this.viewModel.component.value == null ?
       'Invalid Component' :
-      Object.getName(this.state.component.value);
+      Object.getName(this.viewModel.component.value);
   }
 
   private renderHeader() {
     return this.renderConditional(
-      this.state.componentRoute.value !== 'help',
+      this.viewModel.componentRoute.value !== 'help',
       () => (
         <PageHeader>
           <span>{ `${ this.getComponentName() } Demo` }</span>
@@ -93,7 +93,7 @@ export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDem
   private renderComponentView() {
     let view: any;
     const componentName = this.getComponentName();
-    const component = this.state.component.value;
+    const component = this.viewModel.component.value;
 
     if (component != null) {
       this.logger.debug(`Loading View for "${ componentName }"...`);
@@ -101,14 +101,14 @@ export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDem
       const activator = this.props.viewMap[componentName];
 
       if (activator != null) {
-        view = activator(component, this.state.componentRoute.value);
+        view = activator(component, this.viewModel.componentRoute.value);
       }
     }
 
     if (view == null) {
       view = (
         <Alert bsStyle='danger'>
-          { component == null ? `No Component for ${ this.state.componentRoute.value }` : `No View Mapped for ${ componentName }`}
+          { component == null ? `No Component for ${ this.viewModel.componentRoute.value }` : `No View Mapped for ${ componentName }`}
         </Alert>
       );
     }

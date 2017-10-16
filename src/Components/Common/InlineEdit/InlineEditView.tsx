@@ -46,10 +46,10 @@ export class InlineEditView extends BaseView<InlineEditProps, InlineEditViewMode
   private handleKeyDown(e: React.KeyboardEvent<any>) {
     switch (e.keyCode) {
       case 13: // ENTER key
-        this.state.save.execute(null);
+        this.viewModel.save.execute(null);
         break;
       case 27: // ESC key
-        this.state.cancel.execute(null);
+        this.viewModel.cancel.execute(null);
         break;
       default:
         break;
@@ -78,14 +78,14 @@ export class InlineEditView extends BaseView<InlineEditProps, InlineEditViewMode
 
   updateOn() {
     return [
-      this.state.isEditing.changed,
-      this.state.hasSavingError.changed,
-      this.state.save.canExecuteObservable,
+      this.viewModel.isEditing.changed,
+      this.viewModel.hasSavingError.changed,
+      this.viewModel.save.canExecuteObservable,
     ];
   }
 
   render() {
-    return this.renderConditional(this.state.isEditing, () => this.renderEditor(), () => this.renderValue());
+    return this.renderConditional(this.viewModel.isEditing, () => this.renderEditor(), () => this.renderValue());
   }
 
   private renderErrorTooltip() {
@@ -94,7 +94,7 @@ export class InlineEditView extends BaseView<InlineEditProps, InlineEditViewMode
         <div className='InlineEditView-errorContent'>
           {
             this.renderConditional(this.props.errorContent instanceof Function, () => {
-              return this.props.errorContent(this.state, this);
+              return this.props.errorContent(this.viewModel, this);
             }, () => this.props.errorContent)
           }
         </div>
@@ -112,7 +112,7 @@ export class InlineEditView extends BaseView<InlineEditProps, InlineEditViewMode
       <FormGroup { ...rest } className={ this.classNames('InlineEditView', className)}>
         <InputGroup>
           {
-            this.renderConditional(this.state.hasSavingError, () => (
+            this.renderConditional(this.viewModel.hasSavingError, () => (
               <OverlayTrigger placement={ props.errorPlacement } overlay={ this.renderErrorTooltip() }>
                 <InputGroup.Addon className='InlineEditView-error'>
                   <Icon className='alert-danger' name='exclamation' />
@@ -122,10 +122,10 @@ export class InlineEditView extends BaseView<InlineEditProps, InlineEditViewMode
           }
           { this.renderBindableInput() }
           <InputGroup.Button>
-            <CommandButton bsSize={ this.props.bsSize } bsStyle='success' command={ this.state.save }>
+            <CommandButton bsSize={ this.props.bsSize } bsStyle='success' command={ this.viewModel.save }>
               <Icon name='check' />
             </CommandButton>
-            <CommandButton bsSize={ this.props.bsSize } bsStyle='danger' command={ this.state.cancel }>
+            <CommandButton bsSize={ this.props.bsSize } bsStyle='danger' command={ this.viewModel.cancel }>
               <Icon name='times' />
             </CommandButton>
           </InputGroup.Button>
@@ -143,10 +143,10 @@ export class InlineEditView extends BaseView<InlineEditProps, InlineEditViewMode
     const onKeyDown = this.props.keyboard === true ? (e: React.KeyboardEvent<any>) => this.handleKeyDown(e) : undefined;
 
     return (
-      <BindableInput { ...props } property={ this.state.editValue } onKeyDown={ onKeyDown } disabled={ this.state.save.canExecute === false } >
+      <BindableInput { ...props } property={ this.viewModel.editValue } onKeyDown={ onKeyDown } disabled={ this.viewModel.save.canExecute === false } >
         {
           React.cloneElement(
-            this.props.editTemplate!(this.state.editValue.value, this),
+            this.props.editTemplate!(this.viewModel.editValue.value, this),
             { ref: (x: Element | null) => this.focusAndSelectControlText(x) },
           )
         }
@@ -161,13 +161,13 @@ export class InlineEditView extends BaseView<InlineEditProps, InlineEditViewMode
     });
 
     const displayContent = (
-      <span>{ this.props.template!(this.state.value.value, this) }</span>
+      <span>{ this.props.template!(this.viewModel.value.value, this) }</span>
     );
 
     return this.renderConditional(
       props.clickToEdit === true,
       () => (
-        <CommandButton { ...rest } className={ this.classNames('InlineEditView', className)} bsStyle='link' command={ this.state.edit }>
+        <CommandButton { ...rest } className={ this.classNames('InlineEditView', className)} bsStyle='link' command={ this.viewModel.edit }>
           { displayContent }
         </CommandButton>
       ),

@@ -15,8 +15,8 @@ export class AlertView extends BaseView<AlertProps, AlertViewModel> {
 
     return (
       <div { ...rest } className={ this.classNames('Alert', className) }>
-        <Alert bsStyle={ this.state.style } onDismiss={ this.bindEventToCommand(x => x.dismiss) }>
-          <div className='Alert-header'>{ this.state.header }</div>
+        <Alert bsStyle={ this.viewModel.style } onDismiss={ this.bindEventToCommand(x => x.dismiss) }>
+          <div className='Alert-header'>{ this.viewModel.header }</div>
           { this.renderAlertContent() }
         </Alert>
       </div>
@@ -25,14 +25,14 @@ export class AlertView extends BaseView<AlertProps, AlertViewModel> {
 
   private renderAlertContent() {
     return this.renderConditional(
-      String.isString(this.state.content),
+      String.isString(this.viewModel.content),
       () => (
         <div className='Alert-content'>
-          <div className='Alert-text' dangerouslySetInnerHTML={ { __html: this.state.content } }>
+          <div className='Alert-text' dangerouslySetInnerHTML={ { __html: this.viewModel.content } }>
           </div>
         </div>
       ),
-      () => this.state.content,
+      () => this.viewModel.content,
     );
   }
 }
