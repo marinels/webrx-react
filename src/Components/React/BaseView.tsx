@@ -5,7 +5,7 @@ import { AnonymousSubscription, TeardownLogic } from 'rxjs/Subscription';
 import { Property, Command } from '../../WebRx';
 import { ReactSpreadResult } from '../../Extensions/React';
 import { Alert, Logging } from '../../Utils';
-import { BaseViewModel, LifecycleComponentViewModel } from './BaseViewModel';
+import { BaseViewModel, ViewModelLifecyle, isViewModelLifecycle } from './BaseViewModel';
 import { renderIterable, renderConditional, renderNullable, renderLoadable, renderSizedLoadable, renderGridLoadable, focusElement, classNames } from './RenderHelpers';
 import { bindObservableToCommand, bindEventToProperty, bindEventToCommand } from './BindingHelpers';
 
@@ -103,9 +103,13 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     if (nextProps.viewModel !== this.viewModel) {
       this.logger.info('ViewModel Change Detected');
 
-      // cleanup old view model
-      (this.state as any as LifecycleComponentViewModel).cleanupViewModel();
+      // unsubscribe from updates
       this.updateSubscription = Subscription.unsubscribe(this.updateSubscription);
+
+      // cleanup old view model
+      if (isViewModelLifecycle(this.viewModel)) {
+        this.viewModel.cleanupViewModel();
+      }
 
       // set our new view model as the current state
       this.replaceViewModel(nextProps.viewModel);
@@ -117,14 +121,18 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
 
     // check if we need to re-subscripe to updates (if our view model changed)
     if (this.updateSubscription === Subscription.EMPTY) {
-      // first initialize the view model
-      (this.state as any as LifecycleComponentViewModel).initializeViewModel();
+      if (isViewModelLifecycle(this.viewModel)) {
+        // first initialize the view model
+        this.viewModel.initializeViewModel();
+      }
 
       // now sub to the view model observables
       this.subscribeToUpdates();
 
-      // finally inform the view model it has been (re-)loaded
-      (this.state as any as LifecycleComponentViewModel).loadedViewModel();
+      if (isViewModelLifecycle(this.viewModel)) {
+        // finally inform the view model it has been (re-)loaded
+        this.viewModel.loadedViewModel();
+      }
     }
 
     this.logger.debug('re-rendering');
@@ -143,16 +151,21 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
 
   // -----------------------------------------
   // these are internal lifecycle functions
-  // NOTE: we use 'as any as LifecycleComponentViewModel' because the methods are private
   // -----------------------------------------
   private initializeView() {
-    (this.state as any as LifecycleComponentViewModel).initializeViewModel();
+    if (isViewModelLifecycle(this.viewModel)) {
+      this.viewModel.initializeViewModel();
+    }
+
     this.initialize();
   }
 
   private loadedView() {
     this.loaded();
-    (this.state as any as LifecycleComponentViewModel).loadedViewModel();
+
+    if (isViewModelLifecycle(this.viewModel)) {
+      this.viewModel.loadedViewModel();
+    }
   }
 
   private updatingView(nextProps: TViewProps) {
@@ -165,7 +178,10 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
 
   private cleanupView() {
     this.cleanup();
-    (this.state as any as LifecycleComponentViewModel).cleanupViewModel();
+
+    if (isViewModelLifecycle(this.viewModel)) {
+      this.viewModel.cleanupViewModel();
+    }
   }
   // -----------------------------------------
 
