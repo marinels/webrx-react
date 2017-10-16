@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
-import 'es6-shim';
+import 'core-js';
 
 import { getLogger, LogLevel, Logger } from '../src/Utils/Logging';
 
