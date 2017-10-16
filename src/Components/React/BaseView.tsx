@@ -78,6 +78,9 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
       // queue a replacement of state (which does not perform a shallow merge)
       updater.enqueueReplaceState(this, next);
     }
+    else {
+      this.logger.error('Unable to perform view model replacement: invalid React Fiber Updater', updater);
+    }
   }
 
   // -----------------------------------------
