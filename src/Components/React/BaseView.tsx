@@ -206,29 +206,6 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
   }
   // -----------------------------------------
 
-  protected addSubscription<T extends TeardownLogic>(subscription: T) {
-    return this.getSubscriptions().addSubscription(subscription);
-  }
-
-  protected addSubscriptions<T extends TeardownLogic>(...subscriptions: T[]) {
-    return this.getSubscriptions().addSubscriptions(...subscriptions);
-  }
-
-  public unsubscribe() {
-    this.updateSubscription = Subscription.unsubscribe(this.updateSubscription);
-    this.subscriptions = Subscription.unsubscribe(this.subscriptions);
-  }
-
-  // -----------------------------------------
-  // this is the property destruction helper
-  // this functions will remove key, ref, and viewModel props automatically
-  // -----------------------------------------
-
-  public restProps<T>(propsCreator?: (x: TViewProps) => T, ...omits: string[]) {
-    return super.restProps(propsCreator, ...omits.concat('viewModel'));
-  }
-  // -----------------------------------------
-
   // -----------------------------------------
   // these overridable view functions
   // -----------------------------------------
@@ -278,6 +255,29 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     onCompleted?: () => void,
   ) {
     return bindEventToCommand(this.viewModel, commandSelector, paramSelector, conditionSelector, onNext, onError, onCompleted);
+  }
+  // -----------------------------------------
+
+  protected addSubscription<T extends TeardownLogic>(subscription: T) {
+    return this.getSubscriptions().addSubscription(subscription);
+  }
+
+  protected addSubscriptions<T extends TeardownLogic>(...subscriptions: T[]) {
+    return this.getSubscriptions().addSubscriptions(...subscriptions);
+  }
+
+  public unsubscribe() {
+    this.updateSubscription = Subscription.unsubscribe(this.updateSubscription);
+    this.subscriptions = Subscription.unsubscribe(this.subscriptions);
+  }
+
+  // -----------------------------------------
+  // this is the property destruction helper
+  // this functions will remove key, ref, and viewModel props automatically
+  // -----------------------------------------
+
+  public restProps<T>(propsCreator?: (x: TViewProps) => T, ...omits: string[]) {
+    return super.restProps(propsCreator, ...omits.concat('viewModel'));
   }
   // -----------------------------------------
 }
