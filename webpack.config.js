@@ -20,6 +20,7 @@ module.exports = Object.assign(clone(webpackCommon), {
       path.resolve(__dirname, 'src', 'Style', 'Bootstrap.less'),
       'classnames',
       'clone',
+      'core-js',
       'ix',
       'jquery-deparam',
       'jquery-param',

@@ -3,6 +3,9 @@
 // import all custom styles
 import './Style/App.less';
 
+// import core-js to standardize the ECMAScript api across browsers
+import 'core-js';
+
 // apply augmentations
 import './types/augmentations';
 
