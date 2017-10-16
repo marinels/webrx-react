@@ -85,7 +85,7 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInpu
       this.props.children != null,
       () => this.props.children,
       () => (
-        <TimeSpanControl viewModel={ this.state } componentClass={ this.props.componentClass } placeholder='Type in a timespan, or use the controls on the right...' />
+        <TimeSpanControl viewModel={ this.viewModel } componentClass={ this.props.componentClass } placeholder='Type in a timespan, or use the controls on the right...' />
       ),
     );
   }
