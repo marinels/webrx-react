@@ -21,13 +21,13 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
   constructor(props?: ItemListPanelProps, context?: any) {
     super(props, context);
 
-    this.state.toggleIsExpanded.execute(this.props.defaultExpanded || CommonPanel.defaultProps.defaultExpanded);
+    this.viewModel.toggleIsExpanded.execute(this.props.defaultExpanded || CommonPanel.defaultProps.defaultExpanded);
   }
 
   updateOn() {
     return [
-      this.state.isLoading.changed,
-      this.state.isExpanded.changed,
+      this.viewModel.isLoading.changed,
+      this.viewModel.isExpanded.changed,
     ];
   }
 
@@ -37,26 +37,26 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
       return { fill, viewTemplate, search, pager, loadingContent, selectable, highlightSelected, checkmarkSelected, emptyContent };
     });
 
-    if ((props.search || false) !== false && this.state.grid.canFilter() === false) {
+    if ((props.search || false) !== false && this.viewModel.grid.canFilter() === false) {
       this.logger.warn('Cannot render item list panel search component because data source cannot be filtered');
     }
 
     const viewType: DataGridViewType = props.viewTemplate instanceof DataGridListViewTemplate ? 'List' : 'Table';
 
-    const searchComponent = this.state.isExpanded.value !== true ?
+    const searchComponent = this.viewModel.isExpanded.value !== true ?
       undefined :
       this.renderConditional(
         React.isValidElement(props.search),
         () => props.search,
         () => (
           <DataGridView.Search { ...(props.search === true ? {} : props.search) }
-            grid={ this.state.grid } viewType={ viewType }
+            grid={ this.viewModel.grid } viewType={ viewType }
             onClick={ e => { e.stopPropagation(); } }
           />
         ),
       );
 
-    if ((props.search || false) !== false && this.props.headerFormat == null && this.state.isLoading.value === false) {
+    if ((props.search || false) !== false && this.props.headerFormat == null && this.viewModel.isLoading.value === false) {
       rest.headerFormat = (header: any) => (
         <div>
           { header }
@@ -69,16 +69,16 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
       <CommonPanel { ...rest } className={ this.classNames('ItemListPanel', viewType, className) }
         onSelect={ this.bindEventToCommand(x => x.toggleIsExpanded) }
       >
-        <DataGridView { ...props } viewModel={ this.state.grid } search={ false } pager={ false } fill>
+        <DataGridView { ...props } viewModel={ this.viewModel.grid } search={ false } pager={ false } fill>
           { children }
         </DataGridView>
         {
           this.renderConditional(
-            props.pager != null && props.pager !== false && this.state.isLoading.value === false,
+            props.pager != null && props.pager !== false && this.viewModel.isLoading.value === false,
             () => this.renderConditional(
               React.isValidElement(props.pager),
               () => props.pager,
-              () => <DataGridView.Pager { ...(props.pager === true ? {} : props.pager) } grid={ this.state.grid } viewType={ viewType } fill />,
+              () => <DataGridView.Pager { ...(props.pager === true ? {} : props.pager) } grid={ this.viewModel.grid } viewType={ viewType } fill />,
             ),
           )
         }

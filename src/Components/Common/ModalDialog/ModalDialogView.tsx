@@ -22,7 +22,7 @@ export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewM
 
   updateOn() {
     return [
-      this.state.isVisible.changed,
+      this.viewModel.isVisible.changed,
     ];
   }
 
@@ -32,11 +32,11 @@ export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewM
       return { title, body, footer, canClose };
     });
 
-    return this.renderConditional(this.state.isVisible, () => (
+    return this.renderConditional(this.viewModel.isVisible, () => (
       <Modal className={ this.classNames('ModalDialog', className) } autoFocus
         keyboard={ props.canClose === true } enforceFocus={ props.canClose === false }
         backdrop={ props.canClose === false ? 'static' : true }
-        show={ this.state.isVisible.value } onHide={ this.bindEventToCommand(x => x.hide) }
+        show={ this.viewModel.isVisible.value } onHide={ this.bindEventToCommand(x => x.hide) }
         { ...React.Component.trimProps(rest) }
       >
         { this.renderHeader() }

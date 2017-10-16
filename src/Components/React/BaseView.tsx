@@ -40,7 +40,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
 
   protected readonly logger: Logging.Logger = Logging.getLogger(this.getDisplayName());
 
-  constructor(props?: TViewProps | undefined, context?: any) {
+  constructor(props?: TViewProps, context?: any) {
     super(props, context);
 
     this.updateSubscription = this.subscriptions = Subscription.EMPTY;
@@ -51,8 +51,8 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     }
   }
 
-  private logRender(initial: boolean) {
-    this.logger.debug(`${ initial ? '' : 're-' }rendering`);
+  public get viewModel() {
+    return this.state;
   }
 
   private getSubscriptions() {
@@ -63,20 +63,24 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     return this.subscriptions;
   }
 
-  private subscribeToUpdates() {
-    let updateProps = this.updateOn();
-    updateProps.push(this.state.stateChanged.results);
+  private replaceViewModel(next: Readonly<BaseViewModel>) {
+    // WARN: horrible hack ahead
 
-    this.updateSubscription = Observable
-      .merge(...updateProps)
-      .debounceTime(this.getRateLimit())
-      .subscribe(
-        () => {
-          this.renderView();
-        }, x => {
-          this.alertForError(x);
-        },
-      );
+    // we can't do this because it will end up shallow merging our new state
+    // this results in a shallow clone of our view model (not the `next` instance passed in)
+    // this.setState(next);
+
+    // fetch the internal updater from ReactFiberClassComponent
+    const updater = (this as any).updater;
+
+    // do a sanity check on our updater
+    if (updater != null && updater.enqueueReplaceState instanceof Function) {
+      // queue a replacement of state (which does not perform a shallow merge)
+      updater.enqueueReplaceState(this, next);
+    }
+    else {
+      this.logger.error('Unable to perform view model replacement: invalid React Fiber Updater', updater);
+    }
   }
 
   // -----------------------------------------
@@ -87,7 +91,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
 
     this.subscribeToUpdates();
 
-    this.logRender(true);
+    this.logger.debug('rendering');
   }
 
   componentDidMount() {
@@ -95,34 +99,35 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
   }
 
   componentWillReceiveProps(nextProps: TViewProps, nextContext: any) {
-    let state = nextProps.viewModel as TViewModel;
-
     // if the view model changed we need to do some teardown and setup
-    if (state !== this.state) {
+    if (nextProps.viewModel !== this.viewModel) {
       this.logger.info('ViewModel Change Detected');
 
       // cleanup old view model
       (this.state as any as LifecycleComponentViewModel).cleanupViewModel();
       this.updateSubscription = Subscription.unsubscribe(this.updateSubscription);
 
-      // set our new view model as the current state and initialize it
-      this.state = state;
-      (this.state as any as LifecycleComponentViewModel).initializeViewModel();
-
-      // now sub to the view model observables
-      this.subscribeToUpdates();
-
-      // this is effectively a state change so we want to force a re-render
-      this.forceUpdate();
-
-      // finally inform the view model it has been loaded
-      (this.state as any as LifecycleComponentViewModel).loadedViewModel();
+      // set our new view model as the current state
+      this.replaceViewModel(nextProps.viewModel);
     }
   }
 
   componentWillUpdate(nextProps: TViewProps, nextState: TViewModel, nextContext: any) {
     this.updatingView(nextProps);
-    this.logRender(false);
+
+    // check if we need to re-subscripe to updates (if our view model changed)
+    if (this.updateSubscription === Subscription.EMPTY) {
+      // first initialize the view model
+      (this.state as any as LifecycleComponentViewModel).initializeViewModel();
+
+      // now sub to the view model observables
+      this.subscribeToUpdates();
+
+      // finally inform the view model it has been (re-)loaded
+      (this.state as any as LifecycleComponentViewModel).loadedViewModel();
+    }
+
+    this.logger.debug('re-rendering');
   }
 
   componentDidUpdate(prevProps: TViewProps, prevState: TViewModel, prevContext: any) {
@@ -188,28 +193,22 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
   }
   // -----------------------------------------
 
-  protected addSubscription<T extends TeardownLogic>(subscription: T) {
-    return this.getSubscriptions().addSubscription(subscription);
-  }
+  protected subscribeToUpdates() {
+    const updateProps = this.updateOn();
 
-  protected addSubscriptions<T extends TeardownLogic>(...subscriptions: T[]) {
-    return this.getSubscriptions().addSubscriptions(...subscriptions);
-  }
+    updateProps.push(this.viewModel.stateChanged.results);
 
-  public unsubscribe() {
-    this.updateSubscription = Subscription.unsubscribe(this.updateSubscription);
-    this.subscriptions = Subscription.unsubscribe(this.subscriptions);
+    this.updateSubscription = Observable
+      .merge(...updateProps)
+      .debounceTime(this.getRateLimit())
+      .subscribe(
+        () => {
+          this.renderView();
+        }, x => {
+          this.alertForError(x);
+        },
+      );
   }
-
-  // -----------------------------------------
-  // this is the property destruction helper
-  // this functions will remove key, ref, and viewModel props automatically
-  // -----------------------------------------
-
-  public restProps<T>(propsCreator?: (x: TViewProps) => T, ...omits: string[]) {
-    return super.restProps(propsCreator, ...omits.concat('viewModel'));
-  }
-  // -----------------------------------------
 
   // -----------------------------------------
   // these overridable view functions
@@ -235,7 +234,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     onError?: (exception: any) => void,
     onCompleted?: () => void,
   ) {
-    return bindObservableToCommand(this.state, observable, commandSelector, onNext, onError, onCompleted);
+    return bindObservableToCommand(this.viewModel, observable, commandSelector, onNext, onError, onCompleted);
   }
 
   /**
@@ -245,7 +244,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     targetSelector: (viewModel: Readonly<TViewModel>) => Property<TValue>,
     valueSelector?: (eventKey: any, event: TEvent) => TValue,
   ) {
-    return bindEventToProperty(this.state, targetSelector, valueSelector);
+    return bindEventToProperty(this.viewModel, targetSelector, valueSelector);
   }
 
   /**
@@ -259,7 +258,30 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     onError?: (exception: any) => void,
     onCompleted?: () => void,
   ) {
-    return bindEventToCommand(this.state, commandSelector, paramSelector, conditionSelector, onNext, onError, onCompleted);
+    return bindEventToCommand(this.viewModel, commandSelector, paramSelector, conditionSelector, onNext, onError, onCompleted);
+  }
+  // -----------------------------------------
+
+  protected addSubscription<T extends TeardownLogic>(subscription: T) {
+    return this.getSubscriptions().addSubscription(subscription);
+  }
+
+  protected addSubscriptions<T extends TeardownLogic>(...subscriptions: T[]) {
+    return this.getSubscriptions().addSubscriptions(...subscriptions);
+  }
+
+  public unsubscribe() {
+    this.updateSubscription = Subscription.unsubscribe(this.updateSubscription);
+    this.subscriptions = Subscription.unsubscribe(this.subscriptions);
+  }
+
+  // -----------------------------------------
+  // this is the property destruction helper
+  // this functions will remove key, ref, and viewModel props automatically
+  // -----------------------------------------
+
+  public restProps<T>(propsCreator?: (x: TViewProps) => T, ...omits: string[]) {
+    return super.restProps(propsCreator, ...omits.concat('viewModel'));
   }
   // -----------------------------------------
 }

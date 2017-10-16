@@ -376,30 +376,30 @@ export class ListView extends BaseView<ListProps, ListViewModel<any, any>> {
   initialize() {
     super.initialize();
 
-    this.props.viewTemplate!.initialize(this.state, this);
+    this.props.viewTemplate!.initialize(this.viewModel, this);
   }
 
   updated(prevProps: ListProps) {
     // if the view was changed then we need to re-init
     if (prevProps.viewTemplate !== this.props.viewTemplate) {
       // cleanup old view
-      prevProps.viewTemplate!.cleanup(this.state, this);
+      prevProps.viewTemplate!.cleanup(this.viewModel, this);
 
       // initialize new view
-      this.props.viewTemplate!.initialize(this.state, this);
+      this.props.viewTemplate!.initialize(this.viewModel, this);
     }
   }
 
   cleanup() {
     super.cleanup();
 
-    this.props.viewTemplate!.cleanup(this.state, this);
+    this.props.viewTemplate!.cleanup(this.viewModel, this);
   }
 
   updateOn() {
     return [
-      this.state.items.changed,
-      this.state.selectedItem.changed,
+      this.viewModel.items.changed,
+      this.viewModel.selectedItem.changed,
     ];
   }
 
@@ -409,7 +409,7 @@ export class ListView extends BaseView<ListProps, ListViewModel<any, any>> {
       return { viewTemplate, selectable, highlightSelected, checkmarkSelected, emptyContent };
     });
 
-    const list = props.viewTemplate!.render(this.state, this);
+    const list = props.viewTemplate!.render(this.viewModel, this);
 
     return React.cloneElement(
       list,

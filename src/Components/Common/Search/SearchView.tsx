@@ -33,7 +33,7 @@ export class SearchView extends BaseView<SearchViewProps, SearchViewModel> {
     return (
       <div { ...rest } className={ this.classNames('Search', className) }>
         <FormGroup className='has-feedback'>
-          <BindableInput property={ this.state.filter }>
+          <BindableInput property={ this.viewModel.filter }>
             <FormControl className='Search-text' type='text' placeholder={ this.props.placeholder }
               onKeyDown={ this.bindEventToCommand(x => x.search, undefined, (e: React.KeyboardEvent<any>) => e.keyCode === EnterKey) }
             />
