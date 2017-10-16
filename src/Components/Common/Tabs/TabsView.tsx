@@ -47,8 +47,8 @@ export class TabsView extends BaseView<TabsProps, TabsViewModel<any>> {
 
   updateOn() {
     return [
-      this.state.tabs.changed,
-      this.state.selectedIndex.changed,
+      this.viewModel.tabs.changed,
+      this.viewModel.selectedIndex.changed,
     ];
   }
 
@@ -75,7 +75,7 @@ export class TabsView extends BaseView<TabsProps, TabsViewModel<any>> {
 
   private renderStaticTabs() {
     return (
-      <Tabs id={ this.props.id } unmountOnExit activeKey={ this.state.selectedIndex.value }
+      <Tabs id={ this.props.id } unmountOnExit activeKey={ this.viewModel.selectedIndex.value }
         onSelect={ this.bindEventToCommand(x => x.selectIndex) }
       >
         {
@@ -90,10 +90,10 @@ export class TabsView extends BaseView<TabsProps, TabsViewModel<any>> {
 
   private renderDynamicTabs(template: TabRenderTemplate<any>) {
     return (
-      <Tabs id={ this.props.id } activeKey={ this.state.selectedIndex.value }
+      <Tabs id={ this.props.id } activeKey={ this.viewModel.selectedIndex.value }
         onSelect={ this.bindEventToCommand(x => x.selectIndex) }
       >
-        { template.render(this.state, this) }
+        { template.render(this.viewModel, this) }
       </Tabs>
     );
   }

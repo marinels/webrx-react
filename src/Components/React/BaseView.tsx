@@ -51,6 +51,10 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     }
   }
 
+  public get viewModel() {
+    return this.state;
+  }
+
   private logRender(initial: boolean) {
     this.logger.debug(`${ initial ? '' : 're-' }rendering`);
   }
@@ -65,7 +69,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
 
   private subscribeToUpdates() {
     let updateProps = this.updateOn();
-    updateProps.push(this.state.stateChanged.results);
+    updateProps.push(this.viewModel.stateChanged.results);
 
     this.updateSubscription = Observable
       .merge(...updateProps)
@@ -98,7 +102,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     let state = nextProps.viewModel as TViewModel;
 
     // if the view model changed we need to do some teardown and setup
-    if (state !== this.state) {
+    if (state !== this.viewModel) {
       this.logger.info('ViewModel Change Detected');
 
       // cleanup old view model
@@ -235,7 +239,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     onError?: (exception: any) => void,
     onCompleted?: () => void,
   ) {
-    return bindObservableToCommand(this.state, observable, commandSelector, onNext, onError, onCompleted);
+    return bindObservableToCommand(this.viewModel, observable, commandSelector, onNext, onError, onCompleted);
   }
 
   /**
@@ -245,7 +249,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     targetSelector: (viewModel: Readonly<TViewModel>) => Property<TValue>,
     valueSelector?: (eventKey: any, event: TEvent) => TValue,
   ) {
-    return bindEventToProperty(this.state, targetSelector, valueSelector);
+    return bindEventToProperty(this.viewModel, targetSelector, valueSelector);
   }
 
   /**
@@ -259,7 +263,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     onError?: (exception: any) => void,
     onCompleted?: () => void,
   ) {
-    return bindEventToCommand(this.state, commandSelector, paramSelector, conditionSelector, onNext, onError, onCompleted);
+    return bindEventToCommand(this.viewModel, commandSelector, paramSelector, conditionSelector, onNext, onError, onCompleted);
   }
   // -----------------------------------------
 }

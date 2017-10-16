@@ -24,7 +24,7 @@ export class TodoListView extends BaseView<TodoListProps, TodoListViewModel> {
     ),
     x => (
       <CommandButton className='TodoList-removeButton' bsStyle='danger'
-        command={ () => this.state.removeItem } commandParameter={ x }
+        command={ () => this.viewModel.removeItem } commandParameter={ x }
       >
         Remove
       </CommandButton>
@@ -42,7 +42,7 @@ export class TodoListView extends BaseView<TodoListProps, TodoListViewModel> {
 
     return (
       <div { ...rest } className={ classNames('TodoList', className) }>
-        <ItemListPanelView viewModel={ this.state.list } viewTemplate={ this.listViewTemplate }
+        <ItemListPanelView viewModel={ this.viewModel.list } viewTemplate={ this.listViewTemplate }
           emptyContent={ () => this.renderEmptyContent() }
           shadow={ this.props.shadow }
           headerContent='Canonical Todo List' search
@@ -53,7 +53,7 @@ export class TodoListView extends BaseView<TodoListProps, TodoListViewModel> {
   }
 
   private renderEmptyContent() {
-    if (this.state.list.grid.allItems.value.length > 0) {
+    if (this.viewModel.list.grid.allItems.value.length > 0) {
       return 'No todo items to show.';
     }
 
@@ -82,13 +82,13 @@ export class TodoListView extends BaseView<TodoListProps, TodoListViewModel> {
     return (
       <FormGroup className='TodoList-teaser'>
         <InputGroup>
-          <BindableInput property={ this.state.newItemContent }>
+          <BindableInput property={ this.viewModel.newItemContent }>
             <FormControl ref={ x => this.onInputRef(x) } id='newItemContent' type='text' placeholder='Type in a todo item here...'
               onKeyDown={ this.bindEventToCommand(x => x.addItem, undefined, (_, e: React.KeyboardEvent<any>) => e.keyCode === 13, () => this.focusInput()) }
             />
           </BindableInput>
           <InputGroup.Button>
-            <CommandButton bsStyle='success' command={ this.state.addItem } onClick={ () => this.focusInput() }>
+            <CommandButton bsStyle='success' command={ this.viewModel.addItem } onClick={ () => this.focusInput() }>
               <Icon name='plus' />
               { ' Add New Todo Item' }
             </CommandButton>
@@ -109,7 +109,7 @@ export interface TodoItemProps extends BaseViewProps {
 export class TodoItemView extends BaseView<TodoItemProps, TodoItemViewModel> {
   updateOn() {
     return [
-      this.state.completed.changed,
+      this.viewModel.completed.changed,
     ];
   }
 
@@ -120,12 +120,12 @@ export class TodoItemView extends BaseView<TodoItemProps, TodoItemViewModel> {
     });
 
     return (
-      <div { ...rest } className={ classNames('TodoItem', 'fa-lg', className, { completed: this.state.completed.value }) }>
-        <Icon name={ this.state.completed.value ? 'check-circle' : 'circle-o' } size='lg' fixedWidth
+      <div { ...rest } className={ classNames('TodoItem', 'fa-lg', className, { completed: this.viewModel.completed.value }) }>
+        <Icon name={ this.viewModel.completed.value ? 'check-circle' : 'circle-o' } size='lg' fixedWidth
           onClick={ this.bindEventToCommand(x => x.toggleCompleted) }
         />
-        <span className='text-muted'>{ `[ ${ this.state.id } ] ` }</span>
-        <span className='TodoItem-content'>{ this.state.content }</span>
+        <span className='text-muted'>{ `[ ${ this.viewModel.id } ] ` }</span>
+        <span className='TodoItem-content'>{ this.viewModel.content }</span>
       </div>
     );
   }

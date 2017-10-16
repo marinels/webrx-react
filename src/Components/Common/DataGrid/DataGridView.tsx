@@ -461,35 +461,35 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
   initialize() {
     super.initialize();
 
-    this.props.viewTemplate!.initialize(this.state, this);
+    this.props.viewTemplate!.initialize(this.viewModel, this);
   }
 
   updated(prevProps: DataGridViewProps) {
     // if the view was changed then we need to re-init
     if (prevProps.viewTemplate !== this.props.viewTemplate) {
       // cleanup old view
-      prevProps.viewTemplate!.cleanup(this.state, this);
+      prevProps.viewTemplate!.cleanup(this.viewModel, this);
 
       // initialize new view
-      this.props.viewTemplate!.initialize(this.state, this);
+      this.props.viewTemplate!.initialize(this.viewModel, this);
     }
   }
 
   cleanup() {
     super.cleanup();
 
-    this.props.viewTemplate!.cleanup(this.state, this);
+    this.props.viewTemplate!.cleanup(this.viewModel, this);
   }
 
   updateOn() {
     const watches = [
-      this.state.isLoading.changed,
-      this.state.projectedItems.changed,
-      this.state.hasProjectionError.changed,
+      this.viewModel.isLoading.changed,
+      this.viewModel.projectedItems.changed,
+      this.viewModel.hasProjectionError.changed,
     ];
 
     if (this.props.selectable === true) {
-      watches.push(this.state.selectedItem.changed);
+      watches.push(this.viewModel.selectedItem.changed);
     }
 
     return watches;
@@ -501,13 +501,13 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
       return { fill, viewTemplate, search, pager, selectable, highlightSelected, checkmarkSelected, loadingContent, emptyContent };
     });
 
-    if ((props.search || false) !== false && this.state.canFilter() === false) {
+    if ((props.search || false) !== false && this.viewModel.canFilter() === false) {
       this.logger.warn('Cannot render grid search component because data source cannot be filtered');
     }
 
-    return this.renderSizedLoadable(this.state.isLoading, props.loadingContent, '1.5em', () => {
+    return this.renderSizedLoadable(this.viewModel.isLoading, props.loadingContent, '1.5em', () => {
       const viewType: DataGridViewType = props.viewTemplate instanceof DataGridListViewTemplate ? 'List' : 'Table';
-      const grid = props.viewTemplate!.render(this.state, this);
+      const grid = props.viewTemplate!.render(this.viewModel, this);
 
       return this.renderConditional(
         this.isOnlyView() === true,

@@ -34,11 +34,11 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
   }
 
   private getViewKey() {
-    if (this.state.isLoading.value === true) {
+    if (this.viewModel.isLoading.value === true) {
       return SplashKey;
     }
     else {
-      const component = this.state.routedComponent.value;
+      const component = this.viewModel.routedComponent.value;
 
       if (isRoutableViewModel(component)) {
         return component.getRoutingKey();
@@ -59,9 +59,9 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
 
   updateOn() {
     return [
-      this.state.isLoading.changed,
-      this.state.routedComponent.changed,
-      this.state.routingBreadcrumbs.changed,
+      this.viewModel.isLoading.changed,
+      this.viewModel.routedComponent.changed,
+      this.viewModel.routingBreadcrumbs.changed,
     ];
   }
 
@@ -78,7 +78,7 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
         <RTG.TransitionGroup>
           <RTG.CSSTransition key={ key } classNames='view' exit={ false } timeout={ ({ enter: 250 }) }>
             <div className='RouteHandler-viewContainer'>
-              <Breadcrumbs items={ this.state.routingBreadcrumbs.value } pinnable />
+              <Breadcrumbs items={ this.viewModel.routingBreadcrumbs.value } pinnable />
               { this.renderRoutedView(key) }
             </div>
           </RTG.CSSTransition>
@@ -88,7 +88,7 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
   }
 
   private renderRoutedView(key: string): any {
-    let component = this.state.routedComponent.value;
+    let component = this.viewModel.routedComponent.value;
 
     let activator = this.props.viewMap[key];
     if (activator == null && key !== SplashKey) {

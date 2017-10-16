@@ -38,7 +38,7 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
 
   updateOn() {
     return [
-      this.state.isLoading.changed,
+      this.viewModel.isLoading.changed,
     ];
   }
 
@@ -60,7 +60,7 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
       <div className='webrx-react bootstrap-3' ref={ updateDefaultContainer }>
         <div { ...rest } className={ wxr.classNames('App', className) }>
           {
-            this.renderConditional(this.state.isLoading, () => (
+            this.renderConditional(this.viewModel.isLoading, () => (
               <i className='preload fa fa-spinner fa-5x fa-pulse' aria-hidden='true'></i>
             ), () => (
               <div>
@@ -69,14 +69,14 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
                   this.renderConditional(props.alerts, () => (
                     <div className='float-container'>
                       <Grid>
-                        <AlertHostView viewModel={ this.state.alerts } />
+                        <AlertHostView viewModel={ this.viewModel.alerts } />
                       </Grid>
                     </div>
                   ))
                 }
-                { this.renderConditional(props.header, () => (<PageHeaderView viewModel={ this.state.header } brand={ props.brand } branduri={ props.branduri } />)) }
-                <RouteHandlerView viewModel={ this.state.routeHandler } viewMap={ props.viewMap! } />
-                { this.renderConditional(props.footer, () => (<PageFooterView viewModel={ this.state.footer } { ...footerProps } />)) }
+                { this.renderConditional(props.header, () => (<PageHeaderView viewModel={ this.viewModel.header } brand={ props.brand } branduri={ props.branduri } />)) }
+                <RouteHandlerView viewModel={ this.viewModel.routeHandler } viewMap={ props.viewMap! } />
+                { this.renderConditional(props.footer, () => (<PageFooterView viewModel={ this.viewModel.footer } { ...footerProps } />)) }
               </div>
             ))
           }

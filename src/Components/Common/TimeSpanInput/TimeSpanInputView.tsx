@@ -46,9 +46,9 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInpu
 
   updateOn() {
     return [
-      this.state.adjust.results,
-      this.state.unit.changed,
-      this.state.hasError.changed,
+      this.viewModel.adjust.results,
+      this.viewModel.unit.changed,
+      this.viewModel.hasError.changed,
     ];
   }
 
@@ -58,7 +58,7 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInpu
       return { bsClass, bsSize, controlId, validationState };
     });
 
-    props.validationState = props.validationState || (this.state.hasError.value ? 'error' : undefined);
+    props.validationState = props.validationState || (this.viewModel.hasError.value ? 'error' : undefined);
 
     return (
       <FormGroup { ...rest } { ...props } className={ this.classNames('TimeSpanInput', className) }>
@@ -66,10 +66,10 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInpu
           { this.renderControl() }
           <InputGroup.Button>
             { this.renderDropdown() }
-            <CommandButton className='TimeSpanInput-adjustButton' command={ this.state.adjust } commandParameter={ 1 }>
+            <CommandButton className='TimeSpanInput-adjustButton' command={ this.viewModel.adjust } commandParameter={ 1 }>
               <Icon name='chevron-up'/>
             </CommandButton>
-            <CommandButton className='TimeSpanInput-adjustButton' command={ this.state.adjust } commandParameter={ -1 }>
+            <CommandButton className='TimeSpanInput-adjustButton' command={ this.viewModel.adjust } commandParameter={ -1 }>
               <Icon name='chevron-down'/>
             </CommandButton>
           </InputGroup.Button>
@@ -93,13 +93,13 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInpu
   private renderDropdown() {
     return (
       <DropdownButton id={ `TimeSpanInput-units-${ this.props.id }` } className='TimeSpanInput-unitDropdown'
-        title={ this.state.unit.value.name } bsSize={ this.props.bsSize }
+        title={ this.viewModel.unit.value.name } bsSize={ this.props.bsSize }
         onSelect={ this.bindEventToCommand(x => x.setUnit) }
       >
         {
-          this.state.units
+          this.viewModel.units
             .map(x => (
-              <MenuItem key={ x.type } eventKey={ x } active={ x.type === this.state.unit.value.type }>
+              <MenuItem key={ x.type } eventKey={ x } active={ x.type === this.viewModel.unit.value.type }>
                 { x.name }
               </MenuItem>
             ))
@@ -109,11 +109,11 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInpu
   }
 
   private renderHelp() {
-    return this.renderConditional(this.state.hasError, () => (
+    return this.renderConditional(this.viewModel.hasError, () => (
       <HelpBlock>
         {
           this.renderConditional(
-            String.isNullOrEmpty(this.state.text.value) === true,
+            String.isNullOrEmpty(this.viewModel.text.value) === true,
             () => 'Duration is required.',
             () => 'Invalid Duration Format.',
           )

@@ -18,7 +18,7 @@ export class ItemsView extends BaseView<ItemsProps, ItemsViewModel<{}>> {
 
   updateOn() {
     return [
-      this.state.getItemsSourceProperty().changed,
+      this.viewModel.getItemsSourceProperty().changed,
     ];
   }
 
@@ -31,7 +31,7 @@ export class ItemsView extends BaseView<ItemsProps, ItemsViewModel<{}>> {
     return (
       <div { ...rest } className={ this.classNames('Items', className) }>
         <ItemsPresenter
-          itemsSource={ this.state.getItemsSource() }
+          itemsSource={ this.viewModel.getItemsSource() }
           { ...props }
         />
       </div>
