@@ -13,11 +13,20 @@ import { Logging, Alert } from '../../Utils';
 import { Manager } from '../../Routing/RouteManager';
 import { getObservableOrAlert, getObservableResultOrAlert, subscribeOrAlert, logMemberObservables } from './ObservableHelpers';
 
-export interface LifecycleComponentViewModel {
+export interface ViewModelLifecyle {
   initializeViewModel(): void;
   loadedViewModel(): void;
   updatedViewModel(): void;
   cleanupViewModel(): void;
+}
+
+export function isViewModelLifecycle(viewModel: any): viewModel is ViewModelLifecyle {
+  return (
+    viewModel.initializeViewModel instanceof Function &&
+    viewModel.loadedViewModel instanceof Function &&
+    viewModel.updatedViewModel instanceof Function &&
+    viewModel.cleanupViewModel instanceof Function
+  );
 }
 
 export function isViewModel(source: any): source is BaseViewModel {
