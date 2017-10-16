@@ -55,10 +55,6 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     return this.state;
   }
 
-  private logRender(initial: boolean) {
-    this.logger.debug(`${ initial ? '' : 're-' }rendering`);
-  }
-
   private getSubscriptions() {
     if (this.subscriptions === Subscription.EMPTY) {
       this.subscriptions = new Subscription();
@@ -91,7 +87,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
 
     this.subscribeToUpdates();
 
-    this.logRender(true);
+    this.logger.debug('rendering');
   }
 
   componentDidMount() {
@@ -126,7 +122,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
 
   componentWillUpdate(nextProps: TViewProps, nextState: TViewModel, nextContext: any) {
     this.updatingView(nextProps);
-    this.logRender(false);
+    this.logger.debug('re-rendering');
   }
 
   componentDidUpdate(prevProps: TViewProps, prevState: TViewModel, prevContext: any) {
