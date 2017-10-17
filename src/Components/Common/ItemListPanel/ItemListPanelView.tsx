@@ -24,7 +24,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
     this.viewModel.toggleIsExpanded.execute(this.props.defaultExpanded || CommonPanel.defaultProps.defaultExpanded);
   }
 
-  updateOn() {
+  updateOn(viewModel: Readonly<ItemListPanelViewModel<{}>>) {
     return [
       this.viewModel.isLoading.changed,
       this.viewModel.isExpanded.changed,

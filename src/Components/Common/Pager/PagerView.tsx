@@ -44,13 +44,13 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     limit: this.renderLimit,
   };
 
-  updateOn() {
+  updateOn(viewModel: Readonly<PagerViewModel>) {
     return [
-      this.viewModel.itemCount.changed,
-      this.viewModel.limit.changed,
-      this.viewModel.offset.changed,
-      this.viewModel.pageCount.changed,
-      this.viewModel.selectedPage.changed,
+      viewModel.itemCount.changed,
+      viewModel.limit.changed,
+      viewModel.offset.changed,
+      viewModel.pageCount.changed,
+      viewModel.selectedPage.changed,
     ];
   }
 

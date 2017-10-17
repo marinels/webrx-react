@@ -76,11 +76,11 @@ export class InlineEditView extends BaseView<InlineEditProps, InlineEditViewMode
     }
   }
 
-  updateOn() {
+  updateOn(viewModel: Readonly<InlineEditViewModel<{}>>) {
     return [
-      this.viewModel.isEditing.changed,
-      this.viewModel.hasSavingError.changed,
-      this.viewModel.save.canExecuteObservable,
+      viewModel.isEditing.changed,
+      viewModel.hasSavingError.changed,
+      viewModel.save.canExecuteObservable,
     ];
   }
 

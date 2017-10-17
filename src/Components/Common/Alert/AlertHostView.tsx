@@ -13,9 +13,9 @@ export interface AlertHostProps extends BaseViewProps {
 export class AlertHostView extends BaseView<AlertHostProps, AlertHostViewModel> {
   public static displayName = 'AlertHostView';
 
-  updateOn() {
+  updateOn(viewModel: Readonly<AlertHostViewModel>) {
     return [
-      this.viewModel.alerts.changed,
+      viewModel.alerts.changed,
     ];
   }
 

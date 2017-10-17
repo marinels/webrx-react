@@ -10,7 +10,7 @@ import { renderIterable, renderConditional, renderNullable, renderLoadable, rend
 import { bindObservableToCommand, bindEventToProperty, bindEventToCommand } from './BindingHelpers';
 
 export interface ViewModelProps<T extends BaseViewModel = BaseViewModel> {
-  viewModel: T;
+  viewModel: Readonly<T>;
 }
 
 export interface BaseViewProps<TViewModel extends BaseViewModel = BaseViewModel, TView extends BaseView<any, any> = any> extends ViewModelProps<TViewModel>, React.HTMLProps<TView> {
@@ -23,6 +23,7 @@ export interface ViewModelState<T extends BaseViewModel> {
 export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewModel extends BaseViewModel> extends React.Component<TViewProps, TViewModel> implements AnonymousSubscription {
   public static displayName = 'BaseView';
 
+  private nextState: Readonly<TViewModel> | undefined;
   private updateSubscription: Subscription;
   private subscriptions: Subscription;
 
@@ -56,7 +57,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
   }
 
   public get viewModel() {
-    return this.state;
+    return this.getViewModelFromState(this.nextState || this.state);
   }
 
   private getSubscriptions() {
@@ -112,7 +113,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
   componentWillMount() {
     this.initializeView();
 
-    this.subscribeToUpdates();
+    this.subscribeToUpdates(this.state);
 
     this.logger.debug('rendering');
   }
@@ -129,11 +130,6 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
       // unsubscribe from updates
       this.updateSubscription = Subscription.unsubscribe(this.updateSubscription);
 
-      // cleanup old view model
-      if (isViewModelLifecycle(this.viewModel)) {
-        this.viewModel.cleanupViewModel();
-      }
-
       // ask react to generate new state from the updated props
       this.replaceViewModel();
     }
@@ -144,17 +140,29 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
 
     // check if we need to re-subscripe to updates (if our view model changed)
     if (this.updateSubscription === Subscription.EMPTY) {
+      // get the next view model
+      const nextViewModel = this.getViewModelFromState(nextState);
+
+      // cleanup the old view model
       if (isViewModelLifecycle(this.viewModel)) {
-        // first initialize the view model
-        this.viewModel.initializeViewModel();
+        this.viewModel.cleanupViewModel();
+      }
+
+      // then initialize the view model
+      if (isViewModelLifecycle(nextViewModel)) {
+        nextViewModel.initializeViewModel();
       }
 
       // now sub to the view model observables
-      this.subscribeToUpdates();
+      // we wrap our call to subscribeToUpdates with an assignment of the nextState
+      // this patches how updateOn works until it supports async behaviour
+      this.nextState = nextState;
+      this.subscribeToUpdates(nextState);
+      this.nextState = undefined;
 
-      if (isViewModelLifecycle(this.viewModel)) {
+      if (isViewModelLifecycle(nextViewModel)) {
         // finally inform the view model it has been (re-)loaded
-        this.viewModel.loadedViewModel();
+        nextViewModel.loadedViewModel();
       }
     }
 
@@ -232,10 +240,11 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
   }
   // -----------------------------------------
 
-  protected subscribeToUpdates() {
-    const updateProps = this.updateOn();
+  protected subscribeToUpdates(state: Readonly<TViewModel>) {
+    const viewModel = this.getViewModelFromState(state);
+    const updateProps = this.updateOn(state);
 
-    updateProps.push(this.viewModel.stateChanged.results);
+    updateProps.push(viewModel.stateChanged.results);
 
     this.updateSubscription = Observable
       .merge(...updateProps)
@@ -252,7 +261,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
   // -----------------------------------------
   // these overridable view functions
   // -----------------------------------------
-  protected updateOn(): Array<Observable<any>> { return []; }
+  protected updateOn(viewModel: Readonly<TViewModel>): Array<Observable<any>> { return []; }
 
   protected getDisplayName() { return Object.getName(this); }
   protected getRateLimit() { return 100; }
@@ -301,8 +310,12 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
   }
   // -----------------------------------------
 
-  protected createStateFromProps(props: TViewProps) {
+  protected createStateFromProps(props: TViewProps): Readonly<TViewModel> {
     return props.viewModel;
+  }
+
+  protected getViewModelFromState(state: Readonly<TViewModel>) {
+    return state;
   }
 
   protected addSubscription<T extends TeardownLogic>(subscription: T) {

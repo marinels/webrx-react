@@ -16,9 +16,9 @@ export interface ItemsProps extends BaseViewProps, ItemsFacadeProps {
 export class ItemsView extends BaseView<ItemsProps, ItemsViewModel<{}>> {
   public static displayName = 'ItemsView';
 
-  updateOn() {
+  updateOn(viewModel: Readonly<ItemsViewModel<{}>>) {
     return [
-      this.viewModel.getItemsSourceProperty().changed,
+      viewModel.getItemsSourceProperty().changed,
     ];
   }
 

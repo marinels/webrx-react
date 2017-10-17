@@ -23,10 +23,10 @@ export interface ComponentDemoProps extends BaseViewProps {
 export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDemoViewModel> {
   public static displayName = 'ComponentDemoView';
 
-  updateOn() {
+  updateOn(viewModel: Readonly<ComponentDemoViewModel>) {
     return [
-      this.viewModel.columns.changed,
-      this.viewModel.component.changed,
+      viewModel.columns.changed,
+      viewModel.component.changed,
     ];
   }
 
