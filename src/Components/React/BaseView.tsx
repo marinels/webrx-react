@@ -23,6 +23,7 @@ export interface ViewModelState<T extends BaseViewModel> {
 export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewModel extends BaseViewModel> extends React.Component<TViewProps, TViewModel> implements AnonymousSubscription {
   public static displayName = 'BaseView';
 
+  private nextState: Readonly<TViewModel> | undefined;
   private updateSubscription: Subscription;
   private subscriptions: Subscription;
 
@@ -56,7 +57,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
   }
 
   public get viewModel() {
-    return this.state;
+    return this.getViewModelFromState(this.nextState || this.state);
   }
 
   private getSubscriptions() {
@@ -112,7 +113,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
   componentWillMount() {
     this.initializeView();
 
-    this.subscribeToUpdates();
+    this.subscribeToUpdates(this.state);
 
     this.logger.debug('rendering');
   }
@@ -150,7 +151,11 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
       }
 
       // now sub to the view model observables
-      this.subscribeToUpdates();
+      // we wrap our call to subscribeToUpdates with an assignment of the nextState
+      // this patches how updateOn works until it supports async behaviour
+      this.nextState = nextState;
+      this.subscribeToUpdates(nextState);
+      this.nextState = undefined;
 
       if (isViewModelLifecycle(this.viewModel)) {
         // finally inform the view model it has been (re-)loaded
@@ -232,10 +237,11 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
   }
   // -----------------------------------------
 
-  protected subscribeToUpdates() {
+  protected subscribeToUpdates(state: Readonly<TViewModel>) {
+    const viewModel = this.getViewModelFromState(state);
     const updateProps = this.updateOn();
 
-    updateProps.push(this.viewModel.stateChanged.results);
+    updateProps.push(viewModel.stateChanged.results);
 
     this.updateSubscription = Observable
       .merge(...updateProps)
@@ -303,6 +309,10 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
 
   protected createStateFromProps(props: TViewProps) {
     return props.viewModel;
+  }
+
+  protected getViewModelFromState(state: Readonly<TViewModel>) {
+    return state;
   }
 
   protected addSubscription<T extends TeardownLogic>(subscription: T) {
