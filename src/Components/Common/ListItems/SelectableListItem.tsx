@@ -47,7 +47,7 @@ export class SelectableListItem extends React.Component<SelectableListItemCompon
     this.subscribeToUpdates(this.props.listItems);
   }
 
-  componentWillUpdate(nextProps: Readonly<SelectableListItemProps>) {
+  componentWillUpdate(nextProps: Readonly<SelectableListItemComponentProps>) {
     this.subscribeToUpdates(nextProps.listItems);
   }
 
