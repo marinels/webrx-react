@@ -130,11 +130,6 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
       // unsubscribe from updates
       this.updateSubscription = Subscription.unsubscribe(this.updateSubscription);
 
-      // cleanup old view model
-      if (isViewModelLifecycle(this.viewModel)) {
-        this.viewModel.cleanupViewModel();
-      }
-
       // ask react to generate new state from the updated props
       this.replaceViewModel();
     }
@@ -145,9 +140,17 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
 
     // check if we need to re-subscripe to updates (if our view model changed)
     if (this.updateSubscription === Subscription.EMPTY) {
+      // get the next view model
+      const nextViewModel = this.getViewModelFromState(nextState);
+
+      // cleanup the old view model
       if (isViewModelLifecycle(this.viewModel)) {
-        // first initialize the view model
-        this.viewModel.initializeViewModel();
+        this.viewModel.cleanupViewModel();
+      }
+
+      // then initialize the view model
+      if (isViewModelLifecycle(nextViewModel)) {
+        nextViewModel.initializeViewModel();
       }
 
       // now sub to the view model observables
@@ -157,9 +160,9 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
       this.subscribeToUpdates(nextState);
       this.nextState = undefined;
 
-      if (isViewModelLifecycle(this.viewModel)) {
+      if (isViewModelLifecycle(nextViewModel)) {
         // finally inform the view model it has been (re-)loaded
-        this.viewModel.loadedViewModel();
+        nextViewModel.loadedViewModel();
       }
     }
 
