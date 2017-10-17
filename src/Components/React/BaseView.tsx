@@ -10,7 +10,7 @@ import { renderIterable, renderConditional, renderNullable, renderLoadable, rend
 import { bindObservableToCommand, bindEventToProperty, bindEventToCommand } from './BindingHelpers';
 
 export interface ViewModelProps<T extends BaseViewModel = BaseViewModel> {
-  viewModel: T;
+  viewModel: Readonly<T>;
 }
 
 export interface BaseViewProps<TViewModel extends BaseViewModel = BaseViewModel, TView extends BaseView<any, any> = any> extends ViewModelProps<TViewModel>, React.HTMLProps<TView> {
@@ -307,7 +307,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
   }
   // -----------------------------------------
 
-  protected createStateFromProps(props: TViewProps) {
+  protected createStateFromProps(props: TViewProps): Readonly<TViewModel> {
     return props.viewModel;
   }
 
