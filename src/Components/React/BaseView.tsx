@@ -23,7 +23,6 @@ export interface ViewModelState<T extends BaseViewModel> {
 export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewModel extends BaseViewModel> extends React.Component<TViewProps, TViewModel> implements AnonymousSubscription {
   public static displayName = 'BaseView';
 
-  private nextState: Readonly<TViewModel> | undefined;
   private updateSubscription: Subscription;
   private subscriptions: Subscription;
 
@@ -57,7 +56,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
   }
 
   public get viewModel() {
-    return this.getViewModelFromState(this.nextState || this.state);
+    return this.getViewModelFromState(this.state);
   }
 
   private getSubscriptions() {
@@ -154,11 +153,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
       }
 
       // now sub to the view model observables
-      // we wrap our call to subscribeToUpdates with an assignment of the nextState
-      // this patches how updateOn works until it supports async behaviour
-      this.nextState = nextState;
       this.subscribeToUpdates(nextProps, nextState);
-      this.nextState = undefined;
 
       if (isViewModelLifecycle(nextViewModel)) {
         // finally inform the view model it has been (re-)loaded
