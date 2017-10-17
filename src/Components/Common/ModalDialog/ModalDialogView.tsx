@@ -20,9 +20,9 @@ export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewM
     footer: (view: ModalDialogView) => view.props.children,
   };
 
-  updateOn() {
+  updateOn(viewModel: Readonly<ModalDialogViewModel<{}>>) {
     return [
-      this.viewModel.isVisible.changed,
+      viewModel.isVisible.changed,
     ];
   }
 

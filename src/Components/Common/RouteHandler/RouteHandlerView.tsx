@@ -57,11 +57,11 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
     }
   }
 
-  updateOn() {
+  updateOn(viewModel: Readonly<RouteHandlerViewModel>) {
     return [
-      this.viewModel.isLoading.changed,
-      this.viewModel.routedComponent.changed,
-      this.viewModel.routingBreadcrumbs.changed,
+      viewModel.isLoading.changed,
+      viewModel.routedComponent.changed,
+      viewModel.routingBreadcrumbs.changed,
     ];
   }
 

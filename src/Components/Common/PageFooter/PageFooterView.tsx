@@ -42,9 +42,9 @@ export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewMode
     };
   }
 
-  updateOn() {
+  updateOn(viewModel: Readonly<PageFooterViewModel>) {
     return [
-      this.viewModel.viewportDimensions.changed,
+      viewModel.viewportDimensions.changed,
     ];
   }
 

@@ -44,11 +44,11 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInpu
   static defaultProps = {
   };
 
-  updateOn() {
+  updateOn(viewModel: Readonly<TimeSpanInputViewModel>) {
     return [
-      this.viewModel.adjust.results,
-      this.viewModel.unit.changed,
-      this.viewModel.hasError.changed,
+      viewModel.adjust.results,
+      viewModel.unit.changed,
+      viewModel.hasError.changed,
     ];
   }
 

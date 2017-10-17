@@ -45,10 +45,10 @@ export interface TabsProps extends BaseViewProps {
 export class TabsView extends BaseView<TabsProps, TabsViewModel<any>> {
   public static displayName = 'TabsView';
 
-  updateOn() {
+  updateOn(viewModel: Readonly<TabsViewModel<{}>>) {
     return [
-      this.viewModel.tabs.changed,
-      this.viewModel.selectedIndex.changed,
+      viewModel.tabs.changed,
+      viewModel.selectedIndex.changed,
     ];
   }
 
