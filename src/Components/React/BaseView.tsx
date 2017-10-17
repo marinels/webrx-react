@@ -63,23 +63,42 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     return this.subscriptions;
   }
 
-  private replaceViewModel(next: Readonly<BaseViewModel>) {
+  private replaceViewModel() {
     // WARN: horrible hack ahead
+    // we cannot just call this.setState(...)
+    // it will end up shallow merging our new state
+    // this results in a shallow clone of our view model (not the view model instance passed in)
 
-    // we can't do this because it will end up shallow merging our new state
-    // this results in a shallow clone of our view model (not the `next` instance passed in)
-    // this.setState(next);
+    type ReactFiberClassComponent = {
+      updater: {
+        enqueueReplaceState: (
+          component: React.Component<TViewProps, TViewModel>,
+          partialState: (prevState: TViewModel, props: TViewProps) => TViewModel,
+        ) => void;
+      };
+    };
 
-    // fetch the internal updater from ReactFiberClassComponent
-    const updater = (this as any).updater;
+    function isReactFiberClassComponent(component: any): component is ReactFiberClassComponent {
+      const fiberComponent: ReactFiberClassComponent = component;
 
-    // do a sanity check on our updater
-    if (updater != null && updater.enqueueReplaceState instanceof Function) {
+      return (
+        fiberComponent != null &&
+        fiberComponent.updater != null &&
+        fiberComponent.updater.enqueueReplaceState instanceof Function
+      );
+    }
+
+    if (isReactFiberClassComponent(this)) {
       // queue a replacement of state (which does not perform a shallow merge)
-      updater.enqueueReplaceState(this, next);
+      this.updater.enqueueReplaceState(
+        this,
+        (prevState, props) => {
+          return this.createStateFromProps(props);
+        },
+      );
     }
     else {
-      this.logger.error('Unable to perform view model replacement: invalid React Fiber Updater', updater);
+      this.logger.error('Unable to perform view model replacement: invalid React Fiber Updater');
     }
   }
 
@@ -111,8 +130,8 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
         this.viewModel.cleanupViewModel();
       }
 
-      // set our new view model as the current state
-      this.replaceViewModel(nextProps.viewModel);
+      // ask react to generate new state from the updated props
+      this.replaceViewModel();
     }
   }
 
