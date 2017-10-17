@@ -107,9 +107,9 @@ export interface TodoItemProps extends BaseViewProps {
 }
 
 export class TodoItemView extends BaseView<TodoItemProps, TodoItemViewModel> {
-  updateOn() {
+  updateOn(viewModel: Readonly<TodoItemViewModel>) {
     return [
-      this.viewModel.completed.changed,
+      viewModel.completed.changed,
     ];
   }
 

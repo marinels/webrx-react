@@ -36,9 +36,9 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
     guide: DEBUG,
   };
 
-  updateOn() {
+  updateOn(viewModel: Readonly<AppViewModel>) {
     return [
-      this.viewModel.isLoading.changed,
+      viewModel.isLoading.changed,
     ];
   }
 

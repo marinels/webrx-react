@@ -481,15 +481,15 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
     this.props.viewTemplate!.cleanup(this.viewModel, this);
   }
 
-  updateOn() {
-    const watches = [
-      this.viewModel.isLoading.changed,
-      this.viewModel.projectedItems.changed,
-      this.viewModel.hasProjectionError.changed,
+  updateOn(viewModel: Readonly<DataGridViewModel<{}>>) {
+    const watches: Array<Observable<{}>> = [
+      viewModel.isLoading.changed,
+      viewModel.projectedItems.changed,
+      viewModel.hasProjectionError.changed,
     ];
 
     if (this.props.selectable === true) {
-      watches.push(this.viewModel.selectedItem.changed);
+      watches.push(viewModel.selectedItem.changed);
     }
 
     return watches;

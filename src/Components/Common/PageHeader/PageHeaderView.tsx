@@ -24,15 +24,15 @@ export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewMode
     brand: 'webrx-react Rocks!!!',
   };
 
-  updateOn() {
+  updateOn(viewModel: Readonly<PageHeaderViewModel>) {
     return [
-      this.viewModel.sidebarMenus.changed,
-      this.viewModel.navbarMenus.changed,
-      this.viewModel.navbarActions.changed,
-      this.viewModel.helpMenuItems.changed,
-      this.viewModel.adminMenuItems.changed,
-      this.viewModel.userMenuItems.changed,
-      this.viewModel.isSidebarVisible.changed,
+      viewModel.sidebarMenus.changed,
+      viewModel.navbarMenus.changed,
+      viewModel.navbarActions.changed,
+      viewModel.helpMenuItems.changed,
+      viewModel.adminMenuItems.changed,
+      viewModel.userMenuItems.changed,
+      viewModel.isSidebarVisible.changed,
     ];
   }
 

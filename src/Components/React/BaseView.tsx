@@ -261,7 +261,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
   // -----------------------------------------
   // these overridable view functions
   // -----------------------------------------
-  protected updateOn(viewModel?: Readonly<TViewModel>): Array<Observable<any>> { return []; }
+  protected updateOn(viewModel: Readonly<TViewModel>): Array<Observable<any>> { return []; }
 
   protected getDisplayName() { return Object.getName(this); }
   protected getRateLimit() { return 100; }

@@ -396,10 +396,10 @@ export class ListView extends BaseView<ListProps, ListViewModel<any, any>> {
     this.props.viewTemplate!.cleanup(this.viewModel, this);
   }
 
-  updateOn() {
+  updateOn(viewModel: Readonly<ListViewModel<{}, {}>>) {
     return [
-      this.viewModel.items.changed,
-      this.viewModel.selectedItem.changed,
+      viewModel.items.changed,
+      viewModel.selectedItem.changed,
     ];
   }
 
