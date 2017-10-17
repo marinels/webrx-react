@@ -9,14 +9,14 @@ import { BaseViewModel, ViewModelLifecyle, isViewModelLifecycle } from './BaseVi
 import { renderIterable, renderConditional, renderNullable, renderLoadable, renderSizedLoadable, renderGridLoadable, focusElement, classNames } from './RenderHelpers';
 import { bindObservableToCommand, bindEventToProperty, bindEventToCommand } from './BindingHelpers';
 
-export interface ViewModelProps {
-  viewModel: Readonly<BaseViewModel>;
+export interface ViewModelProps<T extends BaseViewModel = BaseViewModel> {
+  viewModel: T;
 }
 
-export interface BaseViewProps extends React.HTMLProps<any>, ViewModelProps {
+export interface BaseViewProps<TViewModel extends BaseViewModel = BaseViewModel, TView extends BaseView<any, any> = any> extends ViewModelProps<TViewModel>, React.HTMLProps<TView> {
 }
 
-export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel extends BaseViewModel> extends React.Component<TViewProps, TViewModel> implements AnonymousSubscription {
+export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewModel extends BaseViewModel> extends React.Component<TViewProps, TViewModel> implements AnonymousSubscription {
   public static displayName = 'BaseView';
 
   private updateSubscription: Subscription;
