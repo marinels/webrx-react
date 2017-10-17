@@ -239,7 +239,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
 
   protected subscribeToUpdates(state: Readonly<TViewModel>) {
     const viewModel = this.getViewModelFromState(state);
-    const updateProps = this.updateOn();
+    const updateProps = this.updateOn(state);
 
     updateProps.push(viewModel.stateChanged.results);
 
@@ -258,7 +258,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
   // -----------------------------------------
   // these overridable view functions
   // -----------------------------------------
-  protected updateOn(): Array<Observable<any>> { return []; }
+  protected updateOn(viewModel?: Readonly<TViewModel>): Array<Observable<any>> { return []; }
 
   protected getDisplayName() { return Object.getName(this); }
   protected getRateLimit() { return 100; }
