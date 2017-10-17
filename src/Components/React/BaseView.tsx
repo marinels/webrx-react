@@ -16,6 +16,10 @@ export interface ViewModelProps<T extends BaseViewModel = BaseViewModel> {
 export interface BaseViewProps<TViewModel extends BaseViewModel = BaseViewModel, TView extends BaseView<any, any> = any> extends ViewModelProps<TViewModel>, React.HTMLProps<TView> {
 }
 
+export interface ViewModelState<T extends BaseViewModel> {
+  viewModel: T;
+}
+
 export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewModel extends BaseViewModel> extends React.Component<TViewProps, TViewModel> implements AnonymousSubscription {
   public static displayName = 'BaseView';
 
