@@ -47,7 +47,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     this.subscriptions = new Subscription();
 
     if (props != null) {
-      this.state = props.viewModel as TViewModel;
+      this.state = this.createStateFromProps(props);
     }
   }
 
@@ -296,6 +296,10 @@ export abstract class BaseView<TViewProps extends ViewModelProps, TViewModel ext
     return bindEventToCommand(this.viewModel, commandSelector, paramSelector, conditionSelector, onNext, onError, onCompleted);
   }
   // -----------------------------------------
+
+  protected createStateFromProps(props: TViewProps) {
+    return props.viewModel;
+  }
 
   protected addSubscription<T extends TeardownLogic>(subscription: T) {
     return this.getSubscriptions().addSubscription(subscription);
