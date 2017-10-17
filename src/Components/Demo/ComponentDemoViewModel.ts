@@ -54,6 +54,12 @@ export class RoutingMap {
   }
 }
 
+export interface RoutedDemoComponent {
+  componentRoute?: string;
+  component?: any;
+  routingState?: any;
+}
+
 export interface ComponentDemoRoutingState {
   route: Route;
   componentRoute: string;
@@ -66,8 +72,9 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   private pageHeader: PageHeaderViewModel;
   private readonly demoAlertItem: HeaderCommandAction;
 
-  public readonly componentRoute: Property<string | undefined>;
   public readonly columns: Property<number>;
+  public readonly componentRoute: ReadOnlyProperty<string | undefined>;
+  public readonly routedComponent: ReadOnlyProperty<RoutedDemoComponent>;
   public readonly component: ReadOnlyProperty<any>;
 
   public readonly setColumns: Command<number>;
@@ -76,7 +83,6 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   constructor(protected readonly routeMap: RoutingMap) {
     super(true);
 
-    this.componentRoute = this.property<string>();
     this.columns = this.property(12);
 
     this.reRender = this.command();
@@ -90,9 +96,19 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
       iconName: 'flask',
     };
 
-    this.component = this
+    this.routedComponent = this
       .whenAny(this.routingState, this.reRender.results.startWith(null), x => x)
-      .map(x => this.getViewModel(x))
+      .map(x => {
+        return this.getRoutedComponent(x);
+      })
+      .toProperty(undefined, false);
+
+    this.componentRoute = this
+      .whenAny(this.routedComponent, x => x == null ? undefined : x.componentRoute)
+      .toProperty(undefined, false);
+
+    this.component = this
+      .whenAny(this.routedComponent, x => x == null ? undefined : x.component)
       .toProperty(undefined, false);
 
     this.addSubscription(this
@@ -161,12 +177,13 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     return state.route.match[1];
   }
 
-  private getViewModel(state: ComponentDemoRoutingState) {
-    let component: any;
+  private getRoutedComponent(state: ComponentDemoRoutingState) {
+    let routedComponent: RoutedDemoComponent = {};
+    // let component: any;
     let activator: ViewModelActivator;
 
     // extract the component route from the routing state
-    const componentRoute = this.getComponentRoute(state);
+    const componentRoute = routedComponent.componentRoute = this.getComponentRoute(state);
 
     // if our component route is null then we can ignore activation
     // let the routing system perform some automated navigation to a new route
@@ -175,10 +192,12 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
         this.logger.debug(`Using Previously Activated Component for "${ componentRoute }"...`);
 
         // if our component route has not changed then we can just use our previously activated component
-        component = this.component.value;
+        routedComponent = this.routedComponent.value;
       }
       else {
         this.logger.debug(`Loading Component for "${ componentRoute }"...`);
+
+        routedComponent.routingState = state;
 
         // try and load our component from the component map using a static route
         activator = this.routeMap.viewModelMap[componentRoute];
@@ -200,29 +219,25 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
             activator = result.activator;
 
             // and override the routed state's path and match with the demo's context
-            state.route.path = result.path;
-            state.route.match = result.match;
+            routedComponent.routingState = Object.assign({}, state, { path: result.path, match: result.match });
           }
         }
 
         // activate our component from the routing state
-        component = activator == null ? null : activator(state);
+        routedComponent.component = activator == null ? null : activator(state);
 
-        if (component != null) {
-          this.logger.debug(`Loaded Component "${ Object.getName(component) }"`, component);
+        if (routedComponent.component != null) {
+          this.logger.debug(`Loaded Component "${ Object.getName(routedComponent.component) }"`, routedComponent.component);
         }
       }
     }
 
     // if our activated component is routable, then apply the current routing state
-    if (isRoutableViewModel(component)) {
-      component.setRoutingState(state);
+    if (isRoutableViewModel(routedComponent.component)) {
+      routedComponent.component.setRoutingState(routedComponent.routingState);
     }
 
-    // finally save our current component route
-    this.componentRoute.value = componentRoute;
-
-    return component;
+    return routedComponent;
   }
 
   routed() {
