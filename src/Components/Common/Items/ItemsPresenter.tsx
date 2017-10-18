@@ -75,6 +75,28 @@ export class ItemsPresenter extends React.Component<ItemsPresenterProps> {
     return this.renderViewTemplate();
   }
 
+  protected getItemsPanelTemplate(): ItemsPanelTemplate {
+    if (this.props.itemsPanelTemplate != null) {
+      return this.props.itemsPanelTemplate;
+    }
+
+    if (this.props.itemsSource != null && React.Children.count(this.props.children) === 1) {
+      const itemsPanel: PanelFragment = React.Children.only(this.props.children);
+
+      if (React.isValidElement<JSX.ElementChildrenAttribute>(itemsPanel)) {
+        return items => {
+          const children = items.concat(React.Children.toArray(itemsPanel.props.children));
+
+          return React.cloneElement(itemsPanel, {}, children);
+        };
+      }
+
+      return () => itemsPanel;
+    }
+
+    return ItemsPresenter.defaultPanelTemplate;
+  }
+
   protected renderItemTemplates() {
     const template = this.props.itemTemplate || ItemsPresenter.defaultItemTemplate;
 
@@ -102,7 +124,7 @@ export class ItemsPresenter extends React.Component<ItemsPresenterProps> {
   }
 
   protected renderPanelTemplate(): PanelFragment {
-    const template = this.props.itemsPanelTemplate || ItemsPresenter.defaultPanelTemplate;
+    const template = this.getItemsPanelTemplate();
     const { items, itemTemplates } = this.renderItemTemplates();
 
     return template(itemTemplates, this, items);
