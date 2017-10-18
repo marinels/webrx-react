@@ -14,6 +14,7 @@ module.exports = {
     alias: {
       'ix$': 'ix/Ix',
       'moment$': 'moment/moment',
+      'rxjs$': 'rxjs/Rx',
     },
   },
   // failOnError: true,
