@@ -14,6 +14,15 @@ declare global {
   interface NumberMap<T> {
     [ key: number]: T;
   }
+
+  // some type constructs to support type outersection (i.e., type subtraction)
+  type Diff<T extends string, U extends string> = (
+    & { [ P in T ]: P }
+    & { [ P in U ]: never }
+    & { [ x: string ]: never }
+  )[T];
+
+  type Omit<T, TExclude> = Pick<T, Diff<keyof T, keyof TExclude>>;
 }
 
 export {};
