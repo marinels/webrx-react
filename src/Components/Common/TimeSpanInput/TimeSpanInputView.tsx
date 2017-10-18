@@ -12,7 +12,7 @@ export interface TimeSpanControlProps extends FormControlProps {
   viewModel: TimeSpanInputViewModel;
 }
 
-export class TimeSpanControl extends React.Component<any, any> {
+export class TimeSpanControl extends React.Component<TimeSpanControlProps> {
   render() {
     const { className, props, rest } = this.restProps(x => {
       const { viewModel } = x;

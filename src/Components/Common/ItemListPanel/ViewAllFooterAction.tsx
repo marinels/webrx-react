@@ -5,7 +5,7 @@ export interface ViewAllFooterActionProps extends React.HTMLAttributes<ViewAllFo
   suffix?: string;
 }
 
-export class ViewAllFooterAction extends React.Component<ViewAllFooterActionProps, any> {
+export class ViewAllFooterAction extends React.Component<ViewAllFooterActionProps> {
   public static displayName = 'ViewAllFooterAction';
 
   static defaultProps = {

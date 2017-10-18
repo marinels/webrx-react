@@ -11,7 +11,7 @@ export interface BreadcrumbsProps extends React.HTMLProps<any> {
   items?: RoutingBreadcrumb[];
 }
 
-export class Breadcrumbs extends React.Component<BreadcrumbsProps, any> {
+export class Breadcrumbs extends React.Component<BreadcrumbsProps> {
   static defaultProps = {
     id: 'breadcrumbs',
   };

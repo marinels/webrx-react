@@ -14,7 +14,7 @@ export interface CommandButtonProps extends ButtonProps {
   tooltip?: any;
 }
 
-export class CommandButton extends React.Component<CommandButtonProps, any> {
+export class CommandButton extends React.Component<CommandButtonProps> {
   public static displayName = 'CommandButton';
 
   private canExecuteSubscription = Subscription.EMPTY;

@@ -18,16 +18,16 @@ export interface ListViewRenderTemplateProps {
   selectable?: boolean;
   highlightSelected?: boolean;
   checkmarkSelected?: boolean;
-  emptyContent?: any | ((viewModel: ReadonlyListViewModel<any>, view: React.Component<ListViewRenderTemplateProps, any>) => any);
+  emptyContent?: any | ((viewModel: ReadonlyListViewModel<any>, view: React.Component<ListViewRenderTemplateProps>) => any);
 }
 
-export interface ListViewRenderTemplate<TData, TView extends React.Component<ListViewRenderTemplateProps, any>> {
+export interface ListViewRenderTemplate<TData, TView extends React.Component<ListViewRenderTemplateProps>> {
   initialize(viewModel: ReadonlyListViewModel<TData>, view: TView): void;
   cleanup(viewModel: ReadonlyListViewModel<TData>, view: TView): void;
   render(viewModel: ReadonlyListViewModel<TData>, view: TView): any;
 }
 
-export abstract class BaseListViewTemplate<TItem, TData, TView extends React.Component<ListViewRenderTemplateProps, any>> implements ListViewRenderTemplate<TData, TView> {
+export abstract class BaseListViewTemplate<TItem, TData, TView extends React.Component<ListViewRenderTemplateProps>> implements ListViewRenderTemplate<TData, TView> {
   public static displayName = 'BaseListViewTemplate';
 
   protected readonly renderTemplateContainer: (content: any, item: TItem, data: TData, index: number, viewModel: ReadonlyListViewModel<TData>, view: TView) => any;

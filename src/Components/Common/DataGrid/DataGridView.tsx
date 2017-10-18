@@ -46,7 +46,7 @@ export interface DataGridColumnProps {
   renderCellContainer?: ColumnContainerRenderFunction;
 }
 
-export class DataGridColumn extends React.Component<DataGridColumnProps, any> {
+export class DataGridColumn extends React.Component<DataGridColumnProps> {
   public static displayName = 'DataGridColumn';
 
   static defaultProps = {
@@ -58,7 +58,7 @@ export interface NavDataGridColumnProps extends DataGridColumnProps {
   buttonProps: ColumnRenderFunction;
 }
 
-export class NavDataGridColumn extends React.Component<NavDataGridColumnProps, any> {
+export class NavDataGridColumn extends React.Component<NavDataGridColumnProps> {
   public static displayName = 'NavDataGridColumn';
 
   static defaultProps = {
@@ -394,7 +394,7 @@ export interface DataGridComponentProps {
 export interface DataGridSearchProps extends DataGridComponentProps, SearchProps, React.HTMLProps<any> {
 }
 
-export class DataGridSearch extends React.Component<DataGridSearchProps, any> {
+export class DataGridSearch extends React.Component<DataGridSearchProps> {
   render() {
     const { className, props, rest } = this.restProps(x => {
       const { grid, viewType } = x;
@@ -412,7 +412,7 @@ export class DataGridSearch extends React.Component<DataGridSearchProps, any> {
 export interface DataGridPagerProps extends DataGridComponentProps, PagerProps {
 }
 
-export class DataGridPager extends React.Component<DataGridPagerProps, any> {
+export class DataGridPager extends React.Component<DataGridPagerProps> {
   render() {
     const { className, props, rest } = this.restProps(x => {
       const { grid, viewType } = x;
