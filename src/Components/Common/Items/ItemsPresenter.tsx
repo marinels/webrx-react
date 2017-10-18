@@ -134,6 +134,19 @@ export class ItemsPresenter extends React.Component<ItemsPresenterProps> {
     const template = this.props.viewTemplate || ItemsPresenter.defaultViewTemplate;
     const itemsPanel = this.renderPanelTemplate();
 
+    if (React.isValidElement(itemsPanel)) {
+      const itemsPresenterPanelProps = Object.trim({
+        itemClassName: this.props.itemClassName,
+        itemStyle: this.props.itemStyle,
+        itemProps: this.props.itemProps,
+        compact: this.props.compact,
+      });
+
+      const itemsPanelProps = React.isValidElement(itemsPanel) ? itemsPanel.props : {};
+
+      return template(React.cloneElement(itemsPanel, { ...itemsPresenterPanelProps, ...itemsPanelProps }), this);
+    }
+
     return template(itemsPanel, this);
   }
 }
