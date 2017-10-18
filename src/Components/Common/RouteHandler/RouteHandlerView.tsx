@@ -10,14 +10,17 @@ import { Breadcrumbs } from './Breadcrumbs';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { ViewMapper } from '../../../Routing/ViewMap';
 
-export interface RouteHandlerProps extends BaseViewProps {
+export interface RouteHandlerProps {
   viewMap: ViewMapper;
 }
 
-export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerViewModel> {
+export interface RouteHandlerViewProps extends BaseViewProps<RouteHandlerViewModel, RouteHandlerView>, RouteHandlerProps {
+}
+
+export class RouteHandlerView extends BaseView<RouteHandlerViewProps, RouteHandlerViewModel> {
   public static displayName = 'RouteHandlerView';
 
-  constructor(props?: RouteHandlerProps, context?: any) {
+  constructor(props?: RouteHandlerViewProps, context?: any) {
     super(props, context);
 
     if (this.props.viewMap[DefaultKey] == null) {

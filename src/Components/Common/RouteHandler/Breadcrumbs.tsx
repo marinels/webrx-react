@@ -5,13 +5,15 @@ import { Icon } from 'react-fa';
 import { wxr, RoutingBreadcrumb } from '../../React';
 import { CommandButton } from '../CommandButton/CommandButton';
 
-export interface BreadcrumbsProps extends React.HTMLProps<any> {
-  id?: string;
+export interface BreadcrumbsProps {
   pinnable?: boolean;
   items?: RoutingBreadcrumb[];
 }
 
-export class Breadcrumbs extends React.Component<BreadcrumbsProps> {
+export interface BreadcrumbsComponentProps extends React.HTMLProps<Breadcrumbs>, BreadcrumbsProps {
+}
+
+export class Breadcrumbs extends React.Component<BreadcrumbsComponentProps> {
   static defaultProps = {
     id: 'breadcrumbs',
   };

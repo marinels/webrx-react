@@ -8,11 +8,14 @@ import { BindableInput } from '../BindableInput/BindableInput';
 import { TimeSpanInputViewModel, TimeSpanUnit } from './TimeSpanInputViewModel';
 import { CommandButton } from '../CommandButton/CommandButton';
 
-export interface TimeSpanControlProps extends FormControlProps {
+export interface TimeSpanControlProps {
   viewModel: Readonly<TimeSpanInputViewModel>;
 }
 
-export class TimeSpanControl extends React.Component<TimeSpanControlProps> {
+export interface TimeSpanControlComponentProps extends FormControlProps, TimeSpanControlProps {
+}
+
+export class TimeSpanControl extends React.Component<TimeSpanControlComponentProps> {
   render() {
     const { className, props, rest } = this.restProps(x => {
       const { viewModel } = x;
@@ -20,14 +23,14 @@ export class TimeSpanControl extends React.Component<TimeSpanControlProps> {
     });
 
     return (
-      <BindableInput property={ props.viewModel.text }>
+      <BindableInput boundProperty={ props.viewModel.text }>
         <FormControl { ...rest } className={ wxr.classNames('TimeSpanControl', className) } type='text' />
       </BindableInput>
     );
   }
 }
 
-export interface TimeSpanInputProps extends BaseViewProps {
+export interface TimeSpanInputProps {
   // FormGroupProps
   bsClass?: string;
   bsSize?: Sizes;
@@ -38,7 +41,10 @@ export interface TimeSpanInputProps extends BaseViewProps {
   componentClass?: React.ReactType;
 }
 
-export class TimeSpanInputView extends BaseView<TimeSpanInputProps, TimeSpanInputViewModel> {
+export interface TimeSpanInputViewProps extends BaseViewProps<TimeSpanInputViewModel, TimeSpanInputView>, TimeSpanInputProps {
+}
+
+export class TimeSpanInputView extends BaseView<TimeSpanInputViewProps, TimeSpanInputViewModel> {
   public static displayName = 'TimeSpanInputView';
 
   static defaultProps = {

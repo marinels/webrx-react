@@ -2,22 +2,25 @@ import * as React from 'react';
 import { Observable } from 'rxjs';
 import { Modal, ModalProps } from 'react-bootstrap';
 
-import { BaseView, ViewModelProps } from '../../React';
+import { BaseView, BaseViewProps } from '../../React';
 import { ModalDialogViewModel } from './ModalDialogViewModel';
 
-export interface ModalDialogProps extends ViewModelProps, Partial<ModalProps> {
-  title?: any;
-  body?: any;
-  footer?: any;
+export interface ModalDialogProps extends Partial<ModalProps> {
+  modalTitle?: {};
+  modalBody?: {};
+  modalFooter?: {};
   canClose?: boolean;
 }
 
-export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewModel<{}>> {
+export interface ModalDialogViewProps extends BaseViewProps<ModalDialogViewModel<{}>, Modal>, ModalDialogProps {
+}
+
+export class ModalDialogView extends BaseView<ModalDialogViewProps, ModalDialogViewModel<{}>> {
   public static displayName = 'ModalDialogView';
 
   static defaultProps = {
     canClose: false,
-    footer: (view: ModalDialogView) => view.props.children,
+    modalFooter: (view: ModalDialogView) => view.props.children,
   };
 
   updateOn(viewModel: Readonly<ModalDialogViewModel<{}>>) {
@@ -28,8 +31,8 @@ export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewM
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { title, body, footer, canClose }  = x;
-      return { title, body, footer, canClose };
+      const { modalTitle, modalBody, modalFooter, canClose }  = x;
+      return { modalTitle, modalBody, modalFooter, canClose };
     });
 
     return this.renderConditional(this.viewModel.isVisible, () => (
@@ -48,7 +51,7 @@ export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewM
 
   private renderHeader() {
     const titleContent = this.renderNullable(
-      this.props.title,
+      this.props.modalTitle,
       title => (
         <Modal.Title>
           { title instanceof Function ? title(this) : title }
@@ -68,7 +71,7 @@ export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewM
 
   private renderBody() {
     return this.renderNullable(
-      this.props.body,
+      this.props.modalBody,
       body => (
         <Modal.Body>
           { body instanceof Function ? body(this) : body }
@@ -79,7 +82,7 @@ export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewM
 
   private renderFooter() {
     return this.renderNullable(
-      this.props.footer,
+      this.props.modalFooter,
       footer => {
         return this.renderNullable(
           footer instanceof Function ? footer(this) : footer,

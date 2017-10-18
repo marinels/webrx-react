@@ -37,12 +37,15 @@ export class TabRenderTemplate<TData> {
   }
 }
 
-// NOTE: id is required for tab (belongs to HTMLAttributes)
-export interface TabsProps extends BaseViewProps {
+export interface TabsProps {
   template?: TabRenderTemplate<any>;
 }
 
-export class TabsView extends BaseView<TabsProps, TabsViewModel<{}>> {
+export interface TabsViewProps extends BaseViewProps<TabsViewModel<{}>, TabsView>, TabsProps {
+  template?: TabRenderTemplate<any>;
+}
+
+export class TabsView extends BaseView<TabsViewProps, TabsViewModel<{}>> {
   public static displayName = 'TabsView';
 
   updateOn(viewModel: Readonly<TabsViewModel<{}>>) {

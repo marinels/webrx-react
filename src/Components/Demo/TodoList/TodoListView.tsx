@@ -13,11 +13,14 @@ import { TodoListViewModel, TodoItemViewModel } from './TodoListViewModel';
 
 import './TodoList.less';
 
-export interface TodoListProps extends BaseViewProps {
+export interface TodoListProps {
   shadow?: boolean;
 }
 
-export class TodoListView extends BaseView<TodoListProps, TodoListViewModel> {
+export interface TodoListViewProps extends BaseViewProps<TodoListViewModel, TodoListView>, TodoListProps {
+}
+
+export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel> {
   private readonly listViewTemplate = new DataGridListViewTemplate<TodoItemViewModel>(
     x => (
       <TodoItemView viewModel={ x } />
@@ -82,7 +85,7 @@ export class TodoListView extends BaseView<TodoListProps, TodoListViewModel> {
     return (
       <FormGroup className='TodoList-teaser'>
         <InputGroup>
-          <BindableInput property={ this.viewModel.newItemContent }>
+          <BindableInput boundProperty={ this.viewModel.newItemContent }>
             <FormControl ref={ x => this.onInputRef(x) } id='newItemContent' type='text' placeholder='Type in a todo item here...'
               onKeyDown={ this.bindEventToCommand(x => x.addItem, undefined, (_, e: React.KeyboardEvent<any>) => e.keyCode === 13, () => this.focusInput()) }
             />
@@ -103,10 +106,13 @@ export class TodoListView extends BaseView<TodoListProps, TodoListViewModel> {
   }
 }
 
-export interface TodoItemProps extends BaseViewProps {
+export interface TodoItemProps {
 }
 
-export class TodoItemView extends BaseView<TodoItemProps, TodoItemViewModel> {
+export interface TodoItemViewProps extends BaseViewProps<TodoItemViewModel, TodoItemView>, TodoItemProps {
+}
+
+export class TodoItemView extends BaseView<TodoItemViewProps, TodoItemViewModel> {
   updateOn(viewModel: Readonly<TodoItemViewModel>) {
     return [
       viewModel.completed.changed,

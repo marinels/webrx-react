@@ -4,7 +4,7 @@ import { Grid } from 'react-bootstrap';
 
 import { updateDefaultContainer } from './NamespacedPortal';
 import { BootstrapGuide } from './BootstrapGuide';
-import { wxr, BaseView } from '../../React';
+import { wxr, BaseView, BaseViewProps } from '../../React';
 import { Splash } from '../Splash/Splash';
 import { AlertHostView } from '../Alert/AlertHostView';
 import { SplashKey } from '../RouteHandler/RouteHandlerViewModel';
@@ -26,7 +26,10 @@ export interface AppProps extends PageHeaderProps, PageFooterProps {
   footer?: boolean;
 }
 
-export class AppView extends BaseView<AppProps, AppViewModel> {
+export interface AppViewProps extends BaseViewProps<AppViewModel, AppView>, AppProps {
+}
+
+export class AppView extends BaseView<AppViewProps, AppViewModel> {
   public static displayName = 'AppView';
 
   public static updateDefaultPortalContainer = updateDefaultContainer;

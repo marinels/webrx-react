@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { Grid, Row, Col } from 'react-bootstrap';
 import { Observable } from 'rxjs';
-import { Pagination, PaginationProps, DropdownButton, DropdownButtonProps, MenuItem } from 'react-bootstrap';
+import { Pagination, PaginationProps, Sizes, SelectCallback, DropdownButton, DropdownButtonProps, MenuItem } from 'react-bootstrap';
 
-import { BaseView, ViewModelProps } from '../../React';
+import { BaseView, BaseViewProps } from '../../React';
 import { PagerViewModel, StandardLimits } from './PagerViewModel';
 
-export interface PagerProps extends PaginationProps {
+// clone of react-bootstrap PaginationProps, but without the subclassing
+export type BootstrapPaginationProps = Omit<PaginationProps, React.HTMLProps<Pagination>>;
+
+export interface PagerProps extends BootstrapPaginationProps {
   info?: boolean;
   limits?: number[];
   dropdownProps?: DropdownButtonProps;
@@ -14,7 +17,7 @@ export interface PagerProps extends PaginationProps {
   emptyInfo?: string;
 }
 
-export interface PagerViewProps extends PagerProps, ViewModelProps {
+export interface PagerViewProps extends BaseViewProps<PagerViewModel, PagerView>, PagerProps {
 }
 
 export type PagerComponentTypes = 'info' | 'controls' | 'limit' | undefined;

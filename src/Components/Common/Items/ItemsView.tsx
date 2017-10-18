@@ -7,13 +7,13 @@ import { ItemsViewModel } from './ItemsViewModel';
 import { Panel, StackPanel, PanelItemProps } from '../Panel';
 import { ItemsPresenter, ItemsPresenterTemplateProps } from './ItemsPresenter';
 
-export interface ItemsFacadeProps extends ItemsPresenterTemplateProps, PanelItemProps {
+export interface ItemsProps extends ItemsPresenterTemplateProps, PanelItemProps {
 }
 
-export interface ItemsProps extends BaseViewProps, ItemsFacadeProps {
+export interface ItemsViewProps extends BaseViewProps<ItemsViewModel<{}>, ItemsView>, ItemsProps {
 }
 
-export class ItemsView extends BaseView<ItemsProps, ItemsViewModel<{}>> {
+export class ItemsView extends BaseView<ItemsViewProps, ItemsViewModel<{}>> {
   public static displayName = 'ItemsView';
 
   updateOn(viewModel: Readonly<ItemsViewModel<{}>>) {

@@ -4,10 +4,15 @@ import { ListGroup, ListGroupProps, ListGroupItem } from 'react-bootstrap';
 import { wxr } from '../../React';
 import { PanelItemProps, PanelTemplateProps, Panel } from './Panel';
 
-export interface ListGroupPanelProps extends ListGroupProps, PanelItemProps, PanelTemplateProps {
+export interface ListGroupPanelProps extends PanelItemProps, PanelTemplateProps {
+  componentClass?: React.ReactType;
+  fill?: boolean;
 }
 
-export class ListGroupPanel extends Panel<ListGroupPanelProps> {
+export interface ListGroupPanelComponentProps extends ListGroupProps, ListGroupPanelProps {
+}
+
+export class ListGroupPanel extends Panel<ListGroupPanelComponentProps> {
   public static displayName = 'ListGroupPanel';
 
   render() {

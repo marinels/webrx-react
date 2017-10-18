@@ -3,11 +3,17 @@ import { Table, TableProps } from 'react-bootstrap';
 
 import { PanelItemProps, PanelTemplateProps, Panel, PanelFragment } from './Panel';
 
-export interface TablePanelProps extends TableProps, PanelItemProps, PanelTemplateProps {
+// clone of react-bootstrap TableProps, but without the subclassing
+export type BootstrapTableProps = Omit<TableProps, React.HTMLProps<Table>>;
+
+export interface TablePanelProps extends PanelItemProps, PanelTemplateProps, BootstrapTableProps {
   header?: PanelFragment;
 }
 
-export class TablePanel extends Panel<TablePanelProps> {
+export interface TablePanelComponentProps extends TableProps, TablePanelProps {
+}
+
+export class TablePanel extends Panel<TablePanelComponentProps> {
   public static displayName = 'TablePanel';
 
   static defaultProps = {

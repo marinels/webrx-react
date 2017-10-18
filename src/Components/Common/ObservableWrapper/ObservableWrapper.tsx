@@ -8,11 +8,14 @@ export interface ObservableWrapperProps {
   render?: (x: any) => any;
 }
 
+export interface ObservableWrapperComponentProps extends ObservableWrapperProps {
+}
+
 export interface ObservableWrapperState {
   value: any;
 }
 
-export class ObservableWrapper extends React.Component<ObservableWrapperProps, ObservableWrapperState> {
+export class ObservableWrapper extends React.Component<ObservableWrapperComponentProps, ObservableWrapperState> {
   private static defaultProps = {
     render: (x: any) => x,
   };

@@ -15,7 +15,10 @@ export interface SelectableListItemProps {
   selectedProps?: SelectedPropsFunction;
 }
 
-export class SelectableListItem extends React.Component<SelectableListItemProps> {
+export interface SelectableListItemComponentProps extends SelectableListItemProps {
+}
+
+export class SelectableListItem extends React.Component<SelectableListItemComponentProps> {
   static defaultProps = {
     selectedProps: () => ({}),
   };
@@ -44,7 +47,7 @@ export class SelectableListItem extends React.Component<SelectableListItemProps>
     this.subscribeToUpdates(this.props.listItems);
   }
 
-  componentWillUpdate(nextProps: Readonly<SelectableListItemProps>) {
+  componentWillUpdate(nextProps: Readonly<SelectableListItemComponentProps>) {
     this.subscribeToUpdates(nextProps.listItems);
   }
 

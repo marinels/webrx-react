@@ -11,7 +11,10 @@ export interface ContentTooltipProps {
   context?: React.ReactElement<any>;
 }
 
-export class ContentTooltip extends React.Component<ContentTooltipProps> {
+export interface ContentTooltipComponentProps extends ContentTooltipProps {
+}
+
+export class ContentTooltip extends React.Component<ContentTooltipComponentProps> {
   render() {
     const content = this.props.content;
     const context = this.props.context || React.Children.only(this.props.children);
