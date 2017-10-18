@@ -33,7 +33,9 @@ export class ItemsView extends BaseView<ItemsProps, ItemsViewModel<{}>> {
         <ItemsPresenter
           itemsSource={ this.viewModel.getItemsSource() }
           { ...props }
-        />
+        >
+          { children }
+        </ItemsPresenter>
       </div>
     );
   }
