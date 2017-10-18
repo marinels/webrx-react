@@ -31,10 +31,13 @@ export class Breadcrumbs extends React.Component<BreadcrumbsProps> {
   }
 
   render() {
-    const { children, className, ref, pinnable, items, ...rest } = this.props;
+    const { className, props, rest } = this.restProps(x => {
+      const { pinnable, items } = x;
+      return { pinnable, items };
+    });
 
     return wxr.renderIterable(
-      items,
+      props.items,
       (x, i, a) => {
         const tooltip = wxr.renderConditional(
           String.isString(x.tooltip),
@@ -63,7 +66,7 @@ export class Breadcrumbs extends React.Component<BreadcrumbsProps> {
           <div className='Breadcrumbs-container'>
             <Breadcrumb>{ x }</Breadcrumb>
             {
-              wxr.renderConditional(pinnable, () => (
+              wxr.renderConditional(props.pinnable, () => (
                 <CommandButton className='Breadcrumbs-pin' bsStyle='link'
                   onClick={ () => this.toggleBreadcrumbsPin() }
                 >
