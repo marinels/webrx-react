@@ -257,7 +257,7 @@ export const demoViewMap: ViewActivatorMap = {
     </div>
   ),
   UniformGridPanel: () => (
-    <Components.UniformGridPanel rows={ 3 } columns={ 2 } border renderEmptyRows
+    <Components.UniformGridPanel gridRows={ 3 } gridColumns={ 2 } border renderEmptyRows
       columnStyle={({ height: 50, verticalAlign: 'middle' })}
     >
       <Label key={ 1 }>Item 1</Label>
@@ -355,7 +355,7 @@ export const demoViewMap: ViewActivatorMap = {
             viewModel={ viewModel }
             itemsPanelTemplate={ x => (
               <Components.UniformGridPanel
-                rows={ 4 } columns={ 4 } firstColumn={ 1 } border renderEmptyRows
+                gridRows={ 4 } gridColumns={ 4 } firstColumn={ 1 } border renderEmptyRows
                 rowStyle={({ height: 100 })}
                 columnStyle={({ verticalAlign: 'middle' })}
               >

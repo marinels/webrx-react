@@ -22,7 +22,7 @@ export interface CommonPanelProps extends PanelProps {
   shadow?: boolean;
 }
 
-export class CommonPanel extends React.Component<CommonPanelProps, any> {
+export class CommonPanel extends React.Component<CommonPanelProps> {
   public static displayName = 'CommonPanel';
 
   static defaultProps = {

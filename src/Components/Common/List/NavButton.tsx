@@ -8,7 +8,7 @@ export interface NavButtonProps extends CommandButtonProps {
   iconSize?: IconSize;
 }
 
-export class NavButton extends React.Component<NavButtonProps, any> {
+export class NavButton extends React.Component<NavButtonProps> {
   public static displayName = 'NavButton';
 
   static defaultProps = {

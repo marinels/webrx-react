@@ -40,14 +40,20 @@ export interface BindableInputProps extends React.AllHTMLAttributes<BindableInpu
   property: any;
 }
 
-export class BindableInput extends React.Component<BindableInputProps, any> {
+export class BindableInput extends React.Component<BindableInputProps> {
   public static displayName = 'BindableInput';
 
   static defaultProps = {
     valueProperty: 'value',
     onChangeProperty: 'onChange',
-    valueGetter: (property: Property<any>) => { return property.value; },
-    valueSetter: (property: Property<any>, value: any) => { property.value = value; },
+    valueGetter: (property: any) => {
+      return wx.isProperty(property) ? property.value : property;
+    },
+    valueSetter: (property: any, value: any) => {
+      if (wx.isProperty(property)) {
+        property.value = value;
+      }
+    },
   };
 
   componentWillMount() {

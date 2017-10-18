@@ -18,7 +18,7 @@ export interface ProfilePictureProps extends React.HTMLAttributes<ProfilePicture
 
 const dataUriPrefix = 'data:image;base64,';
 
-export class ProfilePicture extends React.Component<ProfilePictureProps, any> {
+export class ProfilePicture extends React.Component<ProfilePictureProps> {
   public static displayName = 'ProfilePicture';
 
   static defaultProps = {

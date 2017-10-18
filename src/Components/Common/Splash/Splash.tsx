@@ -13,7 +13,7 @@ export interface SplashProps extends React.HTMLAttributes<Splash> {
   fluid?: boolean;
 }
 
-export class Splash extends React.Component<SplashProps, any> {
+export class Splash extends React.Component<SplashProps> {
   public static displayName = 'Splash';
 
   static defaultProps = {

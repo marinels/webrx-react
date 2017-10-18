@@ -45,12 +45,12 @@ export interface UniformGridPanelProps extends PanelProps, UniformRowItemProps, 
   /**
    * number of columns in the grid
    */
-  columns: number;
+  gridColumns: number;
 
   /**
    * number of rows in the grid
    */
-  rows: number;
+  gridRows: number;
 
   /**
    * which column index to start rendering panel items within (in the first row)
@@ -83,7 +83,7 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
   }
 
   render() {
-    const { columns, rows, firstColumn, border, renderEmptyRows, emptyTemplate, rowClassName, rowStyle, rowProps, columnClassName, columnStyle, columnProps, ...rest } = this.props;
+    const { gridColumns, gridRows, firstColumn, border, renderEmptyRows, emptyTemplate, rowClassName, rowStyle, rowProps, columnClassName, columnStyle, columnProps, ...rest } = this.props;
 
     const bordered = { 'Grid-Border': border === true };
 
@@ -95,14 +95,14 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
 
     let index = 0 - this.props.firstColumn!;
     return Iterable
-      .range(0, this.props.rows)
+      .range(0, this.props.gridRows)
       .map(row => {
         if (this.props.renderEmptyRows !== true && index >= itemTemplates.length) {
           return undefined;
         }
 
         return Iterable
-          .range(0, this.props.columns)
+          .range(0, this.props.gridColumns)
           .map(column => {
             const isBeforeFirstItem = index < 0;
             const isAfterLastItem = index >= itemTemplates.length;

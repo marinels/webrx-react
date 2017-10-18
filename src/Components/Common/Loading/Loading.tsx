@@ -12,7 +12,7 @@ export interface LoadingProps extends React.HTMLAttributes<Loading> {
   componentClass?: any;
 }
 
-export class Loading extends React.Component<LoadingProps, any> {
+export class Loading extends React.Component<LoadingProps> {
   public static displayName = 'Loading';
 
   static defaultProps = {
