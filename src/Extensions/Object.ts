@@ -139,7 +139,7 @@ export function getEnumPropertyDescriptors<T>(type: any): Iterable<EnumPropertyD
   return Object
     .keys(type)
     .asIterable()
-    .map(name => ({ name, value: parseInt(name) }))
+    .map(name => ({ name, value: parseInt(type[name]) }))
     .filter(x => x.value >= 0)
     .map(x => Object.assign<EnumPropertyDescriptor<T>>(x, { type: type[x.name] }));
 }
