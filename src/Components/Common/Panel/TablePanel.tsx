@@ -3,15 +3,11 @@ import { Table, TableProps } from 'react-bootstrap';
 
 import { PanelItemProps, PanelTemplateProps, Panel, PanelFragment } from './Panel';
 
-export interface TablePanelProps extends PanelItemProps, PanelTemplateProps {
+// clone of react-bootstrap TableProps, but without the subclassing
+export type BootstrapTableProps = Omit<TableProps, React.HTMLProps<Table>>;
+
+export interface TablePanelProps extends PanelItemProps, PanelTemplateProps, BootstrapTableProps {
   header?: PanelFragment;
-  bordered?: boolean;
-  condensed?: boolean;
-  hover?: boolean;
-  responsive?: boolean;
-  striped?: boolean;
-  fill?: boolean;
-  bsClass?: string;
 }
 
 export interface TablePanelComponentProps extends TableProps, TablePanelProps {

@@ -1,30 +1,15 @@
 import * as React from 'react';
 import { Grid, Row, Col } from 'react-bootstrap';
 import { Observable } from 'rxjs';
-import { Pagination, Sizes, SelectCallback, DropdownButton, DropdownButtonProps, MenuItem } from 'react-bootstrap';
+import { Pagination, PaginationProps, Sizes, SelectCallback, DropdownButton, DropdownButtonProps, MenuItem } from 'react-bootstrap';
 
 import { BaseView, BaseViewProps } from '../../React';
 import { PagerViewModel, StandardLimits } from './PagerViewModel';
 
 // clone of react-bootstrap PaginationProps, but without the subclassing
-// we also remove onSelect because it is a conflicting re-typing of an inherited definition
-export interface PaginationProps {
-  activePage?: number;
-  bsSize?: Sizes;
-  bsStyle?: string;
-  boundaryLinks?: boolean;
-  buttonComponentClass?: React.ReactType;
-  ellipsis?: React.ReactNode;
-  first?: React.ReactNode;
-  items?: number;
-  last?: React.ReactNode;
-  maxButtons?: number;
-  next?: React.ReactNode;
-  // onSelect?: SelectCallback;
-  prev?: React.ReactNode;
-}
+export type BootstrapPaginationProps = Omit<PaginationProps, React.HTMLProps<Pagination>>;
 
-export interface PagerProps extends PaginationProps {
+export interface PagerProps extends BootstrapPaginationProps {
   info?: boolean;
   limits?: number[];
   dropdownProps?: DropdownButtonProps;
