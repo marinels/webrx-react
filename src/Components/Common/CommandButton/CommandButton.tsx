@@ -5,7 +5,8 @@ import { Button, ButtonProps, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Command } from '../../../WebRx';
 import { wxr } from '../../React';
 
-export interface CommandButtonProps extends ButtonProps {
+export interface CommandButtonProps {
+  id?: string;
   command?: Command<any> | { (): Command<any> };
   commandParameter?: any;
   stopPropagation?: boolean;
@@ -14,7 +15,10 @@ export interface CommandButtonProps extends ButtonProps {
   tooltip?: any;
 }
 
-export class CommandButton extends React.Component<CommandButtonProps> {
+export interface CommandButtonComponentProps extends ButtonProps, CommandButtonProps {
+}
+
+export class CommandButton extends React.Component<CommandButtonComponentProps> {
   public static displayName = 'CommandButton';
 
   private canExecuteSubscription = Subscription.EMPTY;

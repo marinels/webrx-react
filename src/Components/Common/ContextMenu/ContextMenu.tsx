@@ -10,6 +10,9 @@ export interface ContextMenuProps {
   onSelect?: (item: MenuItemProps) => void;
 }
 
+export interface ContextMenuComponentProps extends ContextMenuProps {
+}
+
 export interface ContextMenuState {
   isVisible: boolean;
   left?: number;
@@ -35,7 +38,7 @@ class ContextMenuContainer extends React.Component<PopoverProps> {
 
 const ArrowOffset = 20;
 
-export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuState> {
+export class ContextMenu extends React.Component<ContextMenuComponentProps, ContextMenuState> {
   public static displayName = 'ContextMenu';
 
   constructor(props?: ContextMenuProps, context?: any) {

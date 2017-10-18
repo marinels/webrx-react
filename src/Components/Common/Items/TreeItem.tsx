@@ -65,7 +65,7 @@ export interface TreeItemRenderProps {
 export interface TreeItemFacadeProps extends TreeItemSourceProps, TreeItemTemplateProps, TreeItemRenderProps, ItemsPresenterTemplateProps, PanelItemProps {
 }
 
-export interface TreeItemProps extends React.HTMLAttributes<TreeItemProps>, TreeItemSourceProps, TreeItemTemplateProps, TreeItemRenderProps, ItemsPresenterTemplateProps, PanelItemProps {
+export interface TreeItemProps extends TreeItemFacadeProps {
   /**
    * the item that this tree node represents
    */
@@ -78,6 +78,9 @@ export interface TreeItemProps extends React.HTMLAttributes<TreeItemProps>, Tree
   index: number;
 }
 
+export interface TreeItemComponentProps extends React.HTMLAttributes<TreeItem>, TreeItemProps {
+}
+
 export interface TreeItemState {
   /**
    * true if the tree item is expanded
@@ -85,7 +88,7 @@ export interface TreeItemState {
   isExpanded: boolean;
 }
 
-export class TreeItem extends React.Component<TreeItemProps, TreeItemState> {
+export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemState> {
   static defaultProps = {
     depth: 0,
   };

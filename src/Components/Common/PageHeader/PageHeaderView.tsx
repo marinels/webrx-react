@@ -10,13 +10,16 @@ import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import { Sidebar } from './Sidebar';
 import { PageHeaderViewModel } from './PageHeaderViewModel';
 
-export interface PageHeaderProps extends BaseViewProps {
+export interface PageHeaderProps {
   id?: string;
   brand?: any;
   branduri?: string;
 }
 
-export class PageHeaderView extends BaseView<PageHeaderProps, PageHeaderViewModel> {
+export interface PageHeaderViewProps extends BaseViewProps<PageHeaderViewModel, PageHeaderView>, PageHeaderProps {
+}
+
+export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderViewModel> {
   public static displayName = 'PageHeaderView';
 
   static defaultProps = {

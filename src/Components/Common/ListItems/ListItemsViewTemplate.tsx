@@ -1,10 +1,10 @@
 import * as React from 'react';
 
-import { ItemsFacadeProps } from '../Items/ItemsView';
+import { ItemsProps } from '../Items/ItemsView';
 import { SelectableListItem, SelectedPropsFunction } from './SelectableListItem';
 import { ListItemsViewModel } from './ListItemsViewModel';
 
-export interface ListItemsViewTemplateProps extends React.HTMLProps<ListItemsViewTemplate<ListItemsViewTemplateProps>> {
+export interface ListItemsViewTemplateProps {
   /**
    * internal passthru property
    * DO NOT SET, this property is assigned automatically by the ListItemsView
@@ -14,7 +14,12 @@ export interface ListItemsViewTemplateProps extends React.HTMLProps<ListItemsVie
    * internal passthru property
    * DO NOT SET, this property is assigned automatically by the ListItemsView
    */
-  itemsProps?: ItemsFacadeProps;
+  itemsProps?: ItemsProps;
+  /**
+   * internal passthru property
+   * DO NOT SET, this property is assigned automatically by the ListItemsView
+   */
+  className?: string;
 }
 
 export abstract class ListItemsViewTemplate<T extends ListItemsViewTemplateProps> extends React.Component<T> {
@@ -23,7 +28,7 @@ export abstract class ListItemsViewTemplate<T extends ListItemsViewTemplateProps
   }
 
   protected getItemsProps() {
-    return this.props.itemsProps as ItemsFacadeProps;
+    return this.props.itemsProps as ItemsProps;
   }
 
   protected renderListItem(itemTemplate: React.ReactNode, item: {}, selectedProps?: SelectedPropsFunction) {

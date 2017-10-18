@@ -5,14 +5,17 @@ import { ProgressBar } from 'react-bootstrap';
 import { wx, Property } from '../../../WebRx';
 import { wxr } from '../../React';
 
-export interface LoadingProps extends React.HTMLAttributes<Loading> {
+export interface LoadingProps {
   progress?: Property<number> | number;
   text?: string;
   fontSize?: number | string;
   componentClass?: any;
 }
 
-export class Loading extends React.Component<LoadingProps> {
+export interface LoadingComponentProps extends React.HTMLProps<Loading>, LoadingProps {
+}
+
+export class Loading extends React.Component<LoadingComponentProps> {
   public static displayName = 'Loading';
 
   static defaultProps = {

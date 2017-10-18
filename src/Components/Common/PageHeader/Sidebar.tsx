@@ -10,7 +10,10 @@ export interface SidebarProps {
   header?: any;
 }
 
-export class Sidebar extends React.Component<SidebarProps> {
+export interface SidebarComponentProps extends SidebarProps {
+}
+
+export class Sidebar extends React.Component<SidebarComponentProps> {
   public static displayName = 'Sidebar';
 
   static defaultProps = {

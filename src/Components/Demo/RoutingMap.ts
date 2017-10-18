@@ -168,7 +168,18 @@ demoRoutingMap.addRoute('React', 'CommonPanelTable', 'Common Panel (Table)', (st
 demoRoutingMap.addRoute('React', 'CommonPanelTest', 'Common Panel (Test)', (state: any) => 'CommonPanelTest');
 demoRoutingMap.addRoute('React', 'ObservableWrapper', 'Observable Wrapper', (state: any) => 'ObservableWrapper');
 
-demoRoutingMap.addRoute('webrx-react', 'Search', 'Search', (state: any) => new Components.SearchViewModel());
+demoRoutingMap.addRoute('webrx-react', 'Search', 'Search', (state: any) => {
+  const viewModel = new Components.SearchViewModel();
+
+  wx
+    .whenAny(viewModel.requests, x => x)
+    .filterNull()
+    .subscribe(x => {
+      Alert.create(String.stringify(x), 'Search Requested');
+    });
+
+  return viewModel;
+});
 demoRoutingMap.addRoute('webrx-react', 'TimeSpanInput', 'Time Span Input', (state: any) => new Components.TimeSpanInputViewModel(true, Components.TimeSpanUnitType.Seconds));
 demoRoutingMap.addRoute('webrx-react', 'ItemsList', 'Items (List)', (state: any) => new Components.ItemsViewModel(sampleListData));
 demoRoutingMap.addRoute('webrx-react', 'ItemsWrap', 'Items (Wrap)', (state: any) => new Components.ItemsViewModel(sampleListData));

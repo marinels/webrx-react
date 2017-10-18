@@ -5,7 +5,7 @@ import { Property } from '../../../WebRx';
 import { Loading } from '../Loading/Loading';
 import { wxr } from '../../React';
 
-export interface SplashProps extends React.HTMLAttributes<Splash> {
+export interface SplashProps {
   header: any;
   logo?: string;
   text?: string;
@@ -13,7 +13,10 @@ export interface SplashProps extends React.HTMLAttributes<Splash> {
   fluid?: boolean;
 }
 
-export class Splash extends React.Component<SplashProps> {
+export interface SplashComponentProps extends React.HTMLProps<Splash>, SplashProps {
+}
+
+export class Splash extends React.Component<SplashComponentProps> {
   public static displayName = 'Splash';
 
   static defaultProps = {

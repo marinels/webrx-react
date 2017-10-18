@@ -33,14 +33,17 @@ export interface BindableProps {
   valueSetter?: (property: any, value: any) => void;
 }
 
-export interface BindableInputProps extends React.AllHTMLAttributes<BindableInput>, BindableProps {
+export interface BindableInputProps extends BindableProps {
   /**
    * input property (or value)
    */
-  property: any;
+  boundProperty: any;
 }
 
-export class BindableInput extends React.Component<BindableInputProps> {
+export interface BindableInputComponentProps extends React.AllHTMLAttributes<BindableInput>, BindableInputProps {
+}
+
+export class BindableInput extends React.Component<BindableInputComponentProps> {
   public static displayName = 'BindableInput';
 
   static defaultProps = {
@@ -57,17 +60,17 @@ export class BindableInput extends React.Component<BindableInputProps> {
   };
 
   componentWillMount() {
-    validateBindableProperty(this.props.property);
+    validateBindableProperty(this.props.boundProperty);
   }
 
-  componentWillReceiveProps(nextProps: BindableInputProps) {
-    validateBindableProperty(nextProps.property);
+  componentWillReceiveProps(nextProps: Readonly<BindableInputComponentProps>) {
+    validateBindableProperty(nextProps.boundProperty);
   }
 
   render() {
     const { className, children, props, rest } = this.restProps(x => {
-      const { property, converter, valueProperty, onChangeProperty, valueGetter, valueSetter } = x;
-      return { property, converter, valueProperty, onChangeProperty, valueGetter, valueSetter };
+      const { boundProperty, converter, valueProperty, onChangeProperty, valueGetter, valueSetter } = x;
+      return { boundProperty, converter, valueProperty, onChangeProperty, valueGetter, valueSetter };
     });
 
     const bindProps: any = {};
@@ -87,7 +90,7 @@ export class BindableInput extends React.Component<BindableInputProps> {
 
   protected getValue() {
     try {
-      return this.props.valueGetter!(this.props.property);
+      return this.props.valueGetter!(this.props.boundProperty);
     }
     catch (e) {
       wx.handleError(e);
@@ -105,7 +108,7 @@ export class BindableInput extends React.Component<BindableInputProps> {
         value = this.props.converter(value);
       }
 
-      this.props.valueSetter!(this.props.property, value);
+      this.props.valueSetter!(this.props.boundProperty, value);
 
       this.forceUpdate();
     }

@@ -20,7 +20,10 @@ export interface GridViewColumnProps {
   width?: number | string;
 }
 
-export class GridViewColumn extends React.Component<GridViewColumnProps> {
+export interface GridViewColumnComponentProps extends GridViewColumnProps {
+}
+
+export class GridViewColumn extends React.Component<GridViewColumnComponentProps> {
   public static displayName = 'GridViewColumn';
 
   static defaultProps = {

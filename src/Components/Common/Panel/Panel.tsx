@@ -52,7 +52,7 @@ export interface PanelTemplateProps<T extends PanelItemContext = PanelItemContex
   itemTemplate?: PanelItemTemplate<T>;
 }
 
-export interface PanelProps extends React.HTMLAttributes<PanelProps>, PanelItemProps, PanelTemplateProps {
+export interface PanelProps extends PanelItemProps, PanelTemplateProps {
 }
 
 export abstract class Panel<TProps extends PanelProps> extends React.Component<TProps> {

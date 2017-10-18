@@ -17,7 +17,10 @@ export interface GridRenderProps {
 export interface GridProps extends PanelProps, GridRenderProps {
 }
 
-export class Grid extends Panel<GridProps> {
+export interface GridComponentProps extends React.HTMLAttributes<Grid>, GridProps {
+}
+
+export class Grid extends Panel<GridComponentProps> {
   public static displayName = 'Grid';
 
   /**

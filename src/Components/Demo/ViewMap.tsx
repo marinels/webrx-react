@@ -577,7 +577,7 @@ export const demoViewMap: ViewActivatorMap = {
   ModalDialogViewModel: (data: { viewModel: Components.ModalDialogViewModel<string>, createContext: Command<string>, accept: Command<any>, reject: Command<any> }) => (
     <div>
       <Button onClick={ wxr.bindEventToCommand(data.viewModel, x => data.createContext, () => 'You can put custom content here') }>Show Confirmation Dialog</Button>
-      <Components.ModalDialogView viewModel={ data.viewModel } title='Demo Modal Confirmation Dialog' body={ () => data.viewModel.context.value } bsSize='lg'>
+      <Components.ModalDialogView viewModel={ data.viewModel } modalTitle='Demo Modal Confirmation Dialog' modalBody={ () => data.viewModel.context.value } bsSize='lg'>
         <Components.CommandButton bsStyle='primary' command={ data.viewModel.hideOnExecute(data.accept) } commandParameter={ () => data.viewModel.context.value }>Accept</Components.CommandButton>
         <Components.CommandButton bsStyle='danger' command={ data.viewModel.hideOnExecute(data.reject) } commandParameter={ () => data.viewModel.context.value }>Reject</Components.CommandButton>
         <Components.CommandButton bsStyle='default' command={ data.viewModel.hide }>Cancel</Components.CommandButton>

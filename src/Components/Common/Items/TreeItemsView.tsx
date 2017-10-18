@@ -2,14 +2,17 @@ import * as React from 'react';
 import { Iterable } from 'ix';
 
 import { wxr } from '../../React';
-import { ItemsProps, ItemsView } from './ItemsView';
+import { ItemsProps, ItemsViewProps, ItemsView } from './ItemsView';
 import { TreeItemFacadeProps, TreeItem } from './TreeItem';
 import { ItemsPresenter } from './ItemsPresenter';
 
-export interface TreeProps extends ItemsProps, TreeItemFacadeProps {
+export interface TreeItemsProps extends ItemsProps, TreeItemFacadeProps {
 }
 
-export class TreeItemsView extends React.Component<TreeProps> {
+export interface TreeItemsViewProps extends ItemsViewProps, TreeItemsProps {
+}
+
+export class TreeItemsView extends React.Component<TreeItemsViewProps> {
   public static displayName = 'TreeItemsView';
 
   render() {

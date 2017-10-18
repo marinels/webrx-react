@@ -7,10 +7,13 @@ import { AlertView } from './AlertView';
 import { AlertHostViewModel } from './AlertHostViewModel';
 import { AlertViewModel } from './AlertViewModel';
 
-export interface AlertHostProps extends BaseViewProps {
+export interface AlertHostProps {
 }
 
-export class AlertHostView extends BaseView<AlertHostProps, AlertHostViewModel> {
+export interface AlertHostViewProps extends BaseViewProps<AlertHostViewModel, AlertHostView>, AlertHostProps {
+}
+
+export class AlertHostView extends BaseView<AlertHostViewProps, AlertHostViewModel> {
   public static displayName = 'AlertHostView';
 
   updateOn(viewModel: Readonly<AlertHostViewModel>) {

@@ -69,7 +69,10 @@ export interface UniformGridPanelProps extends PanelProps, UniformRowItemProps, 
   emptyTemplate?: (row: number, column: number) => PanelFragment;
 }
 
-export class UniformGridPanel extends Panel<UniformGridPanelProps> {
+export interface UniformGridPanelComponentProps extends React.HTMLProps<UniformGridPanel>, UniformGridPanelProps {
+}
+
+export class UniformGridPanel extends Panel<UniformGridPanelComponentProps> {
   public static displayName = 'UniformGridPanel';
 
   static defaultProps = {

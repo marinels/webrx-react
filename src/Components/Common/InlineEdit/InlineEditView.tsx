@@ -9,7 +9,7 @@ import { BindableInput, BindableProps } from '../BindableInput/BindableInput';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { InlineEditViewModel } from './InlineEditViewModel';
 
-export interface InlineEditProps extends BaseViewProps, BindableProps {
+export interface InlineEditProps extends BindableProps {
   controlId?: string;
   inputType?: string;
   placeholder?: string;
@@ -22,7 +22,10 @@ export interface InlineEditProps extends BaseViewProps, BindableProps {
   errorPlacement?: string;
 }
 
-export class InlineEditView extends BaseView<InlineEditProps, InlineEditViewModel<{}>> {
+export interface InlineEditViewProps extends BaseViewProps<InlineEditViewModel<{}>, InlineEditView>, InlineEditProps {
+}
+
+export class InlineEditView extends BaseView<InlineEditViewProps, InlineEditViewModel<{}>> {
   public static displayName = 'InlineEditView';
 
   static defaultProps = {
@@ -143,7 +146,7 @@ export class InlineEditView extends BaseView<InlineEditProps, InlineEditViewMode
     const onKeyDown = this.props.keyboard === true ? (e: React.KeyboardEvent<any>) => this.handleKeyDown(e) : undefined;
 
     return (
-      <BindableInput { ...props } property={ this.viewModel.editValue } onKeyDown={ onKeyDown } disabled={ this.viewModel.save.canExecute === false } >
+      <BindableInput { ...props } boundProperty={ this.viewModel.editValue } onKeyDown={ onKeyDown } disabled={ this.viewModel.save.canExecute === false } >
         {
           React.cloneElement(
             this.props.editTemplate!(this.viewModel.editValue.value, this),

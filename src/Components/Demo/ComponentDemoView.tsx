@@ -16,11 +16,14 @@ export interface ViewActivatorMap {
   [key: string]: ViewActivator;
 }
 
-export interface ComponentDemoProps extends BaseViewProps {
+export interface ComponentDemoProps {
   viewMap: ViewActivatorMap;
 }
 
-export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDemoViewModel> {
+export interface ComponentDemoViewProps extends BaseViewProps<ComponentDemoViewModel, ComponentDemoView>, ComponentDemoProps {
+}
+
+export class ComponentDemoView extends BaseView<ComponentDemoViewProps, ComponentDemoViewModel> {
   public static displayName = 'ComponentDemoView';
 
   updateOn(viewModel: Readonly<ComponentDemoViewModel>) {

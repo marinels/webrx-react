@@ -34,10 +34,13 @@ export interface ItemsPresenterSourceProps {
   itemsSource?: IterableLike<{}>;
 }
 
-export interface ItemsPresenterProps extends React.HTMLAttributes<ItemsPresenterProps>, ItemsPresenterTemplateProps, ItemsPresenterSourceProps, PanelItemProps {
+export interface ItemsPresenterProps extends ItemsPresenterTemplateProps, ItemsPresenterSourceProps, PanelItemProps {
 }
 
-export class ItemsPresenter extends React.Component<ItemsPresenterProps> {
+export interface ItemsPresenterComponentProps extends React.HTMLAttributes<ItemsPresenter>, ItemsPresenterProps {
+}
+
+export class ItemsPresenter extends React.Component<ItemsPresenterComponentProps> {
   public static displayName = 'ItemsPresenter';
 
   public static defaultItemTemplate(item: {}, index: number) {

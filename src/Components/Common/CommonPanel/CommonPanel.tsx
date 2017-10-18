@@ -9,20 +9,25 @@ export type CommonPanelSectionFormatter = (section: any) => any;
 export type CommonPanelContentSection = 'header' | 'body' | 'footer';
 export type CommonPanelContentType = 'teaser' | 'summary';
 
-export interface CommonPanelProps extends PanelProps {
+export type PanelAction = CommandButtonProps & { children?: React.ReactNode; };
+
+export interface CommonPanelProps {
   headerContent?: CommonPannelContent;
-  headerActions?: CommandButtonProps[];
+  headerActions?: Array<PanelAction>;
   headerFormat?: CommonPanelSectionFormatter;
   teaserContent?: CommonPannelContent;
   summaryContent?: CommonPannelContent;
   footerContent?: CommonPannelContent;
-  footerActions?: CommandButtonProps[];
+  footerActions?: Array<PanelAction>;
   footerFormat?: CommonPanelSectionFormatter;
 
   shadow?: boolean;
 }
 
-export class CommonPanel extends React.Component<CommonPanelProps> {
+export interface CommonPanelComponentProps extends PanelProps, CommonPanelProps {
+}
+
+export class CommonPanel extends React.Component<CommonPanelComponentProps> {
   public static displayName = 'CommonPanel';
 
   static defaultProps = {

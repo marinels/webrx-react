@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
 
-import { BaseView } from '../../React';
+import { BaseView, BaseViewProps } from '../../React';
 import { ListItemsViewTemplateProps } from './ListItemsViewTemplate';
 import { ItemsProps } from '../Items/ItemsView';
 import { ListGroupView } from './ListGroupView';
@@ -11,7 +11,10 @@ export interface ListItemsProps extends ItemsProps  {
   view?: React.ReactElement<ListItemsViewTemplateProps>;
 }
 
-export class ListItemsView extends BaseView<ListItemsProps, ListItemsViewModel<{}>> {
+export interface ListItemsViewProps extends BaseViewProps<ListItemsViewModel<{}>, ListItemsView>, ListItemsProps {
+}
+
+export class ListItemsView extends BaseView<ListItemsViewProps, ListItemsViewModel<{}>> {
   static defaultProps = {
     view: (<ListGroupView />),
   };

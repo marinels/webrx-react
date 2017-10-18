@@ -6,7 +6,7 @@ import { Grid, Row, Col } from 'react-bootstrap';
 import { BaseView, BaseViewProps } from '../../React';
 import { PageFooterViewModel, ViewportDimensions } from './PageFooterViewModel';
 
-export interface PageFooterProps extends BaseViewProps {
+export interface PageFooterProps {
   copyright?: string | boolean;
   copyrightYear?: number | string;
   copyrightUri?: string;
@@ -14,13 +14,16 @@ export interface PageFooterProps extends BaseViewProps {
   hideDimensions?: boolean;
 }
 
-export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewModel> {
+export interface PageFooterViewProps extends BaseViewProps<PageFooterViewModel, PageFooterView>, PageFooterProps {
+}
+
+export class PageFooterView extends BaseView<PageFooterViewProps, PageFooterViewModel> {
   public static displayName = 'PageFooterView';
 
   static defaultProps = {
   };
 
-  constructor(props?: PageFooterProps, context?: any) {
+  constructor(props?: PageFooterViewProps, context?: any) {
     super(props, context);
 
     this.bindObservableToCommand(

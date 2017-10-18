@@ -4,7 +4,7 @@ import { Icon, IconSize } from 'react-fa';
 
 import { wxr } from '../../React';
 
-export interface ProfilePictureProps extends React.HTMLAttributes<ProfilePicture> {
+export interface ProfilePictureProps {
   src?: string;
   size?: number;
   responsive?: boolean;
@@ -16,9 +16,12 @@ export interface ProfilePictureProps extends React.HTMLAttributes<ProfilePicture
   iconSize?: IconSize;
 }
 
+export interface ProfilePictureComponentProps extends React.HTMLProps<ProfilePicture>, ProfilePictureProps {
+}
+
 const dataUriPrefix = 'data:image;base64,';
 
-export class ProfilePicture extends React.Component<ProfilePictureProps> {
+export class ProfilePicture extends React.Component<ProfilePictureComponentProps> {
   public static displayName = 'ProfilePicture';
 
   static defaultProps = {

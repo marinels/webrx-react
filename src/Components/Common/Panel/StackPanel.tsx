@@ -16,7 +16,10 @@ export interface StackPanelProps extends PanelProps {
   orientation?: StackPanelOrientation | keyof typeof StackPanelOrientation;
 }
 
-export class StackPanel extends Panel<StackPanelProps> {
+export interface StackPanelComponentProps extends React.HTMLProps<StackPanel>, StackPanelProps {
+}
+
+export class StackPanel extends Panel<StackPanelComponentProps> {
   public static displayName = 'StackPanel';
 
   public static defaultOrientiation = StackPanelOrientation.Vertical;

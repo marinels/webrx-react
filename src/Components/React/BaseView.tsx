@@ -13,7 +13,7 @@ export interface ViewModelProps<T extends BaseViewModel> {
   viewModel: Readonly<T>;
 }
 
-export interface BaseViewProps<TViewModel extends BaseViewModel = BaseViewModel, TView = any> extends ViewModelProps<TViewModel>, React.HTMLProps<TView> {
+export interface BaseViewProps<TViewModel extends BaseViewModel, TView> extends ViewModelProps<TViewModel>, React.HTMLProps<TView> {
 }
 
 export interface ViewModelState<T extends BaseViewModel> {

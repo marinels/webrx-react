@@ -20,11 +20,14 @@ export interface GridTemplateProps {
   cellTemplate?: (cell: PanelFragment, item: {} | undefined, field: string | undefined) => PanelFragment;
 }
 
-export interface GridFacadeProps extends GridTemplateProps, ListItemsViewTemplateProps {
+export interface GridViewProps extends GridTemplateProps, ListItemsViewTemplateProps {
   fill?: boolean;
 }
 
-export class GridView extends ListItemsViewTemplate<GridFacadeProps> {
+export interface GridViewComponentProps extends React.HTMLProps<GridView>, GridViewProps {
+}
+
+export class GridView extends ListItemsViewTemplate<GridViewProps> {
   public static displayName = 'GridView';
 
   private readonly logger: Logging.Logger = Logging.getLogger(GridView.displayName);

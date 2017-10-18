@@ -11,7 +11,10 @@ export interface ListGroupViewProps extends ListItemsViewTemplateProps {
   fill?: boolean;
 }
 
-export class ListGroupView extends ListItemsViewTemplate<ListGroupViewProps> {
+export interface ListGroupViewComponentProps extends React.HTMLProps<ListGroupView>, ListGroupViewProps {
+}
+
+export class ListGroupView extends ListItemsViewTemplate<ListGroupViewComponentProps> {
   render() {
     const { className, rest } = this.restProps(x => {
       const { fill, listItems, itemsProps } = x;
