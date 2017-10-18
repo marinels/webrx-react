@@ -12,7 +12,7 @@ export * from './PageFooter/PageFooterViewModel';
 export * from './PageHeader/PageHeaderViewModel';
 export * from './Items/ItemsViewModel';
 export * from './ListItems/ListItemsViewModel';
-export * from './List/ListViewModel';
+// export * from './List/ListViewModel';
 // export * from './DataGrid/DataGridViewModel';
 // export * from './DataGrid/AsyncDataGridViewModel';
 // export * from './ItemListPanel/BaseItemListPanelViewModel';
