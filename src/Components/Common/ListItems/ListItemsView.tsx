@@ -9,29 +9,45 @@ import { ListItemsViewModel } from './ListItemsViewModel';
 
 export interface ListItemsProps extends ItemsProps  {
   view?: React.ReactElement<ListItemsViewTemplateProps>;
+  children?: React.ReactNode;
 }
 
 export class ListItemsView extends BaseView<ListItemsProps, ListItemsViewModel<{}>> {
-  static defaultProps = {
-    view: (<ListGroupView />),
-  };
+  public static renderDefaultListItemsView() {
+    return (
+      <ListGroupView />
+    );
+  }
+
+  public static getListItemsView<T extends ListItemsProps>(
+    props: T,
+    defaultListItemsView: (props: T) => React.ReactElement<ListItemsViewTemplateProps>,
+  ): React.ReactElement<ListItemsViewTemplateProps> {
+    if (props.view != null) {
+      return props.view;
+    }
+
+    if (React.Children.count(props.children) === 1) {
+      return React.Children.only(props.children);
+    }
+
+    return defaultListItemsView(props);
+  }
 
   render() {
-    const { className, props, rest } = this.restProps(x => {
+    const { className, children, props, rest } = this.restProps(x => {
       const { view } = x;
       return { view };
     });
 
-    if (props.view == null) {
-      return null;
-    }
+    const listItemsView = ListItemsView.getListItemsView(this.props, ListItemsView.renderDefaultListItemsView);
 
     const viewProps: ListItemsViewTemplateProps = {
-      itemsProps: React.Component.trimProps(Object.assign({}, props.view.props.itemsProps, rest)),
+      itemsProps: React.Component.trimProps(Object.assign({}, listItemsView.props.itemsProps, rest)),
       listItems: this.viewModel,
-      className: classNames('ListItems', className, props.view.props.className),
+      className: classNames('ListItems', className, listItemsView.props.className),
     };
 
-    return React.cloneElement(props.view, viewProps);
+    return React.cloneElement(listItemsView, viewProps);
   }
 }
