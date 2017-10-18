@@ -7,7 +7,7 @@ import { wx } from '../../../WebRx';
 import { compare } from '../../../Utils/Compare';
 import { ListItemsViewModel } from './ListItemsViewModel';
 
-export type SelectedPropsFunction = (isSelected: boolean, elem: React.ReactElement<React.HTMLAttributes<any>>) => {};
+export type SelectedPropsFunction = (isSelected: boolean, elem: React.ReactElement<React.HTMLAttributes<{}>>) => {};
 
 export interface SelectableListItemProps {
   listItems: Readonly<ListItemsViewModel<{}>>;
@@ -20,17 +20,36 @@ export class SelectableListItem extends React.Component<SelectableListItemProps>
     selectedProps: () => ({}),
   };
 
-  private isSelectedSubscription: Subscription | undefined;
+  private isSelectedSubscription = Subscription.EMPTY;
 
-  componentDidMount() {
+  private subscribeToUpdates(listItems: Readonly<ListItemsViewModel<{}>>) {
+    this.unsubscribeFromUpdates();
+
     this.isSelectedSubscription = wx
-      .whenAny(this.props.listItems.selectedItems, x => x)
+      .whenAny(listItems.selectedItems, x => x)
+      // skip the first result (we already a render queued)
+      .skip(1)
+      // remove nulls (shouldn't be possible)
+      .filterNull()
       .subscribe(() => this.forceUpdate());
   }
 
+  private unsubscribeFromUpdates() {
+    if (this.isSelectedSubscription !== Subscription.EMPTY) {
+      this.isSelectedSubscription = Subscription.unsubscribe(this.isSelectedSubscription);
+    }
+  }
+
+  componentDidMount() {
+    this.subscribeToUpdates(this.props.listItems);
+  }
+
+  componentWillUpdate(nextProps: Readonly<SelectableListItemProps>) {
+    this.subscribeToUpdates(nextProps.listItems);
+  }
+
   componentWillUnmount() {
-    Subscription.unsubscribe(this.isSelectedSubscription);
-    this.isSelectedSubscription = undefined;
+    this.unsubscribeFromUpdates();
   }
 
   render() {

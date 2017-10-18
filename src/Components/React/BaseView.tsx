@@ -13,7 +13,7 @@ export interface ViewModelProps<T extends BaseViewModel = BaseViewModel> {
   viewModel: Readonly<T>;
 }
 
-export interface BaseViewProps<TViewModel extends BaseViewModel = BaseViewModel, TView extends BaseView<any, any> = any> extends ViewModelProps<TViewModel>, React.HTMLProps<TView> {
+export interface BaseViewProps<TViewModel extends BaseViewModel = BaseViewModel, TView = any> extends ViewModelProps<TViewModel>, React.HTMLProps<TView> {
 }
 
 export interface ViewModelState<T extends BaseViewModel> {
@@ -113,7 +113,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
   componentWillMount() {
     this.initializeView();
 
-    this.subscribeToUpdates(this.state);
+    this.subscribeToUpdates(this.props, this.state);
 
     this.logger.debug('rendering');
   }
@@ -122,7 +122,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
     this.loadedView();
   }
 
-  componentWillReceiveProps(nextProps: TViewProps, nextContext: any) {
+  componentWillReceiveProps(nextProps: Readonly<TViewProps>, nextContext: any) {
     // if the view model changed we need to do some teardown and setup
     if (nextProps.viewModel !== this.viewModel) {
       this.logger.info('ViewModel Change Detected');
@@ -135,8 +135,8 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
     }
   }
 
-  componentWillUpdate(nextProps: TViewProps, nextState: TViewModel, nextContext: any) {
-    this.updatingView(nextProps);
+  componentWillUpdate(nextProps: Readonly<TViewProps>, nextState: Readonly<TViewModel>, nextContext: any) {
+    this.updatingView(nextProps, nextState);
 
     // check if we need to re-subscripe to updates (if our view model changed)
     if (this.updateSubscription === Subscription.EMPTY) {
@@ -157,7 +157,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
       // we wrap our call to subscribeToUpdates with an assignment of the nextState
       // this patches how updateOn works until it supports async behaviour
       this.nextState = nextState;
-      this.subscribeToUpdates(nextState);
+      this.subscribeToUpdates(nextProps, nextState);
       this.nextState = undefined;
 
       if (isViewModelLifecycle(nextViewModel)) {
@@ -169,8 +169,8 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
     this.logger.debug('re-rendering');
   }
 
-  componentDidUpdate(prevProps: TViewProps, prevState: TViewModel, prevContext: any) {
-    this.updatedView(prevProps);
+  componentDidUpdate(prevProps: Readonly<TViewProps>, prevState: Readonly<TViewModel>, prevContext: any) {
+    this.updatedView(prevProps, prevState);
   }
 
   componentWillUnmount() {
@@ -199,12 +199,12 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
     }
   }
 
-  private updatingView(nextProps: TViewProps) {
-    this.updating(nextProps);
+  private updatingView(nextProps: Readonly<TViewProps>, nextState: Readonly<TViewModel>) {
+    this.updating(nextProps, nextState);
   }
 
-  private updatedView(prevProps: TViewProps) {
-    this.updated(prevProps);
+  private updatedView(prevProps: Readonly<TViewProps>, prevState: Readonly<TViewModel>) {
+    this.updated(prevProps, prevState);
   }
 
   private cleanupView() {
@@ -227,11 +227,11 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
     // do nothing by default
   }
 
-  protected updating(nextProps: TViewProps) {
+  protected updating(nextProps: Readonly<TViewProps>, nextState: Readonly<TViewModel>) {
     // do nothing by default
   }
 
-  protected updated(prevProps: TViewProps) {
+  protected updated(prevProps: Readonly<TViewProps>, prevState: Readonly<TViewModel>) {
     // do nothing by default
   }
 
@@ -240,11 +240,12 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
   }
   // -----------------------------------------
 
-  protected subscribeToUpdates(state: Readonly<TViewModel>) {
+  protected subscribeToUpdates(props: Readonly<TViewProps>, state: Readonly<TViewModel>) {
     const viewModel = this.getViewModelFromState(state);
-    const updateProps = this.updateOn(state);
-
-    updateProps.push(viewModel.stateChanged.results);
+    const updateProps = this.updateOn(viewModel)
+      .asIterable()
+      .concat([ viewModel.stateChanged.results ])
+      .toArray();
 
     this.updateSubscription = Observable
       .merge(...updateProps)
@@ -310,11 +311,11 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
   }
   // -----------------------------------------
 
-  protected createStateFromProps(props: TViewProps): Readonly<TViewModel> {
+  protected createStateFromProps(props: Readonly<TViewProps>): Readonly<TViewModel> {
     return props.viewModel;
   }
 
-  protected getViewModelFromState(state: Readonly<TViewModel>) {
+  protected getViewModelFromState(state: Readonly<TViewModel>): Readonly<TViewModel> {
     return state;
   }
 

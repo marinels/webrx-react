@@ -42,7 +42,7 @@ export interface TabsProps extends BaseViewProps {
   template?: TabRenderTemplate<any>;
 }
 
-export class TabsView extends BaseView<TabsProps, TabsViewModel<any>> {
+export class TabsView extends BaseView<TabsProps, TabsViewModel<{}>> {
   public static displayName = 'TabsView';
 
   updateOn(viewModel: Readonly<TabsViewModel<{}>>) {

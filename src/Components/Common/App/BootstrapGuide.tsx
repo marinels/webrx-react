@@ -10,7 +10,7 @@ export const BootstrapGuideOffset = 5;
 export interface BootstrapGuideProps {
 }
 
-export class BootstrapGuide extends React.Component<BootstrapGuideProps, any> {
+export class BootstrapGuide extends React.Component<BootstrapGuideProps> {
   private mouseMoveSub = Subscription.EMPTY;
 
   componentDidMount() {

@@ -23,7 +23,7 @@ export interface ContextMenuState {
 // error. So to circumvent this issue, we use this container wrapper that consumes
 // all those Overlay injected props and only passes on the className and children.
 // We still need to 'support' all the PopoverProps to eliminate the error.
-class ContextMenuContainer extends React.Component<PopoverProps, any> {
+class ContextMenuContainer extends React.Component<PopoverProps> {
   render() {
     return (
       <div className={ wxr.classNames('ContextMenu-container', this.props.className) }>
