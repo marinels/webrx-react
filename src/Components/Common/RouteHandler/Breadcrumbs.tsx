@@ -6,7 +6,6 @@ import { wxr, RoutingBreadcrumb } from '../../React';
 import { CommandButton } from '../CommandButton/CommandButton';
 
 export interface BreadcrumbsProps {
-  // id?: string;
   pinnable?: boolean;
   items?: RoutingBreadcrumb[];
 }
