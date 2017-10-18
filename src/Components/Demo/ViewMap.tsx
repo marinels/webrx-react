@@ -432,46 +432,30 @@ export const demoViewMap: ViewActivatorMap = {
         );
       case 'ListItemsListGroup':
         return (
-          <Components.ListItemsView
-            viewModel={ viewModel }
-            view={ (<Components.ListGroupView itemsProps={({ viewTemplate: x => (<div style={({ padding: 10, backgroundColor: 'blue' })}>{ x }</div>) })} />) }
-            itemTemplate={ sampleDataTemplate }
-          />
+          <Components.ListItemsView viewModel={ viewModel } itemTemplate={ sampleDataTemplate }>
+            <Components.ListGroupView itemsProps={({ viewTemplate: x => (<div style={({ padding: 10, backgroundColor: 'blue' })}>{ x }</div>) })} />
+          </Components.ListItemsView>
         );
       case 'ListItemsGrid':
         return (
-          <Components.ListItemsView
-            viewModel={ viewModel }
-            view={(
-              <Components.GridView>
-                <Components.GridViewColumn header='Id' cellTemplate={ (x: SampleData) => x.id } />
-                <Components.GridViewColumn header='Category' cellTemplate={ (x: SampleData) => x.cat } />
-                <Components.GridViewColumn header='Name' cellTemplate={ (x: SampleData) => x.name } />
-                <Components.GridViewColumn header='Required By' cellTemplate={ (x: SampleData) => (<div>{ x.requiredBy }</div>) } />
-              </Components.GridView>
-            )}
-          />
+          <Components.ListItemsView viewModel={ viewModel }>
+            <Components.GridView>
+              <Components.GridViewColumn header='Id' cellTemplate={ (x: SampleData) => x.id } />
+              <Components.GridViewColumn header='Category' cellTemplate={ (x: SampleData) => x.cat } />
+              <Components.GridViewColumn header='Name' cellTemplate={ (x: SampleData) => x.name } />
+              <Components.GridViewColumn header='Required By' cellTemplate={ (x: SampleData) => (<div>{ x.requiredBy }</div>) } />
+            </Components.GridView>
+          </Components.ListItemsView>
         );
       case 'ListItemsGridAuto':
         return (
-          <Components.ListItemsView
-            viewModel={ viewModel }
-            view={(
-              <Components.GridView />
-            )}
-          />
+          <Components.ListItemsView viewModel={ viewModel } view={ (<Components.GridView />) } />
         );
       case 'ListItemsTree':
         return (
-          <Components.ListItemsView
-            viewModel={ viewModel }
-            itemTemplate={ sampleDataTemplate }
-            view={(
-              <Components.TreeView
-                itemsSource={ (x: SampleTreeData) => x.items }
-              />
-            )}
-          />
+          <Components.ListItemsView viewModel={ viewModel } itemTemplate={ sampleDataTemplate }>
+            <Components.TreeView itemsSource={ (x: SampleTreeData) => x.items } />
+          </Components.ListItemsView>
         );
       default:
         return null;
