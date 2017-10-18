@@ -46,8 +46,14 @@ export class BindableInput extends React.Component<BindableInputProps> {
   static defaultProps = {
     valueProperty: 'value',
     onChangeProperty: 'onChange',
-    valueGetter: (property: Property<any>) => { return property.value; },
-    valueSetter: (property: Property<any>, value: any) => { property.value = value; },
+    valueGetter: (property: any) => {
+      return wx.isProperty(property) ? property.value : property;
+    },
+    valueSetter: (property: any, value: any) => {
+      if (wx.isProperty(property)) {
+        property.value = value;
+      }
+    },
   };
 
   componentWillMount() {
