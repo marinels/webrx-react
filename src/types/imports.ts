@@ -1,2 +1,2 @@
-// import missing ix operators
-import 'ix/add/iterable-operators/orderby';
+// no imports at the moment so just export an empty structure
+export {};
