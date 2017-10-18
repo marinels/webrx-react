@@ -10,8 +10,8 @@ import { Logging, Alert } from '../../Utils';
 import { wxr } from '../React';
 import { SampleData, SampleTreeData, sampleListData, sampleTreeData } from './RoutingMap';
 import * as Components from '../Common';
-import { TodoListView } from './TodoList/TodoListView';
-import { TodoListViewModel } from './TodoList/TodoListViewModel';
+// import { TodoListView } from './TodoList/TodoListView';
+// import { TodoListViewModel } from './TodoList/TodoListViewModel';
 import { ComponentDemoViewModel } from './ComponentDemoViewModel';
 import { ComponentDemoView, ViewActivatorMap } from './ComponentDemoView';
 import { ViewMap as AppViewMap } from '../../Routing/ViewMap';
@@ -31,57 +31,57 @@ const sampleDataTemplate = (x: SampleData) => {
   );
 };
 
-const listTemplate = new Components.ListViewTemplate<SampleData>(
-  (x, i, vm, v) => {
-    return sampleDataTemplate(x);
-  },
-  (x, i, vm, v) => {
-    return [
-      <Components.NavButton key='nav' href={ `#/name/${ x.name }` } />,
-    ];
-  },
-);
+// const listTemplate = new Components.ListViewTemplate<SampleData>(
+//   (x, i, vm, v) => {
+//     return sampleDataTemplate(x);
+//   },
+//   (x, i, vm, v) => {
+//     return [
+//       <Components.NavButton key='nav' href={ `#/name/${ x.name }` } />,
+//     ];
+//   },
+// );
 
-// this template renders a custom template container to show how we can
-// inject a custom button that wraps our item template
-const listCmdTemplate = new Components.ListViewTemplate<SampleData>(
-  (x, i, vm, v) => {
-    return sampleDataTemplate(x);
-  },
-  undefined, undefined,
-  (contents, x, i, vm, v) => {
-    return (
-      <Components.CommandButton block plain href={ `#/name/${ x.name }` }>
-        { contents }
-      </Components.CommandButton>
-    );
-  },
-);
+// // this template renders a custom template container to show how we can
+// // inject a custom button that wraps our item template
+// const listCmdTemplate = new Components.ListViewTemplate<SampleData>(
+//   (x, i, vm, v) => {
+//     return sampleDataTemplate(x);
+//   },
+//   undefined, undefined,
+//   (contents, x, i, vm, v) => {
+//     return (
+//       <Components.CommandButton block plain href={ `#/name/${ x.name }` }>
+//         { contents }
+//       </Components.CommandButton>
+//     );
+//   },
+// );
 
-const treeTemplate = new Components.TreeViewTemplate<SampleTreeData>(
-  (x, vm, v) => x.items,
-  (n, x, i, vm, v) => {
-    return sampleDataTemplate(x);
-  },
-  (n, x, i, vm, v) => {
-    return [
-      <Components.NavButton key='nav' href={ `#/name/${ x.name }` } />,
-    ];
-  },
-  x => x.key,
-  undefined,
-  (x, vm, v) => {
-    const search: Components.SearchViewModel = vm.getSearch();
+// const treeTemplate = new Components.TreeViewTemplate<SampleTreeData>(
+//   (x, vm, v) => x.items,
+//   (n, x, i, vm, v) => {
+//     return sampleDataTemplate(x);
+//   },
+//   (n, x, i, vm, v) => {
+//     return [
+//       <Components.NavButton key='nav' href={ `#/name/${ x.name }` } />,
+//     ];
+//   },
+//   x => x.key,
+//   undefined,
+//   (x, vm, v) => {
+//     const search: Components.SearchViewModel = vm.getSearch();
 
-    if (search != null) {
-      return wx
-        .whenAny(search.filter, y => String.isNullOrEmpty(y) === false);
-    }
+//     if (search != null) {
+//       return wx
+//         .whenAny(search.filter, y => String.isNullOrEmpty(y) === false);
+//     }
 
-    return Observable.of(false);
-  },
-  true,
-);
+//     return Observable.of(false);
+//   },
+//   true,
+// );
 
 export const demoViewMap: ViewActivatorMap = {
   Loading: () => <Components.Loading text='Standard Loader...' />,
@@ -477,103 +477,103 @@ export const demoViewMap: ViewActivatorMap = {
         return null;
     }
   },
-  ListViewModel: (viewModel: Components.ListViewModel<any, any>, componentRoute: string) => {
-    switch (componentRoute) {
-      case 'List':
-        return (
-          <Components.ListView viewModel={ viewModel } viewTemplate={ listTemplate } />
-        );
-      case 'ListCmd':
-        return (
-          <Components.ListView viewModel={ viewModel } viewTemplate={ listCmdTemplate } />
-        );
-      case 'Tree':
-        return (
-          <Components.ListView viewModel={ viewModel } selectable checkmarkSelected viewTemplate={ treeTemplate } />
-        );
-      case 'PanelList':
-        return (
-          <Panel header='List View Embedded Within a Panel' style={({ margin: 0 })}>
-            <Components.ListView viewModel={ viewModel } selectable checkmarkSelected fill viewTemplate={ listTemplate } />
-          </Panel>
-        );
-      default:
-        return null;
-    }
-  },
-  DataGridViewModel: (viewModel: Components.DataGridViewModel<any>, componentRoute: string) => {
-    let view: Components.DataGridViewTemplate<SampleData> | undefined;
-    let columns: any;
-    let pager: any = true;
-    let search = false;
+  // ListViewModel: (viewModel: Components.ListViewModel<any, any>, componentRoute: string) => {
+  //   switch (componentRoute) {
+  //     case 'List':
+  //       return (
+  //         <Components.ListView viewModel={ viewModel } viewTemplate={ listTemplate } />
+  //       );
+  //     case 'ListCmd':
+  //       return (
+  //         <Components.ListView viewModel={ viewModel } viewTemplate={ listCmdTemplate } />
+  //       );
+  //     case 'Tree':
+  //       return (
+  //         <Components.ListView viewModel={ viewModel } selectable checkmarkSelected viewTemplate={ treeTemplate } />
+  //       );
+  //     case 'PanelList':
+  //       return (
+  //         <Panel header='List View Embedded Within a Panel' style={({ margin: 0 })}>
+  //           <Components.ListView viewModel={ viewModel } selectable checkmarkSelected fill viewTemplate={ listTemplate } />
+  //         </Panel>
+  //       );
+  //     default:
+  //       return null;
+  //   }
+  // },
+  // DataGridViewModel: (viewModel: Components.DataGridViewModel<any>, componentRoute: string) => {
+  //   let view: Components.DataGridViewTemplate<SampleData> | undefined;
+  //   let columns: any;
+  //   let pager: any = true;
+  //   let search = false;
 
-    if (componentRoute === 'DataGridList') {
-      pager = false;
-      search = true;
-      view = new Components.DataGridListViewTemplate<SampleData>(
-        x => sampleDataTemplate(x),
-      );
-    }
+  //   if (componentRoute === 'DataGridList') {
+  //     pager = false;
+  //     search = true;
+  //     view = new Components.DataGridListViewTemplate<SampleData>(
+  //       x => sampleDataTemplate(x),
+  //     );
+  //   }
 
-    if (componentRoute === 'DataGridPager') {
-      view = new Components.DataGridListViewTemplate<SampleData>(
-        x => sampleDataTemplate(x),
-      );
+  //   if (componentRoute === 'DataGridPager') {
+  //     view = new Components.DataGridListViewTemplate<SampleData>(
+  //       x => sampleDataTemplate(x),
+  //     );
 
-      // this is the simple method of overriding pager details
-      pager = { order: [ 'controls', 'info' ] };
-      // this method allows much more complex composition
-      // pager = (<DataGridView.Pager grid={ viewModel } viewTemplate={ view } order={ [ null, 'info' ] } />);
-    }
+  //     // this is the simple method of overriding pager details
+  //     pager = { order: [ 'controls', 'info' ] };
+  //     // this method allows much more complex composition
+  //     // pager = (<DataGridView.Pager grid={ viewModel } viewTemplate={ view } order={ [ null, 'info' ] } />);
+  //   }
 
-    if (componentRoute === 'DataGrid' || componentRoute === 'DataGridRoutingState') {
-      search = true;
-      columns = [
-        <Components.DataGridColumn key='id' fieldName='id' header='ID' sortable
-          tooltip={ (x: SampleData) => x == null ? null : (
-            <Tooltip id={ `${ x.id }-id-tt` }>{ `Cells support tooltips: ${ x.id }` }</Tooltip>
-          ) }
-        />,
-        <Components.DataGridColumn key='cat' fieldName='cat' header='Category' sortable />,
-        <Components.DataGridColumn key='name' fieldName='name' header='Name' sortable
-          tooltip={ (x: SampleData, index, column) => {
-            if (x == null) {
-              // header
-              return (
-                <Tooltip id='name-header-tt' placement='top'>{ `Headers can have tooltips too: ${ column.fieldName }` }</Tooltip>
-              );
-            }
-            else {
-              // cell
-              return (
-                <Popover id={ `${ x.id }-name-tt` } placement='left'>{ `You can use fancy popover tooltips: ${ x.name }` }</Popover>
-              );
-            }
-          } }
-        />,
-        <Components.DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 }
-          tooltip={ (x: SampleData) => x == null ? null : (
-            <OverlayTrigger placement='top'
-              overlay={ <Tooltip id={ `${ x.id }-requiredBy-tt` }>Even completely custom overlay triggers: { x.requiredBy }</Tooltip> }
-            />
-          ) }
-        />,
-        <Components.NavDataGridColumn key='nav' buttonProps={ (x: SampleData) => ({ href: `#/name/${ x.name }` }) } />,
-      ];
-    }
+  //   if (componentRoute === 'DataGrid' || componentRoute === 'DataGridRoutingState') {
+  //     search = true;
+  //     columns = [
+  //       <Components.DataGridColumn key='id' fieldName='id' header='ID' sortable
+  //         tooltip={ (x: SampleData) => x == null ? null : (
+  //           <Tooltip id={ `${ x.id }-id-tt` }>{ `Cells support tooltips: ${ x.id }` }</Tooltip>
+  //         ) }
+  //       />,
+  //       <Components.DataGridColumn key='cat' fieldName='cat' header='Category' sortable />,
+  //       <Components.DataGridColumn key='name' fieldName='name' header='Name' sortable
+  //         tooltip={ (x: SampleData, index, column) => {
+  //           if (x == null) {
+  //             // header
+  //             return (
+  //               <Tooltip id='name-header-tt' placement='top'>{ `Headers can have tooltips too: ${ column.fieldName }` }</Tooltip>
+  //             );
+  //           }
+  //           else {
+  //             // cell
+  //             return (
+  //               <Popover id={ `${ x.id }-name-tt` } placement='left'>{ `You can use fancy popover tooltips: ${ x.name }` }</Popover>
+  //             );
+  //           }
+  //         } }
+  //       />,
+  //       <Components.DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 }
+  //         tooltip={ (x: SampleData) => x == null ? null : (
+  //           <OverlayTrigger placement='top'
+  //             overlay={ <Tooltip id={ `${ x.id }-requiredBy-tt` }>Even completely custom overlay triggers: { x.requiredBy }</Tooltip> }
+  //           />
+  //         ) }
+  //       />,
+  //       <Components.NavDataGridColumn key='nav' buttonProps={ (x: SampleData) => ({ href: `#/name/${ x.name }` }) } />,
+  //     ];
+  //   }
 
-    return (
-      <Components.DataGridView key={ componentRoute } viewModel={ viewModel } viewTemplate={ view } pager={ pager } search={ search }>
-        { columns }
-      </Components.DataGridView>
-    );
-  },
-  AsyncDataGridViewModel: (viewModel: Components.AsyncDataGridViewModel<any, any, any>) => (
-    <Components.DataGridView viewModel={ viewModel } pager={ ({ limits: [ 1, 5, 10, null ] }) }>
-      <Components.DataGridColumn key='name' fieldName='name' header='Name' sortable />
-      <Components.DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 } />
-    </Components.DataGridView>
-  ),
+  //   return (
+  //     <Components.DataGridView key={ componentRoute } viewModel={ viewModel } viewTemplate={ view } pager={ pager } search={ search }>
+  //       { columns }
+  //     </Components.DataGridView>
+  //   );
+  // },
+  // AsyncDataGridViewModel: (viewModel: Components.AsyncDataGridViewModel<any, any, any>) => (
+  //   <Components.DataGridView viewModel={ viewModel } pager={ ({ limits: [ 1, 5, 10, null ] }) }>
+  //     <Components.DataGridColumn key='name' fieldName='name' header='Name' sortable />
+  //     <Components.DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 } />
+  //   </Components.DataGridView>
+  // ),
   ModalDialogViewModel: (data: { viewModel: Components.ModalDialogViewModel<string>, createContext: Command<string>, accept: Command<any>, reject: Command<any> }) => (
     <div>
       <Button onClick={ wxr.bindEventToCommand(data.viewModel, x => data.createContext, () => 'You can put custom content here') }>Show Confirmation Dialog</Button>
@@ -691,55 +691,55 @@ export const demoViewMap: ViewActivatorMap = {
       </Components.CommonPanel>
     </div>
   ),
-  ItemListPanelViewModel: (viewModel: Components.ItemListPanelViewModel<any>, componentRoute: string) => {
-    if (componentRoute === 'ItemListPanel') {
-      return (
-        <Components.ItemListPanelView viewModel={viewModel} headerContent='Sample Grid Data' collapsible pager search
-          headerActions={[ { id: 'header', children: 'Header Action' } ]}
-          footerContent={ (<Components.CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
-          footerActions={[ { id: 'viewall', bsStyle: 'primary', command: wx.command(x => Alert.create(x, 'View All Pressed')), commandParameter: 'ItemListPanel', children: (<Components.ViewAllFooterAction suffix='Things' />) } ]}
-        >
-          <Components.DataGridColumn key='id' fieldName='id' header='ID' sortable />,
-          <Components.DataGridColumn key='cat' fieldName='cat' header='Category' sortable />,
-          <Components.DataGridColumn fieldName='name' header='Name' sortable className='col-md-8' />
-          <Components.DataGridColumn fieldName='requiredBy' header='Required By' sortable className='col-md-4' />
-          <Components.NavDataGridColumn buttonProps={ (x: SampleData) => ({ href: `#/name/${ x.name }` }) } />
-        </Components.ItemListPanelView>
-      );
-    }
-    else if (componentRoute === 'TreeItemListPanel') {
-      return (
-        <Components.ItemListPanelView viewModel={viewModel} headerContent='Sample Tree Data' collapsible
-          headerActions={[ { id: 'header', children: 'Header Action' } ]} viewTemplate={ treeTemplate }
-          footerContent={ (<Components.CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
-          footerActions={[ { id: 'viewall', bsStyle: 'primary', command: wx.command(x => Alert.create(x, 'View All Pressed')), commandParameter: 'ItemListPanel', children: (<Components.ViewAllFooterAction suffix='Things' />) } ]}
-        >
-        </Components.ItemListPanelView>
-      );
-    }
-    else {
-      return (
-        <Components.ItemListPanelView viewModel={ viewModel } headerContent='Sample List Data' collapsible pager search
-          viewTemplate={
-            new Components.DataGridListViewTemplate<SampleData>(
-              x => `Name: ${ x.name }, Required By: ${ x.requiredBy }`,
-            )
-          }
-        >
-        </Components.ItemListPanelView>
-      );
-    }
-  },
-  AsyncItemListPanelViewModel: (viewModel: Components.AsyncItemListPanelViewModel<any, any, any>) => (
-    <Components.ItemListPanelView viewModel={viewModel} headerContent='Sample Data' collapsible pager
-      headerActions={[ { id: 'viewall', bsStyle: 'primary', command: wx.command(x => Alert.create(x, 'View All Pressed')), commandParameter: 'AsyncItemListPanel', children: (<Components.ViewAllFooterAction suffix='Things' />) } ]}
-      footerContent={ (<Components.CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
-      footerActions={[ { id: 'refresh', command: viewModel.grid.refresh, children: 'Refresh' } ]}
-    >
-      <Components.DataGridColumn fieldName='name' header='Name' sortable className='col-md-8' />
-      <Components.DataGridColumn fieldName='requiredBy' header='Required By' sortable className='col-md-4' />
-    </Components.ItemListPanelView>
-  ),
+  // ItemListPanelViewModel: (viewModel: Components.ItemListPanelViewModel<any>, componentRoute: string) => {
+  //   if (componentRoute === 'ItemListPanel') {
+  //     return (
+  //       <Components.ItemListPanelView viewModel={viewModel} headerContent='Sample Grid Data' collapsible pager search
+  //         headerActions={[ { id: 'header', children: 'Header Action' } ]}
+  //         footerContent={ (<Components.CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
+  //         footerActions={[ { id: 'viewall', bsStyle: 'primary', command: wx.command(x => Alert.create(x, 'View All Pressed')), commandParameter: 'ItemListPanel', children: (<Components.ViewAllFooterAction suffix='Things' />) } ]}
+  //       >
+  //         <Components.DataGridColumn key='id' fieldName='id' header='ID' sortable />,
+  //         <Components.DataGridColumn key='cat' fieldName='cat' header='Category' sortable />,
+  //         <Components.DataGridColumn fieldName='name' header='Name' sortable className='col-md-8' />
+  //         <Components.DataGridColumn fieldName='requiredBy' header='Required By' sortable className='col-md-4' />
+  //         <Components.NavDataGridColumn buttonProps={ (x: SampleData) => ({ href: `#/name/${ x.name }` }) } />
+  //       </Components.ItemListPanelView>
+  //     );
+  //   }
+  //   else if (componentRoute === 'TreeItemListPanel') {
+  //     return (
+  //       <Components.ItemListPanelView viewModel={viewModel} headerContent='Sample Tree Data' collapsible
+  //         headerActions={[ { id: 'header', children: 'Header Action' } ]} viewTemplate={ treeTemplate }
+  //         footerContent={ (<Components.CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
+  //         footerActions={[ { id: 'viewall', bsStyle: 'primary', command: wx.command(x => Alert.create(x, 'View All Pressed')), commandParameter: 'ItemListPanel', children: (<Components.ViewAllFooterAction suffix='Things' />) } ]}
+  //       >
+  //       </Components.ItemListPanelView>
+  //     );
+  //   }
+  //   else {
+  //     return (
+  //       <Components.ItemListPanelView viewModel={ viewModel } headerContent='Sample List Data' collapsible pager search
+  //         viewTemplate={
+  //           new Components.DataGridListViewTemplate<SampleData>(
+  //             x => `Name: ${ x.name }, Required By: ${ x.requiredBy }`,
+  //           )
+  //         }
+  //       >
+  //       </Components.ItemListPanelView>
+  //     );
+  //   }
+  // },
+  // AsyncItemListPanelViewModel: (viewModel: Components.AsyncItemListPanelViewModel<any, any, any>) => (
+  //   <Components.ItemListPanelView viewModel={viewModel} headerContent='Sample Data' collapsible pager
+  //     headerActions={[ { id: 'viewall', bsStyle: 'primary', command: wx.command(x => Alert.create(x, 'View All Pressed')), commandParameter: 'AsyncItemListPanel', children: (<Components.ViewAllFooterAction suffix='Things' />) } ]}
+  //     footerContent={ (<Components.CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
+  //     footerActions={[ { id: 'refresh', command: viewModel.grid.refresh, children: 'Refresh' } ]}
+  //   >
+  //     <Components.DataGridColumn fieldName='name' header='Name' sortable className='col-md-8' />
+  //     <Components.DataGridColumn fieldName='requiredBy' header='Required By' sortable className='col-md-4' />
+  //   </Components.ItemListPanelView>
+  // ),
   InlineEditViewModel: (viewModel: Components.InlineEditViewModel<any>, componentRoute: string) => {
     if (componentRoute === 'InlineEditObject') {
       return (
@@ -757,9 +757,9 @@ export const demoViewMap: ViewActivatorMap = {
       );
     }
   },
-  TodoListViewModel: (viewModel: TodoListViewModel) => (
-    <TodoListView style={({ padding: 20 })} viewModel={ viewModel } shadow />
-  ),
+  // TodoListViewModel: (viewModel: TodoListViewModel) => (
+  //   <TodoListView style={({ padding: 20 })} viewModel={ viewModel } shadow />
+  // ),
   Help: () => {
     const helpStyle: (top?: number, left?: number, textAlign?: string, zIndex?: number) => React.CSSProperties = (top = 0, left = 0, textAlign = 'center', zIndex = 1000) => ({
       display: 'inline-block',

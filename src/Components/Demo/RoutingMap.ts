@@ -5,7 +5,7 @@ import { wx } from '../../WebRx';
 import { Alert, Compare } from '../../Utils';
 import { HeaderMenu, HeaderCommandAction } from '../React';
 import * as Components from '../Common';
-import { TodoListViewModel } from './TodoList/TodoListViewModel';
+// import { TodoListViewModel } from './TodoList/TodoListViewModel';
 import { RouteMap as AppRouteMap } from '../../Routing/RoutingMap';
 import { ComponentDemoViewModel, RoutingMap } from './ComponentDemoViewModel';
 
@@ -50,97 +50,97 @@ export const sampleTreeData = sampleListData
     }, x, { name: x.name + ' (0)' }),
   );
 
-interface SampleDataSourceRequest extends Components.ProjectionRequest {
-  type: string;
-}
+// interface SampleDataSourceRequest extends Components.ProjectionRequest {
+//   type: string;
+// }
 
-const sampleDataSource = <Components.AsyncDataSource<SampleDataSourceRequest, Components.ProjectionResult<SampleData>>>{
-    requests: <Observable<SampleDataSourceRequest>>Observable
-      .timer(2000, 10000)
-      .map(x => {
-        if (x === 2) {
-          // this will kill this request stream (no longer functional)
-          throw new Error('Simulated Request Stream Error');
-        }
+// const sampleDataSource = <Components.AsyncDataSource<SampleDataSourceRequest, Components.ProjectionResult<SampleData>>>{
+//     requests: <Observable<SampleDataSourceRequest>>Observable
+//       .timer(2000, 10000)
+//       .map(x => {
+//         if (x === 2) {
+//           // this will kill this request stream (no longer functional)
+//           throw new Error('Simulated Request Stream Error');
+//         }
 
-        return {
-          type: `param ${ x }`,
-        };
-      })
-      .do(x => {
-        Alert.create('Input Param Changed', `type = ${ x.type }`, undefined, 1000);
-      }),
-    getResultAsync: (request) => {
-      if (request.filter === 'throw') {
-        throw new Error('Simulated Coding Error');
-      }
+//         return {
+//           type: `param ${ x }`,
+//         };
+//       })
+//       .do(x => {
+//         Alert.create('Input Param Changed', `type = ${ x.type }`, undefined, 1000);
+//       }),
+//     getResultAsync: (request) => {
+//       if (request.filter === 'throw') {
+//         throw new Error('Simulated Coding Error');
+//       }
 
-      return Observable
-        .of(sampleListData)
-        // simulate async result delay
-        .delay(2000)
-        .do(() => {
-          const msg = [
-            'Simulating Async Data Result...',
-            `type = ${ request.type }`,
-            `filter = ${ request.filter }`,
-            `offset = ${ request.offset }`,
-            `limit = ${ request.limit }`,
-            `sortField = ${ request.sortField }`,
-            `sortDirection = ${ request.sortDirection == null ? '' : Compare.SortDirection[request.sortDirection] }`,
-          ].join('<br/>');
-          Alert.create(msg, 'Async DataGrid Demo', undefined, 1000);
-        })
-        .map(x => {
-          let query = x
-            .asIterable();
+//       return Observable
+//         .of(sampleListData)
+//         // simulate async result delay
+//         .delay(2000)
+//         .do(() => {
+//           const msg = [
+//             'Simulating Async Data Result...',
+//             `type = ${ request.type }`,
+//             `filter = ${ request.filter }`,
+//             `offset = ${ request.offset }`,
+//             `limit = ${ request.limit }`,
+//             `sortField = ${ request.sortField }`,
+//             `sortDirection = ${ request.sortDirection == null ? '' : Compare.SortDirection[request.sortDirection] }`,
+//           ].join('<br/>');
+//           Alert.create(msg, 'Async DataGrid Demo', undefined, 1000);
+//         })
+//         .map(x => {
+//           let query = x
+//             .asIterable();
 
-          if (String.isNullOrEmpty(request.filter) === false) {
-            if (request.filter === 'error') {
-              throw new Error('Simulated Async DataSource Error');
-            }
+//           if (String.isNullOrEmpty(request.filter) === false) {
+//             if (request.filter === 'error') {
+//               throw new Error('Simulated Async DataSource Error');
+//             }
 
-            query = query
-              .filter(y => {
-                return (
-                  y.name.indexOf(request.filter || '') >= 0 ||
-                  y.requiredBy.indexOf(request.filter || '') >= 0
-                );
-              });
-          }
+//             query = query
+//               .filter(y => {
+//                 return (
+//                   y.name.indexOf(request.filter || '') >= 0 ||
+//                   y.requiredBy.indexOf(request.filter || '') >= 0
+//                 );
+//               });
+//           }
 
-          const count = query.count();
+//           const count = query.count();
 
-          if (String.isNullOrEmpty(request.sortField) === false) {
-            if (request.sortDirection === Compare.SortDirection.Descending) {
-              query = query
-                .orderByDescending(y => request.sortField === 'name' ? y.name : y.requiredBy);
-            }
-            else {
-              query = query
-                .orderBy(y => request.sortField === 'name' ? y.name : y.requiredBy);
-            }
-          }
+//           if (String.isNullOrEmpty(request.sortField) === false) {
+//             if (request.sortDirection === Compare.SortDirection.Descending) {
+//               query = query
+//                 .orderByDescending(y => request.sortField === 'name' ? y.name : y.requiredBy);
+//             }
+//             else {
+//               query = query
+//                 .orderBy(y => request.sortField === 'name' ? y.name : y.requiredBy);
+//             }
+//           }
 
-          const offset = request.offset || 0;
-          if (offset > 0) {
-            query = query.skip(offset);
-          }
+//           const offset = request.offset || 0;
+//           if (offset > 0) {
+//             query = query.skip(offset);
+//           }
 
-          const limit = request.limit || 0;
-          if (limit > 0) {
-            query = query.take(limit);
-          }
+//           const limit = request.limit || 0;
+//           if (limit > 0) {
+//             query = query.take(limit);
+//           }
 
-          const items = query.toArray();
+//           const items = query.toArray();
 
-          return <Components.ProjectionResult<SampleData>>{
-            items,
-            count,
-          };
-        });
-    },
-  };
+//           return <Components.ProjectionResult<SampleData>>{
+//             items,
+//             count,
+//           };
+//         });
+//     },
+//   };
 
 demoRoutingMap.addRoute('React', 'Loading', 'Loading', (state: any) => 'Loading');
 demoRoutingMap.addRoute('React', 'SizedLoading', 'Sized Loading', (state: any) => 'SizedLoading');
@@ -181,39 +181,39 @@ demoRoutingMap.addRoute('webrx-react', 'ListItemsListGroup', 'ListItems (ListGro
 demoRoutingMap.addRoute('webrx-react', 'ListItemsGrid', 'ListItems (Grid)', (state: any) => new Components.ListItemsViewModel(sampleListData));
 demoRoutingMap.addRoute('webrx-react', 'ListItemsGridAuto', 'ListItems (Auto Grid)', (state: any) => new Components.ListItemsViewModel(sampleListData));
 demoRoutingMap.addRoute('webrx-react', 'ListItemsTree', 'ListItems (Tree)', (state: any) => new Components.TreeListItemsViewModel(x => x.items, sampleTreeData));
-demoRoutingMap.addRoute('webrx-react', 'List', 'List', (state: any) => new Components.ListViewModel(Observable.of(sampleListData), false, false));
-demoRoutingMap.addRoute('webrx-react', 'ListCmd', 'List (Command)', (state: any) => new Components.ListViewModel(Observable.of(sampleListData), false, false));
-demoRoutingMap.addRoute('webrx-react', 'Tree', 'Tree', (state: any) => new Components.ListViewModel(wx.property(sampleTreeData), true, false));
-demoRoutingMap.addRoute('webrx-react', 'PanelList', 'Panel List', (state: any) => new Components.ListViewModel(wx.property(sampleListData), true, false));
-demoRoutingMap.addRoute('webrx-react', 'DataGrid', 'Data Grid', (state: any) => {
-  const prop = wx.property<SampleData[]>(undefined, false);
+// demoRoutingMap.addRoute('webrx-react', 'List', 'List', (state: any) => new Components.ListViewModel(Observable.of(sampleListData), false, false));
+// demoRoutingMap.addRoute('webrx-react', 'ListCmd', 'List (Command)', (state: any) => new Components.ListViewModel(Observable.of(sampleListData), false, false));
+// demoRoutingMap.addRoute('webrx-react', 'Tree', 'Tree', (state: any) => new Components.ListViewModel(wx.property(sampleTreeData), true, false));
+// demoRoutingMap.addRoute('webrx-react', 'PanelList', 'Panel List', (state: any) => new Components.ListViewModel(wx.property(sampleListData), true, false));
+// demoRoutingMap.addRoute('webrx-react', 'DataGrid', 'Data Grid', (state: any) => {
+//   const prop = wx.property<SampleData[]>(undefined, false);
 
-  // simulate delayed loading
-  Observable
-    .of(sampleListData)
-    .delay(2000)
-    .do(() => {
-      Alert.create('Simulating Delay', 'Delayed Observable Property List Loading', undefined, 1000);
-    })
-    .subscribe(x => {
-      prop.value = x;
-    });
+//   // simulate delayed loading
+//   Observable
+//     .of(sampleListData)
+//     .delay(2000)
+//     .do(() => {
+//       Alert.create('Simulating Delay', 'Delayed Observable Property List Loading', undefined, 1000);
+//     })
+//     .subscribe(x => {
+//       prop.value = x;
+//     });
 
-  return new Components.DataGridViewModel(prop, (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0);
-});
-demoRoutingMap.addRoute('webrx-react', 'DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: any) => Components.DataGridViewModel.create(...sampleListData));
-demoRoutingMap.addRoute('webrx-react', 'DataGridList', 'DataGrid (List View)', (state: any) =>
-  new Components.DataGridViewModel(Observable.of(sampleListData), (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0, undefined, undefined, undefined, undefined, 0),
-);
-demoRoutingMap.addRoute('webrx-react', 'DataGridPager', 'DataGrid (Custom Pager)', (state: any) =>
-  new Components.DataGridViewModel(Observable.of(sampleListData)),
-);
-demoRoutingMap.addRoute('webrx-react', 'AsyncDataGrid', 'DataGrid (Async)', (state: any) => {
-  return new Components.AsyncDataGridViewModel(sampleDataSource, true, true);
-});
-demoRoutingMap.addRoute('webrx-react', 'DataGridRoutingState', 'DataGrid (Routing State)', (state: any) =>
-  new Components.DataGridViewModel(Observable.of(sampleListData), (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0, undefined, undefined, undefined, undefined, undefined, undefined, true),
-);
+//   return new Components.DataGridViewModel(prop, (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0);
+// });
+// demoRoutingMap.addRoute('webrx-react', 'DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: any) => Components.DataGridViewModel.create(...sampleListData));
+// demoRoutingMap.addRoute('webrx-react', 'DataGridList', 'DataGrid (List View)', (state: any) =>
+//   new Components.DataGridViewModel(Observable.of(sampleListData), (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0, undefined, undefined, undefined, undefined, 0),
+// );
+// demoRoutingMap.addRoute('webrx-react', 'DataGridPager', 'DataGrid (Custom Pager)', (state: any) =>
+//   new Components.DataGridViewModel(Observable.of(sampleListData)),
+// );
+// demoRoutingMap.addRoute('webrx-react', 'AsyncDataGrid', 'DataGrid (Async)', (state: any) => {
+//   return new Components.AsyncDataGridViewModel(sampleDataSource, true, true);
+// });
+// demoRoutingMap.addRoute('webrx-react', 'DataGridRoutingState', 'DataGrid (Routing State)', (state: any) =>
+//   new Components.DataGridViewModel(Observable.of(sampleListData), (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0, undefined, undefined, undefined, undefined, undefined, undefined, true),
+// );
 demoRoutingMap.addRoute('webrx-react', 'ModalDialog', 'Modal Dialog', (state: any) => {
   const createContext = wx.command<string>(x => `[${ moment().format() }] ${ x }`);
   // we are simulating a modal being contained within another view model
@@ -227,20 +227,20 @@ demoRoutingMap.addRoute('webrx-react', 'ModalDialog', 'Modal Dialog', (state: an
 });
 demoRoutingMap.addRoute('webrx-react', 'Tabs', 'Tabs', (state: any) => new Components.TabsViewModel());
 demoRoutingMap.addRoute('webrx-react', 'StaticTabs', 'Static Tabs', (state: any) => new Components.TabsViewModel());
-demoRoutingMap.addRoute('webrx-react', 'ItemListPanel', 'Item List Panel', (state: any) =>
-  new Components.ItemListPanelViewModel(wx.property(sampleListData), (x, r) => r.test(x.name), 'id'),
-);
-demoRoutingMap.addRoute('webrx-react', 'ListItemListPanel', 'Item List Panel (List)', (state: any) =>
-  new Components.ItemListPanelViewModel(Observable.of(sampleListData), (x, r) => r.test(x.name)),
-);
-demoRoutingMap.addRoute('webrx-react', 'TreeItemListPanel', 'Item List Panel (Tree)', (state: any) => {
-  return new Components.ItemListPanelViewModel(Observable.of(sampleTreeData), (node, regexp) => {
-    return Components.filterHierarchical(node, regexp, x => regexp.test(x.name));
-  }, undefined, undefined, undefined, undefined, 0);
-});
-demoRoutingMap.addRoute('webrx-react', 'AsyncItemListPanel', 'ItemListPanel (Async)', (state: any) => {
-  return new Components.AsyncItemListPanelViewModel(sampleDataSource, true, true);
-});
+// demoRoutingMap.addRoute('webrx-react', 'ItemListPanel', 'Item List Panel', (state: any) =>
+//   new Components.ItemListPanelViewModel(wx.property(sampleListData), (x, r) => r.test(x.name), 'id'),
+// );
+// demoRoutingMap.addRoute('webrx-react', 'ListItemListPanel', 'Item List Panel (List)', (state: any) =>
+//   new Components.ItemListPanelViewModel(Observable.of(sampleListData), (x, r) => r.test(x.name)),
+// );
+// demoRoutingMap.addRoute('webrx-react', 'TreeItemListPanel', 'Item List Panel (Tree)', (state: any) => {
+//   return new Components.ItemListPanelViewModel(Observable.of(sampleTreeData), (node, regexp) => {
+//     return Components.filterHierarchical(node, regexp, x => regexp.test(x.name));
+//   }, undefined, undefined, undefined, undefined, 0);
+// });
+// demoRoutingMap.addRoute('webrx-react', 'AsyncItemListPanel', 'ItemListPanel (Async)', (state: any) => {
+//   return new Components.AsyncItemListPanelViewModel(sampleDataSource, true, true);
+// });
 demoRoutingMap.addRoute('webrx-react', 'InlineEdit', 'InlineEdit', (state: any) => {
   const editor = new Components.InlineEditViewModel(5);
 
@@ -300,7 +300,7 @@ demoRoutingMap.addRoute('webrx-react', 'InlineEditObject', 'InlineEdit (Object)'
 });
 
 demoRoutingMap.viewModelMap['help'] = () => 'Help';
-demoRoutingMap.viewModelMap['todolist'] = () => new TodoListViewModel();
+// demoRoutingMap.viewModelMap['todolist'] = () => new TodoListViewModel();
 
 // inject the demo infrastructure into the app routing and view maps
 AppRouteMap['/'] = { path: '/demo/' };
