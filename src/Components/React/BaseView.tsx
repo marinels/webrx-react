@@ -185,11 +185,11 @@ export abstract class BaseView<TViewProps extends ViewModelProps<TViewModel>, TV
     // do nothing by default
   }
 
-  protected updating(nextProps: Readonly<TViewProps>, nextState: Readonly<ViewModelState<TViewModel>>) {
+  protected updating(nextProps?: Readonly<TViewProps>, nextState?: Readonly<ViewModelState<TViewModel>>) {
     // do nothing by default
   }
 
-  protected updated(prevProps: Readonly<TViewProps>, prevState: Readonly<ViewModelState<TViewModel>>) {
+  protected updated(prevProps?: Readonly<TViewProps>, prevState?: Readonly<ViewModelState<TViewModel>>) {
     // do nothing by default
   }
 
