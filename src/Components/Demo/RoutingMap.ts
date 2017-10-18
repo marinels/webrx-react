@@ -18,7 +18,8 @@ export interface SampleData {
   requiredBy: string;
 }
 
-export interface SampleTreeData extends SampleData, Components.HierarchicalItemsSource<SampleTreeData> {
+export interface SampleTreeData extends SampleData {
+  items?: Array<SampleTreeData>;
 }
 
 export const sampleListData = <SampleData[]>[
