@@ -338,6 +338,14 @@ export const demoViewMap: ViewActivatorMap = {
   ),
   ItemsViewModel: (viewModel: Components.ItemsViewModel<{}>, componentRoute: string) => {
     switch (componentRoute) {
+      case 'ItemsList':
+        return (
+          <Components.ItemsView
+            viewModel={ viewModel }
+            itemTemplate={ (x: SampleData) => sampleDataTemplate(x) }
+            itemStyle={ ({ textAlign: 'left' }) }
+          />
+        );
       case 'ItemsWrap':
         return (
           <Components.ItemsView
@@ -409,13 +417,7 @@ export const demoViewMap: ViewActivatorMap = {
           />
         );
       default:
-        return (
-          <Components.ItemsView
-            viewModel={ viewModel }
-            itemTemplate={ (x: SampleData) => sampleDataTemplate(x) }
-            itemStyle={({ textAlign: 'left' })}
-          />
-        );
+        return null;
     }
   },
   ListItemsViewModel: (viewModel: Components.ListItemsViewModel<{}>, componentRoute: string) => {
