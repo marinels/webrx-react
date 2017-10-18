@@ -213,11 +213,9 @@ export const demoViewMap: ViewActivatorMap = {
     </Components.ListGroupPanel>
   ),
   ListGroupPanelBound: () => (
-    <Components.ItemsPresenter
-      itemsSource={ sampleListData }
-      itemTemplate={ sampleDataTemplate }
-      itemsPanelTemplate={ x => (<Components.ListGroupPanel>{ x }</Components.ListGroupPanel>) }
-    />
+    <Components.ItemsPresenter itemsSource={ sampleListData } itemTemplate={ sampleDataTemplate }>
+      <Components.ListGroupPanel />
+    </Components.ItemsPresenter>
   ),
   GridPanel: () => (
     <Components.Grid border style={({ height: 400 })}>
@@ -344,55 +342,39 @@ export const demoViewMap: ViewActivatorMap = {
         return (
           <Components.ItemsView
             viewModel={ viewModel }
-            itemsPanelTemplate={ x => (<Components.WrapPanel>{ x }</Components.WrapPanel>) }
             itemTemplate={ (x: SampleData) => (<Label key={ x.id } style={({ marginRight: 5 })}>{ `name = ${ x.name }, requiredBy = ${ x.requiredBy }` }</Label>) }
-          />
+          >
+            <Components.WrapPanel />
+          </Components.ItemsView>
         );
       case 'ItemsUGrid':
         return (
           <Components.ItemsView
             style={({ height: 400 })}
             viewModel={ viewModel }
-            itemsPanelTemplate={ x => (
-              <Components.UniformGridPanel
-                gridRows={ 4 } gridColumns={ 4 } firstColumn={ 1 } border renderEmptyRows
-                rowStyle={({ height: 100 })}
-                columnStyle={({ verticalAlign: 'middle' })}
-              >
-                { x }
-              </Components.UniformGridPanel>
-            ) }
             itemTemplate={ sampleDataTemplate }
-          />
+          >
+            <Components.UniformGridPanel
+              gridRows={ 4 } gridColumns={ 4 } firstColumn={ 1 } border renderEmptyRows
+              rowStyle={({ height: 100 })}
+              columnStyle={({ verticalAlign: 'middle' })}
+            />
+          </Components.ItemsView>
         );
       case 'ItemsHStack':
         return (
           <Components.ItemsView
             viewModel={ viewModel }
-            itemsPanelTemplate={ x => (<Components.StackPanel orientation='Horizontal'>{ x }</Components.StackPanel>) }
             itemTemplate={ (x: SampleData) => (<Label key={ x.id } style={({ marginRight: 5 })}>{ `name = ${ x.name }, requiredBy = ${ x.requiredBy }` }</Label>) }
-          />
+          >
+            <Components.StackPanel orientation='Horizontal' />
+          </Components.ItemsView>
         );
       case 'ItemsGrid':
         return (
           <Components.ItemsView
             style={({ height: 400 })}
             viewModel={ viewModel }
-            itemsPanelTemplate={ x => (
-              <Components.Grid border>
-                <Components.Grid.Rows>
-                  <Components.RowDefinition height={ 100 } />
-                  <Components.RowDefinition height={ 200 } />
-                  <Components.RowDefinition />
-                </Components.Grid.Rows>
-                <Components.Grid.Columns itemStyle={({ verticalAlign: 'middle' })}>
-                  <Components.ColumnDefinition width={ 100 } />
-                  <Components.ColumnDefinition width='2*' />
-                  <Components.ColumnDefinition />
-                </Components.Grid.Columns>
-                { x }
-              </Components.Grid>
-            ) }
             itemTemplate={ (x: SampleData, i: number) => {
               const row = Math.floor(i / 3) % 3;
               const col = (row + i) % 3;
@@ -401,7 +383,20 @@ export const demoViewMap: ViewActivatorMap = {
                 <div key={ i } data-grid-row={ row } data-grid-column={ col }>{ x.name }</div>
               );
             } }
-          />
+          >
+            <Components.Grid border>
+              <Components.Grid.Rows>
+                <Components.RowDefinition height={ 100 } />
+                <Components.RowDefinition height={ 200 } />
+                <Components.RowDefinition />
+              </Components.Grid.Rows>
+              <Components.Grid.Columns itemStyle={({ verticalAlign: 'middle' })}>
+                <Components.ColumnDefinition width={ 100 } />
+                <Components.ColumnDefinition width='2*' />
+                <Components.ColumnDefinition />
+              </Components.Grid.Columns>
+            </Components.Grid>
+          </Components.ItemsView>
         );
       case 'ItemsTree':
         return (
