@@ -18,11 +18,11 @@ export interface InlineEditProps extends BaseViewProps, BindableProps {
   bsSize?: Sizes;
   template?: (x: any, view: InlineEditView) => any;
   editTemplate?: (x: any, view: InlineEditView) => any;
-  errorContent?: any | ((viewModel: InlineEditViewModel<any>, view: InlineEditView) => any);
+  errorContent?: any | ((viewModel: InlineEditViewModel<{}>, view: InlineEditView) => any);
   errorPlacement?: string;
 }
 
-export class InlineEditView extends BaseView<InlineEditProps, InlineEditViewModel<any>> {
+export class InlineEditView extends BaseView<InlineEditProps, InlineEditViewModel<{}>> {
   public static displayName = 'InlineEditView';
 
   static defaultProps = {
