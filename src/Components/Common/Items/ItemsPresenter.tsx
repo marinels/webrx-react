@@ -5,20 +5,23 @@ import { IterableLike } from '../../../WebRx';
 import { wxr } from '../../React';
 import { Panel, StackPanel, PanelItemProps, PanelFragment } from '../Panel';
 
+export type ViewTemplate = (itemsPanel: PanelFragment, itemsPresenter: ItemsPresenter) => JSX.Element | null | false;
+export type ItemsPanelTemplate = (itemTemplates: Array<PanelFragment>, itemsPresenter: ItemsPresenter, items: Array<{}> | undefined) => PanelFragment;
+
 export interface ItemsPresenterTemplateProps {
   /**
    * template that wraps the entire control.
    * use this to compose the exterior of the the view.
    * render the items presenter where you want the items panel located.
    */
-  viewTemplate?: (itemsPanel: PanelFragment, itemsPresenter: ItemsPresenter) => JSX.Element | null | false;
+  viewTemplate?: ViewTemplate;
 
   /**
    * template to render panel responsible for items layout.
    * this template can control how items are rendered next to one another
    * (i.e., wrapping, stack, grid, etc...)
    */
-  itemsPanelTemplate?: (itemTemplates: Array<PanelFragment>, itemsPresenter: ItemsPresenter, items: Array<{}> | undefined) => PanelFragment;
+  itemsPanelTemplate?: ItemsPanelTemplate;
 
   /**
    * template to render each item
