@@ -6,7 +6,7 @@ import { Icon } from 'react-fa';
 import { IterableLike } from '../../../WebRx';
 import { wxr } from '../../React';
 import { ItemsPresenterProps, ItemsPresenterTemplateProps, ItemsPresenter } from './ItemsPresenter';
-import { PanelItemProps, Panel, PanelFragment } from '../Panel/Panel';
+import { PanelItemProps, PanelRenderProps, Panel, PanelFragment } from '../Panel/Panel';
 
 export type RecursiveItemsSource<T> = (item: T) => (IterableLike<T> | undefined);
 
@@ -62,10 +62,10 @@ export interface TreeItemRenderProps {
   collapsedIconName?: string;
 }
 
-export interface TreeItemFacadeProps extends TreeItemSourceProps, TreeItemTemplateProps, TreeItemRenderProps, ItemsPresenterTemplateProps, PanelItemProps {
+export interface TreeItemFacadeProps extends TreeItemSourceProps, TreeItemTemplateProps, TreeItemRenderProps, ItemsPresenterTemplateProps, PanelItemProps, PanelRenderProps {
 }
 
-export interface TreeItemProps extends React.HTMLAttributes<TreeItemProps>, TreeItemSourceProps, TreeItemTemplateProps, TreeItemRenderProps, ItemsPresenterTemplateProps, PanelItemProps {
+export interface TreeItemProps extends React.HTMLAttributes<TreeItemProps>, TreeItemFacadeProps {
   /**
    * the item that this tree node represents
    */
@@ -121,6 +121,7 @@ export class TreeItem extends React.Component<TreeItemProps, TreeItemState> {
         itemClassName={ props.itemClassName }
         itemStyle={ props.itemStyle }
         itemProps={ props.itemProps }
+        compact={ props.compact }
       />
     );
   }
@@ -149,6 +150,7 @@ export class TreeItem extends React.Component<TreeItemProps, TreeItemState> {
         itemClassName={ view.props.itemClassName }
         itemStyle={ view.props.itemStyle }
         itemProps={ view.props.itemProps }
+        compact={ view.props.compact }
       />
     );
   }
@@ -175,8 +177,8 @@ export class TreeItem extends React.Component<TreeItemProps, TreeItemState> {
 
   render() {
     const { className, props, rest, children } = this.restProps(x => {
-      const { item, index, itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps } = x;
-      return { item, index, itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps };
+      const { item, index, itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact } = x;
+      return { item, index, itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact };
     });
 
     const headerContent = this.renderHeaderContent();

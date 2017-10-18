@@ -3,7 +3,7 @@ import { Iterable } from 'ix';
 
 import { IterableLike } from '../../../WebRx';
 import { wxr } from '../../React';
-import { Panel, StackPanel, PanelItemProps, PanelFragment } from '../Panel';
+import { Panel, StackPanel, PanelItemProps, PanelRenderProps, PanelFragment } from '../Panel';
 
 export type ViewTemplate = (itemsPanel: PanelFragment, itemsPresenter: ItemsPresenter) => JSX.Element | null | false;
 export type ItemsPanelTemplate = (itemTemplates: Array<PanelFragment>, itemsPresenter: ItemsPresenter, items: Array<{}> | undefined) => PanelFragment;
@@ -37,7 +37,7 @@ export interface ItemsPresenterSourceProps {
   itemsSource?: IterableLike<{}>;
 }
 
-export interface ItemsPresenterProps extends React.HTMLAttributes<ItemsPresenterProps>, ItemsPresenterTemplateProps, ItemsPresenterSourceProps, PanelItemProps {
+export interface ItemsPresenterProps extends React.HTMLAttributes<ItemsPresenterProps>, ItemsPresenterTemplateProps, ItemsPresenterSourceProps, PanelItemProps, PanelRenderProps {
 }
 
 export class ItemsPresenter extends React.Component<ItemsPresenterProps> {
@@ -55,6 +55,7 @@ export class ItemsPresenter extends React.Component<ItemsPresenterProps> {
         itemClassName={ itemsPresenter.props.itemClassName }
         itemStyle={ itemsPresenter.props.itemStyle }
         itemProps={ itemsPresenter.props.itemProps }
+        compact={ itemsPresenter.props.compact }
       >
         { itemTemplates }
       </StackPanel>
@@ -63,8 +64,8 @@ export class ItemsPresenter extends React.Component<ItemsPresenterProps> {
 
   public static defaultViewTemplate(itemsPanel: PanelFragment, itemsPresenter: ItemsPresenter) {
     const { className, props, rest } = itemsPresenter.restProps(x => {
-      const { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps } = x;
-      return { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps };
+      const { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact } = x;
+      return { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact };
     });
 
     return (

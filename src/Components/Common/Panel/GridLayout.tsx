@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { PanelItemContext, PanelItemProp, PanelItemProps, PanelTemplateProps, PanelItemTemplate } from './Panel';
+import { PanelItemContext, PanelItemProp, PanelItemProps, PanelTemplateProps, PanelRenderProps, PanelItemTemplate } from './Panel';
 
 /**
  * a row context only knows about its row number
@@ -22,7 +22,7 @@ export interface GridColumnContext extends GridRowContext {
  * a layout element represents props for a component that helps define
  * the grid layout (i.e. GridRowDefinitions and RowDefinition)
  */
-export interface GridLayoutElementProps<T extends GridRowContext = GridRowContext> extends PanelItemProps<T>, PanelTemplateProps<T> {
+export interface GridLayoutElementProps<T extends GridRowContext = GridRowContext> extends PanelItemProps<T>, PanelTemplateProps<T>, PanelRenderProps {
 }
 
 /**
@@ -101,6 +101,7 @@ export class GridLayoutDefinition {
   public readonly itemClassName: PanelItemProp<string, GridRowContext | GridColumnContext> | undefined;
   public readonly itemStyle: PanelItemProp<React.CSSProperties, GridRowContext | GridColumnContext> | undefined;
   public readonly itemProps: PanelItemProp<{}, GridRowContext | GridColumnContext> | undefined;
+  public readonly compact: boolean | undefined;
   public readonly itemTemplate: PanelItemTemplate<GridRowContext | GridColumnContext> | undefined;
 
   constructor(definition?: GridLayoutDefinitionElement, definitionGroup?: GridLayoutDefinitionGroupElement) {
@@ -122,6 +123,7 @@ export class GridLayoutDefinition {
       this.itemClassName = definitionGroup.props.itemClassName;
       this.itemStyle = definitionGroup.props.itemStyle;
       this.itemProps = definitionGroup.props.itemProps;
+      this.compact = definitionGroup.props.compact;
       this.itemTemplate = definitionGroup.props.itemTemplate;
     }
 
@@ -136,6 +138,10 @@ export class GridLayoutDefinition {
 
       if (definition.props.itemProps != null) {
         this.itemProps = definition.props.itemProps;
+      }
+
+      if (definition.props.compact != null) {
+        this.compact = definition.props.compact;
       }
 
       if (definition.props.itemTemplate != null) {
