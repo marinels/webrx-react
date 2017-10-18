@@ -361,6 +361,7 @@ export const demoViewMap: ViewActivatorMap = {
             style={({ height: 400 })}
             viewModel={ viewModel }
             itemTemplate={ sampleDataTemplate }
+            compact
           >
             <Components.UniformGridPanel
               gridRows={ 4 } gridColumns={ 4 } firstColumn={ 1 } border renderEmptyRows
@@ -391,6 +392,7 @@ export const demoViewMap: ViewActivatorMap = {
                 <div key={ i } data-grid-row={ row } data-grid-column={ col }>{ x.name }</div>
               );
             } }
+            compact
           >
             <Components.Grid border>
               <Components.Grid.Rows>
@@ -425,7 +427,7 @@ export const demoViewMap: ViewActivatorMap = {
     switch (componentRoute) {
       case 'ListItemsDefault':
         return (
-          <Components.ListItemsView viewModel={ viewModel } />
+          <Components.ListItemsView viewModel={ viewModel } compact />
         );
       case 'ListItemsListGroup':
         return (
