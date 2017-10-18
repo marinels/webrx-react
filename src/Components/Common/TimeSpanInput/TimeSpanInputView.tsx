@@ -9,7 +9,7 @@ import { TimeSpanInputViewModel, TimeSpanUnit } from './TimeSpanInputViewModel';
 import { CommandButton } from '../CommandButton/CommandButton';
 
 export interface TimeSpanControlProps extends FormControlProps {
-  viewModel: TimeSpanInputViewModel;
+  viewModel: Readonly<TimeSpanInputViewModel>;
 }
 
 export class TimeSpanControl extends React.Component<TimeSpanControlProps> {
