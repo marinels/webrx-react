@@ -16,9 +16,9 @@ export interface InlineEditProps extends BaseViewProps, BindableProps {
   keyboard?: boolean;
   clickToEdit?: boolean;
   bsSize?: Sizes;
-  template?: (x: any, view: InlineEditView) => any;
-  editTemplate?: (x: any, view: InlineEditView) => any;
-  errorContent?: any | ((viewModel: InlineEditViewModel<{}>, view: InlineEditView) => any);
+  template?: (value: any, view: InlineEditView) => any;
+  editTemplate?: (value: any, view: InlineEditView) => any;
+  errorContent?: any | ((viewModel: Readonly<InlineEditViewModel<{}>>, view: InlineEditView) => any);
   errorPlacement?: string;
 }
 
