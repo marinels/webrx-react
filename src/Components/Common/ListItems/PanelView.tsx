@@ -13,7 +13,10 @@ export interface PanelViewProps extends ListItemsViewTemplateProps {
   selectedProps?: SelectedPropsFunction;
 }
 
-export class PanelView extends ListItemsViewTemplate<PanelViewProps> {
+export interface PanelViewComponentProps extends React.HTMLProps<PanelView>, PanelViewProps {
+}
+
+export class PanelView extends ListItemsViewTemplate<PanelViewComponentProps> {
   public static getSelectedProps(isSelected: boolean, elem: React.ReactElement<React.HTMLAttributes<{}>>) {
     return {
       className: classNames({ 'Selected': isSelected }, elem.props.className),
