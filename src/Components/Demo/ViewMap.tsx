@@ -435,6 +435,20 @@ export const demoViewMap: ViewActivatorMap = {
             <Components.ListGroupView itemsProps={({ viewTemplate: x => (<div style={({ padding: 10, backgroundColor: 'blue' })}>{ x }</div>) })} />
           </Components.ListItemsView>
         );
+      case 'ListItemsPanel':
+        return (
+          <Components.ListItemsView viewModel={ viewModel } itemTemplate={ sampleDataTemplate }>
+            <Components.PanelView />
+          </Components.ListItemsView>
+        );
+      case 'ListItemsUGrid':
+        return (
+          <Components.ListItemsView viewModel={ viewModel } itemTemplate={ sampleDataTemplate }>
+            <Components.PanelView>
+              <Components.UniformGridPanel gridRows={ 4 } gridColumns={ 4 } />
+            </Components.PanelView>
+          </Components.ListItemsView>
+        );
       case 'ListItemsGrid':
         return (
           <Components.ListItemsView viewModel={ viewModel }>
