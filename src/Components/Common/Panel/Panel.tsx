@@ -52,7 +52,11 @@ export interface PanelTemplateProps<T extends PanelItemContext = PanelItemContex
   itemTemplate?: PanelItemTemplate<T>;
 }
 
-export interface PanelProps extends React.HTMLAttributes<PanelProps>, PanelItemProps, PanelTemplateProps {
+export interface PanelRenderProps {
+  compact?: boolean;
+}
+
+export interface PanelProps extends React.HTMLAttributes<PanelProps>, PanelItemProps, PanelTemplateProps, PanelRenderProps {
 }
 
 export abstract class Panel<TProps extends PanelProps> extends React.Component<TProps> {
@@ -70,14 +74,20 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
 
   protected renderPanel(panelClassName?: string, panelProps?: PanelProps, componentClass?: React.ReactType): JSX.Element {
     const { className, children, props, rest } = React.Component.restProps(panelProps || this.props, x => {
-      const { itemClassName, itemStyle, itemProps, itemTemplate } = x;
-      return { itemClassName, itemStyle, itemProps, itemTemplate };
+      const { itemClassName, itemStyle, itemProps, itemTemplate, compact } = x;
+      return { itemClassName, itemStyle, itemProps, itemTemplate, compact };
     });
 
     const Component = componentClass || Panel.defaultComponentClass;
+    const componentClassName = wxr.classNames(
+      'Panel',
+      { 'compact': props.compact },
+      panelClassName,
+      className,
+    );
 
     return (
-      <Component { ...rest } className={ wxr.classNames('Panel', panelClassName, className) }>
+      <Component { ...rest } className={ componentClassName }>
         { this.renderItems(children) }
       </Component>
     );

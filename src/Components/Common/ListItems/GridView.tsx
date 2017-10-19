@@ -4,7 +4,7 @@ import * as classNames from 'classnames';
 import { Table } from 'react-bootstrap';
 
 import { Logging } from '../../../Utils';
-import { ItemsView } from '../Items/ItemsView';
+import { PanelView } from './PanelView';
 import { ItemsPresenter } from '../Items/ItemsPresenter';
 import { GridViewColumnProps, GridViewColumn } from './GridViewColumn';
 import { ListItemsViewTemplate, ListItemsViewTemplateProps } from './ListItemsViewTemplate';
@@ -31,7 +31,7 @@ export class GridView extends ListItemsViewTemplate<GridFacadeProps> {
   private columns: Array<React.ReactChild> | undefined;
 
   render() {
-    const { className, rest } = this.restProps(x => {
+    const { className, children, props, rest } = this.restProps(x => {
       const { fill, headerTemplate, cellTemplate, listItems, itemsProps } = x;
       return { fill, headerTemplate, cellTemplate, listItems, itemsProps };
     });
@@ -42,18 +42,21 @@ export class GridView extends ListItemsViewTemplate<GridFacadeProps> {
       return null;
     }
 
-    const props = this.getItemsProps();
+    const gridProps = this.getItemsProps();
 
-    props.itemsPanelTemplate = props.itemsPanelTemplate || this.renderTablePanel.bind(this);
-    props.itemTemplate = props.itemTemplate || this.renderTableRow.bind(this);
+    gridProps.itemsPanelTemplate = gridProps.itemsPanelTemplate || this.renderTablePanel.bind(this);
+    gridProps.itemTemplate = gridProps.itemTemplate || this.renderTableRow.bind(this);
 
     return (
-      <ItemsView
+      <PanelView
         className={ classNames('Grid', className) }
-        viewModel={ this.getListItems() }
-        { ...props }
+        itemsPanelTemplate={ this.renderTablePanel.bind(this) }
+        listItems={ props.listItems }
+        itemsProps={ gridProps }
         { ...React.Component.trimProps(rest) }
-      />
+      >
+        { children }
+      </PanelView>
     );
   }
 
@@ -142,11 +145,7 @@ export class GridView extends ListItemsViewTemplate<GridFacadeProps> {
         }
       </tr>,
       item,
-      (isSelected, elem) => {
-        return {
-          className: classNames({ 'Selected': isSelected }, elem.props.className),
-        };
-      },
+      PanelView.getSelectedProps,
     );
   }
 }

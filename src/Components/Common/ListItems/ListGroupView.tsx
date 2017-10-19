@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { ItemsView } from '../Items/ItemsView';
+import { PanelView } from './PanelView';
 import { ItemsPresenter } from '../Items/ItemsPresenter';
 import { ListItemsViewTemplate, ListItemsViewTemplateProps } from './ListItemsViewTemplate';
 import { ListGroupPanel } from '../Panel/ListGroupPanel';
@@ -12,44 +12,37 @@ export interface ListGroupViewProps extends ListItemsViewTemplateProps {
 }
 
 export class ListGroupView extends ListItemsViewTemplate<ListGroupViewProps> {
+  public static getSelectedProps(isSelected: boolean) {
+    return {
+      active: isSelected,
+    };
+  }
+
   render() {
-    const { className, rest } = this.restProps(x => {
+    const { className, children, props, rest } = this.restProps(x => {
       const { fill, listItems, itemsProps } = x;
       return { fill, listItems, itemsProps };
     });
 
     return (
-      <ItemsView
+      <PanelView
         className={ className }
-        viewModel={ this.getListItems() }
         itemsPanelTemplate={ this.renderListItemPanel.bind(this) }
-        { ...this.getItemsProps() }
+        selectedProps={ ListGroupView.getSelectedProps }
+        listItems={ props.listItems }
+        itemsProps={ props.itemsProps }
         { ...React.Component.trimProps(rest) }
-      />
+      >
+        { children }
+      </PanelView>
     );
   }
 
   protected renderListItemPanel(itemTemplates: Array<React.ReactNode>, itemsPresenter: ItemsPresenter, items: Array<{}> | undefined) {
-    // items = items || this.getListItems().getItems().toArray();
-
     return (
-      <ListGroupPanel fill={ this.props.fill } itemTemplate={ (f, c) => this.renderPanelItem(f, c, items) }>
+      <ListGroupPanel fill={ this.props.fill }>
         { itemTemplates }
       </ListGroupPanel>
-    );
-  }
-
-  protected renderPanelItem(fragment: PanelFragment, context: PanelItemContext, items: Array<{}> | undefined) {
-    if (items == null) {
-      return fragment;
-    }
-
-    const item = items[context.index];
-
-    return this.renderListItem(
-      fragment,
-      item,
-      (isSelected, elem) => ({ active: isSelected }),
     );
   }
 }
