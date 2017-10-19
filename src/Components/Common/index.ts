@@ -49,6 +49,7 @@ export * from './Items/ItemsPresenter';
 export * from './Items/ItemsView';
 export * from './Items/TreeItem';
 export * from './Items/TreeItemsView';
+export * from './ListItems/PanelView';
 export * from './ListItems/GridView';
 export * from './ListItems/ListGroupView';
 export * from './ListItems/TreeView';
