@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
 
+import { PanelView } from './PanelView';
 import { TreeItemsView } from '../Items/TreeItemsView';
 import { ItemsPresenter } from '../Items/ItemsPresenter';
 import { TreeItem, TreeItemSourceProps, TreeItemRenderProps } from '../Items/TreeItem';
@@ -37,11 +38,7 @@ export class TreeView extends ListItemsViewTemplate<TreeViewProps> {
     return this.renderListItem(
       fragment,
       item,
-      (isSelected, elem) => {
-        return {
-          className: classNames({ 'Selected': isSelected }, elem.props.className),
-        };
-      },
+      PanelView.getSelectedProps,
     );
   }
 }
