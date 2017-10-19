@@ -1,21 +1,30 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
 
+import { SelectedPropsFunction } from './SelectableListItem';
 import { ItemsView } from '../Items/ItemsView';
 import { ItemsPresenter, ItemsPanelTemplate } from '../Items/ItemsPresenter';
 import { ListItemsViewTemplate, ListItemsViewTemplateProps } from './ListItemsViewTemplate';
 import { PanelFragment, PanelItemContext } from '../Panel/Panel';
+import { StackPanel } from '../Panel/StackPanel';
 
 export interface PanelViewProps extends ListItemsViewTemplateProps {
   itemsPanelTemplate?: ItemsPanelTemplate;
+  selectedProps?: SelectedPropsFunction;
 }
 
 export class PanelView extends ListItemsViewTemplate<PanelViewProps> {
+  public static getSelectedProps(isSelected: boolean, elem: React.ReactElement<React.HTMLAttributes<{}>>) {
+    return {
+      className: classNames({ 'Selected': isSelected }, elem.props.className),
+    };
+  }
+
   render() {
     const { className, rest } = this.restProps(x => {
-      const { listItems, itemsProps } = x;
-      return { listItems, itemsProps };
-    }, 'itemsPanelTemplate');
+      const { itemsPanelTemplate, selectedProps, listItems, itemsProps } = x;
+      return { itemsPanelTemplate, selectedProps, listItems, itemsProps };
+    });
 
     return (
       <ItemsView
@@ -45,26 +54,18 @@ export class PanelView extends ListItemsViewTemplate<PanelViewProps> {
   protected getItemsPanelTemplateFunction() {
     const template = this.props.itemsPanelTemplate;
 
-    if (template != null) {
-      return (itemTemplates: Array<PanelFragment>, itemsPresenter: ItemsPresenter, items: Array<{}> | undefined) => {
+    return (itemTemplates: Array<PanelFragment>, itemsPresenter: ItemsPresenter, items: Array<{}> | undefined) => {
+      if (template != null) {
         const fragment = template(itemTemplates, itemsPresenter, items);
 
         return this.getItemsPanelTemplate(fragment, itemTemplates, itemsPresenter, items);
-      };
-    }
+      }
 
-    if (React.Children.count(this.props.children) === 1) {
-      return (itemTemplates: Array<PanelFragment>, itemsPresenter: ItemsPresenter, items: Array<{}> | undefined) => {
+      if (React.Children.count(this.props.children) === 1) {
         return this.getItemsPanelTemplate(React.Children.only(this.props.children), itemTemplates, itemsPresenter, items);
-      };
-    }
+      }
 
-    return undefined;
-  }
-
-  protected getSelectionProps(isSelected: boolean, elem: React.ReactElement<React.HTMLAttributes<{}>>) {
-    return {
-      className: classNames({ 'Selected': isSelected }, elem.props.className),
+      return this.getItemsPanelTemplate((<StackPanel />), itemTemplates, itemsPresenter, items);
     };
   }
 
@@ -76,7 +77,7 @@ export class PanelView extends ListItemsViewTemplate<PanelViewProps> {
     return this.renderListItem(
       fragment,
       items[context.index],
-      this.getSelectionProps.bind(this),
+      this.props.selectedProps || PanelView.getSelectedProps,
     );
   }
 }
