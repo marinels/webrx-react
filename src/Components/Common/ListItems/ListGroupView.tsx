@@ -12,6 +12,12 @@ export interface ListGroupViewProps extends ListItemsViewTemplateProps {
 }
 
 export class ListGroupView extends ListItemsViewTemplate<ListGroupViewProps> {
+  public static getSelectedProps(isSelected: boolean) {
+    return {
+      active: isSelected,
+    };
+  }
+
   render() {
     const { className, children, props, rest } = this.restProps(x => {
       const { fill, listItems, itemsProps } = x;
@@ -22,6 +28,7 @@ export class ListGroupView extends ListItemsViewTemplate<ListGroupViewProps> {
       <PanelView
         className={ className }
         itemsPanelTemplate={ this.renderListItemPanel.bind(this) }
+        selectedProps={ ListGroupView.getSelectedProps }
         listItems={ props.listItems }
         itemsProps={ props.itemsProps }
         { ...React.Component.trimProps(rest) }
@@ -37,11 +44,5 @@ export class ListGroupView extends ListItemsViewTemplate<ListGroupViewProps> {
         { itemTemplates }
       </ListGroupPanel>
     );
-  }
-
-  protected getSelectionProps(isSelected: boolean) {
-    return {
-      active: isSelected,
-    };
   }
 }
