@@ -39,8 +39,9 @@ export class Grid extends Panel<GridComponentProps> {
     const { border, ...rest } = this.props;
 
     const bordered = { 'Grid-Border': border === true };
+    const compact = { 'compact': this.props.compact };
 
-    return this.renderPanel(wxr.classNames('Grid', bordered), rest);
+    return this.renderPanel(wxr.classNames('Grid', bordered, compact), rest);
   }
 
   renderItems(allChildren?: React.ReactNode, componentClass?: React.ReactType) {
@@ -70,6 +71,7 @@ export class Grid extends Panel<GridComponentProps> {
     const itemClassName = Panel.getPanelItemPropValue(def.itemClassName, context);
     const itemStyle = Panel.getPanelItemPropValue(def.itemStyle, context);
     const itemProps = Panel.getPanelItemPropValue(def.itemProps, context) || {};
+    const compact = { 'compact': this.props.compact };
     const itemTemplate = def.itemTemplate;
 
     const layoutStyle = Object.assign({}, itemStyle, {
@@ -77,7 +79,7 @@ export class Grid extends Panel<GridComponentProps> {
     });
 
     const fragment = (
-      <div className={ wxr.classNames('Grid-Row', itemClassName) } style={ layoutStyle } data-grid-row={ row } key={ Layout.GridLayoutDefinition.generateKey(row) } { ...itemProps }>
+      <div className={ wxr.classNames('Grid-Row', compact, itemClassName) } style={ layoutStyle } data-grid-row={ row } key={ Layout.GridLayoutDefinition.generateKey(row) } { ...itemProps }>
         { colItems }
       </div>
     );
@@ -115,6 +117,7 @@ export class Grid extends Panel<GridComponentProps> {
     const itemClassName = Panel.getPanelItemPropValue(def.itemClassName, context);
     const itemStyle = Panel.getPanelItemPropValue(def.itemStyle, context);
     const itemProps = Panel.getPanelItemPropValue(def.itemProps, context) || {};
+    const compact = { 'compact': this.props.compact };
     const itemTemplate = def.itemTemplate;
 
     const layoutStyle = Object.assign({}, itemStyle, {
@@ -122,7 +125,7 @@ export class Grid extends Panel<GridComponentProps> {
     });
 
     const fragment = (
-      <div className={ wxr.classNames('Grid-Column', itemClassName) } style={ layoutStyle } data-grid-column={ column } key={ Layout.GridLayoutDefinition.generateKey(row, column) } { ...itemProps }>
+      <div className={ wxr.classNames('Grid-Column', compact, itemClassName) } style={ layoutStyle } data-grid-column={ column } key={ Layout.GridLayoutDefinition.generateKey(row, column) } { ...itemProps }>
         { super.renderItems(cellItems) }
       </div>
     );

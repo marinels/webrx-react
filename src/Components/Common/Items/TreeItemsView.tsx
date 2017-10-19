@@ -17,8 +17,8 @@ export class TreeItemsView extends React.Component<TreeItemsViewProps> {
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps } = x;
-      return { itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps };
+      const { itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact } = x;
+      return { itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact };
     });
 
     return (
@@ -33,6 +33,7 @@ export class TreeItemsView extends React.Component<TreeItemsViewProps> {
         itemClassName={ props.itemClassName }
         itemStyle={ props.itemStyle }
         itemProps={ props.itemProps }
+        compact={ props.compact }
         { ...React.Component.trimProps(rest) }
       />
     );

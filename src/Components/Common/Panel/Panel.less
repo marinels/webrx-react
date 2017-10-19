@@ -1,6 +1,13 @@
 @import (reference) '../../../Style/App.less';
 
 .Panel {
+  &.compact > .Panel-Item,
+  &.Grid.compact > .Grid-Row > .Grid-Column > .Panel-Item,
+  &.Grid > .Grid-Row.compact > .Grid-Column > .Panel-Item,
+  &.Grid > .Grid-Row > .Grid-Column.compact > .Panel-Item {
+    padding: 0;
+  }
+
   // display elements inline left aligned, but wrap within the container (normal)
   &.WrapPanel {
     text-align: left;

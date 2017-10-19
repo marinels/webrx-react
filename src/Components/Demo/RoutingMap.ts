@@ -190,6 +190,8 @@ demoRoutingMap.addRoute('webrx-react', 'ItemsGrid', 'Items (Grid)', (state: any)
 demoRoutingMap.addRoute('webrx-react', 'ItemsTree', 'Items (Tree)', (state: any) => new Components.ItemsViewModel(sampleTreeData));
 demoRoutingMap.addRoute('webrx-react', 'ListItemsDefault', 'ListItems (default)', (state: any) => new Components.ListItemsViewModel(sampleListData));
 demoRoutingMap.addRoute('webrx-react', 'ListItemsListGroup', 'ListItems (ListGroupPanel)', (state: any) => new Components.ListItemsViewModel(sampleListData));
+demoRoutingMap.addRoute('webrx-react', 'ListItemsPanel', 'ListItems (Default Panel)', (state: any) => new Components.ListItemsViewModel(sampleListData));
+demoRoutingMap.addRoute('webrx-react', 'ListItemsUGrid', 'ListItems (Uniform Grid)', (state: any) => new Components.ListItemsViewModel(sampleListData));
 demoRoutingMap.addRoute('webrx-react', 'ListItemsGrid', 'ListItems (Grid)', (state: any) => new Components.ListItemsViewModel(sampleListData));
 demoRoutingMap.addRoute('webrx-react', 'ListItemsGridAuto', 'ListItems (Auto Grid)', (state: any) => new Components.ListItemsViewModel(sampleListData));
 demoRoutingMap.addRoute('webrx-react', 'ListItemsTree', 'ListItems (Tree)', (state: any) => new Components.TreeListItemsViewModel(x => x.items, sampleTreeData));

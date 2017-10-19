@@ -4,10 +4,10 @@ import { Observable } from 'rxjs';
 
 import { BaseView, BaseViewProps } from '../../React';
 import { ItemsViewModel } from './ItemsViewModel';
-import { Panel, StackPanel, PanelItemProps } from '../Panel';
+import { Panel, StackPanel, PanelItemProps, PanelRenderProps } from '../Panel';
 import { ItemsPresenter, ItemsPresenterTemplateProps } from './ItemsPresenter';
 
-export interface ItemsProps extends ItemsPresenterTemplateProps, PanelItemProps {
+export interface ItemsProps extends ItemsPresenterTemplateProps, PanelItemProps, PanelRenderProps {
 }
 
 export interface ItemsViewProps extends BaseViewProps<ItemsViewModel<{}>, ItemsView>, ItemsProps {
@@ -23,9 +23,9 @@ export class ItemsView extends BaseView<ItemsViewProps, ItemsViewModel<{}>> {
   }
 
   render() {
-    const { className, props, rest } = this.restProps(x => {
-      const { viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps } = x;
-      return { viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps };
+    const { className, children, props, rest } = this.restProps(x => {
+      const { viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact } = x;
+      return { viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact };
     });
 
     return (
@@ -33,7 +33,9 @@ export class ItemsView extends BaseView<ItemsViewProps, ItemsViewModel<{}>> {
         <ItemsPresenter
           itemsSource={ this.viewModel.getItemsSource() }
           { ...props }
-        />
+        >
+          { children }
+        </ItemsPresenter>
       </div>
     );
   }
