@@ -31,57 +31,6 @@ const sampleDataTemplate = (x: SampleData) => {
   );
 };
 
-// const listTemplate = new Components.ListViewTemplate<SampleData>(
-//   (x, i, vm, v) => {
-//     return sampleDataTemplate(x);
-//   },
-//   (x, i, vm, v) => {
-//     return [
-//       <Components.NavButton key='nav' href={ `#/name/${ x.name }` } />,
-//     ];
-//   },
-// );
-
-// // this template renders a custom template container to show how we can
-// // inject a custom button that wraps our item template
-// const listCmdTemplate = new Components.ListViewTemplate<SampleData>(
-//   (x, i, vm, v) => {
-//     return sampleDataTemplate(x);
-//   },
-//   undefined, undefined,
-//   (contents, x, i, vm, v) => {
-//     return (
-//       <Components.CommandButton block plain href={ `#/name/${ x.name }` }>
-//         { contents }
-//       </Components.CommandButton>
-//     );
-//   },
-// );
-
-// const treeTemplate = new Components.TreeViewTemplate<SampleTreeData>(
-//   (x, vm, v) => x.items,
-//   (n, x, i, vm, v) => {
-//     return sampleDataTemplate(x);
-//   },
-//   (n, x, i, vm, v) => {
-//     return [
-//       <Components.NavButton key='nav' href={ `#/name/${ x.name }` } />,
-//     ];
-//   },
-//   x => x.key,
-//   undefined,
-//   (x, vm, v) => {
-//     const search: Components.SearchViewModel = vm.getSearch();
-
-//     if (search != null) {
-//       return wx
-//         .whenAny(search.filter, y => String.isNullOrEmpty(y) === false);
-//     }
-
-//     return Observable.of(false);
-//   },
-//   true,
-// );
 
 export const demoViewMap: ViewActivatorMap = {
   Loading: () => <Components.Loading text='Standard Loader...' />,
@@ -474,30 +423,6 @@ export const demoViewMap: ViewActivatorMap = {
         return null;
     }
   },
-  // ListViewModel: (viewModel: Components.ListViewModel<any, any>, componentRoute: string) => {
-  //   switch (componentRoute) {
-  //     case 'List':
-  //       return (
-  //         <Components.ListView viewModel={ viewModel } viewTemplate={ listTemplate } />
-  //       );
-  //     case 'ListCmd':
-  //       return (
-  //         <Components.ListView viewModel={ viewModel } viewTemplate={ listCmdTemplate } />
-  //       );
-  //     case 'Tree':
-  //       return (
-  //         <Components.ListView viewModel={ viewModel } selectable checkmarkSelected viewTemplate={ treeTemplate } />
-  //       );
-  //     case 'PanelList':
-  //       return (
-  //         <Panel header='List View Embedded Within a Panel' style={({ margin: 0 })}>
-  //           <Components.ListView viewModel={ viewModel } selectable checkmarkSelected fill viewTemplate={ listTemplate } />
-  //         </Panel>
-  //       );
-  //     default:
-  //       return null;
-  //   }
-  // },
   // DataGridViewModel: (viewModel: Components.DataGridViewModel<any>, componentRoute: string) => {
   //   let view: Components.DataGridViewTemplate<SampleData> | undefined;
   //   let columns: any;
