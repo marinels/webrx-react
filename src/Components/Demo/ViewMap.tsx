@@ -31,6 +31,13 @@ const sampleDataTemplate = (x: SampleData) => {
   );
 };
 
+const sampleDataCmdTemplate = (x: SampleData) => {
+  return (
+    <Components.CommandButton block plain stopPropagation={ false } href='#' style={ ({ padding: 5 }) }>
+      { sampleDataTemplate(x) }
+    </Components.CommandButton>
+  );
+};
 
 export const demoViewMap: ViewActivatorMap = {
   Loading: () => <Components.Loading text='Standard Loader...' />,
@@ -423,79 +430,6 @@ export const demoViewMap: ViewActivatorMap = {
         return null;
     }
   },
-  // DataGridViewModel: (viewModel: Components.DataGridViewModel<any>, componentRoute: string) => {
-  //   let view: Components.DataGridViewTemplate<SampleData> | undefined;
-  //   let columns: any;
-  //   let pager: any = true;
-  //   let search = false;
-
-  //   if (componentRoute === 'DataGridList') {
-  //     pager = false;
-  //     search = true;
-  //     view = new Components.DataGridListViewTemplate<SampleData>(
-  //       x => sampleDataTemplate(x),
-  //     );
-  //   }
-
-  //   if (componentRoute === 'DataGridPager') {
-  //     view = new Components.DataGridListViewTemplate<SampleData>(
-  //       x => sampleDataTemplate(x),
-  //     );
-
-  //     // this is the simple method of overriding pager details
-  //     pager = { order: [ 'controls', 'info' ] };
-  //     // this method allows much more complex composition
-  //     // pager = (<DataGridView.Pager grid={ viewModel } viewTemplate={ view } order={ [ null, 'info' ] } />);
-  //   }
-
-  //   if (componentRoute === 'DataGrid' || componentRoute === 'DataGridRoutingState') {
-  //     search = true;
-  //     columns = [
-  //       <Components.DataGridColumn key='id' fieldName='id' header='ID' sortable
-  //         tooltip={ (x: SampleData) => x == null ? null : (
-  //           <Tooltip id={ `${ x.id }-id-tt` }>{ `Cells support tooltips: ${ x.id }` }</Tooltip>
-  //         ) }
-  //       />,
-  //       <Components.DataGridColumn key='cat' fieldName='cat' header='Category' sortable />,
-  //       <Components.DataGridColumn key='name' fieldName='name' header='Name' sortable
-  //         tooltip={ (x: SampleData, index, column) => {
-  //           if (x == null) {
-  //             // header
-  //             return (
-  //               <Tooltip id='name-header-tt' placement='top'>{ `Headers can have tooltips too: ${ column.fieldName }` }</Tooltip>
-  //             );
-  //           }
-  //           else {
-  //             // cell
-  //             return (
-  //               <Popover id={ `${ x.id }-name-tt` } placement='left'>{ `You can use fancy popover tooltips: ${ x.name }` }</Popover>
-  //             );
-  //           }
-  //         } }
-  //       />,
-  //       <Components.DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 }
-  //         tooltip={ (x: SampleData) => x == null ? null : (
-  //           <OverlayTrigger placement='top'
-  //             overlay={ <Tooltip id={ `${ x.id }-requiredBy-tt` }>Even completely custom overlay triggers: { x.requiredBy }</Tooltip> }
-  //           />
-  //         ) }
-  //       />,
-  //       <Components.NavDataGridColumn key='nav' buttonProps={ (x: SampleData) => ({ href: `#/name/${ x.name }` }) } />,
-  //     ];
-  //   }
-
-  //   return (
-  //     <Components.DataGridView key={ componentRoute } viewModel={ viewModel } viewTemplate={ view } pager={ pager } search={ search }>
-  //       { columns }
-  //     </Components.DataGridView>
-  //   );
-  // },
-  // AsyncDataGridViewModel: (viewModel: Components.AsyncDataGridViewModel<any, any, any>) => (
-  //   <Components.DataGridView viewModel={ viewModel } pager={ ({ limits: [ 1, 5, 10, null ] }) }>
-  //     <Components.DataGridColumn key='name' fieldName='name' header='Name' sortable />
-  //     <Components.DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 } />
-  //   </Components.DataGridView>
-  // ),
   ModalDialogViewModel: (data: { viewModel: Components.ModalDialogViewModel<string>, createContext: Command<string>, accept: Command<any>, reject: Command<any> }) => (
     <div>
       <Button onClick={ wxr.bindEventToCommand(data.viewModel, x => data.createContext, () => 'You can put custom content here') }>Show Confirmation Dialog</Button>
@@ -613,6 +547,65 @@ export const demoViewMap: ViewActivatorMap = {
       </Components.CommonPanel>
     </div>
   ),
+  DataGridViewModel: (viewModel: Components.DataGridViewModel<{}>, componentRoute: string) => {
+    switch (componentRoute) {
+      case 'DataGrid':
+        return (
+          <Components.DataGridView viewModel={ viewModel } pager>
+            <Components.GridViewColumn field='id' cellTooltipTemplate={ (x: SampleData) => `Item ${ x.id }` } />
+            <Components.GridViewColumn id='cat' header='Category' cellTemplate={ (x: SampleData) => x.cat } headerTooltipTemplate='Simple Header Tooltip' />
+            <Components.GridViewColumn field='requiredBy' header='Required By' cellTooltipTemplate={ (x: SampleData) => (<Components.ContentTooltip content={ `Popover Content for ${ x.name }` } title='Fancy Tooltip' />) } />
+            <Components.GridViewColumn id='name' header='Name' cellTemplate={ (x: SampleData) => (<a href='#'>{ x.name }</a>) } headerTooltipTemplate={(<Components.ContentTooltip content='Fancy Header Popover' popover placement='top' />)} />
+          </Components.DataGridView>
+        );
+      case 'DataGridAutoCol':
+        return (
+          <Components.DataGridView viewModel={ viewModel } pager />
+        );
+      case 'DataGridNoPager':
+        // we are also using a custom grid view here that doesn't render column headers as buttons
+        return (
+          <Components.DataGridView viewModel={ viewModel }>
+            <Components.GridView />
+          </Components.DataGridView>
+        );
+      case 'DataGridPager':
+        // this is the simple method of overriding pager details
+        const pager = { order: [ 'controls', 'info' ] };
+        // this method allows much more complex composition
+        // const pager = (<Components.PagerView viewModel={ viewModel.pager } order={ [ undefined, 'info' ] } />);
+
+        return (
+          <Components.DataGridView viewModel={ viewModel } pager={ pager } />
+        );
+      case 'DataGridList':
+        return (
+          <Components.DataGridView viewModel={ viewModel } itemTemplate={ sampleDataCmdTemplate } pager compact>
+            <Components.ListGroupView />
+          </Components.DataGridView>
+        );
+      case 'DataGridUGrid':
+        return (
+          <Components.DataGridView viewModel={ viewModel } itemTemplate={ sampleDataTemplate } pager>
+            <Components.PanelView>
+              <Components.UniformGridPanel gridRows={ 5 } gridColumns={ 2 } />
+            </Components.PanelView>
+          </Components.DataGridView>
+        );
+      default:
+        return null;
+    }
+  },
+  AsyncDataGridViewModel: (viewModel: Components.AsyncDataGridViewModel<{}>, componentRoute: string) => {
+    switch (componentRoute) {
+      case 'DataGridAsync':
+        return (
+          <Components.DataGridView viewModel={ viewModel } pager />
+        );
+      default:
+        return null;
+    }
+  },
   // ItemListPanelViewModel: (viewModel: Components.ItemListPanelViewModel<any>, componentRoute: string) => {
   //   if (componentRoute === 'ItemListPanel') {
   //     return (
