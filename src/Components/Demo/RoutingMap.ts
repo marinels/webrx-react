@@ -51,97 +51,94 @@ export const sampleTreeData = sampleListData
     }, x, { name: x.name + ' (0)' }),
   );
 
-// interface SampleDataSourceRequest extends Components.ProjectionRequest {
-//   type: string;
-// }
+interface SampleDataSourceContext {
+  filter: string;
+}
 
-// const sampleDataSource = <Components.AsyncDataSource<SampleDataSourceRequest, Components.ProjectionResult<SampleData>>>{
-//     requests: <Observable<SampleDataSourceRequest>>Observable
-//       .timer(2000, 10000)
-//       .map(x => {
-//         if (x === 2) {
-//           // this will kill this request stream (no longer functional)
-//           throw new Error('Simulated Request Stream Error');
-//         }
+function sampleDataSource<TContext = any>(request: Components.DataSourceRequest<TContext> | undefined) {
+  if (request == null) {
+    return undefined;
+  }
 
-//         return {
-//           type: `param ${ x }`,
-//         };
-//       })
-//       .do(x => {
-//         Alert.create('Input Param Changed', `type = ${ x.type }`, undefined, 1000);
-//       }),
-//     getResultAsync: (request) => {
-//       if (request.filter === 'throw') {
-//         throw new Error('Simulated Coding Error');
-//       }
+  const context: Partial<SampleDataSourceContext> = request.context || {};
 
-//       return Observable
-//         .of(sampleListData)
-//         // simulate async result delay
-//         .delay(2000)
-//         .do(() => {
-//           const msg = [
-//             'Simulating Async Data Result...',
-//             `type = ${ request.type }`,
-//             `filter = ${ request.filter }`,
-//             `offset = ${ request.offset }`,
-//             `limit = ${ request.limit }`,
-//             `sortField = ${ request.sortField }`,
-//             `sortDirection = ${ request.sortDirection == null ? '' : Compare.SortDirection[request.sortDirection] }`,
-//           ].join('<br/>');
-//           Alert.create(msg, 'Async DataGrid Demo', undefined, 1000);
-//         })
-//         .map(x => {
-//           let query = x
-//             .asIterable();
+  if (context.filter === 'throw') {
+    throw new Error('Simulated Coding Error');
+  }
 
-//           if (String.isNullOrEmpty(request.filter) === false) {
-//             if (request.filter === 'error') {
-//               throw new Error('Simulated Async DataSource Error');
-//             }
+  return Observable
+    .of(sampleListData)
+    .map(data => ({
+      data,
+      page: request.page,
+      sort: request.sort,
+      context,
+    }))
+    .do(x => {
+      const msg = [
+        'Simulating Async Data Result...',
+        `page = ${ String.stringify(x.page) }`,
+        `sort = ${ String.stringify(x.sort) }`,
+        `context = ${ String.stringify(x.context) }`,
+      ].join('<br/>');
+      Alert.create(msg, 'Async DataGrid Demo', undefined, 2000);
+    })
+    // simulate async result delay
+    .delay(2000)
+    .map(x => {
+      let query = x.data
+        .asIterable();
 
-//             query = query
-//               .filter(y => {
-//                 return (
-//                   y.name.indexOf(request.filter || '') >= 0 ||
-//                   y.requiredBy.indexOf(request.filter || '') >= 0
-//                 );
-//               });
-//           }
+      if (!String.isNullOrEmpty(context.filter)) {
+        if (context.filter === 'error') {
+          throw new Error('Simulated Async DataSource Error');
+        }
 
-//           const count = query.count();
+        query = query
+          .filter(y => {
+            return (
+              y.name.indexOf(context.filter || '') >= 0 ||
+              y.requiredBy.indexOf(context.filter || '') >= 0
+            );
+          });
+      }
 
-//           if (String.isNullOrEmpty(request.sortField) === false) {
-//             if (request.sortDirection === Compare.SortDirection.Descending) {
-//               query = query
-//                 .orderByDescending(y => request.sortField === 'name' ? y.name : y.requiredBy);
-//             }
-//             else {
-//               query = query
-//                 .orderBy(y => request.sortField === 'name' ? y.name : y.requiredBy);
-//             }
-//           }
+      const count = query.count();
 
-//           const offset = request.offset || 0;
-//           if (offset > 0) {
-//             query = query.skip(offset);
-//           }
+      if (x.sort != null && x.sort.direction != null && !String.isNullOrEmpty(x.sort.field)) {
+        const field = x.sort.field;
 
-//           const limit = request.limit || 0;
-//           if (limit > 0) {
-//             query = query.take(limit);
-//           }
+        if (x.sort.direction === Compare.SortDirection.Ascending) {
+          query = query
+            .orderBy((y: any) => y[field]);
+        }
+        else if (x.sort.direction === Compare.SortDirection.Descending) {
+          query = query
+            .orderByDescending((y: any) => y[field]);
+        }
+      }
 
-//           const items = query.toArray();
+      if (x.page != null) {
+        const offset = x.page.offset || 0;
+        const limit = x.page.limit || 0;
 
-//           return <Components.ProjectionResult<SampleData>>{
-//             items,
-//             count,
-//           };
-//         });
-//     },
-//   };
+        if (offset > 0) {
+          query = query.skip(offset);
+        }
+
+        if (limit > 0) {
+          query = query.take(limit);
+        }
+      }
+
+      const items = query.toArray();
+
+      return <Components.DataSourceResponse<SampleData>>{
+        items,
+        count,
+      };
+    });
+}
 
 demoRoutingMap.addRoute('React', 'Loading', 'Loading', (state: any) => 'Loading');
 demoRoutingMap.addRoute('React', 'SizedLoading', 'Sized Loading', (state: any) => 'SizedLoading');
@@ -195,35 +192,6 @@ demoRoutingMap.addRoute('webrx-react', 'ListItemsUGrid', 'ListItems (Uniform Gri
 demoRoutingMap.addRoute('webrx-react', 'ListItemsGrid', 'ListItems (Grid)', (state: any) => new Components.ListItemsViewModel(sampleListData));
 demoRoutingMap.addRoute('webrx-react', 'ListItemsGridAuto', 'ListItems (Auto Grid)', (state: any) => new Components.ListItemsViewModel(sampleListData));
 demoRoutingMap.addRoute('webrx-react', 'ListItemsTree', 'ListItems (Tree)', (state: any) => new Components.TreeListItemsViewModel(x => x.items, sampleTreeData));
-// demoRoutingMap.addRoute('webrx-react', 'DataGrid', 'Data Grid', (state: any) => {
-//   const prop = wx.property<SampleData[]>(undefined, false);
-
-//   // simulate delayed loading
-//   Observable
-//     .of(sampleListData)
-//     .delay(2000)
-//     .do(() => {
-//       Alert.create('Simulating Delay', 'Delayed Observable Property List Loading', undefined, 1000);
-//     })
-//     .subscribe(x => {
-//       prop.value = x;
-//     });
-
-//   return new Components.DataGridViewModel(prop, (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0);
-// });
-// demoRoutingMap.addRoute('webrx-react', 'DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: any) => Components.DataGridViewModel.create(...sampleListData));
-// demoRoutingMap.addRoute('webrx-react', 'DataGridList', 'DataGrid (List View)', (state: any) =>
-//   new Components.DataGridViewModel(Observable.of(sampleListData), (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0, undefined, undefined, undefined, undefined, 0),
-// );
-// demoRoutingMap.addRoute('webrx-react', 'DataGridPager', 'DataGrid (Custom Pager)', (state: any) =>
-//   new Components.DataGridViewModel(Observable.of(sampleListData)),
-// );
-// demoRoutingMap.addRoute('webrx-react', 'AsyncDataGrid', 'DataGrid (Async)', (state: any) => {
-//   return new Components.AsyncDataGridViewModel(sampleDataSource, true, true);
-// });
-// demoRoutingMap.addRoute('webrx-react', 'DataGridRoutingState', 'DataGrid (Routing State)', (state: any) =>
-//   new Components.DataGridViewModel(Observable.of(sampleListData), (item, regex) => `${ item.name } ${ item.requiredBy }`.search(regex) >= 0, undefined, undefined, undefined, undefined, undefined, undefined, true),
-// );
 demoRoutingMap.addRoute('webrx-react', 'ModalDialog', 'Modal Dialog', (state: any) => {
   const createContext = wx.command<string>(x => `[${ moment().format() }] ${ x }`);
   // we are simulating a modal being contained within another view model
@@ -237,6 +205,26 @@ demoRoutingMap.addRoute('webrx-react', 'ModalDialog', 'Modal Dialog', (state: an
 });
 demoRoutingMap.addRoute('webrx-react', 'Tabs', 'Tabs', (state: any) => new Components.TabsViewModel());
 demoRoutingMap.addRoute('webrx-react', 'StaticTabs', 'Static Tabs', (state: any) => new Components.TabsViewModel());
+demoRoutingMap.addRoute('webrx-react', 'DataGrid', 'Data Grid', (state: any) => {
+  // const prop = wx.property<SampleData[]>(undefined, false);
+
+  // simulate delayed loading
+  const delay = 2000;
+  const data = Observable
+    .of(sampleListData)
+    .do(() => {
+      Alert.create('Simulating Delay', 'Delayed Observable Property List Loading', undefined, delay);
+    })
+    .delay(delay);
+
+  return new Components.DataGridViewModel(data);
+});
+demoRoutingMap.addRoute('webrx-react', 'DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: any) => new Components.DataGridViewModel(sampleListData));
+demoRoutingMap.addRoute('webrx-react', 'DataGridNoPager', 'Data Grid (No Pager)', (state: any) => new Components.DataGridViewModel(sampleListData, null));
+demoRoutingMap.addRoute('webrx-react', 'DataGridPager', 'Data Grid (Custom Pager)', (state: any) => new Components.DataGridViewModel(sampleListData));
+demoRoutingMap.addRoute('webrx-react', 'DataGridList', 'Data Grid (List View)', (state: any) => new Components.DataGridViewModel(sampleListData));
+demoRoutingMap.addRoute('webrx-react', 'DataGridUGrid', 'Data Grid (Uniform Grid Panel)', (state: any) => new Components.DataGridViewModel(sampleListData));
+demoRoutingMap.addRoute('webrx-react', 'DataGridAsync', 'Data Grid (Async)', (state: any) => new Components.AsyncDataGridViewModel(sampleDataSource));
 // demoRoutingMap.addRoute('webrx-react', 'ItemListPanel', 'Item List Panel', (state: any) =>
 //   new Components.ItemListPanelViewModel(wx.property(sampleListData), (x, r) => r.test(x.name), 'id'),
 // );
