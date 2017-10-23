@@ -5,6 +5,7 @@
     "outDir": "."
   },
   "files": [
+    "src/types/declarations.d.ts",
     "src/webrx-react.ts",
     "src/Components/Demo/index.ts"
   ]

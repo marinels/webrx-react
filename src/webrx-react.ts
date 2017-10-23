@@ -1,5 +1,3 @@
-/// <reference path="./types/declarations.d.ts" />
-
 // export webrx-react version string
 export const version = VERSION;
 
