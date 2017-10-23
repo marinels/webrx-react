@@ -1,5 +1,8 @@
 /// <reference path="./types/declarations.d.ts" />
 
+// export webrx-react version string
+export const version = VERSION;
+
 // import all custom styles
 import './Style/App.less';
 
