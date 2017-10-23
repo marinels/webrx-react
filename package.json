@@ -10,7 +10,7 @@
     "mocha": "mocha",
     "tsc": "tsc",
     "build-modules": "tsc -p tsconfig.build.json && gulp deploy:modules",
-    "clean-modules": "git clean -df Components Events Extensions Routing Stores Style Utils WebRx types webrx-react.*",
+    "clean-modules": "git clean -df Components Events Extensions Routing Stores Style Utils WebRx types webrx-react.* version.*",
     "deploy-docs": "gulp deploy:docs",
     "optgulp": "babel gulpfile.babel.js --out-file gulpfile.js",
     "tr": "tsc --traceResolution --noEmit > tsctr.log"
@@ -77,6 +77,7 @@
     "gulp-eslint": "^4.0.0",
     "gulp-mocha": "^4.0.0",
     "gulp-plumber": "^1.0.0",
+    "gulp-replace": "^0.6.1",
     "gulp-stylelint": "^5.0.0",
     "gulp-tslint": "^8.0.0",
     "gulp-util": "^3.0.0",

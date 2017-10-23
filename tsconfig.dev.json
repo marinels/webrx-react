@@ -6,6 +6,7 @@
     "noEmit": true
   },
   "files": [
+    "src/types/declarations.d.ts",
     "src/app.tsx"
   ]
 }
