@@ -1,7 +1,5 @@
-/// <reference path="./types/declarations.d.ts" />
-
-// export webrx-react version string
-export const version = VERSION;
+// import webrx-react version string
+import { version } from './version';
 
 // import all custom styles
 import './Style/App.less';
@@ -26,9 +24,9 @@ import * as Stores from './Stores';
 import * as Components from './Components';
 
 // export everything
-export { wx, Logging, PubSub, Alert, Compare, Moment };
+export { version, wx, Logging, PubSub, Alert, Compare, Moment };
 export { Events, Routing, Stores, Components };
 
 // inform the user which version we are using
 // tslint:disable-next-line:no-console
-console.debug(`Loaded webrx-react: ${ version }`);
+Logging.getLogger('webrx-react').debug(`Loaded webrx-react: ${ version }`);
