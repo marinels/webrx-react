@@ -2,7 +2,7 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "declaration": true,
-    "outDir": "."
+    "outDir": "build/modules"
   },
   "files": [
     "src/types/declarations.d.ts",

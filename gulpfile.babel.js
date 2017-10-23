@@ -727,18 +727,24 @@ gulp.task('deploy:docs', [ 'clean:docs' ], () => {
     .pipe(gulp.dest(webpackConfig.output.path));
 });
 
-gulp.task('deploy:modules', [ 'deploy:modules:ts', 'deploy:modules:less' ]);
+gulp.task('deploy:modules', [ 'deploy:modules:tsd', 'deploy:modules:less' ], () => {
+  return gulp
+    .src([
+      path.resolve(config.paths.build, 'modules', '**', '*'),
+    ])
+    .pipe(gulp.dest(__dirname));
+});
 
-gulp.task('deploy:modules:ts', () => {
+gulp.task('deploy:modules:tsd', () => {
   return gulp
     .src([
       path.resolve(config.paths.src, '**', '*.d.ts'),
     ])
-    .pipe(gulp.dest(__dirname));
+    .pipe(gulp.dest(path.resolve(config.paths.build, 'modules')));
 });
 
 gulp.task('deploy:modules:less', () => {
   return gulp
     .src(path.resolve(config.paths.src, '**', '*.less'))
-    .pipe(gulp.dest(__dirname));
+    .pipe(gulp.dest(path.resolve(config.paths.build, 'modules')));
 });
