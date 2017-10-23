@@ -16,6 +16,7 @@ import minimist from 'minimist';
 import mocha from 'gulp-mocha';
 import path from 'path';
 import plumber from 'gulp-plumber';
+import replace from 'gulp-replace';
 import runSequence from 'run-sequence';
 import stylelint from 'gulp-stylelint';
 import through from 'through';
@@ -727,12 +728,24 @@ gulp.task('deploy:docs', [ 'clean:docs' ], () => {
     .pipe(gulp.dest(webpackConfig.output.path));
 });
 
-gulp.task('deploy:modules', [ 'deploy:modules:tsd', 'deploy:modules:less' ], () => {
+gulp.task('deploy:modules', [ 'deploy:modules:version', 'deploy:modules:tsd', 'deploy:modules:less' ], () => {
   return gulp
     .src([
       path.resolve(config.paths.build, 'modules', '**', '*'),
     ])
     .pipe(gulp.dest(__dirname));
+});
+
+gulp.task('deploy:modules:version', () => {
+  // eslint-disable-next-line global-require
+  const npmPackage = require('./package.json');
+
+  return gulp
+    .src([
+      path.resolve(config.paths.build, 'modules', 'version.js'),
+    ])
+    .pipe(replace(/VERSION/g, JSON.stringify(npmPackage.version)))
+    .pipe(gulp.dest(path.resolve(config.paths.build, 'modules')));
 });
 
 gulp.task('deploy:modules:tsd', () => {
