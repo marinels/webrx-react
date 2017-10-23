@@ -29,4 +29,4 @@ export { Events, Routing, Stores, Components };
 
 // inform the user which version we are using
 // tslint:disable-next-line:no-console
-console.debug(`Loaded webrx-react: ${ version }`);
+Logging.getLogger('webrx-react').debug(`Loaded webrx-react: ${ version }`);
