@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const npmPackage = require('./package.json');
 
 module.exports = {
   externals: {
@@ -7,7 +8,13 @@ module.exports = {
   devtool: 'source-map',
   plugins: [
     // eslint-disable-next-line id-match
-    new webpack.DefinePlugin({ DEBUG: false, PRODUCTION: false, TEST: false, WEBPACK_DEV_SERVER: false }),
+    new webpack.DefinePlugin({
+      DEBUG: false,
+      PRODUCTION: false,
+      TEST: false,
+      WEBPACK_DEV_SERVER: false,
+      VERSION: JSON.stringify(npmPackage.version),
+    }),
   ],
   resolve: {
     extensions: [ '.ts', '.tsx', '.webpack.js', '.web.js', '.js' ],
