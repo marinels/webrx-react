@@ -8,7 +8,7 @@ import { BaseRoutableViewModel, BaseView, BaseViewProps, isViewModel, isRoutable
 import { RouteHandlerViewModel, SplashKey, DefaultKey } from './RouteHandlerViewModel';
 import { Breadcrumbs } from './Breadcrumbs';
 import { CommandButton } from '../CommandButton/CommandButton';
-import { ViewMapper } from '../../../Routing/ViewMap';
+import { ViewMapper } from '../../../Routing';
 
 export interface RouteHandlerProps {
   viewMap: ViewMapper;

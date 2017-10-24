@@ -2,7 +2,7 @@ import { Observable, AjaxRequest, AjaxError } from 'rxjs';
 import param = require('jquery-param');
 
 import { Logging } from '../Utils';
-import { Manager } from '../Routing/RouteManager';
+import { normalizePath } from '../Routing';
 import { SampleData } from './SampleData/SampleData';
 
 export enum HttpRequestMethod {

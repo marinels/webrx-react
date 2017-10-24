@@ -1,4 +1,4 @@
-import { Route } from './RouteManager';
+import { Route } from './Interfaces';
 
 export interface ComponentActivator {
   path?: string;

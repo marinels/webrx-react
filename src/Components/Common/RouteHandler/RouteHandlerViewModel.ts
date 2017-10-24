@@ -4,8 +4,7 @@ import 'ix';
 import { ReadOnlyProperty, Command } from '../../../WebRx';
 import { BaseViewModel } from '../../React/BaseViewModel';
 import { BaseRoutableViewModel, isRoutableViewModel, RoutingBreadcrumb } from '../../React/BaseRoutableViewModel';
-import { Manager, Route } from '../../../Routing/RouteManager';
-import { RouteMapper, ComponentActivator, RoutedComponentActivator } from '../../../Routing/RoutingMap';
+import { Route, Manager, RouteMapper, ComponentActivator, RoutedComponentActivator } from '../../../Routing';
 import { PubSub } from '../../../Utils';
 import { RoutingStateChangedKey, RoutingStateChanged } from '../../../Events/RoutingStateChanged';
 

@@ -6,7 +6,7 @@ import { Alert, Compare } from '../../Utils';
 import { HeaderMenu, HeaderCommandAction } from '../React';
 import * as Components from '../Common';
 // import { TodoListViewModel } from './TodoList/TodoListViewModel';
-import { RouteMap as AppRouteMap } from '../../Routing/RoutingMap';
+import { RouteMap as AppRouteMap } from '../../Routing';
 import { ComponentDemoViewModel, RoutingMap } from './ComponentDemoViewModel';
 
 export const demoRoutingMap = new RoutingMap();

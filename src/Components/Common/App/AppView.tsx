@@ -12,7 +12,7 @@ import { RouteHandlerView } from '../RouteHandler/RouteHandlerView';
 import { PageHeaderView, PageHeaderProps } from '../PageHeader/PageHeaderView';
 import { PageFooterView, PageFooterProps } from '../PageFooter/PageFooterView';
 import { AppViewModel } from './AppViewModel';
-import { ViewMap, ViewMapper } from '../../../Routing/ViewMap';
+import { ViewMap, ViewMapper } from '../../../Routing';
 
 ViewMap[SplashKey] = () => (
   <Splash header='webrx-react' />

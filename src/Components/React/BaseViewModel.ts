@@ -10,7 +10,7 @@ import {
 } from '../../WebRx/Utils';
 import { ObservableLike, Command } from '../../WebRx';
 import { Logging, Alert } from '../../Utils';
-import { Manager } from '../../Routing/RouteManager';
+import { Manager } from '../../Routing';
 import { getObservableOrAlert, getObservableResultOrAlert, subscribeOrAlert, logMemberObservables } from './ObservableHelpers';
 
 export interface ViewModelLifecyle {

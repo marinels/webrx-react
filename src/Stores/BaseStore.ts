@@ -20,7 +20,7 @@ export abstract class BaseStore {
       this.api = new ObservableApi(pathOrApi, base, sampleData);
     }
 
-    this.logger.name += ': ' + this.api.path;
+    this.logger.name += ` (${ this.api.path })`;
 
     this.logger.debug('Store Created');
   }
