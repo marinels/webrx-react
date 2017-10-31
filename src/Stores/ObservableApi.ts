@@ -2,7 +2,7 @@ import { Observable, AjaxRequest, AjaxError } from 'rxjs';
 import param = require('jquery-param');
 
 import { Logging } from '../Utils';
-import { normalizePath } from '../Routing';
+import { getWindowLocation, joinPath } from '../Routing';
 import { SampleData } from './SampleData/SampleData';
 
 export enum HttpRequestMethod {
@@ -87,7 +87,9 @@ export class ObservableApi {
       // use the following as the uri:
       // https://httpbin.org/delay/5
 
-      if (uri.indexOf(window.location.origin) !== 0) {
+      const windowLocation = getWindowLocation();
+
+      if (windowLocation != null && uri.indexOf(windowLocation.origin) !== 0) {
         // NOTE: it is possible that you can reach this path if you attempt a CORS
         //       fetch where the OPTIONS preflight request 404's.
         // see: https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Preflighted_requests
@@ -198,16 +200,23 @@ export class ObservableApi {
   }
 
   protected readonly logger = Logging.getLogger(ObservableApi.displayName);
-  protected readonly baseUri: string;
 
-  constructor(public readonly path: string, public readonly base?: string, protected readonly sampleData?: SampleData) {
-    if (String.isNullOrEmpty(base) && window != null && window.location != null) {
-      this.base = (window.location.origin || 'http://localhost') + (window.location.pathname || '/');
+  public readonly base: string;
+  public readonly baseUri: string;
+
+  constructor(public readonly path: string, base?: string, protected readonly sampleData?: SampleData) {
+    const windowLocation = getWindowLocation() || <Location>{};
+
+    if (String.isNullOrEmpty(base)) {
+      this.base = (windowLocation.origin || 'http://localhost') + (windowLocation.pathname || '/');
+    }
+    else {
+      this.base = base;
     }
 
-    this.logger.name += ': ' + path;
+    this.logger.name += ` (${ this.path })`;
 
-    this.baseUri = normalizePath(`${ this.base }/${ path }`);
+    this.baseUri = joinPath(this.base, this.path);
   }
 
   public getRequest<T>(action: string, url: string, method = HttpRequestMethod.GET, params?: any, data?: any, options?: AjaxRequest) {
