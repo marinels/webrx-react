@@ -2,7 +2,9 @@ export function isString(value: any): value is string {
   return typeof value === 'string' || value instanceof String;
 }
 
-export function isNullOrEmpty(value: string | undefined | null): value is undefined {
+export function isNullOrEmpty(value: string | undefined): value is undefined;
+export function isNullOrEmpty(value: string | null): value is null;
+export function isNullOrEmpty(value: string | null | undefined): boolean {
   return value == null || value === '';
 }
 
