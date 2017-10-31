@@ -73,4 +73,4 @@ export class RouteManager {
   }
 }
 
-export const Manager = new RouteManager();
+export const routeManager = new RouteManager();

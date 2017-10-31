@@ -10,7 +10,7 @@ import {
 } from '../../WebRx/Utils';
 import { ObservableLike, Command } from '../../WebRx';
 import { Logging, Alert } from '../../Utils';
-import { Manager } from '../../Routing';
+import { routeManager } from '../../Routing/RouteManager';
 import { getObservableOrAlert, getObservableResultOrAlert, subscribeOrAlert, logMemberObservables } from './ObservableHelpers';
 
 export interface ViewModelLifecyle {
@@ -124,7 +124,7 @@ export abstract class BaseViewModel extends Subscription {
   }
 
   protected navTo(path: string, state?: any, replace = false, uriEncode = false) {
-    Manager.navTo(path, state, replace, uriEncode);
+    routeManager.navTo(path, state, replace, uriEncode);
   }
 
   public isViewModel() {

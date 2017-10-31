@@ -4,7 +4,8 @@ import 'ix';
 import { ReadOnlyProperty, Command } from '../../../WebRx';
 import { BaseViewModel } from '../../React/BaseViewModel';
 import { BaseRoutableViewModel, isRoutableViewModel, RoutingBreadcrumb } from '../../React/BaseRoutableViewModel';
-import { Route, Manager, RouteMapper, ComponentActivator, RoutedComponentActivator } from '../../../Routing';
+import { Route, RouteMapper, ComponentActivator, RoutedComponentActivator } from '../../../Routing';
+import { routeManager } from '../../../Routing/RouteManager';
 import { PubSub } from '../../../Utils';
 import { RoutingStateChangedKey, RoutingStateChanged } from '../../../Events/RoutingStateChanged';
 
@@ -35,7 +36,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
     super();
 
     this.currentRoute = this
-      .whenAny(Manager.currentRoute, x => x)
+      .whenAny(routeManager.currentRoute, x => x)
       // a null route will never get processed so we can filter them out back here
       .filterNull()
       .toProperty();
@@ -173,7 +174,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
       'Routing Handler State Changed Error',
       x => {
         if (this.currentRoute.value != null && this.routedComponent.value != null) {
-          Manager.navTo(this.currentRoute.value.path, this.routedComponent.value.getRoutingState(x), true);
+          routeManager.navTo(this.currentRoute.value.path, this.routedComponent.value.getRoutingState(x), true);
         }
       },
     );
@@ -305,7 +306,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
       this.logger.debug(`Redirecting from '${ activator!.route.path }' to '${ activator!.path }'`, activator);
 
       // inform the routing manager of the redirection
-      Manager.navTo(activator!.path!, undefined, true);
+      routeManager.navTo(activator!.path!, undefined, true);
 
       // return null to stop processing this route
       return null;
