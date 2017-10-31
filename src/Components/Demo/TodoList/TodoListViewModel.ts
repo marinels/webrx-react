@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
-import { Route } from '../../../Routing/RouteManager';
+import { Route } from '../../../Routing';
 import { BaseViewModel } from '../../React/BaseViewModel';
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 import { ItemListPanelViewModel } from '../../Common/ItemListPanel/ItemListPanelViewModel';

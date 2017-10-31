@@ -14,7 +14,7 @@ import * as Components from '../Common';
 // import { TodoListViewModel } from './TodoList/TodoListViewModel';
 import { ComponentDemoViewModel } from './ComponentDemoViewModel';
 import { ComponentDemoView, ViewActivatorMap } from './ComponentDemoView';
-import { ViewMap as AppViewMap } from '../../Routing/ViewMap';
+import { ViewMap as AppViewMap } from '../../Routing';
 
 const logger = Logging.getLogger('Demo.ViewMap');
 

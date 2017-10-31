@@ -2,7 +2,9 @@ import param = require('jquery-param');
 import deparam = require('jquery-deparam');
 
 export class HashCodec {
-  public static displayName = 'HashCodec';
+  public static readonly displayName = 'HashCodec';
+
+  public static readonly Default = new HashCodec();
 
   public static readonly NormalizePathPattern = '';
   public static readonly HashPattern = '';

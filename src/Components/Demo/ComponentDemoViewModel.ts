@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { Tooltip } from 'react-bootstrap';
 
 import { ReadOnlyProperty, Property, Command } from '../../WebRx';
-import { Route } from '../../Routing/RouteManager';
+import { Route } from '../../Routing';
 import { HeaderCommandAction, HeaderMenu } from '../React/Actions';
 import { BaseRoutableViewModel, isRoutableViewModel, RoutingBreadcrumb } from '../React/BaseRoutableViewModel';
 import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
