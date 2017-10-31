@@ -2,6 +2,14 @@
 import { HashCodec } from './HashCodec';
 import { Route } from './Interfaces';
 
+export function getWindowLocation() {
+  if (typeof window === 'undefined') {
+    return undefined;
+  }
+
+  return (window || {}).location;
+}
+
 export function getPath(state: { route: Route}) {
   let path: string | undefined;
 
@@ -14,11 +22,21 @@ export function getPath(state: { route: Route}) {
   return path;
 }
 
+export function trimPath(path: string) {
+  return path.replace(/^\/+/, '').replace(/\/+$/, '');
+}
+
+export function joinPath(base: string, path: string) {
+  return `${ trimPath(base) }/${ trimPath(path) }`;
+}
+
 export function normalizePath(path: string, currentPath?: string, hashCodec?: HashCodec) {
   if (String.isNullOrEmpty(path) === false) {
     if (path[0] !== '/') {
       if (String.isNullOrEmpty(currentPath)) {
-        currentPath = (hashCodec || HashCodec.Default).decode(window.location.hash, x => x);
+        const windowLocation = getWindowLocation();
+        const currentHash = windowLocation == null ? undefined : windowLocation.hash;
+        currentPath = (hashCodec || HashCodec.Default).decode(currentHash, x => x);
       }
 
       // relative path
