@@ -6,7 +6,7 @@ import { HttpRequestMethod, ObservableApi } from '../../src/Stores/ObservableApi
 
 describe('ObservableApi', () => {
   const baseUri = 'http://test1.com/';
-  const api = new ObservableApi(baseUri);
+  const api = new ObservableApi('/', baseUri);
   const action = 'action';
   const data = { item1: 'item1 value' };
   const body = String.stringify(data, null, 2);
