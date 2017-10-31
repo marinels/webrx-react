@@ -40,7 +40,7 @@ export class HashCodec {
     return { path, params };
   }
 
-  private santize(hash: string) {
+  private santize(hash: string | undefined) {
     return (String.isNullOrEmpty(hash) || hash[0] !== '#') ? '#/' : hash;
   }
 
@@ -60,7 +60,7 @@ export class HashCodec {
     return hash;
   }
 
-  public decode<T>(hash: string, selector: (path: string, params: string | undefined, state: any) => T) {
+  public decode<T>(hash: string | undefined, selector: (path: string, params: string | undefined, state: any) => T) {
     hash = this.santize(hash);
 
     const { path, params } = this.getPathAndParams(hash);
