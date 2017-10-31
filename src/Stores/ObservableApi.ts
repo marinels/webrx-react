@@ -199,7 +199,7 @@ export class ObservableApi {
       });
   }
 
-  protected readonly logger = Logging.getLogger(ObservableApi.displayName);
+  protected readonly logger: Logging.Logger = Logging.getLogger(ObservableApi.displayName);
 
   public readonly base: string;
   public readonly baseUri: string;
