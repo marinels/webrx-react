@@ -22,29 +22,29 @@ export class TabsViewModel<T> extends BaseRoutableViewModel<TabsRoutingState> {
   constructor(initialTabs: T[] = [], isRoutingEnabled = false) {
     super(isRoutingEnabled);
 
-    const tabs = this.property<T[]>(initialTabs, false);
+    const tabs = this.wx.property<T[]>(initialTabs, false);
     this.tabs = <ReadOnlyProperty<T[]>>tabs;
 
-    this.addTab = this.command((tab: T) => {
+    this.addTab = this.wx.command((tab: T) => {
       tabs.value = this.tabs.value.concat(tab);
       return tab;
     });
 
-    this.removeTab = this.command((tab: T | number) => {
+    this.removeTab = this.wx.command((tab: T | number) => {
       tabs.value = Number.isNumeric(tab) ?
         this.tabs.value.filter((x, i) => i !== tab) :
         this.tabs.value.filter(x => x !== tab);
       return tab;
     });
 
-    this.selectTab = this.command<T>();
-    this.selectIndex = this.command<number>();
+    this.selectTab = this.wx.command<T>();
+    this.selectIndex = this.wx.command<number>();
 
-    this.selectedTab = this
+    this.selectedTab = this.wx
       .whenAny(this.selectIndex.results, x => this.tabs.value[x])
       .toProperty();
 
-    this.selectedIndex = this
+    this.selectedIndex = this.wx
       .whenAny(this.selectIndex.results, x => x)
       .toProperty();
 
@@ -53,16 +53,18 @@ export class TabsViewModel<T> extends BaseRoutableViewModel<TabsRoutingState> {
       .invokeCommand(this.selectIndex),
     );
 
-    this.addSubscription(this
-      .whenAny(this.tabs.changed, x => ({ i: this.selectedIndex.value, l: x.length }))
-      .filter(x => x.l > 0 && (x.i == null || x.i < 0 || x.i >= x.l))
-      .map(x => x.l - 1)
-      .invokeCommand(this.selectIndex),
+    this.addSubscription(
+      this.wx
+        .whenAny(this.tabs.changed, x => ({ i: this.selectedIndex.value, l: x.length }))
+        .filter(x => x.l > 0 && (x.i == null || x.i < 0 || x.i >= x.l))
+        .map(x => x.l - 1)
+        .invokeCommand(this.selectIndex),
     );
 
-    this.addSubscription(this
-      .whenAny(this.selectedIndex, x => x)
-      .invokeCommand(this.routingStateChanged),
+    this.addSubscription(
+      this.wx
+        .whenAny(this.selectedIndex, x => x)
+        .invokeCommand(this.routingStateChanged),
     );
   }
 

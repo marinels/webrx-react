@@ -1,14 +1,7 @@
 import { Observable, Subscription } from 'rxjs';
 import { TeardownLogic } from 'rxjs/Subscription';
 
-import { property } from '../../WebRx/Property';
-import { command } from '../../WebRx/Command';
-import { whenAny } from '../../WebRx/WhenAny';
-import {
-  isObservable, isObserver, isSubject, isProperty, isCommand, asObservable,
-  getObservable, getProperty, handleError,
-} from '../../WebRx/Utils';
-import { ObservableLike, Command } from '../../WebRx';
+import { wx, Command } from '../../WebRx';
 import { Logging, Alert } from '../../Utils';
 import { routeManager } from '../../Routing/RouteManager';
 import { getObservableOrAlert, getObservableResultOrAlert, subscribeOrAlert, logMemberObservables } from './ObservableHelpers';
@@ -44,18 +37,8 @@ export abstract class BaseViewModel extends Subscription {
   public static displayName = 'BaseViewModel';
 
   // these are WebRx helper functions (so you don't need to import them every time)
-  protected readonly isObservable = isObservable;
-  protected readonly isObserver = isObserver;
-  protected readonly isSubject = isSubject;
-  protected readonly isProperty = isProperty;
-  protected readonly isCommand = isCommand;
-  protected readonly asObservable = asObservable;
-  protected readonly getObservable = getObservable;
-  protected readonly getProperty = getProperty;
-  protected readonly handleError = handleError;
-  protected readonly property = property;
-  protected readonly command = command;
-  protected readonly whenAny = whenAny;
+  public static readonly wx = wx;
+  protected readonly wx = wx;
 
   // these are Alert helper functions
   protected readonly createAlert = Alert.create;
@@ -74,7 +57,7 @@ export abstract class BaseViewModel extends Subscription {
   constructor() {
     super();
 
-    this.stateChanged = this.command();
+    this.stateChanged = this.wx.command();
   }
 
   // -----------------------------------------

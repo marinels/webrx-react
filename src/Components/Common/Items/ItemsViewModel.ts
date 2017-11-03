@@ -1,7 +1,7 @@
 import { Iterable } from 'ix';
 import { Observable } from 'rxjs';
 
-import { wx, IterableLike, ObservableLike, ReadOnlyProperty, Command } from '../../../WebRx';
+import { IterableLike, ObservableLike, ReadOnlyProperty, Command } from '../../../WebRx';
 import { BaseViewModel } from '../../React/BaseViewModel';
 
 export class ItemsViewModel<T> extends BaseViewModel {
@@ -15,11 +15,11 @@ export class ItemsViewModel<T> extends BaseViewModel {
   ) {
     super();
 
-    this.source = this.getObservable(source)
+    this.source = this.wx.getObservable(source)
       .map(x => Iterable.from(x))
       .toProperty(Iterable.empty<T>(), false);
 
-    this.count = this
+    this.count = this.wx
       .whenAny(this.source, x => Iterable.from(x || []).count())
       .toProperty();
   }

@@ -1,10 +1,10 @@
 import * as React from 'react';
 
-import { wx, Property } from '../../../WebRx';
+import { Property } from '../../../WebRx';
 
 export function validateBindableProperty(property: any) {
-  if (wx.isProperty(property) && property.isReadOnly) {
-    wx.handleError('BindableInput bound to ReadOnlyProperty', property);
+  if (BindableInput.wx.isProperty(property) && property.isReadOnly) {
+    BindableInput.wx.handleError('BindableInput bound to ReadOnlyProperty', property);
   }
 }
 
@@ -50,10 +50,10 @@ export class BindableInput extends React.Component<BindableInputComponentProps> 
     valueProperty: 'value',
     onChangeProperty: 'onChange',
     valueGetter: (property: any) => {
-      return wx.isProperty(property) ? property.value : property;
+      return BindableInput.wx.isProperty(property) ? property.value : property;
     },
     valueSetter: (property: any, value: any) => {
-      if (wx.isProperty(property)) {
+      if (BindableInput.wx.isProperty(property)) {
         property.value = value;
       }
     },
@@ -93,7 +93,7 @@ export class BindableInput extends React.Component<BindableInputComponentProps> 
       return this.props.valueGetter!(this.props.boundProperty);
     }
     catch (e) {
-      wx.handleError(e);
+      this.wx.handleError(e);
 
       return undefined;
     }
@@ -113,7 +113,7 @@ export class BindableInput extends React.Component<BindableInputComponentProps> 
       this.forceUpdate();
     }
     catch (e) {
-      wx.handleError(e);
+      this.wx.handleError(e);
     }
   }
 }

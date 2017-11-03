@@ -30,7 +30,7 @@ export class AsyncItemListPanelViewModel<TData, TRequest extends ProjectionReque
   }
 
   public get lengthChanged() {
-    return this
+    return this.wx
       .whenAny(this.grid.pager.itemCount, x => x)
       .distinctUntilChanged();
   }

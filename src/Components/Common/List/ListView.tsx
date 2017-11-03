@@ -4,7 +4,7 @@ import { Iterable } from 'ix';
 import { Icon } from 'react-fa';
 import { ListGroup, ListGroupProps, ListGroupItem } from 'react-bootstrap';
 
-import { wx, ReadOnlyProperty, Command } from '../../../WebRx';
+import { ReadOnlyProperty, Command } from '../../../WebRx';
 import { wxr, BaseView, ViewModelProps } from '../../React';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { ListViewModel } from './ListViewModel';
@@ -219,7 +219,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
   ) {
     super(renderItem, renderItemActions, keySelector, renderTemplateContainer);
 
-    this.toggleNode = wx.command((x: { node?: TreeNode<TData>, data?: TData, index?: number, viewModel?: ReadonlyListViewModel<TData>, view?: ListView }) => {
+    this.toggleNode = ListView.wx.command((x: { node?: TreeNode<TData>, data?: TData, index?: number, viewModel?: ReadonlyListViewModel<TData>, view?: ListView }) => {
       if (x.node != null) {
         x.node.isExpanded = !x.node.isExpanded;
 
@@ -241,7 +241,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
   }
 
   initialize(viewModel: ReadonlyListViewModel<TData>, view: ListView) {
-    this.nodes = wx
+    this.nodes = ListView.wx
       .whenAny(viewModel.items, x => x || [])
       .switchMap(
         x => this.autoExpand(x, viewModel, view),
@@ -253,7 +253,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
       })
       .toProperty(undefined, false);
 
-    this.items = wx
+    this.items = ListView.wx
       .whenAny(this.nodes, this.toggleNode.results.startWith(undefined), x => x || [])
       .map(x => this.getExpandedNodes(x))
       .do(x => {

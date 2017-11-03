@@ -19,8 +19,8 @@ export class AlertHostViewModel extends BaseViewModel {
   constructor() {
     super();
 
-    const addAlert = this.command<AlertViewModel>();
-    const removeAlert = this.command<AlertViewModel>();
+    const addAlert = this.wx.command<AlertViewModel>();
+    const removeAlert = this.wx.command<AlertViewModel>();
 
     const events = Observable
       .merge(
@@ -47,7 +47,7 @@ export class AlertHostViewModel extends BaseViewModel {
     this.addSubscription(
       addAlert.results
         .flatMap(alert => {
-          return this
+          return this.wx
             .whenAny(alert.isVisible, isVisible => ({ alert, isVisible }))
             .filter(x => x.isVisible === false)
             .map(x => x.alert);

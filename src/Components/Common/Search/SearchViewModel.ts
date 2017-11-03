@@ -23,12 +23,12 @@ export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
   constructor(private readonly liveSearchTimeout = 250, private readonly isCaseInsensitive = true, isRoutingEnabled = false) {
     super(isRoutingEnabled);
 
-    this.filter = this.property('');
+    this.filter = this.wx.property('');
 
     // search is executed when a search is to be performed
-    this.search = this.command();
+    this.search = this.wx.command();
 
-    this.requests = this
+    this.requests = this.wx
       // project search executions into filter values
       .whenAny(this.search.results, () => this.filter.value)
       // then map into a search request with regex

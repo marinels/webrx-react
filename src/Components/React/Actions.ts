@@ -1,4 +1,4 @@
-import { wx, Command } from '../../WebRx';
+import { Command, isCommand } from '../../WebRx';
 
 export interface HeaderAction {
   id: any;
@@ -20,7 +20,7 @@ export interface HeaderMenu extends HeaderAction {
 }
 
 export function isHeaderCommandAction(action: HeaderAction): action is HeaderCommandAction {
-  return wx.isCommand((<HeaderCommandAction>action).command);
+  return isCommand((<HeaderCommandAction>action).command);
 }
 
 export function isHeaderMenu(action: HeaderAction): action is HeaderMenu {

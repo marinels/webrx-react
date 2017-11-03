@@ -48,8 +48,8 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
     this.pager = pager === null ? null : (pager || new PagerViewModel());
     this.comparer = String.isString(comparer) ? new ObjectComparer<T>(comparer) : comparer;
 
-    this.sort = this.command<SortArgs>();
-    this.toggleSortDirection = this.command<string>();
+    this.sort = this.wx.command<SortArgs>();
+    this.toggleSortDirection = this.wx.command<string>();
 
     this.requests = this.getRequests(context)
       .toProperty(undefined, false);
@@ -59,12 +59,12 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
 
     this.isLoading = Observable
       .merge(
-        this.whenAny(this.requests, () => true),
-        this.whenAny(this.responses, () => false),
+        this.wx.whenAny(this.requests, () => true),
+        this.wx.whenAny(this.responses, () => false),
       )
       .toProperty(true);
 
-    this.projectedSource = this
+    this.projectedSource = this.wx
       .whenAny(this.responses, x => x)
       .filterNull()
       .do(x => {
@@ -76,19 +76,21 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
       .toProperty(Iterable.empty<T>(), false);
 
     if (this.pager != null) {
-      this.addSubscription(this
-        .whenAny(this.sort, () => 1)
-        .invokeCommand(this.pager.selectPage),
+      this.addSubscription(
+        this.wx
+          .whenAny(this.sort, () => 1)
+          .invokeCommand(this.pager.selectPage),
       );
     }
 
-    this.addSubscription(this
+    this.addSubscription(
+      this.wx
         .whenAny(
           this.toggleSortDirection,
           x => x,
         )
         .withLatestFrom(
-          this.whenAny(this.requests, x => x),
+          this.wx.whenAny(this.requests, x => x),
           (field, request) => ({ field, request }),
         )
         .map(x => {
@@ -103,7 +105,7 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
     );
 
     this.addSubscription(
-      this
+      this.wx
         .whenAny(
           this.sort,
           x => this.selectedItems.value,
@@ -147,7 +149,7 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
   }
 
   protected getRequests(context?: ObservableLike<TRequestContext>, rateLimit = 100) {
-    return this
+    return this.wx
       .whenAny(
         this.source,
         this.pager == null ? Observable.of(undefined) : this.pager.requests,
@@ -193,10 +195,10 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
   }
 
   protected getResponses(requests?: ObservableLike<DataSourceRequest<TRequestContext> | undefined>, rateLimit = 100) {
-    return this
+    return this.wx
       .whenAny(requests || this.requests, x => x)
       .flatMap(x => {
-        return this.getObservable(this.getResponse(x));
+        return this.wx.getObservable(this.getResponse(x));
       })
       .filterNull()
       .debounceTime(rateLimit);

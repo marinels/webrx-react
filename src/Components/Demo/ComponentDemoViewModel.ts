@@ -83,10 +83,10 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   constructor(protected readonly routeMap: RoutingMap) {
     super(true);
 
-    this.columns = this.property(12);
+    this.columns = this.wx.property(12);
 
-    this.reRender = this.command();
-    const demoAlert = this.command(Observable.of(true), (x: string) => this.createAlert(x, 'Demo Alert'));
+    this.reRender = this.wx.command();
+    const demoAlert = this.wx.command(Observable.of(true), (x: string) => this.createAlert(x, 'Demo Alert'));
 
     this.demoAlertItem = {
       id: 'demo-alert-item',
@@ -96,33 +96,35 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
       iconName: 'flask',
     };
 
-    this.routedComponent = this
+    this.routedComponent = this.wx
       .whenAny(this.routingState, this.reRender.results.startWith(null), x => x)
       .map(x => {
         return this.getRoutedComponent(x);
       })
       .toProperty(undefined, false);
 
-    this.componentRoute = this
+    this.componentRoute = this.wx
       .whenAny(this.routedComponent, x => x == null ? undefined : x.componentRoute)
       .toProperty(undefined, false);
 
-    this.component = this
+    this.component = this.wx
       .whenAny(this.routedComponent, x => x == null ? undefined : x.component)
       .toProperty(undefined, false);
 
-    this.addSubscription(this
-      .whenAny(this.columns.changed, () => null)
-      .invokeCommand(this.routingStateChanged),
+    this.addSubscription(
+      this.wx
+        .whenAny(this.columns.changed, () => null)
+        .invokeCommand(this.routingStateChanged),
     );
 
-    this.addSubscription(this
-      .whenAny(this.component, x => x)
-      .subscribe(() => {
-        if (this.pageHeader != null) {
-          this.pageHeader.updateDynamicContent();
-        }
-      }),
+    this.addSubscription(
+      this.wx
+        .whenAny(this.component, x => x)
+        .subscribe(() => {
+          if (this.pageHeader != null) {
+            this.pageHeader.updateDynamicContent();
+          }
+        }),
     );
 
     // set a default title
@@ -138,34 +140,36 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
 
     // this is very similar to what the route handler does for title updates
     // we are essentially projecting the demo title and passing it up the chain
-    this.addSubscription(this
-      .whenAny(this.component, x => x)
-      .debounceTime(100)
-      .subscribe(component => {
-        if (isRoutableViewModel(component)) {
-          this.addSubscription(this
-            .whenAny(component.documentTitle, x => String.isNullOrEmpty(x) ? Object.getName(component) : x)
-            .debounceTime(100)
-            .map(x => `Demo: ${ x }`)
-            .invokeCommand(this.updateDocumentTitle),
-          );
-        }
-        else {
-          let title: string;
-
-          if (component == null) {
-            title = 'No Routed Component';
-          }
-          else if (String.isString(component)) {
-            title = component;
+    this.addSubscription(
+      this.wx
+        .whenAny(this.component, x => x)
+        .debounceTime(100)
+        .subscribe(component => {
+          if (isRoutableViewModel(component)) {
+            this.addSubscription(
+              this.wx
+                .whenAny(component.documentTitle, x => String.isNullOrEmpty(x) ? Object.getName(component) : x)
+                .debounceTime(100)
+                .map(x => `Demo: ${ x }`)
+                .invokeCommand(this.updateDocumentTitle),
+            );
           }
           else {
-            title = Object.getName(component);
-          }
+            let title: string;
 
-          this.updateDocumentTitle.execute(`Demo: ${ title }`);
-        }
-      }),
+            if (component == null) {
+              title = 'No Routed Component';
+            }
+            else if (String.isString(component)) {
+              title = component;
+            }
+            else {
+              title = Object.getName(component);
+            }
+
+            this.updateDocumentTitle.execute(`Demo: ${ title }`);
+          }
+        }),
     );
   }
 

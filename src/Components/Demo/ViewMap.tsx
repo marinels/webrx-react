@@ -5,7 +5,7 @@ import { Col, Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel,
   Well, ListGroup, ListGroupItem, Table, OverlayTrigger, Overlay, Tooltip, Popover, Label,
 } from 'react-bootstrap';
 
-import { wx, Property, Command } from '../../WebRx';
+import { Property, Command } from '../../WebRx';
 import { Logging, Alert } from '../../Utils';
 import { wxr } from '../React';
 import { SampleData, SampleTreeData, sampleListData, sampleTreeData } from './RoutingMap';
@@ -51,21 +51,21 @@ export const demoViewMap: ViewActivatorMap = {
           <InputGroup.Button>
             <Components.CommandButton bsSize='large'
               commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
-              command={wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
+              command={Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
               tooltip='Embedded Command Tooltips!!!'
             >
               Execute Command
             </Components.CommandButton>
             <Components.CommandButton bsSize='large'
               commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
-              command={wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
+              command={Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
               tooltip={ (<Popover id='cmd-btn-custom-tt' placement='top'>Custom Tooltip</Popover>) }
             >
               Same Command
             </Components.CommandButton>
             <Components.CommandButton bsSize='large'
               commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
-              command={wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
+              command={Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
               tooltip={(
                 <OverlayTrigger placement='bottom'
                   overlay={ (<Tooltip id='cmd-btn-custom-tt'>Custom Overlay Tooltip</Tooltip>) }

@@ -76,16 +76,16 @@ export class TimeSpanInputViewModel extends BaseViewModel {
       .filter(x => x >= minUnit && x <= maxUnit)
       .map(x => TimeSpanUnits[x]);
 
-    this.adjust = this.command<number>();
-    this.setUnit = this.command<TimeSpanUnit>();
+    this.adjust = this.wx.command<number>();
+    this.setUnit = this.wx.command<TimeSpanUnit>();
 
-    this.unit = this
+    this.unit = this.wx
       .whenAny(this.setUnit.results, x => x)
       .toProperty(TimeSpanUnits[(initialUnit < minUnit || initialUnit > maxUnit) ? minUnit : initialUnit]);
 
-    this.text = this.property(this.getText(initialValue, this.unit.value, precision));
+    this.text = this.wx.property(this.getText(initialValue, this.unit.value, precision));
 
-    this.duration = this
+    this.duration = this.wx
       .whenAny(this.text, this.unit, (text, unit) => ({ text, unit }))
       .filter(x => x.unit != null)
       .debounceTime(parseDelay)
@@ -122,20 +122,20 @@ export class TimeSpanInputViewModel extends BaseViewModel {
       .map(x => x.duration)
       .toProperty();
 
-    this.isValid = this
+    this.isValid = this.wx
       .whenAny(this.duration, x => x != null)
       .toProperty();
 
-    this.hasError = this
+    this.hasError = this.wx
       .whenAny(this.isValid, this.text, (isValid, text) => this.validate(isValid, text, required))
       .toProperty();
 
     this.addSubscription(
-      this
+      this.wx
         .whenAny(this.unit, x => x)
         .filterNull()
         .withLatestFrom(
-          this.whenAny(this.duration, x => x)
+          this.wx.whenAny(this.duration, x => x)
             .filterNull(),
           (u, d) => ({ u, d }),
         )
@@ -147,7 +147,7 @@ export class TimeSpanInputViewModel extends BaseViewModel {
     this.addSubscription(
       this.adjust.results
         .withLatestFrom(
-          this.whenAny(this.duration, this.unit, (d, u) => ({ d, u })),
+          this.wx.whenAny(this.duration, this.unit, (d, u) => ({ d, u })),
           (a, x) => ({ a, d: x.d || moment.duration(0, x.u.key), u: x.u }),
         )
         .subscribe(x => {

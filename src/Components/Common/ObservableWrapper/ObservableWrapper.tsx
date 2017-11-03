@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Observable, Subscription } from 'rxjs';
 
-import { wx, ObservableLike, ReadOnlyProperty } from '../../../WebRx';
+import { ObservableLike, ReadOnlyProperty } from '../../../WebRx';
 
 export interface ObservableWrapperProps {
   observable: ObservableLike<any>;
@@ -24,9 +24,9 @@ export class ObservableWrapper extends React.Component<ObservableWrapperComponen
   private subscription: Subscription;
 
   componentWillMount() {
-    this.property = wx.getObservable(this.props.observable)
+    this.property = this.wx.getObservable(this.props.observable)
       .toProperty();
-    this.subscription = wx
+    this.subscription = this.wx
       .whenAny(this.property, x => x)
       .subscribe(value => {
         this.setState({

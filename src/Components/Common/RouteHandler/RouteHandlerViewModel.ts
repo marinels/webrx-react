@@ -35,13 +35,13 @@ export class RouteHandlerViewModel extends BaseViewModel {
   constructor(public routingMap: RouteMapper) {
     super();
 
-    this.currentRoute = this
+    this.currentRoute = this.wx
       .whenAny(routeManager.currentRoute, x => x)
       // a null route will never get processed so we can filter them out back here
       .filterNull()
       .toProperty();
 
-    const loadComponentParams = this
+    const loadComponentParams = this.wx
       .whenAny(this.currentRoute, x => x)
       // we also need to filter out null routes here (this should only occur for the first event)
       .filterNull()
@@ -86,7 +86,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
       // we use publish instead of share so we can kick this engine off at the end of stream composition
       .publish();
 
-    const canLoadComponent = this
+    const canLoadComponent = this.wx
       .whenAny(loadComponentParams, x => x)
       .map(x => {
         // this condition should always be true, but we put it here just in case
@@ -98,7 +98,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
       // we must share here because we use this Observable in multiple streams
       .share();
 
-    this.loadComponent = this.command(canLoadComponent, (p: LoadComponentParams) => {
+    this.loadComponent = this.wx.command(canLoadComponent, (p: LoadComponentParams) => {
       return this.getObservableResultOrAlert(
         () => {
           // we need to construct an activated component structure so we can send routing state
@@ -131,9 +131,9 @@ export class RouteHandlerViewModel extends BaseViewModel {
       )
       .toProperty();
 
-    this.routingBreadcrumbs = this
+    this.routingBreadcrumbs = this.wx
       .whenAny(this.routedComponent, x => x)
-      .map(x => isRoutableViewModel(x) ? this.whenAny(x.breadcrumbs, y => y) : Observable.of(undefined))
+      .map(x => isRoutableViewModel(x) ? this.wx.whenAny(x.breadcrumbs, y => y) : Observable.of(undefined))
       .switch()
       .toProperty();
 
@@ -152,17 +152,18 @@ export class RouteHandlerViewModel extends BaseViewModel {
       // initially begin in loading mode
       .toProperty(true);
 
-    this.addSubscription(this
-      // whenever there are new view model loading params and we can load our view model (which should be always)
-      // we can project out just the loading params in preperation for the load command
-      .whenAny(loadComponentParams, canLoadComponent, (params, canLoad) => ({ params, canLoad }))
-      .filter(x => x.canLoad === true)
-      .map(x => x.params)
-      // debouce here to prevent loading param flux from hammering the load command
-      // this may not be necessary for most components, but a small price to pay if a component
-      // performs a lot of routing state changes in a short amount of time
-      .debounceTime(100)
-      .invokeCommand(this.loadComponent),
+    this.addSubscription(
+      this.wx
+        // whenever there are new view model loading params and we can load our view model (which should be always)
+        // we can project out just the loading params in preperation for the load command
+        .whenAny(loadComponentParams, canLoadComponent, (params, canLoad) => ({ params, canLoad }))
+        .filter(x => x.canLoad === true)
+        .map(x => x.params)
+        // debouce here to prevent loading param flux from hammering the load command
+        // this may not be necessary for most components, but a small price to pay if a component
+        // performs a lot of routing state changes in a short amount of time
+        .debounceTime(100)
+        .invokeCommand(this.loadComponent),
     );
 
     // if any component changes its routing state we'll pick it up here and ask the
@@ -180,53 +181,55 @@ export class RouteHandlerViewModel extends BaseViewModel {
     );
 
     // this handles document title changes for any routed component
-    this.addSubscription(this
-      // for every routed component
-      .whenAny(this.routedComponent, x => x)
-      // skip the initial null stream element
-      .skip(1)
-      // wait for routing to settle down
-      .debounceTime(100)
-      .subscribe(component => {
-        if (isRoutableViewModel(component)) {
-          // we have a routable component, so watch the documentTitle observable property
-          this.addSubscription(this
-            .whenAny(component.documentTitle, x => {
-              if (String.isNullOrEmpty(x)) {
-                // there isn't any title set (BAD) so warn and use a sane default
-                this.logger.warn(`${ Object.getName(component) } does not provide a custom routed browser title`);
+    this.addSubscription(
+      this.wx
+        // for every routed component
+        .whenAny(this.routedComponent, x => x)
+        // skip the initial null stream element
+        .skip(1)
+        // wait for routing to settle down
+        .debounceTime(100)
+        .subscribe(component => {
+          if (isRoutableViewModel(component)) {
+            // we have a routable component, so watch the documentTitle observable property
+            this.addSubscription(
+              this.wx
+                .whenAny(component.documentTitle, x => {
+                  if (String.isNullOrEmpty(x)) {
+                    // there isn't any title set (BAD) so warn and use a sane default
+                    this.logger.warn(`${ Object.getName(component) } does not provide a custom routed browser title`);
 
-                return Object.getName(component);
-              }
+                    return Object.getName(component);
+                  }
 
-              return x;
-            })
-            // give rapid title changes a bit to settle down
-            .debounceTime(100)
-            .subscribe(x => {
-              this.updateDocumentTitle(component, x);
-            }),
-          );
-        }
-        else {
-          // we don't have a routable component
-          // so try and generate a reasonable static title
-          let title: string;
-
-          if (component == null) {
-            // this shouldn't happen in practice
-            title = 'No Routed Component';
-          }
-          else if (String.isString(component)) {
-            title = component;
+                  return x;
+                })
+                // give rapid title changes a bit to settle down
+                .debounceTime(100)
+                .subscribe(x => {
+                  this.updateDocumentTitle(component, x);
+                }),
+            );
           }
           else {
-            title = Object.getName(component);
-          }
+            // we don't have a routable component
+            // so try and generate a reasonable static title
+            let title: string;
 
-          this.updateDocumentTitle(component, title);
-        }
-      }),
+            if (component == null) {
+              // this shouldn't happen in practice
+              title = 'No Routed Component';
+            }
+            else if (String.isString(component)) {
+              title = component;
+            }
+            else {
+              title = Object.getName(component);
+            }
+
+            this.updateDocumentTitle(component, title);
+          }
+        }),
     );
 
     // connect the primary observable to allow the routing engine to start processing routes

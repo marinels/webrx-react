@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-import { wx, ObservableLike, ReadOnlyProperty, Command } from '../../../WebRx';
+import { ObservableLike, ReadOnlyProperty, Command } from '../../../WebRx';
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 
 export interface SelectableItem {
@@ -29,7 +29,7 @@ export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<T
   public static displayName = 'ListViewModel';
 
   public static create<T>(...items: T[]) {
-    return new ListViewModel(wx.property<T[]>(items, false));
+    return new ListViewModel(ListViewModel.wx.property<T[]>(items, false));
   }
 
   public readonly listItems: ReadOnlyProperty<TData[]>;
@@ -40,13 +40,13 @@ export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<T
   protected readonly toggleSelection: Command<TData>;
 
   constructor(
-    items: ObservableLike<TData[]> = wx.property<TData[]>([], false),
+    items: ObservableLike<TData[]> = ListViewModel.wx.property<TData[]>([], false),
     public readonly isMultiSelectEnabled = false,
     isRoutingEnabled?: boolean,
   ) {
     super(isRoutingEnabled);
 
-    if (wx.isProperty(items)) {
+    if (this.wx.isProperty(items)) {
       this.listItems = <ReadOnlyProperty<TData[]>>items;
     }
     else {
@@ -55,12 +55,12 @@ export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<T
 
     this.items = this.listItems;
 
-    this.selectItem = this.command<TData>();
-    this.toggleSelection = this.command<TData>();
+    this.selectItem = this.wx.command<TData>();
+    this.toggleSelection = this.wx.command<TData>();
 
     if (this.isMultiSelectEnabled === true) {
       this.addSubscription(
-        wx
+        this.wx
           .whenAny(this.toggleSelection.results, x => x)
           .subscribe(x => {
             const selectable = <SelectableItem><any>x;
@@ -72,7 +72,7 @@ export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<T
       );
     }
 
-    this.selectedItem = wx
+    this.selectedItem = this.wx
       .whenAny(this.selectItem.results, x => x)
       .do(x => {
         if (this.isMultiSelectEnabled === true) {
@@ -83,7 +83,7 @@ export class ListViewModel<TData, TRoutingState> extends BaseRoutableViewModel<T
   }
 
   public get hasItems() {
-    return wx
+    return this.wx
       .whenAny(this.items, x => (x || []).length > 0);
   }
 

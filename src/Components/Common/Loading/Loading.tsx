@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subscription } from  'rxjs';
 import { ProgressBar } from 'react-bootstrap';
 
-import { wx, Property } from '../../../WebRx';
+import { Property } from '../../../WebRx';
 import { wxr } from '../../React';
 
 export interface LoadingProps {
@@ -27,7 +27,7 @@ export class Loading extends React.Component<LoadingComponentProps> {
   private changedSubscription = Subscription.EMPTY;
 
   componentDidMount() {
-    if (wx.isProperty(this.props.progress) === true) {
+    if (this.wx.isProperty(this.props.progress) === true) {
       this.changedSubscription = (this.props.progress as Property<number>).changed
         .subscribe(() => { this.forceUpdate(); });
     }
@@ -55,7 +55,7 @@ export class Loading extends React.Component<LoadingComponentProps> {
   }
 
   private getProgressValue() {
-    return wx.isProperty(this.props.progress) === true ?
+    return this.wx.isProperty(this.props.progress) === true ?
       (this.props.progress as Property<number>).value :
       this.props.progress as number;
   }
