@@ -133,6 +133,13 @@ declare module 'ix/iterable/iterablex' {
   }
 }
 
+// NOTE: temporary patch to deal with IxJS issue
+// see: https://github.com/ReactiveX/IxJS/pull/83#issuecomment-341832266
+import { IterableX } from 'ix/iterable/iterablex';
+declare module 'ix/add/iterable-operators/single' {
+  function singleProto<T>(this: IterableX<T>, predicate?: (value: T, index: number) => boolean): T | undefined;
+}
+
 declare module 'rxjs/Subscription' {
   interface Subscription {
     addSubscription: typeof addSubscription;
