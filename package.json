@@ -1,6 +1,6 @@
 {
   "name": "webrx-react",
-  "version": "0.15.20",
+  "version": "0.15.20-rc.1",
   "description": "ReactJS + WebRx + RxJS + Bootstrap: MVVM for Single Page Web Applications",
   "scripts": {
     "start": "gulp",
