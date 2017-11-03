@@ -429,13 +429,13 @@ export class DataGridPager extends React.Component<DataGridPagerProps> {
 
 export interface DataGridProps extends ListViewRenderTemplateProps {
   fill?: boolean;
-  viewTemplate?: DataGridViewTemplate<any>;
+  viewTemplate?: ListViewRenderTemplate<any, DataGridView>;
   search?: boolean | SearchProps | any;
   pager?: boolean | PagerProps | any;
   loadingContent?: any;
 }
 
-export interface DataGridViewProps extends DataGridProps, BaseViewProps {
+export interface DataGridViewProps extends DataGridProps, BaseViewProps<DataGridViewModel<any>> {
 }
 
 export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<any>> {

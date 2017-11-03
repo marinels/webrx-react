@@ -5,7 +5,7 @@ import { Modal, ModalProps } from 'react-bootstrap';
 import { BaseView, ViewModelProps } from '../../React';
 import { ModalDialogViewModel } from './ModalDialogViewModel';
 
-export interface ModalDialogProps extends ViewModelProps, Partial<ModalProps> {
+export interface ModalDialogProps extends ViewModelProps<ModalDialogViewModel<{}>>, Partial<ModalProps> {
   title?: any;
   body?: any;
   footer?: any;

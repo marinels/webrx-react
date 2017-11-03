@@ -359,7 +359,7 @@ export class TreeViewTemplate<TData> extends BaseListViewTemplate<TreeNode<TData
   }
 }
 
-export interface ListProps extends ListGroupProps, ListViewRenderTemplateProps, ViewModelProps {
+export interface ListProps extends ListGroupProps, ListViewRenderTemplateProps, ViewModelProps<ListViewModel<any, any>> {
 }
 
 export class ListView extends BaseView<ListProps, ListViewModel<any, any>> {

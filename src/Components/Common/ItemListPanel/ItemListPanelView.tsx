@@ -4,15 +4,15 @@ import { Observable } from 'rxjs';
 import { BaseView, ViewModelProps } from '../../React';
 import { DataGridView, DataGridProps, DataGridColumn, DataGridListViewTemplate, DataGridViewType } from '../DataGrid/DataGridView';
 import { CommonPanel, CommonPanelProps } from '../CommonPanel/CommonPanel';
-import { ItemListPanelViewModel } from './ItemListPanelViewModel';
+import { BaseItemListPanelViewModel } from './BaseItemListPanelViewModel';
 
 export * from './CountFooterContent';
 export * from './ViewAllFooterAction';
 
-export interface ItemListPanelProps extends CommonPanelProps, DataGridProps, ViewModelProps {
+export interface ItemListPanelProps extends CommonPanelProps, DataGridProps, ViewModelProps<BaseItemListPanelViewModel<any, any, any, any>> {
 }
 
-export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPanelViewModel<any>> {
+export class ItemListPanelView extends BaseView<ItemListPanelProps, BaseItemListPanelViewModel<any, any, any, any>> {
   public static displayName = 'ItemListPanelView';
 
   static defaultProps = {
@@ -24,7 +24,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelProps, ItemListPane
     this.viewModel.toggleIsExpanded.execute(this.props.defaultExpanded || CommonPanel.defaultProps.defaultExpanded);
   }
 
-  updateOn(viewModel: Readonly<ItemListPanelViewModel<{}>>) {
+  updateOn(viewModel: Readonly<BaseItemListPanelViewModel<any, any, any, any>>) {
     return [
       this.viewModel.isLoading.changed,
       this.viewModel.isExpanded.changed,

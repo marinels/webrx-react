@@ -707,11 +707,11 @@ export const demoViewMap: ViewActivatorMap = {
     else if (componentRoute === 'TreeItemListPanel') {
       return (
         <Components.ItemListPanelView viewModel={viewModel} headerContent='Sample Tree Data' collapsible
-          headerActions={[ { id: 'header', children: 'Header Action' } ]} viewTemplate={ treeTemplate }
-          footerContent={ (<Components.CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
-          footerActions={[ { id: 'viewall', bsStyle: 'primary', command: wx.command(x => Alert.create(x, 'View All Pressed')), commandParameter: 'ItemListPanel', children: (<Components.ViewAllFooterAction suffix='Things' />) } ]}
-        >
-        </Components.ItemListPanelView>
+           headerActions={[ { id: 'header', children: 'Header Action' } ]} viewTemplate={ treeTemplate }
+           footerContent={ (<Components.CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
+           footerActions={[ { id: 'viewall', bsStyle: 'primary', command: wx.command(x => Alert.create(x, 'View All Pressed')), commandParameter: 'ItemListPanel', children: (<Components.ViewAllFooterAction suffix='Things' />) } ]}
+         >
+         </Components.ItemListPanelView>
       );
     }
     else {
