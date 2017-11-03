@@ -300,6 +300,12 @@ demoRoutingMap.addRoute('webrx-react', 'InlineEditObject', 'InlineEdit (Object)'
 demoRoutingMap.viewModelMap['help'] = () => 'Help';
 // demoRoutingMap.viewModelMap['todolist'] = () => new TodoListViewModel();
 
+debugger;
+import { Store } from './TodoList/TodoListStore';
+Store.getItems().subscribe(x => {
+  debugger;
+});
+
 // inject the demo infrastructure into the app routing and view maps
 AppRouteMap['/'] = { path: '/demo/' };
 AppRouteMap['^/demo$'] = { path: '/demo/' };

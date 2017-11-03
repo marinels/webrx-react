@@ -1,47 +1,56 @@
 import { Observable } from  'rxjs';
 import * as clone from 'clone';
 
+import { wx } from '../../WebRx';
 import { BaseSampleDataStore, SampleDataActionSet, SampleDataAction } from './BaseSampleDataStore';
 
 export class SampleData {
-  protected actions: SampleDataActionSet | undefined;
+  protected readonly wx = wx;
+  protected stores: StringMap<BaseSampleDataStore>;
+  protected actions: SampleDataActionSet;
+  protected readonly delay: number;
 
-  constructor(private readonly initializeActions: () => void, protected readonly delay = 0) {
-  }
+  constructor(...stores: Array<BaseSampleDataStore>);
+  constructor(delay: number, ...stores: Array<BaseSampleDataStore>);
+  constructor(arg1: number | BaseSampleDataStore, ...stores: Array<BaseSampleDataStore>) {
+    this.actions = {};
 
-  protected getActions() {
-    if (this.actions == null) {
-      this.actions = {};
-
-      this.initializeActions();
+    if (Number.isNumber(arg1)) {
+      this.delay = arg1;
+    }
+    else {
+      this.delay = 0;
+      stores.unshift(arg1);
     }
 
-    return this.actions;
+    stores
+      .filterNull()
+      .forEach(store => {
+        this.addStore(store);
+      });
   }
 
-  protected getAction(action: string) {
-    return this.getActions()[action];
+  protected addStore(store: BaseSampleDataStore): void {
+    Object.assign(this.actions, store.actions);
+
+    this.stores[Object.getName(store)] = store;
   }
 
-  public addDataStore(data: BaseSampleDataStore, name: string): void {
-    Object.assign(this.getActions(), data.getActions());
+  public getStoreValue<T, TStore extends BaseSampleDataStore>(name: string, selector: (store: TStore) => T) {
+    const store = <TStore>this.stores[name];
 
-    (<StringMap<any>>this)[name] = data;
-  }
+    if (store == null) {
+      return undefined;
+    }
 
-  public addAction(action: string, dataAction: SampleDataAction) {
-    this.getActions()[action] = dataAction;
-  }
+    const value = selector(store);
 
-  public getData<T, TData = any>(name: string, selector: (data: TData) => T) {
-    const data: TData | undefined = (<StringMap<any>>this)[name];
-
-    return data == null ? undefined : clone(selector(data));
+    return value == null ? undefined : clone(value);
   }
 
   public getObservable<T>(action: string, params?: any): Observable<T> {
     return Observable
-      .of(this.getAction(action))
+      .of(this.actions[action])
       .delay(this.delay)
       .flatMap(sampleDataAction => {
         if (sampleDataAction == null) {

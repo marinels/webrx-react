@@ -1,25 +1,31 @@
 import { Observable } from  'rxjs';
 
-import { Default as alert } from '../../Utils/Alert';
+import { wx } from '../../WebRx';
+import { Alert } from '../../Utils';
 
 export type SampleDataAction = (params: any) => Observable<any>;
 export type SampleDataActionSet = StringMap<SampleDataAction>;
 
 export abstract class BaseSampleDataStore {
-  public abstract getActions(): SampleDataActionSet;
+  protected readonly wx = wx;
+
+  public readonly actions: SampleDataActionSet;
 
   constructor(protected readonly enableAlerts = false) {
+    this.actions = {};
   }
 
-  protected connect(actions: SampleDataActionSet, action: string, api: SampleDataAction, thisArg: any = this) {
-    actions[action] = function () {
+  protected connect(action: string, api: SampleDataAction, thisArg: any = this) {
+    this.actions[action] = function(params: any = {}) {
+      this.createAlert(action, params);
+
       return api.apply(thisArg, arguments);
     };
   }
 
   protected createAlert(action: string, params: any = {}) {
     if (this.enableAlerts === true) {
-      alert.create(JSON.stringify(params, null, 2), `SampleData API Call: ${ action }`);
+      Alert.create(JSON.stringify(params, null, 2), `SampleData API Call: ${ action }`);
     }
   }
 }

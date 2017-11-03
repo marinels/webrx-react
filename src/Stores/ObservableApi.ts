@@ -4,6 +4,9 @@ import param = require('jquery-param');
 import { Logging } from '../Utils';
 import { getWindowLocation, joinPath } from '../Routing';
 import { SampleData } from './SampleData/SampleData';
+import { BaseSampleDataStore } from './SampleData/BaseSampleDataStore';
+
+export type SampleDataCreator = () => SampleData;
 
 export enum HttpRequestMethod {
   GET,
@@ -200,18 +203,39 @@ export class ObservableApi {
   }
 
   protected readonly logger: Logging.Logger = Logging.getLogger(ObservableApi.displayName);
+  protected readonly sampleData: SampleData | undefined;
 
+  public readonly path: string;
   public readonly base: string;
   public readonly baseUri: string;
 
-  constructor(public readonly path: string, base?: string, protected readonly sampleData?: SampleData) {
+  constructor(path: string, sampleData?: SampleDataCreator);
+  constructor(path: string, base?: string, sampleData?: SampleDataCreator)
+  constructor(path: string, baseOrSampleData?: string | SampleDataCreator, sampleData?: SampleDataCreator) {
     const windowLocation = getWindowLocation() || <Location>{};
 
-    if (String.isNullOrEmpty(base)) {
+    if (baseOrSampleData instanceof Function) {
+      sampleData = baseOrSampleData;
+      baseOrSampleData = undefined;
+    }
+
+    if (String.isNullOrEmpty(baseOrSampleData)) {
       this.base = (windowLocation.origin || 'http://localhost') + (windowLocation.pathname || '/');
     }
     else {
-      this.base = base;
+      this.base = baseOrSampleData;
+    }
+
+    // TODO: can't do this because we need to create the sample data after the store that owns it is finished loading
+    if (WEBPACK_DEV_SERVER) {
+      this.path = `api/sample/${ path }`;
+
+      if (sampleData != null) {
+        this.sampleData = sampleData();
+      }
+    }
+    else {
+      this.path = path;
     }
 
     this.logger.name += ` (${ this.path })`;
@@ -241,11 +265,11 @@ export class ObservableApi {
     return this.getObservableResult<T>(action, params, data, HttpRequestMethod.POST, options, baseUri);
   }
 
-  public getSampleData<T, TData = any>(name: string, selector: (data: TData) => T) {
+  public getSampleStoreValue<T, TStore extends BaseSampleDataStore>(name: string, selector: (data: TStore) => T) {
     if (this.sampleData == null) {
       return undefined;
     }
 
-    return this.sampleData.getData(name, selector);
+    return this.sampleData.getStoreValue(name, selector);
   }
 }

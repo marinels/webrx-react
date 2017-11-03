@@ -5,6 +5,7 @@ import { Route } from '../../../Routing';
 import { BaseViewModel } from '../../React/BaseViewModel';
 import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
 import { ItemListPanelViewModel } from '../../Common/ItemListPanel/ItemListPanelViewModel';
+import { Store, TodoListItem } from './TodoListStore';
 
 export interface TodoListRoutingState {
 }
@@ -41,12 +42,17 @@ export class TodoListViewModel extends BaseRoutableViewModel<TodoListRoutingStat
       .map(x => new TodoItemViewModel(x))
       .share();
 
-    const todoListItems = Observable
+    const initialItems = Store.getItems()
+      .map(x => {
+        return x.map(item => new TodoItemViewModel(item));
+      });
+
+    const dynamicItems = Observable
       .merge(
         addedItems.map(add => <TodoListChange>{ add, remove: undefined }),
         this.removeItem.results.map(remove => <TodoListChange>{ add: undefined, remove }),
       )
-      .startWith(<TodoListChange>{})
+      // .startWith(<TodoListChange>{})
       .scan(
         (items: TodoItemViewModel[], change: TodoListChange) => {
           if (change.add) {
@@ -61,6 +67,9 @@ export class TodoListViewModel extends BaseRoutableViewModel<TodoListRoutingStat
         },
         [],
       );
+
+    const todoListItems = Observable
+      .merge(initialItems, dynamicItems);
 
     this.list = new ItemListPanelViewModel(
       todoListItems,
@@ -81,20 +90,30 @@ export class TodoItemViewModel extends BaseViewModel {
   private static nextId = 1;
 
   public readonly id: number;
+  public readonly content: string;
 
   public readonly toggleCompleted: Command<any>;
   public readonly completed: ReadOnlyProperty<boolean>;
 
-  constructor(public readonly content: string) {
+  constructor(content: string);
+  constructor(model: TodoListItem);
+  constructor(arg: string | TodoListItem) {
     super();
 
-    this.id = TodoItemViewModel.nextId++;
+    if (String.isString(arg)) {
+      this.id = TodoItemViewModel.nextId++;
+      this.content = arg;
+    }
+    else {
+      this.id = arg.id;
+      this.content = arg.content;
+    }
 
     this.toggleCompleted = this.command();
     this.completed = this
       .whenAny(this.toggleCompleted.results, () => true)
       .scan(x => !x, false)
-      .toProperty(false);
+      .toProperty(String.isString(arg) ? false : arg.completed);
   }
 
   public filter(regexp: RegExp) {

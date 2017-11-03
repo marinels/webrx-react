@@ -1,18 +1,20 @@
 import { Observable, AjaxRequest } from 'rxjs';
 
 import { Logging } from '../Utils';
-import { ObservableApi } from './ObservableApi';
+import { wx } from '../WebRx';
+import { ObservableApi, SampleDataCreator } from './ObservableApi';
 import { SampleData } from './SampleData/SampleData';
 
 export abstract class BaseStore {
   public static displayName = 'BaseStore';
 
   protected readonly logger: Logging.Logger = Logging.getLogger(BaseStore.displayName);
+  protected readonly wx = wx;
   protected readonly api: ObservableApi;
 
-  constructor(path: string, base?: string, sampleData?: SampleData);
+  constructor(path: string, base?: string, sampleData?: SampleDataCreator);
   constructor(api: ObservableApi);
-  constructor(pathOrApi: string | ObservableApi, base?: string, sampleData?: SampleData) {
+  constructor(pathOrApi: string | ObservableApi, base?: string, sampleData?: SampleDataCreator) {
     if (pathOrApi instanceof ObservableApi) {
       this.api = pathOrApi;
     }
