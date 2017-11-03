@@ -26,7 +26,11 @@ export function trimPath(path: string) {
   return path.replace(/^\/+/, '').replace(/\/+$/, '');
 }
 
-export function joinPath(base: string, path: string) {
+export function joinPath(path: string, base?: string) {
+  if (String.isNullOrEmpty(base)) {
+    return trimPath(path);
+  }
+
   return `${ trimPath(base) }/${ trimPath(path) }`;
 }
 
