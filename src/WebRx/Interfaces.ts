@@ -1,5 +1,5 @@
 import { Iterable } from 'ix';
-import { AsyncIterableInput } from 'ix/asynciterable/from';
+import { AsyncIterableInput } from 'ix/asynciterable/asynciterablex';
 import { Observable, Observer, Subscription } from 'rxjs';
 import { PartialObserver } from 'rxjs/Observer';
 
