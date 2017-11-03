@@ -24,6 +24,15 @@ declare global {
   )[T];
 
   type Omit<T, TExclude> = Pick<T, Diff<keyof T, keyof TExclude>>;
+
+  // temporary patch to deal with Array.prototype.fill
+  // used by ixjs
+  interface Array<T> {
+    fill(value: T, start?: number, end?: number): this;
+  }
+  interface ObjectConstructor {
+    setPrototypeOf(o: any, proto: object | null): any;
+  }
 }
 
 export {};

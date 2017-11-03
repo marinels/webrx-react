@@ -312,7 +312,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps<any>, TViewMode
   // -----------------------------------------
 
   protected createStateFromProps(props: Readonly<TViewProps>): Readonly<TViewModel> {
-    return props.viewModel;
+    return props.viewModel as Readonly<TViewModel>;
   }
 
   protected getViewModelFromState(state: Readonly<TViewModel>): Readonly<TViewModel> {
