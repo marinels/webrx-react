@@ -2,33 +2,45 @@ import {
   isIterable, isAsyncIterable,
   isSubscription, isObservable, isObserver, isSubject, isProperty, isCommand,
   asObservable, getObservable, getProperty, handleError, logError,
+  logObservable, logMemberObservables,
+  getObservableOrAlert, getObservableResultOrAlert, subscribeOrAlert,
 } from './Utils';
 import { property } from './Property';
 import { command } from './Command';
 import { whenAny } from './WhenAny';
 
-export function create(target: {} = {}) {
+export function create() {
   return {
-    isIterable: isIterable,
-    isAsyncIterable: isAsyncIterable,
-    isSubscription: isSubscription,
-    isObservable: isObservable,
-    isObserver: isObserver,
-    isSubject: isSubject,
-    isProperty: isProperty,
-    isCommand: isCommand,
-    asObservable: asObservable,
-    getObservable: getObservable,
-    getProperty: getProperty,
-    handleError: handleError,
-    logError: logError,
+    isIterable,
+    isAsyncIterable,
+    isSubscription,
+    isObservable,
+    isObserver,
+    isSubject,
+    isProperty,
+    isCommand,
+    asObservable,
+    getObservable,
+    getProperty,
+    handleError,
+    logError,
 
-    property: property,
-    command: command,
-    whenAny: whenAny,
+    property,
+    command,
+    whenAny,
+
+    logObservable,
+    logMemberObservables,
+    getObservableOrAlert,
+    getObservableResultOrAlert,
+    subscribeOrAlert,
   };
 }
 
 export const wx = create();
 
 export type WebRxStatic = typeof wx;
+
+export function inject<T extends {}>(target: T, wxStatic?: WebRxStatic) {
+  return Object.assign<T>(target, wxStatic || wx);
+}
