@@ -4,7 +4,6 @@ import { Button } from 'react-bootstrap';
 import { Icon } from 'react-fa';
 
 import { IterableLike } from '../../../WebRx';
-import { wxr } from '../../React';
 import { ItemsPresenterProps, ItemsPresenterTemplateProps, ItemsPresenter } from './ItemsPresenter';
 import { PanelItemProps, PanelRenderProps, Panel, PanelFragment } from '../Panel/Panel';
 
@@ -193,7 +192,7 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
     const treeItems = this.renderItems(items);
 
     return (
-      <div key={ key } { ...rest } className={ wxr.classNames('TreeItem', className) }>
+      <div key={ key } { ...rest } className={ this.wxr.classNames('TreeItem', className) }>
         { header }
         {
           treeItems && (

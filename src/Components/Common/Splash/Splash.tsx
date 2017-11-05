@@ -3,7 +3,6 @@ import { Grid, Row, Image } from 'react-bootstrap';
 
 import { Property } from '../../../WebRx';
 import { Loading } from '../Loading/Loading';
-import { wxr } from '../../React';
 
 export interface SplashProps {
   header: any;
@@ -30,7 +29,7 @@ export class Splash extends React.Component<SplashComponentProps> {
     });
 
     return (
-      <div { ...rest } className={ wxr.classNames('Splash', className) }>
+      <div { ...rest } className={ this.wxr.classNames('Splash', className) }>
         <Grid fluid={ props.fluid }>
           <Row>
             <div className='Splash-header'>
@@ -46,7 +45,7 @@ export class Splash extends React.Component<SplashComponentProps> {
   }
 
   private renderLogo() {
-    return wxr.renderConditional(this.props.logo != null, () => (
+    return this.wxr.renderConditional(this.props.logo != null, () => (
       <Image className='Splash-logo' src={this.props.logo} rounded />
     ));
   }

@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import { wxr } from '../../React';
 import { PanelProps, Panel } from './Panel';
 
 export enum StackPanelOrientation {
@@ -35,6 +34,6 @@ export class StackPanel extends Panel<StackPanelComponentProps> {
       orientation :
       StackPanelOrientation[orientation || StackPanel.defaultOrientiation] as string;
 
-    return this.renderPanel(wxr.classNames('StackPanel', `StackPanel-${ orientationName }`), rest);
+    return this.renderPanel(this.wxr.classNames('StackPanel', `StackPanel-${ orientationName }`), rest);
   }
 }

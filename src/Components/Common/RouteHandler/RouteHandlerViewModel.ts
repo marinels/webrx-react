@@ -99,7 +99,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
       .share();
 
     this.loadComponent = this.wx.command(canLoadComponent, (p: LoadComponentParams) => {
-      return this.getObservableResultOrAlert(
+      return this.wx.getObservableResultOrAlert(
         () => {
           // we need to construct an activated component structure so we can send routing state
           // into the viewModel (if it exists)
@@ -169,7 +169,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
     // if any component changes its routing state we'll pick it up here and ask the
     // currently routed component to generate a new routing state object, then
     // ask the routing manager to navigate to the current route with our updated state
-    this.subscribeOrAlert(
+    this.wx.subscribeOrAlert(
       () => PubSub.observe<RoutingStateChanged>(RoutingStateChangedKey)
         .debounceTime(100),
       'Routing Handler State Changed Error',

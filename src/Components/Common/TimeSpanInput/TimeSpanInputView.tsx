@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { FormGroup, InputGroup, Sizes, FormControl, FormControlProps, DropdownButton, MenuItem, HelpBlock } from 'react-bootstrap';
 import { Icon } from 'react-fa';
 
-import { wxr, BaseView, BaseViewProps } from '../../React';
+import { BaseView, BaseViewProps } from '../../React';
 import { BindableInput } from '../BindableInput/BindableInput';
 import { TimeSpanInputViewModel, TimeSpanUnit } from './TimeSpanInputViewModel';
 import { CommandButton } from '../CommandButton/CommandButton';
@@ -24,7 +24,7 @@ export class TimeSpanControl extends React.Component<TimeSpanControlComponentPro
 
     return (
       <BindableInput boundProperty={ props.viewModel.text }>
-        <FormControl { ...rest } className={ wxr.classNames('TimeSpanControl', className) } type='text' />
+        <FormControl { ...rest } className={ this.wxr.classNames('TimeSpanControl', className) } type='text' />
       </BindableInput>
     );
   }

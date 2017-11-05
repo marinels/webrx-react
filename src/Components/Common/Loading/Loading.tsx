@@ -3,7 +3,6 @@ import { Subscription } from  'rxjs';
 import { ProgressBar } from 'react-bootstrap';
 
 import { Property } from '../../../WebRx';
-import { wxr } from '../../React';
 
 export interface LoadingProps {
   progress?: Property<number> | number;
@@ -46,7 +45,7 @@ export class Loading extends React.Component<LoadingComponentProps> {
     const Component = props.componentClass;
 
     return (
-      <Component { ...rest } className={ wxr.classNames('Loading', className) }>
+      <Component { ...rest } className={ this.wxr.classNames('Loading', className) }>
         <ProgressBar style={({ fontSize: props.fontSize })} active now={ this.getProgressValue() } label={ props.text }>
           { children }
         </ProgressBar>

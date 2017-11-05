@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Panel, PanelProps, ButtonToolbar } from 'react-bootstrap';
 
 import { CommandButton, CommandButtonProps } from '../CommandButton/CommandButton';
-import { wxr } from '../../React';
 
 export type CommonPannelContent = ((x: CommonPanel) => any) | any;
 export type CommonPanelSectionFormatter = (section: any) => any;
@@ -40,7 +39,7 @@ export class CommonPanel extends React.Component<CommonPanelComponentProps> {
       return { headerContent, headerActions, headerFormat, teaserContent, summaryContent, footerContent, footerActions, footerFormat, shadow };
     });
 
-    const panelClassName = wxr.classNames(
+    const panelClassName = this.wxr.classNames(
       'CommonPanel',
       {
         shadow: props.shadow === true,
@@ -62,15 +61,15 @@ export class CommonPanel extends React.Component<CommonPanelComponentProps> {
   }
 
   private renderContent(content: CommonPannelContent | undefined, section: CommonPanelContentSection, sectionType?: CommonPanelContentType) {
-    return wxr.renderNullable(content, x => (
-      <div className={ wxr.classNames(`CommonPanel-${ section }Content`, sectionType == null ? null : `CommonPanel-${ sectionType }`) }>
+    return this.wxr.renderNullable(content, x => (
+      <div className={ this.wxr.classNames(`CommonPanel-${ section }Content`, sectionType == null ? null : `CommonPanel-${ sectionType }`) }>
         { x instanceof Function ? x(this) : x }
       </div>
     ));
   }
 
   private renderActions(actions: CommandButtonProps[] | undefined, section: CommonPanelContentSection) {
-    return wxr.renderNullable(actions, a => (
+    return this.wxr.renderNullable(actions, a => (
       <ButtonToolbar className={ `CommonPanel-${ section }Actions` }>
         {
           a
@@ -83,7 +82,7 @@ export class CommonPanel extends React.Component<CommonPanelComponentProps> {
   }
 
   private renderHeaderFooter(content: CommonPannelContent | undefined, actions: CommandButtonProps[] = [], section: CommonPanelContentSection, formatter: (section: any) => any = x => x) {
-    return wxr.renderConditional(
+    return this.wxr.renderConditional(
       content != null || (actions != null && actions.length > 0),
       () => formatter(
         <div className={ `CommonPanel-${ section }` }>

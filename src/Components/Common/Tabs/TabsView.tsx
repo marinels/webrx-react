@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Observable } from 'rxjs';
 import { Tabs, Tab } from 'react-bootstrap';
 
-import { wxr, BaseView, BaseViewProps } from '../../React';
+import { BaseView, BaseViewProps } from '../../React';
 import { TabsViewModel } from './TabsViewModel';
 
 export type ReadonlyTabsViewModel<TData> = Readonly<TabsViewModel<TData>>;
@@ -24,7 +24,7 @@ export class TabRenderTemplate<TData> {
   protected renderDefaultTemplateContainer(content: () => any, item: TData, index: number, viewModel: ReadonlyTabsViewModel<TData>, view: TabsView) {
     return (
       <Tab key={ this.keySelector(item, index, viewModel, view) } title={ this.titleSelector(item, index, viewModel, view) } eventKey={ index }>
-        { wxr.renderConditional(index === viewModel.selectedIndex.value, content) }
+        { TabsView.wxr.renderConditional(index === viewModel.selectedIndex.value, content) }
       </Tab>
     );
   }

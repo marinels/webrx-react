@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Icon, IconSize } from 'react-fa';
 
 import { CommandButton, CommandButtonProps } from '../CommandButton/CommandButton';
-import { wxr } from '../../React';
 
 export interface NavButtonProps extends CommandButtonProps {
   iconSize?: IconSize;

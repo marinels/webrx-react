@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import { wxr } from '../../React';
-
 /**
  * A panel item context is metadata passed to a panel item to give some
  * context as to where in the container it is being rendered.
@@ -79,7 +77,7 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
     });
 
     const Component = componentClass || Panel.defaultComponentClass;
-    const componentClassName = wxr.classNames(
+    const componentClassName = this.wxr.classNames(
       'Panel',
       { 'compact': props.compact },
       panelClassName,
@@ -109,7 +107,7 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
   ): PanelFragment {
     const context = { index };
     const key = this.getItemKey(itemTemplate, index);
-    const className = wxr.classNames('Panel-Item', Panel.getPanelItemPropValue(this.props.itemClassName, context));
+    const className = this.wxr.classNames('Panel-Item', Panel.getPanelItemPropValue(this.props.itemClassName, context));
     const style = Panel.getPanelItemPropValue(this.props.itemStyle, context);
     const props: {} | undefined = Panel.getPanelItemPropValue(this.props.itemProps, context) || {};
     const template = this.props.itemTemplate;

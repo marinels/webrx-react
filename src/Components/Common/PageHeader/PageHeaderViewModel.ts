@@ -64,7 +64,7 @@ export class PageHeaderViewModel extends BaseViewModel {
       .invokeCommand(this.toggleSideBar),
     );
 
-    this.subscribeOrAlert(
+    this.wx.subscribeOrAlert(
       () => this.wx
         .whenAny(this.menuItemSelected.results, x => x)
         .filterNull(),

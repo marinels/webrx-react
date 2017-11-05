@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Breadcrumb, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { Icon } from 'react-fa';
 
-import { wxr, RoutingBreadcrumb } from '../../React';
+import { RoutingBreadcrumb } from '../../React';
 import { CommandButton } from '../CommandButton/CommandButton';
 
 export interface BreadcrumbsProps {
@@ -38,10 +38,10 @@ export class Breadcrumbs extends React.Component<BreadcrumbsComponentProps> {
       return { pinnable, items };
     });
 
-    return wxr.renderIterable(
+    return this.wxr.renderIterable(
       props.items,
       (x, i, a) => {
-        const tooltip = wxr.renderConditional(
+        const tooltip = this.wxr.renderConditional(
           String.isString(x.tooltip),
           () => (<Tooltip id={ `${ this.props.id || x.key }-tt` } placement='top'>{ x.tooltip }</Tooltip>),
           () => x.tooltip == null ? undefined : (<Tooltip id={ `${ this.props.id || x.key }-tt` } { ...x.tooltip } />),
@@ -53,7 +53,7 @@ export class Breadcrumbs extends React.Component<BreadcrumbsComponentProps> {
           </Breadcrumb.Item>
         );
 
-        return wxr.renderConditional(
+        return this.wxr.renderConditional(
           React.isValidElement<any>(tooltip),
           () => (
             <OverlayTrigger key={ breadcrumb.key || undefined } placement={ tooltip.props.placement } overlay={ tooltip } >
@@ -64,11 +64,11 @@ export class Breadcrumbs extends React.Component<BreadcrumbsComponentProps> {
         );
       },
       x => x.length === 0 ? null : (
-        <div { ...rest } className={ wxr.classNames('Breadcrumbs', 'hidden-xs', className) }>
+        <div { ...rest } className={ this.wxr.classNames('Breadcrumbs', 'hidden-xs', className) }>
           <div className='Breadcrumbs-container'>
             <Breadcrumb>{ x }</Breadcrumb>
             {
-              wxr.renderConditional(props.pinnable, () => (
+              this.wxr.renderConditional(props.pinnable, () => (
                 <CommandButton className='Breadcrumbs-pin' bsStyle='link'
                   onClick={ () => this.toggleBreadcrumbsPin() }
                 >

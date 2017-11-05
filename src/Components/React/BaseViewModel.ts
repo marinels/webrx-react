@@ -4,7 +4,6 @@ import { TeardownLogic } from 'rxjs/Subscription';
 import { wx, Command } from '../../WebRx';
 import { Logging, Alert } from '../../Utils';
 import { routeManager } from '../../Routing/RouteManager';
-import { getObservableOrAlert, getObservableResultOrAlert, subscribeOrAlert, logMemberObservables } from './ObservableHelpers';
 
 export interface ViewModelLifecyle {
   initializeViewModel(): void;
@@ -44,11 +43,6 @@ export abstract class BaseViewModel extends Subscription {
   protected readonly createAlert = Alert.create;
   protected readonly alertForError = Alert.createForError;
 
-  // these are Observable helper functions
-  protected readonly getObservableOrAlert = getObservableOrAlert;
-  protected readonly getObservableResultOrAlert = getObservableResultOrAlert;
-  protected readonly subscribeOrAlert = subscribeOrAlert;
-
   protected readonly logger: Logging.Logger = Logging.getLogger(this.getDisplayName());
   private isLoggingMemberObservables = false;
 
@@ -70,7 +64,7 @@ export abstract class BaseViewModel extends Subscription {
     if (this.logger.level <= Logging.LogLevel.Debug && this.isLoggingMemberObservables === false) {
       this.isLoggingMemberObservables = true;
 
-      this.addSubscriptions(...logMemberObservables(this.logger, this));
+      this.addSubscriptions(...this.wx.logMemberObservables(this.logger, this));
     }
   }
 

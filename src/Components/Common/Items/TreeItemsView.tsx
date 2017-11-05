@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Iterable } from 'ix';
 
-import { wxr } from '../../React';
 import { ItemsProps, ItemsViewProps, ItemsView } from './ItemsView';
 import { TreeItemFacadeProps, TreeItem } from './TreeItem';
 import { ItemsPresenter } from './ItemsPresenter';
@@ -23,7 +22,7 @@ export class TreeItemsView extends React.Component<TreeItemsViewProps> {
 
     return (
       <ItemsView
-        className={ wxr.classNames('TreeItems', className) }
+        className={ this.wxr.classNames('TreeItems', className) }
         viewModel={ this.props.viewModel }
         viewTemplate={ props.viewTemplate }
         itemsPanelTemplate={ props.itemsPanelTemplate }

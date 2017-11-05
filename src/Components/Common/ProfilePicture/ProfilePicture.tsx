@@ -2,8 +2,6 @@ import * as React from 'react';
 import { Image } from 'react-bootstrap';
 import { Icon, IconSize } from 'react-fa';
 
-import { wxr } from '../../React';
-
 export interface ProfilePictureProps {
   src?: string;
   size?: number;
@@ -46,7 +44,7 @@ export class ProfilePicture extends React.Component<ProfilePictureComponentProps
   }
 
   render() {
-    return wxr.renderNullable(
+    return this.wxr.renderNullable(
       this.getImageSource(),
       x => this.renderImage(x),
       () => this.renderIcon(),
@@ -71,7 +69,7 @@ export class ProfilePicture extends React.Component<ProfilePictureComponentProps
     });
 
     return (
-      <div { ...rest } className={ wxr.classNames('ProfilePicture', 'ProfilePicture-icon', iconClassNames, className) } style={ iconStyle }>
+      <div { ...rest } className={ this.wxr.classNames('ProfilePicture', 'ProfilePicture-icon', iconClassNames, className) } style={ iconStyle }>
         <Icon name={ props.defaultIcon! } size={ props.iconSize } />
       </div>
     );
@@ -89,7 +87,7 @@ export class ProfilePicture extends React.Component<ProfilePictureComponentProps
     });
 
     return (
-      <Image { ...rest } className={ wxr.classNames('ProfilePicture', className) } style={ imageStyle }
+      <Image { ...rest } className={ this.wxr.classNames('ProfilePicture', className) } style={ imageStyle }
         src={ src } width={ props.size } height={ props.size }
       />
     );
