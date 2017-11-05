@@ -3,8 +3,6 @@
 import * as React from 'react';
 import { Iterable } from 'ix';
 
-import { wx, WebRxStatic } from '../WebRx';
-
 export function trimPropsStatic<T>(props: T): T {
   return Object.trim(props, false);
 }
@@ -49,8 +47,6 @@ export function restProps<P, T>(
 
 declare module 'react' {
   interface Component<P> {
-    wx: WebRxStatic;
-
     // sadly, we need to re-define this restProps function here instead of using
     // the normal restProps: typeof restProps
     // this is because a function property cannot be overridden in a derived class
@@ -61,14 +57,11 @@ declare module 'react' {
   }
 
   namespace Component {
-    let wx: WebRxStatic;
     let trimProps: typeof trimPropsStatic;
     let restProps: typeof restPropsStatic;
   }
 }
 
-React.Component.prototype.wx = wx;
 React.Component.prototype.restProps = restProps;
-React.Component.wx = wx;
 React.Component.trimProps = trimPropsStatic;
 React.Component.restProps = restPropsStatic;
