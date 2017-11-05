@@ -1,4 +1,4 @@
-export * from './StaticHelpers';
+export * from './Static';
 
 export * from './BaseViewModel';
 export * from './Actions';
