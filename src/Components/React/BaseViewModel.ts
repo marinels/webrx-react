@@ -1,8 +1,9 @@
-import { Observable, Subscription } from 'rxjs';
-import { TeardownLogic } from 'rxjs/Subscription';
+import { Observable, Observer, Subject, Subscription } from 'rxjs';
+import { AnonymousSubscription, TeardownLogic } from 'rxjs/Subscription';
 
-import { wx, Command } from '../../WebRx';
-import { Logging, Alert } from '../../Utils';
+import { wx, Property, Command } from '../../WebRx';
+import { Logger, LogLevel, getLogger } from '../../Utils/Logging';
+import { Alert } from '../../Utils';
 import { routeManager } from '../../Routing/RouteManager';
 
 export interface ViewModelLifecyle {
@@ -43,7 +44,7 @@ export abstract class BaseViewModel extends Subscription {
   protected readonly createAlert = Alert.create;
   protected readonly alertForError = Alert.createForError;
 
-  protected readonly logger: Logging.Logger = Logging.getLogger(this.getDisplayName());
+  protected readonly logger: Logger = getLogger(this.getDisplayName());
   private isLoggingMemberObservables = false;
 
   public readonly stateChanged: Command<any>;
@@ -61,7 +62,7 @@ export abstract class BaseViewModel extends Subscription {
   private initializeViewModel() {
     this.initialize();
 
-    if (this.logger.level <= Logging.LogLevel.Debug && this.isLoggingMemberObservables === false) {
+    if (this.logger.level <= LogLevel.Debug && this.isLoggingMemberObservables === false) {
       this.isLoggingMemberObservables = true;
 
       this.addSubscriptions(...this.wx.logMemberObservables(this.logger, this));

@@ -1,7 +1,8 @@
-import { Observable, AjaxRequest } from 'rxjs';
+import { Observable, Subject, Subscription, Observer, AjaxRequest } from 'rxjs';
+import { AnonymousSubscription } from 'rxjs/Subscription';
 
-import { wx } from '../WebRx';
-import { Logging } from '../Utils';
+import { wx, Property, Command } from '../WebRx';
+import { Logger, getLogger } from '../Utils/Logging';
 import { getWindowLocation, joinPath } from '../Routing';
 import { HttpRequestMethod, SampleDataStore, SampleDataApi, SampleDataCreator, StoreApi } from './Interfaces';
 import { getRequest } from './Helpers';
@@ -9,7 +10,7 @@ import { getRequest } from './Helpers';
 export class ObservableApi implements StoreApi {
   public static displayName = 'ObservableApi';
 
-  protected readonly logger: Logging.Logger = Logging.getLogger(ObservableApi.displayName);
+  protected readonly logger: Logger = getLogger(ObservableApi.displayName);
   protected readonly wx = wx;
   protected sampleData: SampleDataApi | undefined;
 

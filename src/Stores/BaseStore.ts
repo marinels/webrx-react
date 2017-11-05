@@ -1,7 +1,8 @@
-import { Observable, AjaxRequest } from 'rxjs';
+import { Observable, Observer, Subject, Subscription, AjaxRequest } from 'rxjs';
+import { AnonymousSubscription } from 'rxjs/Subscription';
 
-import { Logging } from '../Utils';
-import { wx } from '../WebRx';
+import { Logger, getLogger } from '../Utils/Logging';
+import { wx, Property, Command } from '../WebRx';
 import { SampleDataCreator, StoreApi } from './Interfaces';
 import { isStoreApi } from './Helpers';
 import { ObservableApi } from './ObservableApi';
@@ -9,7 +10,7 @@ import { ObservableApi } from './ObservableApi';
 export abstract class BaseStore {
   public static displayName = 'BaseStore';
 
-  protected readonly logger: Logging.Logger = Logging.getLogger(BaseStore.displayName);
+  protected readonly logger: Logger = getLogger(BaseStore.displayName);
   protected readonly wx = wx;
   protected readonly api: StoreApi;
 

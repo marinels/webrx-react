@@ -1,13 +1,15 @@
-import { Observable } from  'rxjs';
+import { Observable, Subject, Subscription, Observer } from  'rxjs';
+import { AnonymousSubscription } from 'rxjs/Subscription';
 
-import { wx } from '../../WebRx';
-import { Logging, Alert } from '../../Utils';
+import { wx, Command, Property } from '../../WebRx';
+import { Alert } from '../../Utils';
+import { Logger, getLogger } from '../../Utils/Logging';
 import { SampleDataStore, SampleDataAction, SampleDataActionSet } from '../Interfaces';
 
 export abstract class BaseSampleDataStore implements SampleDataStore {
   public static displayName = 'BaseSampleDataStore';
 
-  protected readonly logger: Logging.Logger = Logging.getLogger(BaseSampleDataStore.displayName);
+  protected readonly logger: Logger = getLogger(BaseSampleDataStore.displayName);
   protected readonly wx = wx;
 
   public readonly actions: SampleDataActionSet;

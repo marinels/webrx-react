@@ -1,3 +1,7 @@
+import { Component, SyntheticEvent } from 'react';
+import { Iterable } from 'ix';
+import { Observable, Subscription } from 'rxjs';
+
 import {
   bindObservableToCommand, bindEventToProperty, bindEventToCommand,
 } from './BindingHelpers';
@@ -6,6 +10,9 @@ import {
   renderLoadable, renderSizedLoadable, renderGridLoadable,
   focusElement, classNames,
 } from './RenderHelpers';
+import { BaseViewModel } from './BaseViewModel';
+import { Command, Property } from '../../WebRx';
+import { ValueComparison } from '../../Utils/Compare';
 
 export function create(target: {} = {}) {
   return {
