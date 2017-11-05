@@ -1,17 +1,10 @@
-import { Observable, Subscription } from 'rxjs';
-import { TeardownLogic } from 'rxjs/Subscription';
+import { Observable, Observer, Subject, Subscription } from 'rxjs';
+import { AnonymousSubscription, TeardownLogic } from 'rxjs/Subscription';
 
-import { property } from '../../WebRx/Property';
-import { command } from '../../WebRx/Command';
-import { whenAny } from '../../WebRx/WhenAny';
-import {
-  isObservable, isObserver, isSubject, isProperty, isCommand, asObservable,
-  getObservable, getProperty, handleError,
-} from '../../WebRx/Utils';
-import { ObservableLike, Command } from '../../WebRx';
-import { Logging, Alert } from '../../Utils';
+import { wx, Property, Command } from '../../WebRx';
+import { Logger, LogLevel, getLogger } from '../../Utils/Logging';
+import { Alert } from '../../Utils';
 import { routeManager } from '../../Routing/RouteManager';
-import { getObservableOrAlert, getObservableResultOrAlert, subscribeOrAlert, logMemberObservables } from './ObservableHelpers';
 
 export interface ViewModelLifecyle {
   initializeViewModel(): void;
@@ -44,29 +37,14 @@ export abstract class BaseViewModel extends Subscription {
   public static displayName = 'BaseViewModel';
 
   // these are WebRx helper functions (so you don't need to import them every time)
-  protected readonly isObservable = isObservable;
-  protected readonly isObserver = isObserver;
-  protected readonly isSubject = isSubject;
-  protected readonly isProperty = isProperty;
-  protected readonly isCommand = isCommand;
-  protected readonly asObservable = asObservable;
-  protected readonly getObservable = getObservable;
-  protected readonly getProperty = getProperty;
-  protected readonly handleError = handleError;
-  protected readonly property = property;
-  protected readonly command = command;
-  protected readonly whenAny = whenAny;
+  public static readonly wx = wx;
+  protected readonly wx = wx;
 
   // these are Alert helper functions
   protected readonly createAlert = Alert.create;
   protected readonly alertForError = Alert.createForError;
 
-  // these are Observable helper functions
-  protected readonly getObservableOrAlert = getObservableOrAlert;
-  protected readonly getObservableResultOrAlert = getObservableResultOrAlert;
-  protected readonly subscribeOrAlert = subscribeOrAlert;
-
-  protected readonly logger: Logging.Logger = Logging.getLogger(this.getDisplayName());
+  protected readonly logger: Logger = getLogger(this.getDisplayName());
   private isLoggingMemberObservables = false;
 
   public readonly stateChanged: Command<any>;
@@ -74,7 +52,7 @@ export abstract class BaseViewModel extends Subscription {
   constructor() {
     super();
 
-    this.stateChanged = this.command();
+    this.stateChanged = this.wx.command();
   }
 
   // -----------------------------------------
@@ -84,10 +62,10 @@ export abstract class BaseViewModel extends Subscription {
   private initializeViewModel() {
     this.initialize();
 
-    if (this.logger.level <= Logging.LogLevel.Debug && this.isLoggingMemberObservables === false) {
+    if (this.logger.level <= LogLevel.Debug && this.isLoggingMemberObservables === false) {
       this.isLoggingMemberObservables = true;
 
-      this.addSubscriptions(...logMemberObservables(this.logger, this));
+      this.addSubscriptions(...this.wx.logMemberObservables(this.logger, this));
     }
   }
 

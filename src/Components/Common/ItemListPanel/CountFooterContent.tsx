@@ -2,8 +2,6 @@ import * as React from 'react';
 import { Observable, Subscription } from 'rxjs';
 import { Badge } from 'react-bootstrap';
 
-import { wxr } from '../../React';
-
 export interface CountFooterContentProps extends React.HTMLAttributes<CountFooterContent> {
   length: Observable<number>;
   suffix?: string;
@@ -50,7 +48,7 @@ export class CountFooterContent extends React.Component<CountFooterContentProps,
       <div className='CountFooterContent'>
         <Badge>{ this.state.length || 0 }</Badge>
         {
-          wxr.renderConditional(String.isNullOrEmpty(this.props.suffix) === false, () => (
+          this.wxr.renderConditional(String.isNullOrEmpty(this.props.suffix) === false, () => (
             <span className='CountFooterContent-suffix'>{ this.props.suffix }</span>
           ))
         }

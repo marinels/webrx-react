@@ -40,7 +40,7 @@ export class AppViewModel extends BaseViewModel {
       this.footer = new PageFooterViewModel();
     }
 
-    this.isLoading = this
+    this.isLoading = this.wx
       .getProperty(
         isLoading ||
         Observable

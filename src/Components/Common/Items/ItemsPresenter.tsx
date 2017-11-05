@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Iterable } from 'ix';
 
 import { IterableLike } from '../../../WebRx';
-import { wxr } from '../../React';
 import { Panel, StackPanel, PanelItemProps, PanelRenderProps, PanelFragment } from '../Panel';
 
 export type ViewTemplate = (itemsPanel: PanelFragment, itemsPresenter: ItemsPresenter) => JSX.Element | null | false;
@@ -72,7 +71,7 @@ export class ItemsPresenter extends React.Component<ItemsPresenterComponentProps
     });
 
     return (
-      <div { ...rest } className={ wxr.classNames('ItemsPresenter', className) }>
+      <div { ...rest } className={ itemsPresenter.wxr.classNames('ItemsPresenter', className) }>
         { itemsPanel }
       </div>
     );

@@ -21,13 +21,13 @@ export class TodoListViewModel extends BaseRoutableViewModel<TodoListRoutingStat
   constructor() {
     super(true);
 
-    this.newItemContent = this.property('');
+    this.newItemContent = this.wx.property('');
 
-    this.addItem = this.command(
-      this.whenAny(this.newItemContent, x => String.isNullOrEmpty(x) === false),
+    this.addItem = this.wx.command(
+      this.wx.whenAny(this.newItemContent, x => String.isNullOrEmpty(x) === false),
     );
 
-    this.removeItem = this.command<TodoItemViewModel>();
+    this.removeItem = this.wx.command<TodoItemViewModel>();
 
     interface TodoListChange {
       add?: TodoItemViewModel;
@@ -90,8 +90,8 @@ export class TodoItemViewModel extends BaseViewModel {
 
     this.id = TodoItemViewModel.nextId++;
 
-    this.toggleCompleted = this.command();
-    this.completed = this
+    this.toggleCompleted = this.wx.command();
+    this.completed = this.wx
       .whenAny(this.toggleCompleted.results, () => true)
       .scan(x => !x, false)
       .toProperty(false);

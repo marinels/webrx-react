@@ -3,7 +3,6 @@ import { Subscription } from  'rxjs';
 import { Button, ButtonProps, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import { Command } from '../../../WebRx';
-import { wxr } from '../../React';
 
 export interface CommandButtonProps {
   id?: string;
@@ -69,7 +68,7 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
       cmd.canExecute;
 
     const button = (
-      <Button { ...rest } className={ wxr.classNames('CommandButton', this.props.className, { plain: this.props.plain }) } disabled={ canExecute !== true } onClick={ e => this.handleClick(e) }>
+      <Button { ...rest } className={ this.wxr.classNames('CommandButton', this.props.className, { plain: this.props.plain }) } disabled={ canExecute !== true } onClick={ e => this.handleClick(e) }>
         { this.props.children }
       </Button>
     );

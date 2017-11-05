@@ -30,16 +30,17 @@ export class AlertViewModel extends BaseViewModel {
   ) {
     super();
 
-    this.dismiss = this.command();
+    this.dismiss = this.wx.command();
 
     this.isVisible = this.dismiss.results
       .map(() => false)
       .toProperty(true);
 
-    this.addSubscription(this
-      .getObservable(true)
-      .delay(this.timeout)
-      .invokeCommand(this.dismiss),
+    this.addSubscription(
+      this.wx
+        .getObservable(true)
+        .delay(this.timeout)
+        .invokeCommand(this.dismiss),
     );
   }
 }

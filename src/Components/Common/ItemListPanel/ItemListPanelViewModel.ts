@@ -1,4 +1,4 @@
-import { wx, ObservableLike } from '../../../WebRx';
+import { ObservableLike } from '../../../WebRx';
 import { BaseItemListPanelViewModel } from './BaseItemListPanelViewModel';
 import { DataGridViewModel, ProjectionRequest, ProjectionResult } from '../DataGrid/DataGridViewModel';
 import { ObjectComparer } from '../../../Utils/Compare';
@@ -7,7 +7,7 @@ export class ItemListPanelViewModel<TData> extends BaseItemListPanelViewModel<TD
   public static displayName = 'ItemListPanelViewModel';
 
   public static create<T>(...items: T[]) {
-    return new ItemListPanelViewModel(wx.property(items, false));
+    return new ItemListPanelViewModel(ItemListPanelViewModel.wx.property(items, false));
   }
 
   constructor(

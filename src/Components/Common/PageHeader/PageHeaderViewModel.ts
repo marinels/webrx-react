@@ -40,32 +40,32 @@ export class PageHeaderViewModel extends BaseViewModel {
 
     this.dynamicSubscriptions = Subscription.EMPTY;
 
-    this.sidebarMenus = this.property<HeaderMenu[]>(undefined, false);
-    this.navbarMenus = this.property<HeaderMenu[]>(undefined, false);
-    this.navbarActions = this.property<HeaderCommandAction[]>(undefined, false);
-    this.helpMenuItems = this.property<HeaderCommandAction[]>(undefined, false);
-    this.adminMenuItems = this.property<HeaderCommandAction[]>(undefined, false);
-    this.userMenuItems = this.property<HeaderCommandAction[]>(undefined, false);
+    this.sidebarMenus = this.wx.property<HeaderMenu[]>(undefined, false);
+    this.navbarMenus = this.wx.property<HeaderMenu[]>(undefined, false);
+    this.navbarActions = this.wx.property<HeaderCommandAction[]>(undefined, false);
+    this.helpMenuItems = this.wx.property<HeaderCommandAction[]>(undefined, false);
+    this.adminMenuItems = this.wx.property<HeaderCommandAction[]>(undefined, false);
+    this.userMenuItems = this.wx.property<HeaderCommandAction[]>(undefined, false);
 
-    this.toggleSideBar = this.command((isVisible?: boolean) => {
+    this.toggleSideBar = this.wx.command((isVisible?: boolean) => {
       return isVisible == null ? this.isSidebarVisible.value : isVisible;
     });
 
-    this.isSidebarVisible = this
+    this.isSidebarVisible = this.wx
       .whenAny(this.toggleSideBar.results, x => x)
       .toProperty(false);
 
-    this.menuItemSelected = this.command<HeaderCommandAction>();
+    this.menuItemSelected = this.wx.command<HeaderCommandAction>();
 
-    this.addSubscription(this
+    this.addSubscription(this.wx
       .whenAny(this.menuItemSelected.results, x => x)
       .filterNull()
       .map(() => false)
       .invokeCommand(this.toggleSideBar),
     );
 
-    this.subscribeOrAlert(
-      () => this
+    this.wx.subscribeOrAlert(
+      () => this.wx
         .whenAny(this.menuItemSelected.results, x => x)
         .filterNull(),
       'Page Header Menu Item Error',
@@ -84,11 +84,12 @@ export class PageHeaderViewModel extends BaseViewModel {
       },
     );
 
-    this.addSubscription(this
-      .whenAny(this.routeHandler.routedComponent, x => x)
-      .subscribe(() => {
-        this.updateDynamicContent();
-      }),
+    this.addSubscription(
+      this.wx
+        .whenAny(this.routeHandler.routedComponent, x => x)
+        .subscribe(() => {
+          this.updateDynamicContent();
+        }),
     );
   }
 

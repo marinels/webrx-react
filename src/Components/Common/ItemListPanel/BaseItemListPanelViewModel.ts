@@ -18,7 +18,7 @@ export abstract class BaseItemListPanelViewModel<TData, TRequest extends Project
   ) {
     super(isRoutingEnabled);
 
-    this.toggleIsExpanded = this.command<boolean>();
+    this.toggleIsExpanded = this.wx.command<boolean>();
 
     this.isExpanded = this.toggleIsExpanded.results
       .scan((a, x) => x || !a, undefined)
@@ -38,7 +38,7 @@ export abstract class BaseItemListPanelViewModel<TData, TRequest extends Project
   }
 
   public get lengthChanged() {
-    return this
+    return this.wx
       .whenAny(this.items, x => (x || []).length)
       .distinctUntilChanged();
   }

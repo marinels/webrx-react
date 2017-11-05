@@ -4,7 +4,7 @@ import { Grid } from 'react-bootstrap';
 
 import { updateDefaultContainer } from './NamespacedPortal';
 import { BootstrapGuide } from './BootstrapGuide';
-import { wxr, BaseView, BaseViewProps } from '../../React';
+import { BaseView, BaseViewProps } from '../../React';
 import { Splash } from '../Splash/Splash';
 import { AlertHostView } from '../Alert/AlertHostView';
 import { SplashKey } from '../RouteHandler/RouteHandlerViewModel';
@@ -61,7 +61,7 @@ export class AppView extends BaseView<AppViewProps, AppViewModel> {
 
     return (
       <div className='webrx-react bootstrap-3' ref={ updateDefaultContainer }>
-        <div { ...rest } className={ wxr.classNames('App', className) }>
+        <div { ...rest } className={ this.wxr.classNames('App', className) }>
           {
             this.renderConditional(this.viewModel.isLoading, () => (
               <i className='preload fa fa-spinner fa-5x fa-pulse' aria-hidden='true'></i>

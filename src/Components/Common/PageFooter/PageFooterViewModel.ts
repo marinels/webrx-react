@@ -18,9 +18,9 @@ export class PageFooterViewModel extends BaseViewModel {
   constructor() {
     super();
 
-    this.viewportDimensionsChanged = this.command<ViewportDimensions>();
+    this.viewportDimensionsChanged = this.wx.command<ViewportDimensions>();
 
-    this.viewportDimensions = this
+    this.viewportDimensions = this.wx
       .whenAny(this.viewportDimensionsChanged.results, x => x)
       .filterNull()
       .debounceTime(100)

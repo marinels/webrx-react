@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { Overlay, Popover, MenuItemProps, PopoverProps } from 'react-bootstrap';
 
-import { wxr } from '../../React';
-
 export interface ContextMenuProps {
   key?: string | number;
   id: string;
@@ -29,7 +27,7 @@ export interface ContextMenuState {
 class ContextMenuContainer extends React.Component<PopoverProps> {
   render() {
     return (
-      <div className={ wxr.classNames('ContextMenu-container', this.props.className) }>
+      <div className={ this.wxr.classNames('ContextMenu-container', this.props.className) }>
         { this.props.children }
       </div>
     );
@@ -94,7 +92,7 @@ export class ContextMenu extends React.Component<ContextMenuComponentProps, Cont
   }
 
   private renderMenu(menuItems: React.ReactChild[]) {
-    return wxr.renderConditional(this.state.isVisible === true, () => {
+    return this.wxr.renderConditional(this.state.isVisible === true, () => {
       return (
         <Popover id={ this.props.id } placement='right' title={ this.props.header }
           arrowOffsetTop={ ArrowOffset } positionLeft={ this.state.left } positionTop={ this.state.top }
@@ -102,7 +100,7 @@ export class ContextMenu extends React.Component<ContextMenuComponentProps, Cont
           <ul className='dropdown-menu'>
             {
               // if onSelect is provided we need to inject it into all the menu items
-              wxr.renderNullable(
+              this.wxr.renderNullable(
                 this.props.onSelect,
                 onSelect => React.Children
                   .map(menuItems, (x: React.ReactElement<any>) =>
