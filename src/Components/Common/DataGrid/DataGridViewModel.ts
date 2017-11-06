@@ -211,6 +211,9 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
   protected getResponses(requests?: ObservableLike<DataSourceRequest<TRequestContext> | undefined>, rateLimit = 100) {
     return this.wx
       .whenAny(requests || this.requests, x => x)
+      // because requests can be injected here, we cannot trust that nulls are not already filtered out
+      // so we filter here just to be safe (this should be a no-op in most cases)
+      .filterNull()
       .flatMap(x => {
         return this.wx.getObservable(this.getResponse(x));
       })
