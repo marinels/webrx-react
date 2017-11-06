@@ -35,12 +35,17 @@ export class ProfilePicture extends React.Component<ProfilePictureComponentProps
   private getImageSource() {
     let src = this.props.src || this.props.defaultSrc;
 
-    // if we're using a src URI, ensure it contains a data URI prefix
-    if (!String.isNullOrEmpty(src) && src.indexOf(dataUriPrefix) < 0) {
-      src = `${ dataUriPrefix }${ src }`;
+    if (String.isNullOrEmpty(src)) {
+      return src;
     }
 
-    return src;
+    // check if the source uri is already formatted
+    if (src.indexOf(dataUriPrefix) >= 0 || /^https?:/.test(src)) {
+      return src;
+    }
+
+    // otherwise assume we need to format a data uri
+    return `${ dataUriPrefix }${ src }`;
   }
 
   render() {
@@ -70,26 +75,37 @@ export class ProfilePicture extends React.Component<ProfilePictureComponentProps
 
     return (
       <div { ...rest } className={ this.wxr.classNames('ProfilePicture', 'ProfilePicture-icon', iconClassNames, className) } style={ iconStyle }>
-        <Icon name={ props.defaultIcon! } size={ props.iconSize } />
+        <Icon name={ props.defaultIcon! } size={ props.iconSize } style={ ({ lineHeight: `${ props.size }px` }) } />
       </div>
     );
   }
 
-  private renderImage(src: string) {
+  private renderImage(imageSource: string) {
     const { className, props, rest } = this.restProps(x => {
-      const { size, defaultSrc, defaultIcon, iconSize, style } = x;
-      return { size, defaultSrc, defaultIcon, iconSize, style };
+      const { src, size, responsive, rounded, circle, thumbnail, defaultSrc, defaultIcon, iconSize, style } = x;
+      return { src, size, responsive, rounded, circle, thumbnail, defaultSrc, defaultIcon, iconSize, style };
     });
 
-    const imageStyle = Object.assign({}, props.style, {
-      width: this.props.responsive === true ? null : props.size,
-      height: this.props.responsive === true ? null : props.size,
+    const responsiveStyle = Object.assign({}, props.style, {
+      width: this.props.responsive === true ? 'auto' : props.size,
+      height: this.props.responsive === true ? '100%' : props.size,
+      lineHeight: this.props.responsive === true ? null : `${ props.size }px`,
     });
+
+    const imageProps = {
+      src: imageSource,
+      responsive: props.responsive,
+      rounded: props.rounded,
+      circle: props.circle,
+      thumbnail: props.thumbnail,
+    };
+
+    const imageStyle = this.props.responsive ? undefined : { maxHeight: props.size, maxWidth: props.size };
 
     return (
-      <Image { ...rest } className={ this.wxr.classNames('ProfilePicture', className) } style={ imageStyle }
-        src={ src } width={ props.size } height={ props.size }
-      />
+      <div { ...rest } className={ this.wxr.classNames('ProfilePicture', 'ProfilePicture-image', className) } style={ responsiveStyle }>
+        <Image { ...imageProps } style={ imageStyle } />
+      </div>
     );
   }
 }
