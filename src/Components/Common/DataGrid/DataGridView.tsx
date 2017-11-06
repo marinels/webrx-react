@@ -39,7 +39,7 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
     });
 
     return this.renderSizedLoadable(this.viewModel.isLoading,
-      'Loading Grid Data...',
+      'Loading Data...',
       25,
       () => {
         const dataGridView = ListItemsView.getListItemsView(this.props, this.renderDefaultDataGridView.bind(this));
