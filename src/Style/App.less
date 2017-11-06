@@ -52,6 +52,22 @@ body.modal-open {
     }
   }
 
+  .list-group-item,
+  .panel-body {
+    padding: @default-padding;
+  }
+
+  .table {
+    & > thead,
+    & > tbody,
+    & > tfoot {
+      & > tr > th,
+      & > tr > td {
+        padding: @default-padding;
+      }
+    }
+  }
+
   // default hover background color
   .btn-default:hover,
   .table-hover > tbody > tr:hover,
