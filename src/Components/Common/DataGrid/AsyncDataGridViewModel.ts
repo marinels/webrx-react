@@ -1,7 +1,7 @@
 import { Iterable } from 'ix';
 import { Observable } from 'rxjs';
 
-import { IterableLike, ObservableLike, ObservableOrValue, ReadOnlyProperty, Command } from '../../../WebRx';
+import { IterableLike, ObservableLike, ObservableOrValue } from '../../../WebRx';
 import { DataGridViewModel, DataSourceRequest, DataSourceResponse } from './DataGridViewModel';
 import { PagerViewModel } from '../Pager/PagerViewModel';
 
