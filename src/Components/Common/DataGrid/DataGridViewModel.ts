@@ -83,6 +83,16 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
     if (this.pager != null) {
       this.addSubscription(
         this.wx
+          .whenAny(
+            this.projectedCount,
+            x => x,
+          )
+          .filterNull()
+          .invokeCommand(this.pager.updateCount),
+      );
+
+      this.addSubscription(
+        this.wx
           .whenAny(this.sort, () => 1)
           .invokeCommand(this.pager.selectPage),
       );
