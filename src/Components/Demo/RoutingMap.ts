@@ -51,18 +51,14 @@ export const sampleTreeData = sampleListData
     }, x, { name: x.name + ' (0)' }),
   );
 
-interface SampleDataSourceContext {
-  filter: string;
-}
-
 function sampleDataSource<TContext = any>(request: Components.DataSourceRequest<TContext> | undefined) {
   if (request == null) {
     return undefined;
   }
 
-  const context: Partial<SampleDataSourceContext> = request.context || {};
+  const search = Components.ItemListPanelViewModel.getSearchRequest(request);
 
-  if (context.filter === 'throw') {
+  if (search != null && search.filter === 'throw') {
     throw new Error('Simulated Coding Error');
   }
 
@@ -72,7 +68,7 @@ function sampleDataSource<TContext = any>(request: Components.DataSourceRequest<
       data,
       page: request.page,
       sort: request.sort,
-      context,
+      context: request.context,
     }))
     .do(x => {
       const msg = [
@@ -89,16 +85,16 @@ function sampleDataSource<TContext = any>(request: Components.DataSourceRequest<
       let query = x.data
         .asIterable();
 
-      if (!String.isNullOrEmpty(context.filter)) {
-        if (context.filter === 'error') {
+      if (search != null) {
+        if (search.filter === 'error') {
           throw new Error('Simulated Async DataSource Error');
         }
 
         query = query
           .filter(y => {
             return (
-              y.name.indexOf(context.filter || '') >= 0 ||
-              y.requiredBy.indexOf(context.filter || '') >= 0
+              y.name.indexOf(search.filter || '') >= 0 ||
+              y.requiredBy.indexOf(search.filter || '') >= 0
             );
           });
       }
