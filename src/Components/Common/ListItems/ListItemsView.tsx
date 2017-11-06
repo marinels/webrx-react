@@ -13,6 +13,7 @@ export interface ListItemsProps extends ItemsProps  {
 }
 
 export interface ListItemsViewProps extends BaseViewProps<ListItemsViewModel<{}>, ListItemsView>, ListItemsProps {
+  fill?: boolean;
 }
 
 export class ListItemsView extends BaseView<ListItemsViewProps, ListItemsViewModel<{}>> {

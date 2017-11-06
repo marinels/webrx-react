@@ -13,11 +13,11 @@ import { PagerView, PagerProps } from '../Pager/PagerView';
 import { DataGridViewModel, DataSourceRequest } from './DataGridViewModel';
 
 export interface DataGridProps extends ListItemsProps {
-  fill?: boolean;
   pager?: boolean | PagerProps | {};
 }
 
 export interface DataGridViewProps extends BaseViewProps<DataGridViewModel<{}>, DataGridView>, DataGridProps {
+  fill?: boolean;
 }
 
 export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<{}>> {
@@ -34,8 +34,8 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
 
   render() {
     const { className, children, props, rest } = this.restProps(x => {
-      const { fill, pager, view, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact } = x;
-      return { fill, pager, view, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact };
+      const { pager, fill, view, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact } = x;
+      return { pager, fill, view, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact };
     });
 
     return this.renderSizedLoadable(this.viewModel.isLoading,
