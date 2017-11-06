@@ -383,7 +383,7 @@ export const demoViewMap: ViewActivatorMap = {
     switch (componentRoute) {
       case 'ListItemsDefault':
         return (
-          <Components.ListItemsView viewModel={ viewModel } compact />
+          <Components.ListItemsView viewModel={ viewModel } />
         );
       case 'ListItemsListGroup':
         return (
