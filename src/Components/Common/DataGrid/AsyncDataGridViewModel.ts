@@ -22,10 +22,6 @@ export class AsyncDataGridViewModel<T, TRequestContext = any> extends DataGridVi
   }
 
   getResponse(request: DataSourceRequest | undefined) {
-    if (this.responseSelector == null) {
-      return undefined;
-    }
-
     return this.responseSelector(request);
   }
 }
