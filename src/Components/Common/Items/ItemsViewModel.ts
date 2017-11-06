@@ -7,6 +7,8 @@ import { BaseViewModel } from '../../React/BaseViewModel';
 export class ItemsViewModel<T> extends BaseViewModel {
   public static displayName = 'ItemsViewModel';
 
+  protected readonly emptySource = Iterable.empty<T>();
+
   public readonly source: ReadOnlyProperty<IterableLike<T>>;
   public readonly count: ReadOnlyProperty<number>;
 
@@ -17,7 +19,7 @@ export class ItemsViewModel<T> extends BaseViewModel {
 
     this.source = this.wx.getObservable(source)
       .map(x => Iterable.from(x))
-      .toProperty(Iterable.empty<T>(), false);
+      .toProperty(this.emptySource, false);
 
     this.count = this.wx
       .whenAny(this.source, x => Iterable.from(x || []).count())
