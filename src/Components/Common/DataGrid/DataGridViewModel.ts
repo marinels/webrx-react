@@ -177,9 +177,13 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
       return undefined;
     }
 
-    let items = Iterable
+    const items = Iterable
       .from(this.source.value);
 
+    return this.getResponseFromItems(items, request);
+  }
+
+  protected getResponseFromItems(items: Iterable<T>, request: DataSourceRequest<TRequestContext>): ObservableOrValue<DataSourceResponse<T> | undefined> {
     const count = items.count();
 
     if (this.comparer != null && request.sort != null && !String.isNullOrEmpty(request.sort.field) && request.sort.direction != null) {
