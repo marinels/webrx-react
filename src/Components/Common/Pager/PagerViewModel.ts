@@ -19,21 +19,27 @@ export interface PagerRoutingState {
 export class PagerViewModel extends BaseRoutableViewModel<PagerRoutingState> {
   public static displayName = 'PagerViewModel';
 
-  public readonly itemCount: Property<number>;
+  public readonly itemCount: ReadOnlyProperty<number>;
   public readonly limit: Property<number>;
   public readonly selectedPage: ReadOnlyProperty<number>;
   public readonly pageCount: ReadOnlyProperty<number>;
   public readonly offset: ReadOnlyProperty<number>;
   public readonly requests: ReadOnlyProperty<PageRequest>;
 
+  public readonly updateCount: Command<number>;
   public readonly selectPage: Command<number>;
 
   constructor(protected readonly defaultLimit = StandardLimits[0], isRoutingEnabled = false) {
     super(isRoutingEnabled);
 
-    this.itemCount = this.wx.property(0);
-    this.limit = this.wx.property(defaultLimit);
+    this.updateCount = this.wx.command<number>();
     this.selectPage = this.wx.command<number>();
+
+    this.itemCount = this.wx
+      .whenAny(this.updateCount, x => x)
+      .toProperty(0);
+
+    this.limit = this.wx.property(defaultLimit);
 
     this.pageCount = this.wx
       .whenAny(this.itemCount, this.limit, (ic, l) => ({ ic, l }))

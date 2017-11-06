@@ -69,11 +69,6 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
     this.projectedSource = this.wx
       .whenAny(this.responses, x => x)
       .filterNull()
-      .do(x => {
-        if (this.pager != null) {
-          this.pager.itemCount.value = x.count;
-        }
-      })
       .map(x => x.items)
       .toProperty(Iterable.empty<T>(), false);
 
