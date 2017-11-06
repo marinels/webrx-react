@@ -89,8 +89,8 @@ export const demoViewMap: ViewActivatorMap = {
     <Components.ObservableWrapper observable={ Observable.timer(0, 1000) } render={ x => (<div>Current Value is { x }</div>) } />
   ),
   SearchViewModel: (viewModel: Components.SearchViewModel) => (
-    <Form horizontal>
-      <FormGroup>
+    <Form horizontal onSubmit={ () => false }>
+      <FormGroup style={ ({ marginBottom: 0 }) }>
         <Col sm={12}>
           <Components.SearchView viewModel={ viewModel } />
         </Col>
