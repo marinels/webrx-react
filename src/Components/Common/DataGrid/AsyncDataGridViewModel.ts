@@ -1,3 +1,4 @@
+import { Iterable } from 'ix';
 import { Observable } from 'rxjs';
 
 import { IterableLike, ObservableLike, ObservableOrValue, ReadOnlyProperty, Command } from '../../../WebRx';
@@ -12,7 +13,7 @@ export class AsyncDataGridViewModel<T, TRequestContext = any> extends DataGridVi
     pager?: PagerViewModel,
     context?: ObservableLike<TRequestContext>,
   ) {
-    super(undefined, pager, context);
+    super(Iterable.empty<T>(), pager, context);
   }
 
   getResponse(request: DataSourceRequest | undefined) {
