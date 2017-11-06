@@ -52,6 +52,22 @@ body.modal-open {
     }
   }
 
+  .list-group-item,
+  .panel-body {
+    padding: @default-padding;
+  }
+
+  .table {
+    & > thead,
+    & > tbody,
+    & > tfoot {
+      & > tr > th,
+      & > tr > td {
+        padding: @default-padding;
+      }
+    }
+  }
+
   // default hover background color
   .btn-default:hover,
   .table-hover > tbody > tr:hover,
@@ -76,7 +92,7 @@ body.modal-open {
   .Sidebar .nav,
   .dropdown-menu {
     & > li > a {
-      padding: 10px 15px;
+      padding: @default-padding;
     }
   }
 
@@ -92,5 +108,11 @@ body.modal-open {
   // this allows text in fa containers to match the rest of the site
   .fa-text {
     font-family: inherit;
+  }
+
+  // make close buttons have a square focus outline
+  button.close {
+    height: 25px;
+    width: 25px;
   }
 }

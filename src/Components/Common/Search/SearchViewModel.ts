@@ -20,7 +20,7 @@ export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
 
   public readonly search: Command<any>;
 
-  constructor(private readonly liveSearchTimeout = 250, private readonly isCaseInsensitive = true, isRoutingEnabled = false) {
+  constructor(private readonly liveSearchTimeout = 500, private readonly isCaseInsensitive = true, isRoutingEnabled = false) {
     super(isRoutingEnabled);
 
     this.filter = this.wx.property('');
@@ -31,6 +31,8 @@ export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
     this.requests = this.wx
       // project search executions into filter values
       .whenAny(this.search.results, () => this.filter.value)
+      // debounce a little extra to protect against too many search invocations
+      .debounceTime(250)
       // then map into a search request with regex
       .map(filter => (<SearchRequest>{
         filter,

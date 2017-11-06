@@ -48,7 +48,7 @@ export class PageHeaderViewModel extends BaseViewModel {
     this.userMenuItems = this.wx.property<HeaderCommandAction[]>(undefined, false);
 
     this.toggleSideBar = this.wx.command((isVisible?: boolean) => {
-      return isVisible == null ? this.isSidebarVisible.value : isVisible;
+      return isVisible == null ? !this.isSidebarVisible.value : isVisible;
     });
 
     this.isSidebarVisible = this.wx

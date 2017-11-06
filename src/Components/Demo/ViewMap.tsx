@@ -89,8 +89,8 @@ export const demoViewMap: ViewActivatorMap = {
     <Components.ObservableWrapper observable={ Observable.timer(0, 1000) } render={ x => (<div>Current Value is { x }</div>) } />
   ),
   SearchViewModel: (viewModel: Components.SearchViewModel) => (
-    <Form horizontal>
-      <FormGroup>
+    <Form horizontal onSubmit={ () => false }>
+      <FormGroup style={ ({ marginBottom: 0 }) }>
         <Col sm={12}>
           <Components.SearchView viewModel={ viewModel } />
         </Col>
@@ -137,10 +137,19 @@ export const demoViewMap: ViewActivatorMap = {
           <Components.ProfilePicture style={ style } src={ undefined } thumbnail title='Thumbnail Icon' />
           <Components.ProfilePicture style={ style } src={ undefined } iconSize='2x' thumbnail size={ 40 } title='Fixed Width/Height Icon' />
           <Components.ProfilePicture style={ style } src={ undefined } iconSize='2x' thumbnail rounded size={ 40 } title='Rounded Icon' />
+        </div>
+        <div>
           <Components.ProfilePicture style={ style } src={ imageData } title='Basic Image' />
           <Components.ProfilePicture style={ style } src={ imageData } rounded title='Rounded Image' />
           <Components.ProfilePicture style={ style } src={ imageData } thumbnail title='Thumbnail Image' />
           <Components.ProfilePicture style={ style } src={ imageData } thumbnail size={ 40} title='Fixed Width/Height Image' />
+          <Components.ProfilePicture style={ style } src={ imageData } thumbnail rounded size={ 40 } title='Rounded Image' />
+        </div>
+        <div>
+          <Components.ProfilePicture style={ style } src='http://via.placeholder.com/50x30' title='Wide Image' />
+          <Components.ProfilePicture style={ style } src='http://via.placeholder.com/30x50' title='Tall Image' />
+          <Components.ProfilePicture style={ style } src='http://via.placeholder.com/100x60' title='X-Wide Image' />
+          <Components.ProfilePicture style={ style } src='http://via.placeholder.com/60x100' title='X-Tall Image' />
         </div>
         <div style={ ({ height: 250 }) }>
           <Components.ProfilePicture style={ style } src={ imageData } thumbnail responsive title='Responsive Image' />
@@ -383,7 +392,7 @@ export const demoViewMap: ViewActivatorMap = {
     switch (componentRoute) {
       case 'ListItemsDefault':
         return (
-          <Components.ListItemsView viewModel={ viewModel } compact />
+          <Components.ListItemsView viewModel={ viewModel } />
         );
       case 'ListItemsListGroup':
         return (
