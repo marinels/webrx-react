@@ -151,14 +151,22 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
   }
 
   protected getRequests(context?: ObservableLike<TRequestContext>, rateLimit = 100) {
+    const pagerObservable = this.pager == null ?
+      Observable.of(undefined) :
+      this.pager.requests;
+
+    const source = this.wx
+      .whenAny(this.source, x => x)
+      .filter(x => x !== this.emptySource);
+
     return this.wx
       .whenAny(
-        this.source,
-        this.pager == null ? Observable.of(undefined) : this.pager.requests,
+        source,
+        pagerObservable,
         this.sort.results.startWith(undefined),
         context || Observable.of(undefined),
-        (source, page, sort, ctx) => {
-          return this.getRequest(source, page, sort, ctx);
+        (src, page, sort, ctx) => {
+          return this.getRequest(src, page, sort, ctx);
         },
       )
       .debounceTime(rateLimit);
