@@ -59,8 +59,10 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
 
     this.isLoading = Observable
       .merge(
-        this.wx.whenAny(this.requests, () => true),
-        this.wx.whenAny(this.responses, () => false),
+        this.requests.changed
+          .map(() => true),
+        this.responses.changed
+          .map(() => false),
       )
       .toProperty(true);
 
