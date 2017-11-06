@@ -38,6 +38,12 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
   public readonly sort: Command<SortArgs>;
   public readonly toggleSortDirection: Command<string>;
 
+  /**
+   * @param source data source. if omitted no data will ever be loaded.
+   * @param pager pager. if omitted a default pager will be created. use null for no pager.
+   * @param context request context included in projection requests. if included requests are bound to context events.
+   * @param comparer custom object comparer. if omitted a default object comparer will be used.
+   */
   constructor(
     source?: ObservableLike<IterableLike<T>>,
     pager?: PagerViewModel | null,
