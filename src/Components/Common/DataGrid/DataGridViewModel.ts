@@ -33,6 +33,7 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
   public readonly requests: ReadOnlyProperty<DataSourceRequest<TRequestContext> | undefined>;
   public readonly responses: ReadOnlyProperty<DataSourceResponse<T> | undefined>;
   public readonly projectedSource: ReadOnlyProperty<IterableLike<T>>;
+  public readonly projectedCount: ReadOnlyProperty<number>;
 
   public readonly sort: Command<SortArgs>;
   public readonly toggleSortDirection: Command<string>;
@@ -66,11 +67,18 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
       )
       .toProperty(true);
 
-    this.projectedSource = this.wx
+    const validResponses = this.wx
       .whenAny(this.responses, x => x)
       .filterNull()
+      .share();
+
+    this.projectedSource = validResponses
       .map(x => x.items)
       .toProperty(Iterable.empty<T>(), false);
+
+    this.projectedCount = validResponses
+      .map(x => x.count)
+      .toProperty();
 
     if (this.pager != null) {
       this.addSubscription(
