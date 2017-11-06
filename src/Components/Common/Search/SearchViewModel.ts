@@ -20,7 +20,7 @@ export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
 
   public readonly search: Command<any>;
 
-  constructor(private readonly liveSearchTimeout = 250, private readonly isCaseInsensitive = true, isRoutingEnabled = false) {
+  constructor(private readonly liveSearchTimeout = 500, private readonly isCaseInsensitive = true, isRoutingEnabled = false) {
     super(isRoutingEnabled);
 
     this.filter = this.wx.property('');
