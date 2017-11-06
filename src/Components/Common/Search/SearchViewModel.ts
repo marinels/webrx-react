@@ -31,6 +31,8 @@ export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
     this.requests = this.wx
       // project search executions into filter values
       .whenAny(this.search.results, () => this.filter.value)
+      // debounce a little extra to protect against too many search invocations
+      .debounceTime(250)
       // then map into a search request with regex
       .map(filter => (<SearchRequest>{
         filter,
