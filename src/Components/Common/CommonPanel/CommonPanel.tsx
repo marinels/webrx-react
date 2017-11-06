@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Panel, PanelProps, ButtonToolbar } from 'react-bootstrap';
+import { Panel, PanelProps, ButtonToolbar, TransitionCallbacks } from 'react-bootstrap';
 
 import { CommandButton, CommandButtonProps } from '../CommandButton/CommandButton';
 
@@ -10,7 +10,9 @@ export type CommonPanelContentType = 'teaser' | 'summary';
 
 export type PanelAction = CommandButtonProps & { children?: React.ReactNode; };
 
-export interface CommonPanelProps {
+export type BootstrapPanelProps = Omit<Omit<PanelProps, React.HTMLProps<Panel>>, TransitionCallbacks>;
+
+export interface CommonPanelRenderProps extends BootstrapPanelProps {
   headerContent?: CommonPannelContent;
   headerActions?: Array<PanelAction>;
   headerFormat?: CommonPanelSectionFormatter;
@@ -23,10 +25,10 @@ export interface CommonPanelProps {
   shadow?: boolean;
 }
 
-export interface CommonPanelComponentProps extends PanelProps, CommonPanelProps {
+export interface CommonPanelProps extends PanelProps, CommonPanelRenderProps {
 }
 
-export class CommonPanel extends React.Component<CommonPanelComponentProps> {
+export class CommonPanel extends React.Component<CommonPanelProps> {
   public static displayName = 'CommonPanel';
 
   static defaultProps = {
