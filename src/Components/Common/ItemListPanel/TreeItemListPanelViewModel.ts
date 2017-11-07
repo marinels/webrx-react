@@ -33,6 +33,14 @@ export function filterTreeItems<T>(
 export class TreeItemListPanelViewModel<T, TRequestContext = any> extends ItemListPanelViewModel<T, TRequestContext> {
   public static displayName = 'TreeItemListPanelViewModel';
 
+  /**
+   * @param itemsSource delegate to produce sub-items from a source item.
+   * @param itemsAssign delegate to produce a source item with the sub-items assigned.
+   * @param source data source. if omitted no data will ever be loaded.
+   * @param filterer filter predicate. executed for each item when the search context is available.
+   * @param search search handler. if omitted a default search handler will be created. use null for no search handling.
+   * @param context request context included in projection requests. if included requests are bound to context events.
+   */
   constructor(
     protected readonly itemsSource: (item: T) => (IterableLike<T> | undefined),
     protected readonly itemsAssign: (item: T, items: Iterable<T>) => T,
