@@ -172,9 +172,29 @@ export const demoViewMap: ViewActivatorMap = {
   ),
   ListGroupPanel: () => (
     <Components.ListGroupPanel>
-      <Label>Item 1</Label>
-      <Label>Item 2</Label>
-      <Label>Item 3</Label>
+      <Components.NavButton href='#'>
+        <div>
+          <Label>Item 1</Label>
+        </div>
+        <div>
+          <Label>Item 2</Label>
+        </div>
+      </Components.NavButton>
+      <Components.NavButton href='#'>
+        <Label>Item 3</Label>
+      </Components.NavButton>
+      <Components.NavButton href='#' iconName='window-close' />
+      <Components.NavButton href='#'>
+        <div>
+          <Label>Item 4</Label>
+        </div>
+        <div>
+          <Label>Item 5</Label>
+        </div>
+        <div>
+          <Label>Item 6</Label>
+        </div>
+      </Components.NavButton>
     </Components.ListGroupPanel>
   ),
   ListGroupPanelBound: () => (
