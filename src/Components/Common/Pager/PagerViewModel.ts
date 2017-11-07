@@ -37,6 +37,7 @@ export class PagerViewModel extends BaseRoutableViewModel<PagerRoutingState> {
 
     this.itemCount = this.wx
       .whenAny(this.updateCount, x => x)
+      .filterNull()
       .toProperty(0);
 
     this.limit = this.wx.property(defaultLimit);
@@ -49,6 +50,7 @@ export class PagerViewModel extends BaseRoutableViewModel<PagerRoutingState> {
 
     this.selectedPage = this.wx
       .whenAny(this.selectPage.results, x => x)
+      .filterNull()
       .toProperty(1);
 
     this.offset = this.wx
