@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 import { ObservableOrValue, ObservableLike, IterableLike } from '../../../WebRx';
 import { ItemListPanelContext } from './ItemListPanelViewModel';
 import { TreeItemListPanelViewModel } from './TreeItemListPanelViewModel';
-import { DataGridViewModel, DataSourceRequest, DataSourceResponse } from '../DataGrid/DataGridViewModel';
-import { SearchViewModel, SearchRequest } from '../Search/SearchViewModel';
+import { DataSourceRequest, DataSourceResponse } from '../DataGrid/DataGridViewModel';
+import { SearchViewModel } from '../Search/SearchViewModel';
 
 export class AsyncTreeItemListPanelViewModel<T, TRequestContext = any> extends TreeItemListPanelViewModel<T, TRequestContext> {
   public static displayName = 'AsyncTreeItemListPanelViewModel';

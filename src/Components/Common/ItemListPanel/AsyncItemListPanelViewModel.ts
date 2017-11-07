@@ -2,8 +2,8 @@ import { Iterable } from 'ix';
 import { Observable } from 'rxjs';
 
 import { ObservableOrValue, ObservableLike } from '../../../WebRx';
-import { DataGridViewModel, DataSourceRequest, DataSourceResponse } from '../DataGrid/DataGridViewModel';
 import { ItemListPanelViewModel, ItemListPanelContext } from './ItemListPanelViewModel';
+import { DataSourceRequest, DataSourceResponse } from '../DataGrid/DataGridViewModel';
 import { SearchViewModel, SearchRequest } from '../Search/SearchViewModel';
 import { PagerViewModel } from '../Pager/PagerViewModel';
 

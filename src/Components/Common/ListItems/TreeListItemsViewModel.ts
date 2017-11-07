@@ -1,7 +1,7 @@
 import { Iterable } from 'ix';
 import { Observable } from 'rxjs';
 
-import { IterableLike, ObservableLike, ReadOnlyProperty, Command } from '../../../WebRx';
+import { IterableLike, ObservableLike } from '../../../WebRx';
 import { ItemsViewModel } from '../Items/ItemsViewModel';
 import { ListItemsViewModel } from './ListItemsViewModel';
 

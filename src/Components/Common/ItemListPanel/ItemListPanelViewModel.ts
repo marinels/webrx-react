@@ -1,7 +1,7 @@
 import { Iterable } from 'ix';
 import { Observable } from 'rxjs';
 
-import { IterableLike, ObservableOrValue, ObservableLike, ReadOnlyProperty, Command } from '../../../WebRx';
+import { IterableLike, ObservableOrValue, ObservableLike } from '../../../WebRx';
 import { DataGridViewModel, DataSourceRequest, DataSourceResponse } from '../DataGrid/DataGridViewModel';
 import { SearchViewModel, SearchRequest } from '../Search/SearchViewModel';
 import { ObjectComparer } from '../../../Utils/Compare';
