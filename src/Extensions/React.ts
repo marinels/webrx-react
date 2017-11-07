@@ -8,7 +8,7 @@ export function trimPropsStatic<T>(props: T): T {
 }
 
 export interface ReactSpreadResult<T> {
-  className: string;
+  className?: string;
   children: React.ReactNode;
   props: T;
   rest: any;
@@ -31,7 +31,7 @@ export function restPropsStatic<P, T>(
   const result = Object.rest(<Partial<React.HTMLAttributes<P>>>props, propsCreator, ...omits.concat('key', 'ref', 'className', 'children'));
   const htmlProps: Partial<React.HTMLAttributes<P>> = props;
 
-  return Object.assign<ReactSpreadResult<T>>(result, {
+  return Object.assign(result, {
     className: htmlProps.className,
     children: htmlProps.children,
   });

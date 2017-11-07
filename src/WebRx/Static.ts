@@ -47,5 +47,5 @@ export const wx = create();
 export type WebRxStatic = typeof wx;
 
 export function inject<T extends {}>(target: T, wxStatic?: WebRxStatic) {
-  return Object.assign<T>(target, wxStatic || wx);
+  return Object.assign(target, wxStatic || wx);
 }

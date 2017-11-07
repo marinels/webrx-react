@@ -290,8 +290,8 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     return (viewModel != null && viewModel.getSearch != null) ? viewModel.getSearch() : null;
   }
 
-  getSidebarMenus() {
-    return <HeaderMenu[]>[
+  getSidebarMenus(): Array<HeaderMenu> {
+    return [
       {
         id: 'sidebar-demos',
         header: 'Integration Demos',
@@ -303,54 +303,54 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
         id: 'sidebar-1',
         header: 'Section 1',
         items: [
-          Object.assign<HeaderCommandAction>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-1`, commandParameter: 'Sidebar Section 1 Menu Item' }),
+          Object.assign({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-1`, commandParameter: 'Sidebar Section 1 Menu Item' }),
         ],
       },
       {
         id: 'sidebar-2',
         header: 'Section 2',
         items: [
-          Object.assign<HeaderCommandAction>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-2-1`, commandParameter: 'Sidebar Section 2 Menu Item 1' }),
-          Object.assign<HeaderCommandAction>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-2-2`, commandParameter: 'Sidebar Section 2 Menu Item 2' }),
+          Object.assign({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-2-1`, commandParameter: 'Sidebar Section 2 Menu Item 1' }),
+          Object.assign({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-2-2`, commandParameter: 'Sidebar Section 2 Menu Item 2' }),
         ],
       },
     ];
   }
 
-  getNavbarMenus() {
+  getNavbarMenus(): Array<HeaderMenu> {
     return this.routeMap.menus
-      .concat(<HeaderMenu>{
+      .concat({
         id: `${ this.demoAlertItem.id }-menu`,
         header: 'Sample Routed Menu',
         order: -1,
         items: [
-          Object.assign<HeaderCommandAction>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-menuitem`, commandParameter: 'Routed Menu Item' }),
+          Object.assign({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-menuitem`, commandParameter: 'Routed Menu Item' }),
         ],
       });
   }
 
-  getNavbarActions() {
-    return <HeaderCommandAction[]>[
+  getNavbarActions(): Array<HeaderCommandAction> {
+    return [
       { id: 'reRender', header: 'Re-Render', command: this.reRender, bsStyle: 'primary' },
-      Object.assign<HeaderCommandAction>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-navbar`, commandParameter: 'Navbar Action' }),
+      Object.assign({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-navbar`, commandParameter: 'Navbar Action' }),
     ];
   }
 
-  getHelpMenuItems() {
-    return <HeaderCommandAction[]>[
-      Object.assign<HeaderCommandAction>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-help`, commandParameter: 'Help Menu Item' }),
+  getHelpMenuItems(): Array<HeaderCommandAction> {
+    return [
+      Object.assign({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-help`, commandParameter: 'Help Menu Item' }),
     ];
   }
 
-  getAdminMenuItems() {
-    return <HeaderCommandAction[]>[
-      Object.assign<HeaderCommandAction>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-admin`, commandParameter: 'Admin Menu Item' }),
+  getAdminMenuItems(): Array<HeaderCommandAction> {
+    return [
+      Object.assign({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-admin`, commandParameter: 'Admin Menu Item' }),
     ];
   }
 
-  getUserMenuItems() {
-    return <HeaderCommandAction[]>[
-      Object.assign<HeaderCommandAction>({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-user`, commandParameter: 'User Menu Item' }),
+  getUserMenuItems(): Array<HeaderCommandAction> {
+    return [
+      Object.assign({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-user`, commandParameter: 'User Menu Item' }),
     ];
   }
 }

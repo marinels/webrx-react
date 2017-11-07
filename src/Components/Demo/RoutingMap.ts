@@ -50,7 +50,7 @@ export function cloneSampleTreeItem(item: SampleTreeData, items: Iterable<Sample
   return item;
 }
 
-export const sampleListData = <SampleData[]>[
+export const sampleListData: Array<SampleData> = [
   createSampleItem('item', 'test 1', 'now'),
   createSampleItem('item', 'test 2', 'tomorrow'),
   createSampleItem('item', 'test 3', 'yesterday'),
@@ -62,18 +62,18 @@ export const sampleListData = <SampleData[]>[
   createSampleItem('test', 'test 9', 'test9'),
   createSampleItem('test', 'test 10', 'test10'),
   createSampleItem('test', 'test 11', 'test11'),
-].map((x, i) => Object.assign<SampleData>(x, { id: i + 1 }));
+].map((x, i) => Object.assign(x, { id: i + 1 }));
 
-export const sampleTreeData = sampleListData
+export const sampleTreeData: Array<SampleTreeData> = sampleListData
   .map(x => Object
-    .assign<SampleTreeData>({
+    .assign({
       items: sampleListData
         .slice(0, 3)
         .map(y => Object
-          .assign<SampleTreeData>({
+          .assign({
             items: sampleListData
               .slice(0, 3)
-              .map(z => Object.assign<SampleTreeData>({}, z, { name: x.name + ' (2)' })),
+              .map(z => Object.assign({}, z, { name: x.name + ' (2)' })),
           }, y, { name: x.name + ' (1)' }),
         ),
     }, x, { name: x.name + ' (0)' }),
