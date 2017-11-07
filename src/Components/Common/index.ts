@@ -28,6 +28,7 @@ export * from './ProfilePicture/ProfilePicture';
 export * from './CommonPanel/CommonPanel';
 export * from './ObservableWrapper/ObservableWrapper';
 export * from './ContentTooltip/ContentTooltip';
+export * from './NavButton/NavButton';
 
 // Views
 export * from './InlineEdit/InlineEditView';
