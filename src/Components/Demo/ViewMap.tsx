@@ -33,9 +33,11 @@ const sampleDataTemplate = (x: SampleData) => {
 
 const sampleDataCmdTemplate = (x: SampleData) => {
   return (
-    <Components.CommandButton block plain stopPropagation={ false } href='#' style={ ({ padding: 5 }) }>
-      { sampleDataTemplate(x) }
-    </Components.CommandButton>
+    <Components.NavButton href='#'>
+      <Components.CommandButton block plain stopPropagation={ false } href='#' style={ ({ padding: 5 }) }>
+        { sampleDataTemplate(x) }
+      </Components.CommandButton>
+    </Components.NavButton>
   );
 };
 
