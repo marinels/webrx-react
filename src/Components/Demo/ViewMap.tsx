@@ -235,6 +235,30 @@ export const demoViewMap: ViewActivatorMap = {
       <Label>Item 3</Label>
     </Components.WrapPanel>
   ),
+  NavButton: () => {
+    return (
+      <div>
+        <Components.NavButton />
+        <Components.NavButton href='#' />
+        <Components.NavButton href='#'>
+          testing
+        </Components.NavButton>
+        <Components.NavButton href='#'>
+          <div>
+            <Label>Item 1</Label>
+          </div>
+        </Components.NavButton>
+        <Components.NavButton href='#'>
+          <div>
+            <Label>Item 2</Label>
+          </div>
+          <div>
+            <Label>Item 3</Label>
+          </div>
+        </Components.NavButton>
+      </div>
+    );
+  },
   TreeItem: () => (
     <Components.TreeItem
       item={ sampleTreeData[0] }
