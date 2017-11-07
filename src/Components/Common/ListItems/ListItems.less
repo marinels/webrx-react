@@ -21,5 +21,15 @@
     .GridViewColumn-cellContent {
       padding: @default-padding;
     }
+
+    .GridViewColumn-cellContent > .NavButton {
+      margin: -1 * @default-padding;
+
+      // stylelint-disable selector-max-specificity
+      .NavButton-content {
+        padding: @default-padding;
+      }
+      // stylelint-enable selector-max-specificity
+    }
   }
 }

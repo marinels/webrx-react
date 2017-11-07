@@ -33,12 +33,19 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
   public readonly requests: ReadOnlyProperty<DataSourceRequest<TRequestContext> | undefined>;
   public readonly responses: ReadOnlyProperty<DataSourceResponse<T> | undefined>;
   public readonly projectedSource: ReadOnlyProperty<IterableLike<T>>;
+  public readonly projectedCount: ReadOnlyProperty<number>;
 
   public readonly sort: Command<SortArgs>;
   public readonly toggleSortDirection: Command<string>;
 
+  /**
+   * @param source data source.
+   * @param pager pager. if omitted a default pager will be created. use null for no pager.
+   * @param context request context included in projection requests. if included requests are bound to context events.
+   * @param comparer custom object comparer. if omitted a default object comparer will be used.
+   */
   constructor(
-    source?: ObservableLike<IterableLike<T>>,
+    source: ObservableLike<IterableLike<T>>,
     pager?: PagerViewModel | null,
     context?: ObservableLike<TRequestContext>,
     comparer: string | ObjectComparer<T> = new ObjectComparer<T>(),
@@ -59,23 +66,37 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
 
     this.isLoading = Observable
       .merge(
-        this.wx.whenAny(this.requests, () => true),
-        this.wx.whenAny(this.responses, () => false),
+        this.requests.changed
+          .map(() => true),
+        this.responses.changed
+          .map(() => false),
       )
       .toProperty(true);
 
-    this.projectedSource = this.wx
+    const validResponses = this.wx
       .whenAny(this.responses, x => x)
       .filterNull()
-      .do(x => {
-        if (this.pager != null) {
-          this.pager.itemCount.value = x.count;
-        }
-      })
+      .share();
+
+    this.projectedSource = validResponses
       .map(x => x.items)
       .toProperty(Iterable.empty<T>(), false);
 
+    this.projectedCount = validResponses
+      .map(x => x.count)
+      .toProperty();
+
     if (this.pager != null) {
+      this.addSubscription(
+        this.wx
+          .whenAny(
+            this.projectedCount,
+            x => x,
+          )
+          .filterNull()
+          .invokeCommand(this.pager.updateCount),
+      );
+
       this.addSubscription(
         this.wx
           .whenAny(this.sort, () => 1)
@@ -149,14 +170,22 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
   }
 
   protected getRequests(context?: ObservableLike<TRequestContext>, rateLimit = 100) {
+    const pagerObservable = this.pager == null ?
+      Observable.of(undefined) :
+      this.pager.requests;
+
+    const source = this.wx
+      .whenAny(this.source, x => x)
+      .filter(x => x !== this.emptySource);
+
     return this.wx
       .whenAny(
-        this.source,
-        this.pager == null ? Observable.of(undefined) : this.pager.requests,
+        source,
+        pagerObservable,
         this.sort.results.startWith(undefined),
         context || Observable.of(undefined),
-        (source, page, sort, ctx) => {
-          return this.getRequest(source, page, sort, ctx);
+        (src, page, sort, ctx) => {
+          return this.getRequest(src, page, sort, ctx);
         },
       )
       .debounceTime(rateLimit);
@@ -167,9 +196,13 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
       return undefined;
     }
 
-    let items = Iterable
+    const items = Iterable
       .from(this.source.value);
 
+    return this.getResponseFromItems(items, request);
+  }
+
+  protected getResponseFromItems(items: Iterable<T>, request: DataSourceRequest<TRequestContext>): ObservableOrValue<DataSourceResponse<T> | undefined> {
     const count = items.count();
 
     if (this.comparer != null && request.sort != null && !String.isNullOrEmpty(request.sort.field) && request.sort.direction != null) {
@@ -197,6 +230,9 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
   protected getResponses(requests?: ObservableLike<DataSourceRequest<TRequestContext> | undefined>, rateLimit = 100) {
     return this.wx
       .whenAny(requests || this.requests, x => x)
+      // because requests can be injected here, we cannot trust that nulls are not already filtered out
+      // so we filter here just to be safe (this should be a no-op in most cases)
+      .filterNull()
       .flatMap(x => {
         return this.wx.getObservable(this.getResponse(x));
       })

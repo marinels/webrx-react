@@ -2,57 +2,73 @@ import * as React from 'react';
 import { Observable, Subscription } from 'rxjs';
 import { Badge } from 'react-bootstrap';
 
-export interface CountFooterContentProps extends React.HTMLAttributes<CountFooterContent> {
-  length: Observable<number>;
+import { ObservableLike } from '../../../WebRx';
+
+export interface CountFooterContentProps {
+  count: ObservableLike<number>;
   suffix?: string;
 }
 
-export interface CountFooterState {
-  length: number;
+export interface CountFooterContentComponentProps extends CountFooterContentProps, React.HTMLProps<CountFooterContent> {
 }
 
-export class CountFooterContent extends React.Component<CountFooterContentProps, CountFooterState> {
+export interface CountFooterState {
+  count: number;
+}
+
+export class CountFooterContent extends React.Component<CountFooterContentComponentProps, CountFooterState> {
   public static displayName = 'CountFooterContent';
 
-  static defaultProps = {
-    suffix: 'Items',
-  };
-
-  private lengthChangedSub: Subscription;
-
-  constructor(props?: CountFooterContentProps, context?: any) {
-    super(props, context);
-
-    this.lengthChangedSub = Subscription.EMPTY;
-
-    this.state = {
-      length: 0,
-    };
-  }
+  private countChangedSub = Subscription.EMPTY;
 
   componentDidMount() {
-    this.lengthChangedSub = this.props.length
-      .subscribe(x => {
-        this.setState({
-          length: x || 0,
-        });
-      });
+    this.subscribeToCount(this.props.count);
+  }
+
+  componentDidUpdate(prevProps: Readonly<CountFooterContentComponentProps>) {
+    if (prevProps.count !== this.props.count) {
+      this.subscribeToCount(this.props.count);
+    }
   }
 
   componentWillUnmount() {
-    this.lengthChangedSub = Subscription.unsubscribe(this.lengthChangedSub);
+    this.unsubscribeFromCount();
   }
 
   render() {
+    const count = this.state == null ? 0 : this.state.count || 0;
+
     return (
       <div className='CountFooterContent'>
-        <Badge>{ this.state.length || 0 }</Badge>
+        <Badge>{ count }</Badge>
         {
-          this.wxr.renderConditional(String.isNullOrEmpty(this.props.suffix) === false, () => (
-            <span className='CountFooterContent-suffix'>{ this.props.suffix }</span>
-          ))
+          this.wxr.renderConditional(
+            String.isNullOrEmpty(this.props.suffix) === false,
+            () => (
+              <span className='CountFooterContent-suffix'>{ this.props.suffix }</span>
+            ),
+          )
         }
       </div>
     );
+  }
+
+  protected unsubscribeFromCount() {
+    this.countChangedSub = Subscription.unsubscribe(this.countChangedSub);
+  }
+
+  protected subscribeToCount(count: ObservableLike<number>) {
+    this.unsubscribeFromCount();
+
+    this.countChangedSub = this.wx
+      .whenAny(
+        count,
+        x => x,
+      )
+      .subscribe(x => {
+        this.setState({
+          count: x || 0,
+        });
+      });
   }
 }

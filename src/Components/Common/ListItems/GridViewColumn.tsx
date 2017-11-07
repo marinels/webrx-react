@@ -26,10 +26,6 @@ export interface GridViewColumnComponentProps extends GridViewColumnProps {
 export class GridViewColumn extends React.Component<GridViewColumnComponentProps> {
   public static displayName = 'GridViewColumn';
 
-  static defaultProps = {
-    width: 1,
-  };
-
   public static canRenderHeader(column: React.ReactChild) {
     return (
       React.isValidElement<GridViewColumnProps>(column) &&

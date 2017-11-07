@@ -1,40 +1,48 @@
 @import (reference) '../../../Style/App.less';
 
 .ItemListPanel {
-  & > .Loading > .progress,
-  & > .collapse > .Loading > .progress {
+  .panel-heading > .panel-title .Search {
+    margin-top: @default-padding;
+  }
+
+  .Loading > .progress {
     border-radius: 0;
   }
 
-  // responsive tables add their own bootstrap styles that we can't override without styles
   .table-responsive {
     border: 0;
-    margin: 0;
   }
 
-  // we need set the top/bottom border for a table since it isn't rendered when
-  // inside a panel
-  .table {
-    background-color: transparent;
+  .TablePanel.table-bordered {
     border: 0;
+
+    & > thead,
+    & > tbody,
+    & > tfoot {
+      & > tr {
+        & > th:first-child,
+        & > td:first-child {
+          border-left: 0;
+        }
+
+        & > th:last-child,
+        & > td:last-child {
+          border-right: 0;
+        }
+      }
+    }
   }
 
-  // add padding to the search component for a non-collapsible panel
-  // we only need to margin the sides and bottom, header content pads its bottom
-  .panel-title > .Search {
-    padding: 0 10px 10px;
+  .ListGroupPanel.list-group {
+    & > .Panel-Item.list-group-item {
+      border-left: 0;
+      border-right: 0;
+    }
   }
 
-  // add margin to the search component for a collapsible panel
-  // margin against the original header content
-  .panel-title > a > .Search {
-    margin-top: 10px;
-  }
-
-  // add padding around the pager since it is contained within the item list panel
   .Pager {
-    border-top: 1px solid @table-border-color;
-    margin: 0;
-    padding: 5px;
+    border-bottom: 0;
+    border-left: 0;
+    border-right: 0;
   }
 }

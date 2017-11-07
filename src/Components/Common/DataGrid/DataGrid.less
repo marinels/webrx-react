@@ -3,12 +3,12 @@
 .DataGrid {
   background-color: @list-group-bg;
 
-  .list-group-item {
+  .Panel-Item {
     border-radius: 0;
+  }
 
-    & > .btn {
-      border-radius: 0;
-    }
+  & .Panel.ListGroupPanel .Panel-Item > .NavButton > .btn {
+    border-radius: 0;
   }
 
   .DataGrid-header.btn {

@@ -19,21 +19,28 @@ export interface PagerRoutingState {
 export class PagerViewModel extends BaseRoutableViewModel<PagerRoutingState> {
   public static displayName = 'PagerViewModel';
 
-  public readonly itemCount: Property<number>;
+  public readonly itemCount: ReadOnlyProperty<number>;
   public readonly limit: Property<number>;
   public readonly selectedPage: ReadOnlyProperty<number>;
   public readonly pageCount: ReadOnlyProperty<number>;
   public readonly offset: ReadOnlyProperty<number>;
   public readonly requests: ReadOnlyProperty<PageRequest>;
 
+  public readonly updateCount: Command<number>;
   public readonly selectPage: Command<number>;
 
   constructor(protected readonly defaultLimit = StandardLimits[0], isRoutingEnabled = false) {
     super(isRoutingEnabled);
 
-    this.itemCount = this.wx.property(0);
-    this.limit = this.wx.property(defaultLimit);
+    this.updateCount = this.wx.command<number>();
     this.selectPage = this.wx.command<number>();
+
+    this.itemCount = this.wx
+      .whenAny(this.updateCount, x => x)
+      .filterNull()
+      .toProperty(0);
+
+    this.limit = this.wx.property(defaultLimit);
 
     this.pageCount = this.wx
       .whenAny(this.itemCount, this.limit, (ic, l) => ({ ic, l }))
@@ -42,10 +49,8 @@ export class PagerViewModel extends BaseRoutableViewModel<PagerRoutingState> {
       .toProperty(0);
 
     this.selectedPage = this.wx
-      .whenAny(this.selectPage.results, this.pageCount, (sp, pc) => ({ sp, pc }))
-      // if we have a valid page and page count, and page is higher than page count then revert to page 1
-      // this can occur when the limit is adjusted and page is near the end
-      .map(x => (x.sp > 0 && x.pc > 0 && x.sp > x.pc) ? 1 : x.sp)
+      .whenAny(this.selectPage.results, x => x)
+      .filterNull()
       .toProperty(1);
 
     this.offset = this.wx
@@ -64,6 +69,13 @@ export class PagerViewModel extends BaseRoutableViewModel<PagerRoutingState> {
         }),
       )
       .toProperty();
+
+    this.addSubscription(this.wx
+      .whenAny(this.pageCount, x => x)
+      .filterNull()
+      .map(() => 1)
+      .invokeCommand(this.selectPage),
+    );
 
     this.addSubscription(this.wx
       .whenAny(this.selectedPage, this.limit, (sp, l) => ({ sp, l }))

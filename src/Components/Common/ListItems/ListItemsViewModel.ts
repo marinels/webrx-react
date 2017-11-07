@@ -19,7 +19,7 @@ export class ListItemsViewModel<T> extends ItemsViewModel<T> {
   public readonly selectRange: Command<{ from: T, to: T }>;
 
   constructor(
-    source?: ObservableLike<IterableLike<T>>,
+    source: ObservableLike<IterableLike<T>>,
   ) {
     super(source);
 
@@ -137,39 +137,5 @@ export class ListItemsViewModel<T> extends ItemsViewModel<T> {
       .from(items)
       .map(x => set.indexOf(x))
       .toArray();
-  }
-}
-
-export class TreeListItemsViewModel<T> extends ListItemsViewModel<T> {
-  constructor(
-    protected itemsSource: (item: T) => (IterableLike<T> | undefined),
-    source?: ObservableLike<IterableLike<T>>,
-  ) {
-    super(source);
-  }
-
-  getItems() {
-    return Iterable
-      .from(this.source.value)
-      .flatMap(x => this.flattenItems(x));
-  }
-
-  getItemsForIndicies(indicies: IterableLike<number>) {
-    return undefined;
-  }
-
-  getIndiciesForItems(items: IterableLike<T>) {
-    return undefined;
-  }
-
-  protected flattenItems(item: T): Iterable<T> {
-    const items = this.itemsSource(item);
-
-    return items == null ?
-      Iterable.of(item) :
-      Iterable
-        .from(items)
-        .flatMap(x => this.flattenItems(x))
-        .startWith(item);
   }
 }

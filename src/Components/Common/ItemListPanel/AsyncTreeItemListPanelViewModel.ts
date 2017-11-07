@@ -1,30 +1,28 @@
 import { Iterable } from 'ix';
 import { Observable } from 'rxjs';
 
-import { ObservableOrValue, ObservableLike } from '../../../WebRx';
-import { ItemListPanelViewModel, ItemListPanelContext } from './ItemListPanelViewModel';
+import { ObservableOrValue, ObservableLike, IterableLike } from '../../../WebRx';
+import { ItemListPanelContext } from './ItemListPanelViewModel';
+import { TreeItemListPanelViewModel } from './TreeItemListPanelViewModel';
 import { DataSourceRequest, DataSourceResponse } from '../DataGrid/DataGridViewModel';
-import { SearchViewModel, SearchRequest } from '../Search/SearchViewModel';
-import { PagerViewModel } from '../Pager/PagerViewModel';
+import { SearchViewModel } from '../Search/SearchViewModel';
 
-export class AsyncItemListPanelViewModel<T, TRequestContext = any> extends ItemListPanelViewModel<T, TRequestContext> {
-  public static displayName = 'AsyncItemListPanelViewModel';
+export class AsyncTreeItemListPanelViewModel<T, TRequestContext = any> extends TreeItemListPanelViewModel<T, TRequestContext> {
+  public static displayName = 'AsyncTreeItemListPanelViewModel';
 
   /**
    * @param responseSelector delegate that produces a response from a request.
-   * @param filterer filter predicate. executed for each item when the search context is available.
+   * @param itemsSource delegate to produce sub-items from a source item.
    * @param search search handler. if omitted a default search handler will be created. use null for no search handling.
-   * @param pager pager. if omitted a default pager will be created. use null for no pager.
    * @param context request context included in projection requests. if included requests are bound to context events.
    */
   constructor(
     protected readonly responseSelector: (request: DataSourceRequest<ItemListPanelContext<TRequestContext>> | undefined) => ObservableOrValue<DataSourceResponse<T> | undefined>,
-    filterer?: (item: T, search: SearchRequest) => boolean,
+    itemsSource: (item: T) => (IterableLike<T> | undefined),
     search?: SearchViewModel | null,
-    pager?: PagerViewModel | null,
     context?: ObservableLike<TRequestContext>,
   ) {
-    super(Iterable.empty<T>(), filterer, search, pager, context);
+    super(Iterable.empty<T>(), itemsSource, x => x, undefined, search, context);
   }
 
   getResponse(request: DataSourceRequest<ItemListPanelContext<TRequestContext>> | undefined) {
