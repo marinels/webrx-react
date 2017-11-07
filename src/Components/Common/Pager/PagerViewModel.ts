@@ -48,10 +48,7 @@ export class PagerViewModel extends BaseRoutableViewModel<PagerRoutingState> {
       .toProperty(0);
 
     this.selectedPage = this.wx
-      .whenAny(this.selectPage.results, this.pageCount, (sp, pc) => ({ sp, pc }))
-      // if we have a valid page and page count, and page is higher than page count then revert to page 1
-      // this can occur when the limit is adjusted and page is near the end
-      .map(x => (x.sp > 0 && x.pc > 0 && x.sp > x.pc) ? 1 : x.sp)
+      .whenAny(this.selectPage.results, x => x)
       .toProperty(1);
 
     this.offset = this.wx
@@ -70,6 +67,13 @@ export class PagerViewModel extends BaseRoutableViewModel<PagerRoutingState> {
         }),
       )
       .toProperty();
+
+    this.addSubscription(this.wx
+      .whenAny(this.pageCount, x => x)
+      .filterNull()
+      .map(() => 1)
+      .invokeCommand(this.selectPage),
+    );
 
     this.addSubscription(this.wx
       .whenAny(this.selectedPage, this.limit, (sp, l) => ({ sp, l }))
