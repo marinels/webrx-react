@@ -19,7 +19,7 @@ export class ListItemsViewModel<T> extends ItemsViewModel<T> {
   public readonly selectRange: Command<{ from: T, to: T }>;
 
   constructor(
-    source?: ObservableLike<IterableLike<T>>,
+    source: ObservableLike<IterableLike<T>>,
   ) {
     super(source);
 

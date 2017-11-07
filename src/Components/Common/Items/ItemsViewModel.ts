@@ -13,7 +13,7 @@ export class ItemsViewModel<T> extends BaseViewModel {
   public readonly count: ReadOnlyProperty<number>;
 
   constructor(
-    source?: ObservableLike<IterableLike<T>>,
+    source: ObservableLike<IterableLike<T>>,
   ) {
     super();
 

@@ -22,7 +22,7 @@ export class AsyncTreeItemListPanelViewModel<T, TRequestContext = any> extends T
     search?: SearchViewModel | null,
     context?: ObservableLike<TRequestContext>,
   ) {
-    super(itemsSource, x => x, Iterable.empty<T>(), undefined, search, context);
+    super(Iterable.empty<T>(), itemsSource, x => x, undefined, search, context);
   }
 
   getResponse(request: DataSourceRequest<ItemListPanelContext<TRequestContext>> | undefined) {

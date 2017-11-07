@@ -275,7 +275,7 @@ demoRoutingMap.addRoute('webrx-react', 'ListItemsPanel', 'ListItems (Default Pan
 demoRoutingMap.addRoute('webrx-react', 'ListItemsUGrid', 'ListItems (Uniform Grid)', (state: any) => new Components.ListItemsViewModel(sampleListData));
 demoRoutingMap.addRoute('webrx-react', 'ListItemsGrid', 'ListItems (Grid)', (state: any) => new Components.ListItemsViewModel(sampleListData));
 demoRoutingMap.addRoute('webrx-react', 'ListItemsGridAuto', 'ListItems (Auto Grid)', (state: any) => new Components.ListItemsViewModel(sampleListData));
-demoRoutingMap.addRoute('webrx-react', 'ListItemsTree', 'ListItems (Tree)', (state: any) => new Components.TreeListItemsViewModel(x => x.items, sampleTreeData));
+demoRoutingMap.addRoute('webrx-react', 'ListItemsTree', 'ListItems (Tree)', (state: any) => new Components.TreeListItemsViewModel(sampleTreeData, x => x.items));
 demoRoutingMap.addRoute('webrx-react', 'ModalDialog', 'Modal Dialog', (state: any) => {
   const createContext = wx.command<string>(x => `[${ moment().format() }] ${ x }`);
   // we are simulating a modal being contained within another view model
@@ -316,7 +316,7 @@ demoRoutingMap.addRoute('webrx-react', 'ItemListPanelList', 'Item List Panel (Li
   new Components.ItemListPanelViewModel(sampleListData, (x, s) => s.regex.test(x.name)),
 );
 demoRoutingMap.addRoute('webrx-react', 'ItemListPanelTree', 'Item List Panel (Tree)', (state: any) =>
-  new Components.TreeItemListPanelViewModel(x => x.items, (x, items) => cloneSampleTreeItem(x, items), sampleTreeData, (x, s) => s.regex.test(x.name)),
+  new Components.TreeItemListPanelViewModel(sampleTreeData, x => x.items, (x, items) => cloneSampleTreeItem(x, items), (x, s) => s.regex.test(x.name)),
 );
 demoRoutingMap.addRoute('webrx-react', 'AsyncItemListPanel', 'ItemListPanel (Async)', (state: any) => {
   return new Components.AsyncItemListPanelViewModel(sampleDataSource);

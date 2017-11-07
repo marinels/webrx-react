@@ -78,7 +78,7 @@ export class ItemListPanelViewModel<T, TRequestContext = any> extends DataGridVi
   public readonly search: SearchViewModel | null;
 
   /**
-   * @param source data source. if omitted no data will ever be loaded.
+   * @param source data source.
    * @param filterer filter predicate. executed for each item when the search context is available.
    * @param search search handler. if omitted a default search handler will be created. use null for no search handling.
    * @param pager pager. if omitted a default pager will be created. use null for no pager.
@@ -86,7 +86,7 @@ export class ItemListPanelViewModel<T, TRequestContext = any> extends DataGridVi
    * @param comparer custom object comparer. if omitted a default object comparer will be used.
    */
   constructor(
-    source?: ObservableLike<IterableLike<T>>,
+    source: ObservableLike<IterableLike<T>>,
     filterer?: (item: T, search: SearchRequest) => boolean,
     search?: SearchViewModel | null,
     pager?: PagerViewModel | null,

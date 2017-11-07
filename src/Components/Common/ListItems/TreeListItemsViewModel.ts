@@ -23,8 +23,8 @@ export class TreeListItemsViewModel<T> extends ListItemsViewModel<T> {
   public static displayName = 'TreeListItemsViewModel';
 
   constructor(
+    source: ObservableLike<IterableLike<T>>,
     protected readonly itemsSource: (item: T) => (IterableLike<T> | undefined),
-    source?: ObservableLike<IterableLike<T>>,
   ) {
     super(source);
   }
