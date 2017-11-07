@@ -2,8 +2,8 @@ import { Iterable } from 'ix';
 import { Observable } from 'rxjs';
 
 import { ObservableOrValue, ObservableLike } from '../../../WebRx';
-import { ItemListPanelViewModel } from './ItemListPanelViewModel';
 import { DataGridViewModel, DataSourceRequest, DataSourceResponse } from '../DataGrid/DataGridViewModel';
+import { ItemListPanelViewModel, ItemListPanelContext } from './ItemListPanelViewModel';
 import { SearchViewModel, SearchRequest } from '../Search/SearchViewModel';
 import { PagerViewModel } from '../Pager/PagerViewModel';
 
@@ -18,7 +18,7 @@ export class AsyncItemListPanelViewModel<T, TRequestContext = any> extends ItemL
    * @param context request context included in projection requests. if included requests are bound to context events.
    */
   constructor(
-    protected readonly responseSelector: (request: DataSourceRequest<TRequestContext> | undefined) => ObservableOrValue<DataSourceResponse<T> | undefined>,
+    protected readonly responseSelector: (request: DataSourceRequest<ItemListPanelContext<TRequestContext>> | undefined) => ObservableOrValue<DataSourceResponse<T> | undefined>,
     filterer?: (item: T, search: SearchRequest) => boolean,
     search?: SearchViewModel | null,
     pager?: PagerViewModel | null,
@@ -27,7 +27,7 @@ export class AsyncItemListPanelViewModel<T, TRequestContext = any> extends ItemL
     super(Iterable.empty<T>(), filterer, search, pager, context);
   }
 
-  getResponse(request: DataSourceRequest | undefined) {
+  getResponse(request: DataSourceRequest<ItemListPanelContext<TRequestContext>> | undefined) {
     return this.responseSelector(request);
   }
 }
