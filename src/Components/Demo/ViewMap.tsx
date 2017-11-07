@@ -660,55 +660,69 @@ export const demoViewMap: ViewActivatorMap = {
         return null;
     }
   },
-  // ItemListPanelViewModel: (viewModel: Components.ItemListPanelViewModel<any>, componentRoute: string) => {
-  //   if (componentRoute === 'ItemListPanel') {
-  //     return (
-  //       <Components.ItemListPanelView viewModel={viewModel} headerContent='Sample Grid Data' collapsible pager search
-  //         headerActions={[ { id: 'header', children: 'Header Action' } ]}
-  //         footerContent={ (<Components.CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
-  //         footerActions={[ { id: 'viewall', bsStyle: 'primary', command: wx.command(x => Alert.create(x, 'View All Pressed')), commandParameter: 'ItemListPanel', children: (<Components.ViewAllFooterAction suffix='Things' />) } ]}
-  //       >
-  //         <Components.DataGridColumn key='id' fieldName='id' header='ID' sortable />,
-  //         <Components.DataGridColumn key='cat' fieldName='cat' header='Category' sortable />,
-  //         <Components.DataGridColumn fieldName='name' header='Name' sortable className='col-md-8' />
-  //         <Components.DataGridColumn fieldName='requiredBy' header='Required By' sortable className='col-md-4' />
-  //         <Components.NavDataGridColumn buttonProps={ (x: SampleData) => ({ href: `#/name/${ x.name }` }) } />
-  //       </Components.ItemListPanelView>
-  //     );
-  //   }
-  //   else if (componentRoute === 'TreeItemListPanel') {
-  //     return (
-  //       <Components.ItemListPanelView viewModel={viewModel} headerContent='Sample Tree Data' collapsible
-  //         headerActions={[ { id: 'header', children: 'Header Action' } ]} viewTemplate={ treeTemplate }
-  //         footerContent={ (<Components.CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
-  //         footerActions={[ { id: 'viewall', bsStyle: 'primary', command: wx.command(x => Alert.create(x, 'View All Pressed')), commandParameter: 'ItemListPanel', children: (<Components.ViewAllFooterAction suffix='Things' />) } ]}
-  //       >
-  //       </Components.ItemListPanelView>
-  //     );
-  //   }
-  //   else {
-  //     return (
-  //       <Components.ItemListPanelView viewModel={ viewModel } headerContent='Sample List Data' collapsible pager search
-  //         viewTemplate={
-  //           new Components.DataGridListViewTemplate<SampleData>(
-  //             x => `Name: ${ x.name }, Required By: ${ x.requiredBy }`,
-  //           )
-  //         }
-  //       >
-  //       </Components.ItemListPanelView>
-  //     );
-  //   }
-  // },
-  // AsyncItemListPanelViewModel: (viewModel: Components.AsyncItemListPanelViewModel<any, any, any>) => (
-  //   <Components.ItemListPanelView viewModel={viewModel} headerContent='Sample Data' collapsible pager
-  //     headerActions={[ { id: 'viewall', bsStyle: 'primary', command: wx.command(x => Alert.create(x, 'View All Pressed')), commandParameter: 'AsyncItemListPanel', children: (<Components.ViewAllFooterAction suffix='Things' />) } ]}
-  //     footerContent={ (<Components.CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
-  //     footerActions={[ { id: 'refresh', command: viewModel.grid.refresh, children: 'Refresh' } ]}
-  //   >
-  //     <Components.DataGridColumn fieldName='name' header='Name' sortable className='col-md-8' />
-  //     <Components.DataGridColumn fieldName='requiredBy' header='Required By' sortable className='col-md-4' />
-  //   </Components.ItemListPanelView>
-  // ),
+  ItemListPanelViewModel: (viewModel: Components.ItemListPanelViewModel<{}>, componentRoute: string) => {
+    switch (componentRoute) {
+      case 'ItemListPanel':
+        return (
+          <Components.ItemListPanelView viewModel={ viewModel } collapsible pager search
+            headerContent='Sample Grid Data'
+            headerActions={ [ { id: 'header', children: 'Header Action' } ] }
+            footerContent={ (<Components.CountFooterContent count={ viewModel.projectedCount } suffix='Things' />) }
+          >
+            <Components.GridViewColumn field='id' cellTooltipTemplate={ (x: SampleData) => `Item ${ x.id }` } />
+            <Components.GridViewColumn id='cat' header='Category' cellTemplate={ (x: SampleData) => x.cat } headerTooltipTemplate='Simple Header Tooltip' />
+            <Components.GridViewColumn field='requiredBy' header='Required By' cellTooltipTemplate={ (x: SampleData) => (<Components.ContentTooltip content={ `Popover Content for ${ x.name }` } title='Fancy Tooltip' />) } />
+            <Components.GridViewColumn id='name' header='Name' cellTemplate={ (x: SampleData) => (<a href='#'>{ x.name }</a>) } headerTooltipTemplate={(<Components.ContentTooltip content='Fancy Header Popover' popover placement='top' />)} />
+            <Components.GridViewColumn width={ 49 } cellTemplate={ () => (<Components.NavButton href='#' />) } />
+          </Components.ItemListPanelView>
+        );
+      case 'ItemListPanelList':
+        return (
+          <Components.ItemListPanelView viewModel={ viewModel } collapsible pager search compact
+            itemTemplate={ sampleDataCmdTemplate }
+            headerContent='Sample List Data'
+            headerActions={ [ { id: 'header', children: 'Header Action' } ] }
+            footerContent={ (<Components.CountFooterContent count={ viewModel.projectedCount } suffix='Things' />) }
+          >
+            <Components.ListGroupView />
+          </Components.ItemListPanelView>
+        );
+      default:
+        return null;
+    }
+  },
+  TreeItemListPanelViewModel: (viewModel: Components.TreeItemListPanelViewModel<{}>) => (
+    <Components.ItemListPanelView viewModel={ viewModel } collapsible search compact
+      itemTemplate={ sampleDataTemplate }
+      headerContent='Sample Tree Data'
+      headerActions={ [ { id: 'header', children: 'Header Action' } ] }
+      footerContent={ (<Components.CountFooterContent count={ viewModel.projectedCount } suffix='Things' />) }
+    >
+      <Components.TreeView itemsSource={ (x: SampleTreeData) => x.items } />
+    </Components.ItemListPanelView>
+  ),
+  AsyncItemListPanelViewModel: (viewModel: Components.AsyncItemListPanelViewModel<{}>) => (
+    <Components.ItemListPanelView viewModel={ viewModel } collapsible pager search
+      headerContent='Sample Grid Data'
+      headerActions={ [ { id: 'header', children: 'Header Action' } ] }
+      footerContent={ (<Components.CountFooterContent count={ viewModel.projectedCount } suffix='Things' />) }
+    >
+      <Components.GridViewColumn field='id' cellTooltipTemplate={ (x: SampleData) => `Item ${ x.id }` } />
+      <Components.GridViewColumn id='cat' header='Category' cellTemplate={ (x: SampleData) => x.cat } headerTooltipTemplate='Simple Header Tooltip' />
+      <Components.GridViewColumn field='requiredBy' header='Required By' cellTooltipTemplate={ (x: SampleData) => (<Components.ContentTooltip content={ `Popover Content for ${ x.name }` } title='Fancy Tooltip' />) } />
+      <Components.GridViewColumn id='name' header='Name' cellTemplate={ (x: SampleData) => (<a href='#'>{ x.name }</a>) } headerTooltipTemplate={(<Components.ContentTooltip content='Fancy Header Popover' popover placement='top' />)} />
+    </Components.ItemListPanelView>
+  ),
+  AsyncTreeItemListPanelViewModel: (viewModel: Components.AsyncTreeItemListPanelViewModel<{}>) => (
+    <Components.ItemListPanelView viewModel={ viewModel } collapsible search compact
+      itemTemplate={ sampleDataTemplate }
+      headerContent='Sample Tree Data'
+      headerActions={ [ { id: 'header', children: 'Header Action' } ] }
+      footerContent={ (<Components.CountFooterContent count={ viewModel.projectedCount } suffix='Things' />) }
+    >
+      <Components.TreeView itemsSource={ (x: SampleTreeData) => x.items } />
+    </Components.ItemListPanelView>
+  ),
   InlineEditViewModel: (viewModel: Components.InlineEditViewModel<any>, componentRoute: string) => {
     if (componentRoute === 'InlineEditObject') {
       return (

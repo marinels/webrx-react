@@ -1,3 +1,4 @@
+import { Iterable } from 'ix';
 import { Observable } from 'rxjs';
 import * as moment from 'moment';
 
@@ -22,18 +23,45 @@ export interface SampleTreeData extends SampleData {
   items?: Array<SampleTreeData>;
 }
 
+export function createSampleItem(
+  cat: string,
+  name: string,
+  requiredBy: string,
+  id = 0,
+): SampleData {
+  return {
+    id,
+    cat,
+    name,
+    requiredBy,
+  };
+}
+
+export function cloneSampleItem<T extends SampleData>(item: T) {
+  return <T>createSampleItem(item.cat, item.name, item.requiredBy, item.id);
+}
+
+export function cloneSampleTreeItem(item: SampleTreeData, items: Iterable<SampleTreeData>) {
+  item = cloneSampleItem(item);
+
+  item.items = items
+    .toArray();
+
+  return item;
+}
+
 export const sampleListData = <SampleData[]>[
-  { cat: 'test', name: 'test 1', requiredBy: 'now' },
-  { cat: 'test', name: 'test 2', requiredBy: 'tomorrow' },
-  { cat: 'test', name: 'test 3', requiredBy: 'yesterday' },
-  { cat: 'test', name: 'test 4', requiredBy: 'test4' },
-  { cat: 'test', name: 'test 5', requiredBy: 'test5' },
-  { cat: 'test', name: 'test 6', requiredBy: 'test6' },
-  { cat: 'test', name: 'test 7', requiredBy: 'test7' },
-  { cat: 'test', name: 'test 8', requiredBy: 'test8' },
-  { cat: 'test', name: 'test 9', requiredBy: 'test9' },
-  { cat: 'test', name: 'test 10', requiredBy: 'test10' },
-  { cat: 'test', name: 'test 11', requiredBy: 'test11' },
+  createSampleItem('item', 'test 1', 'now'),
+  createSampleItem('item', 'test 2', 'tomorrow'),
+  createSampleItem('item', 'test 3', 'yesterday'),
+  createSampleItem('test', 'test 4', 'test4'),
+  createSampleItem('test', 'test 5', 'test5'),
+  createSampleItem('test', 'test 6', 'test6'),
+  createSampleItem('test', 'test 7', 'test7'),
+  createSampleItem('test', 'test 8', 'test8'),
+  createSampleItem('test', 'test 9', 'test9'),
+  createSampleItem('test', 'test 10', 'test10'),
+  createSampleItem('test', 'test 11', 'test11'),
 ].map((x, i) => Object.assign<SampleData>(x, { id: i + 1 }));
 
 export const sampleTreeData = sampleListData
@@ -77,7 +105,7 @@ function sampleDataSource<TContext = any>(request: Components.DataSourceRequest<
         `sort = ${ String.stringify(x.sort) }`,
         `context = ${ String.stringify(x.context) }`,
       ].join('<br/>');
-      Alert.create(msg, 'Async DataGrid Demo', undefined, 2000);
+      Alert.create(msg, 'Async Data Source Demo', undefined, 2000);
     })
     // simulate async result delay
     .delay(2000)
@@ -87,7 +115,7 @@ function sampleDataSource<TContext = any>(request: Components.DataSourceRequest<
 
       if (search != null) {
         if (search.filter === 'error') {
-          throw new Error('Simulated Async DataSource Error');
+          throw new Error('Simulated Async Data Source Error');
         }
 
         query = query
@@ -130,6 +158,65 @@ function sampleDataSource<TContext = any>(request: Components.DataSourceRequest<
       const items = query.toArray();
 
       return <Components.DataSourceResponse<SampleData>>{
+        items,
+        count,
+      };
+    });
+}
+
+function sampleTreeDataSource<TContext = any>(request: Components.DataSourceRequest<TContext> | undefined) {
+  if (request == null) {
+    return undefined;
+  }
+
+  const search = Components.ItemListPanelViewModel.getSearchRequest(request);
+
+  if (search != null && search.filter === 'throw') {
+    throw new Error('Simulated Coding Error');
+  }
+
+  return Observable
+    .of(sampleTreeData)
+    .map(data => ({
+      data,
+      context: request.context,
+    }))
+    .do(x => {
+      const msg = [
+        'Simulating Async Data Result...',
+        `context = ${ String.stringify(x.context) }`,
+      ].join('<br/>');
+      Alert.create(msg, 'Async Data Source Demo', undefined, 2000);
+    })
+    // simulate async result delay
+    .delay(2000)
+    .map(x => {
+      let query = x.data
+        .asIterable();
+
+      if (search != null) {
+        if (search.filter === 'error') {
+          throw new Error('Simulated Async Data Source Error');
+        }
+
+        query = Components.filterTreeItems(
+          query,
+          y => y.items,
+          (y, i) => cloneSampleTreeItem(y, i),
+          y => {
+            return (
+              y.name.indexOf(search.filter || '') >= 0 ||
+              y.requiredBy.indexOf(search.filter || '') >= 0
+            );
+          },
+        );
+      }
+
+      const count = query.count();
+
+      const items = query.toArray();
+
+      return <Components.DataSourceResponse<SampleTreeData>>{
         items,
         count,
       };
@@ -222,20 +309,21 @@ demoRoutingMap.addRoute('webrx-react', 'DataGridPager', 'Data Grid (Custom Pager
 demoRoutingMap.addRoute('webrx-react', 'DataGridList', 'Data Grid (List View)', (state: any) => new Components.DataGridViewModel(sampleListData));
 demoRoutingMap.addRoute('webrx-react', 'DataGridUGrid', 'Data Grid (Uniform Grid Panel)', (state: any) => new Components.DataGridViewModel(sampleListData));
 demoRoutingMap.addRoute('webrx-react', 'DataGridAsync', 'Data Grid (Async)', (state: any) => new Components.AsyncDataGridViewModel(sampleDataSource));
-// demoRoutingMap.addRoute('webrx-react', 'ItemListPanel', 'Item List Panel', (state: any) =>
-//   new Components.ItemListPanelViewModel(wx.property(sampleListData), (x, r) => r.test(x.name), 'id'),
-// );
-// demoRoutingMap.addRoute('webrx-react', 'ListItemListPanel', 'Item List Panel (List)', (state: any) =>
-//   new Components.ItemListPanelViewModel(Observable.of(sampleListData), (x, r) => r.test(x.name)),
-// );
-// demoRoutingMap.addRoute('webrx-react', 'TreeItemListPanel', 'Item List Panel (Tree)', (state: any) => {
-//   return new Components.ItemListPanelViewModel(Observable.of(sampleTreeData), (node, regexp) => {
-//     return Components.filterHierarchical(node, regexp, x => regexp.test(x.name));
-//   }, undefined, undefined, undefined, undefined, 0);
-// });
-// demoRoutingMap.addRoute('webrx-react', 'AsyncItemListPanel', 'ItemListPanel (Async)', (state: any) => {
-//   return new Components.AsyncItemListPanelViewModel(sampleDataSource, true, true);
-// });
+demoRoutingMap.addRoute('webrx-react', 'ItemListPanel', 'Item List Panel', (state: any) =>
+  new Components.ItemListPanelViewModel(sampleListData, (x, s) => s.regex.test(x.name)),
+);
+demoRoutingMap.addRoute('webrx-react', 'ItemListPanelList', 'Item List Panel (List)', (state: any) =>
+  new Components.ItemListPanelViewModel(sampleListData, (x, s) => s.regex.test(x.name)),
+);
+demoRoutingMap.addRoute('webrx-react', 'ItemListPanelTree', 'Item List Panel (Tree)', (state: any) =>
+  new Components.TreeItemListPanelViewModel(x => x.items, (x, items) => cloneSampleTreeItem(x, items), sampleTreeData, (x, s) => s.regex.test(x.name)),
+);
+demoRoutingMap.addRoute('webrx-react', 'AsyncItemListPanel', 'ItemListPanel (Async)', (state: any) => {
+  return new Components.AsyncItemListPanelViewModel(sampleDataSource);
+});
+demoRoutingMap.addRoute('webrx-react', 'AsyncItemListPanelTree', 'ItemListPanel (Async Tree)', (state: any) => {
+  return new Components.AsyncTreeItemListPanelViewModel(sampleTreeDataSource, x => x.items);
+});
 demoRoutingMap.addRoute('webrx-react', 'InlineEdit', 'InlineEdit', (state: any) => {
   const editor = new Components.InlineEditViewModel(5);
 
