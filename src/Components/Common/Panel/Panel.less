@@ -22,15 +22,19 @@
     // disable the default react-bootstrap margin for ListGroup
     margin: 0;
 
-    .Panel-Item {
-      & > .NavButton {
-        margin: -1 * @default-padding;
+    &:not(.compact) {
+      .Panel-Item {
+        & > .NavButton {
+          margin: -1 * @default-padding;
 
-        .NavButton-content {
-          padding: @default-padding;
+          .NavButton-content {
+            padding: @default-padding;
+          }
         }
       }
+    }
 
+    .Panel-Item {
       &:first-child > .NavButton > .btn {
         border-top-right-radius: @list-group-border-radius;
       }
