@@ -65,6 +65,15 @@ export class ItemListPanelViewModel<T, TRequestContext = any> extends DataGridVi
     return request.context.search;
   }
 
+  public static filterItems<T>(
+    items: Iterable<T>,
+    searchRequest: SearchRequest,
+    filterer: (item: T, search: SearchRequest) => boolean,
+  ) {
+    return items
+      .filter(x => filterer(x, searchRequest));
+  }
+
   protected readonly filterer: undefined | ((item: T, search: SearchRequest) => boolean);
   public readonly search: SearchViewModel | null;
 
@@ -109,10 +118,13 @@ export class ItemListPanelViewModel<T, TRequestContext = any> extends DataGridVi
     }
 
     // filter the items according to the search request involved
-    const filteredItems = items
-      .filter(x => this.filterer!(x, searchRequest));
+    const filteredItems = this.getFilteredItems(items, searchRequest);
 
     // generate a response from the filtered items
     return super.getResponseFromItems(filteredItems, request);
+  }
+
+  protected getFilteredItems(items: Iterable<T>, searchRequest: SearchRequest) {
+    return ItemListPanelViewModel.filterItems(items, searchRequest, this.filterer!);
   }
 }
