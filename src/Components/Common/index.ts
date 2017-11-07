@@ -19,6 +19,7 @@ export * from './ItemListPanel/ItemListPanelViewModel';
 export * from './ItemListPanel/TreeItemListPanelViewModel';
 export * from './ItemListPanel/AsyncItemListPanelViewModel';
 export * from './ItemListPanel/AsyncTreeItemListPanelViewModel';
+export * from './ItemListPanel/CountFooterContent';
 export * from './App/AppViewModel';
 
 // Simple Components

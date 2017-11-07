@@ -7,8 +7,6 @@ import { SearchView, SearchProps } from '../Search/SearchView';
 import { CommonPanel, CommonPanelRenderProps } from '../CommonPanel/CommonPanel';
 import { ItemListPanelViewModel } from './ItemListPanelViewModel';
 
-export * from './CountFooterContent';
-
 export interface ItemListPanelProps extends DataGridProps, CommonPanelRenderProps {
   search?: boolean | SearchProps | {};
 }
