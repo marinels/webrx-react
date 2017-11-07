@@ -22,20 +22,17 @@ export class CountFooterContent extends React.Component<CountFooterContentCompon
   private countChangedSub = Subscription.EMPTY;
 
   componentDidMount() {
-    this.countChangedSub = this.wx
-      .whenAny(
-        this.props.count,
-        x => x,
-      )
-      .subscribe(x => {
-        this.setState({
-          count: x || 0,
-        });
-      });
+    this.subscribeToCount(this.props.count);
+  }
+
+  componentDidUpdate(prevProps: Readonly<CountFooterContentComponentProps>) {
+    if (prevProps.count !== this.props.count) {
+      this.subscribeToCount(this.props.count);
+    }
   }
 
   componentWillUnmount() {
-    this.countChangedSub = Subscription.unsubscribe(this.countChangedSub);
+    this.unsubscribeFromCount();
   }
 
   render() {
@@ -54,5 +51,24 @@ export class CountFooterContent extends React.Component<CountFooterContentCompon
         }
       </div>
     );
+  }
+
+  protected unsubscribeFromCount() {
+    this.countChangedSub = Subscription.unsubscribe(this.countChangedSub);
+  }
+
+  protected subscribeToCount(count: ObservableLike<number>) {
+    this.unsubscribeFromCount();
+
+    this.countChangedSub = this.wx
+      .whenAny(
+        count,
+        x => x,
+      )
+      .subscribe(x => {
+        this.setState({
+          count: x || 0,
+        });
+      });
   }
 }
