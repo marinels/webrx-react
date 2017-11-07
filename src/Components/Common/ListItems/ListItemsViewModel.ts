@@ -139,37 +139,3 @@ export class ListItemsViewModel<T> extends ItemsViewModel<T> {
       .toArray();
   }
 }
-
-export class TreeListItemsViewModel<T> extends ListItemsViewModel<T> {
-  constructor(
-    protected itemsSource: (item: T) => (IterableLike<T> | undefined),
-    source?: ObservableLike<IterableLike<T>>,
-  ) {
-    super(source);
-  }
-
-  getItems() {
-    return Iterable
-      .from(this.source.value)
-      .flatMap(x => this.flattenItems(x));
-  }
-
-  getItemsForIndicies(indicies: IterableLike<number>) {
-    return undefined;
-  }
-
-  getIndiciesForItems(items: IterableLike<T>) {
-    return undefined;
-  }
-
-  protected flattenItems(item: T): Iterable<T> {
-    const items = this.itemsSource(item);
-
-    return items == null ?
-      Iterable.of(item) :
-      Iterable
-        .from(items)
-        .flatMap(x => this.flattenItems(x))
-        .startWith(item);
-  }
-}
