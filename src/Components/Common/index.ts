@@ -16,7 +16,9 @@ export * from './ListItems/TreeListItemsViewModel';
 export * from './DataGrid/DataGridViewModel';
 export * from './DataGrid/AsyncDataGridViewModel';
 export * from './ItemListPanel/ItemListPanelViewModel';
+export * from './ItemListPanel/TreeItemListPanelViewModel';
 export * from './ItemListPanel/AsyncItemListPanelViewModel';
+export * from './ItemListPanel/AsyncTreeItemListPanelViewModel';
 export * from './App/AppViewModel';
 
 // Simple Components
