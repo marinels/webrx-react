@@ -475,15 +475,16 @@ export const demoViewMap: ViewActivatorMap = {
         return (
           <Components.ListItemsView viewModel={ viewModel } view={ (<Components.GridView />) } />
         );
-      case 'ListItemsTree':
-        return (
-          <Components.ListItemsView viewModel={ viewModel } itemTemplate={ sampleDataTemplate }>
-            <Components.TreeView itemsSource={ (x: SampleTreeData) => x.items } />
-          </Components.ListItemsView>
-        );
       default:
         return null;
     }
+  },
+  TreeListItemsViewModel: (viewModel: Components.TreeListItemsViewModel<{}>, componentRoute: string) => {
+    return (
+      <Components.ListItemsView viewModel={ viewModel } itemTemplate={ sampleDataTemplate }>
+        <Components.TreeView itemsSource={ (x: SampleTreeData) => x.items } />
+      </Components.ListItemsView>
+    );
   },
   ModalDialogViewModel: (data: { viewModel: Components.ModalDialogViewModel<string>, createContext: Command<string>, accept: Command<any>, reject: Command<any> }) => (
     <div>
