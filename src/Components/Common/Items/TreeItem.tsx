@@ -207,7 +207,9 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
     );
   }
 
-  protected toggleExpansion() {
+  protected toggleExpansion(e: MouseEvent) {
+    e.stopPropagation();
+
     this.setState({
       isExpanded: !this.state.isExpanded,
     });
@@ -237,7 +239,7 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
       .isEmpty();
 
     return isEmpty ? false : (
-      <Button bsStyle='link' onClick={ () => this.toggleExpansion() }>
+      <Button bsStyle='link' onClick={ this.toggleExpansion.bind(this) }>
         { this.renderExpanderIcon() }
       </Button>
     );
