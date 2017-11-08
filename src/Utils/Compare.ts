@@ -1,4 +1,5 @@
 import { Iterable } from 'ix';
+import * as moment from 'moment';
 
 export interface Comparable<T> {
   compareTo(other: T): number;
@@ -37,6 +38,15 @@ export class ValueComparer<T = any> implements Comparer<T> {
     else if (String.isString(a) && String.isString(b)) {
       // native string comparison
       return a.localeCompare(b);
+    }
+    else if (moment.isMoment(a) && moment.isMoment(b)) {
+      return a.valueOf() - b.valueOf();
+    }
+    else if (moment.isDuration(a) && moment.isDuration(b)) {
+      return a.asMilliseconds() - b.asMilliseconds();
+    }
+    else if (moment.isDate(a) && moment.isDate(b)) {
+      return moment(a).valueOf() - moment(b).valueOf();
     }
     else if (Object.isObject(a) || Object.isObject(b)) {
       // if either side is an object then we have failed referencial equality (first compare)
