@@ -30,10 +30,6 @@ export class ValueComparer<T = any> implements Comparer<T> {
       // only one is null, non-null takes higher value
       return a == null ? -1 : 1;
     }
-    else if (Object.isObject(a) || Object.isObject(b)) {
-      // if either side is an object then we have failed referencial equality (first compare)
-      return -1;
-    }
     else if (isComparable(a)) {
       // implements Comparable
       return a.compareTo(b);
@@ -41,6 +37,10 @@ export class ValueComparer<T = any> implements Comparer<T> {
     else if (String.isString(a) && String.isString(b)) {
       // native string comparison
       return a.localeCompare(b);
+    }
+    else if (Object.isObject(a) || Object.isObject(b)) {
+      // if either side is an object then we have failed referencial equality (first compare)
+      return -1;
     }
     else {
       // fallback on a basic equality check
