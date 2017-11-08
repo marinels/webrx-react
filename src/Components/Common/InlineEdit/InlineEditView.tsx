@@ -88,7 +88,7 @@ export class InlineEditView extends BaseView<InlineEditViewProps, InlineEditView
   }
 
   render() {
-    return this.renderConditional(this.viewModel.isEditing, () => this.renderEditor(), () => this.renderValue());
+    return this.wxr.renderConditional(this.viewModel.isEditing, () => this.renderEditor(), () => this.renderValue());
   }
 
   private renderErrorTooltip() {
@@ -96,7 +96,7 @@ export class InlineEditView extends BaseView<InlineEditViewProps, InlineEditView
       <Popover id='tooltip' className='InlineEditView-popover alert-danger'>
         <div className='InlineEditView-errorContent'>
           {
-            this.renderConditional(this.props.errorContent instanceof Function, () => {
+            this.wxr.renderConditional(this.props.errorContent instanceof Function, () => {
               return this.props.errorContent(this.viewModel, this);
             }, () => this.props.errorContent)
           }
@@ -112,10 +112,10 @@ export class InlineEditView extends BaseView<InlineEditViewProps, InlineEditView
     });
 
     return (
-      <FormGroup { ...rest } className={ this.classNames('InlineEditView', className)}>
+      <FormGroup { ...rest } className={ this.wxr.classNames('InlineEditView', className)}>
         <InputGroup>
           {
-            this.renderConditional(this.viewModel.hasSavingError, () => (
+            this.wxr.renderConditional(this.viewModel.hasSavingError, () => (
               <OverlayTrigger placement={ props.errorPlacement } overlay={ this.renderErrorTooltip() }>
                 <InputGroup.Addon className='InlineEditView-error'>
                   <Icon className='alert-danger' name='exclamation' />
@@ -167,10 +167,10 @@ export class InlineEditView extends BaseView<InlineEditViewProps, InlineEditView
       <span>{ this.props.template!(this.viewModel.value.value, this) }</span>
     );
 
-    return this.renderConditional(
+    return this.wxr.renderConditional(
       props.clickToEdit === true,
       () => (
-        <CommandButton { ...rest } className={ this.classNames('InlineEditView', className)} bsStyle='link' command={ this.viewModel.edit }>
+        <CommandButton { ...rest } className={ this.wxr.classNames('InlineEditView', className)} bsStyle='link' command={ this.viewModel.edit }>
           { displayContent }
         </CommandButton>
       ),

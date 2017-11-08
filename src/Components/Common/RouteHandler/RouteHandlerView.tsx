@@ -77,7 +77,7 @@ export class RouteHandlerView extends BaseView<RouteHandlerViewProps, RouteHandl
     const key = this.getViewKey();
 
     return (
-      <div { ...rest } className={ this.classNames('RouteHandler', className) }>
+      <div { ...rest } className={ this.wxr.classNames('RouteHandler', className) }>
         <RTG.TransitionGroup>
           <RTG.CSSTransition key={ key } classNames='view' exit={ false } timeout={ ({ enter: 250 }) }>
             <div className='RouteHandler-viewContainer'>

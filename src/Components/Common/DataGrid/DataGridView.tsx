@@ -38,13 +38,13 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
       return { pager, fill, view, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact };
     });
 
-    return this.renderSizedLoadable(this.viewModel.isLoading,
+    return this.wxr.renderSizedLoadable(this.viewModel.isLoading,
       'Loading Data...',
       25,
       () => {
         const dataGridView = ListItemsView.getListItemsView(this.props, this.renderDefaultDataGridView.bind(this));
 
-        const pagerView = this.renderNullable(
+        const pagerView = this.wxr.renderNullable(
           props.pager,
           x => React.isValidElement(x) ? x : (
             <PagerView viewModel={ this.viewModel.pager! } { ...(x === true ? {} : x) } />
@@ -54,7 +54,7 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
         );
 
         return (
-          <div { ...rest } className={ this.classNames('DataGrid', className) }>
+          <div { ...rest } className={ this.wxr.classNames('DataGrid', className) }>
             <ListItemsView
               viewModel={ this.viewModel }
               view={ dataGridView }

@@ -94,7 +94,7 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
     });
 
     return (
-      <div { ...rest } className={ this.classNames('PageHeader', className) }>
+      <div { ...rest } className={ this.wxr.classNames('PageHeader', className) }>
         <Navbar fixedTop fluid>
           <Navbar.Header>
             <Navbar.Brand>
@@ -115,7 +115,7 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
             { this.renderRoutedActions() }
           </Navbar.Collapse>
         </Navbar>
-        { this.renderConditional(this.isSidebarEnabled(), () => this.renderSidebar()) }
+        { this.wxr.renderConditional(this.isSidebarEnabled(), () => this.renderSidebar()) }
       </div>
     );
   }
@@ -135,8 +135,8 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
   private renderHeaderMenu(id: any, header: any, items: HeaderCommandAction[], noCaret = false, className?: string) {
     const visibleItems = this.getVisibleActions(items);
 
-    return this.renderConditional(visibleItems.length > 0, () => (
-      <NavDropdown id={ id } key={ id } title={ header } noCaret={ noCaret } className={ this.classNames(`PageHeader-${ id }`, className) }>
+    return this.wxr.renderConditional(visibleItems.length > 0, () => (
+      <NavDropdown id={ id } key={ id } title={ header } noCaret={ noCaret } className={ this.wxr.classNames(`PageHeader-${ id }`, className) }>
         {
           visibleItems
             .map(x => (
@@ -181,7 +181,7 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
   }
 
   private renderRoutedMenus() {
-    return this.renderConditional(this.viewModel.navbarMenus.value.length > 0, () =>
+    return this.wxr.renderConditional(this.viewModel.navbarMenus.value.length > 0, () =>
       this.getOrderedActions(this.viewModel.navbarMenus.value)
         .map(x => {
           return this.renderHeaderMenu(
@@ -223,7 +223,7 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
   }
 
   private renderSearch() {
-    return this.renderNullable(this.viewModel.search, x => (
+    return this.wxr.renderNullable(this.viewModel.search, x => (
       <Navbar.Form pullRight>
         <SearchView viewModel={ x } />
       </Navbar.Form>
@@ -236,7 +236,7 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
     return (
       <Navbar.Form className='PageHeader-routedActions' pullRight>
         {
-          this.renderConditional(visibleActions.length > 0, () =>
+          this.wxr.renderConditional(visibleActions.length > 0, () =>
             visibleActions
               .map(x => (
                 <CommandButton key={ x.id } className='PageHeader-actionButton' bsStyle={ x.bsStyle }
@@ -259,12 +259,12 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
         onHide={ this.bindEventToCommand(x => x.toggleSideBar, () => false) }
       >
         {
-          this.renderConditional(this.viewModel.isSidebarVisible, () =>
+          this.wxr.renderConditional(this.viewModel.isSidebarVisible, () =>
             this.getOrderedActions(this.viewModel.sidebarMenus.value)
               .map(menu => {
                 const visibleActions = this.getVisibleActions(menu.items);
 
-                return this.renderConditional(visibleActions.length > 0, () => (
+                return this.wxr.renderConditional(visibleActions.length > 0, () => (
                   <Nav key={ menu.id }>
                     <NavItem className='PageHeader-sidebarSection' disabled>
                       { menu.header }

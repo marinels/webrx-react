@@ -26,7 +26,7 @@ export class AlertHostView extends BaseView<AlertHostViewProps, AlertHostViewMod
     const { className, rest } = this.restProps();
 
     return (
-      <div { ...rest } className={ this.classNames('AlertHost', className) }>
+      <div { ...rest } className={ this.wxr.classNames('AlertHost', className) }>
         <RTG.TransitionGroup>
           { this.renderAlerts() }
         </RTG.TransitionGroup>

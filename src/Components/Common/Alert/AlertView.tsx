@@ -17,7 +17,7 @@ export class AlertView extends BaseView<AlertViewProps, AlertViewModel> {
     const { className, rest } = this.restProps();
 
     return (
-      <div { ...rest } className={ this.classNames('Alert', className) }>
+      <div { ...rest } className={ this.wxr.classNames('Alert', className) }>
         <Alert bsStyle={ this.viewModel.style } onDismiss={ this.bindEventToCommand(x => x.dismiss) }>
           <div className='Alert-header'>{ this.viewModel.header }</div>
           { this.renderAlertContent() }
@@ -27,7 +27,7 @@ export class AlertView extends BaseView<AlertViewProps, AlertViewModel> {
   }
 
   private renderAlertContent() {
-    return this.renderConditional(
+    return this.wxr.renderConditional(
       String.isString(this.viewModel.content),
       () => (
         <div className='Alert-content'>

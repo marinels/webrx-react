@@ -62,14 +62,14 @@ export class TabsView extends BaseView<TabsViewProps, TabsViewModel<{}>> {
     });
 
     return (
-      <div { ...rest } className={ this.classNames('Tabs', className) }>
+      <div { ...rest } className={ this.wxr.classNames('Tabs', className) }>
         { this.renderTabs() }
       </div>
     );
   }
 
   private renderTabs() {
-    return this.renderNullable(
+    return this.wxr.renderNullable(
       this.props.template,
       x => this.renderDynamicTabs(x),
       () => this.renderStaticTabs(),

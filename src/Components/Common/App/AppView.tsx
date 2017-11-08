@@ -63,13 +63,13 @@ export class AppView extends BaseView<AppViewProps, AppViewModel> {
       <div className='webrx-react bootstrap-3' ref={ updateDefaultContainer }>
         <div { ...rest } className={ this.wxr.classNames('App', className) }>
           {
-            this.renderConditional(this.viewModel.isLoading, () => (
+            this.wxr.renderConditional(this.viewModel.isLoading, () => (
               <i className='preload fa fa-spinner fa-5x fa-pulse' aria-hidden='true'></i>
             ), () => (
               <div>
-                { this.renderConditional(props.guide, () => (<BootstrapGuide />)) }
+                { this.wxr.renderConditional(props.guide, () => (<BootstrapGuide />)) }
                 {
-                  this.renderConditional(props.alerts, () => (
+                  this.wxr.renderConditional(props.alerts, () => (
                     <div className='float-container'>
                       <Grid>
                         <AlertHostView viewModel={ this.viewModel.alerts } />
@@ -77,9 +77,9 @@ export class AppView extends BaseView<AppViewProps, AppViewModel> {
                     </div>
                   ))
                 }
-                { this.renderConditional(props.header, () => (<PageHeaderView viewModel={ this.viewModel.header } brand={ props.brand } branduri={ props.branduri } />)) }
+                { this.wxr.renderConditional(props.header, () => (<PageHeaderView viewModel={ this.viewModel.header } brand={ props.brand } branduri={ props.branduri } />)) }
                 <RouteHandlerView viewModel={ this.viewModel.routeHandler } viewMap={ props.viewMap! } />
-                { this.renderConditional(props.footer, () => (<PageFooterView viewModel={ this.viewModel.footer } { ...footerProps } />)) }
+                { this.wxr.renderConditional(props.footer, () => (<PageFooterView viewModel={ this.viewModel.footer } { ...footerProps } />)) }
               </div>
             ))
           }

@@ -26,18 +26,6 @@ export abstract class BaseView<TViewProps extends ViewModelProps<TViewModel>, TV
   private updateSubscription: Subscription;
   private subscriptions: Subscription;
 
-  // -----------------------------------------
-  // these are render helper methods
-  // -----------------------------------------
-  protected readonly renderIterable = renderIterable;
-  protected readonly renderConditional = renderConditional;
-  protected readonly renderNullable = renderNullable;
-  protected readonly renderLoadable = renderLoadable;
-  protected readonly renderSizedLoadable = renderSizedLoadable;
-  protected readonly renderGridLoadable = renderGridLoadable;
-  protected readonly focusElement = focusElement;
-  protected readonly classNames = classNames;
-
   // these are Alert helper functions
   protected readonly createAlert = Alert.create;
   protected readonly alertForError = Alert.createForError;

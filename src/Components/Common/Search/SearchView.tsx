@@ -37,7 +37,7 @@ export class SearchView extends BaseView<SearchViewProps, SearchViewModel> {
     });
 
     return (
-      <div { ...rest } className={ this.classNames('Search', className) }>
+      <div { ...rest } className={ this.wxr.classNames('Search', className) }>
         <FormGroup>
           <BindableInput boundProperty={ this.viewModel.filter }>
             <FormControl className='Search-text' type='text' placeholder={ this.props.placeholder }
@@ -45,12 +45,12 @@ export class SearchView extends BaseView<SearchViewProps, SearchViewModel> {
             />
           </BindableInput>
           {
-            this.renderConditional(
+            this.wxr.renderConditional(
               this.viewModel.searchPending,
               () => (
                 <Icon className='Search-icon Search-pendingIcon' name='spinner' pulse />
               ),
-              () => this.renderConditional(
+              () => this.wxr.renderConditional(
                 String.isNullOrEmpty(this.viewModel.filter.value) === false,
                 () => (
                   <CommandButton className='Search-icon Search-clearIcon' plain command={ this.viewModel.clear }>

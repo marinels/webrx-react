@@ -29,7 +29,7 @@ export class ItemsView extends BaseView<ItemsViewProps, ItemsViewModel<{}>> {
     });
 
     return (
-      <div { ...rest } className={ this.classNames('Items', className) }>
+      <div { ...rest } className={ this.wxr.classNames('Items', className) }>
         <ItemsPresenter
           itemsSource={ this.viewModel.getItemsSource() }
           { ...props }

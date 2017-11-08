@@ -42,7 +42,7 @@ export class ComponentDemoView extends BaseView<ComponentDemoViewProps, Componen
     const cols = this.viewModel.columns.value;
 
     return (
-      <div { ...rest } className={ this.classNames('ComponentDemo', className) }>
+      <div { ...rest } className={ this.wxr.classNames('ComponentDemo', className) }>
         <Grid fluid={ cols === 0 }>
           <Row>
             <Col md={ 12 }>
@@ -51,7 +51,7 @@ export class ComponentDemoView extends BaseView<ComponentDemoViewProps, Componen
           </Row>
           <Row>
             {
-              this.renderConditional(
+              this.wxr.renderConditional(
                 this.viewModel.componentRoute.value === 'help',
                 () => this.renderComponentView(),
                 () => (
@@ -83,7 +83,7 @@ export class ComponentDemoView extends BaseView<ComponentDemoViewProps, Componen
   }
 
   private renderHeader() {
-    return this.renderConditional(
+    return this.wxr.renderConditional(
       this.viewModel.componentRoute.value !== 'help',
       () => (
         <PageHeader>

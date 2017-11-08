@@ -73,7 +73,7 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputViewProps, TimeSpan
     props.validationState = props.validationState || (this.viewModel.error.value == null ? undefined : 'error');
 
     return (
-      <FormGroup { ...rest } { ...props } className={ this.classNames('TimeSpanInput', className) }>
+      <FormGroup { ...rest } { ...props } className={ this.wxr.classNames('TimeSpanInput', className) }>
         <InputGroup>
           { this.renderControl() }
           <InputGroup.Button>
@@ -93,7 +93,7 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputViewProps, TimeSpan
   }
 
   private renderControl() {
-    return this.renderConditional(
+    return this.wxr.renderConditional(
       this.props.children != null,
       () => this.props.children,
       () => (
@@ -121,7 +121,7 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputViewProps, TimeSpan
   }
 
   private renderHelp() {
-    return this.renderNullable(
+    return this.wxr.renderNullable(
       this.viewModel.error.value,
       x => (
         <HelpBlock>

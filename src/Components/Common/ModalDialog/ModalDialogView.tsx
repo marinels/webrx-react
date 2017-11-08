@@ -35,8 +35,8 @@ export class ModalDialogView extends BaseView<ModalDialogViewProps, ModalDialogV
       return { modalTitle, modalBody, modalFooter, canClose };
     });
 
-    return this.renderConditional(this.viewModel.isVisible, () => (
-      <Modal className={ this.classNames('ModalDialog', className) } autoFocus
+    return this.wxr.renderConditional(this.viewModel.isVisible, () => (
+      <Modal className={ this.wxr.classNames('ModalDialog', className) } autoFocus
         keyboard={ props.canClose === true } enforceFocus={ props.canClose === false }
         backdrop={ props.canClose === false ? 'static' : true }
         show={ this.viewModel.isVisible.value } onHide={ this.bindEventToCommand(x => x.hide) }
@@ -50,7 +50,7 @@ export class ModalDialogView extends BaseView<ModalDialogViewProps, ModalDialogV
   }
 
   private renderHeader() {
-    const titleContent = this.renderNullable(
+    const titleContent = this.wxr.renderNullable(
       this.props.modalTitle,
       title => (
         <Modal.Title>
@@ -59,7 +59,7 @@ export class ModalDialogView extends BaseView<ModalDialogViewProps, ModalDialogV
       ),
     );
 
-    return this.renderConditional(
+    return this.wxr.renderConditional(
       titleContent != null || this.props.canClose === true,
       () => (
         <Modal.Header closeButton={ this.props.canClose === true }>
@@ -70,7 +70,7 @@ export class ModalDialogView extends BaseView<ModalDialogViewProps, ModalDialogV
   }
 
   private renderBody() {
-    return this.renderNullable(
+    return this.wxr.renderNullable(
       this.props.modalBody,
       body => (
         <Modal.Body>
@@ -81,10 +81,10 @@ export class ModalDialogView extends BaseView<ModalDialogViewProps, ModalDialogV
   }
 
   private renderFooter() {
-    return this.renderNullable(
+    return this.wxr.renderNullable(
       this.props.modalFooter,
       footer => {
-        return this.renderNullable(
+        return this.wxr.renderNullable(
           footer instanceof Function ? footer(this) : footer,
           footerContent => (
             <Modal.Footer>
