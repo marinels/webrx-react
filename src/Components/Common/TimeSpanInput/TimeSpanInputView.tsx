@@ -5,7 +5,7 @@ import { Icon } from 'react-fa';
 
 import { BaseView, BaseViewProps } from '../../React';
 import { BindableInput } from '../BindableInput/BindableInput';
-import { TimeSpanInputViewModel, TimeSpanUnit } from './TimeSpanInputViewModel';
+import { TimeSpanInputViewModel, TimeSpanUnit, TimeSpanInputError } from './TimeSpanInputViewModel';
 import { CommandButton } from '../CommandButton/CommandButton';
 
 export interface TimeSpanControlProps {
@@ -50,11 +50,16 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputViewProps, TimeSpan
   static defaultProps = {
   };
 
+  // NOTE: we watch setText results because it is possible for a text change to produce a
+  //       comparatively identical duration and unit, and we want the UI to display the formatted
+  //       text rather than the parsed text that was typed.
+  // i.e., '1 day' === '1 D'
+  //       both have the same duration value, but we want either to always render as '1 Day'
   updateOn(viewModel: Readonly<TimeSpanInputViewModel>) {
     return [
-      viewModel.adjust.results,
-      viewModel.unit.changed,
-      viewModel.hasError.changed,
+      viewModel.duration.changed,
+      viewModel.error.changed,
+      viewModel.setText.results,
     ];
   }
 
@@ -64,7 +69,7 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputViewProps, TimeSpan
       return { bsClass, bsSize, controlId, validationState };
     });
 
-    props.validationState = props.validationState || (this.viewModel.hasError.value ? 'error' : undefined);
+    props.validationState = props.validationState || (this.viewModel.error.value == null ? undefined : 'error');
 
     return (
       <FormGroup { ...rest } { ...props } className={ this.classNames('TimeSpanInput', className) }>
@@ -115,16 +120,17 @@ export class TimeSpanInputView extends BaseView<TimeSpanInputViewProps, TimeSpan
   }
 
   private renderHelp() {
-    return this.renderConditional(this.viewModel.hasError, () => (
-      <HelpBlock>
-        {
-          this.renderConditional(
-            String.isNullOrEmpty(this.viewModel.text.value) === true,
-            () => 'Duration is required.',
-            () => 'Invalid Duration Format.',
-          )
-        }
-      </HelpBlock>
-    ));
+    return this.renderNullable(
+      this.viewModel.error.value,
+      x => (
+        <HelpBlock>
+          {
+            x === TimeSpanInputError.format ?
+              'Invalid Duration Format.' :
+              'Duration is required.'
+          }
+        </HelpBlock>
+      ),
+    );
   }
 }
