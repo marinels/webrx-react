@@ -3,14 +3,22 @@ import { AnonymousSubscription, TeardownLogic } from 'rxjs/Subscription';
 
 import { wx, Property, Command } from '../../WebRx';
 import { Logger, LogLevel, getLogger } from '../../Utils/Logging';
-import { Alert } from '../../Utils';
+import { Alert, PubSub } from '../../Utils';
+import { RoutingStateChangedKey } from '../../Events';
 import { routeManager } from '../../Routing/RouteManager';
+import { ViewModelLifecyle, HandlerRoutingStateChanged, RoutingStateHandler } from './Interfaces';
 
-export interface ViewModelLifecyle {
-  initializeViewModel(): void;
-  loadedViewModel(): void;
-  updatedViewModel(): void;
-  cleanupViewModel(): void;
+export function isRoutingStateHandler(value: any): value is RoutingStateHandler<any> {
+  if (value == null) {
+    return false;
+  }
+
+  const handler: RoutingStateHandler<any> = value;
+
+  return (
+    handler.isRoutingStateHandler instanceof Function &&
+    handler.isRoutingStateHandler()
+  );
 }
 
 export function isViewModelLifecycle(viewModel: any): viewModel is ViewModelLifecyle {
@@ -33,6 +41,31 @@ export function isViewModel(source: any): source is BaseViewModel {
   }
 }
 
+export function getRoutingStateValue<T>(value: T | null | undefined, defaultValue?: T): T | undefined;
+export function getRoutingStateValue<T, R>(value: T | null | undefined, selector: (x: T) => R): R | undefined;
+export function getRoutingStateValue<T, R>(value: T | null | undefined, defaultValue: T, selector: (x: T) => R): R | undefined;
+export function getRoutingStateValue<T, R>(value: T | null | undefined, arg2?: T | ((x: T) => R), selector?: (x: T) => R): R | undefined {
+  if (value == null) {
+    return undefined;
+  }
+
+  if (arg2 instanceof Function) {
+    return arg2(value);
+  }
+
+  if (arg2 != null && value === arg2) {
+    return undefined;
+  }
+
+  if (selector != null) {
+    return selector(value);
+  }
+
+  // we need a direct cast here because no selector was supplied
+  // this just means that T === R
+  return <any>value;
+}
+
 export abstract class BaseViewModel extends Subscription {
   public static displayName = 'BaseViewModel';
 
@@ -40,20 +73,19 @@ export abstract class BaseViewModel extends Subscription {
   public static readonly wx = wx;
   protected readonly wx = wx;
 
+  // helper function for creating routing state values
+  protected readonly getRoutingStateValue = getRoutingStateValue;
+
   // these are Alert helper functions
   protected readonly createAlert = Alert.create;
   protected readonly alertForError = Alert.createForError;
 
   protected readonly logger: Logger = getLogger(this.getDisplayName());
+  protected readonly routeManager = routeManager;
+
   private isLoggingMemberObservables = false;
 
-  public readonly stateChanged: Command<any>;
-
-  constructor() {
-    super();
-
-    this.stateChanged = this.wx.command();
-  }
+  public stateChanged: Command<HandlerRoutingStateChanged> | undefined;
 
   // -----------------------------------------
   // These are special methods that handle the
@@ -61,6 +93,8 @@ export abstract class BaseViewModel extends Subscription {
   // -----------------------------------------
   private initializeViewModel() {
     this.initialize();
+
+    this.initializeRoutingStateHandler(this);
 
     if (this.logger.level <= LogLevel.Debug && this.isLoggingMemberObservables === false) {
       this.isLoggingMemberObservables = true;
@@ -81,6 +115,21 @@ export abstract class BaseViewModel extends Subscription {
     this.cleanup();
   }
 
+  protected initializeRoutingStateHandler(source: this) {
+    if (isRoutingStateHandler(source)) {
+      this.stateChanged = this.wx.command(context => {
+        const stateChanged: HandlerRoutingStateChanged = {
+          source,
+          context,
+        };
+
+        PubSub.publish(RoutingStateChangedKey, stateChanged);
+
+        return stateChanged;
+      });
+    }
+  }
+
   protected initialize() {
     // do nothing by default
   }
@@ -97,12 +146,14 @@ export abstract class BaseViewModel extends Subscription {
     // do nothing by default
   }
 
-  protected notifyChanged(arg?: any) {
-    this.stateChanged.execute(arg);
+  protected notifyChanged(context?: any) {
+    if (this.stateChanged != null) {
+      this.stateChanged.execute(context);
+    }
   }
 
   protected navTo(path: string, state?: any, replace = false, uriEncode = false) {
-    routeManager.navTo(path, state, replace, uriEncode);
+    this.routeManager.navTo(path, state, replace, uriEncode);
   }
 
   public isViewModel() {
