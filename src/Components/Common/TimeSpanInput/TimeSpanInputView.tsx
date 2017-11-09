@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Observable } from 'rxjs';
 import { FormGroup, InputGroup, Sizes, FormControl, FormControlProps, DropdownButton, MenuItem, HelpBlock } from 'react-bootstrap';
 import { Icon } from 'react-fa';
+import * as moment from 'moment';
 
 import { BaseView, BaseViewProps } from '../../React';
 import { BindableInput } from '../BindableInput/BindableInput';
