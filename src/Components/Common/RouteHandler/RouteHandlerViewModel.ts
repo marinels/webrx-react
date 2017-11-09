@@ -165,20 +165,6 @@ export class RouteHandlerViewModel extends BaseViewModel {
         .invokeCommand(this.loadComponent),
     );
 
-    // if any component changes its routing state we'll pick it up here and ask the
-    // currently routed component to generate a new routing state object, then
-    // ask the routing manager to navigate to the current route with our updated state
-    this.wx.subscribeOrAlert(
-      () => PubSub.observe<RoutingStateChanged>(RoutingStateChangedKey)
-        .debounceTime(100),
-      'Routing Handler State Changed Error',
-      x => {
-        if (this.currentRoute.value != null && this.routedComponent.value != null) {
-          routeManager.navTo(this.currentRoute.value.path, this.routedComponent.value.getRoutingState(x), true);
-        }
-      },
-    );
-
     // this handles document title changes for any routed component
     this.addSubscription(
       this.wx
@@ -351,7 +337,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
       activator.route.state.route = activator.route;
 
       // start the routing state assignment
-      component.setRoutingState(activator.route.state);
+      component.applyRoutingState(activator.route.state);
     }
 
     return component;
