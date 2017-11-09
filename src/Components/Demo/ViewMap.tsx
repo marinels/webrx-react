@@ -22,7 +22,7 @@ const sampleDataTemplate = (x: SampleData) => {
   return (
     <div key={ x.id }>
       <div>
-        <span>Name: </span><span>{ x.name }</span>
+        <span>Name: </span><span><a href='#'>{ x.name }</a></span>
       </div>
       <div>
         <span>Required By: </span><span>{ x.requiredBy }</span>
