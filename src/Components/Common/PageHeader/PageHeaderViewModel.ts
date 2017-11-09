@@ -2,18 +2,17 @@ import { Observable, Subscription } from 'rxjs';
 
 import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
 import {
-  BaseViewModel,
+  BaseViewModel, Search,
   BaseRoutableViewModel, isRoutableViewModel,
   HeaderAction, HeaderCommandAction, HeaderMenu, isHeaderCommandAction } from '../../React';
 import { RouteHandlerViewModel } from '../RouteHandler/RouteHandlerViewModel';
-import { SearchViewModel } from '../Search/SearchViewModel';
 
 export class PageHeaderViewModel extends BaseViewModel {
   public static displayName = 'PageHeaderViewModel';
 
   private dynamicSubscriptions: Subscription;
 
-  public search: SearchViewModel | undefined;
+  public search: Search | undefined;
   public readonly sidebarMenus: Property<HeaderMenu[]>;
   public readonly navbarMenus: Property<HeaderMenu[]>;
   public readonly navbarActions: Property<HeaderCommandAction[]>;
@@ -106,7 +105,7 @@ export class PageHeaderViewModel extends BaseViewModel {
     this.logger.debug('Updating Page Header Dynamic Content', component);
 
     if (isRoutableViewModel(component)) {
-      this.search = component.getSearch.apply(component);
+      this.search = component.getSearch();
     }
     else {
       this.search = undefined;
