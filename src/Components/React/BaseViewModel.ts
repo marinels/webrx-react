@@ -5,7 +5,7 @@ import { wx, Property, Command } from '../../WebRx';
 import { Logger, LogLevel, getLogger } from '../../Utils/Logging';
 import { Alert, PubSub } from '../../Utils';
 import { RoutingStateChangedKey } from '../../Events';
-import { routeManager } from '../../Routing/RouteManager';
+import { routeManager, RouteManager } from '../../Routing/RouteManager';
 import { ViewModelLifecyle, HandlerRoutingStateChanged, RoutingStateHandler } from './Interfaces';
 
 export function isRoutingStateHandler(value: any): value is RoutingStateHandler<any> {

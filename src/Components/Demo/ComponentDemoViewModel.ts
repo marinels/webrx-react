@@ -5,7 +5,7 @@ import { ReadOnlyProperty, Property, Command } from '../../WebRx';
 import { Route } from '../../Routing';
 import {
   HeaderCommandAction, HeaderMenu, HandlerRoutingStateChanged, isRoutingStateHandler,
-  BaseRoutableViewModel, isRoutableViewModel, RoutingBreadcrumb } from '../React';
+  BaseRoutableViewModel, isRoutableViewModel, RoutingBreadcrumb, Search } from '../React';
 import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
 import { Current as App } from '../Common/App/AppViewModel';
 
