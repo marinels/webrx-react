@@ -24,9 +24,9 @@ export class SearchView extends BaseView<SearchViewProps, SearchViewModel> {
     placeholder: 'Search',
   };
 
-  updateOn() {
+  updateOn(viewModel: Readonly<SearchViewModel>) {
     return [
-      this.viewModel.searchPending.changed,
+      viewModel.searchPending.changed,
     ];
   }
 
