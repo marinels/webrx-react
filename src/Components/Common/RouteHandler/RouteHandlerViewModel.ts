@@ -2,8 +2,7 @@ import { Observable, Subscription } from 'rxjs';
 import 'ix';
 
 import { ReadOnlyProperty, Command } from '../../../WebRx';
-import { BaseViewModel } from '../../React/BaseViewModel';
-import { BaseRoutableViewModel, isRoutableViewModel, RoutingBreadcrumb } from '../../React/BaseRoutableViewModel';
+import { BaseViewModel, isRoutableViewModel, RoutingBreadcrumb } from '../../React';
 import { Route, RouteMapper, ComponentActivator, RoutedComponentActivator } from '../../../Routing';
 import { routeManager } from '../../../Routing/RouteManager';
 import { PubSub } from '../../../Utils';

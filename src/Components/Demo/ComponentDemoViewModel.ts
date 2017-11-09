@@ -3,8 +3,9 @@ import { Tooltip } from 'react-bootstrap';
 
 import { ReadOnlyProperty, Property, Command } from '../../WebRx';
 import { Route } from '../../Routing';
-import { HeaderCommandAction, HeaderMenu } from '../React/Actions';
-import { BaseRoutableViewModel, isRoutableViewModel, RoutingBreadcrumb } from '../React/BaseRoutableViewModel';
+import {
+  HeaderCommandAction, HeaderMenu,
+  BaseRoutableViewModel, isRoutableViewModel, RoutingBreadcrumb } from '../React';
 import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
 import { Current as App } from '../Common/App/AppViewModel';
 

@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import * as clone from 'clone';
 
 import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
-import { BaseViewModel } from '../../React/BaseViewModel';
+import { BaseViewModel } from '../../React';
 
 export class InlineEditViewModel<T> extends BaseViewModel {
   public static displayName = 'InlineEditViewModel';

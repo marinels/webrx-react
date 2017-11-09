@@ -3,7 +3,7 @@ import * as React from 'react';
 import '../Extensions/String';
 import { getLogger } from './Logging';
 import { PubSub, Default as PubSubInstance } from './PubSub';
-import { AlertCreatedKey, AlertCreated } from '../Events/AlertCreated';
+import { AlertCreatedKey, AlertCreated } from '../Events';
 
 export class Alert {
   private static displayName = 'Alert';

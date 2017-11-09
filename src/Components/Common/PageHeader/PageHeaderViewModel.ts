@@ -1,9 +1,10 @@
 import { Observable, Subscription } from 'rxjs';
 
 import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
-import { BaseViewModel } from '../../React/BaseViewModel';
-import { BaseRoutableViewModel, isRoutableViewModel } from '../../React/BaseRoutableViewModel';
-import { HeaderAction, HeaderCommandAction, HeaderMenu, isHeaderCommandAction } from '../../React/Actions';
+import {
+  BaseViewModel,
+  BaseRoutableViewModel, isRoutableViewModel,
+  HeaderAction, HeaderCommandAction, HeaderMenu, isHeaderCommandAction } from '../../React';
 import { RouteHandlerViewModel } from '../RouteHandler/RouteHandlerViewModel';
 import { SearchViewModel } from '../Search/SearchViewModel';
 

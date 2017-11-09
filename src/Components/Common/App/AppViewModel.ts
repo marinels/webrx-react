@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { ReadOnlyProperty, ObservableLike } from '../../../WebRx';
-import { BaseViewModel } from '../../React/BaseViewModel';
+import { BaseViewModel } from '../../React';
 import { AlertHostViewModel } from '../Alert/AlertHostViewModel';
 import { PageHeaderViewModel } from '../PageHeader/PageHeaderViewModel';
 import { PageFooterViewModel } from '../PageFooter/PageFooterViewModel';

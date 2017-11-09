@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
-import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
+import { BaseRoutableViewModel } from '../../React';
 
 export const StandardLimits = [ 10, 25, 0 ];
 export const AlwaysPagedLimits = StandardLimits.filter(x => x != null && x > 0);

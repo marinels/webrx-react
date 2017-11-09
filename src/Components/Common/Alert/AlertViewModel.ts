@@ -1,7 +1,7 @@
 import { Observable } from  'rxjs';
 
 import { ReadOnlyProperty, Command } from '../../../WebRx';
-import { BaseViewModel } from '../../React/BaseViewModel';
+import { BaseViewModel } from '../../React';
 
 export interface Alert {
   key: string;

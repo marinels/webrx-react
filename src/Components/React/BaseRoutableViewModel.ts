@@ -3,8 +3,8 @@ import { Observable } from 'rxjs';
 import { ReadOnlyProperty, Property, Command } from '../../WebRx';
 import { BaseViewModel } from './BaseViewModel';
 import { HeaderCommandAction, HeaderMenu } from './Actions';
-import { Default as pubSub } from '../../Utils/PubSub';
-import { RoutingStateChangedKey, RoutingStateChanged } from '../../Events/RoutingStateChanged';
+import { PubSub } from '../../Utils';
+import { RoutingStateChangedKey, RoutingStateChanged } from '../../Events';
 
 export function isRoutableViewModel(source: any): source is BaseRoutableViewModel<any> {
   const viewModel = <BaseRoutableViewModel<any>>source;
@@ -55,7 +55,7 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
         .filter(() => this.isRoutingEnabled)
         .debounceTime(routingStateRateLimit)
         .subscribe(x => {
-          pubSub.publish<RoutingStateChanged>(RoutingStateChangedKey, x);
+          PubSub.publish<RoutingStateChanged>(RoutingStateChangedKey, x);
         }),
     );
   }

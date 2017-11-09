@@ -2,7 +2,7 @@ import { Iterable } from 'ix';
 import { Observable } from 'rxjs';
 
 import { IterableLike, ObservableLike, ReadOnlyProperty, Command } from '../../../WebRx';
-import { BaseViewModel } from '../../React/BaseViewModel';
+import { BaseViewModel } from '../../React';
 
 export class ItemsViewModel<T> extends BaseViewModel {
   public static displayName = 'ItemsViewModel';

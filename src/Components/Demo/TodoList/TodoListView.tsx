@@ -4,7 +4,7 @@ import * as classNames from 'classnames';
 import { Icon } from 'react-fa';
 import { FormGroup, InputGroup, FormControl, FormControlProps } from 'react-bootstrap';
 
-import { BaseView, BaseViewProps } from '../../React/BaseView';
+import { BaseView, BaseViewProps } from '../../React';
 import { ItemListPanelView } from '../../Common/ItemListPanel/ItemListPanelView';
 import { DataGridListViewTemplate } from '../../Common/DataGrid/DataGridView';
 import { CommandButton } from '../../Common/CommandButton/CommandButton';

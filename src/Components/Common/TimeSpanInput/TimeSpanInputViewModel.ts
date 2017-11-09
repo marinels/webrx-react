@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import * as moment from 'moment';
 
 import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
-import { BaseViewModel } from '../../React/BaseViewModel';
+import { BaseViewModel } from '../../React';
 import { Compare } from '../../../Utils';
 
 export enum TimeSpanUnitType {

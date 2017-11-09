@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { ReadOnlyProperty, Command } from '../../../WebRx';
-import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
+import { BaseRoutableViewModel } from '../../React';
 
 export interface TabsRoutingState {
   tab: number;
