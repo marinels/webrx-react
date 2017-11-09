@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
-import { BaseRoutableViewModel } from '../../React';
+import { BaseViewModel, RoutingStateHandler } from '../../React';
 
 export const StandardLimits = [ 10, 25, 0 ];
 export const AlwaysPagedLimits = StandardLimits.filter(x => x != null && x > 0);
@@ -12,11 +12,11 @@ export interface PageRequest {
 }
 
 export interface PagerRoutingState {
-  page: number;
-  limit: number;
+  page?: number;
+  limit?: number;
 }
 
-export class PagerViewModel extends BaseRoutableViewModel<PagerRoutingState> {
+export class PagerViewModel extends BaseViewModel implements RoutingStateHandler<PagerRoutingState> {
   public static displayName = 'PagerViewModel';
 
   public readonly itemCount: ReadOnlyProperty<number>;
@@ -29,8 +29,8 @@ export class PagerViewModel extends BaseRoutableViewModel<PagerRoutingState> {
   public readonly updateCount: Command<number>;
   public readonly selectPage: Command<number>;
 
-  constructor(protected readonly defaultLimit = StandardLimits[0], isRoutingEnabled = false) {
-    super(isRoutingEnabled);
+  constructor(protected readonly defaultLimit = StandardLimits[0]) {
+    super();
 
     this.updateCount = this.wx.command<number>();
     this.selectPage = this.wx.command<number>();
@@ -77,39 +77,29 @@ export class PagerViewModel extends BaseRoutableViewModel<PagerRoutingState> {
       .invokeCommand(this.selectPage),
     );
 
-    this.addSubscription(this.wx
-      .whenAny(this.selectedPage, this.limit, (sp, l) => ({ sp, l }))
-      .filter(x => x.sp != null && x.l != null)
-      .invokeCommand(this.routingStateChanged),
+    this.addSubscription(
+      this.wx
+        .whenAny(this.selectedPage, this.limit, (sp, l) => ({ sp, l }))
+        .filter(x => x.sp != null && x.l != null)
+        .subscribe(x => {
+          this.notifyChanged(x);
+        }),
     );
   }
 
-  saveRoutingState(state: PagerRoutingState) {
-    if (this.limit.value != null && this.limit.value !== this.defaultLimit) {
-      // only assign the limit routing state if it is valid and not the default
-      state.limit = this.limit.value;
-    }
-
-    if ((this.selectedPage.value || 1) > 1) {
-      // only assign the page routing state if it is past the first page
-      state.page = this.selectedPage.value;
-    }
+  isRoutingStateHandler() {
+    return true;
   }
 
-  loadRoutingState(state: PagerRoutingState) {
-    const prevState = this.routingState.value || <PagerRoutingState>{};
+  createRoutingState(): PagerRoutingState {
+    return Object.trim({
+      limit: this.getRoutingStateValue(this.limit.value, this.defaultLimit),
+      page: this.getRoutingStateValue(this.selectedPage.value, 1),
+    });
+  }
 
-    if (state.limit == null && prevState.limit != null) {
-      // transitioning to the default routing state for limit, use defaultLimit
-      state.limit = this.defaultLimit;
-    }
-
-    if (state.page == null && prevState.page != null) {
-      // transitioning to the default routing state for page, use the first page
-      state.page = 1;
-    }
-
-    this.limit.value = state.limit || this.limit.value || 0;
-    this.selectPage.execute(state.page || this.selectedPage.value || 1);
+  applyRoutingState(state: PagerRoutingState) {
+    this.limit.value = state.limit || this.defaultLimit;
+    this.selectPage.execute(state.page || 1);
   }
 }

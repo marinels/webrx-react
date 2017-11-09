@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
-import { BaseRoutableViewModel } from '../../React';
+import { BaseViewModel, RoutingStateHandler } from '../../React';
 
 export interface SearchRequest {
   filter: string;
@@ -9,10 +9,10 @@ export interface SearchRequest {
 }
 
 export interface SearchRoutingState {
-  filter: string;
+  filter?: string;
 }
 
-export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
+export class SearchViewModel extends BaseViewModel implements RoutingStateHandler<SearchRoutingState> {
   public static displayName = 'SearchViewModel';
 
   public readonly filter: Property<string>;
@@ -22,8 +22,8 @@ export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
   public readonly search: Command<any>;
   public readonly clear: Command<any>;
 
-  constructor(private readonly liveSearchTimeout = 500, private readonly isCaseInsensitive = true, isRoutingEnabled = false) {
-    super(isRoutingEnabled);
+  constructor(private readonly liveSearchTimeout = 500, private readonly isCaseInsensitive = true) {
+    super();
 
     this.filter = this.wx.property('');
 
@@ -75,9 +75,27 @@ export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
       );
     }
 
-    this.addSubscription(this.search.results
-      .invokeCommand(this.routingStateChanged),
+    this.addSubscription(
+      this.wx
+        .whenAny(this.search, x => x)
+        .subscribe(x => {
+          this.notifyChanged(x);
+        }),
     );
+  }
+
+  isRoutingStateHandler() {
+    return true;
+  }
+
+  createRoutingState(): SearchRoutingState {
+    return Object.trim({
+      filter: this.getRoutingStateValue(this.filter.value, ''),
+    });
+  }
+
+  applyRoutingState(state: SearchRoutingState) {
+    this.filter.value = state.filter || '';
   }
 
   public get filterRequests() {
@@ -115,21 +133,5 @@ export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
     }
 
     return regex;
-  }
-
-  saveRoutingState(state: SearchRoutingState) {
-    if (String.isNullOrEmpty(this.filter.value) === false) {
-      state.filter = this.filter.value;
-    }
-  }
-
-  loadRoutingState(state: SearchRoutingState) {
-    const prevState = this.routingState.value || <SearchRoutingState>{};
-
-    if (state.filter == null && prevState.filter != null) {
-      state.filter = '';
-    }
-
-    this.filter.value = state.filter || this.filter.value || '';
   }
 }

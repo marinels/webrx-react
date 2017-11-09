@@ -1,13 +1,13 @@
 import { Observable } from 'rxjs';
 
 import { ReadOnlyProperty, Command } from '../../../WebRx';
-import { BaseRoutableViewModel } from '../../React';
+import { BaseViewModel, RoutingStateHandler } from '../../React';
 
 export interface TabsRoutingState {
-  tab: number;
+  tab?: number;
 }
 
-export class TabsViewModel<T> extends BaseRoutableViewModel<TabsRoutingState> {
+export class TabsViewModel<T> extends BaseViewModel implements RoutingStateHandler<TabsRoutingState> {
   public static displayName = 'TabsViewModel';
 
   public readonly tabs: ReadOnlyProperty<T[]>;
@@ -19,8 +19,8 @@ export class TabsViewModel<T> extends BaseRoutableViewModel<TabsRoutingState> {
   public readonly selectTab: Command<T>;
   public readonly selectIndex: Command<number>;
 
-  constructor(initialTabs: T[] = [], isRoutingEnabled = false) {
-    super(isRoutingEnabled);
+  constructor(initialTabs: Array<T> = []) {
+    super();
 
     const tabs = this.wx.property<T[]>(initialTabs, false);
     this.tabs = <ReadOnlyProperty<T[]>>tabs;
@@ -46,7 +46,7 @@ export class TabsViewModel<T> extends BaseRoutableViewModel<TabsRoutingState> {
 
     this.selectedIndex = this.wx
       .whenAny(this.selectIndex.results, x => x)
-      .toProperty();
+      .toProperty(1);
 
     this.addSubscription(this.selectTab.results
       .map(x => this.tabs.value.indexOf(x))
@@ -64,23 +64,23 @@ export class TabsViewModel<T> extends BaseRoutableViewModel<TabsRoutingState> {
     this.addSubscription(
       this.wx
         .whenAny(this.selectedIndex, x => x)
-        .invokeCommand(this.routingStateChanged),
+        .subscribe(x => {
+          this.notifyChanged(x);
+        }),
     );
   }
 
-  saveRoutingState(state: TabsRoutingState) {
-    if (this.selectedIndex.value !== 0) {
-      state.tab = this.selectedIndex.value;
-    }
+  isRoutingStateHandler() {
+    return true;
   }
 
-  loadRoutingState(state: TabsRoutingState) {
-    const prevState = this.routingState.value || <TabsRoutingState>{};
+  createRoutingState(): TabsRoutingState {
+    return Object.trim({
+      tab: this.getRoutingStateValue(this.selectedIndex.value, 1),
+    });
+  }
 
-    if (state.tab == null && prevState.tab != null) {
-      state.tab = 0;
-    }
-
-    this.selectIndex.execute(state.tab || this.selectedIndex.value || 0);
+  applyRoutingState(state: TabsRoutingState) {
+    this.selectIndex.execute(state.tab || 1);
   }
 }
