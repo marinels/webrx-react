@@ -4,7 +4,7 @@ export function isObject(value: any): value is {} {
   return typeof value === 'object' || value instanceof Object;
 }
 
-export function trim(obj: any, trimNull = true) {
+export function trim<T extends {}>(obj: T, trimNull = true): Partial<T> {
   if (isObject(obj)) {
     return Iterable
       .from(Object.keys(obj))
