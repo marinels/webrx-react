@@ -1,11 +1,13 @@
 import * as React from 'react';
+import { Iterable } from 'ix';
 import { Observable, Subscription } from 'rxjs';
 import { AnonymousSubscription, TeardownLogic } from 'rxjs/Subscription';
 
-import { Property, Command } from '../../WebRx';
+import { IterableLike, Property, Command } from '../../WebRx';
 import { ReactSpreadResult } from '../../Extensions/React';
 import { Alert, Logging } from '../../Utils';
-import { BaseViewModel, ViewModelLifecyle, isViewModelLifecycle } from './BaseViewModel';
+import { ViewModelLifecyle } from './Interfaces';
+import { BaseViewModel, isViewModelLifecycle } from './BaseViewModel';
 import { renderIterable, renderConditional, renderNullable, renderLoadable, renderSizedLoadable, renderGridLoadable, focusElement, classNames } from './RenderHelpers';
 import { bindObservableToCommand, bindEventToProperty, bindEventToCommand } from './BindingHelpers';
 
@@ -188,27 +190,28 @@ export abstract class BaseView<TViewProps extends ViewModelProps<TViewModel>, TV
 
   protected subscribeToUpdates(props: Readonly<TViewProps>, state: Readonly<ViewModelState<TViewModel>>) {
     const viewModel = this.getViewModelFromState(state);
-    const updateProps = this.updateOn(viewModel)
-      .asIterable()
-      .concat([ viewModel.stateChanged.results ])
+    const updateProps = Iterable
+      .from(this.updateOn(viewModel))
       .toArray();
 
-    this.updateSubscription = Observable
-      .merge(...updateProps)
-      .debounceTime(this.getRateLimit())
-      .subscribe(
-        () => {
-          this.renderView();
-        }, x => {
-          this.alertForError(x);
-        },
-      );
+    if (updateProps.length > 0) {
+      this.updateSubscription = Observable
+        .merge(...updateProps)
+        .debounceTime(this.getRateLimit())
+        .subscribe(
+          () => {
+            this.renderView();
+          }, x => {
+            this.alertForError(x);
+          },
+        );
+    }
   }
 
   // -----------------------------------------
   // these overridable view functions
   // -----------------------------------------
-  protected updateOn(viewModel: Readonly<TViewModel>): Array<Observable<any>> { return []; }
+  protected updateOn(viewModel: Readonly<TViewModel>): IterableLike<Observable<any>> { return []; }
 
   protected getDisplayName() { return Object.getName(this); }
   protected getRateLimit() { return 100; }

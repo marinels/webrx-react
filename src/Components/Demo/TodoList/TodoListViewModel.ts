@@ -8,7 +8,7 @@ import { ItemListPanelViewModel } from '../../Common/ItemListPanel/ItemListPanel
 export interface TodoListRoutingState {
 }
 
-export class TodoListViewModel extends BaseRoutableViewModel<TodoListRoutingState> {
+export class TodoListViewModel extends BaseViewModel {
   public static displayName = 'TodoListViewModel';
 
   public newItemContent: Property<string>;
@@ -18,7 +18,7 @@ export class TodoListViewModel extends BaseRoutableViewModel<TodoListRoutingStat
   public list: ItemListPanelViewModel<TodoItemViewModel>;
 
   constructor() {
-    super(true);
+    super();
 
     this.newItemContent = this.wx.property('');
 

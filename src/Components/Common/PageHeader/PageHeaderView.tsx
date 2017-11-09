@@ -9,6 +9,7 @@ import { SearchView } from '../Search/SearchView';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import { Sidebar } from './Sidebar';
 import { PageHeaderViewModel } from './PageHeaderViewModel';
+import { SearchViewModel } from '../Search/SearchViewModel';
 
 export interface PageHeaderProps {
   id?: string;
@@ -36,6 +37,7 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
       viewModel.adminMenuItems.changed,
       viewModel.userMenuItems.changed,
       viewModel.isSidebarVisible.changed,
+      viewModel.menuItemChanged.results,
     ];
   }
 
@@ -223,11 +225,15 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
   }
 
   private renderSearch() {
-    return this.wxr.renderNullable(this.viewModel.search, x => (
-      <Navbar.Form pullRight>
-        <SearchView viewModel={ x } />
-      </Navbar.Form>
-    ));
+    if (this.viewModel.search instanceof SearchViewModel) {
+      return (
+        <Navbar.Form pullRight>
+          <SearchView viewModel={ this.viewModel.search } />
+        </Navbar.Form>
+      );
+    }
+
+    return null;
   }
 
   private renderRoutedActions() {

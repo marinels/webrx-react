@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { Iterable } from 'ix';
 
-export function trimPropsStatic<T>(props: T): T {
+export function trimPropsStatic<T>(props: T): Partial<T> {
   return Object.trim(props, false);
 }
 

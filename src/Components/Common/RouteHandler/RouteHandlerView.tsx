@@ -4,7 +4,7 @@ import { Grid, Alert, Breadcrumb } from 'react-bootstrap';
 import RTG = require('react-transition-group');
 import { Icon } from 'react-fa';
 
-import { BaseRoutableViewModel, BaseView, BaseViewProps, isViewModel, isRoutableViewModel } from '../../React';
+import { BaseView, BaseViewProps, isViewModel, isRoutableViewModel } from '../../React';
 import { RouteHandlerViewModel, SplashKey, DefaultKey } from './RouteHandlerViewModel';
 import { Breadcrumbs } from './Breadcrumbs';
 import { CommandButton } from '../CommandButton/CommandButton';

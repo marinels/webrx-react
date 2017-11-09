@@ -22,7 +22,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelViewProps, ItemList
 
   updateOn(viewModel: Readonly<ItemListPanelViewModel<{}>>) {
     return [
-      this.viewModel.isLoading.changed,
+      viewModel.isLoading.changed,
     ];
   }
 
