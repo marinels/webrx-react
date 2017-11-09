@@ -37,6 +37,7 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
       viewModel.adminMenuItems.changed,
       viewModel.userMenuItems.changed,
       viewModel.isSidebarVisible.changed,
+      viewModel.menuItemChanged.results,
     ];
   }
 
