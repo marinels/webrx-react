@@ -3,8 +3,9 @@ import { Observable } from 'rxjs';
 
 import { IterableLike, ObservableOrValue, ObservableLike, ReadOnlyProperty, Command } from '../../../WebRx';
 import { ObjectComparer, SortDirection } from '../../../Utils/Compare';
+import { RoutingStateHandler } from '../../React';
 import { ListItemsViewModel } from '../ListItems/ListItemsViewModel';
-import { PagerViewModel, PageRequest } from '../Pager/PagerViewModel';
+import { PagerViewModel, PageRequest, PagerRoutingState } from '../Pager/PagerViewModel';
 
 export interface SortArgs {
   field: string;
@@ -22,7 +23,12 @@ export interface DataSourceResponse<T> {
   count: number;
 }
 
-export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewModel<T> {
+export interface DataGridRoutingState {
+  pager?: PagerRoutingState;
+  sorting?: SortArgs;
+}
+
+export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewModel<T> implements RoutingStateHandler<DataGridRoutingState> {
   public static displayName = 'DataGridViewModel';
 
   protected readonly comparer: ObjectComparer<T>;
@@ -34,6 +40,7 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
   public readonly responses: ReadOnlyProperty<DataSourceResponse<T> | undefined>;
   public readonly projectedSource: ReadOnlyProperty<IterableLike<T>>;
   public readonly projectedCount: ReadOnlyProperty<number>;
+  public readonly sorting: ReadOnlyProperty<SortArgs>;
 
   public readonly sort: Command<SortArgs>;
   public readonly toggleSortDirection: Command<string>;
@@ -57,6 +64,10 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
 
     this.sort = this.wx.command<SortArgs>();
     this.toggleSortDirection = this.wx.command<string>();
+
+    this.sorting = this.wx
+      .whenAny(this.sort, x => x)
+      .toProperty();
 
     this.requests = this.getRequests(context)
       .toProperty(undefined, false);
@@ -133,6 +144,35 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
         )
         .invokeCommand(this.selectItems),
     );
+
+    this.addSubscription(
+      this.wx
+        .whenAny(this.sort, x => x)
+        .subscribe(x => {
+          this.notifyChanged(x);
+        }),
+    );
+  }
+
+  isRoutingStateHandler() {
+    return true;
+  }
+
+  createRoutingState(): DataGridRoutingState {
+    return Object.trim({
+      pager: this.getRoutingStateValue(this.pager, x => x.createRoutingState()),
+      sorting: this.getRoutingStateValue(this.sorting.value),
+    });
+  }
+
+  applyRoutingState(state: DataGridRoutingState) {
+    if (this.pager != null && state.pager != null) {
+      this.pager.applyRoutingState(state.pager);
+    }
+
+    if (state.sorting != null) {
+      this.sort.execute(state.sorting);
+    }
   }
 
   getItemsSourceProperty() {
@@ -182,7 +222,7 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
       .whenAny(
         source,
         pagerObservable,
-        this.sort.results.startWith(undefined),
+        this.sorting,
         context || Observable.of(undefined),
         (src, page, sort, ctx) => {
           return this.getRequest(src, page, sort, ctx);

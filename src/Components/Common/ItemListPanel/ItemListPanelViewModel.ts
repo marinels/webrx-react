@@ -2,8 +2,9 @@ import { Iterable } from 'ix';
 import { Observable } from 'rxjs';
 
 import { IterableLike, ObservableOrValue, ObservableLike } from '../../../WebRx';
-import { DataGridViewModel, DataSourceRequest, DataSourceResponse } from '../DataGrid/DataGridViewModel';
-import { SearchViewModel, SearchRequest } from '../Search/SearchViewModel';
+import { RoutingStateHandler } from '../../React';
+import { DataGridViewModel, DataSourceRequest, DataSourceResponse, DataGridRoutingState } from '../DataGrid/DataGridViewModel';
+import { SearchViewModel, SearchRequest, SearchRoutingState } from '../Search/SearchViewModel';
 import { ObjectComparer } from '../../../Utils/Compare';
 import { PagerViewModel } from '../Pager/PagerViewModel';
 
@@ -13,7 +14,11 @@ export interface ItemListPanelRequestContext {
 
 export type ItemListPanelContext<TRequestContext> = ItemListPanelRequestContext & TRequestContext;
 
-export class ItemListPanelViewModel<T, TRequestContext = any> extends DataGridViewModel<T, ItemListPanelContext<TRequestContext>> {
+export interface ItemListPanelRoutingState extends DataGridRoutingState {
+  search?: SearchRoutingState;
+}
+
+export class ItemListPanelViewModel<T, TRequestContext = any> extends DataGridViewModel<T, ItemListPanelContext<TRequestContext>> implements RoutingStateHandler<ItemListPanelRoutingState> {
   public static displayName = 'ItemListPanelViewModel';
 
   protected static getItemListPanelSearch(search: SearchViewModel | undefined | null) {
@@ -101,6 +106,29 @@ export class ItemListPanelViewModel<T, TRequestContext = any> extends DataGridVi
 
     this.filterer = filterer;
     this.search = search;
+  }
+
+  isRoutingStateHandler() {
+    return true;
+  }
+
+  createRoutingState(): ItemListPanelRoutingState {
+    return Object.trim(
+      Object.assign(
+        super.createRoutingState(),
+        {
+          search: this.getRoutingStateValue(this.search, x => x.createRoutingState()),
+        },
+      ),
+    );
+  }
+
+  applyRoutingState(state: ItemListPanelRoutingState) {
+    super.applyRoutingState(state);
+
+    if (this.search != null && state.search != null) {
+      this.search.applyRoutingState(state.search);
+    }
   }
 
   getResponseFromItems(items: Iterable<T>, request: DataSourceRequest<ItemListPanelContext<TRequestContext>>): ObservableOrValue<DataSourceResponse<T> | undefined> {
