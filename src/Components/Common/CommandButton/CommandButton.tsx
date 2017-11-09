@@ -20,6 +20,10 @@ export interface CommandButtonComponentProps extends ButtonProps, CommandButtonP
 export class CommandButton extends React.Component<CommandButtonComponentProps> {
   public static displayName = 'CommandButton';
 
+  static defaultProps = {
+    componentClass: 'div',
+  };
+
   private canExecuteSubscription = Subscription.EMPTY;
 
   private getCommand(): Command<any> | undefined {
