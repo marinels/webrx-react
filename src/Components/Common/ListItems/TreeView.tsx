@@ -24,13 +24,15 @@ export class TreeView extends ListItemsViewTemplate<TreeViewComponentProps> {
       return { fill, listItems, itemsProps };
     });
 
+    const treeItemProps: any = React.Component.trimProps(rest);
+
     return (
       <TreeItemsView
         className={ className }
         viewModel={ this.getListItems() }
         headerTemplate={ this.renderHeader.bind(this) }
         { ...this.getItemsProps() }
-        { ...React.Component.trimProps(rest) }
+        { ...treeItemProps }
       />
     );
   }
