@@ -274,7 +274,19 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
       // so we filter here just to be safe (this should be a no-op in most cases)
       .filterNull()
       .flatMap(x => {
-        return this.wx.getObservable(this.getResponse(x));
+        return Observable
+          .defer(() => {
+            return this.wx
+              .getObservable(this.getResponse(x));
+          })
+          .catch(e => {
+            this.alertForError(e, 'Data Response Error');
+
+            return this.wx.getObservable<DataSourceResponse<T>>({
+              items: Iterable.empty<T>(),
+              count: 0,
+            });
+          });
       })
       .filterNull()
       .debounceTime(rateLimit);
