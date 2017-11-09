@@ -245,7 +245,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
     document.title = title;
   }
 
-  private getActivator(route: Route) {
+  private getActivator(route: Route): RoutedComponentActivator | undefined {
     let activator: ComponentActivator | undefined;
 
     // we shouldn't ever hit this function with a null route, but play safe anyways
@@ -292,7 +292,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
     // if our route was null (should never happen) always return a null value
     // otherwise merge the route with the activator to create the RoutedActivator
     // we default to the route path, but allow the activator to override that path
-    return route == null ? undefined : Object.assign<RoutedComponentActivator>({ route, path: route.path }, activator);
+    return route == null ? undefined : Object.assign({ route, path: route.path }, activator);
   }
 
   private handleRedirect(activator: RoutedComponentActivator | undefined) {

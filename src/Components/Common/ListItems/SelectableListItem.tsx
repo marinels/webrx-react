@@ -72,7 +72,7 @@ export class SelectableListItem extends React.Component<SelectableListItemCompon
   }
 
   protected getListItemProps(elem: React.ReactElement<any>): ListGroupItemProps {
-    return Object.assign<ListGroupItemProps>(
+    return Object.assign(
       {},
       this.props.selectedProps!(this.getIsSelected(), elem),
       {

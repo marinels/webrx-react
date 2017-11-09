@@ -17,8 +17,10 @@ export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
 
   public readonly filter: Property<string>;
   public readonly requests: ReadOnlyProperty<SearchRequest>;
+  public readonly searchPending: ReadOnlyProperty<boolean>;
 
   public readonly search: Command<any>;
+  public readonly clear: Command<any>;
 
   constructor(private readonly liveSearchTimeout = 500, private readonly isCaseInsensitive = true, isRoutingEnabled = false) {
     super(isRoutingEnabled);
@@ -27,6 +29,8 @@ export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
 
     // search is executed when a search is to be performed
     this.search = this.wx.command();
+
+    this.clear = this.wx.command();
 
     this.requests = this.wx
       // project search executions into filter values
@@ -39,6 +43,28 @@ export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
         regex: this.createRegex(filter),
       }))
       .toProperty();
+
+    this.searchPending = Observable
+      .merge(
+        Observable
+          .merge(
+            this.filter.changed
+              .map(() => true),
+            this.search.results
+              .map(() => true),
+          ),
+        this.requests.changed
+          .map(() => false),
+      )
+      .toProperty(false);
+
+    this.addSubscription(
+      this.wx
+        .whenAny(this.clear, x => x)
+        .subscribe(() => {
+          this.filter.value = '';
+        }),
+    );
 
     if (this.liveSearchTimeout > 0) {
       this.addSubscription(

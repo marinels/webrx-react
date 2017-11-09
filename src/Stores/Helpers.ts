@@ -158,7 +158,7 @@ export function getRequest<T>(action: string, url: string, logger: Logging.Logge
 
   const body = data == null ? undefined : String.stringify(data, null, 2);
 
-  options = Object.assign<AjaxRequest>(<AjaxRequest>{
+  options = Object.assign({
     headers: defaultHeaders,
     async: true,
     body,

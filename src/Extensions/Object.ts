@@ -141,7 +141,7 @@ export function getEnumPropertyDescriptors<T>(type: any): Iterable<EnumPropertyD
     .asIterable()
     .map(name => ({ name, value: parseInt(type[name]) }))
     .filter(x => x.value >= 0)
-    .map(x => Object.assign<EnumPropertyDescriptor<T>>(x, { type: type[x.name] }));
+    .map(x => Object.assign(x, { type: type[x.name] }));
 }
 
 export function getEnumNames<T>(type: any): Array<string> {
@@ -169,7 +169,6 @@ declare global {
   interface ObjectConstructor {
     isObject: typeof isObject;
     trim: typeof trim;
-    assign: typeof assign;
     rest: typeof rest;
     getName: typeof getName;
     getEnumPropertyDescriptors: typeof getEnumPropertyDescriptors;
@@ -181,7 +180,6 @@ declare global {
 
 Object.isObject = isObject;
 Object.trim = trim;
-Object.assign = Object.assign || assign;
 Object.rest = rest;
 Object.getName = getName;
 Object.getEnumPropertyDescriptors = getEnumPropertyDescriptors;

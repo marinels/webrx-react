@@ -122,12 +122,12 @@ export class ObjectComparer<T extends StringMap<any>> {
     }
   }
 
-  public getComparer(field?: string) {
+  public getComparer(field?: string): FieldComparer<T, any> {
     let comparer = this.comparerMap[field || ObjectComparer.DefaultComparerKey] ||
       this.comparerMap[ObjectComparer.DefaultComparerKey];
 
     if (String.isNullOrEmpty(comparer.field) && !String.isNullOrEmpty(field)) {
-      comparer = Object.assign<FieldComparer<T, any>>({}, comparer, { field });
+      comparer = Object.assign({}, comparer, { field });
     }
 
     return comparer;
