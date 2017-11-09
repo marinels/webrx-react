@@ -112,7 +112,18 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
       .toProperty(undefined, false);
 
     this.component = this.wx
-      .whenAny(this.routedComponent, x => x == null ? undefined : x.component)
+      .whenAny(this.routedComponent, x => x)
+      .map(x => {
+        if (x == null) {
+          return undefined;
+        }
+
+        if (isRoutingStateHandler(x.component)) {
+          x.component.applyRoutingState(x.routingState);
+        }
+
+        return x.component;
+      })
       .toProperty(undefined, false);
 
     this.addSubscription(
@@ -207,6 +218,9 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
 
         // if our component route has not changed then we can just use our previously activated component
         routedComponent = this.routedComponent.value;
+
+        // update the routed component's state
+        routedComponent.routingState = state.state;
       }
       else {
         this.logger.debug(`Loading Component for "${ componentRoute }"...`);
