@@ -4,7 +4,7 @@ import { Tooltip } from 'react-bootstrap';
 import { ReadOnlyProperty, Property, Command } from '../../WebRx';
 import { Route } from '../../Routing';
 import {
-  HeaderCommandAction, HeaderMenu,
+  HeaderCommandAction, HeaderMenu, HandlerRoutingStateChanged, isRoutingStateHandler,
   BaseRoutableViewModel, isRoutableViewModel, RoutingBreadcrumb } from '../React';
 import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
 import { Current as App } from '../Common/App/AppViewModel';
@@ -62,9 +62,9 @@ export interface RoutedDemoComponent {
 }
 
 export interface ComponentDemoRoutingState {
-  route: Route;
-  componentRoute: string;
-  columns: number;
+  route?: Route;
+  columns?: number;
+  state?: any;
 }
 
 export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoRoutingState> {
@@ -73,20 +73,22 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   private pageHeader: PageHeaderViewModel;
   private readonly demoAlertItem: HeaderCommandAction;
 
-  public readonly columns: Property<number>;
+  public readonly columns: ReadOnlyProperty<number>;
   public readonly componentRoute: ReadOnlyProperty<string | undefined>;
   public readonly routedComponent: ReadOnlyProperty<RoutedDemoComponent>;
   public readonly component: ReadOnlyProperty<any>;
 
+  public readonly setComponent: Command<RoutedDemoComponent>;
   public readonly setColumns: Command<number>;
   public readonly reRender: Command<any>;
 
   constructor(protected readonly routeMap: RoutingMap) {
-    super(true);
+    super();
 
-    this.columns = this.wx.property(12);
-
+    this.setComponent = this.wx.command<RoutedDemoComponent>();
+    this.setColumns = this.wx.command<number>();
     this.reRender = this.wx.command();
+
     const demoAlert = this.wx.command(Observable.of(true), (x: string) => this.createAlert(x, 'Demo Alert'));
 
     this.demoAlertItem = {
@@ -97,11 +99,12 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
       iconName: 'flask',
     };
 
+    this.columns = this.wx
+      .whenAny(this.setColumns, x => x)
+      .toProperty(12);
+
     this.routedComponent = this.wx
-      .whenAny(this.routingState, this.reRender.results.startWith(null), x => x)
-      .map(x => {
-        return this.getRoutedComponent(x);
-      })
+      .whenAny(this.setComponent, this.reRender.results.startWith(undefined), x => x)
       .toProperty(undefined, false);
 
     this.componentRoute = this.wx
@@ -114,8 +117,10 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
 
     this.addSubscription(
       this.wx
-        .whenAny(this.columns.changed, () => null)
-        .invokeCommand(this.routingStateChanged),
+        .whenAny(this.columns.changed, x => x)
+        .subscribe(x => {
+          this.notifyChanged(x);
+        }),
     );
 
     this.addSubscription(
@@ -175,11 +180,15 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
   }
 
   private getComponentRoute(state: ComponentDemoRoutingState) {
-    if (state == null || state.route == null || Array.isArray(state.route.match) === false || state.route.match.length < 2) {
+    if (state == null || state.route == null) {
       return undefined;
     }
 
-    return state.route.match[1];
+    if (Array.isArray(state.route.match) && state.route.match.length >= 2) {
+      return state.route.match[1];
+    }
+
+    return undefined;
   }
 
   private getRoutedComponent(state: ComponentDemoRoutingState) {
@@ -224,7 +233,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
             activator = result.activator;
 
             // and override the routed state's path and match with the demo's context
-            routedComponent.routingState = Object.assign({}, state, { path: result.path, match: result.match });
+            routedComponent.routingState = Object.assign({}, state.state, { path: result.path, match: result.match });
           }
         }
 
@@ -239,56 +248,61 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
 
     // if our activated component is routable, then apply the current routing state
     if (isRoutableViewModel(routedComponent.component)) {
-      routedComponent.component.setRoutingState(routedComponent.routingState);
+      routedComponent.component.applyRoutingState(routedComponent.routingState);
     }
 
     return routedComponent;
   }
 
-  routed() {
+  createRoutingState(changed: HandlerRoutingStateChanged): ComponentDemoRoutingState {
+    let state: any = undefined;
+
+    if (isRoutingStateHandler(this.component.value)) {
+      state = this.component.value.createRoutingState();
+    }
+
+    let columns: number | undefined;
+
+    if (this.columns.value !== 12) {
+      columns = this.columns.value;
+    }
+
+    return Object.trim({
+      route: {
+        path: `/demo/${ this.componentRoute.value || '' }`,
+      },
+      columns: this.getRoutingStateValue(this.columns.value, 12),
+      state: this.getRoutingStateValue(this.component.value, (x: any) => {
+        if (isRoutingStateHandler(x)) {
+          return x.createRoutingState();
+        }
+
+        return undefined;
+      }),
+    });
+  }
+
+  applyRoutingState(state: ComponentDemoRoutingState) {
+    const routedComponent = this.getRoutedComponent(state);
+
+    // if there is no route, then route to help view
+    if (routedComponent == null || String.isNullOrEmpty(routedComponent.componentRoute)) {
+      this.navTo('#/demo/help');
+    }
+    else {
+      this.setComponent.execute(routedComponent);
+      this.setColumns.execute(state.columns || 12);
+    }
+
     this.pageHeader = App.header;
   }
 
-  saveRoutingState(state: ComponentDemoRoutingState): any {
-    // this will ensure we use a sane routing path when changing routing state
-    state.route = <Route>{
-      path: `/demo/${ this.componentRoute.value || '' }`,
-    };
-
-    if (this.columns.value !== 12) {
-      state.columns = this.columns.value;
-    }
-
-    if (isRoutableViewModel(this.component.value)) {
-      Object.assign(state, this.component.value.getRoutingState('demo'));
-    }
-  }
-
-  loadRoutingState(state: ComponentDemoRoutingState) {
-    // if there is no route, then route to help view
-    if (this.getComponentRoute(state) == null) {
-      this.navTo('#/demo/help');
-      return;
-    }
-
-    // if colums were previously specified, but omitted in the current routing state
-    // then "reset" the columns to 12
-    if (state.columns == null && (this.routingState.value || {}).columns != null) {
-      state.columns = 12;
-    }
-
-    // update the columns from the state, fallback on existing columns, then to 12 as the default
-    this.columns.value = state.columns || this.columns.value || 12;
-
-    if (isRoutableViewModel(this.component.value)) {
-      this.component.value.setRoutingState(state);
-    }
-  }
-
   getSearch() {
-    let viewModel = <BaseRoutableViewModel<any>>this.component.value;
+    if (isRoutableViewModel(this.component.value)) {
+      return this.component.value.getSearch();
+    }
 
-    return (viewModel != null && viewModel.getSearch != null) ? viewModel.getSearch() : null;
+    return undefined;
   }
 
   getSidebarMenus(): Array<HeaderMenu> {
