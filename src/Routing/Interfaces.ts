@@ -2,9 +2,9 @@ import { Observable, Scheduler } from  'rxjs';
 
 export interface Route {
   path: string;
-  params: string;
-  state: any;
-  match: RegExpMatchArray;
+  params?: string;
+  state?: any;
+  match?: RegExpMatchArray;
 }
 
 export interface HashManager {
