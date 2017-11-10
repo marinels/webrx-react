@@ -41,7 +41,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps<TViewModel>, TV
 
   protected readonly logger: Logging.Logger = Logging.getLogger(this.getDisplayName());
 
-  constructor(props?: TViewProps, context?: any) {
+  constructor(props: TViewProps, context?: any) {
     super(props, context);
 
     this.updateSubscription = this.subscriptions = Subscription.EMPTY;

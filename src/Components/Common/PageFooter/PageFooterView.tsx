@@ -23,7 +23,7 @@ export class PageFooterView extends BaseView<PageFooterViewProps, PageFooterView
   static defaultProps = {
   };
 
-  constructor(props?: PageFooterViewProps, context?: any) {
+  constructor(props: PageFooterViewProps, context?: any) {
     super(props, context);
 
     this.bindObservableToCommand(

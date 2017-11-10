@@ -171,7 +171,7 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
     );
   }
 
-  constructor(props?: TreeItemProps, context?: any) {
+  constructor(props: TreeItemComponentProps, context?: any) {
     super(props, context);
 
     this.state = {

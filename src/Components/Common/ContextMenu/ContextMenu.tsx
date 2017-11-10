@@ -39,7 +39,7 @@ const ArrowOffset = 20;
 export class ContextMenu extends React.Component<ContextMenuComponentProps, ContextMenuState> {
   public static displayName = 'ContextMenu';
 
-  constructor(props?: ContextMenuProps, context?: any) {
+  constructor(props: ContextMenuComponentProps, context?: any) {
     super(props, context);
 
     this.state = {
