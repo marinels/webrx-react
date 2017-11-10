@@ -64,8 +64,8 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     });
 
     const pagerProps = Object.rest(rest, x => {
-      const { activePage, boundaryLinks, bsSize, bsStyle, bsClass, buttonComponentClass, ellipsis, first, items, last, maxButtons, next, onSelect, prev } = x;
-      return { activePage, boundaryLinks, bsSize, bsStyle, bsClass, buttonComponentClass, ellipsis, first, items, last, maxButtons, next, onSelect, prev };
+      const { activePage, boundaryLinks, bsSize, bsStyle, buttonComponentClass, ellipsis, first, items, last, maxButtons, next, onSelect, prev } = x;
+      return { activePage, boundaryLinks, bsSize, bsStyle, buttonComponentClass, ellipsis, first, items, last, maxButtons, next, onSelect, prev };
     });
 
     return this.wxr.renderConditional(
