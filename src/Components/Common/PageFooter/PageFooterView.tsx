@@ -14,7 +14,7 @@ export interface PageFooterProps {
   hideDimensions?: boolean;
 }
 
-export interface PageFooterViewProps extends BaseViewProps<PageFooterViewModel, PageFooterView>, PageFooterProps {
+export interface PageFooterViewProps extends BaseViewProps<PageFooterViewModel>, PageFooterProps {
 }
 
 export class PageFooterView extends BaseView<PageFooterViewProps, PageFooterViewModel> {

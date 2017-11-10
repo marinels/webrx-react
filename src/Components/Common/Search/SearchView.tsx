@@ -14,7 +14,7 @@ export interface SearchProps {
   placeholder?: string;
 }
 
-export interface SearchViewProps extends SearchProps, BaseViewProps<SearchViewModel, SearchView> {
+export interface SearchViewProps extends SearchProps, BaseViewProps<SearchViewModel> {
 }
 
 export class SearchView extends BaseView<SearchViewProps, SearchViewModel> {

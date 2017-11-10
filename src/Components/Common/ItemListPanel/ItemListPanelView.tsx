@@ -11,7 +11,7 @@ export interface ItemListPanelProps extends DataGridProps, CommonPanelRenderProp
   search?: boolean | SearchProps | {};
 }
 
-export interface ItemListPanelViewProps extends BaseViewProps<ItemListPanelViewModel<{}>, ItemListPanelView>, ItemListPanelProps {
+export interface ItemListPanelViewProps extends BaseViewProps<ItemListPanelViewModel<{}>>, ItemListPanelProps {
 }
 
 export class ItemListPanelView extends BaseView<ItemListPanelViewProps, ItemListPanelViewModel<{}>> {

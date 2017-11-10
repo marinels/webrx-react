@@ -17,7 +17,7 @@ export interface PageHeaderProps {
   branduri?: string;
 }
 
-export interface PageHeaderViewProps extends BaseViewProps<PageHeaderViewModel, PageHeaderView>, PageHeaderProps {
+export interface PageHeaderViewProps extends BaseViewProps<PageHeaderViewModel>, PageHeaderProps {
 }
 
 export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderViewModel> {

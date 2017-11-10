@@ -26,7 +26,7 @@ export interface AppProps extends PageHeaderProps, PageFooterProps {
   footer?: boolean;
 }
 
-export interface AppViewProps extends BaseViewProps<AppViewModel, AppView>, AppProps {
+export interface AppViewProps extends BaseViewProps<AppViewModel>, AppProps {
 }
 
 export class AppView extends BaseView<AppViewProps, AppViewModel> {

@@ -14,7 +14,7 @@ export interface RouteHandlerProps {
   viewMap: ViewMapper;
 }
 
-export interface RouteHandlerViewProps extends BaseViewProps<RouteHandlerViewModel, RouteHandlerView>, RouteHandlerProps {
+export interface RouteHandlerViewProps extends BaseViewProps<RouteHandlerViewModel>, RouteHandlerProps {
 }
 
 export class RouteHandlerView extends BaseView<RouteHandlerViewProps, RouteHandlerViewModel> {

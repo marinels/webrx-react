@@ -41,7 +41,7 @@ export interface TabsProps {
   template?: TabRenderTemplate<any>;
 }
 
-export interface TabsViewProps extends BaseViewProps<TabsViewModel<{}>, TabsView>, TabsProps {
+export interface TabsViewProps extends BaseViewProps<TabsViewModel<{}>>, TabsProps {
   template?: TabRenderTemplate<any>;
 }
 

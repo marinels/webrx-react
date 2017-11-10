@@ -7,7 +7,7 @@ import { AlertViewModel } from './AlertViewModel';
 export interface AlertProps {
 }
 
-export interface AlertViewProps extends BaseViewProps<AlertViewModel, AlertView>, AlertProps {
+export interface AlertViewProps extends BaseViewProps<AlertViewModel>, AlertProps {
 }
 
 export class AlertView extends BaseView<AlertViewProps, AlertViewModel> {

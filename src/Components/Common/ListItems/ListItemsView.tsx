@@ -12,7 +12,7 @@ export interface ListItemsProps extends ItemsProps  {
   children?: React.ReactNode;
 }
 
-export interface ListItemsViewProps extends BaseViewProps<ListItemsViewModel<{}>, ListItemsView>, ListItemsProps {
+export interface ListItemsViewProps extends BaseViewProps<ListItemsViewModel<{}>>, ListItemsProps {
   fill?: boolean;
 }
 

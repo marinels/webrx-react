@@ -16,7 +16,7 @@ export interface DataGridProps extends ListItemsProps {
   pager?: boolean | PagerProps | {};
 }
 
-export interface DataGridViewProps extends BaseViewProps<DataGridViewModel<{}>, DataGridView>, DataGridProps {
+export interface DataGridViewProps extends BaseViewProps<DataGridViewModel<{}>>, DataGridProps {
   fill?: boolean;
 }
 

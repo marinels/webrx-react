@@ -22,7 +22,7 @@ export interface InlineEditProps extends BindableProps {
   errorPlacement?: string;
 }
 
-export interface InlineEditViewProps extends BaseViewProps<InlineEditViewModel<{}>, InlineEditView>, InlineEditProps {
+export interface InlineEditViewProps extends BaseViewProps<InlineEditViewModel<{}>>, InlineEditProps {
 }
 
 export class InlineEditView extends BaseView<InlineEditViewProps, InlineEditViewModel<{}>> {

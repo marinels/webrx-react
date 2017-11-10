@@ -42,7 +42,7 @@ export interface TimeSpanInputProps {
   componentClass?: React.ReactType;
 }
 
-export interface TimeSpanInputViewProps extends BaseViewProps<TimeSpanInputViewModel, TimeSpanInputView>, TimeSpanInputProps {
+export interface TimeSpanInputViewProps extends BaseViewProps<TimeSpanInputViewModel>, TimeSpanInputProps {
 }
 
 export class TimeSpanInputView extends BaseView<TimeSpanInputViewProps, TimeSpanInputViewModel> {

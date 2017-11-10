@@ -17,7 +17,7 @@ export interface TodoListProps {
   shadow?: boolean;
 }
 
-export interface TodoListViewProps extends BaseViewProps<TodoListViewModel, TodoListView>, TodoListProps {
+export interface TodoListViewProps extends BaseViewProps<TodoListViewModel>, TodoListProps {
 }
 
 export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel> {
@@ -109,7 +109,7 @@ export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel>
 export interface TodoItemProps {
 }
 
-export interface TodoItemViewProps extends BaseViewProps<TodoItemViewModel, TodoItemView>, TodoItemProps {
+export interface TodoItemViewProps extends BaseViewProps<TodoItemViewModel>, TodoItemProps {
 }
 
 export class TodoItemView extends BaseView<TodoItemViewProps, TodoItemViewModel> {

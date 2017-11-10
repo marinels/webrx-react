@@ -14,7 +14,7 @@ export interface ModalDialogProps extends BootstrapModalProps {
   canClose?: boolean;
 }
 
-export interface ModalDialogViewProps extends BaseViewProps<ModalDialogViewModel<{}>, Modal>, ModalDialogProps {
+export interface ModalDialogViewProps extends BaseViewProps<ModalDialogViewModel<{}>>, ModalDialogProps {
 }
 
 export class ModalDialogView extends BaseView<ModalDialogViewProps, ModalDialogViewModel<{}>> {

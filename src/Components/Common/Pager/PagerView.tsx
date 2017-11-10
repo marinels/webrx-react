@@ -17,7 +17,7 @@ export interface PagerProps extends BootstrapPaginationProps {
   emptyInfo?: string;
 }
 
-export interface PagerViewProps extends BaseViewProps<PagerViewModel, PagerView>, PagerProps {
+export interface PagerViewProps extends BaseViewProps<PagerViewModel>, PagerProps {
 }
 
 export type PagerComponentTypes = 'info' | 'controls' | 'limit' | undefined;
