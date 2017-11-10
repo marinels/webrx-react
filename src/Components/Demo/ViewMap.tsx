@@ -137,15 +137,17 @@ export const demoViewMap: ViewActivatorMap = {
           <Components.ProfilePicture style={ style } src={ undefined } title='Basic Icon' />
           <Components.ProfilePicture style={ style } src={ undefined } iconSize='2x' title='2x Size Icon' />
           <Components.ProfilePicture style={ style } src={ undefined } thumbnail title='Thumbnail Icon' />
+          <Components.ProfilePicture style={ style } src={ undefined } thumbnail rounded title='Rounded Thumbnail Icon' />
           <Components.ProfilePicture style={ style } src={ undefined } iconSize='2x' thumbnail size={ 40 } title='Fixed Width/Height Icon' />
-          <Components.ProfilePicture style={ style } src={ undefined } iconSize='2x' thumbnail rounded size={ 40 } title='Rounded Icon' />
+          <Components.ProfilePicture style={ style } src={ undefined } iconSize='2x' thumbnail rounded size={ 40 } title='Rounded Fixed Width/Height Icon' />
         </div>
         <div>
           <Components.ProfilePicture style={ style } src={ imageData } title='Basic Image' />
           <Components.ProfilePicture style={ style } src={ imageData } rounded title='Rounded Image' />
           <Components.ProfilePicture style={ style } src={ imageData } thumbnail title='Thumbnail Image' />
+          <Components.ProfilePicture style={ style } src={ imageData } thumbnail rounded title='Rounded Thumbnail Image' />
           <Components.ProfilePicture style={ style } src={ imageData } thumbnail size={ 40} title='Fixed Width/Height Image' />
-          <Components.ProfilePicture style={ style } src={ imageData } thumbnail rounded size={ 40 } title='Rounded Image' />
+          <Components.ProfilePicture style={ style } src={ imageData } thumbnail rounded size={ 40 } title='Rounded Fixed Width/Height Image' />
         </div>
         <div>
           <Components.ProfilePicture style={ style } src='http://via.placeholder.com/50x30' title='Wide Image' />
@@ -154,7 +156,8 @@ export const demoViewMap: ViewActivatorMap = {
           <Components.ProfilePicture style={ style } src='http://via.placeholder.com/60x100' title='X-Tall Image' />
         </div>
         <div style={ ({ height: 250 }) }>
-          <Components.ProfilePicture style={ style } src={ imageData } thumbnail responsive title='Responsive Image' />
+          <Components.ProfilePicture style={ style } src={ imageData } thumbnail responsive title='Responsive Thumbnail Image' />
+          <Components.ProfilePicture style={ style } src={ imageData } thumbnail rounded responsive title='Responsive Rounded Thumbnail Image' />
         </div>
       </div>
     );
