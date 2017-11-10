@@ -8,12 +8,12 @@ import { RoutingStateChangedKey } from '../../Events';
 import { routeManager, RouteManager } from '../../Routing/RouteManager';
 import { ViewModelLifecyle, HandlerRoutingStateChanged, RoutingStateHandler } from './Interfaces';
 
-export function isRoutingStateHandler(value: any): value is RoutingStateHandler<any> {
+export function isRoutingStateHandler(value: any): value is RoutingStateHandler<{}> {
   if (value == null) {
     return false;
   }
 
-  const handler: RoutingStateHandler<any> = value;
+  const handler: RoutingStateHandler<{}> = value;
 
   return (
     handler.isRoutingStateHandler instanceof Function &&
