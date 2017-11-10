@@ -10,7 +10,7 @@ export type CommonPanelContentType = 'teaser' | 'summary';
 
 export type PanelAction = CommandButtonProps & { children?: React.ReactNode; };
 
-export type BootstrapPanelProps = Omit<Omit<PanelProps, React.HTMLProps<Panel>>, TransitionCallbacks>;
+export type BootstrapPanelProps = Omit2<PanelProps, React.HTMLProps<Panel>, TransitionCallbacks>;
 
 export interface CommonPanelRenderProps extends BootstrapPanelProps {
   headerContent?: CommonPannelContent;
