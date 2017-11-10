@@ -23,34 +23,48 @@ export function trim<T extends {}>(obj: T, trimNull = true): T {
   return obj;
 }
 
-export interface RestResult<TProps, TRest> {
-  props: TProps;
-  rest: TRest;
+export interface RestResult<P, T, R> {
+  props: T;
+  rest: Omit2<P, T, R>;
+  removals: R;
 }
 
 // this extension solves the Unknown Prop Warning that is experienced in
 // typescript when using Rest and Spread Properties
 // see: https://facebook.github.io/react/warnings/unknown-prop.html
 // see: https://facebook.github.io/react/docs/transferring-props.html
-export function rest<TProps, TRest extends StringMap<any>>(
-  data: TRest, propsCreator?: (x: TRest) => TProps,
-  ...omits: string[],
-): RestResult<TProps, TRest> {
-  const props = propsCreator == null ? <TProps>{} : propsCreator(data);
+export function rest<P extends {}, T, R extends {} = {}>(
+  data: P,
+  propsCreator?: (x: P) => T,
+  removals?: R,
+): RestResult<P, T, R> {
+  const map = {
+    data: <StringMap<any>>data || {},
+    props: (propsCreator == null ? undefined : propsCreator(data)) || {},
+    removals: removals || {},
+  };
+
+  const result = {
+    rest: <StringMap<any>>{},
+    removals: <StringMap<any>>{},
+  };
 
   const restParams = Object
     .keys(data)
-    .filter(key => props.hasOwnProperty(key) === false && omits.indexOf(key) < 0)
-    .reduce(
-      (r, key) => {
-        r[key] = data[key];
+    .forEach(key => {
+      if (map.removals.hasOwnProperty(key)) {
+        result.removals[key] = map.data[key];
+      }
+      else if (map.props.hasOwnProperty(key) === false) {
+        result.rest[key] = map.data[key];
+      }
+    });
 
-        return r;
-      },
-      <TRest>{},
-    );
-
-  return { props, rest: restParams };
+  return {
+    props: <T>map.props,
+    rest: <Omit2<P, T, R>>result.rest,
+    removals: <R>result.removals,
+  };
 }
 
 export interface NamedObject {

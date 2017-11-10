@@ -3,16 +3,31 @@
 import * as React from 'react';
 import { Iterable } from 'ix';
 
-export function trimPropsStatic<T>(props: T): Partial<T> {
+import { RestResult } from './Object';
+
+export function trimPropsStatic<T>(props: T): T {
   return Object.trim(props, false);
 }
 
-export interface ReactSpreadResult<T> {
+export interface ReactSpreadResultProps {
   className?: string;
-  children: React.ReactNode;
-  props: T;
-  rest: any;
+  children?: React.ReactNode;
 }
+
+export interface ReactSpreadRestrictedProps extends ReactSpreadResultProps {
+  key?: React.Key;
+  ref?: React.Ref<any>;
+}
+
+export interface ReactSpreadResult<P, T, R extends ReactSpreadRestrictedProps> extends RestResult<P, T, R>, ReactSpreadResultProps {
+}
+
+export const reactRestrictedProps: ReactSpreadRestrictedProps = {
+  key: undefined,
+  ref: undefined,
+  className: undefined,
+  children: undefined,
+};
 
 // this extension makes 'resting' React props much easier
 // i.e.,
@@ -23,26 +38,32 @@ export interface ReactSpreadResult<T> {
 // You may omit any of the className, children, props, or rest props from the return value
 // you may additionally choose to omit any properties by name from the rest
 // object that is returned (like 'children' for example).
-export function restPropsStatic<P, T>(
+export function restPropsStatic<P, T, R extends ReactSpreadRestrictedProps = ReactSpreadRestrictedProps>(
   props: P,
   propsCreator?: (x: P) => T,
-  ...omits: string[],
-): ReactSpreadResult<T> {
-  const result = Object.rest(<Partial<React.HTMLAttributes<P>>>props, propsCreator, ...omits.concat('key', 'ref', 'className', 'children'));
-  const htmlProps: Partial<React.HTMLAttributes<P>> = props;
+  restrictedProps?: R,
+): ReactSpreadResult<P, T, R> {
+  if (restrictedProps == null) {
+    restrictedProps = <R>reactRestrictedProps;
+  }
 
-  return Object.assign(result, {
-    className: htmlProps.className,
-    children: htmlProps.children,
-  });
+  const result = Object.rest(props, propsCreator, restrictedProps);
+
+  return {
+    className: result.removals.className,
+    children: result.removals.children,
+    props: result.props,
+    rest: result.rest,
+    removals: result.removals,
+  };
 }
 
-export function restProps<P, T>(
+export function restProps<P, T, R extends ReactSpreadRestrictedProps = ReactSpreadRestrictedProps>(
   this: React.Component<P>,
   propsCreator?: (x: P) => T,
-  ...omits: string[],
-): ReactSpreadResult<T> {
-  return restPropsStatic(this.props, propsCreator, ...omits);
+  restrictedProps?: R,
+): ReactSpreadResult<P, T, R> {
+  return restPropsStatic(this.props, propsCreator, restrictedProps);
 }
 
 declare module 'react' {
@@ -50,10 +71,10 @@ declare module 'react' {
     // sadly, we need to re-define this restProps function here instead of using
     // the normal restProps: typeof restProps
     // this is because a function property cannot be overridden in a derived class
-    restProps<T>(
+    restProps<T, R extends ReactSpreadRestrictedProps = ReactSpreadRestrictedProps>(
       propsCreator?: (x: P) => T,
-      ...omits: string[],
-    ): ReactSpreadResult<T>;
+      restrictedProps?: R,
+    ): ReactSpreadResult<P, T, R>;
   }
 
   namespace Component {

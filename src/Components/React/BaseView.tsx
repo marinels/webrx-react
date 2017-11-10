@@ -4,7 +4,7 @@ import { Observable, Subscription } from 'rxjs';
 import { AnonymousSubscription, TeardownLogic } from 'rxjs/Subscription';
 
 import { IterableLike, Property, Command } from '../../WebRx';
-import { ReactSpreadResult } from '../../Extensions/React';
+import { ReactSpreadResult, ReactSpreadRestrictedProps, reactRestrictedProps } from '../../Extensions/React';
 import { Alert, Logging } from '../../Utils';
 import { ViewModelLifecyle } from './Interfaces';
 import { BaseViewModel, isViewModelLifecycle } from './BaseViewModel';
@@ -14,6 +14,13 @@ import { bindObservableToCommand, bindEventToProperty, bindEventToCommand } from
 export interface ViewModelProps<T extends BaseViewModel> {
   viewModel: Readonly<T>;
 }
+
+export type ReactSpreadRestrictedViewModelProps = ReactSpreadRestrictedProps & Partial<ViewModelProps<any>>;
+
+export const reactSpreadRestrictedViewModelProps: ReactSpreadRestrictedViewModelProps = Object.assign(
+  { viewModel: undefined },
+  reactRestrictedProps,
+);
 
 export interface BaseViewProps<TViewModel extends BaseViewModel, TView> extends ViewModelProps<TViewModel>, React.HTMLProps<TView> {
 }
@@ -288,8 +295,15 @@ export abstract class BaseView<TViewProps extends ViewModelProps<TViewModel>, TV
   // this functions will remove key, ref, and viewModel props automatically
   // -----------------------------------------
 
-  public restProps<T>(propsCreator?: (x: TViewProps) => T, ...omits: string[]) {
-    return super.restProps(propsCreator, ...omits.concat('viewModel'));
+  public restProps<T, R extends ReactSpreadRestrictedProps = ReactSpreadRestrictedViewModelProps>(
+    propsCreator?: (x: TViewProps) => T,
+    restrictedProps?: R,
+  ): ReactSpreadResult<TViewProps, T, R> {
+    if (restrictedProps == null) {
+      restrictedProps = Object.assign({ viewModel: undefined }, reactRestrictedProps) as any;
+    }
+
+    return super.restProps(propsCreator, restrictedProps);
   }
   // -----------------------------------------
 }
