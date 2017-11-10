@@ -23,28 +23,6 @@ export function trim<T extends {}>(obj: T, trimNull = true): T {
   return obj;
 }
 
-export function assign<T>(target: any, ...sources: any[]): T {
-  if (target == null) {
-    target = {};
-  }
-
-  return sources
-    .filter(x => x != null)
-    .reduce(
-      (to, source) => {
-        Object
-          .keys(source)
-          // .filter(key => Object.prototype.hasOwnProperty.call(source, key))
-          .forEach(key => {
-            to[key] = source[key];
-          });
-
-        return to;
-      },
-      target,
-    );
-}
-
 export interface RestResult<TProps, TRest> {
   props: TProps;
   rest: TRest;
