@@ -46,40 +46,38 @@ export const demoViewMap: ViewActivatorMap = {
   SizedLoading: (c, cr) => wxr.renderSizedLoadable(true, '50px Loader...', 50),
   Splash: () => <Components.Splash fluid header='webrx-react Demo' logo='http://placehold.it/100x100?text=Logo' />,
   CommandButton: () => (
-    <Form>
-      <FormGroup bsSize='large' style={({ marginBottom: 0 })}>
-        <InputGroup>
-          <FormControl id='CommandButtonParamInput' type='text' placeholder='Enter Command Parameter Text Here...' />
-          <InputGroup.Button>
-            <Components.CommandButton bsSize='large'
-              commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
-              command={Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
-              tooltip='Embedded Command Tooltips!!!'
-            >
-              Execute Command
-            </Components.CommandButton>
-            <Components.CommandButton bsSize='large'
-              commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
-              command={Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
-              tooltip={ (<Popover id='cmd-btn-custom-tt' placement='top'>Custom Tooltip</Popover>) }
-            >
-              Same Command
-            </Components.CommandButton>
-            <Components.CommandButton bsSize='large'
-              commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
-              command={Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
-              tooltip={(
-                <OverlayTrigger placement='bottom'
-                  overlay={ (<Tooltip id='cmd-btn-custom-tt'>Custom Overlay Tooltip</Tooltip>) }
-                />
-              )}
-            >
-              Same Again
-            </Components.CommandButton>
-          </InputGroup.Button>
-        </InputGroup>
-      </FormGroup>
-    </Form>
+    <FormGroup bsSize='large' style={({ marginBottom: 0 })}>
+      <InputGroup>
+        <FormControl id='CommandButtonParamInput' type='text' placeholder='Enter Command Parameter Text Here...' />
+        <InputGroup.Button>
+          <Components.CommandButton bsSize='large'
+            commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
+            command={Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
+            tooltip='Embedded Command Tooltips!!!'
+          >
+            Execute Command
+          </Components.CommandButton>
+          <Components.CommandButton bsSize='large'
+            commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
+            command={Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
+            tooltip={ (<Popover id='cmd-btn-custom-tt' placement='top'>Custom Tooltip</Popover>) }
+          >
+            Same Command
+          </Components.CommandButton>
+          <Components.CommandButton bsSize='large'
+            commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
+            command={Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
+            tooltip={(
+              <OverlayTrigger placement='bottom'
+                overlay={ (<Tooltip id='cmd-btn-custom-tt'>Custom Overlay Tooltip</Tooltip>) }
+              />
+            )}
+          >
+            Same Again
+          </Components.CommandButton>
+        </InputGroup.Button>
+      </InputGroup>
+    </FormGroup>
   ),
   Alert: () => (
     <div>
@@ -91,21 +89,15 @@ export const demoViewMap: ViewActivatorMap = {
     <Components.ObservableWrapper observable={ Observable.timer(0, 1000) } render={ x => (<div>Current Value is { x }</div>) } />
   ),
   SearchViewModel: (viewModel: Components.SearchViewModel) => (
-    <Form horizontal onSubmit={ () => false }>
-      <FormGroup style={ ({ marginBottom: 0 }) }>
-        <Col sm={12}>
-          <Components.SearchView viewModel={ viewModel } />
-        </Col>
-      </FormGroup>
-    </Form>
+    <Components.SearchView viewModel={ viewModel } />
   ),
   TimeSpanInputViewModel: (viewModel: Components.TimeSpanInputViewModel) => (
-    <Form>
+    <div>
       <Components.TimeSpanInputView viewModel={ viewModel } />
       <Components.TimeSpanInputView viewModel={ viewModel } >
         <Components.TimeSpanControl viewModel={ viewModel } id='custom' placeholder='You can also use your own custom control component' />
       </Components.TimeSpanInputView>
-    </Form>
+    </div>
   ),
   ContextMenu: () => (
     <div>
