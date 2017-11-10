@@ -166,17 +166,34 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
   }
 
   applyRoutingState(state: DataGridRoutingState) {
-    if (this.pager != null && state.pager != null) {
-      this.pager.applyRoutingState(state.pager);
+    if (this.pager != null) {
+      this.pager.applyRoutingState(state.pager || {});
     }
 
-    if (state.sorting != null) {
+    if (this.isSortChanged(state.sorting)) {
       this.sort.execute(state.sorting);
     }
   }
 
   getItemsSourceProperty() {
     return this.projectedSource || super.getItemsSourceProperty();
+  }
+
+  protected isSortChanged(sort: SortArgs | undefined) {
+    const sorting = this.sorting.value;
+
+    if (sorting == null && sorting == null) {
+      return false;
+    }
+
+    if (sort == null || sorting == null) {
+      return true;
+    }
+
+    return (
+      sort.direction !== sorting.direction ||
+      sort.field !== sorting.field
+    );
   }
 
   protected getReverseSortDirection(field: string, request: DataSourceRequest | undefined) {

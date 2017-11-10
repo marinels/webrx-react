@@ -76,11 +76,13 @@ export class TabsViewModel<T> extends BaseViewModel implements RoutingStateHandl
 
   createRoutingState(): TabsRoutingState {
     return Object.trim({
-      tab: this.getRoutingStateValue(this.selectedIndex.value, 1),
+      tab: this.getRoutingStateValue(this.selectedIndex.value, 0),
     });
   }
 
   applyRoutingState(state: TabsRoutingState) {
-    this.selectIndex.execute(state.tab || 1);
+    if (this.selectedIndex.value !== state.tab) {
+      this.selectIndex.execute(state.tab == null ? 0 : state.tab);
+    }
   }
 }

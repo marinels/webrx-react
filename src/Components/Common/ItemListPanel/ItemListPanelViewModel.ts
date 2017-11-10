@@ -126,8 +126,8 @@ export class ItemListPanelViewModel<T, TRequestContext = any> extends DataGridVi
   applyRoutingState(state: ItemListPanelRoutingState) {
     super.applyRoutingState(state);
 
-    if (this.search != null && state.search != null) {
-      this.search.applyRoutingState(state.search);
+    if (this.search != null) {
+      this.search.applyRoutingState(state.search || {});
     }
   }
 
