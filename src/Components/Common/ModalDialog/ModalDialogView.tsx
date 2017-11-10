@@ -5,7 +5,9 @@ import { Modal, ModalProps } from 'react-bootstrap';
 import { BaseView, BaseViewProps } from '../../React';
 import { ModalDialogViewModel } from './ModalDialogViewModel';
 
-export interface ModalDialogProps extends Partial<ModalProps> {
+export type BootstrapModalProps = Omit2<ModalProps, React.HTMLProps<Modal>, { onHide: Function; }>;
+
+export interface ModalDialogProps extends BootstrapModalProps {
   modalTitle?: {};
   modalBody?: {};
   modalFooter?: {};
