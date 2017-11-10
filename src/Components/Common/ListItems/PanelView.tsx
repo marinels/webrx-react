@@ -41,7 +41,7 @@ export class PanelView extends ListItemsViewTemplate<PanelViewComponentProps> {
   }
 
   protected getItemsPanelTemplate(panelFragment: PanelFragment, itemTemplates: Array<PanelFragment>, itemsPresenter: ItemsPresenter, items: Array<{}> | undefined) {
-    if (React.isValidElement(panelFragment)) {
+    if (React.isValidElement<any>(panelFragment)) {
       const itemsPanelTemplateProps = Object.trim({
         itemTemplate: (fragment: PanelFragment, context: PanelItemContext) => {
           return this.renderPanelItem(fragment, context, items);

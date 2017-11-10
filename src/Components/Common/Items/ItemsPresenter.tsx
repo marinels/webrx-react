@@ -140,7 +140,7 @@ export class ItemsPresenter extends React.Component<ItemsPresenterComponentProps
     const template = this.props.viewTemplate || ItemsPresenter.defaultViewTemplate;
     const itemsPanel = this.renderPanelTemplate();
 
-    if (React.isValidElement(itemsPanel)) {
+    if (React.isValidElement<any>(itemsPanel)) {
       const itemsPresenterPanelProps = Object.trim({
         itemClassName: this.props.itemClassName,
         itemStyle: this.props.itemStyle,
