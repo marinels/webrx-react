@@ -52,6 +52,11 @@ export interface PanelTemplateProps<T extends PanelItemContext = PanelItemContex
 
 export interface PanelRenderProps {
   compact?: boolean;
+
+  /**
+   * apply a custom content to an empty panel with no items to render
+   */
+  emptyContent?: PanelFragment;
 }
 
 export interface PanelProps extends PanelItemProps, PanelTemplateProps, PanelRenderProps {
@@ -72,8 +77,8 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
 
   protected renderPanel(panelClassName?: string, panelProps?: PanelProps, componentClass?: React.ReactType): JSX.Element {
     const { className, children, props, rest } = React.Component.restProps(panelProps || this.props, x => {
-      const { itemClassName, itemStyle, itemProps, itemTemplate, compact } = x;
-      return { itemClassName, itemStyle, itemProps, itemTemplate, compact };
+      const { itemClassName, itemStyle, itemProps, itemTemplate, compact, emptyContent } = x;
+      return { itemClassName, itemStyle, itemProps, itemTemplate, compact, emptyContent };
     });
 
     const Component = componentClass || Panel.defaultComponentClass;
@@ -97,7 +102,22 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
     return React.Children
       .map(children || this.props.children, (x, i) => {
         return this.renderItem(x, i, componentClass);
-      });
+      })
+      .asIterable()
+      .defaultIfEmpty(this.renderEmpty())
+      .toArray();
+  }
+
+  protected renderEmpty() {
+    if (this.props.emptyContent) {
+      return (
+        <div className='Panel-empty'>
+          { this.props.emptyContent }
+        </div>
+      );
+    }
+
+    return false;
   }
 
   protected renderItem(

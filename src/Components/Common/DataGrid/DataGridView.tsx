@@ -34,8 +34,8 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
 
   render() {
     const { className, children, props, rest } = this.restProps(x => {
-      const { pager, fill, view, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact } = x;
-      return { pager, fill, view, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact };
+      const { pager, fill, view, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent } = x;
+      return { pager, fill, view, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent };
     });
 
     return this.wxr.renderSizedLoadable(this.viewModel.isLoading,
@@ -65,6 +65,7 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
               itemStyle={ props.itemStyle }
               itemProps={ props.itemProps }
               compact={ props.compact }
+              emptyContent={ props.emptyContent }
             />
             { pagerView }
           </div>

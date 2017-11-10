@@ -28,8 +28,8 @@ export class ItemListPanelView extends BaseView<ItemListPanelViewProps, ItemList
 
   render() {
     const { className, children, props, rest } = this.restProps(x => {
-      const { search, pager, view, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact } = x;
-      return { search, pager, view, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact };
+      const { search, pager, view, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent } = x;
+      return { search, pager, view, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent };
     });
 
     const searchView = this.wxr.renderNullable(

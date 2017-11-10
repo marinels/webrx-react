@@ -58,6 +58,7 @@ export class ItemsPresenter extends React.Component<ItemsPresenterComponentProps
         itemStyle={ itemsPresenter.props.itemStyle }
         itemProps={ itemsPresenter.props.itemProps }
         compact={ itemsPresenter.props.compact }
+        emptyContent={ itemsPresenter.props.emptyContent }
       >
         { itemTemplates }
       </StackPanel>
@@ -66,8 +67,8 @@ export class ItemsPresenter extends React.Component<ItemsPresenterComponentProps
 
   public static defaultViewTemplate(itemsPanel: PanelFragment, itemsPresenter: ItemsPresenter) {
     const { className, props, rest } = itemsPresenter.restProps(x => {
-      const { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact } = x;
-      return { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact };
+      const { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent } = x;
+      return { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent };
     });
 
     return (
@@ -146,6 +147,7 @@ export class ItemsPresenter extends React.Component<ItemsPresenterComponentProps
         itemStyle: this.props.itemStyle,
         itemProps: this.props.itemProps,
         compact: this.props.compact,
+        emptyContent: this.props.emptyContent,
       });
 
       const itemsPanelProps = React.isValidElement(itemsPanel) ? itemsPanel.props : {};

@@ -58,6 +58,7 @@ export class Grid extends Panel<GridComponentProps> {
 
         return this.renderRow(row, rows, colItems);
       })
+      .defaultIfEmpty(this.renderEmpty())
       .toArray();
   }
 
