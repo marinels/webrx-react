@@ -65,7 +65,7 @@ export interface UniformGridPanelProps extends PanelProps, UniformRowItemProps, 
    * template to render an empty panel item cell
    * default template renders an &nbsp; block
    */
-  emptyTemplate?: (row: number, column: number) => PanelFragment;
+  emptyCellTemplate?: (row: number, column: number) => PanelFragment;
 }
 
 export interface UniformGridPanelComponentProps extends React.HTMLProps<UniformGridPanel>, UniformGridPanelProps {
@@ -85,7 +85,7 @@ export class UniformGridPanel extends Panel<UniformGridPanelComponentProps> {
   }
 
   render() {
-    const { gridColumns, gridRows, firstColumn, border, renderEmptyRows, emptyTemplate, rowClassName, rowStyle, rowProps, columnClassName, columnStyle, columnProps, ...rest } = this.props;
+    const { gridColumns, gridRows, firstColumn, border, renderEmptyRows, emptyCellTemplate, rowClassName, rowStyle, rowProps, columnClassName, columnStyle, columnProps, ...rest } = this.props;
 
     const bordered = { 'Grid-Border': border === true };
 
@@ -110,7 +110,7 @@ export class UniformGridPanel extends Panel<UniformGridPanelComponentProps> {
             const isAfterLastItem = index >= itemTemplates.length;
 
             const itemTemplate = (isBeforeFirstItem || isAfterLastItem) ?
-              this.renderEmpty(row, column, index) :
+              this.renderEmptyCell(row, column, index) :
               itemTemplates[index];
 
             const item = (itemTemplate != null && React.isValidElement<any>(itemTemplate)) ?
@@ -146,9 +146,9 @@ export class UniformGridPanel extends Panel<UniformGridPanelComponentProps> {
       .toArray();
   }
 
-  protected renderEmpty(row: number, column: number, index: number) {
+  protected renderEmptyCell(row: number, column: number, index: number) {
     return this.renderItem(
-      (this.props.emptyTemplate || UniformGridPanel.defaultEmptyTemplate)(row, column),
+      (this.props.emptyCellTemplate || UniformGridPanel.defaultEmptyTemplate)(row, column),
       index,
     );
   }
