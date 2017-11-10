@@ -29,7 +29,7 @@ export interface RoutingBreadcrumb {
   tooltip?: any;
 }
 
-export abstract class BaseRoutableViewModel<T> extends BaseViewModel {
+export abstract class BaseRoutableViewModel<T> extends BaseViewModel implements RoutingStateHandler<T> {
   public static displayName = 'BaseRoutableViewModel';
 
   protected readonly updateDocumentTitle: Command<string>;

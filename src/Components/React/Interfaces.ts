@@ -9,7 +9,7 @@ export interface ViewModelLifecyle {
 
 export interface RoutingStateHandler<T> {
   isRoutingStateHandler(): boolean;
-  createRoutingState(): T;
+  createRoutingState(context?: any): T;
   applyRoutingState(state: T): void;
 }
 
