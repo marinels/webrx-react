@@ -683,6 +683,7 @@ export const demoViewMap: ViewActivatorMap = {
         return (
           <Components.ItemListPanelView viewModel={ viewModel } collapsible pager search compact
             itemTemplate={ sampleDataCmdTemplate }
+            emptyContent={ 'No Items Found' }
             headerContent='Sample List Data'
             headerActions={ [ { id: 'header', children: 'Header Action' } ] }
             footerContent={ (<Components.CountFooterContent count={ viewModel.projectedCount } suffix='Things' />) }

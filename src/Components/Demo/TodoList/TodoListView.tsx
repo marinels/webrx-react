@@ -46,7 +46,7 @@ export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel>
     return (
       <div { ...rest } className={ classNames('TodoList', className) }>
         <ItemListPanelView viewModel={ this.viewModel.list } viewTemplate={ this.listViewTemplate }
-          emptyContent={ () => this.renderEmptyContent() }
+          emptyContent={ this.renderEmptyContent() }
           shadow={ this.props.shadow }
           headerContent='Canonical Todo List' search
           teaserContent={ this.renderTeaser() } footerContent={ this.renderFooter() }
