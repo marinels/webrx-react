@@ -22,7 +22,7 @@ export const reactSpreadRestrictedViewModelProps: ReactSpreadRestrictedViewModel
   reactRestrictedProps,
 );
 
-export interface BaseViewProps<TViewModel extends BaseViewModel, TView> extends ViewModelProps<TViewModel>, React.HTMLProps<TView> {
+export interface BaseViewProps<TViewModel extends BaseViewModel, TView = any> extends ViewModelProps<TViewModel>, React.HTMLProps<TView> {
 }
 
 export interface ViewModelState<T extends BaseViewModel> {
