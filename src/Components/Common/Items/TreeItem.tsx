@@ -77,7 +77,7 @@ export interface TreeItemProps extends TreeItemFacadeProps {
   index: number;
 }
 
-export interface TreeItemComponentProps extends React.HTMLAttributes<TreeItem>, TreeItemProps {
+export interface TreeItemComponentProps extends React.HTMLProps<any>, TreeItemProps {
 }
 
 export interface TreeItemState {

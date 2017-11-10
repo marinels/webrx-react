@@ -39,7 +39,7 @@ export interface ItemsPresenterSourceProps {
 export interface ItemsPresenterProps extends ItemsPresenterTemplateProps, ItemsPresenterSourceProps, PanelItemProps, PanelRenderProps {
 }
 
-export interface ItemsPresenterComponentProps extends React.HTMLAttributes<ItemsPresenter>, ItemsPresenterProps {
+export interface ItemsPresenterComponentProps extends React.HTMLProps<any>, ItemsPresenterProps {
 }
 
 export class ItemsPresenter extends React.Component<ItemsPresenterComponentProps> {

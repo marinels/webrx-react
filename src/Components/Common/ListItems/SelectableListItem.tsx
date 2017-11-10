@@ -7,7 +7,7 @@ import { wx } from '../../../WebRx';
 import { compare } from '../../../Utils/Compare';
 import { ListItemsViewModel } from './ListItemsViewModel';
 
-export type SelectedPropsFunction = (isSelected: boolean, elem: React.ReactElement<React.HTMLAttributes<{}>>) => {};
+export type SelectedPropsFunction = (isSelected: boolean, elem: React.ReactElement<React.HTMLProps<any>>) => {};
 
 export interface SelectableListItemProps {
   listItems: Readonly<ListItemsViewModel<{}>>;

@@ -10,7 +10,7 @@ export interface BreadcrumbsProps {
   items?: RoutingBreadcrumb[];
 }
 
-export interface BreadcrumbsComponentProps extends React.HTMLProps<Breadcrumbs>, BreadcrumbsProps {
+export interface BreadcrumbsComponentProps extends React.HTMLProps<any>, BreadcrumbsProps {
 }
 
 export class Breadcrumbs extends React.Component<BreadcrumbsComponentProps> {

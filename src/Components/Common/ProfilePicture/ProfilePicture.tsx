@@ -14,7 +14,7 @@ export interface ProfilePictureProps {
   iconSize?: IconSize;
 }
 
-export interface ProfilePictureComponentProps extends React.HTMLProps<ProfilePicture>, ProfilePictureProps {
+export interface ProfilePictureComponentProps extends React.HTMLProps<any>, ProfilePictureProps {
 }
 
 const dataUriPrefix = 'data:image;base64,';
