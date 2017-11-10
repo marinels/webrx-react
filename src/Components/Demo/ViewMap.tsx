@@ -437,8 +437,10 @@ export const demoViewMap: ViewActivatorMap = {
         );
       case 'ListItemsListGroup':
         return (
-          <Components.ListItemsView viewModel={ viewModel } itemTemplate={ sampleDataTemplate }>
-            <Components.ListGroupView itemsProps={({ viewTemplate: x => (<div style={({ padding: 10, backgroundColor: 'blue' })}>{ x }</div>) })} />
+          <Components.ListItemsView viewModel={ viewModel } itemTemplate={ sampleDataTemplate }
+            viewTemplate={ x => (<Panel header='Wrapping in a Panel'>{ x }</Panel>) }
+          >
+            <Components.ListGroupView fill itemsProps={ ({ itemStyle: { textAlign: 'right' } }) } />
           </Components.ListItemsView>
         );
       case 'ListItemsPanel':
