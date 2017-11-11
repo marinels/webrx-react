@@ -97,12 +97,13 @@ export class ItemListPanelViewModel<T, TRequestContext = any> extends DataGridVi
     pager?: PagerViewModel | null,
     context?: ObservableLike<TRequestContext>,
     comparer?: string | ObjectComparer<T>,
+    rateLimit?: number,
   ) {
     // create the effective search view model (or null if omitted)
     search = ItemListPanelViewModel.getItemListPanelSearch(search);
 
     // initialize the data grid with a composite context observable
-    super(source, pager, ItemListPanelViewModel.getDataGridContext(search, context), comparer);
+    super(source, pager, ItemListPanelViewModel.getDataGridContext(search, context), comparer, rateLimit);
 
     this.filterer = filterer;
     this.search = search;

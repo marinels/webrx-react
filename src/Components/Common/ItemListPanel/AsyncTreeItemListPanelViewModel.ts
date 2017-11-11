@@ -5,6 +5,7 @@ import { ObservableOrValue, ObservableLike, IterableLike } from '../../../WebRx'
 import { ItemListPanelContext } from './ItemListPanelViewModel';
 import { TreeItemListPanelViewModel } from './TreeItemListPanelViewModel';
 import { DataSourceRequest, DataSourceResponse } from '../DataGrid/DataGridViewModel';
+import { AsyncDataGridViewModel } from '../DataGrid/AsyncDataGridViewModel';
 import { SearchViewModel } from '../Search/SearchViewModel';
 
 export class AsyncTreeItemListPanelViewModel<T, TRequestContext = any> extends TreeItemListPanelViewModel<T, TRequestContext> {
@@ -21,8 +22,9 @@ export class AsyncTreeItemListPanelViewModel<T, TRequestContext = any> extends T
     itemsSource: (item: T) => (IterableLike<T> | undefined),
     search?: SearchViewModel | null,
     context?: ObservableLike<TRequestContext>,
+    rateLimit = AsyncDataGridViewModel.DefaultRateLimit,
   ) {
-    super(Iterable.empty<T>(), itemsSource, x => x, undefined, search, context);
+    super(Iterable.empty<T>(), itemsSource, x => x, undefined, search, context, rateLimit);
   }
 
   getResponse(request: DataSourceRequest<ItemListPanelContext<TRequestContext>> | undefined) {
