@@ -136,11 +136,12 @@ export class ItemListPanelViewModel<T, TRequestContext = any> extends DataGridVi
   }
 
   applyRoutingState(state: ItemListPanelRoutingState) {
-    super.applyRoutingState(state);
-
     if (this.search != null) {
       this.search.applyRoutingState(state.search || {});
     }
+
+    // we apply the base (grid) routing state last because it will trigger requests to start
+    super.applyRoutingState(state);
   }
 
   getResponseFromItems(items: Iterable<T>, request: DataSourceRequest<ItemListPanelContext<TRequestContext>>): ObservableOrValue<DataSourceResponse<T> | undefined> {
