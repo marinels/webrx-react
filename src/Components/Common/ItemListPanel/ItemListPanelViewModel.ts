@@ -110,6 +110,14 @@ export class ItemListPanelViewModel<T, TRequestContext = any> extends DataGridVi
 
     this.filterer = filterer;
     this.search = search;
+
+    if (this.search != null) {
+      // seed the search after routing state is loaded
+      // we need to do this because we want an initial request even if the filter is empty
+      this.processRequests.results
+        .take(1)
+        .invokeCommand(this.search.search);
+    }
   }
 
   isRoutingStateHandler() {
