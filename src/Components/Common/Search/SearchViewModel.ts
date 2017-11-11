@@ -15,6 +15,8 @@ export interface SearchRoutingState {
 export class SearchViewModel extends BaseViewModel implements RoutingStateHandler<SearchRoutingState> {
   public static displayName = 'SearchViewModel';
 
+  protected readonly processRequests: Command<any>;
+
   public readonly filter: Property<string>;
   public readonly requests: ReadOnlyProperty<SearchRequest>;
   public readonly searchPending: ReadOnlyProperty<boolean>;
@@ -25,6 +27,8 @@ export class SearchViewModel extends BaseViewModel implements RoutingStateHandle
   constructor(private readonly liveSearchTimeout = 500, private readonly isCaseInsensitive = true) {
     super();
 
+    this.processRequests = this.wx.command();
+
     this.filter = this.wx.property('');
 
     // search is executed when a search is to be performed
@@ -34,13 +38,19 @@ export class SearchViewModel extends BaseViewModel implements RoutingStateHandle
 
     this.requests = this.wx
       // project search executions into filter values
-      .whenAny(this.search.results, () => this.filter.value)
-      // debounce a little extra to protect against too many search invocations
-      .debounceTime(250)
+      .whenAny(
+        this.search.results
+          // debounce a little extra to protect against too many search invocations
+          .debounceTime(250),
+        // "gate" the requests until the processRequests command is invoked
+        this.processRequests.results
+          .take(1),
+        x => x,
+      )
       // then map into a search request with regex
-      .map(filter => (<SearchRequest>{
-        filter,
-        regex: this.createRegex(filter),
+      .map(x => (<SearchRequest>{
+        filter: this.filter.value,
+        regex: this.createRegex(this.filter.value),
       }))
       .toProperty();
 
@@ -58,6 +68,15 @@ export class SearchViewModel extends BaseViewModel implements RoutingStateHandle
       )
       .toProperty(false);
 
+    // check to see if we should queue up an initial search
+    this.processRequests.results
+      .take(1)
+      .filter(() => {
+        // check if we have a non-empty filter
+        return String.isNullOrEmpty(this.filter.value) === false;
+      })
+      .invokeCommand(this.search);
+
     this.addSubscription(
       this.wx
         .whenAny(this.clear, x => x)
@@ -68,8 +87,10 @@ export class SearchViewModel extends BaseViewModel implements RoutingStateHandle
 
     if (this.liveSearchTimeout > 0) {
       this.addSubscription(
-        this.filter.changed
-          // debounce on the live search timeout
+        // "gate" live search activation until the processRequests command is invoked
+        this.processRequests.results
+          .take(1)
+          .switchMap(() => this.filter.changed)
           .debounceTime(this.liveSearchTimeout)
           .invokeCommand(this.search),
       );
@@ -96,6 +117,9 @@ export class SearchViewModel extends BaseViewModel implements RoutingStateHandle
 
   applyRoutingState(state: SearchRoutingState) {
     this.filter.value = state.filter == null ? '' : String(state.filter);
+
+    // notify our streams that we're routed and may begin processing requests
+    this.processRequests.execute();
   }
 
   public get filterRequests() {
