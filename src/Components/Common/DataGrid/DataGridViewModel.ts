@@ -236,9 +236,7 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
     };
   }
 
-  protected getRequests(
-    context?: ObservableLike<TRequestContext>,
-  ) {
+  protected getRequests(context?: ObservableLike<TRequestContext>) {
     const pagerObservable = this.pager == null ?
       Observable.of(undefined) :
       this.pager.requests;
