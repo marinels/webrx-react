@@ -95,7 +95,7 @@ export class SearchViewModel extends BaseViewModel implements RoutingStateHandle
   }
 
   applyRoutingState(state: SearchRoutingState) {
-    this.filter.value = state.filter || '';
+    this.filter.value = state.filter == null ? '' : String(state.filter);
   }
 
   public get filterRequests() {
