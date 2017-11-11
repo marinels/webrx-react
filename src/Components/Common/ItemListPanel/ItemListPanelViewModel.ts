@@ -32,11 +32,14 @@ export class ItemListPanelViewModel<T, TRequestContext = any> extends DataGridVi
   }
 
   protected static getItemListPanelContext(search: SearchViewModel | null): Observable<ItemListPanelRequestContext> {
-    return search == null ?
-      Observable.of({}) :
-      this.wx
-        .whenAny(search.requests, x => x)
-        .map(x => ItemListPanelViewModel.createItemListPanelContext(x));
+    if (search == null) {
+      return Observable.of({});
+    }
+
+    return this.wx
+      .whenAny(search.requests, x => x)
+      .filterNull()
+      .map(x => ItemListPanelViewModel.createItemListPanelContext(x));
   }
 
   protected static getDataGridContext<TRequestContext>(
