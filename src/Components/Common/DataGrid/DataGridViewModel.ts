@@ -33,6 +33,7 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
 
   public static DefaultRateLimit = 100;
 
+  protected readonly processRequests: Command<any>;
   protected readonly comparer: ObjectComparer<T>;
 
   public readonly pager: PagerViewModel | null;
@@ -65,6 +66,7 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
     this.pager = pager === null ? null : (pager || new PagerViewModel());
     this.comparer = String.isString(comparer) ? new ObjectComparer<T>(comparer) : comparer;
 
+    this.processRequests = this.wx.command();
     this.sort = this.wx.command<SortArgs>();
     this.toggleSortDirection = this.wx.command<string>();
 
@@ -73,6 +75,8 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
       .toProperty();
 
     this.requests = this.getRequests(context)
+      // combineLatest will "gate" the requests until the processRequests command is invoked
+      .combineLatest(this.processRequests.results.take(1), x => x)
       .toProperty(undefined, false);
 
     this.responses = this.getResponses(this.requests, rateLimit)
@@ -176,6 +180,9 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
     if (this.isSortChanged(state.sorting)) {
       this.sort.execute(state.sorting);
     }
+
+    // notify our streams that we're routed and may begin processing requests
+    this.processRequests.execute();
   }
 
   getItemsSourceProperty() {
