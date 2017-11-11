@@ -77,7 +77,7 @@ export class SearchViewModel extends BaseViewModel implements RoutingStateHandle
 
     this.addSubscription(
       this.wx
-        .whenAny(this.search, x => x)
+        .whenAny(this.requests, x => x)
         .subscribe(x => {
           this.notifyChanged(x);
         }),
