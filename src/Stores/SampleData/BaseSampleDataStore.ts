@@ -27,13 +27,8 @@ export abstract class BaseSampleDataStore implements SampleDataStore {
   }
 
   protected createAlert(action: string, params: any = {}) {
-    const message = `SampleData API Call: ${ action }`;
-
     if (this.enableAlerts) {
-      Alert.create(JSON.stringify(params, null, 2), message);
-    }
-    else {
-      this.logger.info(message, params);
+      Alert.create(JSON.stringify(params, null, 2), `SampleDataStore API Call: ${ action }`);
     }
   }
 }

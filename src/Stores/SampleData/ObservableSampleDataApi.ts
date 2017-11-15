@@ -2,10 +2,13 @@ import { Observable } from  'rxjs';
 import * as clone from 'clone';
 
 import { wx } from '../../WebRx';
+import { Logger, getLogger } from '../../Utils/Logging';
 import { SampleDataStore, SampleDataApi, SampleDataActionSet, SampleDataAction } from '../Interfaces';
 
 export class ObservableSampleDataApi implements SampleDataApi {
   public static displayName = 'ObservableSampleDataApi';
+
+  protected readonly logger: Logger = getLogger(ObservableSampleDataApi.displayName);
 
   protected readonly stores: StringMap<SampleDataStore>;
   protected readonly actions: SampleDataActionSet;
@@ -52,6 +55,9 @@ export class ObservableSampleDataApi implements SampleDataApi {
 
         return sampleDataAction;
       })
+      .do(() => {
+        this.logger.info(`Sample API Request: ${ action }`, params);
+      })
       .delay(this.delay)
       .flatMap<SampleDataAction, T>(sampleDataAction => {
         return Observable
@@ -59,7 +65,15 @@ export class ObservableSampleDataApi implements SampleDataApi {
             return wx.asObservable(sampleDataAction(params));
           })
           .map(x => (x != null && cloneResult) ? clone(x) : x);
-      });
+      })
+      .do(
+        x => {
+          this.logger.info(`Sample API  Result: ${ action }`, x);
+        },
+        e => {
+          this.logger.error(`Sample API  ERROR: ${ action }`, e);
+        },
+      );
   }
 
   public getStoreValue<T, TStore extends SampleDataStore>(
