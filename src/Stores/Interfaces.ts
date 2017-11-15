@@ -1,5 +1,7 @@
 import { Observable, AjaxRequest } from 'rxjs';
 
+import { ObservableLike } from '../WebRx';
+
 export enum HttpRequestMethod {
   GET,
   POST,
@@ -17,7 +19,7 @@ export interface ObservableApiError {
   response?: any;
 }
 
-export type SampleDataAction = (params: any) => Observable<any>;
+export type SampleDataAction = (params: any) => ObservableLike<any>;
 export type SampleDataActionSet = StringMap<SampleDataAction>;
 
 export interface SampleDataStore {
