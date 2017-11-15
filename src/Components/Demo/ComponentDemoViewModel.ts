@@ -227,7 +227,9 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
         this.logger.debug(`Loading Component for "${ componentRoute }"...`);
 
         // default to using the routed component's state
-        let routingState = state.state;
+        // it is possible that the routed component has no routing state, but because routing
+        // state must be set we need to then sanitize the value with an empty state object
+        let routingState = state.state || {};
 
         // try and load our component from the component map using a static route
         let activator = this.routeMap.viewModelMap[componentRoute];
