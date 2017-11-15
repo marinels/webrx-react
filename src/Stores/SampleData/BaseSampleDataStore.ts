@@ -1,7 +1,7 @@
 import { Observable, Subject, Subscription, Observer } from  'rxjs';
 import { AnonymousSubscription } from 'rxjs/Subscription';
 
-import { wx, Command, Property } from '../../WebRx';
+import { wx } from '../../WebRx';
 import { Alert } from '../../Utils';
 import { Logger, getLogger } from '../../Utils/Logging';
 import { SampleDataStore, SampleDataAction, SampleDataActionSet } from '../Interfaces';
