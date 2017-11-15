@@ -1,6 +1,7 @@
 import { Observable } from  'rxjs';
 import * as clone from 'clone';
 
+import { wx } from '../../WebRx';
 import { SampleDataStore, SampleDataApi, SampleDataActionSet, SampleDataAction } from '../Interfaces';
 
 export class ObservableSampleDataApi implements SampleDataApi {
@@ -37,7 +38,11 @@ export class ObservableSampleDataApi implements SampleDataApi {
     this.stores[Object.getName(store)] = store;
   }
 
-  public observe<T>(action: string, params?: any) {
+  public observe<T>(
+    action: string,
+    params?: any,
+    cloneResult = true,
+  ) {
     return Observable
       .of(this.actions[action])
       .map(sampleDataAction => {
@@ -49,11 +54,19 @@ export class ObservableSampleDataApi implements SampleDataApi {
       })
       .delay(this.delay)
       .flatMap<SampleDataAction, T>(sampleDataAction => {
-        return sampleDataAction(params);
+        return Observable
+          .defer(() => {
+            return wx.asObservable(sampleDataAction(params));
+          })
+          .map(x => (x != null && cloneResult) ? clone(x) : x);
       });
   }
 
-  public getStoreValue<T, TStore extends SampleDataStore>(name: string, selector: (store: TStore) => T) {
+  public getStoreValue<T, TStore extends SampleDataStore>(
+    name: string,
+    selector: (store: TStore) => T,
+    cloneResult = false,
+  ) {
     const store = this.stores[name];
 
     if (store == null) {
@@ -62,6 +75,8 @@ export class ObservableSampleDataApi implements SampleDataApi {
 
     const value = selector(<TStore>store);
 
-    return value == null ? undefined : clone(value);
+    return value == null ?
+      undefined :
+      (cloneResult ? clone(value) : value);
   }
 }
