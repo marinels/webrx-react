@@ -19,7 +19,7 @@ export interface ObservableApiError {
   response?: any;
 }
 
-export type SampleDataAction = (params: any) => ObservableLike<any>;
+export type SampleDataAction = (params: any) => (ObservableLike<{} | undefined>);
 export type SampleDataActionSet = StringMap<SampleDataAction>;
 
 export interface SampleDataStore {
