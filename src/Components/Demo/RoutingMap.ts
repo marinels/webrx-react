@@ -6,7 +6,7 @@ import { wx } from '../../WebRx';
 import { Alert, Compare } from '../../Utils';
 import { HeaderMenu, HeaderCommandAction } from '../React';
 import * as Components from '../Common';
-// import { TodoListViewModel } from './TodoList/TodoListViewModel';
+import { TodoListViewModel } from './TodoList/TodoListViewModel';
 import { RouteMap as AppRouteMap } from '../../Routing';
 import { ComponentDemoViewModel, RoutingMap } from './ComponentDemoViewModel';
 
@@ -383,7 +383,7 @@ demoRoutingMap.addRoute('webrx-react', 'InlineEditObject', 'InlineEdit (Object)'
 });
 
 demoRoutingMap.viewModelMap['help'] = () => 'Help';
-// demoRoutingMap.viewModelMap['todolist'] = () => new TodoListViewModel();
+demoRoutingMap.viewModelMap['todolist'] = () => new TodoListViewModel();
 
 // inject the demo infrastructure into the app routing and view maps
 AppRouteMap['/'] = { path: '/demo/' };

@@ -10,8 +10,8 @@ import { Logging, Alert } from '../../Utils';
 import { wxr } from '../React';
 import { SampleData, SampleTreeData, sampleListData, sampleTreeData } from './RoutingMap';
 import * as Components from '../Common';
-// import { TodoListView } from './TodoList/TodoListView';
-// import { TodoListViewModel } from './TodoList/TodoListViewModel';
+import { TodoListView } from './TodoList/TodoListView';
+import { TodoListViewModel } from './TodoList/TodoListViewModel';
 import { ComponentDemoViewModel } from './ComponentDemoViewModel';
 import { ComponentDemoView, ViewActivatorMap } from './ComponentDemoView';
 import { ViewMap as AppViewMap } from '../../Routing';
@@ -741,9 +741,9 @@ export const demoViewMap: ViewActivatorMap = {
       );
     }
   },
-  // TodoListViewModel: (viewModel: TodoListViewModel) => (
-  //   <TodoListView style={({ padding: 20 })} viewModel={ viewModel } shadow />
-  // ),
+  TodoListViewModel: (viewModel: TodoListViewModel) => (
+    <TodoListView style={({ padding: 20 })} viewModel={ viewModel } shadow />
+  ),
   Help: () => {
     const helpStyle: (top?: number, left?: number, textAlign?: string, zIndex?: number) => React.CSSProperties = (top = 0, left = 0, textAlign = 'center', zIndex = 1000) => ({
       display: 'inline-block',
