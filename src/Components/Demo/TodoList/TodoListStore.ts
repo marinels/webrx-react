@@ -21,8 +21,8 @@ export class TodoListStore extends BaseStore {
 
   public static readonly default = new TodoListStore();
 
-  constructor() {
-    super(TodoListApi.default);
+  constructor(api = TodoListApi.default) {
+    super(api);
   }
 
   public getItems() {
