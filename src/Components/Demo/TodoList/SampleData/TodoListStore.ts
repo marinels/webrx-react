@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { BaseSampleDataStore } from '../../../../Stores/SampleData/BaseSampleDataStore';
 import { TodoListActions, TodoListItem } from '../TodoListStore';
 
-interface Data {
+export interface TodoListSampleData {
   items: Array<TodoListItem>;
 }
 
@@ -13,7 +13,7 @@ export class TodoListStore extends BaseSampleDataStore {
 
   public static readonly default = new TodoListStore();
 
-  public readonly data: Data;
+  public readonly data: TodoListSampleData;
 
   protected nextId = 1;
 
