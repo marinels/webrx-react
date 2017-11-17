@@ -113,7 +113,7 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
   protected renderEmpty() {
     if (this.props.emptyContent) {
       return (
-        <div className='Panel-empty'>
+        <div key='empty' className='Panel-empty'>
           { this.props.emptyContent }
         </div>
       );
