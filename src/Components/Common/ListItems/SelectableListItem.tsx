@@ -9,9 +9,9 @@ import { ListItemsViewModel } from './ListItemsViewModel';
 
 export type SelectedPropsFunction = (isSelected: boolean, elem: React.ReactElement<React.HTMLProps<any>>) => {};
 
-export interface SelectableListItemProps {
-  listItems: Readonly<ListItemsViewModel<{}>>;
-  item: {};
+export interface SelectableListItemProps<T = {}> {
+  listItems: Readonly<ListItemsViewModel<T>>;
+  item: T;
   selectedProps?: SelectedPropsFunction;
 }
 

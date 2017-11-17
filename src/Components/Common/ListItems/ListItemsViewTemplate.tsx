@@ -1,20 +1,21 @@
 import * as React from 'react';
 
+import { PanelItemContext } from '../Panel/Panel';
 import { ItemsProps } from '../Items/ItemsView';
 import { SelectableListItem, SelectedPropsFunction } from './SelectableListItem';
 import { ListItemsViewModel } from './ListItemsViewModel';
 
-export interface ListItemsViewTemplateProps {
+export interface ListItemsViewTemplateProps<T = {}, TContext extends PanelItemContext = PanelItemContext> {
   /**
    * internal passthru property
    * DO NOT SET, this property is assigned automatically by the ListItemsView
    */
-  listItems?: Readonly<ListItemsViewModel<{}>>;
+  listItems?: Readonly<ListItemsViewModel<T>>;
   /**
    * internal passthru property
    * DO NOT SET, this property is assigned automatically by the ListItemsView
    */
-  itemsProps?: ItemsProps;
+  itemsProps?: ItemsProps<T, TContext>;
   /**
    * internal passthru property
    * DO NOT SET, this property is assigned automatically by the ListItemsView

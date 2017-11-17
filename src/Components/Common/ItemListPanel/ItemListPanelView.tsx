@@ -2,12 +2,13 @@ import * as React from 'react';
 import { Observable } from 'rxjs';
 
 import { BaseView, BaseViewProps } from '../../React';
+import { PanelItemContext } from '../Panel/Panel';
 import { DataGridView, DataGridProps } from '../DataGrid/DataGridView';
 import { SearchView, SearchProps } from '../Search/SearchView';
 import { CommonPanel, CommonPanelRenderProps } from '../CommonPanel/CommonPanel';
 import { ItemListPanelViewModel } from './ItemListPanelViewModel';
 
-export interface ItemListPanelProps extends DataGridProps, CommonPanelRenderProps {
+export interface ItemListPanelProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends DataGridProps<T, TContext>, CommonPanelRenderProps {
   search?: boolean | SearchProps | {};
 }
 

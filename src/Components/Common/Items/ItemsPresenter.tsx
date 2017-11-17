@@ -2,12 +2,12 @@ import * as React from 'react';
 import { Iterable } from 'ix';
 
 import { IterableLike } from '../../../WebRx';
-import { Panel, StackPanel, PanelItemProps, PanelRenderProps, PanelFragment } from '../Panel';
+import { Panel, StackPanel, PanelItemProps, PanelItemContext, PanelRenderProps, PanelFragment } from '../Panel';
 
 export type ViewTemplate = (itemsPanel: PanelFragment, itemsPresenter: ItemsPresenter) => JSX.Element | null | false;
-export type ItemsPanelTemplate = (itemTemplates: Array<PanelFragment>, itemsPresenter: ItemsPresenter, items: Array<{}> | undefined) => PanelFragment;
+export type ItemsPanelTemplate<T = {}> = (itemTemplates: Array<PanelFragment>, itemsPresenter: ItemsPresenter, items: Array<T> | undefined) => PanelFragment;
 
-export interface ItemsPresenterTemplateProps {
+export interface ItemsPresenterTemplateProps<T = {}> {
   /**
    * template that wraps the entire control.
    * use this to compose the exterior of the the view.
@@ -20,23 +20,23 @@ export interface ItemsPresenterTemplateProps {
    * this template can control how items are rendered next to one another
    * (i.e., wrapping, stack, grid, etc...)
    */
-  itemsPanelTemplate?: ItemsPanelTemplate;
+  itemsPanelTemplate?: ItemsPanelTemplate<T>;
 
   /**
    * template to render each item
    */
-  itemTemplate?: (item: {}, index: number) => PanelFragment;
+  itemTemplate?: (item: T, index: number) => PanelFragment;
 }
 
-export interface ItemsPresenterSourceProps {
+export interface ItemsPresenterSourceProps<T = {}> {
   /**
    * data source of items to render
    * if omitted then component children is used in place
    */
-  itemsSource?: IterableLike<{}>;
+  itemsSource?: IterableLike<T>;
 }
 
-export interface ItemsPresenterProps extends ItemsPresenterTemplateProps, ItemsPresenterSourceProps, PanelItemProps, PanelRenderProps {
+export interface ItemsPresenterProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ItemsPresenterTemplateProps<T>, ItemsPresenterSourceProps<T>, PanelItemProps<T, TContext>, PanelRenderProps {
 }
 
 export interface ItemsPresenterComponentProps extends React.HTMLProps<any>, ItemsPresenterProps {

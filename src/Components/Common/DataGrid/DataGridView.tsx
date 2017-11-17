@@ -5,14 +5,14 @@ import { Icon } from 'react-fa';
 import { BaseView, BaseViewProps } from '../../React';
 import { SortDirection } from '../../../Utils/Compare';
 import { ListItemsView, ListItemsProps } from '../ListItems/ListItemsView';
-import { PanelFragment } from '../Panel/Panel';
+import { PanelFragment, PanelItemContext } from '../Panel/Panel';
 import { ItemsPresenter } from '../Items/ItemsPresenter';
 import { GridView, GridViewProps, GridViewColumn } from '../ListItems/GridView';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { PagerView, PagerProps } from '../Pager/PagerView';
 import { DataGridViewModel, DataSourceRequest } from './DataGridViewModel';
 
-export interface DataGridProps extends ListItemsProps {
+export interface DataGridProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ListItemsProps<T, TContext> {
   pager?: boolean | PagerProps | {};
 }
 

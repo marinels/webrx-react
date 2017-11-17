@@ -8,8 +8,8 @@ import { ListItemsViewTemplate, ListItemsViewTemplateProps } from './ListItemsVi
 import { PanelFragment, PanelItemContext } from '../Panel/Panel';
 import { StackPanel } from '../Panel/StackPanel';
 
-export interface PanelViewProps extends ListItemsViewTemplateProps {
-  itemsPanelTemplate?: ItemsPanelTemplate;
+export interface PanelViewProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ListItemsViewTemplateProps<T, TContext> {
+  itemsPanelTemplate?: ItemsPanelTemplate<T>;
   selectedProps?: SelectedPropsFunction;
 }
 

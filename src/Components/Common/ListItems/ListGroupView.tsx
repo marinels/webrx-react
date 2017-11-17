@@ -7,7 +7,7 @@ import { ListGroupPanel } from '../Panel/ListGroupPanel';
 import { PanelFragment, PanelItemContext } from '../Panel/Panel';
 import { ListItemsViewModel } from './ListItemsViewModel';
 
-export interface ListGroupViewProps extends ListItemsViewTemplateProps {
+export interface ListGroupViewProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ListItemsViewTemplateProps<T, TContext> {
   fill?: boolean;
 }
 

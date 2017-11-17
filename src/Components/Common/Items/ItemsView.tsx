@@ -4,10 +4,10 @@ import { Observable } from 'rxjs';
 
 import { BaseView, BaseViewProps } from '../../React';
 import { ItemsViewModel } from './ItemsViewModel';
-import { Panel, StackPanel, PanelItemProps, PanelRenderProps } from '../Panel';
+import { Panel, StackPanel, PanelItemProps, PanelItemContext, PanelRenderProps } from '../Panel';
 import { ItemsPresenter, ItemsPresenterTemplateProps } from './ItemsPresenter';
 
-export interface ItemsProps extends ItemsPresenterTemplateProps, PanelItemProps, PanelRenderProps {
+export interface ItemsProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ItemsPresenterTemplateProps<T>, PanelItemProps<T, TContext>, PanelRenderProps {
 }
 
 export interface ItemsViewProps extends BaseViewProps<ItemsViewModel<{}>>, ItemsProps {

@@ -5,18 +5,18 @@ import { Icon } from 'react-fa';
 
 import { IterableLike } from '../../../WebRx';
 import { ItemsPresenterProps, ItemsPresenterTemplateProps, ItemsPresenter } from './ItemsPresenter';
-import { PanelItemProps, PanelRenderProps, Panel, PanelFragment } from '../Panel/Panel';
+import { PanelItemProps, PanelItemContext, PanelRenderProps, Panel, PanelFragment } from '../Panel/Panel';
 
 export type RecursiveItemsSource<T> = (item: T) => (IterableLike<T> | undefined);
 
-export interface TreeItemSourceProps {
+export interface TreeItemSourceProps<T = {}> {
   /**
    * function to produce the recursive items source for the provided item
    */
-  itemsSource: RecursiveItemsSource<{}>;
+  itemsSource: RecursiveItemsSource<T>;
 }
 
-export interface TreeItemTemplateProps {
+export interface TreeItemTemplateProps<T = {}> {
   /**
    * Override the expander icon template
    * default behaviour is to render an icon using the expandedIconName and collapsedIconName
@@ -27,13 +27,13 @@ export interface TreeItemTemplateProps {
    * Override the header template
    * compose a custom header out of the subcomponents
    */
-  headerTemplate?: (item: {}, index: number, indent: Array<PanelFragment>, expander: PanelFragment, headerContent: PanelFragment, view: TreeItem) => PanelFragment;
+  headerTemplate?: (item: T, index: number, indent: Array<PanelFragment>, expander: PanelFragment, headerContent: PanelFragment, view: TreeItem) => PanelFragment;
 
   /**
    * template to render each item belonging to the bound item
    * use this template to define your own items presenter template
    */
-  itemsTemplate?: (items: IterableLike<{}> | undefined, view: TreeItem) => PanelFragment;
+  itemsTemplate?: (items: IterableLike<T> | undefined, view: TreeItem) => PanelFragment;
 }
 
 export interface TreeItemRenderProps {
@@ -61,10 +61,10 @@ export interface TreeItemRenderProps {
   collapsedIconName?: string;
 }
 
-export interface TreeItemFacadeProps extends TreeItemSourceProps, TreeItemTemplateProps, TreeItemRenderProps, ItemsPresenterTemplateProps, PanelItemProps, PanelRenderProps {
+export interface TreeItemFacadeProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends TreeItemSourceProps<T>, TreeItemTemplateProps<T>, TreeItemRenderProps, ItemsPresenterTemplateProps<T>, PanelItemProps<T, TContext>, PanelRenderProps {
 }
 
-export interface TreeItemProps extends TreeItemFacadeProps {
+export interface TreeItemProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends TreeItemFacadeProps<T, TContext> {
   /**
    * the item that this tree node represents
    */

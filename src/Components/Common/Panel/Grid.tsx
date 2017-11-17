@@ -13,7 +13,7 @@ export interface GridRenderProps {
   border?: boolean;
 }
 
-export interface GridProps extends PanelProps, GridRenderProps {
+export interface GridProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends PanelProps<T, TContext>, GridRenderProps {
 }
 
 export interface GridComponentProps extends React.HTMLProps<any>, GridProps {

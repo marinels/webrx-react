@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Iterable } from 'ix';
 
-import { PanelProps, Panel, PanelItemProp, PanelFragment } from './Panel';
+import { PanelProps, Panel, PanelItemProp, PanelItemContext, PanelFragment } from './Panel';
 import { GridRowContext, GridColumnContext, GridLayoutDefinition } from './GridLayout';
 import { GridRenderProps } from './Grid';
 
 
-export interface UniformRowItemProps {
+export interface UniformRowItemProps<T = {}> {
   /**
    * apply custom row class name to the corresponding panel item
    */
@@ -20,10 +20,10 @@ export interface UniformRowItemProps {
   /**
    * apply custom row props to the corresponding panel item
    */
-  rowProps?: PanelItemProp<{}, GridRowContext>;
+  rowProps?: PanelItemProp<T, GridRowContext>;
 }
 
-export interface UniformColumnItemProps {
+export interface UniformColumnItemProps<T = {}> {
   /**
    * apply custom column class name to the corresponding panel item
    */
@@ -37,10 +37,10 @@ export interface UniformColumnItemProps {
   /**
    * apply custom column props to the corresponding panel item
    */
-  columnProps?: PanelItemProp<{}, GridColumnContext>;
+  columnProps?: PanelItemProp<T, GridColumnContext>;
 }
 
-export interface UniformGridPanelProps extends PanelProps, UniformRowItemProps, UniformColumnItemProps, GridRenderProps {
+export interface UniformGridPanelProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends PanelProps<T, TContext>, UniformRowItemProps<T>, UniformColumnItemProps<T>, GridRenderProps {
   /**
    * number of columns in the grid
    */

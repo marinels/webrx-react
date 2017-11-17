@@ -28,21 +28,21 @@ export type PanelItemTemplate<TContext extends PanelItemContext = PanelItemConte
  * panel item props allow component to inject props to the rendered
  * block structure.
  */
-export interface PanelItemProps<T extends PanelItemContext = PanelItemContext> {
+export interface PanelItemProps<T = {}, TContext extends PanelItemContext = PanelItemContext> {
   /**
    * apply custom class name to the corresponding panel item
    */
-  itemClassName?: PanelItemProp<string, T>;
+  itemClassName?: PanelItemProp<string, TContext>;
 
   /**
    * apply custom style to the corresponding panel item
    */
-  itemStyle?: PanelItemProp<React.CSSProperties, T>;
+  itemStyle?: PanelItemProp<React.CSSProperties, TContext>;
 
   /**
    * apply custom props to the corresponding panel item
    */
-  itemProps?: PanelItemProp<{}, T>;
+  itemProps?: PanelItemProp<T, TContext>;
 }
 
 export interface PanelTemplateProps<T extends PanelItemContext = PanelItemContext> {
@@ -61,7 +61,7 @@ export interface PanelRenderProps {
   emptyContent?: PanelFragment;
 }
 
-export interface PanelProps extends PanelItemProps, PanelTemplateProps, PanelRenderProps {
+export interface PanelProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends PanelItemProps<T, TContext>, PanelTemplateProps<TContext>, PanelRenderProps {
 }
 
 export abstract class Panel<TProps extends PanelProps> extends React.Component<TProps> {

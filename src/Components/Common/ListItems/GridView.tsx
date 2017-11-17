@@ -8,19 +8,19 @@ import { PanelView } from './PanelView';
 import { ItemsPresenter } from '../Items/ItemsPresenter';
 import { GridViewColumnProps, GridViewColumn } from './GridViewColumn';
 import { ListItemsViewTemplate, ListItemsViewTemplateProps } from './ListItemsViewTemplate';
-import { PanelFragment } from '../Panel/Panel';
+import { PanelFragment, PanelItemContext } from '../Panel/Panel';
 import { TablePanel } from '../Panel/TablePanel';
 import { ContentTooltip } from '../ContentTooltip/ContentTooltip';
 import { ListItemsViewModel } from './ListItemsViewModel';
 
 export { GridViewColumnProps, GridViewColumn };
 
-export interface GridTemplateProps {
-  headerTemplate?: (header: PanelFragment, item: {} | undefined, field: string | undefined) => PanelFragment;
-  cellTemplate?: (cell: PanelFragment, item: {} | undefined, field: string | undefined) => PanelFragment;
+export interface GridTemplateProps<T = {}> {
+  headerTemplate?: (header: PanelFragment, item: T | undefined, field: string | undefined) => PanelFragment;
+  cellTemplate?: (cell: PanelFragment, item: T | undefined, field: string | undefined) => PanelFragment;
 }
 
-export interface GridViewProps extends GridTemplateProps, ListItemsViewTemplateProps {
+export interface GridViewProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends GridTemplateProps<T>, ListItemsViewTemplateProps<T, TContext> {
   fill?: boolean;
 }
 

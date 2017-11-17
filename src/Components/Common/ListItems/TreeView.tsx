@@ -10,7 +10,7 @@ import { StackPanel } from '../Panel/StackPanel';
 import { PanelFragment, PanelItemContext } from '../Panel/Panel';
 import { ListItemsViewModel } from './ListItemsViewModel';
 
-export interface TreeViewProps extends ListItemsViewTemplateProps, TreeItemSourceProps, TreeItemRenderProps {
+export interface TreeViewProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ListItemsViewTemplateProps<T, TContext>, TreeItemSourceProps<T>, TreeItemRenderProps {
   fill?: boolean;
 }
 
