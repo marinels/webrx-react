@@ -15,7 +15,7 @@ export interface StackPanelProps extends PanelProps {
   orientation?: StackPanelOrientation | keyof typeof StackPanelOrientation;
 }
 
-export interface StackPanelComponentProps extends React.HTMLProps<StackPanel>, StackPanelProps {
+export interface StackPanelComponentProps extends React.HTMLProps<any>, StackPanelProps {
 }
 
 export class StackPanel extends Panel<StackPanelComponentProps> {

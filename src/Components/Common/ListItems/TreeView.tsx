@@ -14,7 +14,7 @@ export interface TreeViewProps extends ListItemsViewTemplateProps, TreeItemSourc
   fill?: boolean;
 }
 
-export interface TreeViewComponentProps extends React.HTMLProps<TreeView>, TreeViewProps {
+export interface TreeViewComponentProps extends React.HTMLProps<any>, TreeViewProps {
 }
 
 export class TreeView extends ListItemsViewTemplate<TreeViewComponentProps> {

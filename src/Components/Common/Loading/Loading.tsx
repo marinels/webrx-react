@@ -11,7 +11,7 @@ export interface LoadingProps {
   componentClass?: any;
 }
 
-export interface LoadingComponentProps extends React.HTMLProps<Loading>, LoadingProps {
+export interface LoadingComponentProps extends React.HTMLProps<any>, LoadingProps {
 }
 
 export class Loading extends React.Component<LoadingComponentProps> {

@@ -24,7 +24,7 @@ export interface GridViewProps extends GridTemplateProps, ListItemsViewTemplateP
   fill?: boolean;
 }
 
-export interface GridViewComponentProps extends React.HTMLProps<GridView>, GridViewProps {
+export interface GridViewComponentProps extends React.HTMLProps<any>, GridViewProps {
 }
 
 export class GridView extends ListItemsViewTemplate<GridViewProps> {

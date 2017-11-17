@@ -9,7 +9,7 @@ export interface CountFooterContentProps {
   suffix?: string;
 }
 
-export interface CountFooterContentComponentProps extends CountFooterContentProps, React.HTMLProps<CountFooterContent> {
+export interface CountFooterContentComponentProps extends CountFooterContentProps, React.HTMLProps<any> {
 }
 
 export interface CountFooterState {
