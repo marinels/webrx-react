@@ -68,6 +68,7 @@ export function restProps<P, T, R extends ReactSpreadRestrictedProps = ReactSpre
 
 declare module 'react' {
   interface Component<P> {
+    trimProps: typeof trimPropsStatic;
     // sadly, we need to re-define this restProps function here instead of using
     // the normal restProps: typeof restProps
     // this is because a function property cannot be overridden in a derived class
@@ -83,6 +84,7 @@ declare module 'react' {
   }
 }
 
+React.Component.prototype.trimProps = trimPropsStatic;
 React.Component.prototype.restProps = restProps;
 React.Component.trimProps = trimPropsStatic;
 React.Component.restProps = restPropsStatic;
