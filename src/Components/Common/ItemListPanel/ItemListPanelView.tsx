@@ -51,7 +51,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelViewProps, ItemList
       undefined;
 
     return (
-      <CommonPanel headerFormat={ headerFormat } { ...React.Component.trimProps(rest) } className={ this.wxr.classNames('ItemListPanel', className) }>
+      <CommonPanel headerFormat={ headerFormat } { ...this.trimProps(rest) } className={ this.wxr.classNames('ItemListPanel', className) }>
         { this.renderDataGrid(props) }
       </CommonPanel>
     );

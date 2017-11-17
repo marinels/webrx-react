@@ -56,7 +56,7 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
         itemsPanelTemplate={ this.renderTablePanel.bind(this) }
         listItems={ props.listItems }
         itemsProps={ gridProps }
-        { ...React.Component.trimProps(rest) }
+        { ...this.trimProps(rest) }
       >
         { children }
       </PanelView>
@@ -104,7 +104,7 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
       .some(x => GridViewColumn.canRenderHeader(x));
 
     if (renderHeaders) {
-      const props = React.Component.trimProps({
+      const props = this.trimProps({
         itemTemplate: this.props.headerTemplate,
       });
 
@@ -129,7 +129,7 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
 
   protected renderTableRow(item: {}, index: number) {
     const columns = this.getColumnDefinitions();
-    const props = React.Component.trimProps({
+    const props = this.trimProps({
       item,
       itemTemplate: this.props.cellTemplate,
     });

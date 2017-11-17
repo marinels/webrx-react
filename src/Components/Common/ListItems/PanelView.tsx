@@ -35,7 +35,7 @@ export class PanelView extends ListItemsViewTemplate<PanelViewComponentProps> {
         viewModel={ this.getListItems() }
         itemsPanelTemplate={ this.getItemsPanelTemplateFunction() }
         { ...this.getItemsProps() }
-        { ...React.Component.trimProps(rest) }
+        { ...this.trimProps(rest) }
       />
     );
   }

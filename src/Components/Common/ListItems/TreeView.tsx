@@ -24,7 +24,7 @@ export class TreeView extends ListItemsViewTemplate<TreeViewComponentProps> {
       return { fill, listItems, itemsProps };
     });
 
-    const treeItemProps: any = React.Component.trimProps(rest);
+    const treeItemProps: any = this.trimProps(rest);
 
     return (
       <TreeItemsView

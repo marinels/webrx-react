@@ -34,7 +34,7 @@ export class TreeItemsView extends React.Component<TreeItemsViewProps> {
         itemProps={ props.itemProps }
         compact={ props.compact }
         emptyContent={ props.emptyContent }
-        { ...React.Component.trimProps(rest) }
+        { ...this.trimProps(rest) }
       />
     );
   }

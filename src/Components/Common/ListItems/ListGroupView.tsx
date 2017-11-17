@@ -34,7 +34,7 @@ export class ListGroupView extends ListItemsViewTemplate<ListGroupViewComponentP
         selectedProps={ ListGroupView.getSelectedProps }
         listItems={ props.listItems }
         itemsProps={ props.itemsProps }
-        { ...React.Component.trimProps(rest) }
+        { ...this.trimProps(rest) }
       >
         { children }
       </PanelView>
