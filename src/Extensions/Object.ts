@@ -80,45 +80,64 @@ export function getName(
   undefinedValue = 'undefined',
   isStatic = false,
 ): string {
-  if (source != null) {
-    const nameSource: NamedObject = source;
+  if (source == null) {
+    return undefinedValue;
+  }
 
-    if (String.isString(nameSource)) {
-      return nameSource;
-    }
-    else if (!String.isNullOrEmpty(nameSource.displayName)) {
-      return nameSource.displayName;
-    }
-    else if (!String.isNullOrEmpty(nameSource.typeName)) {
-      return nameSource.typeName;
-    }
-    else if (!String.isNullOrEmpty(nameSource.name)) {
-      return nameSource.name;
-    }
-    else if (nameSource.constructor != null) {
-      // this allows us to inspect the static properties of the source object
-      // but we don't want to go beyond the the static properties
-      if (isStatic === false) {
-        const name = getName(nameSource.constructor, undefinedValue, true);
+  // first check if we're a string
+  if (String.isString(source)) {
+    return source;
+  }
 
-        if (String.isNullOrEmpty(name) === false) {
-          return name;
-        }
-      }
-      else {
-        // IE is pretty dumb and doesn't expose any useful naming properties
-        // so we can try and extract it from the toString()
-        let match = /function (.+)\(/.exec(nameSource.toString());
-        if (match != null && match.length >= 2) {
-          if (String.isNullOrEmpty(match[1]) === false) {
-            return match[1];
-          }
-        }
+  // check if this is a function and try and extract the name directly
+  if (source instanceof Function && String.isString(source.name)) {
+    return source.name;
+  }
+
+  const nameSource: NamedObject = source;
+
+  // then check the static sources
+  if (nameSource.constructor != null) {
+    if (!String.isNullOrEmpty(nameSource.constructor.displayName)) {
+      return nameSource.constructor.displayName;
+    }
+
+    if (!String.isNullOrEmpty(nameSource.constructor.typeName)) {
+      return nameSource.constructor.typeName;
+    }
+
+    if (!String.isNullOrEmpty(nameSource.constructor.name)) {
+      return nameSource.constructor.name;
+    }
+  }
+
+  // now check the instance sources
+  if (!String.isNullOrEmpty(nameSource.displayName)) {
+    return nameSource.displayName;
+  }
+
+  if (!String.isNullOrEmpty(nameSource.typeName)) {
+    return nameSource.typeName;
+  }
+
+  if (!String.isNullOrEmpty(nameSource.name)) {
+    return nameSource.name;
+  }
+
+  // try and extract the name from the toString() reprenstation
+  // IE is pretty dumb and doesn't expose any useful naming properties
+  // but this seems to work reliably for some objects
+  if (nameSource.constructor != null) {
+    let match = /function (.+)\(/.exec(nameSource.constructor.toString());
+    if (match != null && match.length >= 2) {
+      if (String.isNullOrEmpty(match[1]) === false) {
+        return match[1];
       }
     }
   }
 
-  return undefinedValue;
+  // finally fallback onto simple toString()
+  return nameSource.toString();
 }
 
 export interface EnumPropertyDescriptor<T> {
