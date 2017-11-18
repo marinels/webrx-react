@@ -179,6 +179,16 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
     };
   }
 
+  componentWillReceiveProps(nextProps: Readonly<TreeItemComponentProps>, nextContext: any) {
+    if (nextProps.startExpanded !== this.state.isExpanded) {
+      this.setState((prevState, props) => {
+        return {
+          isExpanded: props.startExpanded,
+        };
+      });
+    }
+  }
+
   render() {
     const { className, props, rest, children } = this.restProps(x => {
       const { item, index, itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent } = x;
