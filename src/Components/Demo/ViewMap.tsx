@@ -524,7 +524,12 @@ export const demoViewMap: ViewActivatorMap = {
   CommonPanel: () => (
     <Components.CommonPanel headerContent='Common Panel Demo' footerContent='Add Status Content to the Footer' collapsible
       headerActions={[ { id: 'header-action-1', children: 'Header Button 1' }, { id: 'header-action-2', children: 'Header Button 2' } ]}
-      footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' }, { id: 'footer-action-2', children: 'Footer Button 2' } ]}
+      footerActions={(
+        <Components.CommonPanel.Actions>
+          <Components.CommandButton children='Footer CommandButton' />
+          <Button children='Footer Button' />
+        </Components.CommonPanel.Actions>
+      )}
     >
       Add any content to the panel body!
       <Components.Loading fontSize={ 24 } text='Such as a Loader...' />
@@ -533,8 +538,8 @@ export const demoViewMap: ViewActivatorMap = {
   ),
   CommonPanelList: () => (
     <Components.CommonPanel headerContent='Common Panel Demo' footerContent='Add Status Content to the Footer' collapsible
-      headerActions={[ { id: 'header-action-1', children: 'Header Button 1' }, { id: 'header-action-2', children: 'Header Button 2' } ]}
-      footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' }, { id: 'footer-action-2', children: 'Footer Button 2' } ]}
+      headerActions={ (<Components.CommandButton children='Header Action' />) }
+      footerActions={ (<Button children='Footer Action' />) }
     >
       <ListGroup fill>
         <ListGroupItem>Item 1</ListGroupItem>
@@ -545,8 +550,8 @@ export const demoViewMap: ViewActivatorMap = {
   ),
   CommonPanelTable: () => (
     <Components.CommonPanel headerContent='Common Panel Demo' footerContent='Add Status Content to the Footer' collapsible
-      headerActions={[ { id: 'header-action-1', children: 'Header Button 1' }, { id: 'header-action-2', children: 'Header Button 2' } ]}
-      footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' }, { id: 'footer-action-2', children: 'Footer Button 2' } ]}
+      headerActions={ (<Components.CommandButton children='Header Action' />) }
+      footerActions={ (<Button children='Footer Action' />) }
     >
       <Table fill>
         <thead><tr><th>Some Column</th></tr></thead>
