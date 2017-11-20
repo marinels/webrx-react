@@ -8,18 +8,30 @@ export type CommonPanelSectionFormatter = (section: any) => any;
 export type CommonPanelContentSection = 'header' | 'body' | 'footer';
 export type CommonPanelContentType = 'teaser' | 'summary';
 
-export type PanelAction = CommandButtonProps & { children?: React.ReactNode; };
+export interface CommonPanelActionsProps {
+  section?: CommonPanelContentSection;
+}
+
+export class CommonPanelActions extends React.Component<CommonPanelActionsProps> {
+  render() {
+    return (
+      <ButtonToolbar className={ `CommonPanel-${ this.props.section }Actions` }>
+        { this.props.children }
+      </ButtonToolbar>
+    );
+  }
+}
 
 export type BootstrapPanelProps = Omit2<PanelProps, React.HTMLProps<Panel>, TransitionCallbacks>;
 
 export interface CommonPanelRenderProps extends BootstrapPanelProps {
   headerContent?: CommonPannelContent;
-  headerActions?: Array<PanelAction>;
+  headerActions?: any;
   headerFormat?: CommonPanelSectionFormatter;
   teaserContent?: CommonPannelContent;
   summaryContent?: CommonPannelContent;
   footerContent?: CommonPannelContent;
-  footerActions?: Array<PanelAction>;
+  footerActions?: any;
   footerFormat?: CommonPanelSectionFormatter;
 
   shadow?: boolean;
@@ -30,6 +42,8 @@ export interface CommonPanelProps extends PanelProps, CommonPanelRenderProps {
 
 export class CommonPanel extends React.Component<CommonPanelProps> {
   public static displayName = 'CommonPanel';
+
+  public static Actions = CommonPanelActions;
 
   static defaultProps = {
     defaultExpanded: true,
@@ -70,22 +84,32 @@ export class CommonPanel extends React.Component<CommonPanelProps> {
     ));
   }
 
-  private renderActions(actions: CommandButtonProps[] | undefined, section: CommonPanelContentSection) {
-    return this.wxr.renderNullable(actions, a => (
-      <ButtonToolbar className={ `CommonPanel-${ section }Actions` }>
-        {
-          a
-            // strip off the ref prop if it exists
-            .map(x => Object.rest(x, undefined, 'ref').rest as any)
-            .map(x => (<CommandButton key={ x.id } { ...x } />))
-        }
-      </ButtonToolbar>
-    ), undefined, x => x.length > 0);
+  private renderActions(actions: any, section: CommonPanelContentSection) {
+    return this.wxr
+      .renderNullable(
+        actions,
+        a => {
+          if (React.isValidElement<any>(a)) {
+            return React.cloneElement(a, { section });
+          }
+
+          return (
+            <CommonPanelActions section={ section }>
+              {
+                Array.isArray(a) ?
+                  a
+                    .map((x, i) => (<CommandButton key={ x.id || i } { ...x } />)) :
+                  (<CommandButton { ...a } />)
+              }
+            </CommonPanelActions>
+          );
+        },
+      );
   }
 
-  private renderHeaderFooter(content: CommonPannelContent | undefined, actions: CommandButtonProps[] = [], section: CommonPanelContentSection, formatter: (section: any) => any = x => x) {
+  private renderHeaderFooter(content: CommonPannelContent | undefined, actions: any, section: CommonPanelContentSection, formatter: (section: any) => any = x => x) {
     return this.wxr.renderConditional(
-      content != null || (actions != null && actions.length > 0),
+      content != null || actions != null,
       () => formatter(
         <div className={ `CommonPanel-${ section }` }>
           { this.renderContent(content, section) }
