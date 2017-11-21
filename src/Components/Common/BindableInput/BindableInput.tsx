@@ -77,7 +77,7 @@ export class BindableInput extends React.Component<BindableInputComponentProps> 
     const value = this.getValue();
     // NOTE: react says the value of a bindable control should not be null, but
     //       instead empty string (undefined is ok though, so === is required).
-    bindProps[props.valueProperty!] = value === null ? '' : value;
+    bindProps[props.valueProperty!] = value == null ? '' : value;
     bindProps[props.onChangeProperty!] = (e: React.FormEvent<any>) => {
       this.setValue(e);
     };
