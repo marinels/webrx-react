@@ -180,7 +180,7 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
   }
 
   componentWillReceiveProps(nextProps: Readonly<TreeItemComponentProps>, nextContext: any) {
-    if (nextProps.startExpanded !== this.state.isExpanded) {
+    if (nextProps.startExpanded != null && nextProps.startExpanded !== this.state.isExpanded) {
       this.setState((prevState, props) => {
         return {
           isExpanded: props.startExpanded,
