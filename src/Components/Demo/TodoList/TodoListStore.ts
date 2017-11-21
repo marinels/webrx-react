@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-import { BaseStore } from '../../../Stores/BaseStore';
+import { BaseApiStore } from '../../../Stores/BaseStore';
 import { TodoListApi } from './TodoListApi';
 
 export interface TodoListItem {
@@ -16,7 +16,7 @@ export const TodoListActions = {
   SetCompleted: 'SetCompleted',
 };
 
-export class TodoListStore extends BaseStore {
+export class TodoListStore extends BaseApiStore<TodoListApi> {
   public static displayName = 'TodoListStore';
 
   public static readonly default = new TodoListStore();
