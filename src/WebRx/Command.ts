@@ -134,7 +134,7 @@ export class ObservableCommand<T = any> extends Subscription implements Command<
   }
 }
 
-export function command(): Command;
+export function command<T = any>(): Command<T>;
 export function command<T>(execute: ExecutionAction<T>): Command<T>;
 export function command<T>(canExecute: Observable<boolean>, execute?: ExecutionAction<T>): Command<T>;
 export function command<T>(execute: ExecutionAction<T>, canExecute: Observable<boolean>): Command<T>;
