@@ -7,7 +7,7 @@ import { SampleDataCreator, StoreApi } from './Interfaces';
 import { isStoreApi } from './Helpers';
 import { ObservableApi } from './ObservableApi';
 
-export abstract class BaseStore {
+export class BaseStore {
   public static displayName = 'BaseStore';
 
   protected readonly logger: Logger = getLogger(BaseStore.displayName);
@@ -37,5 +37,11 @@ export abstract class BaseStore {
   protected postObservable<T = any>(action: string, data?: any, params?: any, options?: AjaxRequest, baseUri?: string): Observable<T> {
     return this.api
       .postObservable<T>(action, data, params, options, baseUri);
+  }
+}
+
+export class BaseApiStore<T extends StoreApi> extends BaseStore {
+  constructor(protected readonly api: T) {
+    super(api);
   }
 }
