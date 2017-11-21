@@ -1,7 +1,7 @@
 import { Observable, Observer, Subject, Subscription } from 'rxjs';
 import { AnonymousSubscription, TeardownLogic } from 'rxjs/Subscription';
 
-import { wx, Property, Command } from '../../WebRx';
+import { wx, WebRxStatic, Property, Command } from '../../WebRx';
 import { Logger, LogLevel, getLogger } from '../../Utils/Logging';
 import { Alert, PubSub } from '../../Utils';
 import { RoutingStateChangedKey } from '../../Events';
@@ -66,26 +66,41 @@ export function getRoutingStateValue<T, R>(value: T | null | undefined, arg2?: T
   return <any>value;
 }
 
+export type RoutingStateValueCreator = typeof getRoutingStateValue;
+
 export abstract class BaseViewModel extends Subscription {
   public static displayName = 'BaseViewModel';
 
-  // these are WebRx helper functions (so you don't need to import them every time)
-  public static readonly wx = wx;
-  protected readonly wx = wx;
+  // WebRx helper functions (so you don't need to import them every time)
+  public static readonly wx: WebRxStatic = wx;
+
+  protected readonly logger: Logger;
+  protected readonly wx: WebRxStatic;
 
   // helper function for creating routing state values
-  protected readonly getRoutingStateValue = getRoutingStateValue;
+  protected readonly getRoutingStateValue: RoutingStateValueCreator;
 
   // these are Alert helper functions
-  protected readonly createAlert = Alert.create;
-  protected readonly alertForError = Alert.createForError;
+  protected readonly createAlert: Alert.AlertCreator;
+  protected readonly alertForError: Alert.ErrorAlertCreator;
 
-  protected readonly logger: Logger = getLogger(this.getDisplayName());
-  protected readonly routeManager = routeManager;
+  protected readonly routeManager: RouteManager;
 
-  private isLoggingMemberObservables = false;
+  private isLoggingMemberObservables: boolean;
 
   public stateChanged: Command<HandlerRoutingStateChanged> | undefined;
+
+  constructor(unsubscribe?: () => void) {
+    super(unsubscribe);
+
+    this.logger = getLogger(this.getDisplayName());
+    this.wx = wx;
+    this.getRoutingStateValue = getRoutingStateValue;
+    this.createAlert = Alert.create;
+    this.alertForError = Alert.createForError;
+    this.routeManager = routeManager;
+    this.isLoggingMemberObservables = false;
+  }
 
   // -----------------------------------------
   // These are special methods that handle the
