@@ -29,12 +29,12 @@ export abstract class BaseStore {
     this.logger.debug('Store Created');
   }
 
-  protected getObservable<T>(action: string, params?: any, options?: AjaxRequest, baseUri?: string): Observable<T> {
+  protected getObservable<T = any>(action: string, params?: any, options?: AjaxRequest, baseUri?: string): Observable<T> {
     return this.api
       .getObservable<T>(action, params, options, baseUri);
   }
 
-  protected postObservable<T>(action: string, data?: any, params?: any, options?: AjaxRequest, baseUri?: string): Observable<T> {
+  protected postObservable<T = any>(action: string, data?: any, params?: any, options?: AjaxRequest, baseUri?: string): Observable<T> {
     return this.api
       .postObservable<T>(action, data, params, options, baseUri);
   }
