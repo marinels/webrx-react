@@ -20,10 +20,6 @@ export interface CommandButtonComponentProps extends ButtonProps, CommandButtonP
 export class CommandButton extends React.Component<CommandButtonComponentProps> {
   public static displayName = 'CommandButton';
 
-  static defaultProps = {
-    componentClass: 'div',
-  };
-
   private canExecuteSubscription = Subscription.EMPTY;
 
   private getCommand(): Command<any> | undefined {
@@ -55,8 +51,8 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
 
   render() {
     const { rest } = this.restProps(x => {
-      const { onClick, command, commandParameter, stopPropagation, preventDefault, plain, tooltip, disabled } = x;
-      return { onClick, command, commandParameter, stopPropagation, preventDefault, plain, tooltip, disabled };
+      const { onClick, command, commandParameter, stopPropagation, preventDefault, plain, tooltip, disabled, componentClass } = x;
+      return { onClick, command, commandParameter, stopPropagation, preventDefault, plain, tooltip, disabled, componentClass };
     });
 
     return this.renderButton(rest);
@@ -72,7 +68,12 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
       cmd.canExecute;
 
     const button = (
-      <Button { ...rest } className={ this.wxr.classNames('CommandButton', this.props.className, { plain: this.props.plain }) } disabled={ canExecute !== true } onClick={ e => this.handleClick(e) }>
+      <Button { ...rest }
+        className={ this.wxr.classNames('CommandButton', this.props.className, { plain: this.props.plain }) }
+        disabled={ canExecute !== true }
+        onClick={ e => this.handleClick(e) }
+        componentClass={ this.getComponentClass() }
+      >
         { this.props.children }
       </Button>
     );
@@ -98,7 +99,19 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
     }
   }
 
-  private handleClick(e: React.MouseEvent<Button>) {
+  protected getComponentClass() {
+    if (this.props.componentClass != null) {
+      return this.props.componentClass;
+    }
+
+    if (this.props.command == null && String.isNullOrEmpty(this.props.href) === false) {
+      return 'a';
+    }
+
+    return 'div';
+  }
+
+  protected handleClick(e: React.MouseEvent<Button>) {
     const cmd = this.getCommand();
 
     if (cmd == null) {
