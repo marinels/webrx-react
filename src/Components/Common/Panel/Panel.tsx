@@ -62,6 +62,7 @@ export interface PanelRenderProps {
 }
 
 export interface PanelProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends PanelItemProps<T, TContext>, PanelTemplateProps<TContext>, PanelRenderProps {
+  fill?: boolean;
 }
 
 export abstract class Panel<TProps extends PanelProps> extends React.Component<TProps> {

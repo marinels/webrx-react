@@ -9,6 +9,7 @@ export interface TreeItemsProps extends ItemsProps, TreeItemFacadeProps {
 }
 
 export interface TreeItemsViewProps extends ItemsViewProps, TreeItemsProps {
+  fill?: boolean;
 }
 
 export class TreeItemsView extends React.Component<TreeItemsViewProps> {

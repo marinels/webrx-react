@@ -40,6 +40,7 @@ export interface ItemsPresenterProps<T = {}, TContext extends PanelItemContext =
 }
 
 export interface ItemsPresenterComponentProps extends React.HTMLProps<any>, ItemsPresenterProps {
+  fill?: boolean;
 }
 
 export class ItemsPresenter extends React.Component<ItemsPresenterComponentProps> {
@@ -148,6 +149,7 @@ export class ItemsPresenter extends React.Component<ItemsPresenterComponentProps
         itemProps: this.props.itemProps,
         compact: this.props.compact,
         emptyContent: this.props.emptyContent,
+        fill: this.props.fill,
       });
 
       const itemsPanelProps = React.isValidElement(itemsPanel) ? itemsPanel.props : {};

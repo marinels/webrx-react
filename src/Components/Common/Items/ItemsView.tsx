@@ -11,6 +11,7 @@ export interface ItemsProps<T = {}, TContext extends PanelItemContext = PanelIte
 }
 
 export interface ItemsViewProps extends BaseViewProps<ItemsViewModel<{}>>, ItemsProps {
+  fill?: boolean;
 }
 
 export class ItemsView extends BaseView<ItemsViewProps, ItemsViewModel<{}>> {
@@ -24,8 +25,8 @@ export class ItemsView extends BaseView<ItemsViewProps, ItemsViewModel<{}>> {
 
   render() {
     const { className, children, props, rest } = this.restProps(x => {
-      const { viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent } = x;
-      return { viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent };
+      const { viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent, fill } = x;
+      return { viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent, fill };
     });
 
     return (
