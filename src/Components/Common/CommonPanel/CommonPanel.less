@@ -54,6 +54,12 @@
     vertical-align: middle;
   }
 
+  // make the header/footer content stretch to consume any leftover space
+  .CommonPanel-headerContent,
+  .CommonPanel-footerContent {
+    width: 100%;
+  }
+
   // action sections are set to consume minimum width
   // -- (they will consume at least 1px and stretch to their desired size)
   // we text align right to push buttons to the right when there is no content section
