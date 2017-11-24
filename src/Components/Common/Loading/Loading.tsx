@@ -3,6 +3,7 @@ import { Subscription } from  'rxjs';
 import { Grid, ProgressBar } from 'react-bootstrap';
 
 import { Property } from '../../../WebRx';
+import { wxr } from '../../React';
 
 export function renderLoadable(
   isLoading: Property<boolean> | boolean | undefined,
@@ -26,7 +27,7 @@ export function renderLoadable(
     );
   }
 
-  return this.renderConditional(isLoading, action, loadedComponent);
+  return wxr.renderConditional(isLoading, action, loadedComponent);
 }
 
 export function renderSizedLoadable(
@@ -35,7 +36,7 @@ export function renderSizedLoadable(
   fontSize: number | string,
   loadedComponent?: any,
 ) {
-  return this.renderLoadable(isLoading, {
+  return renderLoadable(isLoading, {
     text,
     fontSize,
   }, loadedComponent);
@@ -47,7 +48,7 @@ export function renderGridLoadable(
   fontSize: number | string,
   loadedComponent?: any,
 ) {
-  return this.renderLoadable(isLoading, {
+  return renderLoadable(isLoading, {
     text,
     fontSize,
     componentClass: Grid,
