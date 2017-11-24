@@ -7,7 +7,7 @@ export interface TabsRoutingState {
   tab?: number;
 }
 
-export class TabsViewModel<T> extends BaseViewModel implements RoutingStateHandler<TabsRoutingState> {
+export class TabsViewModel<T = any> extends BaseViewModel implements RoutingStateHandler<TabsRoutingState> {
   public static displayName = 'TabsViewModel';
 
   public readonly tabs: ReadOnlyProperty<T[]>;
