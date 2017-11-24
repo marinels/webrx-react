@@ -6,6 +6,7 @@ import { PanelItemContext } from '../Panel/Panel';
 import { ListItemsViewTemplateProps } from './ListItemsViewTemplate';
 import { ItemsProps } from '../Items/ItemsView';
 import { ListGroupView } from './ListGroupView';
+import { GridViewColumns } from './GridView';
 import { ListItemsViewModel } from './ListItemsViewModel';
 
 export interface ListItemsProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ItemsProps<T, TContext> {
@@ -33,7 +34,11 @@ export class ListItemsView extends BaseView<ListItemsViewProps, ListItemsViewMod
     }
 
     if (React.Children.count(props.children) === 1) {
-      return React.Children.only(props.children);
+      const view = React.Children.only(props.children);
+
+      if (view.type !== GridViewColumns) {
+        return view;
+      }
     }
 
     return defaultListItemsView(props);

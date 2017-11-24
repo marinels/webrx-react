@@ -15,6 +15,12 @@ import { ListItemsViewModel } from './ListItemsViewModel';
 
 export { GridViewColumnProps, GridViewColumn };
 
+export class GridViewColumns extends React.Component {
+  render() {
+    return this.props.children;
+  }
+}
+
 export interface GridTemplateProps<T = {}> {
   headerTemplate?: (header: PanelFragment, item: T | undefined, field: string | undefined) => PanelFragment;
   cellTemplate?: (cell: PanelFragment, item: T | undefined, field: string | undefined) => PanelFragment;
@@ -29,6 +35,8 @@ export interface GridViewComponentProps extends React.HTMLProps<any>, GridViewPr
 
 export class GridView extends ListItemsViewTemplate<GridViewProps> {
   public static displayName = 'GridView';
+
+  public static readonly Columns = GridViewColumns;
 
   private readonly logger: Logging.Logger = Logging.getLogger(GridView.displayName);
   private columns: Array<React.ReactChild> | undefined;
@@ -72,7 +80,9 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
   }
 
   protected getColumnDefinitions(): Array<React.ReactChild> | undefined {
-    if (React.Children.count(this.props.children) === 0) {
+    const count = React.Children.count(this.props.children);
+
+    if (count === 0) {
       // try and auto-gen columns
       const item = this.getListItems().getItems().first();
 
@@ -89,6 +99,14 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
           <GridViewColumn key={ x } field={ x } />
         ))
         .toArray();
+    }
+
+    if (count === 1) {
+      const elem = React.Children.only(this.props.children);
+
+      if (elem.type === GridViewColumns) {
+        return React.Children.toArray(elem.props.children);
+      }
     }
 
     return React.Children.toArray(this.props.children);

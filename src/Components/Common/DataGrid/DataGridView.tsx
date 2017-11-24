@@ -7,7 +7,7 @@ import { SortDirection } from '../../../Utils/Compare';
 import { ListItemsView, ListItemsProps } from '../ListItems/ListItemsView';
 import { PanelFragment, PanelItemContext } from '../Panel/Panel';
 import { ItemsPresenter } from '../Items/ItemsPresenter';
-import { GridView, GridViewProps, GridViewColumn } from '../ListItems/GridView';
+import { GridView, GridViewProps, GridViewColumn, GridViewColumns } from '../ListItems/GridView';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { PagerView, PagerProps } from '../Pager/PagerView';
 import { Loading } from '../Loading/Loading';
@@ -24,8 +24,7 @@ export interface DataGridViewProps extends BaseViewProps<DataGridViewModel<{}>>,
 export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<{}>> {
   public static displayName = 'DataGridView';
 
-  static defaultProps = {
-  };
+  public static readonly Columns = GridViewColumns;
 
   updateOn(viewModel: Readonly<DataGridViewModel<{}>>) {
     return [
