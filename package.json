@@ -1,6 +1,6 @@
 {
   "name": "webrx-react",
-  "version": "0.16.0",
+  "version": "0.16.0-rc.10",
   "description": "ReactJS + WebRx + RxJS + Bootstrap: MVVM for Single Page Web Applications",
   "scripts": {
     "start": "webpack-dev-server --config webpack.dev.config.ts --port 3000",
