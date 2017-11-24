@@ -1,6 +1,5 @@
 declare global {
   // webpack defines
-  const DEBUG: boolean;
   const PRODUCTION: boolean;
   const TEST: boolean;
   const WEBPACK_DEV_SERVER: boolean;

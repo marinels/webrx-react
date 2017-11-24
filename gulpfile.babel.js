@@ -4,7 +4,6 @@
 
 import 'babel-polyfill';
 import File from 'vinyl';
-import WebpackDevServer from 'webpack-dev-server';
 import del from 'del';
 import clone from 'clone';
 import eslint from 'gulp-eslint';
@@ -109,7 +108,7 @@ if (config.verbose) {
 }
 
 // Default build task
-gulp.task('default', [ 'watch' ]);
+gulp.task('default', [ 'webpack' ]);
 // Default test task
 gulp.task('test', (done) => {
   runSequence('lint', 'mocha', done);
@@ -156,7 +155,6 @@ Tasks:
   ${ util.colors.cyan('gulp mocha') } will build the ${ util.colors.yellow('test') } bundle and run mocha against the tests
   ${ util.colors.cyan('gulp mocha:run') } will run mocha against the current ${ util.colors.yellow('test') } bundle
 
-  ${ util.colors.cyan('gulp watch') } will start a webpack development server
   ${ util.colors.cyan('gulp watch:mocha') } will start webpack in ${ util.colors.magenta('watch') } mode, and run all tests after any detected change
   ${ util.colors.cyan('gulp watch:lint') } will watch source files for changes and run ${ util.colors.cyan('lint') } after any detected change
   ${ util.colors.cyan('gulp watch:dist') } will watch source files for changes and run ${ util.colors.cyan('dist') } after any detected change
@@ -551,83 +549,6 @@ gulp.task('mocha:run', () => {
   return gulp
     .src(target)
     .pipe(mocha({ reporter: args.reporter || (config.quiet ? 'dot' : config.reporter) }));
-});
-
-gulp.task('watch', [ 'watch:webpack' ]);
-
-gulp.task('watch:webpack', [ 'clean:build' ], (done) => {
-  const webpackConfig = getWebpackConfig(config.builds.debug);
-  const uri = `http://${ config.host === '0.0.0.0' ? 'localhost' : config.host }:${ config.port }`;
-
-  webpackConfig.entry = {
-    app: [
-      `webpack-dev-server/client?${ uri }`,
-      'webpack/hot/only-dev-server',
-      path.resolve(config.paths.src, 'app.tsx'),
-    ],
-  };
-  // remove CommonsChunkPlugin and ExtractTextPlugin
-  webpackConfig.plugins.splice(1, 2);
-  // eslint-disable-next-line id-match
-  webpackConfig.plugins[0].definitions.WEBPACK_DEV_SERVER = true;
-  webpackConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
-  webpackConfig.devtool = 'eval';
-  webpackConfig.watch = true;
-
-  webpackConfig.module.rules = [
-    { test: /\.css$/, loader: [ 'style-loader', 'css-loader' ] },
-    { test: /\.less$/, loader: [ 'style-loader', 'css-loader', 'less-loader' ] },
-    { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader?mimetype=application/font-woff' },
-    { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader' },
-    { test: /\.(png|jpg|gif)$/, loader: 'url-loader' },
-    { test: /\.tsx?$/, loader: [ 'react-hot-loader/webpack', 'awesome-typescript-loader' ] },
-  ];
-
-  const compiler = webpack(webpackConfig);
-
-  compiler.plugin('compile', () => {
-    log('Bundling...');
-  });
-
-  compiler.plugin('done', (stats) => {
-    onWebpackComplete(config.builds.watch, null, stats);
-
-    if (done) {
-      // eslint-disable-next-line callback-return
-      done();
-      done = null;
-
-      log('[webpack-dev-server]', `Listening at ${ util.colors.magenta(`${ config.host }:${ config.port }`) }`);
-      log('[webpack-dev-server]', util.colors.magenta(`${ uri }/index.html`));
-      log('[webpack-dev-server]', util.colors.magenta(`${ uri }/webpack-dev-server/index.html`));
-
-      return;
-    }
-
-    log('watching for changes');
-  });
-
-  compiler.plugin('failed', (err) => {
-    if (err) {
-      throw new util.PluginError(`webpack: ${ config.builds.debug }`, err.message);
-    }
-  });
-
-  new WebpackDevServer(compiler, {
-    publicPath: webpackConfig.output.publicPath,
-    contentBase: path.resolve(config.paths.build, config.builds.watch),
-    hot: true,
-    historyApiFallback: true,
-    quiet: true,
-    noInfo: false,
-    stats: {
-      colors: true,
-    },
-  }).listen(config.port, config.host, (err) => {
-    if (err) {
-      throw new util.PluginError('webpack-dev-server', err);
-    }
-  });
 });
 
 gulp.task('watch:mocha', [ 'clean:build' ], () => {
