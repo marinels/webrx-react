@@ -1,8 +1,59 @@
 import * as React from 'react';
 import { Subscription } from  'rxjs';
-import { ProgressBar } from 'react-bootstrap';
+import { Grid, ProgressBar } from 'react-bootstrap';
 
 import { Property } from '../../../WebRx';
+
+export function renderLoadable(
+  isLoading: Property<boolean> | boolean | undefined,
+  loadingComponent: any,
+  loadedComponent?: any,
+) {
+  let action = loadingComponent;
+
+  if (String.isString(loadingComponent)) {
+    const text = loadingComponent;
+
+    action = () => (
+      <Loading text={ text } />
+    );
+  }
+  else if (Object.isObject(loadingComponent) && React.isValidElement(loadingComponent) === false) {
+    const props = loadingComponent;
+
+    action = () => (
+      <Loading { ...props } />
+    );
+  }
+
+  return this.renderConditional(isLoading, action, loadedComponent);
+}
+
+export function renderSizedLoadable(
+  isLoading: Property<boolean> | boolean | undefined,
+  text: string,
+  fontSize: number | string,
+  loadedComponent?: any,
+) {
+  return this.renderLoadable(isLoading, {
+    text,
+    fontSize,
+  }, loadedComponent);
+}
+
+export function renderGridLoadable(
+  isLoading: Property<boolean> | boolean | undefined,
+  text: string,
+  fontSize: number | string,
+  loadedComponent?: any,
+) {
+  return this.renderLoadable(isLoading, {
+    text,
+    fontSize,
+    componentClass: Grid,
+  }, loadedComponent);
+}
+
 
 export interface LoadingProps {
   progress?: Property<number> | number;
@@ -16,6 +67,10 @@ export interface LoadingComponentProps extends React.HTMLProps<any>, LoadingProp
 
 export class Loading extends React.Component<LoadingComponentProps> {
   public static displayName = 'Loading';
+
+  public static readonly renderLoadable = renderLoadable;
+  public static readonly renderSizedLoadable = renderSizedLoadable;
+  public static readonly renderGridLoadable = renderGridLoadable;
 
   static defaultProps = {
     progress: 100,

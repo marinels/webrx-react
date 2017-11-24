@@ -7,7 +7,6 @@ import {
 } from './BindingHelpers';
 import {
   renderIterable, renderConditional, renderNullable,
-  renderLoadable, renderSizedLoadable, renderGridLoadable,
   focusElement, classNames,
 } from './RenderHelpers';
 import { BaseViewModel } from './BaseViewModel';
@@ -23,9 +22,6 @@ export function create(target: {} = {}) {
     renderIterable,
     renderConditional,
     renderNullable,
-    renderLoadable,
-    renderSizedLoadable,
-    renderGridLoadable,
     focusElement,
     classNames,
   };

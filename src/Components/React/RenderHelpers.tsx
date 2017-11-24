@@ -1,11 +1,9 @@
 import * as React from 'react';
 import { findDOMNode } from 'react-dom';
-import { Grid } from 'react-bootstrap';
 import { Iterable } from 'ix';
 import * as classNamesFunc from 'classnames';
 
 import { Property } from '../../WebRx';
-import { Loading } from '../Common/Loading/Loading';
 import { ValueComparison, ValueComparer } from '../../Utils/Compare';
 
 export function renderIterable<T>(
@@ -58,54 +56,6 @@ export function renderNullable<T>(element: T | undefined, notNullContent: (x: T)
     () => notNullContent(element as T),
     nullContent,
   );
-}
-
-export function renderLoadable(
-  isLoading: Property<boolean> | boolean | undefined,
-  loadingComponent: any,
-  loadedComponent?: any,
-) {
-  if (String.isString(loadingComponent)) {
-    const text = loadingComponent;
-
-    loadingComponent = () => (
-      <Loading text={ text } />
-    );
-  }
-  else if (Object.isObject(loadingComponent) && React.isValidElement(loadingComponent) === false) {
-    const props = loadingComponent;
-
-    loadingComponent = () => (
-      <Loading { ...props } />
-    );
-  }
-
-  return this.renderConditional(isLoading, loadingComponent, loadedComponent);
-}
-
-export function renderSizedLoadable(
-  isLoading: Property<boolean> | boolean | undefined,
-  text: string,
-  fontSize: number | string,
-  loadedComponent?: any,
-) {
-  return this.renderLoadable(isLoading, {
-    text,
-    fontSize,
-  }, loadedComponent);
-}
-
-export function renderGridLoadable(
-  isLoading: Property<boolean> | boolean | undefined,
-  text: string,
-  fontSize: number | string,
-  loadedComponent?: any,
-) {
-  return this.renderLoadable(isLoading, {
-    text,
-    fontSize,
-    componentClass: Grid,
-  }, loadedComponent);
 }
 
 /**

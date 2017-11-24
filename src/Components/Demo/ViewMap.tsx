@@ -43,7 +43,7 @@ const sampleDataCmdTemplate = (x: SampleData) => {
 
 export const demoViewMap: ViewActivatorMap = {
   Loading: () => <Components.Loading text='Standard Loader...' />,
-  SizedLoading: (c, cr) => wxr.renderSizedLoadable(true, '50px Loader...', 50),
+  SizedLoading: (c, cr) => Components.Loading.renderSizedLoadable(true, '50px Loader...', 50),
   Splash: () => <Components.Splash fluid header='webrx-react Demo' logo='http://placehold.it/100x100?text=Logo' />,
   CommandButton: () => (
     <FormGroup bsSize='large' style={({ marginBottom: 0 })}>

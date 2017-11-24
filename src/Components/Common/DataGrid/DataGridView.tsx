@@ -10,6 +10,7 @@ import { ItemsPresenter } from '../Items/ItemsPresenter';
 import { GridView, GridViewProps, GridViewColumn } from '../ListItems/GridView';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { PagerView, PagerProps } from '../Pager/PagerView';
+import { Loading } from '../Loading/Loading';
 import { DataGridViewModel, DataSourceRequest } from './DataGridViewModel';
 
 export interface DataGridProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ListItemsProps<T, TContext> {
@@ -38,7 +39,7 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
       return { pager, fill, view, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent };
     });
 
-    return this.wxr.renderSizedLoadable(this.viewModel.isLoading,
+    return Loading.renderSizedLoadable(this.viewModel.isLoading,
       'Loading Data...',
       25,
       () => {
