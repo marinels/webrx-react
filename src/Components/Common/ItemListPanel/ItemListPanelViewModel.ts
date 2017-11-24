@@ -2,7 +2,7 @@ import { Iterable } from 'ix';
 import { Observable } from 'rxjs';
 
 import { IterableLike, ObservableOrValue, ObservableLike } from '../../../WebRx';
-import { RoutingStateHandler } from '../../React';
+import { RoutingStateHandler, HandlerRoutingStateChanged } from '../../React';
 import { DataGridViewModel, DataSourceRequest, DataSourceResponse, DataGridRoutingState } from '../DataGrid/DataGridViewModel';
 import { SearchViewModel, SearchRequest, SearchRoutingState } from '../Search/SearchViewModel';
 import { ObjectComparer } from '../../../Utils/Compare';
@@ -124,12 +124,12 @@ export class ItemListPanelViewModel<T, TRequestContext = any> extends DataGridVi
     return true;
   }
 
-  createRoutingState(): ItemListPanelRoutingState {
+  createRoutingState(changed?: HandlerRoutingStateChanged): ItemListPanelRoutingState {
     return Object.trim(
       Object.assign(
-        super.createRoutingState(),
+        super.createRoutingState(changed),
         {
-          search: this.getRoutingStateValue(this.search, x => x.createRoutingState()),
+          search: this.getRoutingStateValue(this.search, x => x.createRoutingState(changed)),
         },
       ),
     );

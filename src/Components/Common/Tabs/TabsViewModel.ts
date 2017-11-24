@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { ReadOnlyProperty, Command } from '../../../WebRx';
-import { BaseViewModel, RoutingStateHandler } from '../../React';
+import { BaseViewModel, RoutingStateHandler, HandlerRoutingStateChanged } from '../../React';
 
 export interface TabsRoutingState {
   tab?: number;
@@ -74,7 +74,7 @@ export class TabsViewModel<T = any> extends BaseViewModel implements RoutingStat
     return true;
   }
 
-  createRoutingState(): TabsRoutingState {
+  createRoutingState(changed?: HandlerRoutingStateChanged): TabsRoutingState {
     return Object.trim({
       tab: this.getRoutingStateValue(this.selectedIndex.value, 0),
     });

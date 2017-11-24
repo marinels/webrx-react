@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 
 import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
 import { Route } from '../../../Routing';
-import { BaseViewModel, RoutingStateHandler } from '../../React';
+import { BaseViewModel, RoutingStateHandler, HandlerRoutingStateChanged } from '../../React';
 import { ItemListPanelViewModel, ItemListPanelRoutingState } from '../../Common/ItemListPanel/ItemListPanelViewModel';
 import { TodoListStore, TodoListItem } from './TodoListStore';
 
@@ -104,8 +104,8 @@ export class TodoListViewModel extends BaseViewModel implements RoutingStateHand
     return true;
   }
 
-  createRoutingState() {
-    return this.list.createRoutingState();
+  createRoutingState(changed?: HandlerRoutingStateChanged) {
+    return this.list.createRoutingState(changed);
   }
 
   applyRoutingState(state: ItemListPanelRoutingState) {

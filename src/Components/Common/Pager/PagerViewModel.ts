@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
-import { BaseViewModel, RoutingStateHandler } from '../../React';
+import { BaseViewModel, RoutingStateHandler, HandlerRoutingStateChanged } from '../../React';
 
 export const StandardLimits = [ 10, 25, 0 ];
 export const AlwaysPagedLimits = StandardLimits.filter(x => x != null && x > 0);
@@ -91,7 +91,7 @@ export class PagerViewModel extends BaseViewModel implements RoutingStateHandler
     return true;
   }
 
-  createRoutingState(): PagerRoutingState {
+  createRoutingState(changed?: HandlerRoutingStateChanged): PagerRoutingState {
     return Object.trim({
       limit: this.getRoutingStateValue(this.limit.value, this.defaultLimit),
       page: this.getRoutingStateValue(this.selectedPage.value, 1),

@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
-import { BaseViewModel, RoutingStateHandler } from '../../React';
+import { BaseViewModel, RoutingStateHandler, HandlerRoutingStateChanged } from '../../React';
 
 export interface SearchRequest {
   filter: string;
@@ -109,7 +109,7 @@ export class SearchViewModel extends BaseViewModel implements RoutingStateHandle
     return true;
   }
 
-  createRoutingState(): SearchRoutingState {
+  createRoutingState(changed?: HandlerRoutingStateChanged): SearchRoutingState {
     return Object.trim({
       filter: this.getRoutingStateValue(this.filter.value, ''),
     });

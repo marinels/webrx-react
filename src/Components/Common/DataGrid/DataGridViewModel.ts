@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 
 import { IterableLike, ObservableOrValue, ObservableLike, ReadOnlyProperty, Command } from '../../../WebRx';
 import { ObjectComparer, SortDirection } from '../../../Utils/Compare';
-import { RoutingStateHandler } from '../../React';
+import { RoutingStateHandler, HandlerRoutingStateChanged } from '../../React';
 import { ListItemsViewModel } from '../ListItems/ListItemsViewModel';
 import { PagerViewModel, PageRequest, PagerRoutingState } from '../Pager/PagerViewModel';
 
@@ -165,9 +165,9 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
     return true;
   }
 
-  createRoutingState(): DataGridRoutingState {
+  createRoutingState(changed?: HandlerRoutingStateChanged): DataGridRoutingState {
     return Object.trim({
-      pager: this.getRoutingStateValue(this.pager, x => x.createRoutingState()),
+      pager: this.getRoutingStateValue(this.pager, x => x.createRoutingState(changed)),
       sorting: this.getRoutingStateValue(this.sorting.value),
     });
   }
