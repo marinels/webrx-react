@@ -23,7 +23,7 @@ export function isRoutableViewModel(value: any): value is BaseRoutableViewModel<
 export interface RoutingBreadcrumb {
   key: any;
   content: string;
-  href: string;
+  href?: string;
   target?: string;
   title?: string;
   tooltip?: any;
