@@ -19,8 +19,12 @@ export interface GridViewColumnProps {
   header?: PanelFragment;
   headerTemplate?: (header: PanelFragment | undefined) => PanelFragment;
   headerTooltipTemplate?: PanelFragment | ((column: GridViewColumn, content: PanelFragment) => PanelFragment | undefined);
+  headerStyle?: React.CSSProperties;
+  headerProps?: {};
   cellTemplate?: (item: {}, field: string | undefined) => PanelFragment;
   cellTooltipTemplate?: (item: {}, field: string | undefined, content: PanelFragment) => PanelFragment | undefined;
+  cellStyle?: React.CSSProperties;
+  cellProps?: {};
   itemTemplate?: (fragment: PanelFragment, item: {} | undefined, field: string | undefined) => PanelFragment;
   id?: string;
   width?: number | string;
@@ -90,8 +94,18 @@ export class GridViewColumn extends React.Component<GridViewColumnComponentProps
     const headerContent = this.renderContent('header', content, undefined, this.props.field);
     const tooltipContent = this.renderHeaderTooltip(headerContent);
 
+    const style = Object.assign(
+      { width: this.props.width },
+      this.props.headerStyle,
+    );
+
+    const props = Object.assign(
+      { style },
+      this.props.headerProps,
+    );
+
     return (
-      <th style={ ({ width: this.props.width }) }>
+      <th { ...props }>
         { this.renderTooltip(tooltipContent, headerContent) }
       </th>
     );
@@ -114,8 +128,18 @@ export class GridViewColumn extends React.Component<GridViewColumnComponentProps
 
     const tooltipContent = this.renderCellTooltip(cellContent);
 
+    const style = Object.assign(
+      { width: this.props.width },
+      this.props.cellStyle,
+    );
+
+    const props = Object.assign(
+      { style },
+      this.props.cellProps,
+    );
+
     return (
-      <td style={ ({ width: this.props.width }) }>
+      <td { ...props }>
         { this.renderTooltip(tooltipContent, cellContent) }
       </td>
     );
