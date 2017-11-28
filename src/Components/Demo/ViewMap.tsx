@@ -34,7 +34,9 @@ const sampleDataTemplate = (x: SampleData) => {
 const sampleDataCmdTemplate = (x: SampleData) => {
   return (
     <Components.NavButton href='#'>
-      <Components.CommandButton block plain stopPropagation={ false } href='#' style={ ({ padding: 5 }) }>
+      <Components.CommandButton block plain stopPropagation={ true } style={ ({ padding: 5 }) }
+        onClick={ () => Alert.create(JSON.stringify(x, undefined, 2), 'Element Clicked') }
+      >
         { sampleDataTemplate(x) }
       </Components.CommandButton>
     </Components.NavButton>
