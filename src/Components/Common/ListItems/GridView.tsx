@@ -6,20 +6,12 @@ import { Table } from 'react-bootstrap';
 import { Logging } from '../../../Utils';
 import { PanelView } from './PanelView';
 import { ItemsPresenter } from '../Items/ItemsPresenter';
-import { GridViewColumnProps, GridViewColumn } from './GridViewColumn';
+import { GridViewColumns, GridViewColumnProps, GridViewColumn } from './GridViewColumn';
 import { ListItemsViewTemplate, ListItemsViewTemplateProps } from './ListItemsViewTemplate';
 import { PanelFragment, PanelItemContext } from '../Panel/Panel';
 import { TablePanel } from '../Panel/TablePanel';
 import { ContentTooltip } from '../ContentTooltip/ContentTooltip';
 import { ListItemsViewModel } from './ListItemsViewModel';
-
-export { GridViewColumnProps, GridViewColumn };
-
-export class GridViewColumns extends React.Component {
-  render() {
-    return this.props.children;
-  }
-}
 
 export interface GridTemplateProps<T = {}> {
   headerTemplate?: (header: PanelFragment, item: T | undefined, field: string | undefined) => PanelFragment;

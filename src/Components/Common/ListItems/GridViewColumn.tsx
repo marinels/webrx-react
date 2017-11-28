@@ -3,6 +3,12 @@ import * as React from 'react';
 import { PanelFragment } from '../Panel/Panel';
 import { ContentTooltip } from '../ContentTooltip/ContentTooltip';
 
+export class GridViewColumns extends React.Component {
+  render() {
+    return this.props.children;
+  }
+}
+
 export interface GridViewColumnProps {
   /**
    * internal passthru property

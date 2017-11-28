@@ -6,7 +6,7 @@ import { PanelItemContext } from '../Panel/Panel';
 import { ListItemsViewTemplateProps } from './ListItemsViewTemplate';
 import { ItemsProps } from '../Items/ItemsView';
 import { ListGroupView } from './ListGroupView';
-import { GridViewColumns } from './GridView';
+import { GridViewColumns } from './GridViewColumn';
 import { ListItemsViewModel } from './ListItemsViewModel';
 
 export interface ListItemsProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ItemsProps<T, TContext> {
