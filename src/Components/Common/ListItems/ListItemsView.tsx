@@ -11,6 +11,7 @@ import { ListItemsViewModel } from './ListItemsViewModel';
 
 export interface ListItemsProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ItemsProps<T, TContext> {
   view?: React.ReactElement<ListItemsViewTemplateProps<T, TContext>>;
+  viewProps?: {};
   children?: React.ReactNode;
 }
 
@@ -46,18 +47,19 @@ export class ListItemsView extends BaseView<ListItemsViewProps, ListItemsViewMod
 
   render() {
     const { className, children, props, rest } = this.restProps(x => {
-      const { view } = x;
-      return { view };
+      const { view, viewProps } = x;
+      return { view, viewProps };
     });
 
     const listItemsView = ListItemsView.getListItemsView(this.props, ListItemsView.renderDefaultListItemsView);
 
-    const viewProps: ListItemsViewTemplateProps = {
+    const listItemsViewProps: ListItemsViewTemplateProps = {
       itemsProps: this.trimProps(Object.assign({}, listItemsView.props.itemsProps, rest)),
       listItems: this.viewModel,
       className: classNames('ListItems', className, listItemsView.props.className),
+      ...this.trimProps(props.viewProps || {}),
     };
 
-    return React.cloneElement(listItemsView, viewProps);
+    return React.cloneElement(listItemsView, listItemsViewProps);
   }
 }
