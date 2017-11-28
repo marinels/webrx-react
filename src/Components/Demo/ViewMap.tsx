@@ -647,7 +647,7 @@ export const demoViewMap: ViewActivatorMap = {
         return (
           <Components.DataGridView viewModel={ viewModel } itemTemplate={ sampleDataTemplate } pager>
             <Components.PanelView>
-              <Components.UniformGridPanel gridRows={ 5 } gridColumns={ 2 } />
+              <Components.UniformGridPanel gridRows={ 5 } gridColumns={ 2 } border />
             </Components.PanelView>
           </Components.DataGridView>
         );
