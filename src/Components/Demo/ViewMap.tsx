@@ -625,7 +625,7 @@ export const demoViewMap: ViewActivatorMap = {
         // we are also using a custom grid view here that doesn't render column headers as buttons
         return (
           <Components.DataGridView viewModel={ viewModel }>
-            <Components.GridView />
+            <Components.GridView bordered={ false } />
           </Components.DataGridView>
         );
       case 'DataGridPager':
@@ -670,6 +670,7 @@ export const demoViewMap: ViewActivatorMap = {
       case 'ItemListPanel':
         return (
           <Components.ItemListPanelView viewModel={ viewModel } collapsible pager search
+            viewProps={ ({ bordered: false }) }
             headerContent='Sample Grid Data'
             headerActions={ [ { id: 'header', children: 'Header Action' } ] }
             footerContent={ (<Components.CountFooterContent count={ viewModel.projectedCount } suffix='Things' />) }
