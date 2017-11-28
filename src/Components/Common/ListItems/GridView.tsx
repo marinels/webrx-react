@@ -9,7 +9,7 @@ import { ItemsPresenter } from '../Items/ItemsPresenter';
 import { GridViewColumns, GridViewColumnProps, GridViewColumn } from './GridViewColumn';
 import { ListItemsViewTemplate, ListItemsViewTemplateProps } from './ListItemsViewTemplate';
 import { PanelFragment, PanelItemContext } from '../Panel/Panel';
-import { TablePanel } from '../Panel/TablePanel';
+import { TablePanel, BootstrapTableProps } from '../Panel/TablePanel';
 import { ContentTooltip } from '../ContentTooltip/ContentTooltip';
 import { ListItemsViewModel } from './ListItemsViewModel';
 
@@ -18,8 +18,10 @@ export interface GridTemplateProps<T = {}> {
   cellTemplate?: (cell: PanelFragment, item: T | undefined, field: string | undefined) => PanelFragment;
 }
 
-export interface GridViewProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends GridTemplateProps<T>, ListItemsViewTemplateProps<T, TContext> {
-  fill?: boolean;
+export interface GridTableRenderProps extends BootstrapTableProps {
+}
+
+export interface GridViewProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends GridTemplateProps<T>, ListItemsViewTemplateProps<T, TContext>, GridTableRenderProps {
 }
 
 export interface GridViewComponentProps extends React.HTMLProps<any>, GridViewProps {
@@ -35,8 +37,8 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
 
   render() {
     const { className, children, props, rest } = this.restProps(x => {
-      const { fill, headerTemplate, cellTemplate, listItems, itemsProps } = x;
-      return { fill, headerTemplate, cellTemplate, listItems, itemsProps };
+      const { headerTemplate, cellTemplate, bordered, condensed, hover, responsive, striped, listItems, itemsProps } = x;
+      return { headerTemplate, cellTemplate, bordered, condensed, hover, responsive, striped, listItems, itemsProps };
     });
 
     this.columns = this.getColumnDefinitions();
@@ -64,8 +66,16 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
   }
 
   protected renderTablePanel(itemTemplates: Array<React.ReactNode>, itemsPresenter: ItemsPresenter, items: Array<{}> | undefined) {
+    const { props } = this.restProps(x => {
+      const { bordered, condensed, hover, responsive, striped, bsClass } = x;
+      return { bordered, condensed, hover, responsive, striped, bsClass };
+    });
+
     return (
-      <TablePanel header={ this.renderTableHeaderRow() }>
+      <TablePanel
+        header={ this.renderTableHeaderRow() }
+        { ...this.trimProps(props) }
+      >
         { itemTemplates }
       </TablePanel>
     );
