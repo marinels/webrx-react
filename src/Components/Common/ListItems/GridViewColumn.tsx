@@ -28,8 +28,7 @@ export class GridViewColumn extends React.Component<GridViewColumnComponentProps
 
   public static canRenderHeader(column: React.ReactChild) {
     return (
-      React.isValidElement<GridViewColumnProps>(column) &&
-      column.type === GridViewColumn &&
+      React.isValidType(column, GridViewColumn) &&
       (column.props.header != null || column.props.field != null)
     );
   }
@@ -131,7 +130,7 @@ export class GridViewColumn extends React.Component<GridViewColumnComponentProps
 
     const id = this.props.id || this.props.field;
 
-    if (React.isValidElement<any>(content) && content.type === ContentTooltip) {
+    if (React.isValidType<any>(content, ContentTooltip)) {
       const child = (
         content.props.context == null &&
         React.Children.count(content.props.children) === 0

@@ -104,7 +104,7 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
     if (count === 1) {
       const elem = React.Children.only(this.props.children);
 
-      if (elem.type === GridViewColumns) {
+      if (React.isType(elem, GridViewColumns)) {
         return React.Children.toArray(elem.props.children);
       }
     }

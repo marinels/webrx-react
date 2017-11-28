@@ -24,11 +24,11 @@ export class ContentTooltip extends React.Component<ContentTooltipComponentProps
     }
 
     if (React.isValidElement(content)) {
-      if (content.type === OverlayTrigger) {
+      if (React.isType(content, OverlayTrigger)) {
         return this.renderOverlayTrigger(content, context);
       }
 
-      if (content.type === Popover || content.type === Tooltip) {
+      if (React.isType(content, Popover) || React.isType(content, Tooltip)) {
         return this.renderOverlay(content, context);
       }
     }
@@ -54,7 +54,7 @@ export class ContentTooltip extends React.Component<ContentTooltipComponentProps
       ...content.props,
     };
 
-    if (content.type !== Popover) {
+    if (!React.isType(content, Popover)) {
       delete props.title;
     }
 

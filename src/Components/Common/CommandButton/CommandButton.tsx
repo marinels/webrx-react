@@ -83,7 +83,7 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
       this.props.tooltip;
 
     if (React.isValidElement<any>(tooltip)) {
-      if (tooltip.type === OverlayTrigger) {
+      if (React.isType(tooltip, OverlayTrigger)) {
         return React.cloneElement(tooltip as any, { key: button.key }, button);
       }
       else {

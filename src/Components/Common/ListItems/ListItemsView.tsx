@@ -36,7 +36,7 @@ export class ListItemsView extends BaseView<ListItemsViewProps, ListItemsViewMod
     if (React.Children.count(props.children) === 1) {
       const view = React.Children.only(props.children);
 
-      if (view.type !== GridViewColumns) {
+      if (!React.isType(view, GridViewColumns)) {
         return view;
       }
     }
