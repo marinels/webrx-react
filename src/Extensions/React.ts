@@ -66,6 +66,30 @@ export function restProps<P, T, R extends ReactSpreadRestrictedProps = ReactSpre
   return restPropsStatic(this.props, propsCreator, restrictedProps);
 }
 
+export function isTypeStatic<P>(
+  elem: React.ReactElement<P>,
+  type: string | React.ComponentClass<P> | React.SFC<P>,
+): boolean {
+  if (WEBPACK_DEV_SERVER) {
+    // react-hot-loader injects proxy types so we cannot perform standard type checking while using it
+    // this branch allows us to perform a less efficient type check that works with react-hot-loader.
+    return Object.getName(elem.type) === Object.getName(type);
+  }
+
+  return elem.type === type;
+}
+
+export function isValidTypeStatic<P>(
+  value: any,
+  type: string | React.ComponentClass<P> | React.SFC<P>,
+): value is React.ReactElement<P> {
+  if (!React.isValidElement<P>(value)) {
+    return false;
+  }
+
+  return isTypeStatic(value, type);
+}
+
 declare module 'react' {
   interface Component<P> {
     trimProps: typeof trimPropsStatic;
@@ -82,9 +106,14 @@ declare module 'react' {
     let trimProps: typeof trimPropsStatic;
     let restProps: typeof restPropsStatic;
   }
+
+  let isType: typeof isTypeStatic;
+  let isValidType: typeof isValidTypeStatic;
 }
 
 React.Component.prototype.trimProps = trimPropsStatic;
 React.Component.prototype.restProps = restProps;
 React.Component.trimProps = trimPropsStatic;
 React.Component.restProps = restPropsStatic;
+(<any>React).isType = isTypeStatic;
+(<any>React).isValidType = isValidTypeStatic;
