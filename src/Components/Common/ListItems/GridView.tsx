@@ -19,6 +19,7 @@ export interface GridTemplateProps<T = {}> {
 }
 
 export interface GridTableRenderProps extends BootstrapTableProps {
+  fixedLayout?: boolean;
 }
 
 export interface GridViewProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends GridTemplateProps<T>, ListItemsViewTemplateProps<T, TContext>, GridTableRenderProps {
@@ -37,8 +38,8 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
 
   render() {
     const { className, children, props, rest } = this.restProps(x => {
-      const { headerTemplate, cellTemplate, bordered, condensed, hover, responsive, striped, listItems, itemsProps } = x;
-      return { headerTemplate, cellTemplate, bordered, condensed, hover, responsive, striped, listItems, itemsProps };
+      const { headerTemplate, cellTemplate, bordered, condensed, hover, responsive, striped, bsClass, fixedLayout, listItems, itemsProps } = x;
+      return { headerTemplate, cellTemplate, bordered, condensed, hover, responsive, striped, bsClass, fixedLayout, listItems, itemsProps };
     });
 
     this.columns = this.getColumnDefinitions();
@@ -67,8 +68,8 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
 
   protected renderTablePanel(itemTemplates: Array<React.ReactNode>, itemsPresenter: ItemsPresenter, items: Array<{}> | undefined) {
     const { props } = this.restProps(x => {
-      const { bordered, condensed, hover, responsive, striped, bsClass } = x;
-      return { bordered, condensed, hover, responsive, striped, bsClass };
+      const { bordered, condensed, hover, responsive, striped, bsClass, fixedLayout } = x;
+      return { bordered, condensed, hover, responsive, striped, bsClass, fixedLayout };
     });
 
     return (
