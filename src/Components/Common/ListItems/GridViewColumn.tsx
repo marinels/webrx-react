@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { PanelFragment } from '../Panel/Panel';
 import { ContentTooltip } from '../ContentTooltip/ContentTooltip';
+import { NavButton } from '../NavButton/NavButton';
 
 export class GridViewColumns extends React.Component {
   render() {
@@ -28,12 +29,13 @@ export interface GridViewColumnProps {
   itemTemplate?: (fragment: PanelFragment, item: {} | undefined, field: string | undefined) => PanelFragment;
   id?: string;
   width?: number | string;
+  className?: string;
 }
 
 export interface GridViewColumnComponentProps extends GridViewColumnProps {
 }
 
-export class GridViewColumn extends React.Component<GridViewColumnComponentProps> {
+export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnComponentProps> extends React.Component<T> {
   public static displayName = 'GridViewColumn';
 
   public static canRenderHeader(column: React.ReactChild) {
@@ -83,9 +85,10 @@ export class GridViewColumn extends React.Component<GridViewColumnComponentProps
     return this.props.itemTemplate(fragment, item, field);
   }
 
-  protected renderHeader() {
-    const template = this.props.headerTemplate || ((header: PanelFragment | undefined) => header);
-    const headerOrField = this.props.header || this.props.field;
+  protected renderHeader(headerTemplate?: (header: PanelFragment | undefined) => PanelFragment) {
+    const template = headerTemplate || this.props.headerTemplate ||
+      ((header: PanelFragment | undefined) => header);
+    const headerOrField: PanelFragment | undefined = this.props.header || this.props.field;
 
     const content = (headerOrField == null && this.props.headerTemplate == null) ?
       undefined :
@@ -105,13 +108,17 @@ export class GridViewColumn extends React.Component<GridViewColumnComponentProps
     );
 
     return (
-      <th { ...props }>
+      <th className={ this.props.className } { ...props }>
         { this.renderTooltip(tooltipContent, headerContent) }
       </th>
     );
   }
 
-  protected renderHeaderTooltip(context: PanelFragment) {
+  protected renderHeaderTooltip(context: PanelFragment): PanelFragment | undefined {
+    if (this.props.headerTooltipTemplate == null) {
+      return undefined;
+    }
+
     if (this.props.headerTooltipTemplate instanceof Function) {
       return this.props.headerTooltipTemplate(this, context);
     }
@@ -119,8 +126,8 @@ export class GridViewColumn extends React.Component<GridViewColumnComponentProps
     return this.props.headerTooltipTemplate;
   }
 
-  protected renderCell() {
-    const template = this.props.cellTemplate ||
+  protected renderCell(cellTemplate?: (item: {}, field: string | undefined) => PanelFragment) {
+    const template = cellTemplate || this.props.cellTemplate ||
       ((item: {}, field: string | undefined) => GridViewColumn.renderItemField(item, field));
 
     const content = template(this.props.item!, this.props.field);
@@ -139,7 +146,7 @@ export class GridViewColumn extends React.Component<GridViewColumnComponentProps
     );
 
     return (
-      <td { ...props }>
+      <td className={ this.props.className } { ...props }>
         { this.renderTooltip(tooltipContent, cellContent) }
       </td>
     );
@@ -172,6 +179,34 @@ export class GridViewColumn extends React.Component<GridViewColumnComponentProps
       <ContentTooltip id={ id } content={ content }>
         { context }
       </ContentTooltip>
+    );
+  }
+}
+
+export interface NavButtonColumnProps extends GridViewColumnProps {
+  href: string | ((item: {}, field: string | undefined) => string);
+}
+
+export interface NavButtonColumnComponentProps extends NavButtonColumnProps {
+}
+
+export class NavButtonColumn extends GridViewColumn<NavButtonColumnComponentProps> {
+  static defaultProps = {
+    className: 'NavButtonColumn',
+    width: 49,
+  };
+
+  renderCell() {
+    return super.renderCell(this.renderNavButton.bind(this));
+  }
+
+  protected renderNavButton(item: {}, field: string | undefined): PanelFragment {
+    const href = this.props.href instanceof Function ?
+      this.props.href(item, field) :
+      this.props.href;
+
+    return (
+      <NavButton href={ href } compact />
     );
   }
 }

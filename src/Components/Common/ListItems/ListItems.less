@@ -32,12 +32,17 @@
       padding: @default-padding;
     }
 
-    .GridViewColumn-cellContent > .NavButton {
-      margin: -1 * @default-padding;
+    td.NavButtonColumn {
+      position: relative;
 
       // stylelint-disable selector-max-specificity
-      .NavButton-content {
-        padding: @default-padding;
+      .GridViewColumn-cellContent {
+        height: 100%;
+        left: 0;
+        padding: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
       }
       // stylelint-enable selector-max-specificity
     }
