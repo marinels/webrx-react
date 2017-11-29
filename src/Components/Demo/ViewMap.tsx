@@ -616,12 +616,12 @@ export const demoViewMap: ViewActivatorMap = {
     switch (componentRoute) {
       case 'DataGrid':
         return (
-          <Components.DataGridView viewModel={ viewModel } pager>
+          <Components.DataGridView viewModel={ viewModel } pager viewProps={ ({ bordered: false }) }>
             <Components.GridViewColumn field='id' cellTooltipTemplate={ (x: SampleData) => `Item ${ x.id }` } />
             <Components.GridViewColumn id='cat' header='Category' cellTemplate={ (x: SampleData) => x.cat } headerTooltipTemplate='Simple Header Tooltip' />
             <Components.GridViewColumn field='requiredBy' header='Required By' cellTooltipTemplate={ (x: SampleData) => (<Components.ContentTooltip content={ `Popover Content for ${ x.name }` } title='Fancy Tooltip' />) } />
             <Components.GridViewColumn id='name' header='Name' cellTemplate={ (x: SampleData) => (<a href='#'>{ x.name }</a>) } headerTooltipTemplate={(<Components.ContentTooltip content='Fancy Header Popover' popover placement='top' />)} />
-            <Components.GridViewColumn width={ 49 } cellTemplate={ () => (<Components.NavButton href='#' />) } />
+            <Components.NavButtonColumn href='#' />
           </Components.DataGridView>
         );
       case 'DataGridAutoCol':
@@ -686,7 +686,7 @@ export const demoViewMap: ViewActivatorMap = {
             <Components.GridViewColumn id='cat' header='Category' cellTemplate={ (x: SampleData) => x.cat } headerTooltipTemplate='Simple Header Tooltip' />
             <Components.GridViewColumn field='requiredBy' header='Required By' cellTooltipTemplate={ (x: SampleData) => (<Components.ContentTooltip content={ `Popover Content for ${ x.name }` } title='Fancy Tooltip' />) } />
             <Components.GridViewColumn id='name' header='Name' cellTemplate={ (x: SampleData) => (<a href='#'>{ x.name }</a>) } headerTooltipTemplate={(<Components.ContentTooltip content='Fancy Header Popover' popover placement='top' />)} />
-            <Components.GridViewColumn width={ 49 } cellTemplate={ () => (<Components.NavButton href='#' />) } />
+            <Components.NavButtonColumn href='#' />
           </Components.ItemListPanelView>
         );
       case 'ItemListPanelList':
