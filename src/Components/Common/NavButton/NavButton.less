@@ -1,12 +1,16 @@
 .NavButton {
   display: table;
+  height: 100%;
 
-  & > * {
+  & > .NavButton-content,
+  & > .CommandButton {
     display: table-cell;
   }
 
-  & > .NavButton-contentContainer {
-    width: 100%;
+  &.NavButton-container {
+    & > .NavButton-content {
+      width: 100%;
+    }
   }
 
   & > .btn-link {

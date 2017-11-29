@@ -259,6 +259,11 @@ export const demoViewMap: ViewActivatorMap = {
       <div>
         <Components.NavButton />
         <Components.NavButton href='#' />
+        <div style={ ({ height: 100, textAlign: 'right' }) }>
+          <div style={ ({ height: '100%', display: 'inline-block' }) }>
+            <Components.NavButton href='#' compact />
+          </div>
+        </div>
         <Components.NavButton href='#'>
           testing
         </Components.NavButton>
