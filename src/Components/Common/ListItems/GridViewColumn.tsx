@@ -184,7 +184,7 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnCompon
 }
 
 export interface NavButtonColumnProps extends GridViewColumnProps {
-  href: string | ((item: {}, field: string | undefined) => string);
+  href: string | undefined | ((item: {}, field: string | undefined) => (string | undefined));
 }
 
 export interface NavButtonColumnComponentProps extends NavButtonColumnProps {
