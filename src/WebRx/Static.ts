@@ -12,6 +12,7 @@ import { Property, Command } from './Interfaces';
 import { property } from './Property';
 import { command } from './Command';
 import { whenAny } from './WhenAny';
+import * as utils from '../Utils';
 import { Logger } from '../Utils/Logging';
 
 export function create() {
@@ -39,6 +40,8 @@ export function create() {
     getObservableOrAlert,
     getObservableResultOrAlert,
     subscribeOrAlert,
+
+    utils,
   };
 }
 

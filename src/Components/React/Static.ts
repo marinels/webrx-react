@@ -11,6 +11,7 @@ import {
 } from './RenderHelpers';
 import { BaseViewModel } from './BaseViewModel';
 import { Command, Property } from '../../WebRx';
+import * as utils from '../../Utils';
 import { ValueComparison } from '../../Utils/Compare';
 
 export function create(target: {} = {}) {
@@ -24,6 +25,8 @@ export function create(target: {} = {}) {
     renderNullable,
     focusElement,
     classNames,
+
+    utils,
   };
 }
 
