@@ -13,12 +13,14 @@ import './types/augmentations';
 // import extensions
 import './Extensions';
 
-// import WebRx
+// import webrx-react helper submodules
+import * as Events from './Events';
+import { Logging, PubSub, Alert, Compare, Moment } from './Utils';
+
+// import WebRx framework
 import * as wx from './WebRx';
 
-// import webrx-react submodules
-import { Logging, PubSub, Alert, Compare, Moment } from './Utils';
-import * as Events from './Events';
+// import webrx-react framework submodules
 import * as Routing from './Routing';
 import * as Stores from './Stores';
 import * as Components from './Components';
