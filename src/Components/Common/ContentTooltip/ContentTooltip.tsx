@@ -4,6 +4,7 @@ import { Tooltip, Popover, OverlayTrigger } from 'react-bootstrap';
 export interface ContentTooltipProps {
   content: any;
   id?: string;
+  className?: string;
   placement?: string;
   trigger?: string | string[];
   title?: any;
@@ -69,6 +70,7 @@ export class ContentTooltip extends React.Component<ContentTooltipComponentProps
   protected renderOverlayContent(content: React.ReactChild, context: any) {
     const props = {
       id: this.props.id,
+      className: this.props.className,
       placement: this.props.placement,
     };
 

@@ -28,8 +28,8 @@ export interface GridViewColumnProps {
   cellProps?: {};
   itemTemplate?: (fragment: PanelFragment, item: {} | undefined, field: string | undefined) => PanelFragment;
   id?: string;
-  width?: number | string;
   className?: string;
+  width?: number | string;
 }
 
 export interface GridViewColumnComponentProps extends GridViewColumnProps {
@@ -172,11 +172,11 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnCompon
         content.props.context == null &&
         React.Children.count(content.props.children) === 0
       ) ? context : undefined;
-      return React.cloneElement(content, { id, ...content.props }, child);
+      return React.cloneElement(content, { id, className: this.props.className, ...content.props }, child);
     }
 
     return (
-      <ContentTooltip id={ id } content={ content }>
+      <ContentTooltip id={ id } className={ this.props.className } content={ content }>
         { context }
       </ContentTooltip>
     );
