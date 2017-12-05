@@ -238,6 +238,7 @@ demoRoutingMap.addRoute('React', 'GridPanel', 'Grid Panel', (state: any) => 'Gri
 demoRoutingMap.addRoute('React', 'StackPanel', 'Stack Panel', (state: any) => 'StackPanel');
 demoRoutingMap.addRoute('React', 'UniformGridPanel', 'Uniform Grid Panel', (state: any) => 'UniformGridPanel');
 demoRoutingMap.addRoute('React', 'WrapPanel', 'Wrap Panel', (state: any) => 'WrapPanel');
+demoRoutingMap.addRoute('React', 'ContentTooltip', 'Content Tooltip', (state: any) => 'ContentTooltip');
 demoRoutingMap.addRoute('React', 'NavButton', 'Nav Button', (state: any) => 'NavButton');
 demoRoutingMap.addRoute('React', 'TreeItem', 'Tree Item', (state: any) => 'TreeItem');
 demoRoutingMap.addRoute('React', 'TreeItemPresenter', 'Tree Item Presenter', (state: any) => 'TreeItemPresenter');
