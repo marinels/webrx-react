@@ -18,6 +18,13 @@
     & .btn-link {
       color: @list-group-active-color;
     }
+
+    // stylelint-disable selector-max-specificity
+    .NavButton .btn-link:hover {
+      background-color: @list-group-active-color;
+      color: @list-group-active-bg;
+    }
+    // stylelint-enable selector-max-specificity
   }
 
   &.Grid .TablePanel {
