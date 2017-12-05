@@ -6,8 +6,8 @@ export interface ContentTooltipProps {
   id?: string;
   className?: string;
   placement?: string;
-  trigger?: string | string[];
   title?: any;
+  trigger?: string | string[];
   popover?: boolean;
   context?: React.ReactElement<any>;
 }
@@ -37,46 +37,42 @@ export class ContentTooltip extends React.Component<ContentTooltipComponentProps
     return this.renderOverlayContent(content, context);
   }
 
+  // content is an OverlayTrigger
   protected renderOverlayTrigger(content: React.ReactElement<any>, context: any) {
-    const props = {
+    const props = this.trimProps({
       placement: this.props.placement,
       trigger: this.props.trigger,
-      ...content.props,
-    };
+    });
 
     return React.cloneElement(content, props, context);
   }
 
+  // content is an Overlay (Popover, Tooltip)
   protected renderOverlay(content: React.ReactElement<any>, context: any) {
-    const props = {
-      id: context.id,
-      placement: this.props.placement,
+    const props = this.trimProps({
+      id: this.props.id || content.props.id || context.id,
+      className: this.wxr.classNames(this.props.className, content.props.className),
+      placement: this.props.placement || content.props.placement,
       title: this.props.title,
-      ...content.props,
-    };
+    });
 
     if (!React.isType(content, Popover)) {
       delete props.title;
     }
 
     const overlay = React.cloneElement(content, props);
+
     const overlayTrigger = (
-      <OverlayTrigger overlay={ overlay } />
+      <OverlayTrigger overlay={ overlay } placement={ overlay.props.placement } />
     );
 
     return this.renderOverlayTrigger(overlayTrigger, context);
   }
 
   protected renderOverlayContent(content: React.ReactChild, context: any) {
-    const props = {
-      id: this.props.id,
-      className: this.props.className,
-      placement: this.props.placement,
-    };
-
     if (this.props.title != null || this.props.popover) {
       const popover = (
-        <Popover { ...props } title={ this.props.title }>
+        <Popover>
           { content }
         </Popover>
       );
@@ -85,7 +81,7 @@ export class ContentTooltip extends React.Component<ContentTooltipComponentProps
     }
 
     const tooltip = (
-      <Tooltip { ...props }>
+      <Tooltip>
         { content }
       </Tooltip>
     );
