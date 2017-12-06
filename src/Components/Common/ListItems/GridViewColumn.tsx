@@ -192,12 +192,14 @@ export interface NavButtonColumnComponentProps extends NavButtonColumnProps {
 
 export class NavButtonColumn extends GridViewColumn<NavButtonColumnComponentProps> {
   static defaultProps = {
-    className: 'NavButtonColumn',
     width: 49,
   };
 
   renderCell() {
-    return super.renderCell(this.renderNavButton.bind(this));
+    const cell = super.renderCell(this.renderNavButton.bind(this));
+    const className = this.wxr.classNames('NavButtonColumn', cell.props.className);
+
+    return React.cloneElement(cell, { className });
   }
 
   protected renderNavButton(item: {}, field: string | undefined): PanelFragment {
