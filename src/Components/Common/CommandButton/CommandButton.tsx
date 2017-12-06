@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Subscription } from  'rxjs';
-import { Button, ButtonProps, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Button, ButtonProps } from 'react-bootstrap';
 
+import { ContentTooltip } from '../ContentTooltip/ContentTooltip';
 import { Command } from '../../../WebRx';
 
 export interface CommandButtonProps {
@@ -78,25 +79,17 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
       </Button>
     );
 
-    const tooltip = (this.props.tooltip != null && String.isString(this.props.tooltip)) ?
-      (<Tooltip id={ `${ this.props.id }-tt` }>{ this.props.tooltip }</Tooltip>) :
-      this.props.tooltip;
-
-    if (React.isValidElement<any>(tooltip)) {
-      if (React.isType(tooltip, OverlayTrigger)) {
-        return React.cloneElement(tooltip as any, { key: button.key }, button);
-      }
-      else {
-        return (
-          <OverlayTrigger key={ button.key || undefined } placement={ tooltip.props.placement } overlay={ tooltip } >
-            { button }
-          </OverlayTrigger>
-        );
-      }
-    }
-    else {
+    if (this.props.tooltip == null) {
       return button;
     }
+
+    const ttId = this.props.id ? `${ this.props.id }-tt` : undefined;
+
+    return (
+      <ContentTooltip id={ ttId } className={ this.props.className } content={ this.props.tooltip }>
+        { button }
+      </ContentTooltip>
+    );
   }
 
   protected getComponentClass() {
