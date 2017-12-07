@@ -104,6 +104,8 @@ export class CommonPanel extends React.Component<CommonPanelProps> {
             </CommonPanelActions>
           );
         },
+        undefined,
+        x => x !== false,
       );
   }
 
