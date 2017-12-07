@@ -72,7 +72,7 @@ export class ContentTooltip extends React.Component<ContentTooltipComponentProps
   protected renderOverlayContent(content: React.ReactChild, context: any) {
     if (this.props.title != null || this.props.popover) {
       const popover = (
-        <Popover>
+        <Popover id={ this.props.id }>
           { content }
         </Popover>
       );
@@ -81,7 +81,7 @@ export class ContentTooltip extends React.Component<ContentTooltipComponentProps
     }
 
     const tooltip = (
-      <Tooltip>
+      <Tooltip id={ this.props.id }>
         { content }
       </Tooltip>
     );
