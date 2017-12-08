@@ -79,8 +79,14 @@ export abstract class BaseView<TViewProps extends ViewModelProps<TViewModel>, TV
   }
 
   componentWillReceiveProps(nextProps: Readonly<TViewProps>, nextContext: any) {
+    // create the next state
+    const nextState = this.createStateFromProps(nextProps);
+
+    // get the next view model
+    const nextViewModel = this.getViewModelFromState(nextState);
+
     // if the view model changed we need to do some teardown and setup
-    if (nextProps.viewModel !== this.viewModel) {
+    if (nextViewModel !== this.viewModel) {
       this.logger.info('ViewModel Change Detected');
 
       // unsubscribe from updates
@@ -88,7 +94,7 @@ export abstract class BaseView<TViewProps extends ViewModelProps<TViewModel>, TV
 
       // ask react to generate new state from the updated props
       this.setState((prevState, props) => {
-        return this.createStateFromProps(props);
+        return nextState;
       });
     }
   }
@@ -96,11 +102,11 @@ export abstract class BaseView<TViewProps extends ViewModelProps<TViewModel>, TV
   componentWillUpdate(nextProps: Readonly<TViewProps>, nextState: Readonly<ViewModelState<TViewModel>>, nextContext: any) {
     this.updatingView(nextProps, nextState);
 
-    // check if we need to re-subscripe to updates (if our view model changed)
-    if (this.updateSubscription === Subscription.EMPTY) {
-      // get the next view model
-      const nextViewModel = this.getViewModelFromState(nextState);
+    // get the next view model
+    const nextViewModel = this.getViewModelFromState(nextState);
 
+    // check if we need to re-subscripe to updates (if our view model changed)
+    if (nextViewModel !== this.viewModel) {
       // cleanup the old view model
       if (isViewModelLifecycle(this.viewModel)) {
         this.viewModel.cleanupViewModel();
