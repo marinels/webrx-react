@@ -1,5 +1,5 @@
-// import webrx-react version string
-import { version } from './version';
+// import globals
+import { version } from './globals';
 
 // import all custom styles
 import './Style/App.less';
