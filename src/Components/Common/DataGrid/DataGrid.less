@@ -3,6 +3,10 @@
 .DataGrid {
   background-color: @list-group-bg;
 
+  & > .Loading {
+    font-size: 1.5rem;
+  }
+
   .Panel-Item {
     border-radius: 0;
   }
@@ -20,8 +24,8 @@
     }
   }
 
-  & > .Pager {
+  & > .DataGrid-container > .Pager {
     border: 1px solid @table-border-color;
-    padding: @table-cell-padding;
+    padding: @default-padding;
   }
 }
