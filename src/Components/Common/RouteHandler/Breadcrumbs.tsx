@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Breadcrumb, Tooltip, OverlayTrigger } from 'react-bootstrap';
+import { Breadcrumb, Tooltip, OverlayTrigger, TooltipProps } from 'react-bootstrap';
 import { Icon } from 'react-fa';
 
 import { RoutingBreadcrumb } from '../../React';
@@ -53,10 +53,14 @@ export class Breadcrumbs extends React.Component<BreadcrumbsComponentProps> {
           </Breadcrumb.Item>
         );
 
+        const placement = React.isValidElement<TooltipProps>(tooltip) ?
+          tooltip.props.placement :
+          undefined;
+
         return this.wxr.renderConditional(
           React.isValidElement<any>(tooltip),
           () => (
-            <OverlayTrigger key={ breadcrumb.key || undefined } placement={ tooltip.props.placement } overlay={ tooltip } >
+            <OverlayTrigger key={ breadcrumb.key || undefined } placement={ placement } overlay={ tooltip } >
               { breadcrumb }
             </OverlayTrigger>
           ),
