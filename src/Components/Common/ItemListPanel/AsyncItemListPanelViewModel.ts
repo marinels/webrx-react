@@ -20,13 +20,12 @@ export class AsyncItemListPanelViewModel<T, TRequestContext = any> extends ItemL
    */
   constructor(
     protected readonly responseSelector: (request: DataSourceRequest<ItemListPanelContext<TRequestContext>> | undefined) => ObservableOrValue<DataSourceResponse<T> | undefined>,
-    filterer?: (item: T, search: SearchRequest) => boolean,
     search?: SearchViewModel | null,
     pager?: PagerViewModel | null,
     context?: ObservableLike<TRequestContext>,
     rateLimit = AsyncDataGridViewModel.DefaultRateLimit,
   ) {
-    super(Iterable.empty<T>(), filterer, search, pager, context, undefined, rateLimit);
+    super(Iterable.empty<T>(), undefined, search, pager, context, undefined, rateLimit);
   }
 
   getResponse(request: DataSourceRequest<ItemListPanelContext<TRequestContext>> | undefined) {
