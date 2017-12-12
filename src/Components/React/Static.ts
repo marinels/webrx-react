@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { Component, SyntheticEvent } from 'react';
 import { Iterable } from 'ix';
 import { Observable, Subscription } from 'rxjs';
