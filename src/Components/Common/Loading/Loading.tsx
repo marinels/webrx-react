@@ -6,24 +6,32 @@ import { Property } from '../../../WebRx';
 import { wxr } from '../../React';
 
 export function renderLoadable(
-  isLoading: Property<boolean> | boolean | undefined,
-  loadingComponent: any,
-  loadedComponent?: any,
+  isLoading: Property<boolean> | boolean | undefined | null,
+  loadingComponent?: React.ReactNode | (() => React.ReactNode),
+  loadedComponent?: () => React.ReactNode,
 ) {
-  let action = loadingComponent;
+  let action: () => React.ReactNode;
 
-  if (String.isString(loadingComponent)) {
+  if (loadingComponent instanceof Function) {
+    action = loadingComponent;
+  }
+  else if (String.isString(loadingComponent)) {
     const text = loadingComponent;
 
     action = () => (
       <Loading text={ text } />
     );
   }
-  else if (Object.isObject(loadingComponent) && React.isValidElement(loadingComponent) === false) {
-    const props = loadingComponent;
+  else if (!React.isValidElement(loadingComponent) && Object.isObject(loadingComponent)) {
+    const props: {} = loadingComponent;
 
     action = () => (
       <Loading { ...props } />
+    );
+  }
+  else {
+    action = () => (
+      <Loading />
     );
   }
 
@@ -31,10 +39,10 @@ export function renderLoadable(
 }
 
 export function renderSizedLoadable(
-  isLoading: Property<boolean> | boolean | undefined,
+  isLoading: Property<boolean> | boolean | undefined | null,
   text: string,
   fontSize: number | string,
-  loadedComponent?: any,
+  loadedComponent?: () => React.ReactNode,
 ) {
   return renderLoadable(isLoading, {
     text,
@@ -43,10 +51,10 @@ export function renderSizedLoadable(
 }
 
 export function renderGridLoadable(
-  isLoading: Property<boolean> | boolean | undefined,
+  isLoading: Property<boolean> | boolean | undefined | null,
   text: string,
   fontSize: number | string,
-  loadedComponent?: any,
+  loadedComponent?: () => React.ReactNode,
 ) {
   return renderLoadable(isLoading, {
     text,

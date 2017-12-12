@@ -3,28 +3,22 @@ import { findDOMNode } from 'react-dom';
 import { Iterable } from 'ix';
 import * as classNamesFunc from 'classnames';
 
-import { Property } from '../../WebRx';
+import { Property, IterableLike } from '../../WebRx';
 import { ValueComparison, ValueComparer } from '../../Utils/Compare';
 
 export function renderIterable<T>(
-  source: T[] | Iterable<T> | undefined,
-  selector: (item: T, index: number, items: T[]) => any = item => item,
-  projector: (items: T[]) => any = items => items,
+  source: IterableLike<T> | undefined,
+  selector: (item: T, index: number, items: Array<T>) => React.ReactNode = item => item,
+  projector: (items: Array<React.ReactNode>) => React.ReactNode = items => items,
   sortKey?: (item: T) => any,
   sortComparer: ValueComparison<T> = ValueComparer.DefaultComparison,
   defaultSelector: () => T | undefined = () => undefined,
 ) {
-  let iterable: Iterable<T>;
-
   if (source == null) {
-    iterable = Iterable.empty<T>();
+    return projector([]);
   }
-  else if (Array.isArray(source)) {
-    iterable = source.asIterable();
-  }
-  else {
-    iterable = source;
-  }
+
+  let iterable = Iterable.from(source);
 
   if (sortKey != null) {
     iterable = iterable
@@ -35,25 +29,30 @@ export function renderIterable<T>(
     iterable
       .defaultIfEmpty(defaultSelector())
       .filterNull()
-      .toArray<T>()
+      .toArray()
       .map((x, i, a) => selector(x, i, a)),
   );
 }
 
 export function renderConditional(
-  condition: Property<boolean> | boolean | undefined,
-  trueContent: () => any,
-  falseContent: () => any = () => null,
+  condition: Property<boolean> | boolean | undefined | null,
+  trueContent: () => React.ReactNode,
+  falseContent: () => React.ReactNode = () => false,
 ) {
   return (condition == null ? false : (typeof condition === 'boolean' ? condition : condition.value)) ?
     trueContent() :
     falseContent();
 }
 
-export function renderNullable<T>(element: T | undefined, notNullContent: (x: T) => any, nullContent?: () => any, constraint?: (x: T) => boolean) {
+export function renderNullable<T>(
+  item: T | undefined | null,
+  notNullContent: (x: T) => React.ReactNode,
+  nullContent?: () => React.ReactNode,
+  constraint?: (x: T) => boolean,
+) {
   return renderConditional(
-    element != null && (constraint == null || constraint(element)),
-    () => notNullContent(element as T),
+    item != null && (constraint == null || constraint(item)),
+    () => notNullContent(item as T),
     nullContent,
   );
 }
@@ -62,7 +61,9 @@ export function renderNullable<T>(element: T | undefined, notNullContent: (x: T)
  * Focus a react instance upon mounting
  * i.e., <Elem ref={ (x: React.ReactInstance) => this.focusElement(x) } />
  */
-export function focusElement<T extends HTMLElement = HTMLElement>(instance: React.ReactInstance | undefined) {
+export function focusElement<T extends HTMLElement = HTMLElement>(
+  instance: React.ReactInstance | undefined | null,
+) {
   const elem = instance == null ? undefined : findDOMNode(instance) as T;
 
   if (elem != null) {
