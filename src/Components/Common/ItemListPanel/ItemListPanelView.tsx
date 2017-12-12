@@ -50,11 +50,9 @@ export class ItemListPanelView extends BaseView<ItemListPanelViewProps, ItemList
       (content: any) => this.renderPanelHeader(content, searchView) :
       undefined;
 
-    const { loadingContent, ...gridProps } = props;
-
     return (
       <CommonPanel headerFormat={ headerFormat } { ...this.trimProps(rest) } className={ this.wxr.classNames('ItemListPanel', className) }>
-        { this.renderDataGrid(gridProps) }
+        { this.renderDataGrid(props) }
       </CommonPanel>
     );
   }
