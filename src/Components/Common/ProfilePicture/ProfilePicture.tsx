@@ -75,7 +75,7 @@ export class ProfilePicture extends React.Component<ProfilePictureComponentProps
 
     return (
       <div { ...rest } className={ this.wxr.classNames('ProfilePicture', 'ProfilePicture-icon', iconClassNames, className) } style={ iconStyle }>
-        <Icon name={ props.defaultIcon! } size={ props.iconSize } style={ ({ lineHeight: `${ props.size }px` }) } />
+        <Icon name={ props.defaultIcon! } size={ props.iconSize } />
       </div>
     );
   }
