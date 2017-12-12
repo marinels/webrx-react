@@ -16,6 +16,7 @@ import { DataGridViewModel, DataSourceRequest } from './DataGridViewModel';
 
 export interface DataGridProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ListItemsProps<T, TContext> {
   pager?: boolean | PagerProps | {};
+  loadingContent?: React.ReactNode | (() => React.ReactNode);
 }
 
 export interface DataGridViewProps extends BaseViewProps<DataGridViewModel<{}>>, DataGridProps {
@@ -27,6 +28,10 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
 
   public static readonly Columns = GridViewColumns;
 
+  static defaultProps = {
+    loadingContent: 'Loading Data...',
+  };
+
   updateOn(viewModel: Readonly<DataGridViewModel<{}>>) {
     return [
       viewModel.isLoading.changed,
@@ -35,13 +40,13 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
 
   render() {
     const { className, children, props, rest } = this.restProps(x => {
-      const { pager, fill, view, viewProps, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent } = x;
-      return { pager, fill, view, viewProps, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent };
+      const { pager, loadingContent, fill, view, viewProps, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent } = x;
+      return { pager, loadingContent, fill, view, viewProps, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent };
     });
 
-    return Loading.renderSizedLoadable(this.viewModel.isLoading,
-      'Loading Data...',
-      25,
+    return Loading.renderLoadable(
+      this.viewModel.isLoading,
+      props.loadingContent!,
       () => {
         const dataGridView = ListItemsView.getListItemsView(this.props, this.renderDefaultDataGridView.bind(this));
 
