@@ -757,7 +757,7 @@ export const demoViewMap: ViewActivatorMap = {
     switch (componentRoute) {
       case 'DataGridAsync':
         return (
-          <Components.DataGridView viewModel={ viewModel } pager />
+          <Components.DataGridView viewModel={ viewModel } pager loadingContent='Custom Loading Message...' />
         );
       default:
         return null;
@@ -808,6 +808,7 @@ export const demoViewMap: ViewActivatorMap = {
   ),
   AsyncItemListPanelViewModel: (viewModel: Components.AsyncItemListPanelViewModel<{}>) => (
     <Components.ItemListPanelView viewModel={ viewModel } collapsible pager search
+      loadingContent='Custom Loading Message...'
       headerContent='Sample Grid Data'
       headerActions={ [ { id: 'header', children: 'Header Action' } ] }
       footerContent={ (<Components.CountFooterContent count={ viewModel.projectedCount } suffix='Things' />) }
