@@ -8,9 +8,7 @@ export interface PanelItemContext {
   index: number;
 }
 
-// NOTE: we have to use boolean here instead of false due to a typescript bug
-// see: https://github.com/Microsoft/TypeScript/issues/19896
-export type PanelFragment = React.ReactChild | boolean;
+export type PanelFragment = React.ReactNode;
 
 /**
  * panel item prop can be statically assigned or dynamically determined

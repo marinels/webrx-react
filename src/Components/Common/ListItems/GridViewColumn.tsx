@@ -18,12 +18,12 @@ export interface GridViewColumnProps {
   item?: {};
   field?: string;
   header?: PanelFragment;
-  headerTemplate?: (header: PanelFragment | undefined) => PanelFragment;
-  headerTooltipTemplate?: PanelFragment | ((column: GridViewColumn, content: PanelFragment) => PanelFragment | undefined);
+  headerTemplate?: (header: PanelFragment) => PanelFragment;
+  headerTooltipTemplate?: PanelFragment | ((column: GridViewColumn, content: PanelFragment) => PanelFragment);
   headerStyle?: React.CSSProperties;
   headerProps?: {};
   cellTemplate?: (item: {}, field: string | undefined) => PanelFragment;
-  cellTooltipTemplate?: (item: {}, field: string | undefined, content: PanelFragment) => PanelFragment | undefined;
+  cellTooltipTemplate?: (item: {}, field: string | undefined, content: PanelFragment) => PanelFragment;
   cellStyle?: React.CSSProperties;
   cellProps?: {};
   itemTemplate?: (fragment: PanelFragment, item: {} | undefined, field: string | undefined) => PanelFragment;
@@ -55,7 +55,7 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnCompon
     return content;
   }
 
-  public static renderItemField(item: StringMap<any>, field: string | undefined): PanelFragment | undefined {
+  public static renderItemField(item: StringMap<any>, field: string | undefined): PanelFragment {
     if (String.isNullOrEmpty(field)) {
       return undefined;
     }
@@ -71,7 +71,7 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnCompon
     return (col == null || React.isValidElement(col)) ? col : (<div>{ col || null }</div>);
   }
 
-  protected renderContent(type: 'header' | 'cell', content: PanelFragment | undefined, item: {} | undefined, field: string | undefined) {
+  protected renderContent(type: 'header' | 'cell', content: PanelFragment, item: {} | undefined, field: string | undefined) {
     const fragment = (
       <div className={ `GridViewColumn-${ type }Content` }>
         { GridViewColumn.sanitizeFragment(content) }
@@ -85,10 +85,11 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnCompon
     return this.props.itemTemplate(fragment, item, field);
   }
 
-  protected renderHeader(headerTemplate?: (header: PanelFragment | undefined) => PanelFragment) {
-    const template = headerTemplate || this.props.headerTemplate ||
-      ((header: PanelFragment | undefined) => header);
-    const headerOrField: PanelFragment | undefined = this.props.header || this.props.field;
+  protected renderHeader(headerTemplate?: (header: PanelFragment) => PanelFragment) {
+    headerTemplate = headerTemplate || this.props.headerTemplate;
+
+    const template = headerTemplate || (x => x);
+    const headerOrField: PanelFragment = this.props.header || this.props.field;
 
     const content = (headerOrField == null && this.props.headerTemplate == null) ?
       undefined :
@@ -114,7 +115,7 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnCompon
     );
   }
 
-  protected renderHeaderTooltip(context: PanelFragment): PanelFragment | undefined {
+  protected renderHeaderTooltip(context: PanelFragment): PanelFragment {
     if (this.props.headerTooltipTemplate == null) {
       return undefined;
     }
@@ -127,8 +128,9 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnCompon
   }
 
   protected renderCell(cellTemplate?: (item: {}, field: string | undefined) => PanelFragment) {
-    const template = cellTemplate || this.props.cellTemplate ||
-      ((item: {}, field: string | undefined) => GridViewColumn.renderItemField(item, field));
+    cellTemplate = cellTemplate || this.props.cellTemplate;
+
+    const template = cellTemplate || ((x, f) => GridViewColumn.renderItemField(x, f));
 
     const content = template(this.props.item!, this.props.field);
     const cellContent = this.renderContent('cell', content, this.props.item, this.props.field);
@@ -160,7 +162,7 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnCompon
     return this.props.cellTooltipTemplate(this.props.item!, this.props.field, context);
   }
 
-  protected renderTooltip(content: PanelFragment | undefined, context: PanelFragment) {
+  protected renderTooltip(content: PanelFragment, context: PanelFragment) {
     if (content == null) {
       return context;
     }
