@@ -152,8 +152,8 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     this.updateRoutingBreadcrumbs.execute(<RoutingBreadcrumb[]>[
       { key: 1, content: 'Here', href: '#/demo', title: 'title-based tooltips supported' },
       { key: 2, content: 'Are', href: '#/demo', tooltip: 'simple string tooltip overlays' },
-      { key: 3, content: 'Some', href: '#/demo', tooltip: { id: 'demo-tt', placement: 'top', children: 'custom props-based tooltip overlays' } },
-      { key: 4, content: 'Breadcrumbs', href: '#/demo' },
+      { key: 3, content: 'Some', href: '#/demo', tooltip: { id: 'demo-tt', title: 'Popovers!', children: 'custom props-based tooltip overlays' } },
+      { key: 4, content: 'Breadcrumbs', href: '#/demo', tooltip: { placement: 'top', children: 'regular tooltip' } },
     ]);
 
     // this is very similar to what the route handler does for title updates
