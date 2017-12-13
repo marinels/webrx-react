@@ -70,6 +70,20 @@ export class ContentTooltip extends React.Component<ContentTooltipComponentProps
   }
 
   protected renderOverlayContent(content: React.ReactChild, context: any) {
+    if (!React.isValidElement(content) && Object.isObject(content)) {
+      const props: any = content;
+      const Component = props.title != null || props.popover || this.props.title != null || this.props.popover ?
+        Popover :
+        Tooltip;
+
+      return this.renderOverlay(
+        (
+          <Component id={ props.id || this.props.id } { ...props } />
+        ),
+        context,
+      );
+    }
+
     if (this.props.title != null || this.props.popover) {
       const popover = (
         <Popover id={ this.props.id }>
