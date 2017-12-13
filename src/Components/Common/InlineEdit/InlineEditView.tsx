@@ -2,11 +2,12 @@ import * as React from 'react';
 import { findDOMNode } from 'react-dom';
 import { Observable } from 'rxjs';
 import { Icon } from 'react-fa';
-import { FormGroup, InputGroup, FormControl, Sizes, Popover, OverlayTrigger } from 'react-bootstrap';
+import { FormGroup, InputGroup, FormControl, Sizes } from 'react-bootstrap';
 
 import { BaseView, BaseViewProps } from '../../React';
 import { BindableInput, BindableProps } from '../BindableInput/BindableInput';
 import { CommandButton } from '../CommandButton/CommandButton';
+import { ContentTooltip } from '../ContentTooltip/ContentTooltip';
 import { InlineEditViewModel } from './InlineEditViewModel';
 
 export interface InlineEditProps extends BindableProps {
@@ -93,15 +94,18 @@ export class InlineEditView extends BaseView<InlineEditViewProps, InlineEditView
 
   private renderErrorTooltip() {
     return (
-      <Popover id='tooltip' className='InlineEditView-popover alert-danger'>
-        <div className='InlineEditView-errorContent'>
-          {
-            this.wxr.renderConditional(this.props.errorContent instanceof Function, () => {
-              return this.props.errorContent(this.viewModel, this);
-            }, () => this.props.errorContent)
-          }
-        </div>
-      </Popover>
+      <div className='InlineEditView-errorContent'>
+        {
+          this.wxr
+            .renderConditional(
+              this.props.errorContent instanceof Function,
+              () => {
+                return this.props.errorContent(this.viewModel, this);
+              },
+              () => this.props.errorContent,
+            )
+        }
+      </div>
     );
   }
 
@@ -115,13 +119,21 @@ export class InlineEditView extends BaseView<InlineEditViewProps, InlineEditView
       <FormGroup { ...rest } className={ this.wxr.classNames('InlineEditView', className)}>
         <InputGroup>
           {
-            this.wxr.renderConditional(this.viewModel.hasSavingError, () => (
-              <OverlayTrigger placement={ props.errorPlacement } overlay={ this.renderErrorTooltip() }>
-                <InputGroup.Addon className='InlineEditView-error'>
-                  <Icon className='alert-danger' name='exclamation' />
-                </InputGroup.Addon>
-              </OverlayTrigger>
-            ))
+            this.wxr
+              .renderConditional(
+                this.viewModel.hasSavingError,
+                () => (
+                  <ContentTooltip id={ `${ props.controlId || 'inlineedit' }-tt` }
+                    className='InlineEditView-popover alert-danger'
+                    placement={ props.errorPlacement } popover
+                    content={ this.renderErrorTooltip() }
+                  >
+                    <InputGroup.Addon className='InlineEditView-error'>
+                      <Icon className='alert-danger' name='exclamation' />
+                    </InputGroup.Addon>
+                  </ContentTooltip>
+                ),
+              )
           }
           { this.renderBindableInput() }
           <InputGroup.Button>
