@@ -13,6 +13,7 @@ export class ObservableApi implements StoreApi {
   protected readonly logger: Logger;
   protected readonly wx: WebRxStatic;
   protected sampleData: SampleDataApi | undefined;
+  protected readonly sampleDataCreator: SampleDataCreator | undefined;
 
   public readonly path: string;
   public readonly base: string;
@@ -20,14 +21,20 @@ export class ObservableApi implements StoreApi {
 
   constructor(path: string, sampleData?: SampleDataCreator);
   constructor(path: string, base?: string, sampleData?: SampleDataCreator)
-  constructor(path: string, baseOrSampleData?: string | SampleDataCreator, protected readonly sampleDataCreator?: SampleDataCreator) {
+  constructor(path: string, baseOrSampleData?: string | SampleDataCreator, sampleDataCreator?: SampleDataCreator) {
     const windowLocation = getWindowLocation() || <Location>{};
 
     this.logger = getLogger(ObservableApi.displayName);
     this.wx = wx;
 
+    if (WEBPACK_DEV_SERVER) {
+      this.sampleDataCreator = sampleDataCreator;
+    }
+
     if (baseOrSampleData instanceof Function) {
-      this.sampleDataCreator = baseOrSampleData;
+      if (WEBPACK_DEV_SERVER) {
+        this.sampleDataCreator = baseOrSampleData;
+      }
       baseOrSampleData = undefined;
     }
 
