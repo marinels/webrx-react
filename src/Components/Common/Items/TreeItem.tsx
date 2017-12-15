@@ -182,6 +182,11 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
   componentWillReceiveProps(nextProps: Readonly<TreeItemComponentProps>, nextContext: any) {
     if (nextProps.startExpanded != null && nextProps.startExpanded !== this.state.isExpanded) {
       this.setState((prevState, props) => {
+        // props.startExpanded should not be null (as per above) but we do a check just in case
+        if (props.startExpanded == null) {
+          return prevState;
+        }
+
         return {
           isExpanded: props.startExpanded,
         };

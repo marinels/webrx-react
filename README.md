@@ -41,8 +41,6 @@ _TBD_
 
 ## Development
 
-If you are developing for `webrx-react`, the best strategy is to  run `npm run gulp watch` and use the browser to test out your changes.
+If you are developing for `webrx-react`, the best strategy is to  run `npm run watch` and use the browser to test out your changes.
 
-You can also run `npm run gulp watch:mocha` if you are working on tests, or `npm run gulp watch:lint` if you want to fix linter errors.
-
-You can additionally run `npm run gulp help` to list all of the available gulp commands and options.
+You can also run `npm run watch-test` if you are working on tests, or `npm run lint` if you want to fix linter errors.

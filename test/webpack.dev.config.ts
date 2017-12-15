@@ -2,13 +2,12 @@ import * as path from 'path';
 import * as webpack from 'webpack';
 import * as HtmlWebpackPlugin from 'html-webpack-plugin';
 
-import { commonConfig, args } from './webpack.common';
+import { commonConfig, args } from '../webpack.common';
 
-const devConfig: Partial<webpack.Configuration> = {
+const testConfig: Partial<webpack.Configuration> = {
   entry: {
-    app: [
-      'react-hot-loader/patch',
-      './src/app.tsx',
+    spec: [
+      path.resolve(__dirname, 'app.spec.ts'),
     ],
   },
   output: {
@@ -21,26 +20,27 @@ const devConfig: Partial<webpack.Configuration> = {
     host: '0.0.0.0',
     port: args.env.port,
   },
+  module: {
+    rules: [
+      { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
+      { test: /\.spec\.tsx?$/, loaders: [ 'mocha-loader', 'awesome-typescript-loader' ] },
+    ],
+  },
 };
 
-const config: webpack.Configuration = Object.assign({}, commonConfig, devConfig);
-
-(config.module as webpack.NewModule).rules.splice(-1, 1,
-  { test: /\.tsx?$/, loaders: [ 'react-hot-loader/webpack', 'awesome-typescript-loader' ] },
-);
+const config: webpack.Configuration = Object.assign({}, commonConfig, testConfig);
 
 const definePlugin: any = config.plugins![0];
 
 if (definePlugin != null) {
-  definePlugin.definitions.DEBUG = true;
-  definePlugin.definitions.WEBPACK_DEV_SERVER = true;
+  definePlugin.definitions.TEST = true;
 }
 
 config.plugins!.push(
   new HtmlWebpackPlugin({
     title: 'webrx-react',
     chunksSortMode: 'dependency',
-    template: args.env.templatePath || 'src/index.ejs',
+    template: args.env.templatePath || 'test/index.ejs',
   }),
   new webpack.HotModuleReplacementPlugin(),
 );

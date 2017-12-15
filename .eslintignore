@@ -1,6 +1,0 @@
-.vscode/
-build/
-dist/
-node_modules/
-gulpfile.js
-webrx-react.js
