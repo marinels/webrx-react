@@ -18,6 +18,7 @@ const options = {
   ],
   boolean: [
     'env.release',
+    'env.min',
     'env.profile',
   ],
   default: {
@@ -25,6 +26,7 @@ const options = {
     'env.entryPath': path.resolve(__dirname, 'src', 'webrx-react.ts'),
     'env.port': 3000,
     'env.release': false,
+    'env.min': false,
     'env.profile': false,
   },
 };
@@ -73,7 +75,9 @@ if (args.env.release) {
   defines.definitions['process.env'] = {
     'NODE_ENV': JSON.stringify('production'),
   };
+}
 
+if (args.env.min) {
   commonConfig.plugins!.push(
     new webpack.optimize.UglifyJsPlugin({
       comments: false,

@@ -11,7 +11,7 @@ const cssLoader = ExtractTextPlugin.extract(
       loader: 'css-loader',
       options: {
         sourceMap: true,
-        minimize: args.env.release,
+        minimize: args.env.min,
       },
     },
   },
@@ -24,7 +24,7 @@ const lessLoader = ExtractTextPlugin.extract(
         loader: 'css-loader',
         options: {
           sourceMap: true,
-          minimize: args.env.release,
+          minimize: args.env.min,
         },
       },
       {
@@ -37,7 +37,7 @@ const lessLoader = ExtractTextPlugin.extract(
   },
 );
 
-const outputTag = args.env.release ? '.min' : '';
+const outputTag = args.env.min ? '.min' : '';
 
 const devConfig: Partial<webpack.Configuration> = {
   entry: {
