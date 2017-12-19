@@ -22,6 +22,7 @@ const defaults = Object.assign(
     'env.templatePath': path.resolve(__dirname, 'src', 'index.ejs'),
     'env.templateOutputPath': 'index.html',
     'env.port': 3000,
+    'env.templateInject': true,
     'env.release': false,
     'env.min': false,
     'env.profile': false,
@@ -40,6 +41,7 @@ const options = {
     'env.port',
   ],
   boolean: [
+    'env.templateInject',
     'env.release',
     'env.min',
     'env.profile',
@@ -112,6 +114,8 @@ if (args.env.templatePath) {
       chunksSortMode: 'dependency',
       template: args.env.templatePath,
       filename: args.env.templateOutputPath,
+      hash: true,
+      inject: args.env.templateInject,
     }),
   );
 }
