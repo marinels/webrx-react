@@ -3,7 +3,7 @@
   "version": "0.16.0",
   "description": "ReactJS + WebRx + RxJS + Bootstrap: MVVM for Single Page Web Applications",
   "scripts": {
-    "start": "npm run dev-server",
+    "start": "npm run watch",
     "test": "npm run lint && npm run bundle-test && npm run mocha-test",
     "clean": "del-cli build dist && npm run clean-modules",
     "clean-modules": "git clean -df Components Events Extensions Routing Stores Style Utils WebRx types webrx-react.* globals.* version.*",
