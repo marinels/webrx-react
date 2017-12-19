@@ -20,6 +20,7 @@ const defaults = Object.assign(
     'env.buildPath': path.resolve(__dirname, 'build'),
     'env.entryPath': path.resolve(__dirname, 'src', 'app.tsx'),
     'env.templatePath': path.resolve(__dirname, 'src', 'index.ejs'),
+    'env.templateOutputPath': 'index.html',
     'env.port': 3000,
     'env.release': false,
     'env.min': false,
@@ -33,6 +34,7 @@ const options = {
     'env.buildPath',
     'env.entryPath',
     'env.templatePath',
+    'env.templateOutputPath',
   ],
   number: [
     'env.port',
@@ -109,6 +111,7 @@ if (args.env.templatePath) {
       title: 'webrx-react',
       chunksSortMode: 'dependency',
       template: args.env.templatePath,
+      filename: args.env.templateOutputPath,
     }),
   );
 }
