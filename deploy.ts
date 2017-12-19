@@ -38,5 +38,5 @@ if (args.env.declarations) {
 }
 
 if (args.env.modules) {
-  cpy('*', args.env.dest, { cwd: args.env.src, parents: true, nodir: true });
+  cpy('**/*', args.env.dest, { cwd: args.env.src, parents: true, nodir: true });
 }
