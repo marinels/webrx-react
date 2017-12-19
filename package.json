@@ -6,7 +6,7 @@
     "start": "npm run watch",
     "test": "npm run lint && npm run bundle-test && npm run mocha-test",
     "clean": "del-cli build dist && npm run clean-modules",
-    "clean-modules": "git clean -df Components Events Extensions Routing Stores Style Utils WebRx types webrx-react.* globals.* version.*",
+    "clean-modules": "git clean -df Assets Components Events Extensions Routing Stores Style Utils WebRx types webrx-react.* globals.* version.*",
     "lint": "npm run lint-ts && npm run lint-less",
     "lint-ts": "tslint -t verbose ./src/**/*.ts ./src/**/*.tsx ./test/**/*.ts",
     "lint-less": "stylelint -s less -f string ./src/**/*.less",

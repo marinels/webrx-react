@@ -17,12 +17,15 @@ const options = {
 
 export const args = minimist(process.argv, options);
 
-function copySrcFiles(pattern: string) {
-  return cpy(pattern, args.env.src, { cwd: 'src', parents: true, nodir: true });
+function copySrcFiles(pattern: string, opts: Partial<cpy.Options> = {}) {
+  opts = Object.assign({}, { cwd: 'src', parents: true, nodir: true }, opts);
+
+  return cpy(pattern, args.env.src, opts);
 }
 
 copySrcFiles('**/*.less')
   .then(() => copySrcFiles('**/*.d.ts'))
+  .then(() => copySrcFiles('Assets/**/*', { ignore: [ 'Assets/index.ts' ] }))
   .then(() => cpy('**/*', args.env.dest, { cwd: args.env.src, parents: true, nodir: true }))
   .then(() => {
     // tslint:disable-next-line no-console
