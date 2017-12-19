@@ -9,34 +9,22 @@ const options = {
     'env.src',
     'env.dest',
   ],
-  boolean: [
-    'env.styles',
-    'env.declarations',
-    'env.modules',
-  ],
   default: {
     'env.src': path.resolve(__dirname, 'build', 'modules'),
     'env.dest': path.resolve(__dirname),
-    'env.styles': true,
-    'env.declarations': true,
-    'env.modules': true,
   },
 };
 
 export const args = minimist(process.argv, options);
 
 function copySrcFiles(pattern: string) {
-  cpy(pattern, args.env.src, { cwd: 'src', parents: true, nodir: true });
+  return cpy(pattern, args.env.src, { cwd: 'src', parents: true, nodir: true });
 }
 
-if (args.env.styles) {
-  copySrcFiles('**/*.less');
-}
-
-if (args.env.declarations) {
-  copySrcFiles('**/*.d.ts');
-}
-
-if (args.env.modules) {
-  cpy('**/*', args.env.dest, { cwd: args.env.src, parents: true, nodir: true });
-}
+copySrcFiles('**/*.less')
+  .then(() => copySrcFiles('**/*.d.ts'))
+  .then(() => cpy('**/*', args.env.dest, { cwd: args.env.src, parents: true, nodir: true }))
+  .then(() => {
+    // tslint:disable-next-line no-console
+    console.log('all files deployed.');
+  });
