@@ -14,8 +14,12 @@ import { PageFooterView, PageFooterProps } from '../PageFooter/PageFooterView';
 import { AppViewModel } from './AppViewModel';
 import { ViewMap, ViewMapper } from '../../../Routing';
 
+// force the logo to load with a data uri string
+// tslint:disable-next-line:no-var-requires
+const logo = require('!url-loader!../../../assets/logo.png');
+
 ViewMap[SplashKey] = () => (
-  <Splash header='webrx-react' />
+  <Splash header='webrx-react' logo={ logo } />
 );
 
 export interface AppProps extends PageHeaderProps, PageFooterProps {
