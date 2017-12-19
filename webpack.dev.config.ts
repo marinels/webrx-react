@@ -36,13 +36,4 @@ if (definePlugin != null) {
   definePlugin.definitions.WEBPACK_DEV_SERVER = true;
 }
 
-config.plugins!.push(
-  new HtmlWebpackPlugin({
-    title: 'webrx-react',
-    chunksSortMode: 'dependency',
-    template: args.env.templatePath || 'src/index.ejs',
-  }),
-  new webpack.HotModuleReplacementPlugin(),
-);
-
 export default config;

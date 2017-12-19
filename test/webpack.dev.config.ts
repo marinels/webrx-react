@@ -2,6 +2,10 @@ import * as path from 'path';
 import * as webpack from 'webpack';
 import * as HtmlWebpackPlugin from 'html-webpack-plugin';
 
+defaultArgs = {
+  'env.templatePath': path.resolve(__dirname, 'index.ejs'),
+};
+
 import { commonConfig, args } from '../webpack.common';
 
 const testConfig: Partial<webpack.Configuration> = {
@@ -37,11 +41,6 @@ if (definePlugin != null) {
 }
 
 config.plugins!.push(
-  new HtmlWebpackPlugin({
-    title: 'webrx-react',
-    chunksSortMode: 'dependency',
-    template: args.env.templatePath || 'test/index.ejs',
-  }),
   new webpack.HotModuleReplacementPlugin(),
 );
 

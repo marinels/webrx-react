@@ -1,6 +1,10 @@
 import * as path from 'path';
 import * as webpack from 'webpack';
 
+defaultArgs = {
+  'env.templatePath': path.resolve(__dirname, 'index.ejs'),
+};
+
 import { commonConfig, args } from '../webpack.common';
 
 const testConfig: Partial<webpack.Configuration> = {

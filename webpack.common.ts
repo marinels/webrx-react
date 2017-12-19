@@ -6,8 +6,27 @@ import * as minimist from 'minimist';
 import * as HtmlWebpackPlugin from 'html-webpack-plugin';
 import * as FaviconsWebpackPlugin from 'favicons-webpack-plugin';
 
+// sanitize default args to an empty object
+if (typeof defaultArgs === 'undefined') {
+  defaultArgs = {};
+}
+
 // tslint:disable-next-line:no-var-requires
 const npmPackage = require('./package.json');
+
+const defaults = Object.assign(
+  {},
+  {
+    'env.buildPath': path.resolve(__dirname, 'build'),
+    'env.entryPath': path.resolve(__dirname, 'src', 'app.tsx'),
+    'env.templatePath': path.resolve(__dirname, 'src', 'index.ejs'),
+    'env.port': 3000,
+    'env.release': false,
+    'env.min': false,
+    'env.profile': false,
+  },
+  defaultArgs,
+);
 
 const options = {
   string: [
@@ -23,14 +42,7 @@ const options = {
     'env.min',
     'env.profile',
   ],
-  default: {
-    'env.buildPath': path.resolve(__dirname, 'build'),
-    'env.entryPath': path.resolve(__dirname, 'src', 'webrx-react.ts'),
-    'env.port': 3000,
-    'env.release': false,
-    'env.min': false,
-    'env.profile': false,
-  },
+  default: defaults,
 };
 
 export const args = minimist(process.argv, options);
