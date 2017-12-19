@@ -18,7 +18,8 @@
     "watch-test": "webpack-dev-server --config test/webpack.dev.config.ts",
     "version-modules": "replace-in-file --configFile ./version-config.js ./src/version.ts",
     "build-modules": "tsc -p tsconfig.build.json",
-    "dist": "npm run test && npm run bundle -- --env.release --env.buildPath ./dist && npm run bundle -- --env.release --env.min --env.buildPath ./dist && npm run version-modules && npm run build-modules -- --outDir .",
+    "deploy-modules": "ts-node ./deploy.ts",
+    "dist": "npm run test && npm run bundle -- --env.release --env.buildPath ./dist && npm run bundle -- --env.release --env.min --env.buildPath ./dist && npm run version-modules && npm run build-modules && npm run deploy-modules",
     "tr": "tsc --traceResolution --noEmit > tsctr.log"
   },
   "author": "Pat Sissons <pat@marinels.com> (http://github.com/patsissons)",
@@ -63,6 +64,7 @@
   "devDependencies": {
     "@types/chai": "^4.0.0",
     "@types/clone": "^0.1.0",
+    "@types/cpy": "^5.1.0",
     "@types/extract-text-webpack-plugin": "^3.0.0",
     "@types/html-webpack-plugin": "^2.0.0",
     "@types/minimist": "^1.0.0",
@@ -74,8 +76,8 @@
     "@types/webpack-env": "^1.0.0",
     "awesome-typescript-loader": "^3.0.0",
     "chai": "^4.0.0",
+    "cpy": "^6.0.0",
     "css-loader": "^0.28.0",
-    "del": "^3.0.0",
     "del-cli": "^1.0.0",
     "extract-text-webpack-plugin": "^3.0.0",
     "file-loader": "^1.0.0",
