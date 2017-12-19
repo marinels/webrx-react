@@ -59,7 +59,7 @@ export const commonConfig: Partial<webpack.Configuration> = {
       VERSION: JSON.stringify(npmPackage.version),
     }),
     new webpack.NamedModulesPlugin(),
-    new FaviconsWebpackPlugin('./src/assets/logo.png'),
+    new FaviconsWebpackPlugin('./src/Assets/logo.png'),
   ],
   resolve: {
     extensions: [ '.ts', '.tsx', '.webpack.js', '.web.js', '.js' ],

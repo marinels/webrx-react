@@ -13,7 +13,7 @@ import { PageHeaderView, PageHeaderProps } from '../PageHeader/PageHeaderView';
 import { PageFooterView, PageFooterProps } from '../PageFooter/PageFooterView';
 import { AppViewModel } from './AppViewModel';
 import { ViewMap, ViewMapper } from '../../../Routing';
-import { logo } from '../../../assets';
+import { logo } from '../../../Assets';
 
 ViewMap[SplashKey] = () => (
   <Splash header='webrx-react' logo={ logo } />
