@@ -1,8 +1,10 @@
+/// <reference path="./tooling.d.ts" />
+
 import * as path from 'path';
 import * as webpack from 'webpack';
 import * as minimist from 'minimist';
 import * as HtmlWebpackPlugin from 'html-webpack-plugin';
-// import * as FaviconsWebpackPlugin from 'favicons-webpack-plugin';
+import * as FaviconsWebpackPlugin from 'favicons-webpack-plugin';
 
 // tslint:disable-next-line:no-var-requires
 const npmPackage = require('./package.json');
