@@ -36,4 +36,8 @@ if (definePlugin != null) {
   definePlugin.definitions.WEBPACK_DEV_SERVER = true;
 }
 
+config.plugins!.push(
+  new webpack.HotModuleReplacementPlugin(),
+);
+
 export default config;
