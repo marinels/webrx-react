@@ -77,7 +77,7 @@ export class ObservableApi implements StoreApi {
         // use sampleData if it has been defined
         return sampleData == null ?
           getRequest<T>(action, this.getRequestUri(action, baseUri), this.logger, method, params, data, options) :
-          sampleData.observe<T>(action, params);
+          sampleData.observe<T>(action, params, data);
       });
   }
 

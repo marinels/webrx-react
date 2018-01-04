@@ -44,6 +44,7 @@ export class ObservableSampleDataApi implements SampleDataApi {
   public observe<T>(
     action: string,
     params?: any,
+    data?: any,
     cloneResult = true,
   ) {
     return Observable
@@ -56,13 +57,13 @@ export class ObservableSampleDataApi implements SampleDataApi {
         return sampleDataAction;
       })
       .do(() => {
-        this.logger.info(`Sample API Request: ${ action }`, params);
+        this.logger.info(`Sample API Request: ${ action }`, params, data);
       })
       .delay(this.delay)
       .flatMap<SampleDataAction, T>(sampleDataAction => {
         return Observable
           .defer(() => {
-            return wx.asObservable(sampleDataAction(params));
+            return wx.asObservable(sampleDataAction(params, data));
           })
           .map(x => (x != null && cloneResult) ? clone(x) : x);
       })
