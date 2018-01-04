@@ -16,7 +16,7 @@
     "mocha-test": "mocha --reporter spec build/test/app.spec.js",
     "watch": "webpack-dev-server --config webpack.dev.config.ts",
     "watch-test": "webpack-dev-server --config test/webpack.dev.config.ts",
-    "version-modules": "replace-in-file --configFile ./version-config.js ./src/version.ts",
+    "version-modules": "git checkout ./src/version.ts && replace-in-file --configFile ./version-config.js ./src/version.ts",
     "build-modules": "tsc -p tsconfig.build.json",
     "deploy-modules": "ts-node ./deploy.ts",
     "dist": "npm run test && npm run bundle -- --env.release --env.buildPath ./dist && npm run bundle -- --env.release --env.min --env.buildPath ./dist && npm run version-modules && npm run build-modules && npm run deploy-modules",
