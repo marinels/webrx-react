@@ -44,9 +44,17 @@ export interface TreeItemRenderProps {
   depth?: number;
 
   /**
-   * set the isExpanded intial state
+   * set the isExpanded intial state (modified existing state)
    */
   startExpanded?: boolean;
+
+  /**
+   * override the current expansion state (does not modify state)
+   * true will override isExpanded to true, false will not override the current state
+   * use a function to handle async changes in state overrides where override logic is computerd
+   * outside the treeitem container component (i.e., outside the treeview).
+   */
+  overrideExpanded?: boolean | (() => boolean);
 
   /**
    * override the default expanded icon name
@@ -115,6 +123,7 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
         itemsTemplate={ props.itemsTemplate }
         depth={ props.depth == null ? 0 : (props.depth + 1) }
         startExpanded={ props.startExpanded }
+        overrideExpanded={ props.overrideExpanded }
         expandedIconName={ props.expandedIconName }
         collapsedIconName={ props.collapsedIconName }
         viewTemplate={ props.viewTemplate }
@@ -142,7 +151,9 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
   }
 
   public static defaultItemsTemplate(items: IterableLike<{}> | undefined, view: TreeItem) {
-    return (view.state.isExpanded === false || items == null) ? false : (
+    const isExpanded = view.getIsExpanded();
+
+    return (isExpanded === false || items == null) ? false : (
       <ItemsPresenter
         itemsSource={ items }
         viewTemplate={ view.props.viewTemplate }
@@ -196,8 +207,8 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
 
   render() {
     const { className, props, rest, children } = this.restProps(x => {
-      const { item, index, itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent } = x;
-      return { item, index, itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent };
+      const { item, index, itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, overrideExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent } = x;
+      return { item, index, itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, overrideExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent };
     });
 
     const headerContent = this.renderHeaderContent();
@@ -224,6 +235,24 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
     );
   }
 
+  protected getIsExpanded() {
+    if (this.props.overrideExpanded != null) {
+      // if an override prop is provided, then check to see if it is set to true
+      const override = this.props.overrideExpanded instanceof Function ?
+        this.props.overrideExpanded() :
+        this.props.overrideExpanded;
+
+      if (override) {
+        // override is set to true so return true for isExpanded state (overridden)
+        return true;
+      }
+    }
+
+    // either no override prop is provided or the override result was false
+    // so fallback onto standard component state
+    return this.state.isExpanded || false;
+  }
+
   protected toggleExpansion(e: MouseEvent) {
     e.stopPropagation();
 
@@ -246,8 +275,9 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
 
   protected renderExpanderIcon() {
     const template = (this.props.expanderIconTemplate || TreeItem.defaultExpanderIconTemplate);
+    const isExpanded = this.getIsExpanded();
 
-    return template(this.state.isExpanded, this.props.expandedIconName, this.props.collapsedIconName);
+    return template(isExpanded, this.props.expandedIconName, this.props.collapsedIconName);
   }
 
   protected renderExpander(items: IterableLike<{}> | undefined) {
