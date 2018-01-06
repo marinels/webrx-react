@@ -81,7 +81,7 @@ export class CommonPanel extends React.Component<CommonPanelProps> {
       <div className={ this.wxr.classNames(`CommonPanel-${ section }Content`, sectionType == null ? null : `CommonPanel-${ sectionType }`) }>
         { x instanceof Function ? x(this) : x }
       </div>
-    ));
+    ), undefined, x => x !== false);
   }
 
   private renderActions(actions: any, section: CommonPanelContentSection) {
