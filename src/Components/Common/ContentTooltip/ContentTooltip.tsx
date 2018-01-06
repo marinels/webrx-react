@@ -25,6 +25,10 @@ export class ContentTooltip extends React.Component<ContentTooltipComponentProps
     }
 
     if (React.isValidElement(content)) {
+      if (React.isType(content, ContentTooltip)) {
+        return React.cloneElement(content, {}, context);
+      }
+
       if (React.isType(content, OverlayTrigger)) {
         return this.renderOverlayTrigger(content, context);
       }
