@@ -72,7 +72,7 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
       <Button { ...rest }
         className={ this.wxr.classNames('CommandButton', this.props.className, { plain: this.props.plain }) }
         disabled={ canExecute !== true }
-        onClick={ e => this.handleClick(e) }
+        onClick={ this.props.disabled ? undefined : e => this.handleClick(e) }
         componentClass={ this.getComponentClass() }
       >
         { this.props.children }
