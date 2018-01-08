@@ -23,6 +23,7 @@ export * from './ItemListPanel/CountFooterContent';
 export * from './App/AppViewModel';
 
 // Simple Components
+export * from './Group/Group';
 export * from './Splash/Splash';
 export * from './BindableInput/BindableInput';
 export * from './CommandButton/CommandButton';
