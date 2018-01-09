@@ -5,7 +5,7 @@ import { Button, ButtonProps } from 'react-bootstrap';
 import { ContentTooltip } from '../ContentTooltip/ContentTooltip';
 import { Command } from '../../../WebRx';
 
-export interface CommandButtonProps {
+export interface CommandButtonProps extends Omit<ButtonProps, React.HTMLProps<Button>> {
   id?: string;
   command?: Command<any> | { (): Command<any> };
   commandParameter?: any;
@@ -15,7 +15,7 @@ export interface CommandButtonProps {
   tooltip?: any;
 }
 
-export interface CommandButtonComponentProps extends ButtonProps, CommandButtonProps {
+export interface CommandButtonComponentProps extends React.HTMLProps<any>, CommandButtonProps {
 }
 
 export class CommandButton extends React.Component<CommandButtonComponentProps> {

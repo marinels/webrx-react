@@ -7,6 +7,7 @@ import { CommandButton } from '../CommandButton/CommandButton';
 import { ContentTooltip } from '../ContentTooltip/ContentTooltip';
 
 export interface BreadcrumbsProps {
+  id?: string;
   pinnable?: boolean;
   items?: RoutingBreadcrumb[];
 }
