@@ -81,7 +81,7 @@ export class Loading extends React.Component<LoadingComponentProps> {
   public static readonly renderSizedLoadable = renderSizedLoadable;
   public static readonly renderGridLoadable = renderGridLoadable;
 
-  static defaultProps = {
+  static defaultProps: Partial<LoadingProps> = {
     progress: 100,
     text: 'Loading...',
     componentClass: 'div',

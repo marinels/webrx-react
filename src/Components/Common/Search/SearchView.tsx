@@ -20,7 +20,7 @@ export interface SearchViewProps extends SearchProps, BaseViewProps<SearchViewMo
 export class SearchView extends BaseView<SearchViewProps, SearchViewModel> {
   public static displayName = 'SearchView';
 
-  static defaultProps = {
+  static defaultProps: Partial<SearchProps> = {
     placeholder: 'Search',
   };
 

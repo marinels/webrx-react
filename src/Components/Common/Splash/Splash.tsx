@@ -18,7 +18,7 @@ export interface SplashComponentProps extends React.HTMLProps<any>, SplashProps 
 export class Splash extends React.Component<SplashComponentProps> {
   public static displayName = 'Splash';
 
-  static defaultProps = {
+  static defaultProps: Partial<SplashProps> = {
     fluid: false,
   };
 

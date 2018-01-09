@@ -17,7 +17,7 @@ export interface TablePanelComponentProps extends TablePanelProps, TableProps {
 export class TablePanel extends Panel<TablePanelComponentProps> {
   public static displayName = 'TablePanel';
 
-  static defaultProps = {
+  static defaultProps: Partial<TablePanelProps> = {
     fixedLayout: true,
     bordered: true,
     hover: true,

@@ -46,7 +46,7 @@ export interface BindableInputComponentProps extends React.HTMLProps<any>, Binda
 export class BindableInput extends React.Component<BindableInputComponentProps> {
   public static displayName = 'BindableInput';
 
-  static defaultProps = {
+  static defaultProps: Partial<BindableInputProps> = {
     valueProperty: 'value',
     onChangeProperty: 'onChange',
     valueGetter: (property: any) => {

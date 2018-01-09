@@ -96,7 +96,7 @@ export interface TreeItemState {
 }
 
 export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemState> {
-  static defaultProps = {
+  static defaultProps: Partial<TreeItemProps> = {
     depth: 0,
   };
 

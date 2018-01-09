@@ -67,7 +67,7 @@ export interface ColumnDefinitionProps<T = {}> extends GridLayoutElementProps<T,
  * if width is omitted, width will auto stretch to consume '1*' of space
  */
 export class ColumnDefinition extends React.Component<ColumnDefinitionProps> {
-  static defaultProps = {
+  static defaultProps: Partial<ColumnDefinitionProps> = {
     width: '*',
   };
 }

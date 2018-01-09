@@ -19,7 +19,7 @@ export interface SelectableListItemComponentProps extends SelectableListItemProp
 }
 
 export class SelectableListItem extends React.Component<SelectableListItemComponentProps> {
-  static defaultProps = {
+  static defaultProps: Partial<SelectableListItemProps> = {
     selectedProps: () => ({}),
   };
 

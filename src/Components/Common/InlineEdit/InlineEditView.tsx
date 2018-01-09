@@ -29,7 +29,7 @@ export interface InlineEditViewProps extends BaseViewProps<InlineEditViewModel<{
 export class InlineEditView extends BaseView<InlineEditViewProps, InlineEditViewModel<{}>> {
   public static displayName = 'InlineEditView';
 
-  static defaultProps = {
+  static defaultProps: Partial<InlineEditProps> = {
     inputType: 'text',
     placeholder: 'Enter New Value...',
     template: (x: any, view: InlineEditView) => x.toString(),

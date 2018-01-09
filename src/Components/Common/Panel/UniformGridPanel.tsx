@@ -74,7 +74,7 @@ export interface UniformGridPanelComponentProps extends React.HTMLProps<any>, Un
 export class UniformGridPanel extends Panel<UniformGridPanelComponentProps> {
   public static displayName = 'UniformGridPanel';
 
-  static defaultProps = {
+  static defaultProps: Partial<UniformGridPanelProps> = {
     firstColumn: 0,
   };
 

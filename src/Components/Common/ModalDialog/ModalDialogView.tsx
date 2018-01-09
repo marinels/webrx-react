@@ -20,7 +20,7 @@ export interface ModalDialogViewProps extends BaseViewProps<ModalDialogViewModel
 export class ModalDialogView extends BaseView<ModalDialogViewProps, ModalDialogViewModel<{}>> {
   public static displayName = 'ModalDialogView';
 
-  static defaultProps = {
+  static defaultProps: Partial<ModalDialogProps> = {
     canClose: false,
     modalFooter: (view: ModalDialogView) => view.props.children,
   };

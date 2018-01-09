@@ -17,7 +17,7 @@ export interface NavButtonComponentProps extends ButtonProps, NavButtonProps {
 export class NavButton extends React.Component<NavButtonComponentProps> {
   public static displayName = 'NavButton';
 
-  static defaultProps = {
+  static defaultProps: Partial<NavButtonProps> = {
     bsStyle: 'link',
     iconSize: 'lg',
     iconName: 'chevron-right',

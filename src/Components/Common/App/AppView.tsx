@@ -35,7 +35,7 @@ export class AppView extends BaseView<AppViewProps, AppViewModel> {
 
   public static updateDefaultPortalContainer = updateDefaultContainer;
 
-  static defaultProps = {
+  static defaultProps: Partial<AppProps> = {
     viewMap: ViewMap,
     guide: DEBUG,
   };

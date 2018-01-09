@@ -14,7 +14,7 @@ export interface SidebarComponentProps extends SidebarProps {
 export class Sidebar extends React.Component<SidebarComponentProps> {
   public static displayName = 'Sidebar';
 
-  static defaultProps = {
+  static defaultProps: Partial<SidebarProps> = {
     side: 'left',
   };
 

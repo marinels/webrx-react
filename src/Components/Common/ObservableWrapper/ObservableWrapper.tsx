@@ -16,7 +16,7 @@ export interface ObservableWrapperState {
 }
 
 export class ObservableWrapper extends React.Component<ObservableWrapperComponentProps, ObservableWrapperState> {
-  private static defaultProps = {
+  static defaultProps: Partial<ObservableWrapperProps> = {
     render: (x: any) => x,
   };
 

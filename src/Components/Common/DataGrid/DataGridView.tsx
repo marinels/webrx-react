@@ -28,7 +28,7 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
 
   public static readonly Columns = GridViewColumns;
 
-  static defaultProps = {
+  static defaultProps: Partial<DataGridProps> = {
     loadingContent: 'Loading Data...',
   };
 

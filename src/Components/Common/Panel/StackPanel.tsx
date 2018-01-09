@@ -23,7 +23,7 @@ export class StackPanel extends Panel<StackPanelComponentProps> {
 
   public static defaultOrientiation = StackPanelOrientation.Vertical;
 
-  static defaultProps = {
+  static defaultProps: Partial<StackPanelProps> = {
     orientation: StackPanel.defaultOrientiation,
   };
 

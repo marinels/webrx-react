@@ -193,7 +193,7 @@ export interface NavButtonColumnComponentProps extends NavButtonColumnProps {
 }
 
 export class NavButtonColumn extends GridViewColumn<NavButtonColumnComponentProps> {
-  static defaultProps = {
+  static defaultProps: Partial<NavButtonColumnProps> = {
     width: 49,
   };
 

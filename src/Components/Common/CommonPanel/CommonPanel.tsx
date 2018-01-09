@@ -45,7 +45,7 @@ export class CommonPanel extends React.Component<CommonPanelProps> {
 
   public static Actions = CommonPanelActions;
 
-  static defaultProps = {
+  static defaultProps: Partial<CommonPanelProps> = {
     defaultExpanded: true,
   };
 

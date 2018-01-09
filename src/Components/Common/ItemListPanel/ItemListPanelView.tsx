@@ -18,7 +18,7 @@ export interface ItemListPanelViewProps extends BaseViewProps<ItemListPanelViewM
 export class ItemListPanelView extends BaseView<ItemListPanelViewProps, ItemListPanelViewModel<{}>> {
   public static displayName = 'ItemListPanelView';
 
-  static defaultProps = {
+  static defaultProps: Partial<ItemListPanelProps> = {
   };
 
   updateOn(viewModel: Readonly<ItemListPanelViewModel<{}>>) {

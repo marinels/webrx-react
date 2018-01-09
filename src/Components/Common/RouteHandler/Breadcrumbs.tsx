@@ -15,7 +15,7 @@ export interface BreadcrumbsComponentProps extends React.HTMLProps<any>, Breadcr
 }
 
 export class Breadcrumbs extends React.Component<BreadcrumbsComponentProps> {
-  static defaultProps = {
+  static defaultProps: Partial<BreadcrumbsProps> = {
     id: 'breadcrumbs',
   };
 

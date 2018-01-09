@@ -20,7 +20,7 @@ export interface PageFooterViewProps extends BaseViewProps<PageFooterViewModel>,
 export class PageFooterView extends BaseView<PageFooterViewProps, PageFooterViewModel> {
   public static displayName = 'PageFooterView';
 
-  static defaultProps = {
+  static defaultProps: Partial<PageFooterProps> = {
   };
 
   constructor(props: PageFooterViewProps, context?: any) {

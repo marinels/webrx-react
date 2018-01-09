@@ -22,7 +22,7 @@ const dataUriPrefix = 'data:image;base64,';
 export class ProfilePicture extends React.Component<ProfilePictureComponentProps> {
   public static displayName = 'ProfilePicture';
 
-  static defaultProps = {
+  static defaultProps: Partial<ProfilePictureProps> = {
     size: 65,
     responsive: false,
     rounded: false,

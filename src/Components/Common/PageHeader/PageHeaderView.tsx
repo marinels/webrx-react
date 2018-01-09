@@ -23,7 +23,7 @@ export interface PageHeaderViewProps extends BaseViewProps<PageHeaderViewModel>,
 export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderViewModel> {
   public static displayName = 'PageHeaderView';
 
-  static defaultProps = {
+  static defaultProps: Partial<PageHeaderProps> = {
     id: 'page-header',
     brand: 'webrx-react Rocks!!!',
   };

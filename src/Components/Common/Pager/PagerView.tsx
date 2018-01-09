@@ -28,7 +28,7 @@ const ComponentLocations = [ 'left', 'center', 'right' ];
 export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
   public static displayName = 'PagerView';
 
-  static defaultProps = {
+  static defaultProps: Partial<PagerProps> = {
     first: true,
     prev: true,
     next: true,
