@@ -29,8 +29,10 @@ export class ObservableWrapper extends React.Component<ObservableWrapperComponen
     this.subscription = this.wx
       .whenAny(this.property, x => x)
       .subscribe(value => {
-        this.setState({
-          value,
+        this.setState((prevState, props) => {
+          return {
+            value,
+          };
         });
       });
   }

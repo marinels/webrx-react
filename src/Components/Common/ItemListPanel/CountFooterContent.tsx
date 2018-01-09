@@ -66,8 +66,10 @@ export class CountFooterContent extends React.Component<CountFooterContentCompon
         x => x,
       )
       .subscribe(x => {
-        this.setState({
-          count: x || 0,
+        this.setState((prevState, props) => {
+          return {
+            count: x || 0,
+          };
         });
       });
   }

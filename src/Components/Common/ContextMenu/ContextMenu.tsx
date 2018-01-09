@@ -57,19 +57,23 @@ export class ContextMenu extends React.Component<ContextMenuComponentProps, Cont
       e.preventDefault();
 
       // update our state
-      this.setState({
-        isVisible,
-        left: e.pageX,
-        top: e.pageY - ArrowOffset,
+      this.setState((prevState, props) => {
+        return {
+          isVisible,
+          left: e.pageX,
+          top: e.pageY - ArrowOffset,
+        };
       });
     }
   }
 
   private hide() {
-    this.setState({
-      isVisible: false,
-      left: undefined,
-      top: undefined,
+    this.setState((prevState, props) => {
+      return {
+        isVisible: false,
+        left: undefined,
+        top: undefined,
+      };
     });
   }
 

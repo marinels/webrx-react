@@ -256,8 +256,10 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
   protected toggleExpansion(e: MouseEvent) {
     e.stopPropagation();
 
-    this.setState({
-      isExpanded: !this.state.isExpanded,
+    this.setState((prevState, props) => {
+      return {
+        isExpanded: !this.state.isExpanded,
+      };
     });
   }
 
