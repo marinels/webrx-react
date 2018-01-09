@@ -90,16 +90,17 @@ export const demoViewMap: ViewActivatorMap = {
   ObservableWrapper: () => (
     <Components.ObservableWrapper observable={ Observable.timer(0, 1000) } render={ x => (<div>Current Value is { x }</div>) } />
   ),
+  TimeSpanInput: () => (
+    <div>
+      <Components.TimeSpanInput placeholder='Manual input is parsed on blur' />
+      <Components.TimeSpanInput units={ [ 'hours', 'days' ] } initialUnit='hours' />
+      <Components.TimeSpanInput>
+        <FormControl type='text' id='custom' placeholder='You can also use your own custom control component' />
+      </Components.TimeSpanInput>
+    </div>
+  ),
   SearchViewModel: (viewModel: Components.SearchViewModel) => (
     <Components.SearchView viewModel={ viewModel } />
-  ),
-  TimeSpanInputViewModel: (viewModel: Components.TimeSpanInputViewModel) => (
-    <div>
-      <Components.TimeSpanInputView viewModel={ viewModel } />
-      <Components.TimeSpanInputView viewModel={ viewModel } >
-        <Components.TimeSpanControl viewModel={ viewModel } id='custom' placeholder='You can also use your own custom control component' />
-      </Components.TimeSpanInputView>
-    </div>
   ),
   ContextMenu: () => (
     <div>
