@@ -40,7 +40,7 @@ export interface BindableInputProps extends BindableProps {
   boundProperty: any;
 }
 
-export interface BindableInputComponentProps extends React.AllHTMLAttributes<BindableInput>, BindableInputProps {
+export interface BindableInputComponentProps extends React.HTMLProps<any>, BindableInputProps {
 }
 
 export class BindableInput extends React.Component<BindableInputComponentProps> {
