@@ -19,7 +19,7 @@ export interface TimeSpanInputProps {
   initialDuration?: moment.Duration;
   precision?: number;
 
-  onDurationChanged?: (duration: moment.Moment) => void;
+  onDurationChanged?: (duration: moment.Duration | undefined) => void;
 }
 
 export interface TimeSpanInputComponentProps extends React.HTMLProps<any>, TimeSpanInputProps {
@@ -122,6 +122,25 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
       input: TimeSpanInput.formatDuration(props.initialDuration, props.initialUnit!),
       duration: props.initialDuration,
     };
+  }
+
+  componentDidUpdate(
+    prevProps: Readonly<TimeSpanInputComponentProps>,
+    prevState: Readonly<TimeSpanInputState>,
+    prevContext: any,
+  ) {
+    if (this.props.onDurationChanged != null && prevState != null && this.state != null) {
+      if (prevState.duration != null) {
+        if (this.state.duration == null || prevState.duration !== this.state.duration) {
+          this.props.onDurationChanged(this.state.duration);
+        }
+      }
+      else if (this.state.duration != null) {
+        if (prevState.duration == null || prevState.duration !== this.state.duration) {
+          this.props.onDurationChanged(this.state.duration);
+        }
+      }
+    }
   }
 
   render() {
