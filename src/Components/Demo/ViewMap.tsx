@@ -835,7 +835,7 @@ export const demoViewMap: ViewActivatorMap = {
       return (
         <Components.InlineEditView style={ ({ margin: 0 }) } viewModel={ viewModel } inputType='number'
           template={ x => `${ x.rank } of 10` } converter={ x => Number(x) } keyboard clickToEdit
-          valueGetter={ (x: Property<any>) => x.value.rank } valueSetter={ (x: Property<any>, v) => x.value.rank = v }
+          valueGetter={ (x: Property<any>) => x.value.rank } valueSetter={ (v, p: Property<any>) => p.value.rank = v }
         />
       );
     }

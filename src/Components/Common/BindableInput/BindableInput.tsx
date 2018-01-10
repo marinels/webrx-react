@@ -37,7 +37,7 @@ export interface BindableInputProps extends BindableProps {
   /**
    * input property (or value)
    */
-  boundProperty: any;
+  boundProperty?: any;
 }
 
 export interface BindableInputComponentProps extends React.HTMLProps<any>, BindableInputProps {
@@ -49,10 +49,10 @@ export class BindableInput extends React.Component<BindableInputComponentProps> 
   static defaultProps: Partial<BindableInputProps> = {
     valueProperty: 'value',
     onChangeProperty: 'onChange',
-    valueGetter: (property: any) => {
+    valueGetter: (property?: any) => {
       return BindableInput.wx.isProperty(property) ? property.value : property;
     },
-    valueSetter: (property: any, value: any) => {
+    valueSetter: (value: any, property?: any) => {
       if (BindableInput.wx.isProperty(property)) {
         property.value = value;
       }
@@ -108,7 +108,7 @@ export class BindableInput extends React.Component<BindableInputComponentProps> 
         value = this.props.converter(value);
       }
 
-      this.props.valueSetter!(this.props.boundProperty, value);
+      this.props.valueSetter!(value, this.props.boundProperty);
 
       this.forceUpdate();
     }
