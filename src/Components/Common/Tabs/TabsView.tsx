@@ -2,34 +2,32 @@ import * as React from 'react';
 import { Observable } from 'rxjs';
 import { Tabs, Tab } from 'react-bootstrap';
 
-import { wxr, BaseView, BaseViewProps } from '../../React';
+import { BaseView, BaseViewProps } from '../../React';
 import { TabsViewModel } from './TabsViewModel';
 
-export type ReadonlyTabsViewModel<TData> = Readonly<TabsViewModel<TData>>;
-
-export class TabRenderTemplate<TData> {
+export class TabRenderTemplate<T> {
   public static displayName = 'TabViewTemplate';
 
-  protected readonly renderTemplateContainer: (content: () => any, item: TData, index: number, viewModel: ReadonlyTabsViewModel<TData>, view: TabsView) => any;
+  protected readonly renderTemplateContainer: (content: () => any, item: T, index: number, viewModel: Readonly<TabsViewModel<T>>, view: TabsView) => any;
 
   constructor(
-    protected readonly titleSelector: (item: TData, index: number, viewModel: ReadonlyTabsViewModel<TData>, view: TabsView) => string,
-    protected readonly renderItem: (item: TData, index: number, viewModel: ReadonlyTabsViewModel<TData>, view: TabsView) => any = x => x.toString(),
-    protected readonly keySelector: (item: TData, index: number, viewModel: ReadonlyTabsViewModel<TData>, view: TabsView) => any = (x, i) => i,
-    renderTemplateContainer?: (content: () => any, item: TData, index: number, viewModel: ReadonlyTabsViewModel<TData>, view: TabsView) => any,
+    protected readonly titleSelector: (item: T, index: number, viewModel: Readonly<TabsViewModel<T>>, view: TabsView) => string,
+    protected readonly renderItem: (item: T, index: number, viewModel: Readonly<TabsViewModel<T>>, view: TabsView) => any = x => x.toString(),
+    protected readonly keySelector: (item: T, index: number, viewModel: Readonly<TabsViewModel<T>>, view: TabsView) => any = (x, i) => i,
+    renderTemplateContainer?: (content: () => any, item: T, index: number, viewModel: Readonly<TabsViewModel<T>>, view: TabsView) => any,
   ) {
     this.renderTemplateContainer = renderTemplateContainer || this.renderDefaultTemplateContainer;
   }
 
-  protected renderDefaultTemplateContainer(content: () => any, item: TData, index: number, viewModel: ReadonlyTabsViewModel<TData>, view: TabsView) {
+  protected renderDefaultTemplateContainer(content: () => any, item: T, index: number, viewModel: Readonly<TabsViewModel<T>>, view: TabsView) {
     return (
       <Tab key={ this.keySelector(item, index, viewModel, view) } title={ this.titleSelector(item, index, viewModel, view) } eventKey={ index }>
-        { wxr.renderConditional(index === viewModel.selectedIndex.value, content) }
+        { TabsView.wxr.renderConditional(index === viewModel.selectedIndex.value, content) }
       </Tab>
     );
   }
 
-  public render(viewModel: ReadonlyTabsViewModel<TData>, view: TabsView) {
+  public render(viewModel: Readonly<TabsViewModel<T>>, view: TabsView) {
     return viewModel.tabs.value
       .map((x, i) => {
         return this.renderTemplateContainer(() => this.renderItem(x, i, viewModel, view), x, i, viewModel, view);
@@ -37,12 +35,14 @@ export class TabRenderTemplate<TData> {
   }
 }
 
-// NOTE: id is required for tab (belongs to HTMLAttributes)
-export interface TabsProps extends BaseViewProps {
-  template?: TabRenderTemplate<any>;
+export interface TabsProps<T = {}> {
+  template?: TabRenderTemplate<T>;
 }
 
-export class TabsView extends BaseView<TabsProps, TabsViewModel<{}>> {
+export interface TabsViewProps extends BaseViewProps<TabsViewModel<{}>>, TabsProps {
+}
+
+export class TabsView extends BaseView<TabsViewProps, TabsViewModel<{}>> {
   public static displayName = 'TabsView';
 
   updateOn(viewModel: Readonly<TabsViewModel<{}>>) {
@@ -59,14 +59,14 @@ export class TabsView extends BaseView<TabsProps, TabsViewModel<{}>> {
     });
 
     return (
-      <div { ...rest } className={ this.classNames('Tabs', className) }>
+      <div { ...rest } className={ this.wxr.classNames('Tabs', className) }>
         { this.renderTabs() }
       </div>
     );
   }
 
   private renderTabs() {
-    return this.renderNullable(
+    return this.wxr.renderNullable(
       this.props.template,
       x => this.renderDynamicTabs(x),
       () => this.renderStaticTabs(),

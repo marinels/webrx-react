@@ -1,13 +1,15 @@
 @import (reference) '../../../Style/App.less';
 
+@selected-item-bg: lighten(@list-group-active-bg, 40%);
+
 .Items.ListItems {
   .Panel-Item,
   .TablePanel tr,
   &.TreeItems .TreeItem > .TreeItem-Header {
     &.Selected {
-      background-color: @list-group-active-bg;
-      border-color: @list-group-active-border;
-      color: @list-group-active-color;
+      background-color: @selected-item-bg;
+      border-color: @selected-item-bg;
+      outline: none;
     }
   }
 
@@ -15,11 +17,31 @@
     th,
     td {
       padding: 0;
+      vertical-align: middle;
     }
 
     .GridViewColumn-headerContent,
     .GridViewColumn-cellContent {
-      padding: 8px;
+      padding: @default-padding;
+    }
+
+    td.NavButtonColumn {
+      position: relative;
+
+      // stylelint-disable selector-max-specificity
+      .GridViewColumn-cellContent {
+        height: 100%;
+        left: 0;
+        padding: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+
+        .NavButton {
+          width: 100%;
+        }
+      }
+      // stylelint-enable selector-max-specificity
     }
   }
 }

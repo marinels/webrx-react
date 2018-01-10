@@ -3,7 +3,7 @@ import * as React from 'react';
 import '../Extensions/String';
 import { getLogger } from './Logging';
 import { PubSub, Default as PubSubInstance } from './PubSub';
-import { AlertCreatedKey, AlertCreated } from '../Events/AlertCreated';
+import { AlertCreatedKey, AlertCreated } from '../Events';
 
 export class Alert {
   private static displayName = 'Alert';
@@ -137,6 +137,10 @@ export function create(content: any, header?: string, style?: string, timeout?: 
   Default.create(content, header, style, timeout);
 }
 
+export type AlertCreator = typeof create;
+
 export function createForError<TError>(error: TError, header?: string, style?: string, timeout?: number, formatter?: (e: TError) => any) {
   Default.createForError(error, header, style, timeout, formatter);
 }
+
+export type ErrorAlertCreator = typeof createForError;

@@ -1,10 +1,10 @@
 import * as React from 'react';
 
-import { wx, Property } from '../../../WebRx';
+import { Property } from '../../../WebRx';
 
 export function validateBindableProperty(property: any) {
-  if (wx.isProperty(property) && property.isReadOnly) {
-    wx.handleError('BindableInput bound to ReadOnlyProperty', property);
+  if (BindableInput.wx.isProperty(property) && property.isReadOnly) {
+    BindableInput.wx.handleError('BindableInput bound to ReadOnlyProperty', property);
   }
 }
 
@@ -33,48 +33,51 @@ export interface BindableProps {
   valueSetter?: (property: any, value: any) => void;
 }
 
-export interface BindableInputProps extends React.AllHTMLAttributes<BindableInput>, BindableProps {
+export interface BindableInputProps extends BindableProps {
   /**
    * input property (or value)
    */
-  property: any;
+  boundProperty?: any;
 }
 
-export class BindableInput extends React.Component<BindableInputProps> {
+export interface BindableInputComponentProps extends React.HTMLProps<any>, BindableInputProps {
+}
+
+export class BindableInput extends React.Component<BindableInputComponentProps> {
   public static displayName = 'BindableInput';
 
-  static defaultProps = {
+  static defaultProps: Partial<BindableInputProps> = {
     valueProperty: 'value',
     onChangeProperty: 'onChange',
-    valueGetter: (property: any) => {
-      return wx.isProperty(property) ? property.value : property;
+    valueGetter: (property?: any) => {
+      return BindableInput.wx.isProperty(property) ? property.value : property;
     },
-    valueSetter: (property: any, value: any) => {
-      if (wx.isProperty(property)) {
+    valueSetter: (value: any, property?: any) => {
+      if (BindableInput.wx.isProperty(property)) {
         property.value = value;
       }
     },
   };
 
   componentWillMount() {
-    validateBindableProperty(this.props.property);
+    validateBindableProperty(this.props.boundProperty);
   }
 
-  componentWillReceiveProps(nextProps: BindableInputProps) {
-    validateBindableProperty(nextProps.property);
+  componentWillReceiveProps(nextProps: Readonly<BindableInputComponentProps>) {
+    validateBindableProperty(nextProps.boundProperty);
   }
 
   render() {
     const { className, children, props, rest } = this.restProps(x => {
-      const { property, converter, valueProperty, onChangeProperty, valueGetter, valueSetter } = x;
-      return { property, converter, valueProperty, onChangeProperty, valueGetter, valueSetter };
+      const { boundProperty, converter, valueProperty, onChangeProperty, valueGetter, valueSetter } = x;
+      return { boundProperty, converter, valueProperty, onChangeProperty, valueGetter, valueSetter };
     });
 
     const bindProps: any = {};
     const value = this.getValue();
     // NOTE: react says the value of a bindable control should not be null, but
     //       instead empty string (undefined is ok though, so === is required).
-    bindProps[props.valueProperty!] = value === null ? '' : value;
+    bindProps[props.valueProperty!] = value == null ? '' : value;
     bindProps[props.onChangeProperty!] = (e: React.FormEvent<any>) => {
       this.setValue(e);
     };
@@ -87,10 +90,10 @@ export class BindableInput extends React.Component<BindableInputProps> {
 
   protected getValue() {
     try {
-      return this.props.valueGetter!(this.props.property);
+      return this.props.valueGetter!(this.props.boundProperty);
     }
     catch (e) {
-      wx.handleError(e);
+      this.wx.handleError(e);
 
       return undefined;
     }
@@ -105,12 +108,12 @@ export class BindableInput extends React.Component<BindableInputProps> {
         value = this.props.converter(value);
       }
 
-      this.props.valueSetter!(this.props.property, value);
+      this.props.valueSetter!(value, this.props.boundProperty);
 
       this.forceUpdate();
     }
     catch (e) {
-      wx.handleError(e);
+      this.wx.handleError(e);
     }
   }
 }

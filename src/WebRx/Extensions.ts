@@ -85,7 +85,8 @@ export function observeCommand<T, TRet>(
     .debounce(x => {
       return x.command.canExecuteObservable
         .startWith(x.command.canExecute)
-        .filter(y => y);
+        .filter(y => y)
+        .map(() => 0);
     })
     .map(x => {
       return x.command
@@ -123,13 +124,6 @@ export function invokeCommand<T, TRet>(
 declare module 'ix/iterable/iterablex' {
   interface IterableX<T> {
     filterNull: typeof filterNullIterable;
-  }
-
-  // NOTE: temporary patch to deal with IxJS issue
-  // see: https://github.com/ReactiveX/IxJS/pull/83#issuecomment-341832266
-  function singleProto<T>(this: IterableX<T>, predicate?: (value: T, index: number) => boolean): T | undefined;
-  interface IterableX<T> {
-    single: typeof singleProto;
   }
 }
 

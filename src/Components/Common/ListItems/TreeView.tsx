@@ -10,16 +10,21 @@ import { StackPanel } from '../Panel/StackPanel';
 import { PanelFragment, PanelItemContext } from '../Panel/Panel';
 import { ListItemsViewModel } from './ListItemsViewModel';
 
-export interface TreeViewProps extends ListItemsViewTemplateProps, TreeItemSourceProps, TreeItemRenderProps {
+export interface TreeViewProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ListItemsViewTemplateProps<T, TContext>, TreeItemSourceProps<T>, TreeItemRenderProps {
   fill?: boolean;
 }
 
-export class TreeView extends ListItemsViewTemplate<TreeViewProps> {
+export interface TreeViewComponentProps extends React.HTMLProps<any>, TreeViewProps {
+}
+
+export class TreeView extends ListItemsViewTemplate<TreeViewComponentProps> {
   render() {
     const { className, rest } = this.restProps(x => {
       const { fill, listItems, itemsProps } = x;
       return { fill, listItems, itemsProps };
     });
+
+    const treeItemProps: any = this.trimProps(rest);
 
     return (
       <TreeItemsView
@@ -27,7 +32,7 @@ export class TreeView extends ListItemsViewTemplate<TreeViewProps> {
         viewModel={ this.getListItems() }
         headerTemplate={ this.renderHeader.bind(this) }
         { ...this.getItemsProps() }
-        { ...React.Component.trimProps(rest) }
+        { ...treeItemProps }
       />
     );
   }

@@ -1,18 +1,19 @@
 import { Observable, Subscription } from 'rxjs';
 
 import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
-import { BaseViewModel } from '../../React/BaseViewModel';
-import { BaseRoutableViewModel, isRoutableViewModel } from '../../React/BaseRoutableViewModel';
-import { HeaderAction, HeaderCommandAction, HeaderMenu, isHeaderCommandAction } from '../../React/Actions';
+import {
+  BaseViewModel, Search,
+  BaseRoutableViewModel, isRoutableViewModel,
+  HeaderAction, HeaderCommandAction, HeaderMenu, isHeaderCommandAction } from '../../React';
 import { RouteHandlerViewModel } from '../RouteHandler/RouteHandlerViewModel';
-import { SearchViewModel } from '../Search/SearchViewModel';
 
 export class PageHeaderViewModel extends BaseViewModel {
   public static displayName = 'PageHeaderViewModel';
 
-  private dynamicSubscriptions: Subscription;
+  private dynamicSubscriptions = Subscription.EMPTY;
 
-  public search: SearchViewModel | undefined;
+  public search: Search | undefined;
+
   public readonly sidebarMenus: Property<HeaderMenu[]>;
   public readonly navbarMenus: Property<HeaderMenu[]>;
   public readonly navbarActions: Property<HeaderCommandAction[]>;
@@ -22,6 +23,7 @@ export class PageHeaderViewModel extends BaseViewModel {
   public readonly isSidebarVisible: ReadOnlyProperty<boolean>;
 
   public readonly menuItemSelected: Command<HeaderCommandAction>;
+  public readonly menuItemChanged: Command<any>;
   public readonly toggleSideBar: Command<boolean>;
 
   constructor(
@@ -38,34 +40,32 @@ export class PageHeaderViewModel extends BaseViewModel {
   ) {
     super();
 
-    this.dynamicSubscriptions = Subscription.EMPTY;
-
-    this.sidebarMenus = this.property<HeaderMenu[]>(undefined, false);
-    this.navbarMenus = this.property<HeaderMenu[]>(undefined, false);
-    this.navbarActions = this.property<HeaderCommandAction[]>(undefined, false);
-    this.helpMenuItems = this.property<HeaderCommandAction[]>(undefined, false);
-    this.adminMenuItems = this.property<HeaderCommandAction[]>(undefined, false);
-    this.userMenuItems = this.property<HeaderCommandAction[]>(undefined, false);
-
-    this.toggleSideBar = this.command((isVisible?: boolean) => {
-      return isVisible == null ? this.isSidebarVisible.value : isVisible;
+    this.menuItemSelected = this.wx.command<HeaderCommandAction>();
+    this.menuItemChanged = this.wx.command();
+    this.toggleSideBar = this.wx.command((isVisible?: boolean) => {
+      return isVisible == null ? !this.isSidebarVisible.value : isVisible;
     });
 
-    this.isSidebarVisible = this
+    this.sidebarMenus = this.wx.property<HeaderMenu[]>(undefined, false);
+    this.navbarMenus = this.wx.property<HeaderMenu[]>(undefined, false);
+    this.navbarActions = this.wx.property<HeaderCommandAction[]>(undefined, false);
+    this.helpMenuItems = this.wx.property<HeaderCommandAction[]>(undefined, false);
+    this.adminMenuItems = this.wx.property<HeaderCommandAction[]>(undefined, false);
+    this.userMenuItems = this.wx.property<HeaderCommandAction[]>(undefined, false);
+
+    this.isSidebarVisible = this.wx
       .whenAny(this.toggleSideBar.results, x => x)
       .toProperty(false);
 
-    this.menuItemSelected = this.command<HeaderCommandAction>();
-
-    this.addSubscription(this
+    this.addSubscription(this.wx
       .whenAny(this.menuItemSelected.results, x => x)
       .filterNull()
       .map(() => false)
       .invokeCommand(this.toggleSideBar),
     );
 
-    this.subscribeOrAlert(
-      () => this
+    this.wx.subscribeOrAlert(
+      () => this.wx
         .whenAny(this.menuItemSelected.results, x => x)
         .filterNull(),
       'Page Header Menu Item Error',
@@ -84,11 +84,12 @@ export class PageHeaderViewModel extends BaseViewModel {
       },
     );
 
-    this.addSubscription(this
-      .whenAny(this.routeHandler.routedComponent, x => x)
-      .subscribe(() => {
-        this.updateDynamicContent();
-      }),
+    this.addSubscription(
+      this.wx
+        .whenAny(this.routeHandler.routedComponent, x => x)
+        .subscribe(() => {
+          this.updateDynamicContent();
+        }),
     );
   }
 
@@ -104,7 +105,7 @@ export class PageHeaderViewModel extends BaseViewModel {
     this.logger.debug('Updating Page Header Dynamic Content', component);
 
     if (isRoutableViewModel(component)) {
-      this.search = component.getSearch.apply(component);
+      this.search = component.getSearch();
     }
     else {
       this.search = undefined;
@@ -152,7 +153,7 @@ export class PageHeaderViewModel extends BaseViewModel {
             .filterNull()
             .map(x => x.command!.canExecuteObservable),
         )
-        .invokeCommand(this.stateChanged),
+        .invokeCommand(this.menuItemChanged),
     );
   }
 }

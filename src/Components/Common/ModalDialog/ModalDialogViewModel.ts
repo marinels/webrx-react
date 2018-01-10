@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { ObservableLike, ReadOnlyProperty, Command } from '../../../WebRx';
-import { BaseViewModel } from '../../React/BaseViewModel';
+import { BaseViewModel } from '../../React';
 
 export class ModalDialogViewModel<T> extends BaseViewModel {
   public static displayName = 'ModalDialogViewModel';
@@ -17,16 +17,16 @@ export class ModalDialogViewModel<T> extends BaseViewModel {
   ) {
     super();
 
-    this.show = this.command(() => true);
-    this.hide = this.command(() => false);
+    this.show = this.wx.command(() => true);
+    this.hide = this.wx.command(() => false);
 
     // any context observable result will generate a new context property changed event
-    this.context = this.getObservable(context)
+    this.context = this.wx.getObservable(context)
       .toProperty(undefined, false);
 
     this.isVisible = Observable
       .merge(
-        this.whenAny(this.context, x => x != null),
+        this.wx.whenAny(this.context, x => x != null),
         this.show.results,
         this.hide.results,
       )

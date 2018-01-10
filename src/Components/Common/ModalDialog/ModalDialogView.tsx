@@ -2,22 +2,27 @@ import * as React from 'react';
 import { Observable } from 'rxjs';
 import { Modal, ModalProps } from 'react-bootstrap';
 
-import { BaseView, ViewModelProps } from '../../React';
+import { BaseView, BaseViewProps } from '../../React';
 import { ModalDialogViewModel } from './ModalDialogViewModel';
 
-export interface ModalDialogProps extends ViewModelProps, Partial<ModalProps> {
-  title?: any;
-  body?: any;
-  footer?: any;
+export type BootstrapModalProps = Omit2<ModalProps, React.HTMLProps<Modal>, { onHide: Function; }>;
+
+export interface ModalDialogProps extends BootstrapModalProps {
+  modalTitle?: {};
+  modalBody?: {};
+  modalFooter?: {};
   canClose?: boolean;
 }
 
-export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewModel<{}>> {
+export interface ModalDialogViewProps extends BaseViewProps<ModalDialogViewModel<{}>>, ModalDialogProps {
+}
+
+export class ModalDialogView extends BaseView<ModalDialogViewProps, ModalDialogViewModel<{}>> {
   public static displayName = 'ModalDialogView';
 
-  static defaultProps = {
+  static defaultProps: Partial<ModalDialogProps> = {
     canClose: false,
-    footer: (view: ModalDialogView) => view.props.children,
+    modalFooter: (view: ModalDialogView) => view.props.children,
   };
 
   updateOn(viewModel: Readonly<ModalDialogViewModel<{}>>) {
@@ -28,16 +33,16 @@ export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewM
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { title, body, footer, canClose }  = x;
-      return { title, body, footer, canClose };
+      const { modalTitle, modalBody, modalFooter, canClose }  = x;
+      return { modalTitle, modalBody, modalFooter, canClose };
     });
 
-    return this.renderConditional(this.viewModel.isVisible, () => (
-      <Modal className={ this.classNames('ModalDialog', className) } autoFocus
+    return this.wxr.renderConditional(this.viewModel.isVisible, () => (
+      <Modal className={ this.wxr.classNames('ModalDialog', className) } autoFocus
         keyboard={ props.canClose === true } enforceFocus={ props.canClose === false }
         backdrop={ props.canClose === false ? 'static' : true }
         show={ this.viewModel.isVisible.value } onHide={ this.bindEventToCommand(x => x.hide) }
-        { ...React.Component.trimProps(rest) }
+        { ...this.trimProps(rest) }
       >
         { this.renderHeader() }
         { this.renderBody() }
@@ -47,8 +52,8 @@ export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewM
   }
 
   private renderHeader() {
-    const titleContent = this.renderNullable(
-      this.props.title,
+    const titleContent = this.wxr.renderNullable(
+      this.props.modalTitle,
       title => (
         <Modal.Title>
           { title instanceof Function ? title(this) : title }
@@ -56,7 +61,7 @@ export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewM
       ),
     );
 
-    return this.renderConditional(
+    return this.wxr.renderConditional(
       titleContent != null || this.props.canClose === true,
       () => (
         <Modal.Header closeButton={ this.props.canClose === true }>
@@ -67,8 +72,8 @@ export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewM
   }
 
   private renderBody() {
-    return this.renderNullable(
-      this.props.body,
+    return this.wxr.renderNullable(
+      this.props.modalBody,
       body => (
         <Modal.Body>
           { body instanceof Function ? body(this) : body }
@@ -78,10 +83,10 @@ export class ModalDialogView extends BaseView<ModalDialogProps, ModalDialogViewM
   }
 
   private renderFooter() {
-    return this.renderNullable(
-      this.props.footer,
+    return this.wxr.renderNullable(
+      this.props.modalFooter,
       footer => {
-        return this.renderNullable(
+        return this.wxr.renderNullable(
           footer instanceof Function ? footer(this) : footer,
           footerContent => (
             <Modal.Footer>

@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { Iterable } from 'ix';
 
-import { wxr } from '../../React';
-import { PanelProps, Panel, PanelItemProp, PanelFragment } from './Panel';
+import { PanelProps, Panel, PanelItemProp, PanelItemContext, PanelFragment } from './Panel';
 import { GridRowContext, GridColumnContext, GridLayoutDefinition } from './GridLayout';
 import { GridRenderProps } from './Grid';
 
 
-export interface UniformRowItemProps {
+export interface UniformRowItemProps<T = {}> {
   /**
    * apply custom row class name to the corresponding panel item
    */
@@ -21,10 +20,10 @@ export interface UniformRowItemProps {
   /**
    * apply custom row props to the corresponding panel item
    */
-  rowProps?: PanelItemProp<{}, GridRowContext>;
+  rowProps?: PanelItemProp<T, GridRowContext>;
 }
 
-export interface UniformColumnItemProps {
+export interface UniformColumnItemProps<T = {}> {
   /**
    * apply custom column class name to the corresponding panel item
    */
@@ -38,10 +37,10 @@ export interface UniformColumnItemProps {
   /**
    * apply custom column props to the corresponding panel item
    */
-  columnProps?: PanelItemProp<{}, GridColumnContext>;
+  columnProps?: PanelItemProp<T, GridColumnContext>;
 }
 
-export interface UniformGridPanelProps extends PanelProps, UniformRowItemProps, UniformColumnItemProps, GridRenderProps {
+export interface UniformGridPanelProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends PanelProps<T, TContext>, UniformRowItemProps<T>, UniformColumnItemProps<T>, GridRenderProps {
   /**
    * number of columns in the grid
    */
@@ -66,13 +65,16 @@ export interface UniformGridPanelProps extends PanelProps, UniformRowItemProps, 
    * template to render an empty panel item cell
    * default template renders an &nbsp; block
    */
-  emptyTemplate?: (row: number, column: number) => PanelFragment;
+  emptyCellTemplate?: (row: number, column: number) => PanelFragment;
 }
 
-export class UniformGridPanel extends Panel<UniformGridPanelProps> {
+export interface UniformGridPanelComponentProps extends React.HTMLProps<any>, UniformGridPanelProps {
+}
+
+export class UniformGridPanel extends Panel<UniformGridPanelComponentProps> {
   public static displayName = 'UniformGridPanel';
 
-  static defaultProps = {
+  static defaultProps: Partial<UniformGridPanelProps> = {
     firstColumn: 0,
   };
 
@@ -83,11 +85,11 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
   }
 
   render() {
-    const { gridColumns, gridRows, firstColumn, border, renderEmptyRows, emptyTemplate, rowClassName, rowStyle, rowProps, columnClassName, columnStyle, columnProps, ...rest } = this.props;
+    const { gridColumns, gridRows, firstColumn, border, renderEmptyRows, emptyCellTemplate, rowClassName, rowStyle, rowProps, columnClassName, columnStyle, columnProps, ...rest } = this.props;
 
     const bordered = { 'Grid-Border': border === true };
 
-    return this.renderPanel(wxr.classNames('Grid', 'Grid-Uniform', bordered), rest);
+    return this.renderPanel(this.wxr.classNames('Grid', 'Grid-Uniform', bordered), rest);
   }
 
   renderItems(children?: React.ReactNode, componentClass?: React.ReactType) {
@@ -108,7 +110,7 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
             const isAfterLastItem = index >= itemTemplates.length;
 
             const itemTemplate = (isBeforeFirstItem || isAfterLastItem) ?
-              this.renderEmpty(row, column, index) :
+              this.renderEmptyCell(row, column, index) :
               itemTemplates[index];
 
             const item = (itemTemplate != null && React.isValidElement<any>(itemTemplate)) ?
@@ -121,7 +123,7 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
             const colProps = Panel.getPanelItemPropValue(this.props.columnProps, context) || {};
 
             return (
-              <div key={ GridLayoutDefinition.generateKey(row, column) } className={ wxr.classNames('Grid-Column', colClassName) } style={ colStyle } { ...colProps }>
+              <div key={ GridLayoutDefinition.generateKey(row, column) } className={ this.wxr.classNames('Grid-Column', colClassName) } style={ colStyle } { ...colProps }>
                 { item }
               </div>
             );
@@ -136,7 +138,7 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
         const rowProps = Panel.getPanelItemPropValue(this.props.rowProps, context) || {};
 
         return (
-          <div key={ GridLayoutDefinition.generateKey(row) } className={ wxr.classNames('Grid-Row', rowClassName) } style={ rowStyle } { ...rowProps }>
+          <div key={ GridLayoutDefinition.generateKey(row) } className={ this.wxr.classNames('Grid-Row', rowClassName) } style={ rowStyle } { ...rowProps }>
             { cols }
           </div>
         );
@@ -144,9 +146,9 @@ export class UniformGridPanel extends Panel<UniformGridPanelProps> {
       .toArray();
   }
 
-  protected renderEmpty(row: number, column: number, index: number) {
+  protected renderEmptyCell(row: number, column: number, index: number) {
     return this.renderItem(
-      (this.props.emptyTemplate || UniformGridPanel.defaultEmptyTemplate)(row, column),
+      (this.props.emptyCellTemplate || UniformGridPanel.defaultEmptyTemplate)(row, column),
       index,
     );
   }

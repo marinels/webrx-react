@@ -1,13 +1,14 @@
 import * as React from 'react';
 import { Overlay, Popover, MenuItemProps, PopoverProps } from 'react-bootstrap';
 
-import { wxr } from '../../React';
-
 export interface ContextMenuProps {
   key?: string | number;
   id: string;
   header?: string;
   onSelect?: (item: MenuItemProps) => void;
+}
+
+export interface ContextMenuComponentProps extends ContextMenuProps {
 }
 
 export interface ContextMenuState {
@@ -26,7 +27,7 @@ export interface ContextMenuState {
 class ContextMenuContainer extends React.Component<PopoverProps> {
   render() {
     return (
-      <div className={ wxr.classNames('ContextMenu-container', this.props.className) }>
+      <div className={ this.wxr.classNames('ContextMenu-container', this.props.className) }>
         { this.props.children }
       </div>
     );
@@ -35,10 +36,10 @@ class ContextMenuContainer extends React.Component<PopoverProps> {
 
 const ArrowOffset = 20;
 
-export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuState> {
+export class ContextMenu extends React.Component<ContextMenuComponentProps, ContextMenuState> {
   public static displayName = 'ContextMenu';
 
-  constructor(props?: ContextMenuProps, context?: any) {
+  constructor(props: ContextMenuComponentProps, context?: any) {
     super(props, context);
 
     this.state = {
@@ -56,19 +57,23 @@ export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuSt
       e.preventDefault();
 
       // update our state
-      this.setState({
-        isVisible,
-        left: e.pageX,
-        top: e.pageY - ArrowOffset,
+      this.setState((prevState, props) => {
+        return {
+          isVisible,
+          left: e.pageX,
+          top: e.pageY - ArrowOffset,
+        };
       });
     }
   }
 
   private hide() {
-    this.setState({
-      isVisible: false,
-      left: undefined,
-      top: undefined,
+    this.setState((prevState, props) => {
+      return {
+        isVisible: false,
+        left: undefined,
+        top: undefined,
+      };
     });
   }
 
@@ -91,7 +96,7 @@ export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuSt
   }
 
   private renderMenu(menuItems: React.ReactChild[]) {
-    return wxr.renderConditional(this.state.isVisible === true, () => {
+    return this.wxr.renderConditional(this.state.isVisible === true, () => {
       return (
         <Popover id={ this.props.id } placement='right' title={ this.props.header }
           arrowOffsetTop={ ArrowOffset } positionLeft={ this.state.left } positionTop={ this.state.top }
@@ -99,7 +104,7 @@ export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuSt
           <ul className='dropdown-menu'>
             {
               // if onSelect is provided we need to inject it into all the menu items
-              wxr.renderNullable(
+              this.wxr.renderNullable(
                 this.props.onSelect,
                 onSelect => React.Children
                   .map(menuItems, (x: React.ReactElement<any>) =>

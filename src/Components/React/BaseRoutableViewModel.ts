@@ -3,127 +3,61 @@ import { Observable } from 'rxjs';
 import { ReadOnlyProperty, Property, Command } from '../../WebRx';
 import { BaseViewModel } from './BaseViewModel';
 import { HeaderCommandAction, HeaderMenu } from './Actions';
-import { Default as pubSub } from '../../Utils/PubSub';
-import { RoutingStateChangedKey, RoutingStateChanged } from '../../Events/RoutingStateChanged';
+import { PubSub } from '../../Utils';
+import { HandlerRoutingStateChanged, RoutingStateHandler, Search } from './Interfaces';
 
-export function isRoutableViewModel(source: any): source is BaseRoutableViewModel<any> {
-  const viewModel = <BaseRoutableViewModel<any>>source;
-
-  if (viewModel != null && viewModel.isRoutableViewModel instanceof Function) {
-    return viewModel.isRoutableViewModel();
-  }
-  else {
+export function isRoutableViewModel(value: any): value is BaseRoutableViewModel<any> {
+  if (value == null) {
     return false;
   }
+
+  const viewModel: BaseRoutableViewModel<any> = value;
+
+  return (
+    viewModel.isRoutableViewModel instanceof Function &&
+    viewModel.isRoutableViewModel()
+  );
 }
 
 export interface RoutingBreadcrumb {
   key: any;
   content: string;
-  href: string;
+  href?: string;
   target?: string;
   title?: string;
   tooltip?: any;
 }
 
-export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel {
+export abstract class BaseRoutableViewModel<T> extends BaseViewModel implements RoutingStateHandler<T> {
   public static displayName = 'BaseRoutableViewModel';
 
-  protected readonly routingState: Property<TRoutingState>;
   protected readonly updateDocumentTitle: Command<string>;
-  protected readonly updateRoutingBreadcrumbs: Command<RoutingBreadcrumb[] | undefined>;
+  protected readonly updateRoutingBreadcrumbs: Command<Array<RoutingBreadcrumb> | undefined>;
 
-  public readonly routingStateChanged: Command<any>;
   public readonly documentTitle: ReadOnlyProperty<string>;
-  public readonly breadcrumbs: ReadOnlyProperty<RoutingBreadcrumb[] | undefined>;
+  public readonly breadcrumbs: ReadOnlyProperty<Array<RoutingBreadcrumb> | undefined>;
 
-  constructor(public isRoutingEnabled = false, routingStateRateLimit = 25) {
+  constructor() {
     super();
 
-    this.routingState = this.property<TRoutingState>();
-    this.updateDocumentTitle = this.command((title: any) => title.toString());
-    this.updateRoutingBreadcrumbs = this.command<RoutingBreadcrumb[] | undefined>();
+    this.updateDocumentTitle = this.wx.command((title: any) => (title || '').toString());
+    this.updateRoutingBreadcrumbs = this.wx.command<Array<RoutingBreadcrumb> | undefined>();
 
-    this.routingStateChanged = this.command();
     this.documentTitle = this.updateDocumentTitle.results.toProperty();
-    this.breadcrumbs = this
+    this.breadcrumbs = this.wx
       .whenAny(this.updateRoutingBreadcrumbs.results, x => x)
       .toProperty();
-
-    this.addSubscription(
-      this.routingStateChanged.results
-        .filter(() => this.isRoutingEnabled)
-        .debounceTime(routingStateRateLimit)
-        .subscribe(x => {
-          pubSub.publish<RoutingStateChanged>(RoutingStateChangedKey, x);
-        }),
-    );
   }
 
-  protected notifyRoutingStateChanged(context?: any) {
-    if (this.isRoutingEnabled) {
-      this.routingStateChanged.execute(context);
-    }
-  }
-
-  private createRoutingState(initializer: (state: TRoutingState) => void, initialState = {} as TRoutingState) {
-    if (this.isRoutingEnabled === true && initializer != null) {
-      return initializer(initialState) || initialState;
-    }
-
-    return initialState;
-  }
-
-  private handleRoutingState(state = {} as TRoutingState, handler: (state: TRoutingState) => void) {
-    if (this.isRoutingEnabled && handler != null) {
-      handler(state);
-    }
-  }
-
-  // -------------------------------------------------------
-  // These are overridable routing state functions
-  // -------------------------------------------------------
-  protected saveRoutingState(state: TRoutingState) {
-    // do nothing by default
-  }
-
-  protected loadRoutingState(state: TRoutingState) {
-    // do nothing by default
-  }
-  // -------------------------------------------------------
-
-  // -------------------------------------------------------
-  // These are overridable routing lifecycle functions
-  // -------------------------------------------------------
-  protected routed() {
-    // do nothing
-  }
-  // -------------------------------------------------------
-
-  public isRoutableViewModel() {
+  isRoutingStateHandler() {
     return true;
   }
 
-  /**
-   * Get the current routing state
-   */
-  public getRoutingState(context?: any) {
-    return this.createRoutingState(state => {
-      return this.saveRoutingState(state) || state;
-    });
-  }
+  public abstract createRoutingState(changed: HandlerRoutingStateChanged): T;
+  public abstract applyRoutingState(state: T): void;
 
-  /**
-   * Apply a new routing state
-   */
-  public setRoutingState(state: TRoutingState) {
-    this.handleRoutingState(state, x => {
-      this.loadRoutingState(x);
-
-      this.routingState.value = state;
-    });
-
-    this.routed();
+  public isRoutableViewModel() {
+    return true;
   }
 
   // -------------------------------------------------------
@@ -133,32 +67,32 @@ export abstract class BaseRoutableViewModel<TRoutingState> extends BaseViewModel
     return Object.getName(this);
   }
 
-  public getSearch() {
-    return <any>null;
+  public getSearch(): Search | undefined {
+    return undefined;
   }
 
-  public getSidebarMenus() {
-    return <HeaderMenu[]>[];
+  public getSidebarMenus(): Array<HeaderMenu> {
+    return [];
   }
 
-  public getNavbarMenus() {
-    return <HeaderMenu[]>[];
+  public getNavbarMenus(): Array<HeaderMenu> {
+    return [];
   }
 
-  public getNavbarActions() {
-    return <HeaderCommandAction[]>[];
+  public getNavbarActions(): Array<HeaderCommandAction> {
+    return [];
   }
 
-  public getHelpMenuItems() {
-    return <HeaderCommandAction[]>[];
+  public getHelpMenuItems(): Array<HeaderCommandAction> {
+    return [];
   }
 
-  public getAdminMenuItems() {
-    return <HeaderCommandAction[]>[];
+  public getAdminMenuItems(): Array<HeaderCommandAction> {
+    return [];
   }
 
-  public getUserMenuItems() {
-    return <HeaderCommandAction[]>[];
+  public getUserMenuItems(): Array<HeaderCommandAction> {
+    return [];
   }
   // -------------------------------------------------------
 }

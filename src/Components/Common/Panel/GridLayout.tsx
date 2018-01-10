@@ -22,13 +22,13 @@ export interface GridColumnContext extends GridRowContext {
  * a layout element represents props for a component that helps define
  * the grid layout (i.e. GridRowDefinitions and RowDefinition)
  */
-export interface GridLayoutElementProps<T extends GridRowContext = GridRowContext> extends PanelItemProps<T>, PanelTemplateProps<T>, PanelRenderProps {
+export interface GridLayoutElementProps<T = {}, TContext extends GridRowContext = GridRowContext> extends PanelItemProps<T, TContext>, PanelTemplateProps<TContext>, PanelRenderProps {
 }
 
 /**
  * a row layout element with a height prop
  */
-export interface RowDefinitionProps extends GridLayoutElementProps {
+export interface RowDefinitionProps<T = {}> extends GridLayoutElementProps<T> {
   height?: number;
 }
 
@@ -42,8 +42,8 @@ export class RowDefinition extends React.Component<RowDefinitionProps> {
 /**
  * a row collection layout element to define row layout elements as children
  */
-export interface GridRowDefinitionsProps extends GridLayoutElementProps {
-  children?: React.ReactElement<RowDefinitionProps> | Array<React.ReactElement<RowDefinitionProps>>;
+export interface GridRowDefinitionsProps<T = {}> extends GridLayoutElementProps<T> {
+  children?: React.ReactElement<RowDefinitionProps<T>> | Array<React.ReactElement<RowDefinitionProps<T>>>;
 }
 
 /**
@@ -58,7 +58,7 @@ export class GridRowDefinitions extends React.Component<GridRowDefinitionsProps>
  * NOTE: if using multiple stretch columns, the number of units used
  * becomes the divisor (i.e., '1*', '2*', '4*' to denote 1/7, 2/7, 4/7)
  */
-export interface ColumnDefinitionProps extends GridLayoutElementProps<GridColumnContext> {
+export interface ColumnDefinitionProps<T = {}> extends GridLayoutElementProps<T, GridColumnContext> {
   width?: number | string;
 }
 
@@ -67,7 +67,7 @@ export interface ColumnDefinitionProps extends GridLayoutElementProps<GridColumn
  * if width is omitted, width will auto stretch to consume '1*' of space
  */
 export class ColumnDefinition extends React.Component<ColumnDefinitionProps> {
-  static defaultProps = {
+  static defaultProps: Partial<ColumnDefinitionProps> = {
     width: '*',
   };
 }
@@ -75,8 +75,8 @@ export class ColumnDefinition extends React.Component<ColumnDefinitionProps> {
 /**
  * a column collection layout element to define column layout elements as children
  */
-export interface GridColumnDefinitionsProps extends GridLayoutElementProps<GridColumnContext> {
-  children?: React.ReactElement<ColumnDefinitionProps> | Array<React.ReactElement<ColumnDefinitionProps>>;
+export interface GridColumnDefinitionsProps<T = {}> extends GridLayoutElementProps<T, GridColumnContext> {
+  children?: React.ReactElement<ColumnDefinitionProps<T>> | Array<React.ReactElement<ColumnDefinitionProps<T>>>;
 }
 
 /**
@@ -85,8 +85,8 @@ export interface GridColumnDefinitionsProps extends GridLayoutElementProps<GridC
 export class GridColumnDefinitions extends React.Component<GridColumnDefinitionsProps> {
 }
 
-export type GridLayoutDefinitionGroupElement = React.ReactElement<GridRowDefinitionsProps | GridColumnDefinitionsProps>;
-export type GridLayoutDefinitionElement = React.ReactElement<RowDefinitionProps | ColumnDefinitionProps>;
+export type GridLayoutDefinitionGroupElement<T = {}> = React.ReactElement<GridRowDefinitionsProps<T> | GridColumnDefinitionsProps<T>>;
+export type GridLayoutDefinitionElement<T = {}> = React.ReactElement<RowDefinitionProps<T> | ColumnDefinitionProps<T>>;
 
 /**
  * this class is used internally to compute the grid layout metadata

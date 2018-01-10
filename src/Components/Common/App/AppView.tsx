@@ -4,7 +4,7 @@ import { Grid } from 'react-bootstrap';
 
 import { updateDefaultContainer } from './NamespacedPortal';
 import { BootstrapGuide } from './BootstrapGuide';
-import { wxr, BaseView } from '../../React';
+import { BaseView, BaseViewProps } from '../../React';
 import { Splash } from '../Splash/Splash';
 import { AlertHostView } from '../Alert/AlertHostView';
 import { SplashKey } from '../RouteHandler/RouteHandlerViewModel';
@@ -12,10 +12,11 @@ import { RouteHandlerView } from '../RouteHandler/RouteHandlerView';
 import { PageHeaderView, PageHeaderProps } from '../PageHeader/PageHeaderView';
 import { PageFooterView, PageFooterProps } from '../PageFooter/PageFooterView';
 import { AppViewModel } from './AppViewModel';
-import { ViewMap, ViewMapper } from '../../../Routing/ViewMap';
+import { ViewMap, ViewMapper } from '../../../Routing';
+import { logo } from '../../../Assets';
 
 ViewMap[SplashKey] = () => (
-  <Splash header='webrx-react' />
+  <Splash header='webrx-react' logo={ logo } />
 );
 
 export interface AppProps extends PageHeaderProps, PageFooterProps {
@@ -26,12 +27,15 @@ export interface AppProps extends PageHeaderProps, PageFooterProps {
   footer?: boolean;
 }
 
-export class AppView extends BaseView<AppProps, AppViewModel> {
+export interface AppViewProps extends BaseViewProps<AppViewModel>, AppProps {
+}
+
+export class AppView extends BaseView<AppViewProps, AppViewModel> {
   public static displayName = 'AppView';
 
   public static updateDefaultPortalContainer = updateDefaultContainer;
 
-  static defaultProps = {
+  static defaultProps: Partial<AppProps> = {
     viewMap: ViewMap,
     guide: DEBUG,
   };
@@ -58,15 +62,15 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
 
     return (
       <div className='webrx-react bootstrap-3' ref={ updateDefaultContainer }>
-        <div { ...rest } className={ wxr.classNames('App', className) }>
+        <div { ...rest } className={ this.wxr.classNames('App', className) }>
           {
-            this.renderConditional(this.viewModel.isLoading, () => (
+            this.wxr.renderConditional(this.viewModel.isLoading, () => (
               <i className='preload fa fa-spinner fa-5x fa-pulse' aria-hidden='true'></i>
             ), () => (
               <div>
-                { this.renderConditional(props.guide, () => (<BootstrapGuide />)) }
+                { this.wxr.renderConditional(props.guide, () => (<BootstrapGuide />)) }
                 {
-                  this.renderConditional(props.alerts, () => (
+                  this.wxr.renderConditional(props.alerts, () => (
                     <div className='float-container'>
                       <Grid>
                         <AlertHostView viewModel={ this.viewModel.alerts } />
@@ -74,9 +78,9 @@ export class AppView extends BaseView<AppProps, AppViewModel> {
                     </div>
                   ))
                 }
-                { this.renderConditional(props.header, () => (<PageHeaderView viewModel={ this.viewModel.header } brand={ props.brand } branduri={ props.branduri } />)) }
+                { this.wxr.renderConditional(props.header, () => (<PageHeaderView viewModel={ this.viewModel.header } brand={ props.brand } branduri={ props.branduri } />)) }
                 <RouteHandlerView viewModel={ this.viewModel.routeHandler } viewMap={ props.viewMap! } />
-                { this.renderConditional(props.footer, () => (<PageFooterView viewModel={ this.viewModel.footer } { ...footerProps } />)) }
+                { this.wxr.renderConditional(props.footer, () => (<PageFooterView viewModel={ this.viewModel.footer } { ...footerProps } />)) }
               </div>
             ))
           }

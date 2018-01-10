@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
-import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
+import { BaseViewModel, RoutingStateHandler, HandlerRoutingStateChanged } from '../../React';
 
 export interface SearchRequest {
   filter: string;
@@ -9,47 +9,117 @@ export interface SearchRequest {
 }
 
 export interface SearchRoutingState {
-  filter: string;
+  filter?: string;
 }
 
-export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
+export class SearchViewModel extends BaseViewModel implements RoutingStateHandler<SearchRoutingState> {
   public static displayName = 'SearchViewModel';
+
+  protected readonly processRequests: Command<any>;
 
   public readonly filter: Property<string>;
   public readonly requests: ReadOnlyProperty<SearchRequest>;
+  public readonly searchPending: ReadOnlyProperty<boolean>;
 
   public readonly search: Command<any>;
+  public readonly clear: Command<any>;
 
-  constructor(private readonly liveSearchTimeout = 250, private readonly isCaseInsensitive = true, isRoutingEnabled = false) {
-    super(isRoutingEnabled);
+  constructor(private readonly liveSearchTimeout = 500, private readonly isCaseInsensitive = true) {
+    super();
 
-    this.filter = this.property('');
+    this.processRequests = this.wx.command();
+
+    this.filter = this.wx.property('');
 
     // search is executed when a search is to be performed
-    this.search = this.command();
+    this.search = this.wx.command();
 
-    this.requests = this
+    this.clear = this.wx.command();
+
+    this.requests = this.wx
       // project search executions into filter values
-      .whenAny(this.search.results, () => this.filter.value)
+      .whenAny(
+        this.search.results
+          // debounce a little extra to protect against too many search invocations
+          .debounceTime(250),
+        // "gate" the requests until the processRequests command is invoked
+        this.processRequests.results
+          .take(1),
+        x => x,
+      )
       // then map into a search request with regex
-      .map(filter => (<SearchRequest>{
-        filter,
-        regex: this.createRegex(filter),
+      .map(x => (<SearchRequest>{
+        filter: this.filter.value,
+        regex: this.createRegex(this.filter.value),
       }))
       .toProperty();
 
+    this.searchPending = Observable
+      .merge(
+        Observable
+          .merge(
+            this.filter.changed
+              .map(() => true),
+            this.search.results
+              .map(() => true),
+          ),
+        this.requests.changed
+          .map(() => false),
+      )
+      .toProperty(false);
+
+    // check to see if we should queue up an initial search
+    this.processRequests.results
+      .take(1)
+      .filter(() => {
+        // check if we have a non-empty filter
+        return String.isNullOrEmpty(this.filter.value) === false;
+      })
+      .invokeCommand(this.search);
+
+    this.addSubscription(
+      this.wx
+        .whenAny(this.clear, x => x)
+        .subscribe(() => {
+          this.filter.value = '';
+        }),
+    );
+
     if (this.liveSearchTimeout > 0) {
       this.addSubscription(
-        this.filter.changed
-          // debounce on the live search timeout
+        // "gate" live search activation until the processRequests command is invoked
+        this.processRequests.results
+          .take(1)
+          .switchMap(() => this.filter.changed)
           .debounceTime(this.liveSearchTimeout)
           .invokeCommand(this.search),
       );
     }
 
-    this.addSubscription(this.search.results
-      .invokeCommand(this.routingStateChanged),
+    this.addSubscription(
+      this.wx
+        .whenAny(this.requests, x => x)
+        .subscribe(x => {
+          this.notifyChanged(x);
+        }),
     );
+  }
+
+  isRoutingStateHandler() {
+    return true;
+  }
+
+  createRoutingState(changed?: HandlerRoutingStateChanged): SearchRoutingState {
+    return Object.trim({
+      filter: this.getRoutingStateValue(this.filter.value, ''),
+    });
+  }
+
+  applyRoutingState(state: SearchRoutingState) {
+    this.filter.value = state.filter == null ? '' : String(state.filter);
+
+    // notify our streams that we're routed and may begin processing requests
+    this.processRequests.execute();
   }
 
   public get filterRequests() {
@@ -87,21 +157,5 @@ export class SearchViewModel extends BaseRoutableViewModel<SearchRoutingState> {
     }
 
     return regex;
-  }
-
-  saveRoutingState(state: SearchRoutingState) {
-    if (String.isNullOrEmpty(this.filter.value) === false) {
-      state.filter = this.filter.value;
-    }
-  }
-
-  loadRoutingState(state: SearchRoutingState) {
-    const prevState = this.routingState.value || <SearchRoutingState>{};
-
-    if (state.filter == null && prevState.filter != null) {
-      state.filter = '';
-    }
-
-    this.filter.value = state.filter || this.filter.value || '';
   }
 }

@@ -5,7 +5,10 @@ import { PanelProps, Panel } from './Panel';
 export interface WrapPanelProps extends PanelProps {
 }
 
-export class WrapPanel extends Panel<WrapPanelProps> {
+export interface WrapPanelComponentProps extends React.HTMLProps<any>, WrapPanelProps {
+}
+
+export class WrapPanel extends Panel<WrapPanelComponentProps> {
   public static displayName = 'WrapPanel';
 
   render() {

@@ -1,6 +1,7 @@
 language: node_js
 node_js:
   - '6'
+  - '8'
 
 notifications:
   email: false
@@ -12,7 +13,7 @@ notifications:
   #   on_start: never     # options: [always|never|change] default: always
 
 script:
-  - npm test
+  - npm run dist
 
 after_success:
 

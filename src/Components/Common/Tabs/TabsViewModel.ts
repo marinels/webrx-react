@@ -1,13 +1,13 @@
 import { Observable } from 'rxjs';
 
 import { ReadOnlyProperty, Command } from '../../../WebRx';
-import { BaseRoutableViewModel } from '../../React/BaseRoutableViewModel';
+import { BaseViewModel, RoutingStateHandler, HandlerRoutingStateChanged } from '../../React';
 
 export interface TabsRoutingState {
-  tab: number;
+  tab?: number;
 }
 
-export class TabsViewModel<T> extends BaseRoutableViewModel<TabsRoutingState> {
+export class TabsViewModel<T = any> extends BaseViewModel implements RoutingStateHandler<TabsRoutingState> {
   public static displayName = 'TabsViewModel';
 
   public readonly tabs: ReadOnlyProperty<T[]>;
@@ -19,66 +19,70 @@ export class TabsViewModel<T> extends BaseRoutableViewModel<TabsRoutingState> {
   public readonly selectTab: Command<T>;
   public readonly selectIndex: Command<number>;
 
-  constructor(initialTabs: T[] = [], isRoutingEnabled = false) {
-    super(isRoutingEnabled);
+  constructor(initialTabs: Array<T> = []) {
+    super();
 
-    const tabs = this.property<T[]>(initialTabs, false);
+    const tabs = this.wx.property<T[]>(initialTabs, false);
     this.tabs = <ReadOnlyProperty<T[]>>tabs;
 
-    this.addTab = this.command((tab: T) => {
+    this.addTab = this.wx.command((tab: T) => {
       tabs.value = this.tabs.value.concat(tab);
       return tab;
     });
 
-    this.removeTab = this.command((tab: T | number) => {
+    this.removeTab = this.wx.command((tab: T | number) => {
       tabs.value = Number.isNumeric(tab) ?
         this.tabs.value.filter((x, i) => i !== tab) :
         this.tabs.value.filter(x => x !== tab);
       return tab;
     });
 
-    this.selectTab = this.command<T>();
-    this.selectIndex = this.command<number>();
+    this.selectTab = this.wx.command<T>();
+    this.selectIndex = this.wx.command<number>();
 
-    this.selectedTab = this
+    this.selectedTab = this.wx
       .whenAny(this.selectIndex.results, x => this.tabs.value[x])
       .toProperty();
 
-    this.selectedIndex = this
+    this.selectedIndex = this.wx
       .whenAny(this.selectIndex.results, x => x)
-      .toProperty();
+      .toProperty(1);
 
     this.addSubscription(this.selectTab.results
       .map(x => this.tabs.value.indexOf(x))
       .invokeCommand(this.selectIndex),
     );
 
-    this.addSubscription(this
-      .whenAny(this.tabs.changed, x => ({ i: this.selectedIndex.value, l: x.length }))
-      .filter(x => x.l > 0 && (x.i == null || x.i < 0 || x.i >= x.l))
-      .map(x => x.l - 1)
-      .invokeCommand(this.selectIndex),
+    this.addSubscription(
+      this.wx
+        .whenAny(this.tabs.changed, x => ({ i: this.selectedIndex.value, l: x.length }))
+        .filter(x => x.l > 0 && (x.i == null || x.i < 0 || x.i >= x.l))
+        .map(x => x.l - 1)
+        .invokeCommand(this.selectIndex),
     );
 
-    this.addSubscription(this
-      .whenAny(this.selectedIndex, x => x)
-      .invokeCommand(this.routingStateChanged),
+    this.addSubscription(
+      this.wx
+        .whenAny(this.selectedIndex, x => x)
+        .subscribe(x => {
+          this.notifyChanged(x);
+        }),
     );
   }
 
-  saveRoutingState(state: TabsRoutingState) {
-    if (this.selectedIndex.value !== 0) {
-      state.tab = this.selectedIndex.value;
-    }
+  isRoutingStateHandler() {
+    return true;
   }
 
-  loadRoutingState(state: TabsRoutingState) {
-    const prevState = this.routingState.value || <TabsRoutingState>{};
+  createRoutingState(changed?: HandlerRoutingStateChanged): TabsRoutingState {
+    return Object.trim({
+      tab: this.getRoutingStateValue(this.selectedIndex.value, 0),
+    });
+  }
 
-    if (state.tab == null && prevState.tab != null) {
-      state.tab = 0;
+  applyRoutingState(state: TabsRoutingState) {
+    if (this.selectedIndex.value !== state.tab) {
+      this.selectIndex.execute(state.tab == null ? 0 : state.tab);
     }
-
-    this.selectIndex.execute(state.tab || this.selectedIndex.value || 0);
   }
 }

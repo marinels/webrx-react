@@ -1,19 +1,22 @@
 import * as React from 'react';
 import { Observable, Subscription } from 'rxjs';
 
-import { wx, ObservableLike, ReadOnlyProperty } from '../../../WebRx';
+import { ObservableLike, ReadOnlyProperty } from '../../../WebRx';
 
 export interface ObservableWrapperProps {
   observable: ObservableLike<any>;
   render?: (x: any) => any;
 }
 
+export interface ObservableWrapperComponentProps extends ObservableWrapperProps {
+}
+
 export interface ObservableWrapperState {
   value: any;
 }
 
-export class ObservableWrapper extends React.Component<ObservableWrapperProps, ObservableWrapperState> {
-  private static defaultProps = {
+export class ObservableWrapper extends React.Component<ObservableWrapperComponentProps, ObservableWrapperState> {
+  static defaultProps: Partial<ObservableWrapperProps> = {
     render: (x: any) => x,
   };
 
@@ -21,13 +24,15 @@ export class ObservableWrapper extends React.Component<ObservableWrapperProps, O
   private subscription: Subscription;
 
   componentWillMount() {
-    this.property = wx.getObservable(this.props.observable)
+    this.property = this.wx.getObservable(this.props.observable)
       .toProperty();
-    this.subscription = wx
+    this.subscription = this.wx
       .whenAny(this.property, x => x)
       .subscribe(value => {
-        this.setState({
-          value,
+        this.setState((prevState, props) => {
+          return {
+            value,
+          };
         });
       });
   }

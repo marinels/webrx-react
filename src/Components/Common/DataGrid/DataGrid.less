@@ -1,86 +1,31 @@
 @import (reference) '../../../Style/App.less';
 
 .DataGrid {
-  & > .Search {
-    margin-bottom: 5px;
+  background-color: @list-group-bg;
 
-    &.Table input {
-      border-radius: 0;
-    }
+  & > .Loading {
+    font-size: 1.5rem;
   }
 
-  // responsive tables add their own bootstrap styles that we can't override without styles
-  & > .table-responsive {
-    border: 0;
-    margin: 0;
+  .Panel-Item {
+    border-radius: 0;
   }
 
-  & > .table,
-  & > .table-responsive > .table,
-  &.table-responsive > .table,
-  &.table {
-    // consistent background color for the table
-    background-color: #fff;
-
-    // always put a border around the outside
-    border: 1px solid @table-border-color;
-
-    // stretch the table vertically
-    height: 100%;
-
-    // remove default table margin
-    margin: 0;
-
-    .DataGrid-column {
-      padding: 0;
-    }
-
-    .DataGrid-columnContainer {
-      padding: 5px;
-
-      // style the sort direction buttons
-      &.btn {
-        text-align: left;
-        width: 100%;
-      }
-    }
-
-    // ensure spacing between header and sort icon
-    .DataGrid-columnSortIcon {
-      margin-left: 10px;
-    }
-
-    .DataGrid-row {
-      &.DataGrid-row--selected {
-        font-weight: bold;
-      }
-
-      & > td {
-        vertical-align: middle;
-      }
-
-      & > .navColumn {
-        height: 100%;
-        overflow: hidden;
-      }
-    }
+  & .Panel.ListGroupPanel .Panel-Item > .NavButton > .btn {
+    border-radius: 0;
   }
 
-  .DataGrid-cell {
+  .DataGrid-header.btn {
     padding: 0;
+    text-align: left;
+
+    & > .GridViewColumn-headerContent {
+      display: inline-block;
+    }
   }
 
-  .DataGrid-cellContainer {
-    padding: 5px;
-  }
-
-  & > .Pager,
-  &.Pager {
-    padding: 5px;
-  }
-
-  .DataGrid-empty {
-    font-size: 1.25em;
-    text-align: center;
+  & > .DataGrid-container > .Pager {
+    border: 1px solid @table-border-color;
+    padding: @default-padding;
   }
 }

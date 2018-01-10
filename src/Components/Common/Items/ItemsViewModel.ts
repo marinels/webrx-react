@@ -1,25 +1,34 @@
 import { Iterable } from 'ix';
 import { Observable } from 'rxjs';
 
-import { wx, IterableLike, ObservableLike, ReadOnlyProperty, Command } from '../../../WebRx';
-import { BaseViewModel } from '../../React/BaseViewModel';
+import { IterableLike, ObservableLike, ReadOnlyProperty, Command } from '../../../WebRx';
+import { BaseViewModel } from '../../React';
 
 export class ItemsViewModel<T> extends BaseViewModel {
   public static displayName = 'ItemsViewModel';
+
+  protected readonly emptySource = Iterable.empty<T>();
 
   public readonly source: ReadOnlyProperty<IterableLike<T>>;
   public readonly count: ReadOnlyProperty<number>;
 
   constructor(
-    source?: ObservableLike<IterableLike<T>>,
+    source: ObservableLike<IterableLike<T>>,
   ) {
     super();
 
-    this.source = this.getObservable(source)
-      .map(x => Iterable.from(x))
-      .toProperty(Iterable.empty<T>(), false);
+    this.source = this.wx
+      .getObservableOrAlert(
+        () => {
+          return this.wx
+            .getObservable(source)
+            .map(x => Iterable.from(x));
+        },
+        'Invalid Items Source',
+      )
+      .toProperty(this.emptySource, false);
 
-    this.count = this
+    this.count = this.wx
       .whenAny(this.source, x => Iterable.from(x || []).count())
       .toProperty();
   }

@@ -16,11 +16,14 @@ export interface ViewActivatorMap {
   [key: string]: ViewActivator;
 }
 
-export interface ComponentDemoProps extends BaseViewProps {
+export interface ComponentDemoProps {
   viewMap: ViewActivatorMap;
 }
 
-export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDemoViewModel> {
+export interface ComponentDemoViewProps extends BaseViewProps<ComponentDemoViewModel>, ComponentDemoProps {
+}
+
+export class ComponentDemoView extends BaseView<ComponentDemoViewProps, ComponentDemoViewModel> {
   public static displayName = 'ComponentDemoView';
 
   updateOn(viewModel: Readonly<ComponentDemoViewModel>) {
@@ -39,7 +42,7 @@ export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDem
     const cols = this.viewModel.columns.value;
 
     return (
-      <div { ...rest } className={ this.classNames('ComponentDemo', className) }>
+      <div { ...rest } className={ this.wxr.classNames('ComponentDemo', className) }>
         <Grid fluid={ cols === 0 }>
           <Row>
             <Col md={ 12 }>
@@ -48,7 +51,7 @@ export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDem
           </Row>
           <Row>
             {
-              this.renderConditional(
+              this.wxr.renderConditional(
                 this.viewModel.componentRoute.value === 'help',
                 () => this.renderComponentView(),
                 () => (
@@ -80,7 +83,7 @@ export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDem
   }
 
   private renderHeader() {
-    return this.renderConditional(
+    return this.wxr.renderConditional(
       this.viewModel.componentRoute.value !== 'help',
       () => (
         <PageHeader>
@@ -123,7 +126,7 @@ export class ComponentDemoView extends BaseView<ComponentDemoProps, ComponentDem
     return (
       <DropdownButton id='col-width' bsStyle='info'
         title={ `Column Width (${ cols === 0 ? 'Full Width' : cols })` }
-        onSelect={ this.bindEventToProperty(x => x.columns) }
+        onSelect={ this.bindEventToCommand(x => x.setColumns) }
       >
         {
           Iterable

@@ -1,30 +1,12 @@
 @import (reference) '../../../Style/App.less';
 
-@todo-spacing: 10px;
+@todo-remove-width: 28px;
 
 .TodoList {
-  .List-row {
-    height: @button-height + @todo-spacing;
+  position: relative;
 
-    .TodoList-removeButton {
-      visibility: hidden;
-    }
-
-    &:hover .TodoList-removeButton {
-      visibility: visible;
-    }
-  }
-
-  // .TodoList-completedItem {
-  //   background-color: lighten(@brand-success, 30%);
-  // }
-
-  .List-itemActions {
-    padding-right: @todo-spacing;
-  }
-
-  .panel-body {
-    padding: @todo-spacing;
+  .CommonPanel-header {
+    text-align: center;
   }
 
   .TodoList-teaser {
@@ -32,13 +14,31 @@
   }
 
   .TodoItem {
-    span {
-      margin-right: @todo-spacing;
-      vertical-align: middle;
+    line-height: @button-height;
+
+    & > .TodoItem-main {
+      padding-right: @todo-remove-width + 2 * @default-padding;
     }
 
-    &.completed > .TodoItem-content {
-      text-decoration: line-through;
+    & > .TodoItem-actions {
+      position: absolute;
+      right: @default-padding;
+      top: 0;
+      visibility: collapse;
+
+      & > .btn {
+        width: @todo-remove-width;
+      }
+    }
+
+    &:hover > .TodoItem-actions {
+      visibility: visible;
+    }
+
+    &.completed {
+      .TodoItem-content {
+        text-decoration: line-through;
+      }
     }
   }
 }

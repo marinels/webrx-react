@@ -2,14 +2,15 @@ import * as React from 'react';
 import { findDOMNode } from 'react-dom';
 import { Observable } from 'rxjs';
 import { Icon } from 'react-fa';
-import { FormGroup, InputGroup, FormControl, Sizes, Popover, OverlayTrigger } from 'react-bootstrap';
+import { FormGroup, InputGroup, FormControl, Sizes } from 'react-bootstrap';
 
 import { BaseView, BaseViewProps } from '../../React';
 import { BindableInput, BindableProps } from '../BindableInput/BindableInput';
 import { CommandButton } from '../CommandButton/CommandButton';
+import { ContentTooltip } from '../ContentTooltip/ContentTooltip';
 import { InlineEditViewModel } from './InlineEditViewModel';
 
-export interface InlineEditProps extends BaseViewProps, BindableProps {
+export interface InlineEditProps extends BindableProps {
   controlId?: string;
   inputType?: string;
   placeholder?: string;
@@ -22,10 +23,13 @@ export interface InlineEditProps extends BaseViewProps, BindableProps {
   errorPlacement?: string;
 }
 
-export class InlineEditView extends BaseView<InlineEditProps, InlineEditViewModel<{}>> {
+export interface InlineEditViewProps extends BaseViewProps<InlineEditViewModel<{}>>, InlineEditProps {
+}
+
+export class InlineEditView extends BaseView<InlineEditViewProps, InlineEditViewModel<{}>> {
   public static displayName = 'InlineEditView';
 
-  static defaultProps = {
+  static defaultProps: Partial<InlineEditProps> = {
     inputType: 'text',
     placeholder: 'Enter New Value...',
     template: (x: any, view: InlineEditView) => x.toString(),
@@ -85,20 +89,23 @@ export class InlineEditView extends BaseView<InlineEditProps, InlineEditViewMode
   }
 
   render() {
-    return this.renderConditional(this.viewModel.isEditing, () => this.renderEditor(), () => this.renderValue());
+    return this.wxr.renderConditional(this.viewModel.isEditing, () => this.renderEditor(), () => this.renderValue());
   }
 
   private renderErrorTooltip() {
     return (
-      <Popover id='tooltip' className='InlineEditView-popover alert-danger'>
-        <div className='InlineEditView-errorContent'>
-          {
-            this.renderConditional(this.props.errorContent instanceof Function, () => {
-              return this.props.errorContent(this.viewModel, this);
-            }, () => this.props.errorContent)
-          }
-        </div>
-      </Popover>
+      <div className='InlineEditView-errorContent'>
+        {
+          this.wxr
+            .renderConditional(
+              this.props.errorContent instanceof Function,
+              () => {
+                return this.props.errorContent(this.viewModel, this);
+              },
+              () => this.props.errorContent,
+            )
+        }
+      </div>
     );
   }
 
@@ -109,16 +116,24 @@ export class InlineEditView extends BaseView<InlineEditProps, InlineEditViewMode
     });
 
     return (
-      <FormGroup { ...rest } className={ this.classNames('InlineEditView', className)}>
+      <FormGroup { ...rest } className={ this.wxr.classNames('InlineEditView', className)}>
         <InputGroup>
           {
-            this.renderConditional(this.viewModel.hasSavingError, () => (
-              <OverlayTrigger placement={ props.errorPlacement } overlay={ this.renderErrorTooltip() }>
-                <InputGroup.Addon className='InlineEditView-error'>
-                  <Icon className='alert-danger' name='exclamation' />
-                </InputGroup.Addon>
-              </OverlayTrigger>
-            ))
+            this.wxr
+              .renderConditional(
+                this.viewModel.hasSavingError,
+                () => (
+                  <ContentTooltip id={ `${ props.controlId || 'inlineedit' }-tt` }
+                    className='InlineEditView-popover alert-danger'
+                    placement={ props.errorPlacement } popover
+                    content={ this.renderErrorTooltip() }
+                  >
+                    <InputGroup.Addon className='InlineEditView-error'>
+                      <Icon className='alert-danger' name='exclamation' />
+                    </InputGroup.Addon>
+                  </ContentTooltip>
+                ),
+              )
           }
           { this.renderBindableInput() }
           <InputGroup.Button>
@@ -143,7 +158,7 @@ export class InlineEditView extends BaseView<InlineEditProps, InlineEditViewMode
     const onKeyDown = this.props.keyboard === true ? (e: React.KeyboardEvent<any>) => this.handleKeyDown(e) : undefined;
 
     return (
-      <BindableInput { ...props } property={ this.viewModel.editValue } onKeyDown={ onKeyDown } disabled={ this.viewModel.save.canExecute === false } >
+      <BindableInput { ...props } boundProperty={ this.viewModel.editValue } onKeyDown={ onKeyDown } disabled={ this.viewModel.save.canExecute === false } >
         {
           React.cloneElement(
             this.props.editTemplate!(this.viewModel.editValue.value, this),
@@ -164,10 +179,10 @@ export class InlineEditView extends BaseView<InlineEditProps, InlineEditViewMode
       <span>{ this.props.template!(this.viewModel.value.value, this) }</span>
     );
 
-    return this.renderConditional(
+    return this.wxr.renderConditional(
       props.clickToEdit === true,
       () => (
-        <CommandButton { ...rest } className={ this.classNames('InlineEditView', className)} bsStyle='link' command={ this.viewModel.edit }>
+        <CommandButton { ...rest } className={ this.wxr.classNames('InlineEditView', className)} bsStyle='link' command={ this.viewModel.edit }>
           { displayContent }
         </CommandButton>
       ),

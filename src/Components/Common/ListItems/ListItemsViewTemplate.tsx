@@ -1,20 +1,26 @@
 import * as React from 'react';
 
-import { ItemsFacadeProps } from '../Items/ItemsView';
+import { PanelItemContext } from '../Panel/Panel';
+import { ItemsProps } from '../Items/ItemsView';
 import { SelectableListItem, SelectedPropsFunction } from './SelectableListItem';
 import { ListItemsViewModel } from './ListItemsViewModel';
 
-export interface ListItemsViewTemplateProps extends React.HTMLProps<ListItemsViewTemplate<ListItemsViewTemplateProps>> {
+export interface ListItemsViewTemplateProps<T = {}, TContext extends PanelItemContext = PanelItemContext> {
   /**
    * internal passthru property
    * DO NOT SET, this property is assigned automatically by the ListItemsView
    */
-  listItems?: Readonly<ListItemsViewModel<{}>>;
+  listItems?: Readonly<ListItemsViewModel<T>>;
   /**
    * internal passthru property
    * DO NOT SET, this property is assigned automatically by the ListItemsView
    */
-  itemsProps?: ItemsFacadeProps;
+  itemsProps?: ItemsProps<T, TContext>;
+  /**
+   * internal passthru property
+   * DO NOT SET, this property is assigned automatically by the ListItemsView
+   */
+  className?: string;
 }
 
 export abstract class ListItemsViewTemplate<T extends ListItemsViewTemplateProps> extends React.Component<T> {
@@ -23,7 +29,7 @@ export abstract class ListItemsViewTemplate<T extends ListItemsViewTemplateProps
   }
 
   protected getItemsProps() {
-    return this.props.itemsProps as ItemsFacadeProps;
+    return this.props.itemsProps as ItemsProps;
   }
 
   protected renderListItem(itemTemplate: React.ReactNode, item: {}, selectedProps?: SelectedPropsFunction) {

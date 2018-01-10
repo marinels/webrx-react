@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { Grid, Row, Col } from 'react-bootstrap';
 import { Observable } from 'rxjs';
-import { Pagination, PaginationProps, DropdownButton, DropdownButtonProps, MenuItem } from 'react-bootstrap';
+import { Pagination, PaginationProps, Sizes, SelectCallback, DropdownButton, DropdownButtonProps, MenuItem } from 'react-bootstrap';
 
-import { BaseView, ViewModelProps } from '../../React';
+import { BaseView, BaseViewProps } from '../../React';
 import { PagerViewModel, StandardLimits } from './PagerViewModel';
 
-export interface PagerProps extends PaginationProps {
+// clone of react-bootstrap PaginationProps, but without the subclassing
+export type BootstrapPaginationProps = Omit<PaginationProps, React.HTMLProps<Pagination>>;
+
+export interface PagerProps extends BootstrapPaginationProps {
   info?: boolean;
   limits?: number[];
   dropdownProps?: DropdownButtonProps;
@@ -14,7 +17,7 @@ export interface PagerProps extends PaginationProps {
   emptyInfo?: string;
 }
 
-export interface PagerViewProps extends PagerProps, ViewModelProps {
+export interface PagerViewProps extends BaseViewProps<PagerViewModel>, PagerProps {
 }
 
 export type PagerComponentTypes = 'info' | 'controls' | 'limit' | undefined;
@@ -25,7 +28,7 @@ const ComponentLocations = [ 'left', 'center', 'right' ];
 export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
   public static displayName = 'PagerView';
 
-  static defaultProps = {
+  static defaultProps: Partial<PagerProps> = {
     first: true,
     prev: true,
     next: true,
@@ -61,14 +64,14 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     });
 
     const pagerProps = Object.rest(rest, x => {
-      const { activePage, boundaryLinks, bsSize, bsStyle, bsClass, buttonComponentClass, ellipsis, first, items, last, maxButtons, next, onSelect, prev } = x;
-      return { activePage, boundaryLinks, bsSize, bsStyle, bsClass, buttonComponentClass, ellipsis, first, items, last, maxButtons, next, onSelect, prev };
+      const { activePage, boundaryLinks, bsSize, bsStyle, buttonComponentClass, ellipsis, first, items, last, maxButtons, next, onSelect, prev } = x;
+      return { activePage, boundaryLinks, bsSize, bsStyle, buttonComponentClass, ellipsis, first, items, last, maxButtons, next, onSelect, prev };
     });
 
-    return this.renderConditional(
+    return this.wxr.renderConditional(
       this.shouldRenderPager(),
       () => (
-        <div { ...pagerProps.rest } className={ this.classNames('Pager', className) }>
+        <div { ...pagerProps.rest } className={ this.wxr.classNames('Pager', className) }>
           <Grid fluid>
             { this.renderComponents() }
           </Grid>
@@ -130,14 +133,14 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
   }
 
   private renderComponent(type: PagerComponentTypes | undefined) {
-    return this.renderNullable(type, x => this.renderFunctions[x].apply(this));
+    return this.wxr.renderNullable(type, x => this.renderFunctions[x].apply(this));
   }
 
   private renderInfo() {
-    return this.renderConditional(this.shouldRenderInfo(), () => (
+    return this.wxr.renderConditional(this.shouldRenderInfo(), () => (
       <div className='Pager-info'>
           {
-            this.renderConditional(
+            this.wxr.renderConditional(
               this.isEmpty(),
               () => this.props.emptyInfo,
               () => `Showing Items ${ this.viewModel.offset.value + 1 } through ${ Math.min(this.viewModel.itemCount.value, this.viewModel.offset.value + (this.viewModel.limit.value || 0)) } of ${ this.viewModel.itemCount.value }`,
@@ -153,7 +156,7 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
       return { activePage, bsSize, bsStyle, buttonComponentClass, ellipsis, first, items, last, maxButtons, next, prev };
     });
 
-    return this.renderConditional(this.shouldRenderControls(), () => (
+    return this.wxr.renderConditional(this.shouldRenderControls(), () => (
       <Pagination items={ this.viewModel.pageCount.value } activePage={ this.viewModel.selectedPage.value } onSelect={ this.bindEventToCommand(x => x.selectPage) }
         { ...(Object.assign(props, { items: this.viewModel.pageCount.value, activePage: this.viewModel.selectedPage.value })) }
       />
@@ -161,7 +164,7 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
   }
 
   private renderLimit() {
-    return this.renderConditional(this.shouldRenderLimit(), () => (
+    return this.wxr.renderConditional(this.shouldRenderLimit(), () => (
       <DropdownButton id={ this.props.id || 'pager-limit-selector' } { ...this.props.dropdownProps } title={ this.renderLimitTitle() } onSelect={ this.bindEventToProperty(x => x.limit) }>
         {
           this.props.limits!

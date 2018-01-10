@@ -1,10 +1,30 @@
+@import (reference) '../../../Style/App.less';
+
+@search-icon-width: 25px;
+
 .Search {
   & > .form-group {
-    margin: 0 !important;
-  }
+    margin: 0;
+    position: relative;
 
-  .Search-icon {
-    display: block;
-    line-height: 34px;
+    & > .form-control {
+      padding-right: @search-icon-width * 2;
+    }
+
+    & > .Search-icon {
+      display: block;
+      height: @input-height-base;
+      line-height: @input-height-base;
+      position: absolute;
+      right: 0;
+      text-align: center;
+      top: 0;
+      width: @search-icon-width;
+
+      &.Search-pendingIcon,
+      &.Search-clearIcon {
+        right: @search-icon-width;
+      }
+    }
   }
 }

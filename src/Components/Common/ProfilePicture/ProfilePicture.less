@@ -4,16 +4,19 @@
   font-size: 14px;
   text-align: center;
 
+  &.ProfilePicture-image {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
   &.ProfilePicture-icon {
     display: inline-block;
     vertical-align: middle;
-    // margin: 5px;
   }
 
   &.ProfilePicture-iconThumbnail {
     background-color: @thumbnail-bg;
     border: 1px solid @thumbnail-border;
-    border-radius: @thumbnail-border-radius;
     padding: 4px;
   }
 
@@ -25,7 +28,15 @@
     display: inline;
   }
 
-  &.img-responsive {
+  & > .img-thumbnail {
+    border-radius: 0;
+  }
+
+  & > .img-rounded {
+    border-radius: @thumbnail-border-radius;
+  }
+
+  & > .img-responsive {
     height: 100%;
     width: auto;
   }

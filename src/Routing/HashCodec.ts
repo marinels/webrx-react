@@ -2,7 +2,9 @@ import param = require('jquery-param');
 import deparam = require('jquery-deparam');
 
 export class HashCodec {
-  public static displayName = 'HashCodec';
+  public static readonly displayName = 'HashCodec';
+
+  public static readonly Default = new HashCodec();
 
   public static readonly NormalizePathPattern = '';
   public static readonly HashPattern = '';
@@ -44,7 +46,7 @@ export class HashCodec {
     return (String.isNullOrEmpty(hash) || hash[0] !== '#') ? '#/' : hash;
   }
 
-  public encode(path: string, state?: any, uriEncode = false) {
+  public encode(path: string, state: {}, uriEncode = false) {
     let hash = '#' + this.normalizePath(path);
 
     if (state) {
@@ -60,7 +62,7 @@ export class HashCodec {
     return hash;
   }
 
-  public decode<T>(hash: string | undefined, selector: (path: string, params: string | undefined, state: any) => T) {
+  public decode<T>(hash: string | undefined, selector: (path: string, params: string | undefined, state: {}) => T) {
     hash = this.santize(hash);
 
     const { path, params } = this.getPathAndParams(hash);
@@ -68,7 +70,7 @@ export class HashCodec {
     let state = {};
 
     if (params != null && params.length > 0) {
-      const obj = deparam(params[0] === '?' ? params.substring(1) : params, true);
+      const obj: {} = deparam(params[0] === '?' ? params.substring(1) : params, true);
 
       if (obj) {
         state = obj;

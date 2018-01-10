@@ -4,17 +4,20 @@ import { Alert } from 'react-bootstrap';
 import { BaseView, BaseViewProps } from '../../React';
 import { AlertViewModel } from './AlertViewModel';
 
-export interface AlertProps extends BaseViewProps {
+export interface AlertProps {
 }
 
-export class AlertView extends BaseView<AlertProps, AlertViewModel> {
+export interface AlertViewProps extends BaseViewProps<AlertViewModel>, AlertProps {
+}
+
+export class AlertView extends BaseView<AlertViewProps, AlertViewModel> {
   public static displayName = 'AlertView';
 
   render() {
     const { className, rest } = this.restProps();
 
     return (
-      <div { ...rest } className={ this.classNames('Alert', className) }>
+      <div { ...rest } className={ this.wxr.classNames('Alert', className) }>
         <Alert bsStyle={ this.viewModel.style } onDismiss={ this.bindEventToCommand(x => x.dismiss) }>
           <div className='Alert-header'>{ this.viewModel.header }</div>
           { this.renderAlertContent() }
@@ -24,7 +27,7 @@ export class AlertView extends BaseView<AlertProps, AlertViewModel> {
   }
 
   private renderAlertContent() {
-    return this.renderConditional(
+    return this.wxr.renderConditional(
       String.isString(this.viewModel.content),
       () => (
         <div className='Alert-content'>

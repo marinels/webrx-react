@@ -1,9 +1,10 @@
 import { isIterable, isAsyncIterable } from 'ix/internal/isiterable';
+import { Iterable } from 'ix';
 import { AnonymousSubscription } from 'rxjs/Subscription';
 import { Observable, Observer, Subject, Subscription } from 'rxjs';
 
 import { Property, Command, IterableLike, AsyncIterableLike, ObservableOrValue, ObservableLike } from './Interfaces';
-import { LogLevel } from '../Utils/Logging/LogLevel';
+import { Logging, Alert } from '../Utils';
 import { Default as ConsoleLogger } from '../Utils/Logging/Adapters/Console';
 
 export { isIterable, isAsyncIterable };
@@ -145,5 +146,104 @@ export function handleError(e: any, ...optionalParams: any[]) {
 
 // replace this function to inject your own global error handling
 export function logError(err: Error, ...optionalParams: any[]) {
-  ConsoleLogger.logToConsole(LogLevel.Error, err, ...optionalParams);
+  ConsoleLogger.logToConsole(Logging.LogLevel.Error, err, ...optionalParams);
+}
+
+export function logObservable(logger: Logging.Logger, observable: Observable<any>, name: string): Subscription {
+  return observable
+    .subscribe(
+      x => {
+        if (x == null) {
+          logger.debug(name);
+        }
+        else if (Object.isObject(x)) {
+          let value = Object.getName(x);
+
+          if (value === 'Object') {
+            value = '';
+          }
+
+          logger.debug(`${ name } = ${ value }`, x);
+        }
+        else {
+          logger.debug(`${ name } = ${ x }`);
+        }
+      },
+      e => logger.error(`${ name }: ${ e }`),
+    );
+}
+
+export function logMemberObservables(logger: Logging.Logger, source: StringMap<any>): Subscription[] {
+  return Iterable
+    .from(Object.keys(source))
+    .map(key => ({ key, member: source[key] }))
+    .filter(x => isObservable(x.member) || isProperty(x.member) || isCommand(x.member))
+    .flatMap(x => {
+      if (isCommand(x.member)) {
+        return [
+          { key: `<${ x.key }>...`, observable: x.member.requests },
+          { key: `<${ x.key }>`, observable: x.member.results },
+        ];
+      }
+
+      return [ { key: x.key, observable: getObservable(x.member) } ];
+    })
+    .map(x => logObservable(logger, x.observable!, x.key))
+    .toArray();
+}
+
+export function getObservableOrAlert<T, TError = Error>(
+  observableFactory: () => Observable<T>,
+  header?: string,
+  style?: string,
+  timeout?: number,
+  errorFormatter?: (e: TError) => string,
+) {
+  return Observable
+    .defer(observableFactory)
+    .catch(err => {
+      Alert.createForError(err, header, style, timeout, errorFormatter);
+
+      return Observable.empty<T>();
+    });
+}
+
+export function getObservableResultOrAlert<TResult, TError = Error>(
+  resultFactory: () => TResult,
+  header?: string,
+  style?: string,
+  timeout?: number,
+  errorFormatter?: (e: TError) => string,
+) {
+  return getObservableOrAlert(
+    () => getObservable(resultFactory()),
+    header,
+    style,
+    timeout,
+    errorFormatter,
+  );
+}
+
+export function subscribeOrAlert<T, TError = Error>(
+  observableFactory: () => Observable<T>,
+  header: string,
+  onNext: (value: T) => void,
+  style?: string,
+  timeout?: number,
+  errorFormatter?: (e: TError) => string,
+): Subscription {
+  return getObservableOrAlert(
+    observableFactory,
+    header,
+    style,
+    timeout,
+    errorFormatter,
+  ).subscribe(x => {
+    try {
+      onNext(x);
+    }
+    catch (err) {
+      Alert.createForError(err, header, style, timeout, errorFormatter);
+    }
+  });
 }

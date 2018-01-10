@@ -31,14 +31,14 @@
 
   // tree item border and padding
   .TreeItem > .TreeItem-Header {
-    border-bottom: 1px solid @list-group-border;
+    border-top: 1px solid @list-group-border;
     padding: 5px 5px 5px 0;
   }
 
   // stylelint-disable selector-max-specificity
-  // sadly we need this much specificity to accurately select the last child at
+  // sadly we need this much specificity to accurately select the very first child at
   // depth 0 of this tree view
-  & > .ItemsPresenter > .Panel > .Panel-Item:last-child .TreeItem-Header {
+  & > .ItemsPresenter > .Panel > .Panel-Item:first-child > .TreeItem > .TreeItem-Header {
     border: none;
   }
   // stylelint-enable selector-max-specificity

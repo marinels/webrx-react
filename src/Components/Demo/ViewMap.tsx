@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Observable } from 'rxjs';
 import { Icon } from 'react-fa';
-import { Col, Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab,
+import { Grid, Row, Col, Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab,
   Well, ListGroup, ListGroupItem, Table, OverlayTrigger, Overlay, Tooltip, Popover, Label,
 } from 'react-bootstrap';
 
-import { wx, Property, Command } from '../../WebRx';
+import { Property, Command } from '../../WebRx';
 import { Logging, Alert } from '../../Utils';
 import { wxr } from '../React';
 import { SampleData, SampleTreeData, sampleListData, sampleTreeData } from './RoutingMap';
@@ -14,7 +14,7 @@ import { TodoListView } from './TodoList/TodoListView';
 import { TodoListViewModel } from './TodoList/TodoListViewModel';
 import { ComponentDemoViewModel } from './ComponentDemoViewModel';
 import { ComponentDemoView, ViewActivatorMap } from './ComponentDemoView';
-import { ViewMap as AppViewMap } from '../../Routing/ViewMap';
+import { ViewMap as AppViewMap } from '../../Routing';
 
 const logger = Logging.getLogger('Demo.ViewMap');
 
@@ -22,7 +22,7 @@ const sampleDataTemplate = (x: SampleData) => {
   return (
     <div key={ x.id }>
       <div>
-        <span>Name: </span><span>{ x.name }</span>
+        <span>Name: </span><span><a href='#'>{ x.name }</a></span>
       </div>
       <div>
         <span>Required By: </span><span>{ x.requiredBy }</span>
@@ -31,97 +31,55 @@ const sampleDataTemplate = (x: SampleData) => {
   );
 };
 
-const listTemplate = new Components.ListViewTemplate<SampleData>(
-  (x, i, vm, v) => {
-    return sampleDataTemplate(x);
-  },
-  (x, i, vm, v) => {
-    return [
-      <Components.NavButton key='nav' href={ `#/name/${ x.name }` } />,
-    ];
-  },
-);
-
-// this template renders a custom template container to show how we can
-// inject a custom button that wraps our item template
-const listCmdTemplate = new Components.ListViewTemplate<SampleData>(
-  (x, i, vm, v) => {
-    return sampleDataTemplate(x);
-  },
-  undefined, undefined,
-  (contents, x, i, vm, v) => {
-    return (
-      <Components.CommandButton block plain href={ `#/name/${ x.name }` }>
-        { contents }
+const sampleDataCmdTemplate = (x: SampleData) => {
+  return (
+    <Components.NavButton href='#'>
+      <Components.CommandButton block plain stopPropagation={ true } style={ ({ padding: 5 }) }
+        onClick={ () => Alert.create(JSON.stringify(x, undefined, 2), 'Element Clicked') }
+      >
+        { sampleDataTemplate(x) }
       </Components.CommandButton>
-    );
-  },
-);
-
-const treeTemplate = new Components.TreeViewTemplate<SampleTreeData>(
-  (x, vm, v) => x.items,
-  (n, x, i, vm, v) => {
-    return sampleDataTemplate(x);
-  },
-  (n, x, i, vm, v) => {
-    return [
-      <Components.NavButton key='nav' href={ `#/name/${ x.name }` } />,
-    ];
-  },
-  x => x.key,
-  undefined,
-  (x, vm, v) => {
-    const search: Components.SearchViewModel = vm.getSearch();
-
-    if (search != null) {
-      return wx
-        .whenAny(search.filter, y => String.isNullOrEmpty(y) === false);
-    }
-
-    return Observable.of(false);
-  },
-  true,
-);
+    </Components.NavButton>
+  );
+};
 
 export const demoViewMap: ViewActivatorMap = {
   Loading: () => <Components.Loading text='Standard Loader...' />,
-  SizedLoading: (c, cr) => wxr.renderSizedLoadable(true, '50px Loader...', 50),
+  SizedLoading: (c, cr) => Components.Loading.renderSizedLoadable(true, '50px Loader...', 50),
   Splash: () => <Components.Splash fluid header='webrx-react Demo' logo='http://placehold.it/100x100?text=Logo' />,
   CommandButton: () => (
-    <Form>
-      <FormGroup bsSize='large' style={({ marginBottom: 0 })}>
-        <InputGroup>
-          <FormControl id='CommandButtonParamInput' type='text' placeholder='Enter Command Parameter Text Here...' />
-          <InputGroup.Button>
-            <Components.CommandButton bsSize='large'
-              commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
-              command={wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
-              tooltip='Embedded Command Tooltips!!!'
-            >
-              Execute Command
-            </Components.CommandButton>
-            <Components.CommandButton bsSize='large'
-              commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
-              command={wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
-              tooltip={ (<Popover id='cmd-btn-custom-tt' placement='top'>Custom Tooltip</Popover>) }
-            >
-              Same Command
-            </Components.CommandButton>
-            <Components.CommandButton bsSize='large'
-              commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
-              command={wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
-              tooltip={(
-                <OverlayTrigger placement='bottom'
-                  overlay={ (<Tooltip id='cmd-btn-custom-tt'>Custom Overlay Tooltip</Tooltip>) }
-                />
-              )}
-            >
-              Same Again
-            </Components.CommandButton>
-          </InputGroup.Button>
-        </InputGroup>
-      </FormGroup>
-    </Form>
+    <FormGroup bsSize='large' style={({ marginBottom: 0 })}>
+      <InputGroup>
+        <FormControl id='CommandButtonParamInput' type='text' placeholder='Enter Command Parameter Text Here...' />
+        <InputGroup.Button>
+          <Components.CommandButton bsSize='large'
+            commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
+            command={Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
+            tooltip='Embedded Command Tooltips!!!'
+          >
+            Execute Command
+          </Components.CommandButton>
+          <Components.CommandButton bsSize='large'
+            commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
+            command={Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
+            tooltip={ (<Popover id='cmd-btn-custom-tt' placement='top'>Custom Tooltip</Popover>) }
+          >
+            Same Command
+          </Components.CommandButton>
+          <Components.CommandButton bsSize='large'
+            commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
+            command={Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
+            tooltip={(
+              <OverlayTrigger placement='bottom'
+                overlay={ (<Tooltip id='cmd-btn-custom-tt'>Custom Overlay Tooltip</Tooltip>) }
+              />
+            )}
+          >
+            Same Again
+          </Components.CommandButton>
+        </InputGroup.Button>
+      </InputGroup>
+    </FormGroup>
   ),
   Alert: () => (
     <div>
@@ -132,22 +90,17 @@ export const demoViewMap: ViewActivatorMap = {
   ObservableWrapper: () => (
     <Components.ObservableWrapper observable={ Observable.timer(0, 1000) } render={ x => (<div>Current Value is { x }</div>) } />
   ),
-  SearchViewModel: (viewModel: Components.SearchViewModel) => (
-    <Form horizontal>
-      <FormGroup>
-        <Col sm={12}>
-          <Components.SearchView viewModel={ viewModel } />
-        </Col>
-      </FormGroup>
-    </Form>
+  TimeSpanInput: () => (
+    <div>
+      <Components.TimeSpanInput placeholder='Manual input is parsed on blur' />
+      <Components.TimeSpanInput units={ [ 'hours', 'days' ] } initialUnit='hours' />
+      <Components.TimeSpanInput>
+        <FormControl type='text' id='custom' placeholder='You can also use your own custom control component' />
+      </Components.TimeSpanInput>
+    </div>
   ),
-  TimeSpanInputViewModel: (viewModel: Components.TimeSpanInputViewModel) => (
-    <Form>
-      <Components.TimeSpanInputView viewModel={ viewModel } />
-      <Components.TimeSpanInputView viewModel={ viewModel } >
-        <Components.TimeSpanControl viewModel={ viewModel } id='custom' placeholder='You can also use your own custom control component' />
-      </Components.TimeSpanInputView>
-    </Form>
+  SearchViewModel: (viewModel: Components.SearchViewModel) => (
+    <Components.SearchView viewModel={ viewModel } />
   ),
   ContextMenu: () => (
     <div>
@@ -179,15 +132,27 @@ export const demoViewMap: ViewActivatorMap = {
           <Components.ProfilePicture style={ style } src={ undefined } title='Basic Icon' />
           <Components.ProfilePicture style={ style } src={ undefined } iconSize='2x' title='2x Size Icon' />
           <Components.ProfilePicture style={ style } src={ undefined } thumbnail title='Thumbnail Icon' />
+          <Components.ProfilePicture style={ style } src={ undefined } thumbnail rounded title='Rounded Thumbnail Icon' />
           <Components.ProfilePicture style={ style } src={ undefined } iconSize='2x' thumbnail size={ 40 } title='Fixed Width/Height Icon' />
-          <Components.ProfilePicture style={ style } src={ undefined } iconSize='2x' thumbnail rounded size={ 40 } title='Rounded Icon' />
+          <Components.ProfilePicture style={ style } src={ undefined } iconSize='2x' thumbnail rounded size={ 40 } title='Rounded Fixed Width/Height Icon' />
+        </div>
+        <div>
           <Components.ProfilePicture style={ style } src={ imageData } title='Basic Image' />
           <Components.ProfilePicture style={ style } src={ imageData } rounded title='Rounded Image' />
           <Components.ProfilePicture style={ style } src={ imageData } thumbnail title='Thumbnail Image' />
+          <Components.ProfilePicture style={ style } src={ imageData } thumbnail rounded title='Rounded Thumbnail Image' />
           <Components.ProfilePicture style={ style } src={ imageData } thumbnail size={ 40} title='Fixed Width/Height Image' />
+          <Components.ProfilePicture style={ style } src={ imageData } thumbnail rounded size={ 40 } title='Rounded Fixed Width/Height Image' />
+        </div>
+        <div>
+          <Components.ProfilePicture style={ style } src='http://via.placeholder.com/50x30' title='Wide Image' />
+          <Components.ProfilePicture style={ style } src='http://via.placeholder.com/30x50' title='Tall Image' />
+          <Components.ProfilePicture style={ style } src='http://via.placeholder.com/100x60' title='X-Wide Image' />
+          <Components.ProfilePicture style={ style } src='http://via.placeholder.com/60x100' title='X-Tall Image' />
         </div>
         <div style={ ({ height: 250 }) }>
-          <Components.ProfilePicture style={ style } src={ imageData } thumbnail responsive title='Responsive Image' />
+          <Components.ProfilePicture style={ style } src={ imageData } thumbnail responsive title='Responsive Thumbnail Image' />
+          <Components.ProfilePicture style={ style } src={ imageData } thumbnail rounded responsive title='Responsive Rounded Thumbnail Image' />
         </div>
       </div>
     );
@@ -207,9 +172,29 @@ export const demoViewMap: ViewActivatorMap = {
   ),
   ListGroupPanel: () => (
     <Components.ListGroupPanel>
-      <Label>Item 1</Label>
-      <Label>Item 2</Label>
-      <Label>Item 3</Label>
+      <Components.NavButton href='#'>
+        <div>
+          <Label>Item 1</Label>
+        </div>
+        <div>
+          <Label>Item 2</Label>
+        </div>
+      </Components.NavButton>
+      <Components.NavButton href='#'>
+        <Label>Item 3</Label>
+      </Components.NavButton>
+      <Components.NavButton href='#' iconName='window-close' />
+      <Components.NavButton href='#'>
+        <div>
+          <Label>Item 4</Label>
+        </div>
+        <div>
+          <Label>Item 5</Label>
+        </div>
+        <div>
+          <Label>Item 6</Label>
+        </div>
+      </Components.NavButton>
     </Components.ListGroupPanel>
   ),
   ListGroupPanelBound: () => (
@@ -270,6 +255,126 @@ export const demoViewMap: ViewActivatorMap = {
       <Label>Item 3</Label>
     </Components.WrapPanel>
   ),
+  ContentTooltip: () => {
+    return (
+      <Grid fluid>
+        <Row>
+          <Col md={ 3 }>
+            <Components.ContentTooltip content='Just Text'>
+              <Well>text content tooltip</Well>
+            </Components.ContentTooltip>
+          </Col>
+          <Col md={ 3 }>
+            <Components.ContentTooltip content='Just Text' id='content-tt-1' className='content-tt-1' placement='top'>
+              <Well>text content tooltip with id, className, placement</Well>
+            </Components.ContentTooltip>
+          </Col>
+          <Col md={ 3 }>
+            <Components.ContentTooltip content='Just Text' popover>
+              <Well>text content tooltip as popover</Well>
+            </Components.ContentTooltip>
+          </Col>
+          <Col md={ 3 }>
+            <Components.ContentTooltip content='Just Text' title='Popover Mode'>
+              <Well>text content tooltip as popover with title</Well>
+            </Components.ContentTooltip>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={ 3 }>
+            <Components.ContentTooltip content={ (<Tooltip children='Tooltip Component'/>) }>
+              <Well>Tooltip content tooltip</Well>
+            </Components.ContentTooltip>
+          </Col>
+          <Col md={ 3 }>
+            <Components.ContentTooltip content={ (<Tooltip children='Tooltip Component'/>) } id='content-tt-2' className='content-tt-2' placement='top'>
+              <Well>Tooltip content tooltip with id, className, placement</Well>
+            </Components.ContentTooltip>
+          </Col>
+          <Col md={ 3 }>
+            <Components.ContentTooltip content={ (<Tooltip children='Tooltip Component'/>) } popover>
+              <Well>Tooltip content tooltip as popover</Well>
+            </Components.ContentTooltip>
+          </Col>
+          <Col md={ 3 }>
+            <Components.ContentTooltip content={ (<Tooltip children='Tooltip Component'/>) } title='Popover Mode'>
+              <Well>Tooltip content tooltip as popover with title</Well>
+            </Components.ContentTooltip>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={ 3 }>
+            <Components.ContentTooltip content={ (<Popover children='Popover Component'/>) }>
+              <Well>Popover content tooltip</Well>
+            </Components.ContentTooltip>
+          </Col>
+          <Col md={ 3 }>
+            <Components.ContentTooltip content={ (<Popover children='Popover Component'/>) } id='content-tt-3' className='content-tt-3' placement='top'>
+              <Well>Popover content tooltip with id, className, placement</Well>
+            </Components.ContentTooltip>
+          </Col>
+          <Col md={ 3 }>
+            <Components.ContentTooltip content={ (<Popover children='Popover Component'/>) } popover>
+              <Well>Popover content tooltip as popover</Well>
+            </Components.ContentTooltip>
+          </Col>
+          <Col md={ 3 }>
+            <Components.ContentTooltip content={ (<Popover children='Popover Component'/>) } title='Popover Mode'>
+              <Well>Popover content tooltip as popover with title</Well>
+            </Components.ContentTooltip>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={ 3 }>
+            <Components.ContentTooltip content={ (<Tooltip children='Tooltip Component' id='content-tt-4' className='content-tt-4' placement='top' />) } id='content-tt-5' className='content-tt-5' placement='bottom'>
+              <Well>Tooltip content tooltip with overrides</Well>
+            </Components.ContentTooltip>
+          </Col>
+          <Col md={ 3 }>
+            <Components.ContentTooltip content={ (<Popover children='Popover Component' id='content-tt-6' className='content-tt-6' placement='top' />) } id='content-tt-7' className='content-tt-7' placement='bottom'>
+              <Well>Popover content tooltip with overrides</Well>
+            </Components.ContentTooltip>
+          </Col>
+          <Col md={ 3 }>
+            <Components.ContentTooltip content={ (<OverlayTrigger overlay={ (<Tooltip children='Tooltip Component' id='content-tt-7' className='content-tt-7' placement='top' />) } placement='left' />) } id='content-tt-8' className='content-tt-8' placement='bottom'>
+              <Well>OverlayTrigger content tooltip with overrides</Well>
+            </Components.ContentTooltip>
+          </Col>
+          <Col md={ 3 }>
+          </Col>
+        </Row>
+      </Grid>
+    );
+  },
+  NavButton: () => {
+    return (
+      <div>
+        <Components.NavButton />
+        <Components.NavButton href='#' />
+        <div style={ ({ height: 100, textAlign: 'right' }) }>
+          <div style={ ({ height: '100%', display: 'inline-block' }) }>
+            <Components.NavButton href='#' compact />
+          </div>
+        </div>
+        <Components.NavButton href='#'>
+          testing
+        </Components.NavButton>
+        <Components.NavButton href='#'>
+          <div>
+            <Label>Item 1</Label>
+          </div>
+        </Components.NavButton>
+        <Components.NavButton href='#'>
+          <div>
+            <Label>Item 2</Label>
+          </div>
+          <div>
+            <Label>Item 3</Label>
+          </div>
+        </Components.NavButton>
+      </div>
+    );
+  },
   TreeItem: () => (
     <Components.TreeItem
       item={ sampleTreeData[0] }
@@ -427,12 +532,14 @@ export const demoViewMap: ViewActivatorMap = {
     switch (componentRoute) {
       case 'ListItemsDefault':
         return (
-          <Components.ListItemsView viewModel={ viewModel } compact />
+          <Components.ListItemsView viewModel={ viewModel } />
         );
       case 'ListItemsListGroup':
         return (
-          <Components.ListItemsView viewModel={ viewModel } itemTemplate={ sampleDataTemplate }>
-            <Components.ListGroupView itemsProps={({ viewTemplate: x => (<div style={({ padding: 10, backgroundColor: 'blue' })}>{ x }</div>) })} />
+          <Components.ListItemsView viewModel={ viewModel } itemTemplate={ sampleDataTemplate }
+            viewTemplate={ x => (<Panel header='Wrapping in a Panel'>{ x }</Panel>) }
+          >
+            <Components.ListGroupView fill itemsProps={ ({ itemStyle: { textAlign: 'right' } }) } />
           </Components.ListItemsView>
         );
       case 'ListItemsPanel':
@@ -464,117 +571,21 @@ export const demoViewMap: ViewActivatorMap = {
         return (
           <Components.ListItemsView viewModel={ viewModel } view={ (<Components.GridView />) } />
         );
-      case 'ListItemsTree':
-        return (
-          <Components.ListItemsView viewModel={ viewModel } itemTemplate={ sampleDataTemplate }>
-            <Components.TreeView itemsSource={ (x: SampleTreeData) => x.items } />
-          </Components.ListItemsView>
-        );
       default:
         return null;
     }
   },
-  ListViewModel: (viewModel: Components.ListViewModel<any, any>, componentRoute: string) => {
-    switch (componentRoute) {
-      case 'List':
-        return (
-          <Components.ListView viewModel={ viewModel } viewTemplate={ listTemplate } />
-        );
-      case 'ListCmd':
-        return (
-          <Components.ListView viewModel={ viewModel } viewTemplate={ listCmdTemplate } />
-        );
-      case 'Tree':
-        return (
-          <Components.ListView viewModel={ viewModel } selectable checkmarkSelected viewTemplate={ treeTemplate } />
-        );
-      case 'PanelList':
-        return (
-          <Panel header='List View Embedded Within a Panel' style={({ margin: 0 })}>
-            <Components.ListView viewModel={ viewModel } selectable checkmarkSelected fill viewTemplate={ listTemplate } />
-          </Panel>
-        );
-      default:
-        return null;
-    }
-  },
-  DataGridViewModel: (viewModel: Components.DataGridViewModel<any>, componentRoute: string) => {
-    let view: Components.DataGridViewTemplate<SampleData> | undefined;
-    let columns: any;
-    let pager: any = true;
-    let search = false;
-
-    if (componentRoute === 'DataGridList') {
-      pager = false;
-      search = true;
-      view = new Components.DataGridListViewTemplate<SampleData>(
-        x => sampleDataTemplate(x),
-      );
-    }
-
-    if (componentRoute === 'DataGridPager') {
-      view = new Components.DataGridListViewTemplate<SampleData>(
-        x => sampleDataTemplate(x),
-      );
-
-      // this is the simple method of overriding pager details
-      pager = { order: [ 'controls', 'info' ] };
-      // this method allows much more complex composition
-      // pager = (<DataGridView.Pager grid={ viewModel } viewTemplate={ view } order={ [ null, 'info' ] } />);
-    }
-
-    if (componentRoute === 'DataGrid' || componentRoute === 'DataGridRoutingState') {
-      search = true;
-      columns = [
-        <Components.DataGridColumn key='id' fieldName='id' header='ID' sortable
-          tooltip={ (x: SampleData) => x == null ? null : (
-            <Tooltip id={ `${ x.id }-id-tt` }>{ `Cells support tooltips: ${ x.id }` }</Tooltip>
-          ) }
-        />,
-        <Components.DataGridColumn key='cat' fieldName='cat' header='Category' sortable />,
-        <Components.DataGridColumn key='name' fieldName='name' header='Name' sortable
-          tooltip={ (x: SampleData, index, column) => {
-            if (x == null) {
-              // header
-              return (
-                <Tooltip id='name-header-tt' placement='top'>{ `Headers can have tooltips too: ${ column.fieldName }` }</Tooltip>
-              );
-            }
-            else {
-              // cell
-              return (
-                <Popover id={ `${ x.id }-name-tt` } placement='left'>{ `You can use fancy popover tooltips: ${ x.name }` }</Popover>
-              );
-            }
-          } }
-        />,
-        <Components.DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 }
-          tooltip={ (x: SampleData) => x == null ? null : (
-            <OverlayTrigger placement='top'
-              overlay={ <Tooltip id={ `${ x.id }-requiredBy-tt` }>Even completely custom overlay triggers: { x.requiredBy }</Tooltip> }
-            />
-          ) }
-        />,
-        <Components.NavDataGridColumn key='nav' buttonProps={ (x: SampleData) => ({ href: `#/name/${ x.name }` }) } />,
-      ];
-    }
-
+  TreeListItemsViewModel: (viewModel: Components.TreeListItemsViewModel<{}>, componentRoute: string) => {
     return (
-      <Components.DataGridView key={ componentRoute } viewModel={ viewModel } viewTemplate={ view } pager={ pager } search={ search }>
-        { columns }
-      </Components.DataGridView>
+      <Components.ListItemsView viewModel={ viewModel } itemTemplate={ sampleDataTemplate }>
+        <Components.TreeView itemsSource={ (x: SampleTreeData) => x.items } />
+      </Components.ListItemsView>
     );
   },
-  AsyncDataGridViewModel: (viewModel: Components.AsyncDataGridViewModel<any, any, any>) => (
-    <Components.DataGridView viewModel={ viewModel } pager={ ({ limits: [ 1, 5, 10, null ] }) }>
-      <Components.DataGridColumn key='name' fieldName='name' header='Name' sortable />
-      <Components.DataGridColumn key='requiredBy' fieldName='requiredBy' header='Required By' sortable width={ 250 } />
-    </Components.DataGridView>
-  ),
   ModalDialogViewModel: (data: { viewModel: Components.ModalDialogViewModel<string>, createContext: Command<string>, accept: Command<any>, reject: Command<any> }) => (
     <div>
       <Button onClick={ wxr.bindEventToCommand(data.viewModel, x => data.createContext, () => 'You can put custom content here') }>Show Confirmation Dialog</Button>
-      <Components.ModalDialogView viewModel={ data.viewModel } title='Demo Modal Confirmation Dialog' body={ () => data.viewModel.context.value } bsSize='lg'>
+      <Components.ModalDialogView viewModel={ data.viewModel } modalTitle='Demo Modal Confirmation Dialog' modalBody={ () => data.viewModel.context.value } bsSize='lg'>
         <Components.CommandButton bsStyle='primary' command={ data.viewModel.hideOnExecute(data.accept) } commandParameter={ () => data.viewModel.context.value }>Accept</Components.CommandButton>
         <Components.CommandButton bsStyle='danger' command={ data.viewModel.hideOnExecute(data.reject) } commandParameter={ () => data.viewModel.context.value }>Reject</Components.CommandButton>
         <Components.CommandButton bsStyle='default' command={ data.viewModel.hide }>Cancel</Components.CommandButton>
@@ -612,7 +623,12 @@ export const demoViewMap: ViewActivatorMap = {
   CommonPanel: () => (
     <Components.CommonPanel headerContent='Common Panel Demo' footerContent='Add Status Content to the Footer' collapsible
       headerActions={[ { id: 'header-action-1', children: 'Header Button 1' }, { id: 'header-action-2', children: 'Header Button 2' } ]}
-      footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' }, { id: 'footer-action-2', children: 'Footer Button 2' } ]}
+      footerActions={(
+        <Components.CommonPanel.Actions>
+          <Components.CommandButton children='Footer CommandButton' />
+          <Button children='Footer Button' />
+        </Components.CommonPanel.Actions>
+      )}
     >
       Add any content to the panel body!
       <Components.Loading fontSize={ 24 } text='Such as a Loader...' />
@@ -621,8 +637,8 @@ export const demoViewMap: ViewActivatorMap = {
   ),
   CommonPanelList: () => (
     <Components.CommonPanel headerContent='Common Panel Demo' footerContent='Add Status Content to the Footer' collapsible
-      headerActions={[ { id: 'header-action-1', children: 'Header Button 1' }, { id: 'header-action-2', children: 'Header Button 2' } ]}
-      footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' }, { id: 'footer-action-2', children: 'Footer Button 2' } ]}
+      headerActions={ (<Components.CommandButton children='Header Action' />) }
+      footerActions={ (<Button children='Footer Action' />) }
     >
       <ListGroup fill>
         <ListGroupItem>Item 1</ListGroupItem>
@@ -633,8 +649,8 @@ export const demoViewMap: ViewActivatorMap = {
   ),
   CommonPanelTable: () => (
     <Components.CommonPanel headerContent='Common Panel Demo' footerContent='Add Status Content to the Footer' collapsible
-      headerActions={[ { id: 'header-action-1', children: 'Header Button 1' }, { id: 'header-action-2', children: 'Header Button 2' } ]}
-      footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' }, { id: 'footer-action-2', children: 'Footer Button 2' } ]}
+      headerActions={ (<Components.CommandButton children='Header Action' />) }
+      footerActions={ (<Button children='Footer Action' />) }
     >
       <Table fill>
         <thead><tr><th>Some Column</th></tr></thead>
@@ -688,53 +704,130 @@ export const demoViewMap: ViewActivatorMap = {
       </Components.CommonPanel>
     </div>
   ),
-  ItemListPanelViewModel: (viewModel: Components.ItemListPanelViewModel<any>, componentRoute: string) => {
-    if (componentRoute === 'ItemListPanel') {
-      return (
-        <Components.ItemListPanelView viewModel={viewModel} headerContent='Sample Grid Data' collapsible pager search
-          headerActions={[ { id: 'header', children: 'Header Action' } ]}
-          footerContent={ (<Components.CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
-          footerActions={[ { id: 'viewall', bsStyle: 'primary', command: wx.command(x => Alert.create(x, 'View All Pressed')), commandParameter: 'ItemListPanel', children: (<Components.ViewAllFooterAction suffix='Things' />) } ]}
-        >
-          <Components.DataGridColumn key='id' fieldName='id' header='ID' sortable />,
-          <Components.DataGridColumn key='cat' fieldName='cat' header='Category' sortable />,
-          <Components.DataGridColumn fieldName='name' header='Name' sortable className='col-md-8' />
-          <Components.DataGridColumn fieldName='requiredBy' header='Required By' sortable className='col-md-4' />
-          <Components.NavDataGridColumn buttonProps={ (x: SampleData) => ({ href: `#/name/${ x.name }` }) } />
-        </Components.ItemListPanelView>
-      );
-    }
-    else if (componentRoute === 'TreeItemListPanel') {
-      return (
-        <Components.ItemListPanelView viewModel={viewModel} headerContent='Sample Tree Data' collapsible
-          headerActions={[ { id: 'header', children: 'Header Action' } ]} viewTemplate={ treeTemplate }
-          footerContent={ (<Components.CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
-          footerActions={[ { id: 'viewall', bsStyle: 'primary', command: wx.command(x => Alert.create(x, 'View All Pressed')), commandParameter: 'ItemListPanel', children: (<Components.ViewAllFooterAction suffix='Things' />) } ]}
-        >
-        </Components.ItemListPanelView>
-      );
-    }
-    else {
-      return (
-        <Components.ItemListPanelView viewModel={ viewModel } headerContent='Sample List Data' collapsible pager search
-          viewTemplate={
-            new Components.DataGridListViewTemplate<SampleData>(
-              x => `Name: ${ x.name }, Required By: ${ x.requiredBy }`,
-            )
-          }
-        >
-        </Components.ItemListPanelView>
-      );
+  DataGridViewModel: (viewModel: Components.DataGridViewModel<{}>, componentRoute: string) => {
+    switch (componentRoute) {
+      case 'DataGrid':
+        return (
+          <Components.DataGridView viewModel={ viewModel } pager viewProps={ ({ bordered: false }) }>
+            <Components.GridViewColumn field='id' cellTooltipTemplate={ (x: SampleData) => `Item ${ x.id }` } />
+            <Components.GridViewColumn id='cat' header='Category' cellTemplate={ (x: SampleData) => x.cat } headerTooltipTemplate='Simple Header Tooltip' />
+            <Components.GridViewColumn field='requiredBy' header='Required By' cellTooltipTemplate={ (x: SampleData) => (<Components.ContentTooltip content={ `Popover Content for ${ x.name }` } title='Fancy Tooltip' />) } />
+            <Components.GridViewColumn id='name' header='Name' cellTemplate={ (x: SampleData) => (<a href='#'>{ x.name }</a>) } headerTooltipTemplate={(<Components.ContentTooltip content='Fancy Header Popover' popover placement='top' />)} />
+            <Components.NavButtonColumn href='#' />
+          </Components.DataGridView>
+        );
+      case 'DataGridAutoCol':
+        return (
+          <Components.DataGridView viewModel={ viewModel } pager />
+        );
+      case 'DataGridNoPager':
+        // we are also using a custom grid view here that doesn't render column headers as buttons
+        return (
+          <Components.DataGridView viewModel={ viewModel }>
+            <Components.GridView bordered={ false } />
+          </Components.DataGridView>
+        );
+      case 'DataGridPager':
+        // this is the simple method of overriding pager details
+        const pager = { order: [ 'controls', 'info' ] };
+        // this method allows much more complex composition
+        // const pager = (<Components.PagerView viewModel={ viewModel.pager } order={ [ undefined, 'info' ] } />);
+
+        return (
+          <Components.DataGridView viewModel={ viewModel } pager={ pager } />
+        );
+      case 'DataGridList':
+        return (
+          <Components.DataGridView viewModel={ viewModel } itemTemplate={ sampleDataCmdTemplate } pager compact>
+            <Components.ListGroupView />
+          </Components.DataGridView>
+        );
+      case 'DataGridUGrid':
+        return (
+          <Components.DataGridView viewModel={ viewModel } itemTemplate={ sampleDataTemplate } pager>
+            <Components.PanelView>
+              <Components.UniformGridPanel gridRows={ 5 } gridColumns={ 2 } border />
+            </Components.PanelView>
+          </Components.DataGridView>
+        );
+      default:
+        return null;
     }
   },
-  AsyncItemListPanelViewModel: (viewModel: Components.AsyncItemListPanelViewModel<any, any, any>) => (
-    <Components.ItemListPanelView viewModel={viewModel} headerContent='Sample Data' collapsible pager
-      headerActions={[ { id: 'viewall', bsStyle: 'primary', command: wx.command(x => Alert.create(x, 'View All Pressed')), commandParameter: 'AsyncItemListPanel', children: (<Components.ViewAllFooterAction suffix='Things' />) } ]}
-      footerContent={ (<Components.CountFooterContent length={viewModel.lengthChanged} suffix='Things' />) }
-      footerActions={[ { id: 'refresh', command: viewModel.grid.refresh, children: 'Refresh' } ]}
+  AsyncDataGridViewModel: (viewModel: Components.AsyncDataGridViewModel<{}>, componentRoute: string) => {
+    switch (componentRoute) {
+      case 'DataGridAsync':
+        return (
+          <Components.DataGridView viewModel={ viewModel } pager loadingContent='Custom Loading Message...' />
+        );
+      default:
+        return null;
+    }
+  },
+  ItemListPanelViewModel: (viewModel: Components.ItemListPanelViewModel<{}>, componentRoute: string) => {
+    switch (componentRoute) {
+      case 'ItemListPanel':
+        return (
+          <Components.ItemListPanelView viewModel={ viewModel } collapsible pager search
+            viewProps={ ({ bordered: false }) }
+            headerContent='Sample Grid Data'
+            headerActions={ [ { id: 'header', children: 'Header Action' } ] }
+            footerContent={ (<Components.CountFooterContent count={ viewModel.projectedCount } suffix='Things' />) }
+          >
+            <Components.GridViewColumn field='id' cellTooltipTemplate={ (x: SampleData) => `Item ${ x.id }` } />
+            <Components.GridViewColumn id='cat' header='Category' cellTemplate={ (x: SampleData) => x.cat } headerTooltipTemplate='Simple Header Tooltip' />
+            <Components.GridViewColumn field='requiredBy' header='Required By' cellTooltipTemplate={ (x: SampleData) => (<Components.ContentTooltip content={ `Popover Content for ${ x.name }` } title='Fancy Tooltip' />) } />
+            <Components.GridViewColumn id='name' header='Name' cellTemplate={ (x: SampleData) => (<a href='#'>{ x.name }</a>) } headerTooltipTemplate={(<Components.ContentTooltip content='Fancy Header Popover' popover placement='top' />)} />
+            <Components.NavButtonColumn href='#' />
+          </Components.ItemListPanelView>
+        );
+      case 'ItemListPanelList':
+        return (
+          <Components.ItemListPanelView viewModel={ viewModel } collapsible pager search compact
+            itemTemplate={ sampleDataCmdTemplate }
+            emptyContent={ 'No Items Found' }
+            headerContent='Sample List Data'
+            headerActions={ [ { id: 'header', children: 'Header Action' } ] }
+            footerContent={ (<Components.CountFooterContent count={ viewModel.projectedCount } suffix='Things' />) }
+          >
+            <Components.ListGroupView />
+          </Components.ItemListPanelView>
+        );
+      default:
+        return null;
+    }
+  },
+  TreeItemListPanelViewModel: (viewModel: Components.TreeItemListPanelViewModel<{}>) => (
+    <Components.ItemListPanelView viewModel={ viewModel } collapsible search compact
+      itemTemplate={ sampleDataTemplate }
+      headerContent='Sample Tree Data'
+      headerActions={ [ { id: 'header', children: 'Header Action' } ] }
+      footerContent={ (<Components.CountFooterContent count={ viewModel.projectedCount } suffix='Things' />) }
     >
-      <Components.DataGridColumn fieldName='name' header='Name' sortable className='col-md-8' />
-      <Components.DataGridColumn fieldName='requiredBy' header='Required By' sortable className='col-md-4' />
+      <Components.TreeView itemsSource={ (x: SampleTreeData) => x.items } />
+    </Components.ItemListPanelView>
+  ),
+  AsyncItemListPanelViewModel: (viewModel: Components.AsyncItemListPanelViewModel<{}>) => (
+    <Components.ItemListPanelView viewModel={ viewModel } collapsible pager search
+      loadingContent='Custom Loading Message...'
+      headerContent='Sample Grid Data'
+      headerActions={ [ { id: 'header', children: 'Header Action' } ] }
+      footerContent={ (<Components.CountFooterContent count={ viewModel.projectedCount } suffix='Things' />) }
+    >
+      <Components.GridViewColumn field='id' cellTooltipTemplate={ (x: SampleData) => `Item ${ x.id }` } />
+      <Components.GridViewColumn id='cat' header='Category' cellTemplate={ (x: SampleData) => x.cat } headerTooltipTemplate='Simple Header Tooltip' />
+      <Components.GridViewColumn field='requiredBy' header='Required By' cellTooltipTemplate={ (x: SampleData) => (<Components.ContentTooltip content={ `Popover Content for ${ x.name }` } title='Fancy Tooltip' />) } />
+      <Components.GridViewColumn id='name' header='Name' cellTemplate={ (x: SampleData) => (<a href='#'>{ x.name }</a>) } headerTooltipTemplate={(<Components.ContentTooltip content='Fancy Header Popover' popover placement='top' />)} />
+    </Components.ItemListPanelView>
+  ),
+  AsyncTreeItemListPanelViewModel: (viewModel: Components.AsyncTreeItemListPanelViewModel<{}>) => (
+    <Components.ItemListPanelView viewModel={ viewModel } collapsible search compact
+      itemTemplate={ sampleDataTemplate }
+      headerContent='Sample Tree Data'
+      headerActions={ [ { id: 'header', children: 'Header Action' } ] }
+      footerContent={ (<Components.CountFooterContent count={ viewModel.projectedCount } suffix='Things' />) }
+    >
+      <Components.TreeView itemsSource={ (x: SampleTreeData) => x.items } />
     </Components.ItemListPanelView>
   ),
   InlineEditViewModel: (viewModel: Components.InlineEditViewModel<any>, componentRoute: string) => {
@@ -742,7 +835,7 @@ export const demoViewMap: ViewActivatorMap = {
       return (
         <Components.InlineEditView style={ ({ margin: 0 }) } viewModel={ viewModel } inputType='number'
           template={ x => `${ x.rank } of 10` } converter={ x => Number(x) } keyboard clickToEdit
-          valueGetter={ (x: Property<any>) => x.value.rank } valueSetter={ (x: Property<any>, v) => x.value.rank = v }
+          valueGetter={ (x: Property<any>) => x.value.rank } valueSetter={ (v, p: Property<any>) => p.value.rank = v }
         />
       );
     }

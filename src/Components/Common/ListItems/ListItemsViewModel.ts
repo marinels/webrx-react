@@ -19,15 +19,15 @@ export class ListItemsViewModel<T> extends ItemsViewModel<T> {
   public readonly selectRange: Command<{ from: T, to: T }>;
 
   constructor(
-    source?: ObservableLike<IterableLike<T>>,
+    source: ObservableLike<IterableLike<T>>,
   ) {
     super(source);
 
-    this.selectItem = this.command<T>();
-    this.selectItems = this.command<Array<T>>();
-    this.selectIndex = this.command<number>();
-    this.selectIndicies = this.command<Array<number>>();
-    this.selectRange = this.command<{ from: T, to: T }>();
+    this.selectItem = this.wx.command<T>();
+    this.selectItems = this.wx.command<Array<T>>();
+    this.selectIndex = this.wx.command<number>();
+    this.selectIndicies = this.wx.command<Array<number>>();
+    this.selectRange = this.wx.command<{ from: T, to: T }>();
 
     this.selectedItems = Observable
       .merge(
@@ -45,16 +45,16 @@ export class ListItemsViewModel<T> extends ItemsViewModel<T> {
       .map(x => x.filterNull())
       .toProperty([], (a, b) => Iterable.from(a).sequenceEqual(Iterable.from(b)));
 
-    this.selectedItem = this
+    this.selectedItem = this.wx
       .whenAny(this.selectedItems, x => x[0])
       .toProperty();
 
-    this.selectedIndex = this
+    this.selectedIndex = this.wx
       .whenAny(this.selectedIndicies, x => x[0])
       .toProperty();
 
     this.addSubscription(
-      this
+      this.wx
         .whenAny(this.selectRange, x => x)
         .map(range => {
           if (range.from == null || range.to == null) {
@@ -86,7 +86,7 @@ export class ListItemsViewModel<T> extends ItemsViewModel<T> {
     );
 
     this.addSubscription(
-      this
+      this.wx
         .whenAny(this.selectedIndicies, x => x)
         .map(x => {
           return this.getItemsForIndicies(x);
@@ -96,7 +96,7 @@ export class ListItemsViewModel<T> extends ItemsViewModel<T> {
     );
 
     this.addSubscription(
-      this
+      this.wx
         .whenAny(this.selectedItems, x => x)
         .map(x => {
           return this.getIndiciesForItems(x);
@@ -137,39 +137,5 @@ export class ListItemsViewModel<T> extends ItemsViewModel<T> {
       .from(items)
       .map(x => set.indexOf(x))
       .toArray();
-  }
-}
-
-export class TreeListItemsViewModel<T> extends ListItemsViewModel<T> {
-  constructor(
-    protected itemsSource: (item: T) => (IterableLike<T> | undefined),
-    source?: ObservableLike<IterableLike<T>>,
-  ) {
-    super(source);
-  }
-
-  getItems() {
-    return Iterable
-      .from(this.source.value)
-      .flatMap(x => this.flattenItems(x));
-  }
-
-  getItemsForIndicies(indicies: IterableLike<number>) {
-    return undefined;
-  }
-
-  getIndiciesForItems(items: IterableLike<T>) {
-    return undefined;
-  }
-
-  protected flattenItems(item: T): Iterable<T> {
-    const items = this.itemsSource(item);
-
-    return items == null ?
-      Iterable.of(item) :
-      Iterable
-        .from(items)
-        .flatMap(x => this.flattenItems(x))
-        .startWith(item);
   }
 }

@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { Subscription } from  'rxjs';
-import { Button, ButtonProps, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Button, ButtonProps } from 'react-bootstrap';
 
+import { ContentTooltip } from '../ContentTooltip/ContentTooltip';
 import { Command } from '../../../WebRx';
-import { wxr } from '../../React';
 
-export interface CommandButtonProps extends ButtonProps {
+export interface CommandButtonProps extends Omit<ButtonProps, React.HTMLProps<Button>> {
+  id?: string;
   command?: Command<any> | { (): Command<any> };
   commandParameter?: any;
   stopPropagation?: boolean;
@@ -14,7 +15,10 @@ export interface CommandButtonProps extends ButtonProps {
   tooltip?: any;
 }
 
-export class CommandButton extends React.Component<CommandButtonProps> {
+export interface CommandButtonComponentProps extends React.HTMLProps<any>, CommandButtonProps {
+}
+
+export class CommandButton extends React.Component<CommandButtonComponentProps> {
   public static displayName = 'CommandButton';
 
   private canExecuteSubscription = Subscription.EMPTY;
@@ -48,8 +52,8 @@ export class CommandButton extends React.Component<CommandButtonProps> {
 
   render() {
     const { rest } = this.restProps(x => {
-      const { onClick, command, commandParameter, stopPropagation, preventDefault, plain, tooltip, disabled } = x;
-      return { onClick, command, commandParameter, stopPropagation, preventDefault, plain, tooltip, disabled };
+      const { onClick, command, commandParameter, stopPropagation, preventDefault, plain, tooltip, disabled, componentClass } = x;
+      return { onClick, command, commandParameter, stopPropagation, preventDefault, plain, tooltip, disabled, componentClass };
     });
 
     return this.renderButton(rest);
@@ -65,33 +69,42 @@ export class CommandButton extends React.Component<CommandButtonProps> {
       cmd.canExecute;
 
     const button = (
-      <Button { ...rest } className={ wxr.classNames('CommandButton', this.props.className, { plain: this.props.plain }) } disabled={ canExecute !== true } onClick={ e => this.handleClick(e) }>
+      <Button { ...rest }
+        className={ this.wxr.classNames('CommandButton', this.props.className, { plain: this.props.plain }) }
+        disabled={ canExecute !== true }
+        onClick={ this.props.disabled ? undefined : e => this.handleClick(e) }
+        componentClass={ this.getComponentClass() }
+      >
         { this.props.children }
       </Button>
     );
 
-    const tooltip = (this.props.tooltip != null && String.isString(this.props.tooltip)) ?
-      (<Tooltip id={ `${ this.props.id }-tt` }>{ this.props.tooltip }</Tooltip>) :
-      this.props.tooltip;
-
-    if (React.isValidElement<any>(tooltip)) {
-      if (tooltip.type === OverlayTrigger) {
-        return React.cloneElement(tooltip as any, { key: button.key }, button);
-      }
-      else {
-        return (
-          <OverlayTrigger key={ button.key || undefined } placement={ tooltip.props.placement } overlay={ tooltip } >
-            { button }
-          </OverlayTrigger>
-        );
-      }
-    }
-    else {
+    if (this.props.tooltip == null) {
       return button;
     }
+
+    const ttId = this.props.id ? `${ this.props.id }-tt` : undefined;
+
+    return (
+      <ContentTooltip id={ ttId } className={ this.props.className } content={ this.props.tooltip }>
+        { button }
+      </ContentTooltip>
+    );
   }
 
-  private handleClick(e: React.MouseEvent<Button>) {
+  protected getComponentClass() {
+    if (this.props.componentClass != null) {
+      return this.props.componentClass;
+    }
+
+    if (this.props.command == null && String.isNullOrEmpty(this.props.href) === false) {
+      return 'a';
+    }
+
+    return 'div';
+  }
+
+  protected handleClick(e: React.MouseEvent<Button>) {
     const cmd = this.getCommand();
 
     if (cmd == null) {

@@ -7,10 +7,13 @@ import { AlertView } from './AlertView';
 import { AlertHostViewModel } from './AlertHostViewModel';
 import { AlertViewModel } from './AlertViewModel';
 
-export interface AlertHostProps extends BaseViewProps {
+export interface AlertHostProps {
 }
 
-export class AlertHostView extends BaseView<AlertHostProps, AlertHostViewModel> {
+export interface AlertHostViewProps extends BaseViewProps<AlertHostViewModel>, AlertHostProps {
+}
+
+export class AlertHostView extends BaseView<AlertHostViewProps, AlertHostViewModel> {
   public static displayName = 'AlertHostView';
 
   updateOn(viewModel: Readonly<AlertHostViewModel>) {
@@ -23,7 +26,7 @@ export class AlertHostView extends BaseView<AlertHostProps, AlertHostViewModel> 
     const { className, rest } = this.restProps();
 
     return (
-      <div { ...rest } className={ this.classNames('AlertHost', className) }>
+      <div { ...rest } className={ this.wxr.classNames('AlertHost', className) }>
         <RTG.TransitionGroup>
           { this.renderAlerts() }
         </RTG.TransitionGroup>

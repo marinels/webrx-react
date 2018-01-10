@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import * as clone from 'clone';
 
 import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
-import { BaseViewModel } from '../../React/BaseViewModel';
+import { BaseViewModel } from '../../React';
 
 export class InlineEditViewModel<T> extends BaseViewModel {
   public static displayName = 'InlineEditViewModel';
@@ -23,23 +23,23 @@ export class InlineEditViewModel<T> extends BaseViewModel {
   ) {
     super();
 
-    if (this.isProperty(value)) {
+    if (this.wx.isProperty(value)) {
       this.value = value;
     }
     else {
-      this.value = this.property(value);
+      this.value = this.wx.property(value);
     }
 
-    this.editValue = this.property<T | undefined>();
+    this.editValue = this.wx.property<T | undefined>();
 
-    this.edit = this.command(() => {
+    this.edit = this.wx.command(() => {
       return clone(this.value.value);
     });
 
-    this.save = this.command(
+    this.save = this.wx.command(
       () => {
         return Observable
-          .defer(() => this.asObservable(this.onSave(this.editValue.value!, this)))
+          .defer(() => this.wx.asObservable(this.onSave(this.editValue.value!, this)))
           .do({
             error: e => {
               this.alertForError(e, 'Unable to Save');
@@ -48,14 +48,14 @@ export class InlineEditViewModel<T> extends BaseViewModel {
       },
     );
 
-    this.cancel = this.command(
+    this.cancel = this.wx.command(
       // prevent cancel from being executed while we are waiting for save to respond
       this.save.isExecutingObservable.map(x => x === false),
       // this is intentionally returning undefined to 'reset' the editValue
       () => undefined,
     );
 
-    this.setError = this.command<boolean>();
+    this.setError = this.wx.command<boolean>();
 
     this.addSubscription(
       Observable

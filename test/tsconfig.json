@@ -1,6 +1,7 @@
 {
-  "extends": "./tsconfig.base.json",
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
+    "jsx": "react",
     // "noUnusedLocals": true,
     // "noUnusedParameters": true,
     "noEmit": true

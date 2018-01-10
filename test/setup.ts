@@ -13,12 +13,12 @@ afterEach(() => {
   sandbox.restore();
 });
 
+chai.use(sinonChai);
+
 const should = chai.should();
 const assert = chai.assert;
 const expect = chai.expect;
-let sandbox: sinon.SinonSandbox = <any>undefined;
-
-chai.use(sinonChai);
+let sandbox: sinon.SinonSandbox;
 
 const fail = (message?: string, operator?: string) => {
   should.fail(false, true, message, operator);

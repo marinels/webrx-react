@@ -1,26 +1,29 @@
 import * as React from 'react';
 import { Iterable } from 'ix';
 
-import { wxr } from '../../React';
-import { ItemsProps, ItemsView } from './ItemsView';
+import { ItemsProps, ItemsViewProps, ItemsView } from './ItemsView';
 import { TreeItemFacadeProps, TreeItem } from './TreeItem';
 import { ItemsPresenter } from './ItemsPresenter';
 
-export interface TreeProps extends ItemsProps, TreeItemFacadeProps {
+export interface TreeItemsProps extends ItemsProps, TreeItemFacadeProps {
 }
 
-export class TreeItemsView extends React.Component<TreeProps> {
+export interface TreeItemsViewProps extends ItemsViewProps, TreeItemsProps {
+  fill?: boolean;
+}
+
+export class TreeItemsView extends React.Component<TreeItemsViewProps> {
   public static displayName = 'TreeItemsView';
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact } = x;
-      return { itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact };
+      const { itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, overrideExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent } = x;
+      return { itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, overrideExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent };
     });
 
     return (
       <ItemsView
-        className={ wxr.classNames('TreeItems', className) }
+        className={ this.wxr.classNames('TreeItems', className) }
         viewModel={ this.props.viewModel }
         viewTemplate={ props.viewTemplate }
         itemsPanelTemplate={ props.itemsPanelTemplate }
@@ -31,7 +34,8 @@ export class TreeItemsView extends React.Component<TreeProps> {
         itemStyle={ props.itemStyle }
         itemProps={ props.itemProps }
         compact={ props.compact }
-        { ...React.Component.trimProps(rest) }
+        emptyContent={ props.emptyContent }
+        { ...this.trimProps(rest) }
       />
     );
   }

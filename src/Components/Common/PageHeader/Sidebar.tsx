@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { Modal } from 'react-bootstrap';
 
-import { wxr } from '../../React';
-
 export interface SidebarProps {
   onHide: Function;
   isVisible?: boolean;
@@ -10,10 +8,13 @@ export interface SidebarProps {
   header?: any;
 }
 
-export class Sidebar extends React.Component<SidebarProps> {
+export interface SidebarComponentProps extends SidebarProps {
+}
+
+export class Sidebar extends React.Component<SidebarComponentProps> {
   public static displayName = 'Sidebar';
 
-  static defaultProps = {
+  static defaultProps: Partial<SidebarProps> = {
     side: 'left',
   };
 
@@ -24,7 +25,7 @@ export class Sidebar extends React.Component<SidebarProps> {
     });
 
     return (
-      <Modal { ...rest } className={ wxr.classNames('Sidebar', props.side, className) }
+      <Modal { ...rest } className={ this.wxr.classNames('Sidebar', props.side, className) }
         onHide={ this.props.onHide } show={ this.props.isVisible } autoFocus keyboard
       >
         <Modal.Header closeButton>

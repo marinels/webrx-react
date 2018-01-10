@@ -4,9 +4,9 @@ import { PartialObserver } from 'rxjs/Observer';
 import { Command, ObservableOrValue } from './Interfaces';
 import { isObservable, asObservable, handleError } from './Utils';
 
-export type ExecutionAction<T> = (parameter: any) => ObservableOrValue<T>;
+export type ExecutionAction<T = any> = (parameter: any) => ObservableOrValue<T>;
 
-export class ObservableCommand<T> extends Subscription implements Command<T> {
+export class ObservableCommand<T = any> extends Subscription implements Command<T> {
   protected isExecutingSubject: BehaviorSubject<boolean>;
   protected canExecuteSubject: BehaviorSubject<boolean>;
   protected requestsSubject: Subject<T>;
@@ -134,7 +134,7 @@ export class ObservableCommand<T> extends Subscription implements Command<T> {
   }
 }
 
-export function command<T>(): Command<T>;
+export function command<T = any>(): Command<T>;
 export function command<T>(execute: ExecutionAction<T>): Command<T>;
 export function command<T>(canExecute: Observable<boolean>, execute?: ExecutionAction<T>): Command<T>;
 export function command<T>(execute: ExecutionAction<T>, canExecute: Observable<boolean>): Command<T>;

@@ -1,47 +1,54 @@
+import { Observable, Observer, Subscription, Subject } from 'rxjs';
+import { AnonymousSubscription } from 'rxjs/Subscription';
+
 import {
   isIterable, isAsyncIterable,
   isSubscription, isObservable, isObserver, isSubject, isProperty, isCommand,
   asObservable, getObservable, getProperty, handleError, logError,
+  logObservable, logMemberObservables,
+  getObservableOrAlert, getObservableResultOrAlert, subscribeOrAlert,
 } from './Utils';
+import { Property, Command } from './Interfaces';
 import { property } from './Property';
 import { command } from './Command';
 import { whenAny } from './WhenAny';
+import * as utils from '../Utils';
+import { Logger } from '../Utils/Logging';
 
-export let wx = <WebRxStatic>{};
-export interface WebRxStatic {
-  isIterable: typeof isIterable;
-  isAsyncIterable: typeof isAsyncIterable;
-  isSubscription: typeof isSubscription;
-  isObservable: typeof isObservable;
-  isObserver: typeof isObserver;
-  isSubject: typeof isSubject;
-  isProperty: typeof isProperty;
-  isCommand: typeof isCommand;
-  asObservable: typeof asObservable;
-  getObservable: typeof getObservable;
-  getProperty: typeof getProperty;
-  handleError: typeof handleError;
-  logError: typeof logError;
+export function create() {
+  return {
+    isIterable,
+    isAsyncIterable,
+    isSubscription,
+    isObservable,
+    isObserver,
+    isSubject,
+    isProperty,
+    isCommand,
+    asObservable,
+    getObservable,
+    getProperty,
+    handleError,
+    logError,
 
-  property: typeof property;
-  command: typeof command;
-  whenAny: typeof whenAny;
+    property,
+    command,
+    whenAny,
+
+    logObservable,
+    logMemberObservables,
+    getObservableOrAlert,
+    getObservableResultOrAlert,
+    subscribeOrAlert,
+
+    utils,
+  };
 }
 
-wx.isIterable = isIterable;
-wx.isAsyncIterable = isAsyncIterable;
-wx.isSubscription = isSubscription;
-wx.isObservable = isObservable;
-wx.isObserver = isObserver;
-wx.isSubject = isSubject;
-wx.isProperty = isProperty;
-wx.isCommand = isCommand;
-wx.asObservable = asObservable;
-wx.getObservable = getObservable;
-wx.getProperty = getProperty;
-wx.handleError = handleError;
-wx.logError = logError;
+export const wx = create();
 
-wx.property = property;
-wx.command = command;
-wx.whenAny = whenAny;
+export type WebRxStatic = typeof wx;
+
+export function inject<T extends {}>(target: T, wxStatic?: WebRxStatic) {
+  return Object.assign(target, wxStatic || wx);
+}

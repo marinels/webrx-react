@@ -1,0 +1,27 @@
+.NavButton {
+  display: table;
+  height: 100%;
+
+  & > .NavButton-content,
+  & > .CommandButton {
+    display: table-cell;
+  }
+
+  &.NavButton-container {
+    & > .NavButton-content {
+      width: 100%;
+    }
+  }
+
+  & > .btn-link {
+    border: 0;
+    height: 100%;
+    padding-bottom: @default-padding;
+    padding-top: @default-padding;
+
+    &:hover {
+      background-color: @list-group-active-bg;
+      color: @list-group-active-color;
+    }
+  }
+}

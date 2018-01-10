@@ -6,7 +6,7 @@ import { Grid, Row, Col } from 'react-bootstrap';
 import { BaseView, BaseViewProps } from '../../React';
 import { PageFooterViewModel, ViewportDimensions } from './PageFooterViewModel';
 
-export interface PageFooterProps extends BaseViewProps {
+export interface PageFooterProps {
   copyright?: string | boolean;
   copyrightYear?: number | string;
   copyrightUri?: string;
@@ -14,13 +14,16 @@ export interface PageFooterProps extends BaseViewProps {
   hideDimensions?: boolean;
 }
 
-export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewModel> {
+export interface PageFooterViewProps extends BaseViewProps<PageFooterViewModel>, PageFooterProps {
+}
+
+export class PageFooterView extends BaseView<PageFooterViewProps, PageFooterViewModel> {
   public static displayName = 'PageFooterView';
 
-  static defaultProps = {
+  static defaultProps: Partial<PageFooterProps> = {
   };
 
-  constructor(props?: PageFooterProps, context?: any) {
+  constructor(props: PageFooterViewProps, context?: any) {
     super(props, context);
 
     this.bindObservableToCommand(
@@ -54,7 +57,7 @@ export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewMode
       return { copyright, copyrightYear, copyrightUri, footerContent, hideDimensions };
     });
 
-    const copyrightContent = this.renderConditional(
+    const copyrightContent = this.wxr.renderConditional(
       props.copyright !== false,
       () => (
         <span className='PageFooter-text'>
@@ -64,7 +67,7 @@ export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewMode
       ),
     );
 
-    const dimensions = this.renderConditional(
+    const dimensions = this.wxr.renderConditional(
       props.hideDimensions !== true,
       () => (
         <span className='PageFooter-viewport PageFooter-text text-muted'>
@@ -74,14 +77,14 @@ export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewMode
     );
 
     return (
-      <div { ...rest } className={ this.classNames('PageFooter', className) }>
+      <div { ...rest } className={ this.wxr.classNames('PageFooter', className) }>
         <Grid>
           <Row>
             <Col md={ 12 }>
               <div className='PageFooter-container'>
                 { copyrightContent }
                 {
-                  this.renderConditional(
+                  this.wxr.renderConditional(
                     copyrightContent != null && dimensions != null,
                     () => (<span className='PageFooter-spacer text-muted'> | </span>),
                   )
@@ -91,7 +94,7 @@ export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewMode
             </Col>
           </Row>
           {
-            this.renderNullable(
+            this.wxr.renderNullable(
               props.footerContent,
               x => (
                 <Row>
@@ -108,7 +111,7 @@ export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewMode
   }
 
   private renderCopyrightYear() {
-    return this.renderNullable(
+    return this.wxr.renderNullable(
       this.props.copyrightYear,
       x => x,
       () => moment().format('YYYY'),
@@ -116,7 +119,7 @@ export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewMode
   }
 
   private renderCopyrightText() {
-    return this.renderNullable(
+    return this.wxr.renderNullable(
       this.props.copyrightUri,
       x => (
         <a href={ x }>{ this.props.copyright || '' }</a>
@@ -128,7 +131,7 @@ export class PageFooterView extends BaseView<PageFooterProps, PageFooterViewMode
   private renderDimensions() {
     const dim = this.viewModel.viewportDimensions.value;
 
-    return this.renderConditional(
+    return this.wxr.renderConditional(
       (dim == null || dim.width === 0 || dim.height === 0),
       () => 'Measuring...',
       () => `Viewport: ${ dim.width }x${ dim.height }`,

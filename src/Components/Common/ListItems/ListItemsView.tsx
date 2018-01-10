@@ -1,18 +1,25 @@
 import * as React from 'react';
 import * as classNames from 'classnames';
 
-import { BaseView } from '../../React';
+import { BaseView, BaseViewProps } from '../../React';
+import { PanelItemContext } from '../Panel/Panel';
 import { ListItemsViewTemplateProps } from './ListItemsViewTemplate';
 import { ItemsProps } from '../Items/ItemsView';
 import { ListGroupView } from './ListGroupView';
+import { GridViewColumns } from './GridViewColumn';
 import { ListItemsViewModel } from './ListItemsViewModel';
 
-export interface ListItemsProps extends ItemsProps  {
-  view?: React.ReactElement<ListItemsViewTemplateProps>;
+export interface ListItemsProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ItemsProps<T, TContext> {
+  view?: React.ReactElement<ListItemsViewTemplateProps<T, TContext>>;
+  viewProps?: {};
   children?: React.ReactNode;
 }
 
-export class ListItemsView extends BaseView<ListItemsProps, ListItemsViewModel<{}>> {
+export interface ListItemsViewProps extends BaseViewProps<ListItemsViewModel<{}>>, ListItemsProps {
+  fill?: boolean;
+}
+
+export class ListItemsView extends BaseView<ListItemsViewProps, ListItemsViewModel<{}>> {
   public static renderDefaultListItemsView() {
     return (
       <ListGroupView />
@@ -28,7 +35,11 @@ export class ListItemsView extends BaseView<ListItemsProps, ListItemsViewModel<{
     }
 
     if (React.Children.count(props.children) === 1) {
-      return React.Children.only(props.children);
+      const view = React.Children.only(props.children);
+
+      if (!React.isType(view, GridViewColumns)) {
+        return view;
+      }
     }
 
     return defaultListItemsView(props);
@@ -36,18 +47,19 @@ export class ListItemsView extends BaseView<ListItemsProps, ListItemsViewModel<{
 
   render() {
     const { className, children, props, rest } = this.restProps(x => {
-      const { view } = x;
-      return { view };
+      const { view, viewProps } = x;
+      return { view, viewProps };
     });
 
     const listItemsView = ListItemsView.getListItemsView(this.props, ListItemsView.renderDefaultListItemsView);
 
-    const viewProps: ListItemsViewTemplateProps = {
-      itemsProps: React.Component.trimProps(Object.assign({}, listItemsView.props.itemsProps, rest)),
+    const listItemsViewProps: ListItemsViewTemplateProps = {
+      itemsProps: this.trimProps(Object.assign({}, listItemsView.props.itemsProps, rest)),
       listItems: this.viewModel,
       className: classNames('ListItems', className, listItemsView.props.className),
+      ...this.trimProps(props.viewProps || {}),
     };
 
-    return React.cloneElement(listItemsView, viewProps);
+    return React.cloneElement(listItemsView, listItemsViewProps);
   }
 }

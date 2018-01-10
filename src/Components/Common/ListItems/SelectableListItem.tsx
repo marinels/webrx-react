@@ -7,16 +7,19 @@ import { wx } from '../../../WebRx';
 import { compare } from '../../../Utils/Compare';
 import { ListItemsViewModel } from './ListItemsViewModel';
 
-export type SelectedPropsFunction = (isSelected: boolean, elem: React.ReactElement<React.HTMLAttributes<{}>>) => {};
+export type SelectedPropsFunction = (isSelected: boolean, elem: React.ReactElement<React.HTMLProps<any>>) => {};
 
-export interface SelectableListItemProps {
-  listItems: Readonly<ListItemsViewModel<{}>>;
-  item: {};
+export interface SelectableListItemProps<T = {}> {
+  listItems: Readonly<ListItemsViewModel<T>>;
+  item: T;
   selectedProps?: SelectedPropsFunction;
 }
 
-export class SelectableListItem extends React.Component<SelectableListItemProps> {
-  static defaultProps = {
+export interface SelectableListItemComponentProps extends SelectableListItemProps {
+}
+
+export class SelectableListItem extends React.Component<SelectableListItemComponentProps> {
+  static defaultProps: Partial<SelectableListItemProps> = {
     selectedProps: () => ({}),
   };
 
@@ -44,7 +47,7 @@ export class SelectableListItem extends React.Component<SelectableListItemProps>
     this.subscribeToUpdates(this.props.listItems);
   }
 
-  componentWillUpdate(nextProps: Readonly<SelectableListItemProps>) {
+  componentWillUpdate(nextProps: Readonly<SelectableListItemComponentProps>) {
     this.subscribeToUpdates(nextProps.listItems);
   }
 
@@ -69,7 +72,7 @@ export class SelectableListItem extends React.Component<SelectableListItemProps>
   }
 
   protected getListItemProps(elem: React.ReactElement<any>): ListGroupItemProps {
-    return Object.assign<ListGroupItemProps>(
+    return Object.assign(
       {},
       this.props.selectedProps!(this.getIsSelected(), elem),
       {

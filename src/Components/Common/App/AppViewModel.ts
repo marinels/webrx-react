@@ -1,12 +1,12 @@
 import { Observable } from 'rxjs';
 
 import { ReadOnlyProperty, ObservableLike } from '../../../WebRx';
-import { BaseViewModel } from '../../React/BaseViewModel';
+import { BaseViewModel } from '../../React';
 import { AlertHostViewModel } from '../Alert/AlertHostViewModel';
 import { PageHeaderViewModel } from '../PageHeader/PageHeaderViewModel';
 import { PageFooterViewModel } from '../PageFooter/PageFooterViewModel';
 import { RouteHandlerViewModel, SplashKey } from '../RouteHandler/RouteHandlerViewModel';
-import { RouteMap, RouteMapper } from '../../../Routing/RoutingMap';
+import { RouteMap, RouteMapper } from '../../../Routing';
 
 // inject a default route
 RouteMap['/'] = { path: SplashKey };
@@ -40,7 +40,7 @@ export class AppViewModel extends BaseViewModel {
       this.footer = new PageFooterViewModel();
     }
 
-    this.isLoading = this
+    this.isLoading = this.wx
       .getProperty(
         isLoading ||
         Observable

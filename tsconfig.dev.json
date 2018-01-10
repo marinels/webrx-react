@@ -8,5 +8,10 @@
   "files": [
     "src/types/declarations.d.ts",
     "src/app.tsx"
+  ],
+  "include": [
+    "src/Components/Demo/TodoList/SampleData/*.ts",
+    "src/Components/Demo/index.ts",
+    "test/app.spec.ts"
   ]
 }

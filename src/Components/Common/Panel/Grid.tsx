@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Iterable } from 'ix';
 
-import { wxr } from '../../React';
 import * as Layout from './GridLayout';
 import { PanelItemContext, PanelItemProp, PanelItemProps, PanelTemplateProps, PanelItemTemplate, PanelProps, Panel } from './Panel';
 
@@ -14,10 +13,13 @@ export interface GridRenderProps {
   border?: boolean;
 }
 
-export interface GridProps extends PanelProps, GridRenderProps {
+export interface GridProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends PanelProps<T, TContext>, GridRenderProps {
 }
 
-export class Grid extends Panel<GridProps> {
+export interface GridComponentProps extends React.HTMLProps<any>, GridProps {
+}
+
+export class Grid extends Panel<GridComponentProps> {
   public static displayName = 'Grid';
 
   /**
@@ -38,7 +40,7 @@ export class Grid extends Panel<GridProps> {
     const bordered = { 'Grid-Border': border === true };
     const compact = { 'compact': this.props.compact };
 
-    return this.renderPanel(wxr.classNames('Grid', bordered, compact), rest);
+    return this.renderPanel(this.wxr.classNames('Grid', bordered, compact), rest);
   }
 
   renderItems(allChildren?: React.ReactNode, componentClass?: React.ReactType) {
@@ -56,6 +58,7 @@ export class Grid extends Panel<GridProps> {
 
         return this.renderRow(row, rows, colItems);
       })
+      .defaultIfEmpty(this.renderEmpty())
       .toArray();
   }
 
@@ -76,7 +79,7 @@ export class Grid extends Panel<GridProps> {
     });
 
     const fragment = (
-      <div className={ wxr.classNames('Grid-Row', compact, itemClassName) } style={ layoutStyle } data-grid-row={ row } key={ Layout.GridLayoutDefinition.generateKey(row) } { ...itemProps }>
+      <div className={ this.wxr.classNames('Grid-Row', compact, itemClassName) } style={ layoutStyle } data-grid-row={ row } key={ Layout.GridLayoutDefinition.generateKey(row) } { ...itemProps }>
         { colItems }
       </div>
     );
@@ -122,7 +125,7 @@ export class Grid extends Panel<GridProps> {
     });
 
     const fragment = (
-      <div className={ wxr.classNames('Grid-Column', compact, itemClassName) } style={ layoutStyle } data-grid-column={ column } key={ Layout.GridLayoutDefinition.generateKey(row, column) } { ...itemProps }>
+      <div className={ this.wxr.classNames('Grid-Column', compact, itemClassName) } style={ layoutStyle } data-grid-column={ column } key={ Layout.GridLayoutDefinition.generateKey(row, column) } { ...itemProps }>
         { super.renderItems(cellItems) }
       </div>
     );
@@ -147,11 +150,11 @@ export class Grid extends Panel<GridProps> {
     while (index < children.length) {
       const elem: any = children[index];
 
-      if (elem.type === Layout.GridRowDefinitions) {
+      if (React.isType(elem, Layout.GridRowDefinitions)) {
         rows = elem;
         children.splice(index, 1);
       }
-      else if (elem.type === Layout.GridColumnDefinitions) {
+      else if (React.isType(elem, Layout.GridColumnDefinitions)) {
         cols = elem;
         children.splice(index, 1);
       }

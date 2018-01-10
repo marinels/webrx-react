@@ -1,23 +1,25 @@
 @import (reference) '../../../Style/App.less';
 
-@upDownButtonWidth: 40px;
-@unitDropdownWidth: 100px;
+@TimeSpanInputButtonWidth: 40px;
+@TimeSpanInputDropdownWidth: 100px;
 
-.TimeSpanInput.form-group {
+.TimeSpanInput {
+  margin: 0;
+
   // set static button width for up/down buttons
   .TimeSpanInput-adjustButton {
-    width: @upDownButtonWidth;
+    width: @TimeSpanInputButtonWidth;
   }
 
   // set static button width for dropdown button
   .TimeSpanInput-unitDropdown {
-    width: @unitDropdownWidth;
+    width: @TimeSpanInputDropdownWidth;
   }
 
   // fix location of the feedback icon to account for the buttons on the right
   .form-control-feedback {
-    // -3 to account for the 3 1px borders
-    right: @upDownButtonWidth * 2 + @unitDropdownWidth - 3;
+    // -4 to account for the 4 1px borders
+    right: @TimeSpanInputButtonWidth * 3 + @TimeSpanInputDropdownWidth - 4;
   }
 
   // this fixes a bug with the z-order of the dropdown w/r to the buttons

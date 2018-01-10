@@ -40,7 +40,7 @@
   .CommonPanel-footer,
   &.collapsible > .panel-heading > .panel-title > a {
     display: table;
-    padding: 10px;
+    padding: @default-padding;
     width: 100%;
   }
 
@@ -52,6 +52,12 @@
   .CommonPanel-footerActions {
     display: table-cell;
     vertical-align: middle;
+  }
+
+  // make the header/footer content stretch to consume any leftover space
+  .CommonPanel-headerContent,
+  .CommonPanel-footerContent {
+    width: 100%;
   }
 
   // action sections are set to consume minimum width
@@ -66,7 +72,7 @@
     white-space: nowrap;
     width: 1px;
 
-    & > .btn {
+    .btn {
       float: none;
     }
   }

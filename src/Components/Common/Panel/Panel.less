@@ -8,6 +8,11 @@
     padding: 0;
   }
 
+  .Panel-empty {
+    padding: @default-padding;
+    text-align: center;
+  }
+
   // display elements inline left aligned, but wrap within the container (normal)
   &.WrapPanel {
     text-align: left;
@@ -21,6 +26,28 @@
   &.ListGroupPanel {
     // disable the default react-bootstrap margin for ListGroup
     margin: 0;
+
+    &:not(.compact) {
+      .Panel-Item {
+        & > .NavButton {
+          margin: -1 * @default-padding;
+
+          .NavButton-content {
+            padding: @default-padding;
+          }
+        }
+      }
+    }
+
+    .Panel-Item {
+      &:first-child > .NavButton > .btn {
+        border-top-right-radius: @list-group-border-radius;
+      }
+
+      &:last-child > .NavButton > .btn {
+        border-bottom-right-radius: @list-group-border-radius;
+      }
+    }
   }
 
   &.StackPanel {
@@ -47,7 +74,10 @@
 
   &.TablePanel {
     margin: 0;
-    table-layout: fixed;
+
+    &.TablePanel-fixedLayout {
+      table-layout: fixed;
+    }
   }
 
   // grids emulate a table layout, stretching both horizontally and vertically
@@ -75,7 +105,7 @@
       border-collapse: collapse;
 
       & > .Grid-Row > .Grid-Column {
-        border: 1px solid gray;
+        border: 1px solid @table-border-color;
       }
     }
 

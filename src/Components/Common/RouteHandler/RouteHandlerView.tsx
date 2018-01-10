@@ -4,20 +4,23 @@ import { Grid, Alert, Breadcrumb } from 'react-bootstrap';
 import RTG = require('react-transition-group');
 import { Icon } from 'react-fa';
 
-import { BaseRoutableViewModel, BaseView, BaseViewProps, isViewModel, isRoutableViewModel } from '../../React';
+import { BaseView, BaseViewProps, isViewModel, isRoutableViewModel } from '../../React';
 import { RouteHandlerViewModel, SplashKey, DefaultKey } from './RouteHandlerViewModel';
 import { Breadcrumbs } from './Breadcrumbs';
 import { CommandButton } from '../CommandButton/CommandButton';
-import { ViewMapper } from '../../../Routing/ViewMap';
+import { ViewMapper } from '../../../Routing';
 
-export interface RouteHandlerProps extends BaseViewProps {
+export interface RouteHandlerProps {
   viewMap: ViewMapper;
 }
 
-export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerViewModel> {
+export interface RouteHandlerViewProps extends BaseViewProps<RouteHandlerViewModel>, RouteHandlerProps {
+}
+
+export class RouteHandlerView extends BaseView<RouteHandlerViewProps, RouteHandlerViewModel> {
   public static displayName = 'RouteHandlerView';
 
-  constructor(props?: RouteHandlerProps, context?: any) {
+  constructor(props: RouteHandlerViewProps, context?: any) {
     super(props, context);
 
     if (this.props.viewMap[DefaultKey] == null) {
@@ -74,7 +77,7 @@ export class RouteHandlerView extends BaseView<RouteHandlerProps, RouteHandlerVi
     const key = this.getViewKey();
 
     return (
-      <div { ...rest } className={ this.classNames('RouteHandler', className) }>
+      <div { ...rest } className={ this.wxr.classNames('RouteHandler', className) }>
         <RTG.TransitionGroup>
           <RTG.CSSTransition key={ key } classNames='view' exit={ false } timeout={ ({ enter: 250 }) }>
             <div className='RouteHandler-viewContainer'>

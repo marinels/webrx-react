@@ -12,6 +12,7 @@ describe('Sanity Tests', () => {
   describe('for chai', () => {
     it('can use should.equal to assert', () => {
       should.equal(true, true);
+      should.equal(true, true);
     });
 
     it('can use should extensions to assert', () => {
