@@ -25,7 +25,7 @@ export interface ItemsPresenterTemplateProps<T = {}> {
   /**
    * template to render each item
    */
-  itemTemplate?: (item: T, index: number) => PanelFragment;
+  itemTemplate?: (item: T, index: number, context?: any) => PanelFragment;
 }
 
 export interface ItemsPresenterSourceProps<T = {}> {
@@ -46,7 +46,7 @@ export interface ItemsPresenterComponentProps extends React.HTMLProps<any>, Item
 export class ItemsPresenter extends React.Component<ItemsPresenterComponentProps> {
   public static displayName = 'ItemsPresenter';
 
-  public static defaultItemTemplate(item: {}, index: number) {
+  public static defaultItemTemplate(item: {}, index: number, context?: any) {
     return (
       <div key={ index }>{ String.stringify(item) }</div>
     );

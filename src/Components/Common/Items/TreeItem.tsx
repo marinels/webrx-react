@@ -297,7 +297,7 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
   protected renderHeaderContent() {
     const itemTemplate = this.props.itemTemplate || ItemsPresenter.defaultItemTemplate;
 
-    return itemTemplate(this.props.item, this.props.index);
+    return itemTemplate(this.props.item, this.props.index, this.state);
   }
 
   protected renderHeader(indent: Array<PanelFragment>, expander: PanelFragment, headerContent: PanelFragment) {
