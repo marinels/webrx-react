@@ -31,14 +31,17 @@ export function isViewModelLifecycle(viewModel: any): viewModel is ViewModelLife
 }
 
 export function isViewModel(source: any): source is BaseViewModel {
-  const viewModel = <BaseViewModel>source;
-
-  if (viewModel != null && viewModel.isViewModel instanceof Function) {
-    return viewModel.isViewModel();
-  }
-  else {
+  if (source == null) {
     return false;
   }
+
+  const viewModel: BaseViewModel = source;
+
+  if (viewModel.isViewModel instanceof Function) {
+    return viewModel.isViewModel();
+  }
+
+  return false;
 }
 
 export function getRoutingStateValue<T>(value: T | null | undefined, defaultValue?: T): T | undefined;
