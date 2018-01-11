@@ -85,7 +85,8 @@ export function observeCommand<T, TRet>(
     .debounce(x => {
       return x.command.canExecuteObservable
         .startWith(x.command.canExecute)
-        .filter(y => y);
+        .filter(y => y)
+        .map(() => 0);
     })
     .map(x => {
       return x.command

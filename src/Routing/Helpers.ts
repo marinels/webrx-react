@@ -22,8 +22,8 @@ export function getPath(state: { route: Route}) {
   return path;
 }
 
-export function trimPath(path: string) {
-  return path.replace(/^\/+/, '').replace(/\/+$/, '');
+export function trimPath(path: string, removeLeadingSlash = false) {
+  return path.replace(/^\/+/, removeLeadingSlash ? '' : '/').replace(/\/+$/, '');
 }
 
 export function joinPath(path: string, base?: string) {
@@ -31,7 +31,7 @@ export function joinPath(path: string, base?: string) {
     return trimPath(path);
   }
 
-  return `${ trimPath(base) }/${ trimPath(path) }`;
+  return `${ trimPath(base) }/${ trimPath(path, true) }`;
 }
 
 export function normalizePath(path: string, currentPath?: string, hashCodec?: HashCodec) {

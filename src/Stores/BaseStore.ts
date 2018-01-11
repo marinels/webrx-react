@@ -2,21 +2,29 @@ import { Observable, Observer, Subject, Subscription, AjaxRequest } from 'rxjs';
 import { AnonymousSubscription } from 'rxjs/Subscription';
 
 import { Logger, getLogger } from '../Utils/Logging';
-import { wx, Property, Command } from '../WebRx';
+import { wx, WebRxStatic, Property, Command } from '../WebRx';
 import { SampleDataCreator, StoreApi } from './Interfaces';
 import { isStoreApi } from './Helpers';
 import { ObservableApi } from './ObservableApi';
 
-export abstract class BaseStore {
+export class BaseStore extends Subscription {
   public static displayName = 'BaseStore';
 
-  protected readonly logger: Logger = getLogger(BaseStore.displayName);
-  protected readonly wx = wx;
+  protected readonly logger: Logger;
+  protected readonly wx: WebRxStatic;
   protected readonly api: StoreApi;
 
-  constructor(path: string, base?: string, sampleData?: SampleDataCreator);
-  constructor(api: StoreApi);
-  constructor(pathOrApi: string | StoreApi, base?: string, sampleData?: SampleDataCreator) {
+  constructor(path: string, base?: string, sampleData?: SampleDataCreator, unsubscribe?: () => void);
+  constructor(api: StoreApi, unsubscribe?: () => void);
+  constructor(pathOrApi: string | StoreApi, baseOrUnsubscribe?: string | (() => void), sampleData?: SampleDataCreator, unsubscribe?: () => void) {
+    unsubscribe = baseOrUnsubscribe instanceof Function ? baseOrUnsubscribe : unsubscribe;
+    const base = String.isString(baseOrUnsubscribe) ? baseOrUnsubscribe : undefined;
+
+    super(unsubscribe);
+
+    this.logger = getLogger(BaseStore.displayName);
+    this.wx = wx;
+
     if (isStoreApi(pathOrApi)) {
       this.api = pathOrApi;
     }
@@ -29,13 +37,19 @@ export abstract class BaseStore {
     this.logger.debug('Store Created');
   }
 
-  protected getObservable<T>(action: string, params?: any, options?: AjaxRequest, baseUri?: string): Observable<T> {
+  protected getObservable<T = any>(action: string, params?: any, options?: AjaxRequest, baseUri?: string): Observable<T> {
     return this.api
       .getObservable<T>(action, params, options, baseUri);
   }
 
-  protected postObservable<T>(action: string, data?: any, params?: any, options?: AjaxRequest, baseUri?: string): Observable<T> {
+  protected postObservable<T = any>(action: string, data?: any, params?: any, options?: AjaxRequest, baseUri?: string): Observable<T> {
     return this.api
       .postObservable<T>(action, data, params, options, baseUri);
+  }
+}
+
+export class BaseApiStore<T extends StoreApi> extends BaseStore {
+  constructor(protected readonly api: T, unsubscribe?: () => void) {
+    super(api, unsubscribe);
   }
 }

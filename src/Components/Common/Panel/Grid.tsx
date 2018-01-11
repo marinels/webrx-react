@@ -13,10 +13,10 @@ export interface GridRenderProps {
   border?: boolean;
 }
 
-export interface GridProps extends PanelProps, GridRenderProps {
+export interface GridProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends PanelProps<T, TContext>, GridRenderProps {
 }
 
-export interface GridComponentProps extends React.HTMLAttributes<Grid>, GridProps {
+export interface GridComponentProps extends React.HTMLProps<any>, GridProps {
 }
 
 export class Grid extends Panel<GridComponentProps> {
@@ -58,6 +58,7 @@ export class Grid extends Panel<GridComponentProps> {
 
         return this.renderRow(row, rows, colItems);
       })
+      .defaultIfEmpty(this.renderEmpty())
       .toArray();
   }
 
@@ -149,11 +150,11 @@ export class Grid extends Panel<GridComponentProps> {
     while (index < children.length) {
       const elem: any = children[index];
 
-      if (elem.type === Layout.GridRowDefinitions) {
+      if (React.isType(elem, Layout.GridRowDefinitions)) {
         rows = elem;
         children.splice(index, 1);
       }
-      else if (elem.type === Layout.GridColumnDefinitions) {
+      else if (React.isType(elem, Layout.GridColumnDefinitions)) {
         cols = elem;
         children.splice(index, 1);
       }

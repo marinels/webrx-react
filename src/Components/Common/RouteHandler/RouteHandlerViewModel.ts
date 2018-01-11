@@ -2,7 +2,7 @@ import { Observable, Subscription } from 'rxjs';
 import 'ix';
 
 import { ReadOnlyProperty, Command } from '../../../WebRx';
-import { BaseViewModel, isRoutableViewModel, RoutingBreadcrumb } from '../../React';
+import { BaseViewModel, isRoutableViewModel, RoutingBreadcrumb, HandlerRoutingStateChanged } from '../../React';
 import { Route, RouteMapper, ComponentActivator, RoutedComponentActivator } from '../../../Routing';
 import { routeManager } from '../../../Routing/RouteManager';
 import { PubSub } from '../../../Utils';
@@ -31,7 +31,10 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
   private loadComponent: Command<any>;
 
-  constructor(public routingMap: RouteMapper) {
+  constructor(
+    public routingMap: RouteMapper,
+    routingStateRateLimit = 25,
+  ) {
     super();
 
     this.currentRoute = this.wx
@@ -215,6 +218,38 @@ export class RouteHandlerViewModel extends BaseViewModel {
             this.updateDocumentTitle(component, title);
           }
         }),
+    );
+
+    this.addSubscription(
+      PubSub
+        .observe<HandlerRoutingStateChanged>(RoutingStateChangedKey)
+        .debounceTime(routingStateRateLimit)
+        .withLatestFrom(
+          this.wx
+            .whenAny(this.routedComponent, x => x),
+          this.wx
+            .whenAny(this.currentRoute, x => x),
+          (change, component, route) => ({ change, component, route }),
+        )
+        .map(x => {
+          if (isRoutableViewModel(x.component)) {
+            return {
+              state: x.component.createRoutingState(x.change),
+              route: x.route,
+            };
+          }
+
+          return undefined;
+        })
+        .filterNull()
+        .subscribe(
+          x => {
+            this.navTo(x.route.path, x.state, true);
+          },
+          error => {
+            this.alertForError(error, 'Routing State Changed Error');
+          },
+        ),
     );
 
     // connect the primary observable to allow the routing engine to start processing routes

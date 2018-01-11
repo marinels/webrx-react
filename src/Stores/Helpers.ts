@@ -170,7 +170,7 @@ export function getRequest<T>(action: string, url: string, logger: Logging.Logge
     .ajax(options)
     .map(x => <T>x.response)
     .do(x => {
-      logger.info(`API Result: ${ action } (${ url })`, x);
+      logger.info(`API  Result: ${ action } (${ url })`, x);
     })
     .catch<T, T>((x: AjaxError) => {
       logger.error(`API  ERROR: ${ action } (${ url })`, x);

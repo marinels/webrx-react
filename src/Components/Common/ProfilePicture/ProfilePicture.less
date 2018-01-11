@@ -17,7 +17,6 @@
   &.ProfilePicture-iconThumbnail {
     background-color: @thumbnail-bg;
     border: 1px solid @thumbnail-border;
-    border-radius: @thumbnail-border-radius;
     padding: 4px;
   }
 
@@ -27,6 +26,14 @@
 
   & > .fa {
     display: inline;
+  }
+
+  & > .img-thumbnail {
+    border-radius: 0;
+  }
+
+  & > .img-rounded {
+    border-radius: @thumbnail-border-radius;
   }
 
   & > .img-responsive {

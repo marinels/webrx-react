@@ -20,7 +20,7 @@ export interface ComponentDemoProps {
   viewMap: ViewActivatorMap;
 }
 
-export interface ComponentDemoViewProps extends BaseViewProps<ComponentDemoViewModel, ComponentDemoView>, ComponentDemoProps {
+export interface ComponentDemoViewProps extends BaseViewProps<ComponentDemoViewModel>, ComponentDemoProps {
 }
 
 export class ComponentDemoView extends BaseView<ComponentDemoViewProps, ComponentDemoViewModel> {

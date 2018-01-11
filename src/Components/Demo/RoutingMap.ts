@@ -6,7 +6,7 @@ import { wx } from '../../WebRx';
 import { Alert, Compare } from '../../Utils';
 import { HeaderMenu, HeaderCommandAction } from '../React';
 import * as Components from '../Common';
-// import { TodoListViewModel } from './TodoList/TodoListViewModel';
+import { TodoListViewModel } from './TodoList/TodoListViewModel';
 import { RouteMap as AppRouteMap } from '../../Routing';
 import { ComponentDemoViewModel, RoutingMap } from './ComponentDemoViewModel';
 
@@ -238,6 +238,7 @@ demoRoutingMap.addRoute('React', 'GridPanel', 'Grid Panel', (state: any) => 'Gri
 demoRoutingMap.addRoute('React', 'StackPanel', 'Stack Panel', (state: any) => 'StackPanel');
 demoRoutingMap.addRoute('React', 'UniformGridPanel', 'Uniform Grid Panel', (state: any) => 'UniformGridPanel');
 demoRoutingMap.addRoute('React', 'WrapPanel', 'Wrap Panel', (state: any) => 'WrapPanel');
+demoRoutingMap.addRoute('React', 'ContentTooltip', 'Content Tooltip', (state: any) => 'ContentTooltip');
 demoRoutingMap.addRoute('React', 'NavButton', 'Nav Button', (state: any) => 'NavButton');
 demoRoutingMap.addRoute('React', 'TreeItem', 'Tree Item', (state: any) => 'TreeItem');
 demoRoutingMap.addRoute('React', 'TreeItemPresenter', 'Tree Item Presenter', (state: any) => 'TreeItemPresenter');
@@ -249,6 +250,7 @@ demoRoutingMap.addRoute('React', 'CommonPanelList', 'Common Panel (List)', (stat
 demoRoutingMap.addRoute('React', 'CommonPanelTable', 'Common Panel (Table)', (state: any) => 'CommonPanelTable');
 demoRoutingMap.addRoute('React', 'CommonPanelTest', 'Common Panel (Test)', (state: any) => 'CommonPanelTest');
 demoRoutingMap.addRoute('React', 'ObservableWrapper', 'Observable Wrapper', (state: any) => 'ObservableWrapper');
+demoRoutingMap.addRoute('React', 'TimeSpanInput', 'Time Span Input', (state: any) => 'TimeSpanInput');
 
 demoRoutingMap.addRoute('webrx-react', 'Search', 'Search', (state: any) => {
   const viewModel = new Components.SearchViewModel();
@@ -262,7 +264,6 @@ demoRoutingMap.addRoute('webrx-react', 'Search', 'Search', (state: any) => {
 
   return viewModel;
 });
-demoRoutingMap.addRoute('webrx-react', 'TimeSpanInput', 'Time Span Input', (state: any) => new Components.TimeSpanInputViewModel(true, Components.TimeSpanUnitType.Seconds));
 demoRoutingMap.addRoute('webrx-react', 'ItemsList', 'Items (List)', (state: any) => new Components.ItemsViewModel(sampleListData));
 demoRoutingMap.addRoute('webrx-react', 'ItemsWrap', 'Items (Wrap)', (state: any) => new Components.ItemsViewModel(sampleListData));
 demoRoutingMap.addRoute('webrx-react', 'ItemsUGrid', 'Items (Uniform Grid)', (state: any) => new Components.ItemsViewModel(sampleListData));
@@ -383,7 +384,9 @@ demoRoutingMap.addRoute('webrx-react', 'InlineEditObject', 'InlineEdit (Object)'
 });
 
 demoRoutingMap.viewModelMap['help'] = () => 'Help';
-// demoRoutingMap.viewModelMap['todolist'] = () => new TodoListViewModel();
+demoRoutingMap.addRoute('webrx-react', 'todolist', 'Todo List', (state: any) => {
+  return new TodoListViewModel();
+});
 
 // inject the demo infrastructure into the app routing and view maps
 AppRouteMap['/'] = { path: '/demo/' };

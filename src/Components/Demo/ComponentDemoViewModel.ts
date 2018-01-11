@@ -10,7 +10,7 @@ import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
 import { Current as App } from '../Common/App/AppViewModel';
 
 export interface ViewModelActivator {
-  (state: any): any;
+  (state: {}): any;
 }
 
 export interface ViewModelActivatorMap {
@@ -56,15 +56,15 @@ export class RoutingMap {
 }
 
 export interface RoutedDemoComponent {
-  componentRoute?: string;
-  component?: any;
-  routingState?: any;
+  componentRoute: string;
+  component: {};
+  routingState: {};
 }
 
 export interface ComponentDemoRoutingState {
-  route?: Route;
+  route: Partial<Route>;
   columns?: number;
-  state?: any;
+  state: {};
 }
 
 export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoRoutingState> {
@@ -112,7 +112,19 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
       .toProperty(undefined, false);
 
     this.component = this.wx
-      .whenAny(this.routedComponent, x => x == null ? undefined : x.component)
+      .whenAny(this.routedComponent, x => x)
+      .map(x => {
+        if (x == null) {
+          return undefined;
+        }
+
+        // if our routed component handles routing state, then we can pass on the routed state
+        if (isRoutingStateHandler(x.component)) {
+          x.component.applyRoutingState(x.routingState);
+        }
+
+        return x.component;
+      })
       .toProperty(undefined, false);
 
     this.addSubscription(
@@ -140,8 +152,8 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     this.updateRoutingBreadcrumbs.execute(<RoutingBreadcrumb[]>[
       { key: 1, content: 'Here', href: '#/demo', title: 'title-based tooltips supported' },
       { key: 2, content: 'Are', href: '#/demo', tooltip: 'simple string tooltip overlays' },
-      { key: 3, content: 'Some', href: '#/demo', tooltip: { id: 'demo-tt', placement: 'top', children: 'custom props-based tooltip overlays' } },
-      { key: 4, content: 'Breadcrumbs', href: '#/demo' },
+      { key: 3, content: 'Some', href: '#/demo', tooltip: { id: 'demo-tt', title: 'Popovers!', children: 'custom props-based tooltip overlays' } },
+      { key: 4, content: 'Breadcrumbs', href: '#/demo', tooltip: { placement: 'top', children: 'regular tooltip' } },
     ]);
 
     // this is very similar to what the route handler does for title updates
@@ -191,13 +203,9 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     return undefined;
   }
 
-  private getRoutedComponent(state: ComponentDemoRoutingState) {
-    let routedComponent: RoutedDemoComponent = {};
-    // let component: any;
-    let activator: ViewModelActivator;
-
+  private getRoutedComponent(state: ComponentDemoRoutingState): RoutedDemoComponent | undefined {
     // extract the component route from the routing state
-    const componentRoute = routedComponent.componentRoute = this.getComponentRoute(state);
+    const componentRoute = this.getComponentRoute(state);
 
     // if our component route is null then we can ignore activation
     // let the routing system perform some automated navigation to a new route
@@ -206,15 +214,25 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
         this.logger.debug(`Using Previously Activated Component for "${ componentRoute }"...`);
 
         // if our component route has not changed then we can just use our previously activated component
-        routedComponent = this.routedComponent.value;
+        return {
+          componentRoute,
+          component: this.routedComponent.value.component,
+          // we may have routed with different routing state, so apply it here.
+          // it is possible that the routed component has no routing state, but because routing
+          // state must be set we need to then sanitize the value with an empty state object
+          routingState: state.state || {},
+        };
       }
       else {
         this.logger.debug(`Loading Component for "${ componentRoute }"...`);
 
-        routedComponent.routingState = state;
+        // default to using the routed component's state
+        // it is possible that the routed component has no routing state, but because routing
+        // state must be set we need to then sanitize the value with an empty state object
+        let routingState = state.state || {};
 
         // try and load our component from the component map using a static route
-        activator = this.routeMap.viewModelMap[componentRoute];
+        let activator = this.routeMap.viewModelMap[componentRoute];
 
         // if no static route was found then we can attempt an expression route
         if (activator == null) {
@@ -233,59 +251,56 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
             activator = result.activator;
 
             // and override the routed state's path and match with the demo's context
-            routedComponent.routingState = Object.assign({}, state.state, { path: result.path, match: result.match });
+            routingState = Object.assign({}, routingState, { path: result.path, match: result.match });
           }
         }
 
         // activate our component from the routing state
-        routedComponent.component = activator == null ? null : activator(state);
+        const component = activator == null ? null : activator(state);
 
-        if (routedComponent.component != null) {
-          this.logger.debug(`Loaded Component "${ Object.getName(routedComponent.component) }"`, routedComponent.component);
+        if (component != null) {
+          this.logger.debug(`Loaded Component "${ Object.getName(component) }"`, component);
         }
+
+        return {
+          componentRoute,
+          component,
+          routingState,
+        };
       }
     }
 
-    // if our activated component is routable, then apply the current routing state
-    if (isRoutableViewModel(routedComponent.component)) {
-      routedComponent.component.applyRoutingState(routedComponent.routingState);
-    }
-
-    return routedComponent;
+    return undefined;
   }
 
   createRoutingState(changed: HandlerRoutingStateChanged): ComponentDemoRoutingState {
-    let state: any = undefined;
-
-    if (isRoutingStateHandler(this.component.value)) {
-      state = this.component.value.createRoutingState();
-    }
-
     let columns: number | undefined;
 
     if (this.columns.value !== 12) {
       columns = this.columns.value;
     }
 
-    return Object.trim({
+    const state: ComponentDemoRoutingState = {
       route: {
         path: `/demo/${ this.componentRoute.value || '' }`,
       },
       columns: this.getRoutingStateValue(this.columns.value, 12),
-      state: this.getRoutingStateValue(this.component.value, (x: any) => {
+      state: this.getRoutingStateValue<any, {}>(this.component.value, (x: any) => {
         if (isRoutingStateHandler(x)) {
-          return x.createRoutingState();
+          return x.createRoutingState(changed.context);
         }
 
-        return undefined;
-      }),
-    });
+        return {};
+      }) || {},
+    };
+
+    return Object.trim(state);
   }
 
   applyRoutingState(state: ComponentDemoRoutingState) {
     const routedComponent = this.getRoutedComponent(state);
 
-    // if there is no route, then route to help view
+    // if there is no route, then route to help
     if (routedComponent == null || String.isNullOrEmpty(routedComponent.componentRoute)) {
       this.navTo('#/demo/help');
     }
@@ -294,6 +309,9 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
       this.setColumns.execute(state.columns || 12);
     }
 
+    // keep a handle on the current app page header
+    // NOTE: we make this assignment every time we apply routing state,
+    //       but it should be a no-op every time but the first
     this.pageHeader = App.header;
   }
 

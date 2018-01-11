@@ -4,7 +4,6 @@ export * from './Alert/AlertViewModel';
 export * from './Alert/AlertHostViewModel';
 export * from './ModalDialog/ModalDialogViewModel';
 export * from './RouteHandler/RouteHandlerViewModel';
-export * from './TimeSpanInput/TimeSpanInputViewModel';
 export * from './Search/SearchViewModel';
 export * from './Pager/PagerViewModel';
 export * from './Tabs/TabsViewModel';
@@ -23,6 +22,7 @@ export * from './ItemListPanel/CountFooterContent';
 export * from './App/AppViewModel';
 
 // Simple Components
+export * from './Group/Group';
 export * from './Splash/Splash';
 export * from './BindableInput/BindableInput';
 export * from './CommandButton/CommandButton';
@@ -33,6 +33,7 @@ export * from './CommonPanel/CommonPanel';
 export * from './ObservableWrapper/ObservableWrapper';
 export * from './ContentTooltip/ContentTooltip';
 export * from './NavButton/NavButton';
+export * from './TimeSpanInput/TimeSpanInput';
 
 // Views
 export * from './InlineEdit/InlineEditView';
@@ -41,7 +42,6 @@ export * from './Alert/AlertHostView';
 export * from './ModalDialog/ModalDialogView';
 export * from './RouteHandler/Breadcrumbs';
 export * from './RouteHandler/RouteHandlerView';
-export * from './TimeSpanInput/TimeSpanInputView';
 export * from './Search/SearchView';
 export * from './Pager/PagerView';
 export * from './Tabs/TabsView';
@@ -53,6 +53,7 @@ export * from './Items/ItemsView';
 export * from './Items/TreeItem';
 export * from './Items/TreeItemsView';
 export * from './ListItems/PanelView';
+export * from './ListItems/GridViewColumn';
 export * from './ListItems/GridView';
 export * from './ListItems/ListGroupView';
 export * from './ListItems/TreeView';

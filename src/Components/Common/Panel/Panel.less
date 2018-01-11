@@ -8,6 +8,11 @@
     padding: 0;
   }
 
+  .Panel-empty {
+    padding: @default-padding;
+    text-align: center;
+  }
+
   // display elements inline left aligned, but wrap within the container (normal)
   &.WrapPanel {
     text-align: left;
@@ -69,7 +74,10 @@
 
   &.TablePanel {
     margin: 0;
-    table-layout: fixed;
+
+    &.TablePanel-fixedLayout {
+      table-layout: fixed;
+    }
   }
 
   // grids emulate a table layout, stretching both horizontally and vertically
@@ -97,7 +105,7 @@
       border-collapse: collapse;
 
       & > .Grid-Row > .Grid-Column {
-        border: 1px solid gray;
+        border: 1px solid @table-border-color;
       }
     }
 

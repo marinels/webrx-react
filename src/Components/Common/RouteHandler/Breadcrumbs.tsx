@@ -1,36 +1,24 @@
 import * as React from 'react';
-import { Breadcrumb, Tooltip, OverlayTrigger } from 'react-bootstrap';
+import { Breadcrumb } from 'react-bootstrap';
 import { Icon } from 'react-fa';
 
 import { RoutingBreadcrumb } from '../../React';
 import { CommandButton } from '../CommandButton/CommandButton';
+import { ContentTooltip } from '../ContentTooltip/ContentTooltip';
 
 export interface BreadcrumbsProps {
+  id?: string;
   pinnable?: boolean;
   items?: RoutingBreadcrumb[];
 }
 
-export interface BreadcrumbsComponentProps extends React.HTMLProps<Breadcrumbs>, BreadcrumbsProps {
+export interface BreadcrumbsComponentProps extends React.HTMLProps<any>, BreadcrumbsProps {
 }
 
 export class Breadcrumbs extends React.Component<BreadcrumbsComponentProps> {
-  static defaultProps = {
+  static defaultProps: Partial<BreadcrumbsProps> = {
     id: 'breadcrumbs',
   };
-
-  private toggleBreadcrumbsPin() {
-    const elem = document
-      .getElementById(this.props.id!);
-
-    if (elem != null) {
-      if (/fixed/.test(elem.className)) {
-        elem.className = 'Breadcrumbs';
-      }
-      else {
-        elem.className = 'Breadcrumbs fixed';
-      }
-    }
-  }
 
   render() {
     const { className, props, rest } = this.restProps(x => {
@@ -41,27 +29,7 @@ export class Breadcrumbs extends React.Component<BreadcrumbsComponentProps> {
     return this.wxr.renderIterable(
       props.items,
       (x, i, a) => {
-        const tooltip = this.wxr.renderConditional(
-          String.isString(x.tooltip),
-          () => (<Tooltip id={ `${ this.props.id || x.key }-tt` } placement='top'>{ x.tooltip }</Tooltip>),
-          () => x.tooltip == null ? undefined : (<Tooltip id={ `${ this.props.id || x.key }-tt` } { ...x.tooltip } />),
-        );
-
-        const breadcrumb = (
-          <Breadcrumb.Item key={ x.key } active={ i === a.length - 1 } href={ x.href } title={ x.title } target={ x.target }>
-            { x.content }
-          </Breadcrumb.Item>
-        );
-
-        return this.wxr.renderConditional(
-          React.isValidElement<any>(tooltip),
-          () => (
-            <OverlayTrigger key={ breadcrumb.key || undefined } placement={ tooltip.props.placement } overlay={ tooltip } >
-              { breadcrumb }
-            </OverlayTrigger>
-          ),
-          () => breadcrumb,
-        );
+        return this.renderCrumb(x, i, i === a.length - 1);
       },
       x => x.length === 0 ? null : (
         <div { ...rest } className={ this.wxr.classNames('Breadcrumbs', 'hidden-xs', className) }>
@@ -80,5 +48,36 @@ export class Breadcrumbs extends React.Component<BreadcrumbsComponentProps> {
         </div>
       ),
     );
+  }
+
+  protected renderCrumb(crumb: RoutingBreadcrumb, index: number, active: boolean) {
+    const breadcrumb = (
+      <Breadcrumb.Item key={ crumb.key } active={ active } href={ crumb.href } title={ crumb.title } target={ crumb.target }>
+        { crumb.content }
+      </Breadcrumb.Item>
+    );
+
+    return this.wxr
+      .renderNullable(
+        crumb.tooltip,
+        x => (
+          <ContentTooltip key={ crumb.key } id={ `${ crumb.key }-tt` } content={ x } context={ breadcrumb } placement={ x.placement || 'bottom' } />
+        ),
+        () => breadcrumb,
+      );
+  }
+
+  protected toggleBreadcrumbsPin() {
+    const elem = document
+      .getElementById(this.props.id!);
+
+    if (elem != null) {
+      if (/fixed/.test(elem.className)) {
+        elem.className = 'Breadcrumbs';
+      }
+      else {
+        elem.className = 'Breadcrumbs fixed';
+      }
+    }
   }
 }

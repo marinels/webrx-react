@@ -8,5 +8,8 @@
     "src/types/declarations.d.ts",
     "src/webrx-react.ts",
     "src/Components/Demo/index.ts"
+  ],
+  "include": [
+    "src/Components/Demo/TodoList/SampleData/*.ts"
   ]
 }

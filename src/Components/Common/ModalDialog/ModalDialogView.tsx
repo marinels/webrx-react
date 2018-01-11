@@ -5,20 +5,22 @@ import { Modal, ModalProps } from 'react-bootstrap';
 import { BaseView, BaseViewProps } from '../../React';
 import { ModalDialogViewModel } from './ModalDialogViewModel';
 
-export interface ModalDialogProps extends Partial<ModalProps> {
+export type BootstrapModalProps = Omit2<ModalProps, React.HTMLProps<Modal>, { onHide: Function; }>;
+
+export interface ModalDialogProps extends BootstrapModalProps {
   modalTitle?: {};
   modalBody?: {};
   modalFooter?: {};
   canClose?: boolean;
 }
 
-export interface ModalDialogViewProps extends BaseViewProps<ModalDialogViewModel<{}>, Modal>, ModalDialogProps {
+export interface ModalDialogViewProps extends BaseViewProps<ModalDialogViewModel<{}>>, ModalDialogProps {
 }
 
 export class ModalDialogView extends BaseView<ModalDialogViewProps, ModalDialogViewModel<{}>> {
   public static displayName = 'ModalDialogView';
 
-  static defaultProps = {
+  static defaultProps: Partial<ModalDialogProps> = {
     canClose: false,
     modalFooter: (view: ModalDialogView) => view.props.children,
   };
@@ -40,7 +42,7 @@ export class ModalDialogView extends BaseView<ModalDialogViewProps, ModalDialogV
         keyboard={ props.canClose === true } enforceFocus={ props.canClose === false }
         backdrop={ props.canClose === false ? 'static' : true }
         show={ this.viewModel.isVisible.value } onHide={ this.bindEventToCommand(x => x.hide) }
-        { ...React.Component.trimProps(rest) }
+        { ...this.trimProps(rest) }
       >
         { this.renderHeader() }
         { this.renderBody() }

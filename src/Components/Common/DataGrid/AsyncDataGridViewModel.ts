@@ -8,6 +8,8 @@ import { PagerViewModel } from '../Pager/PagerViewModel';
 export class AsyncDataGridViewModel<T, TRequestContext = any> extends DataGridViewModel<T, TRequestContext> {
   public static displayName = 'AsyncDataGridViewModel';
 
+  public static DefaultRateLimit = 250;
+
   /**
    * @param responseSelector delegate that produces a response from a request.
    * @param pager pager. if omitted a default pager will be created. use null for no pager.
@@ -17,8 +19,9 @@ export class AsyncDataGridViewModel<T, TRequestContext = any> extends DataGridVi
     protected readonly responseSelector: (request: DataSourceRequest<TRequestContext> | undefined) => ObservableOrValue<DataSourceResponse<T> | undefined>,
     pager?: PagerViewModel,
     context?: ObservableLike<TRequestContext>,
+    rateLimit = AsyncDataGridViewModel.DefaultRateLimit,
   ) {
-    super(Iterable.empty<T>(), pager, context);
+    super(Iterable.empty<T>(), pager, context, undefined, rateLimit);
   }
 
   getResponse(request: DataSourceRequest | undefined) {

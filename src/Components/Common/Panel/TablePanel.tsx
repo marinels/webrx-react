@@ -1,22 +1,24 @@
 import * as React from 'react';
 import { Table, TableProps } from 'react-bootstrap';
 
-import { PanelItemProps, PanelTemplateProps, Panel, PanelFragment } from './Panel';
+import { PanelItemProps, PanelItemContext, PanelTemplateProps, Panel, PanelFragment } from './Panel';
 
 // clone of react-bootstrap TableProps, but without the subclassing
 export type BootstrapTableProps = Omit<TableProps, React.HTMLProps<Table>>;
 
-export interface TablePanelProps extends PanelItemProps, PanelTemplateProps, BootstrapTableProps {
+export interface TablePanelProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends PanelItemProps<T, TContext>, PanelTemplateProps<TContext>, BootstrapTableProps {
   header?: PanelFragment;
+  fixedLayout?: boolean;
 }
 
-export interface TablePanelComponentProps extends TableProps, TablePanelProps {
+export interface TablePanelComponentProps extends TablePanelProps, TableProps {
 }
 
 export class TablePanel extends Panel<TablePanelComponentProps> {
   public static displayName = 'TablePanel';
 
-  static defaultProps = {
+  static defaultProps: Partial<TablePanelProps> = {
+    fixedLayout: true,
     bordered: true,
     hover: true,
     responsive: true,
@@ -24,9 +26,16 @@ export class TablePanel extends Panel<TablePanelComponentProps> {
   };
 
   render() {
-    const { header, ...rest } = this.props;
+    const { props, rest } = this.restProps(x => {
+      const { header, fixedLayout } = x;
+      return { header, fixedLayout };
+    });
 
-    return this.renderPanel('TablePanel', rest, Table);
+    return this.renderPanel(
+      this.wxr.classNames('TablePanel', { 'TablePanel-fixedLayout': props.fixedLayout }),
+      rest,
+      Table,
+    );
   }
 
   renderItems(children?: React.ReactNode, componentClass?: React.ReactType) {

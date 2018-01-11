@@ -5,18 +5,18 @@ import { Icon } from 'react-fa';
 
 import { IterableLike } from '../../../WebRx';
 import { ItemsPresenterProps, ItemsPresenterTemplateProps, ItemsPresenter } from './ItemsPresenter';
-import { PanelItemProps, PanelRenderProps, Panel, PanelFragment } from '../Panel/Panel';
+import { PanelItemProps, PanelItemContext, PanelRenderProps, Panel, PanelFragment } from '../Panel/Panel';
 
 export type RecursiveItemsSource<T> = (item: T) => (IterableLike<T> | undefined);
 
-export interface TreeItemSourceProps {
+export interface TreeItemSourceProps<T = {}> {
   /**
    * function to produce the recursive items source for the provided item
    */
-  itemsSource: RecursiveItemsSource<{}>;
+  itemsSource: RecursiveItemsSource<T>;
 }
 
-export interface TreeItemTemplateProps {
+export interface TreeItemTemplateProps<T = {}> {
   /**
    * Override the expander icon template
    * default behaviour is to render an icon using the expandedIconName and collapsedIconName
@@ -27,13 +27,13 @@ export interface TreeItemTemplateProps {
    * Override the header template
    * compose a custom header out of the subcomponents
    */
-  headerTemplate?: (item: {}, index: number, indent: Array<PanelFragment>, expander: PanelFragment, headerContent: PanelFragment, view: TreeItem) => PanelFragment;
+  headerTemplate?: (item: T, index: number, indent: Array<PanelFragment>, expander: PanelFragment, headerContent: PanelFragment, view: TreeItem) => PanelFragment;
 
   /**
    * template to render each item belonging to the bound item
    * use this template to define your own items presenter template
    */
-  itemsTemplate?: (items: IterableLike<{}> | undefined, view: TreeItem) => PanelFragment;
+  itemsTemplate?: (items: IterableLike<T> | undefined, view: TreeItem) => PanelFragment;
 }
 
 export interface TreeItemRenderProps {
@@ -44,9 +44,17 @@ export interface TreeItemRenderProps {
   depth?: number;
 
   /**
-   * set the isExpanded intial state
+   * set the isExpanded intial state (modified existing state)
    */
   startExpanded?: boolean;
+
+  /**
+   * override the current expansion state (does not modify state)
+   * true will override isExpanded to true, false will not override the current state
+   * use a function to handle async changes in state overrides where override logic is computerd
+   * outside the treeitem container component (i.e., outside the treeview).
+   */
+  overrideExpanded?: boolean | (() => boolean);
 
   /**
    * override the default expanded icon name
@@ -61,10 +69,10 @@ export interface TreeItemRenderProps {
   collapsedIconName?: string;
 }
 
-export interface TreeItemFacadeProps extends TreeItemSourceProps, TreeItemTemplateProps, TreeItemRenderProps, ItemsPresenterTemplateProps, PanelItemProps, PanelRenderProps {
+export interface TreeItemFacadeProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends TreeItemSourceProps<T>, TreeItemTemplateProps<T>, TreeItemRenderProps, ItemsPresenterTemplateProps<T>, PanelItemProps<T, TContext>, PanelRenderProps {
 }
 
-export interface TreeItemProps extends TreeItemFacadeProps {
+export interface TreeItemProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends TreeItemFacadeProps<T, TContext> {
   /**
    * the item that this tree node represents
    */
@@ -77,7 +85,7 @@ export interface TreeItemProps extends TreeItemFacadeProps {
   index: number;
 }
 
-export interface TreeItemComponentProps extends React.HTMLAttributes<TreeItem>, TreeItemProps {
+export interface TreeItemComponentProps extends React.HTMLProps<any>, TreeItemProps {
 }
 
 export interface TreeItemState {
@@ -88,7 +96,7 @@ export interface TreeItemState {
 }
 
 export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemState> {
-  static defaultProps = {
+  static defaultProps: Partial<TreeItemProps> = {
     depth: 0,
   };
 
@@ -115,6 +123,7 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
         itemsTemplate={ props.itemsTemplate }
         depth={ props.depth == null ? 0 : (props.depth + 1) }
         startExpanded={ props.startExpanded }
+        overrideExpanded={ props.overrideExpanded }
         expandedIconName={ props.expandedIconName }
         collapsedIconName={ props.collapsedIconName }
         viewTemplate={ props.viewTemplate }
@@ -124,6 +133,7 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
         itemStyle={ props.itemStyle }
         itemProps={ props.itemProps }
         compact={ props.compact }
+        emptyContent={ props.emptyContent }
       />
     );
   }
@@ -141,7 +151,9 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
   }
 
   public static defaultItemsTemplate(items: IterableLike<{}> | undefined, view: TreeItem) {
-    return (view.state.isExpanded === false || items == null) ? false : (
+    const isExpanded = view.getIsExpanded();
+
+    return (isExpanded === false || items == null) ? false : (
       <ItemsPresenter
         itemsSource={ items }
         viewTemplate={ view.props.viewTemplate }
@@ -153,6 +165,7 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
         itemStyle={ view.props.itemStyle }
         itemProps={ view.props.itemProps }
         compact={ view.props.compact }
+        emptyContent={ view.props.emptyContent }
       />
     );
   }
@@ -169,7 +182,7 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
     );
   }
 
-  constructor(props?: TreeItemProps, context?: any) {
+  constructor(props: TreeItemComponentProps, context?: any) {
     super(props, context);
 
     this.state = {
@@ -177,10 +190,25 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
     };
   }
 
+  componentWillReceiveProps(nextProps: Readonly<TreeItemComponentProps>, nextContext: any) {
+    if (nextProps.startExpanded != null && nextProps.startExpanded !== this.state.isExpanded) {
+      this.setState((prevState, props) => {
+        // props.startExpanded should not be null (as per above) but we do a check just in case
+        if (props.startExpanded == null) {
+          return prevState;
+        }
+
+        return {
+          isExpanded: props.startExpanded,
+        };
+      });
+    }
+  }
+
   render() {
     const { className, props, rest, children } = this.restProps(x => {
-      const { item, index, itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact } = x;
-      return { item, index, itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact };
+      const { item, index, itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, overrideExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent } = x;
+      return { item, index, itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, overrideExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent };
     });
 
     const headerContent = this.renderHeaderContent();
@@ -207,11 +235,31 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
     );
   }
 
+  protected getIsExpanded() {
+    if (this.props.overrideExpanded != null) {
+      // if an override prop is provided, then check to see if it is set to true
+      const override = this.props.overrideExpanded instanceof Function ?
+        this.props.overrideExpanded() :
+        this.props.overrideExpanded;
+
+      if (override) {
+        // override is set to true so return true for isExpanded state (overridden)
+        return true;
+      }
+    }
+
+    // either no override prop is provided or the override result was false
+    // so fallback onto standard component state
+    return this.state.isExpanded || false;
+  }
+
   protected toggleExpansion(e: MouseEvent) {
     e.stopPropagation();
 
-    this.setState({
-      isExpanded: !this.state.isExpanded,
+    this.setState((prevState, props) => {
+      return {
+        isExpanded: !this.state.isExpanded,
+      };
     });
   }
 
@@ -229,8 +277,9 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
 
   protected renderExpanderIcon() {
     const template = (this.props.expanderIconTemplate || TreeItem.defaultExpanderIconTemplate);
+    const isExpanded = this.getIsExpanded();
 
-    return template(this.state.isExpanded, this.props.expandedIconName, this.props.collapsedIconName);
+    return template(isExpanded, this.props.expandedIconName, this.props.collapsedIconName);
   }
 
   protected renderExpander(items: IterableLike<{}> | undefined) {
@@ -248,7 +297,7 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
   protected renderHeaderContent() {
     const itemTemplate = this.props.itemTemplate || ItemsPresenter.defaultItemTemplate;
 
-    return itemTemplate(this.props.item, this.props.index);
+    return itemTemplate(this.props.item, this.props.index, this.state);
   }
 
   protected renderHeader(indent: Array<PanelFragment>, expander: PanelFragment, headerContent: PanelFragment) {

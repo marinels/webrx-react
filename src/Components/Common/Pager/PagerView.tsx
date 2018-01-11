@@ -17,7 +17,7 @@ export interface PagerProps extends BootstrapPaginationProps {
   emptyInfo?: string;
 }
 
-export interface PagerViewProps extends BaseViewProps<PagerViewModel, PagerView>, PagerProps {
+export interface PagerViewProps extends BaseViewProps<PagerViewModel>, PagerProps {
 }
 
 export type PagerComponentTypes = 'info' | 'controls' | 'limit' | undefined;
@@ -28,7 +28,7 @@ const ComponentLocations = [ 'left', 'center', 'right' ];
 export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
   public static displayName = 'PagerView';
 
-  static defaultProps = {
+  static defaultProps: Partial<PagerProps> = {
     first: true,
     prev: true,
     next: true,
@@ -64,8 +64,8 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     });
 
     const pagerProps = Object.rest(rest, x => {
-      const { activePage, boundaryLinks, bsSize, bsStyle, bsClass, buttonComponentClass, ellipsis, first, items, last, maxButtons, next, onSelect, prev } = x;
-      return { activePage, boundaryLinks, bsSize, bsStyle, bsClass, buttonComponentClass, ellipsis, first, items, last, maxButtons, next, onSelect, prev };
+      const { activePage, boundaryLinks, bsSize, bsStyle, buttonComponentClass, ellipsis, first, items, last, maxButtons, next, onSelect, prev } = x;
+      return { activePage, boundaryLinks, bsSize, bsStyle, buttonComponentClass, ellipsis, first, items, last, maxButtons, next, onSelect, prev };
     });
 
     return this.wxr.renderConditional(

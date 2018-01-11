@@ -2,22 +2,23 @@ import * as React from 'react';
 import { Observable } from 'rxjs';
 
 import { BaseView, BaseViewProps } from '../../React';
+import { PanelItemContext } from '../Panel/Panel';
 import { DataGridView, DataGridProps } from '../DataGrid/DataGridView';
 import { SearchView, SearchProps } from '../Search/SearchView';
 import { CommonPanel, CommonPanelRenderProps } from '../CommonPanel/CommonPanel';
 import { ItemListPanelViewModel } from './ItemListPanelViewModel';
 
-export interface ItemListPanelProps extends DataGridProps, CommonPanelRenderProps {
+export interface ItemListPanelProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends DataGridProps<T, TContext>, CommonPanelRenderProps {
   search?: boolean | SearchProps | {};
 }
 
-export interface ItemListPanelViewProps extends BaseViewProps<ItemListPanelViewModel<{}>, ItemListPanelView>, ItemListPanelProps {
+export interface ItemListPanelViewProps extends BaseViewProps<ItemListPanelViewModel<{}>>, ItemListPanelProps {
 }
 
 export class ItemListPanelView extends BaseView<ItemListPanelViewProps, ItemListPanelViewModel<{}>> {
   public static displayName = 'ItemListPanelView';
 
-  static defaultProps = {
+  static defaultProps: Partial<ItemListPanelProps> = {
   };
 
   updateOn(viewModel: Readonly<ItemListPanelViewModel<{}>>) {
@@ -28,8 +29,8 @@ export class ItemListPanelView extends BaseView<ItemListPanelViewProps, ItemList
 
   render() {
     const { className, children, props, rest } = this.restProps(x => {
-      const { search, pager, view, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact } = x;
-      return { search, pager, view, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact };
+      const { search, pager, loadingContent, view, viewProps, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent } = x;
+      return { search, pager, loadingContent, view, viewProps, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent };
     });
 
     const searchView = this.wxr.renderNullable(
@@ -50,7 +51,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelViewProps, ItemList
       undefined;
 
     return (
-      <CommonPanel headerFormat={ headerFormat } { ...React.Component.trimProps(rest) } className={ this.wxr.classNames('ItemListPanel', className) }>
+      <CommonPanel headerFormat={ headerFormat } { ...this.trimProps(rest) } className={ this.wxr.classNames('ItemListPanel', className) }>
         { this.renderDataGrid(props) }
       </CommonPanel>
     );

@@ -13,7 +13,7 @@ export class HistoryStateHashManager implements HashManager {
     this.changeHash = wx.command<string>();
   }
 
-  updateHash(hash: string, state: any, title: string, replace: boolean) {
+  updateHash(hash: string, state: {}, title: string, replace: boolean) {
     if (history != null && history.replaceState instanceof Function && history.pushState instanceof Function) {
       if (replace === true) {
         history.replaceState(state, title, hash);

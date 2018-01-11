@@ -7,9 +7,9 @@ export interface ViewModelLifecyle {
   cleanupViewModel(): void;
 }
 
-export interface RoutingStateHandler<T> {
+export interface RoutingStateHandler<T extends {}> {
   isRoutingStateHandler(): boolean;
-  createRoutingState(): T;
+  createRoutingState(context?: any): T;
   applyRoutingState(state: T): void;
 }
 

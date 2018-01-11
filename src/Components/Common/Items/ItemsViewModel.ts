@@ -17,8 +17,15 @@ export class ItemsViewModel<T> extends BaseViewModel {
   ) {
     super();
 
-    this.source = this.wx.getObservable(source)
-      .map(x => Iterable.from(x))
+    this.source = this.wx
+      .getObservableOrAlert(
+        () => {
+          return this.wx
+            .getObservable(source)
+            .map(x => Iterable.from(x));
+        },
+        'Invalid Items Source',
+      )
       .toProperty(this.emptySource, false);
 
     this.count = this.wx

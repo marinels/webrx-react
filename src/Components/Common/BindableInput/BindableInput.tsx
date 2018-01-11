@@ -37,22 +37,22 @@ export interface BindableInputProps extends BindableProps {
   /**
    * input property (or value)
    */
-  boundProperty: any;
+  boundProperty?: any;
 }
 
-export interface BindableInputComponentProps extends React.AllHTMLAttributes<BindableInput>, BindableInputProps {
+export interface BindableInputComponentProps extends React.HTMLProps<any>, BindableInputProps {
 }
 
 export class BindableInput extends React.Component<BindableInputComponentProps> {
   public static displayName = 'BindableInput';
 
-  static defaultProps = {
+  static defaultProps: Partial<BindableInputProps> = {
     valueProperty: 'value',
     onChangeProperty: 'onChange',
-    valueGetter: (property: any) => {
+    valueGetter: (property?: any) => {
       return BindableInput.wx.isProperty(property) ? property.value : property;
     },
-    valueSetter: (property: any, value: any) => {
+    valueSetter: (value: any, property?: any) => {
       if (BindableInput.wx.isProperty(property)) {
         property.value = value;
       }
@@ -77,7 +77,7 @@ export class BindableInput extends React.Component<BindableInputComponentProps> 
     const value = this.getValue();
     // NOTE: react says the value of a bindable control should not be null, but
     //       instead empty string (undefined is ok though, so === is required).
-    bindProps[props.valueProperty!] = value === null ? '' : value;
+    bindProps[props.valueProperty!] = value == null ? '' : value;
     bindProps[props.onChangeProperty!] = (e: React.FormEvent<any>) => {
       this.setValue(e);
     };
@@ -108,7 +108,7 @@ export class BindableInput extends React.Component<BindableInputComponentProps> 
         value = this.props.converter(value);
       }
 
-      this.props.valueSetter!(this.props.boundProperty, value);
+      this.props.valueSetter!(value, this.props.boundProperty);
 
       this.forceUpdate();
     }

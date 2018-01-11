@@ -48,8 +48,9 @@ export class TreeItemListPanelViewModel<T, TRequestContext = any> extends ItemLi
     filterer?: (item: T, search: SearchRequest) => boolean,
     search?: SearchViewModel | null,
     context?: ObservableLike<TRequestContext>,
+    rateLimit?: number,
   ) {
-    super(source, filterer, search, null, context);
+    super(source, filterer, search, null, context, undefined, rateLimit);
   }
 
   getItems() {

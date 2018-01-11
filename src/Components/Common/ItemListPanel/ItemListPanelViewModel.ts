@@ -2,7 +2,7 @@ import { Iterable } from 'ix';
 import { Observable } from 'rxjs';
 
 import { IterableLike, ObservableOrValue, ObservableLike } from '../../../WebRx';
-import { RoutingStateHandler } from '../../React';
+import { RoutingStateHandler, HandlerRoutingStateChanged } from '../../React';
 import { DataGridViewModel, DataSourceRequest, DataSourceResponse, DataGridRoutingState } from '../DataGrid/DataGridViewModel';
 import { SearchViewModel, SearchRequest, SearchRoutingState } from '../Search/SearchViewModel';
 import { ObjectComparer } from '../../../Utils/Compare';
@@ -32,11 +32,14 @@ export class ItemListPanelViewModel<T, TRequestContext = any> extends DataGridVi
   }
 
   protected static getItemListPanelContext(search: SearchViewModel | null): Observable<ItemListPanelRequestContext> {
-    return search == null ?
-      Observable.of({}) :
-      this.wx
-        .whenAny(search.requests, x => x)
-        .map(x => ItemListPanelViewModel.createItemListPanelContext(x));
+    if (search == null) {
+      return Observable.of({});
+    }
+
+    return this.wx
+      .whenAny(search.requests, x => x)
+      .filterNull()
+      .map(x => ItemListPanelViewModel.createItemListPanelContext(x));
   }
 
   protected static getDataGridContext<TRequestContext>(
@@ -97,38 +100,48 @@ export class ItemListPanelViewModel<T, TRequestContext = any> extends DataGridVi
     pager?: PagerViewModel | null,
     context?: ObservableLike<TRequestContext>,
     comparer?: string | ObjectComparer<T>,
+    rateLimit?: number,
   ) {
     // create the effective search view model (or null if omitted)
     search = ItemListPanelViewModel.getItemListPanelSearch(search);
 
     // initialize the data grid with a composite context observable
-    super(source, pager, ItemListPanelViewModel.getDataGridContext(search, context), comparer);
+    super(source, pager, ItemListPanelViewModel.getDataGridContext(search, context), comparer, rateLimit);
 
     this.filterer = filterer;
     this.search = search;
+
+    if (this.search != null) {
+      // seed the search after routing state is loaded
+      // we need to do this because we want an initial request even if the filter is empty
+      this.processRequests.results
+        .take(1)
+        .invokeCommand(this.search.search);
+    }
   }
 
   isRoutingStateHandler() {
     return true;
   }
 
-  createRoutingState(): ItemListPanelRoutingState {
+  createRoutingState(changed?: HandlerRoutingStateChanged): ItemListPanelRoutingState {
     return Object.trim(
       Object.assign(
-        super.createRoutingState(),
+        super.createRoutingState(changed),
         {
-          search: this.getRoutingStateValue(this.search, x => x.createRoutingState()),
+          search: this.getRoutingStateValue(this.search, x => x.createRoutingState(changed)),
         },
       ),
     );
   }
 
   applyRoutingState(state: ItemListPanelRoutingState) {
-    super.applyRoutingState(state);
-
-    if (this.search != null && state.search != null) {
-      this.search.applyRoutingState(state.search);
+    if (this.search != null) {
+      this.search.applyRoutingState(state.search || {});
     }
+
+    // we apply the base (grid) routing state last because it will trigger requests to start
+    super.applyRoutingState(state);
   }
 
   getResponseFromItems(items: Iterable<T>, request: DataSourceRequest<ItemListPanelContext<TRequestContext>>): ObservableOrValue<DataSourceResponse<T> | undefined> {

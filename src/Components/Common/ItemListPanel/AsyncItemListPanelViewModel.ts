@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { ObservableOrValue, ObservableLike } from '../../../WebRx';
 import { ItemListPanelViewModel, ItemListPanelContext } from './ItemListPanelViewModel';
 import { DataSourceRequest, DataSourceResponse } from '../DataGrid/DataGridViewModel';
+import { AsyncDataGridViewModel } from '../DataGrid/AsyncDataGridViewModel';
 import { SearchViewModel, SearchRequest } from '../Search/SearchViewModel';
 import { PagerViewModel } from '../Pager/PagerViewModel';
 
@@ -19,12 +20,12 @@ export class AsyncItemListPanelViewModel<T, TRequestContext = any> extends ItemL
    */
   constructor(
     protected readonly responseSelector: (request: DataSourceRequest<ItemListPanelContext<TRequestContext>> | undefined) => ObservableOrValue<DataSourceResponse<T> | undefined>,
-    filterer?: (item: T, search: SearchRequest) => boolean,
     search?: SearchViewModel | null,
     pager?: PagerViewModel | null,
     context?: ObservableLike<TRequestContext>,
+    rateLimit = AsyncDataGridViewModel.DefaultRateLimit,
   ) {
-    super(Iterable.empty<T>(), filterer, search, pager, context);
+    super(Iterable.empty<T>(), undefined, search, pager, context, undefined, rateLimit);
   }
 
   getResponse(request: DataSourceRequest<ItemListPanelContext<TRequestContext>> | undefined) {

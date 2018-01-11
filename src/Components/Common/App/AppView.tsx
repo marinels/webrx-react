@@ -13,9 +13,10 @@ import { PageHeaderView, PageHeaderProps } from '../PageHeader/PageHeaderView';
 import { PageFooterView, PageFooterProps } from '../PageFooter/PageFooterView';
 import { AppViewModel } from './AppViewModel';
 import { ViewMap, ViewMapper } from '../../../Routing';
+import { logo } from '../../../Assets';
 
 ViewMap[SplashKey] = () => (
-  <Splash header='webrx-react' />
+  <Splash header='webrx-react' logo={ logo } />
 );
 
 export interface AppProps extends PageHeaderProps, PageFooterProps {
@@ -26,7 +27,7 @@ export interface AppProps extends PageHeaderProps, PageFooterProps {
   footer?: boolean;
 }
 
-export interface AppViewProps extends BaseViewProps<AppViewModel, AppView>, AppProps {
+export interface AppViewProps extends BaseViewProps<AppViewModel>, AppProps {
 }
 
 export class AppView extends BaseView<AppViewProps, AppViewModel> {
@@ -34,7 +35,7 @@ export class AppView extends BaseView<AppViewProps, AppViewModel> {
 
   public static updateDefaultPortalContainer = updateDefaultContainer;
 
-  static defaultProps = {
+  static defaultProps: Partial<AppProps> = {
     viewMap: ViewMap,
     guide: DEBUG,
   };

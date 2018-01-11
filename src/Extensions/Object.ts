@@ -4,7 +4,7 @@ export function isObject(value: any): value is {} {
   return typeof value === 'object' || value instanceof Object;
 }
 
-export function trim<T extends {}>(obj: T, trimNull = true): Partial<T> {
+export function trim<T extends {}>(obj: T, trimNull = true): T {
   if (isObject(obj)) {
     return Iterable
       .from(Object.keys(obj))
@@ -23,56 +23,48 @@ export function trim<T extends {}>(obj: T, trimNull = true): Partial<T> {
   return obj;
 }
 
-export function assign<T>(target: any, ...sources: any[]): T {
-  if (target == null) {
-    target = {};
-  }
-
-  return sources
-    .filter(x => x != null)
-    .reduce(
-      (to, source) => {
-        Object
-          .keys(source)
-          // .filter(key => Object.prototype.hasOwnProperty.call(source, key))
-          .forEach(key => {
-            to[key] = source[key];
-          });
-
-        return to;
-      },
-      target,
-    );
-}
-
-export interface RestResult<TProps, TRest> {
-  props: TProps;
-  rest: TRest;
+export interface RestResult<P, T, R> {
+  props: T;
+  rest: Omit2<P, T, R>;
+  removals: R;
 }
 
 // this extension solves the Unknown Prop Warning that is experienced in
 // typescript when using Rest and Spread Properties
 // see: https://facebook.github.io/react/warnings/unknown-prop.html
 // see: https://facebook.github.io/react/docs/transferring-props.html
-export function rest<TProps, TRest extends StringMap<any>>(
-  data: TRest, propsCreator?: (x: TRest) => TProps,
-  ...omits: string[],
-): RestResult<TProps, TRest> {
-  const props = propsCreator == null ? <TProps>{} : propsCreator(data);
+export function rest<P extends {}, T, R extends {} = {}>(
+  data: P,
+  propsCreator?: (x: P) => T,
+  removals?: R,
+): RestResult<P, T, R> {
+  const map = {
+    data: <StringMap<any>>data || {},
+    props: (propsCreator == null ? undefined : propsCreator(data)) || {},
+    removals: removals || {},
+  };
+
+  const result = {
+    rest: <StringMap<any>>{},
+    removals: <StringMap<any>>{},
+  };
 
   const restParams = Object
     .keys(data)
-    .filter(key => props.hasOwnProperty(key) === false && omits.indexOf(key) < 0)
-    .reduce(
-      (r, key) => {
-        r[key] = data[key];
+    .forEach(key => {
+      if (map.removals.hasOwnProperty(key)) {
+        result.removals[key] = map.data[key];
+      }
+      else if (map.props.hasOwnProperty(key) === false) {
+        result.rest[key] = map.data[key];
+      }
+    });
 
-        return r;
-      },
-      <TRest>{},
-    );
-
-  return { props, rest: restParams };
+  return {
+    props: <T>map.props,
+    rest: <Omit2<P, T, R>>result.rest,
+    removals: <R>result.removals,
+  };
 }
 
 export interface NamedObject {
@@ -88,45 +80,64 @@ export function getName(
   undefinedValue = 'undefined',
   isStatic = false,
 ): string {
-  if (source != null) {
-    const nameSource: NamedObject = source;
+  if (source == null) {
+    return undefinedValue;
+  }
 
-    if (String.isString(nameSource)) {
-      return nameSource;
-    }
-    else if (!String.isNullOrEmpty(nameSource.displayName)) {
-      return nameSource.displayName;
-    }
-    else if (!String.isNullOrEmpty(nameSource.typeName)) {
-      return nameSource.typeName;
-    }
-    else if (!String.isNullOrEmpty(nameSource.name)) {
-      return nameSource.name;
-    }
-    else if (nameSource.constructor != null) {
-      // this allows us to inspect the static properties of the source object
-      // but we don't want to go beyond the the static properties
-      if (isStatic === false) {
-        const name = getName(nameSource.constructor, undefinedValue, true);
+  // first check if we're a string
+  if (String.isString(source)) {
+    return source;
+  }
 
-        if (String.isNullOrEmpty(name) === false) {
-          return name;
-        }
-      }
-      else {
-        // IE is pretty dumb and doesn't expose any useful naming properties
-        // so we can try and extract it from the toString()
-        let match = /function (.+)\(/.exec(nameSource.toString());
-        if (match != null && match.length >= 2) {
-          if (String.isNullOrEmpty(match[1]) === false) {
-            return match[1];
-          }
-        }
+  // check if this is a function and try and extract the name directly
+  if (source instanceof Function && String.isString(source.name)) {
+    return source.name;
+  }
+
+  const nameSource: NamedObject = source;
+
+  // then check the static sources
+  if (nameSource.constructor != null) {
+    if (!String.isNullOrEmpty(nameSource.constructor.displayName)) {
+      return nameSource.constructor.displayName;
+    }
+
+    if (!String.isNullOrEmpty(nameSource.constructor.typeName)) {
+      return nameSource.constructor.typeName;
+    }
+
+    if (!String.isNullOrEmpty(nameSource.constructor.name)) {
+      return nameSource.constructor.name;
+    }
+  }
+
+  // now check the instance sources
+  if (!String.isNullOrEmpty(nameSource.displayName)) {
+    return nameSource.displayName;
+  }
+
+  if (!String.isNullOrEmpty(nameSource.typeName)) {
+    return nameSource.typeName;
+  }
+
+  if (!String.isNullOrEmpty(nameSource.name)) {
+    return nameSource.name;
+  }
+
+  // try and extract the name from the toString() reprenstation
+  // IE is pretty dumb and doesn't expose any useful naming properties
+  // but this seems to work reliably for some objects
+  if (nameSource.constructor != null) {
+    let match = /function (.+)\(/.exec(nameSource.constructor.toString());
+    if (match != null && match.length >= 2) {
+      if (String.isNullOrEmpty(match[1]) === false) {
+        return match[1];
       }
     }
   }
 
-  return undefinedValue;
+  // finally fallback onto simple toString()
+  return nameSource.toString();
 }
 
 export interface EnumPropertyDescriptor<T> {

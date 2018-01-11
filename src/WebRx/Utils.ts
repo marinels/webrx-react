@@ -192,7 +192,7 @@ export function logMemberObservables(logger: Logging.Logger, source: StringMap<a
     .toArray();
 }
 
-export function getObservableOrAlert<T, TError>(
+export function getObservableOrAlert<T, TError = Error>(
   observableFactory: () => Observable<T>,
   header?: string,
   style?: string,
@@ -208,7 +208,7 @@ export function getObservableOrAlert<T, TError>(
     });
 }
 
-export function getObservableResultOrAlert<TResult, TError>(
+export function getObservableResultOrAlert<TResult, TError = Error>(
   resultFactory: () => TResult,
   header?: string,
   style?: string,
@@ -224,7 +224,7 @@ export function getObservableResultOrAlert<TResult, TError>(
   );
 }
 
-export function subscribeOrAlert<T, TError>(
+export function subscribeOrAlert<T, TError = Error>(
   observableFactory: () => Observable<T>,
   header: string,
   onNext: (value: T) => void,

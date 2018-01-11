@@ -17,13 +17,13 @@ export interface PageHeaderProps {
   branduri?: string;
 }
 
-export interface PageHeaderViewProps extends BaseViewProps<PageHeaderViewModel, PageHeaderView>, PageHeaderProps {
+export interface PageHeaderViewProps extends BaseViewProps<PageHeaderViewModel>, PageHeaderProps {
 }
 
 export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderViewModel> {
   public static displayName = 'PageHeaderView';
 
-  static defaultProps = {
+  static defaultProps: Partial<PageHeaderProps> = {
     id: 'page-header',
     brand: 'webrx-react Rocks!!!',
   };

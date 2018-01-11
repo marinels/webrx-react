@@ -1,7 +1,7 @@
 import { Observable, Subject, Subscription, Observer, AjaxRequest } from 'rxjs';
 import { AnonymousSubscription } from 'rxjs/Subscription';
 
-import { wx, Property, Command } from '../WebRx';
+import { wx, WebRxStatic, Property, Command } from '../WebRx';
 import { Logger, getLogger } from '../Utils/Logging';
 import { getWindowLocation, joinPath } from '../Routing';
 import { HttpRequestMethod, SampleDataStore, SampleDataApi, SampleDataCreator, StoreApi } from './Interfaces';
@@ -10,9 +10,10 @@ import { getRequest } from './Helpers';
 export class ObservableApi implements StoreApi {
   public static displayName = 'ObservableApi';
 
-  protected readonly logger: Logger = getLogger(ObservableApi.displayName);
-  protected readonly wx = wx;
+  protected readonly logger: Logger;
+  protected readonly wx: WebRxStatic;
   protected sampleData: SampleDataApi | undefined;
+  protected readonly sampleDataCreator: SampleDataCreator | undefined;
 
   public readonly path: string;
   public readonly base: string;
@@ -20,11 +21,20 @@ export class ObservableApi implements StoreApi {
 
   constructor(path: string, sampleData?: SampleDataCreator);
   constructor(path: string, base?: string, sampleData?: SampleDataCreator)
-  constructor(path: string, baseOrSampleData?: string | SampleDataCreator, protected readonly sampleDataCreator?: SampleDataCreator) {
+  constructor(path: string, baseOrSampleData?: string | SampleDataCreator, sampleDataCreator?: SampleDataCreator) {
     const windowLocation = getWindowLocation() || <Location>{};
 
+    this.logger = getLogger(ObservableApi.displayName);
+    this.wx = wx;
+
+    if (WEBPACK_DEV_SERVER) {
+      this.sampleDataCreator = sampleDataCreator;
+    }
+
     if (baseOrSampleData instanceof Function) {
-      this.sampleDataCreator = baseOrSampleData;
+      if (WEBPACK_DEV_SERVER) {
+        this.sampleDataCreator = baseOrSampleData;
+      }
       baseOrSampleData = undefined;
     }
 
@@ -67,7 +77,7 @@ export class ObservableApi implements StoreApi {
         // use sampleData if it has been defined
         return sampleData == null ?
           getRequest<T>(action, this.getRequestUri(action, baseUri), this.logger, method, params, data, options) :
-          sampleData.observe<T>(action, params);
+          sampleData.observe<T>(action, params, data);
       });
   }
 

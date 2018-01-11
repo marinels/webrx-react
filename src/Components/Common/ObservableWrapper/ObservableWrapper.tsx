@@ -16,7 +16,7 @@ export interface ObservableWrapperState {
 }
 
 export class ObservableWrapper extends React.Component<ObservableWrapperComponentProps, ObservableWrapperState> {
-  private static defaultProps = {
+  static defaultProps: Partial<ObservableWrapperProps> = {
     render: (x: any) => x,
   };
 
@@ -29,8 +29,10 @@ export class ObservableWrapper extends React.Component<ObservableWrapperComponen
     this.subscription = this.wx
       .whenAny(this.property, x => x)
       .subscribe(value => {
-        this.setState({
-          value,
+        this.setState((prevState, props) => {
+          return {
+            value,
+          };
         });
       });
   }

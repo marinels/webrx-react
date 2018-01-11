@@ -2,12 +2,12 @@ import * as React from 'react';
 import { Iterable } from 'ix';
 
 import { IterableLike } from '../../../WebRx';
-import { Panel, StackPanel, PanelItemProps, PanelRenderProps, PanelFragment } from '../Panel';
+import { Panel, StackPanel, PanelItemProps, PanelItemContext, PanelRenderProps, PanelFragment } from '../Panel';
 
 export type ViewTemplate = (itemsPanel: PanelFragment, itemsPresenter: ItemsPresenter) => JSX.Element | null | false;
-export type ItemsPanelTemplate = (itemTemplates: Array<PanelFragment>, itemsPresenter: ItemsPresenter, items: Array<{}> | undefined) => PanelFragment;
+export type ItemsPanelTemplate<T = {}> = (itemTemplates: Array<PanelFragment>, itemsPresenter: ItemsPresenter, items: Array<T> | undefined) => PanelFragment;
 
-export interface ItemsPresenterTemplateProps {
+export interface ItemsPresenterTemplateProps<T = {}> {
   /**
    * template that wraps the entire control.
    * use this to compose the exterior of the the view.
@@ -20,32 +20,33 @@ export interface ItemsPresenterTemplateProps {
    * this template can control how items are rendered next to one another
    * (i.e., wrapping, stack, grid, etc...)
    */
-  itemsPanelTemplate?: ItemsPanelTemplate;
+  itemsPanelTemplate?: ItemsPanelTemplate<T>;
 
   /**
    * template to render each item
    */
-  itemTemplate?: (item: {}, index: number) => PanelFragment;
+  itemTemplate?: (item: T, index: number, context?: any) => PanelFragment;
 }
 
-export interface ItemsPresenterSourceProps {
+export interface ItemsPresenterSourceProps<T = {}> {
   /**
    * data source of items to render
    * if omitted then component children is used in place
    */
-  itemsSource?: IterableLike<{}>;
+  itemsSource?: IterableLike<T>;
 }
 
-export interface ItemsPresenterProps extends ItemsPresenterTemplateProps, ItemsPresenterSourceProps, PanelItemProps, PanelRenderProps {
+export interface ItemsPresenterProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ItemsPresenterTemplateProps<T>, ItemsPresenterSourceProps<T>, PanelItemProps<T, TContext>, PanelRenderProps {
 }
 
-export interface ItemsPresenterComponentProps extends React.HTMLAttributes<ItemsPresenter>, ItemsPresenterProps {
+export interface ItemsPresenterComponentProps extends React.HTMLProps<any>, ItemsPresenterProps {
+  fill?: boolean;
 }
 
 export class ItemsPresenter extends React.Component<ItemsPresenterComponentProps> {
   public static displayName = 'ItemsPresenter';
 
-  public static defaultItemTemplate(item: {}, index: number) {
+  public static defaultItemTemplate(item: {}, index: number, context?: any) {
     return (
       <div key={ index }>{ String.stringify(item) }</div>
     );
@@ -58,6 +59,7 @@ export class ItemsPresenter extends React.Component<ItemsPresenterComponentProps
         itemStyle={ itemsPresenter.props.itemStyle }
         itemProps={ itemsPresenter.props.itemProps }
         compact={ itemsPresenter.props.compact }
+        emptyContent={ itemsPresenter.props.emptyContent }
       >
         { itemTemplates }
       </StackPanel>
@@ -66,8 +68,8 @@ export class ItemsPresenter extends React.Component<ItemsPresenterComponentProps
 
   public static defaultViewTemplate(itemsPanel: PanelFragment, itemsPresenter: ItemsPresenter) {
     const { className, props, rest } = itemsPresenter.restProps(x => {
-      const { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact } = x;
-      return { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact };
+      const { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent } = x;
+      return { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent };
     });
 
     return (
@@ -140,12 +142,14 @@ export class ItemsPresenter extends React.Component<ItemsPresenterComponentProps
     const template = this.props.viewTemplate || ItemsPresenter.defaultViewTemplate;
     const itemsPanel = this.renderPanelTemplate();
 
-    if (React.isValidElement(itemsPanel)) {
+    if (React.isValidElement<any>(itemsPanel)) {
       const itemsPresenterPanelProps = Object.trim({
         itemClassName: this.props.itemClassName,
         itemStyle: this.props.itemStyle,
         itemProps: this.props.itemProps,
         compact: this.props.compact,
+        emptyContent: this.props.emptyContent,
+        fill: this.props.fill,
       });
 
       const itemsPanelProps = React.isValidElement(itemsPanel) ? itemsPanel.props : {};

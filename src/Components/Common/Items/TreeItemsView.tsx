@@ -9,6 +9,7 @@ export interface TreeItemsProps extends ItemsProps, TreeItemFacadeProps {
 }
 
 export interface TreeItemsViewProps extends ItemsViewProps, TreeItemsProps {
+  fill?: boolean;
 }
 
 export class TreeItemsView extends React.Component<TreeItemsViewProps> {
@@ -16,8 +17,8 @@ export class TreeItemsView extends React.Component<TreeItemsViewProps> {
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact } = x;
-      return { itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact };
+      const { itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, overrideExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent } = x;
+      return { itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, overrideExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent };
     });
 
     return (
@@ -33,7 +34,8 @@ export class TreeItemsView extends React.Component<TreeItemsViewProps> {
         itemStyle={ props.itemStyle }
         itemProps={ props.itemProps }
         compact={ props.compact }
-        { ...React.Component.trimProps(rest) }
+        emptyContent={ props.emptyContent }
+        { ...this.trimProps(rest) }
       />
     );
   }

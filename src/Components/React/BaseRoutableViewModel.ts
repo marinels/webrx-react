@@ -4,7 +4,6 @@ import { ReadOnlyProperty, Property, Command } from '../../WebRx';
 import { BaseViewModel } from './BaseViewModel';
 import { HeaderCommandAction, HeaderMenu } from './Actions';
 import { PubSub } from '../../Utils';
-import { RoutingStateChangedKey } from '../../Events';
 import { HandlerRoutingStateChanged, RoutingStateHandler, Search } from './Interfaces';
 
 export function isRoutableViewModel(value: any): value is BaseRoutableViewModel<any> {
@@ -23,13 +22,13 @@ export function isRoutableViewModel(value: any): value is BaseRoutableViewModel<
 export interface RoutingBreadcrumb {
   key: any;
   content: string;
-  href: string;
+  href?: string;
   target?: string;
   title?: string;
   tooltip?: any;
 }
 
-export abstract class BaseRoutableViewModel<T> extends BaseViewModel {
+export abstract class BaseRoutableViewModel<T> extends BaseViewModel implements RoutingStateHandler<T> {
   public static displayName = 'BaseRoutableViewModel';
 
   protected readonly updateDocumentTitle: Command<string>;
@@ -38,7 +37,7 @@ export abstract class BaseRoutableViewModel<T> extends BaseViewModel {
   public readonly documentTitle: ReadOnlyProperty<string>;
   public readonly breadcrumbs: ReadOnlyProperty<Array<RoutingBreadcrumb> | undefined>;
 
-  constructor(routingStateRateLimit = 25) {
+  constructor() {
     super();
 
     this.updateDocumentTitle = this.wx.command((title: any) => (title || '').toString());
@@ -48,26 +47,6 @@ export abstract class BaseRoutableViewModel<T> extends BaseViewModel {
     this.breadcrumbs = this.wx
       .whenAny(this.updateRoutingBreadcrumbs.results, x => x)
       .toProperty();
-
-    this.addSubscription(
-      PubSub
-        .observe<HandlerRoutingStateChanged>(RoutingStateChangedKey)
-        .debounceTime(routingStateRateLimit)
-        .map(change => this.createRoutingState(change))
-        .filterNull()
-        .subscribe(
-          (state: T) => {
-            this.navToState(state);
-          },
-          error => {
-            this.alertForError(error, 'Routing State Changed Error');
-          },
-        ),
-    );
-  }
-
-  protected navToState(state: {}, uriEncode = false) {
-    this.navTo(this.routeManager.currentRoute.value.path, state, true, uriEncode);
   }
 
   isRoutingStateHandler() {

@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { ListGroup, ListGroupProps, ListGroupItem } from 'react-bootstrap';
 
-import { PanelItemProps, PanelTemplateProps, Panel } from './Panel';
+import { PanelItemProps, PanelItemContext, PanelTemplateProps, Panel } from './Panel';
 
-export interface ListGroupPanelProps extends PanelItemProps, PanelTemplateProps {
+export interface ListGroupPanelProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends PanelItemProps<T, TContext>, PanelTemplateProps {
   componentClass?: React.ReactType;
   fill?: boolean;
 }

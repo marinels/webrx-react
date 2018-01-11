@@ -39,7 +39,7 @@ const ArrowOffset = 20;
 export class ContextMenu extends React.Component<ContextMenuComponentProps, ContextMenuState> {
   public static displayName = 'ContextMenu';
 
-  constructor(props?: ContextMenuProps, context?: any) {
+  constructor(props: ContextMenuComponentProps, context?: any) {
     super(props, context);
 
     this.state = {
@@ -57,19 +57,23 @@ export class ContextMenu extends React.Component<ContextMenuComponentProps, Cont
       e.preventDefault();
 
       // update our state
-      this.setState({
-        isVisible,
-        left: e.pageX,
-        top: e.pageY - ArrowOffset,
+      this.setState((prevState, props) => {
+        return {
+          isVisible,
+          left: e.pageX,
+          top: e.pageY - ArrowOffset,
+        };
       });
     }
   }
 
   private hide() {
-    this.setState({
-      isVisible: false,
-      left: undefined,
-      top: undefined,
+    this.setState((prevState, props) => {
+      return {
+        isVisible: false,
+        left: undefined,
+        top: undefined,
+      };
     });
   }
 

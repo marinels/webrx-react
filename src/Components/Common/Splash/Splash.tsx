@@ -12,13 +12,13 @@ export interface SplashProps {
   fluid?: boolean;
 }
 
-export interface SplashComponentProps extends React.HTMLProps<Splash>, SplashProps {
+export interface SplashComponentProps extends React.HTMLProps<any>, SplashProps {
 }
 
 export class Splash extends React.Component<SplashComponentProps> {
   public static displayName = 'Splash';
 
-  static defaultProps = {
+  static defaultProps: Partial<SplashProps> = {
     fluid: false,
   };
 

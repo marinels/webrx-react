@@ -8,16 +8,16 @@ import { ListItemsViewTemplate, ListItemsViewTemplateProps } from './ListItemsVi
 import { PanelFragment, PanelItemContext } from '../Panel/Panel';
 import { StackPanel } from '../Panel/StackPanel';
 
-export interface PanelViewProps extends ListItemsViewTemplateProps {
-  itemsPanelTemplate?: ItemsPanelTemplate;
+export interface PanelViewProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ListItemsViewTemplateProps<T, TContext> {
+  itemsPanelTemplate?: ItemsPanelTemplate<T>;
   selectedProps?: SelectedPropsFunction;
 }
 
-export interface PanelViewComponentProps extends React.HTMLProps<PanelView>, PanelViewProps {
+export interface PanelViewComponentProps extends React.HTMLProps<any>, PanelViewProps {
 }
 
 export class PanelView extends ListItemsViewTemplate<PanelViewComponentProps> {
-  public static getSelectedProps(isSelected: boolean, elem: React.ReactElement<React.HTMLAttributes<{}>>) {
+  public static getSelectedProps(isSelected: boolean, elem: React.ReactElement<React.HTMLProps<any>>) {
     return {
       className: classNames({ 'Selected': isSelected }, elem.props.className),
     };
@@ -35,13 +35,13 @@ export class PanelView extends ListItemsViewTemplate<PanelViewComponentProps> {
         viewModel={ this.getListItems() }
         itemsPanelTemplate={ this.getItemsPanelTemplateFunction() }
         { ...this.getItemsProps() }
-        { ...React.Component.trimProps(rest) }
+        { ...this.trimProps(rest) }
       />
     );
   }
 
   protected getItemsPanelTemplate(panelFragment: PanelFragment, itemTemplates: Array<PanelFragment>, itemsPresenter: ItemsPresenter, items: Array<{}> | undefined) {
-    if (React.isValidElement(panelFragment)) {
+    if (React.isValidElement<any>(panelFragment)) {
       const itemsPanelTemplateProps = Object.trim({
         itemTemplate: (fragment: PanelFragment, context: PanelItemContext) => {
           return this.renderPanelItem(fragment, context, items);

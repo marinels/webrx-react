@@ -1,5 +1,7 @@
 import { Observable, AjaxRequest } from 'rxjs';
 
+import { ObservableLike } from '../WebRx';
+
 export enum HttpRequestMethod {
   GET,
   POST,
@@ -17,7 +19,7 @@ export interface ObservableApiError {
   response?: any;
 }
 
-export type SampleDataAction = (params: any) => Observable<any>;
+export type SampleDataAction = (params?: any, data?: any) => (ObservableLike<{} | undefined>);
 export type SampleDataActionSet = StringMap<SampleDataAction>;
 
 export interface SampleDataStore {
@@ -25,7 +27,7 @@ export interface SampleDataStore {
 }
 
 export interface SampleDataApi {
-  observe<T>(action: string, params?: any): Observable<T>;
+  observe<T>(action: string, params?: any, data?: any, cloneResult?: boolean): Observable<T>;
   getStoreValue<T, TStore extends SampleDataStore>(name: string, selector: (store: TStore) => T): T | undefined;
 }
 

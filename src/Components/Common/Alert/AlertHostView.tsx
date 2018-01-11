@@ -10,7 +10,7 @@ import { AlertViewModel } from './AlertViewModel';
 export interface AlertHostProps {
 }
 
-export interface AlertHostViewProps extends BaseViewProps<AlertHostViewModel, AlertHostView>, AlertHostProps {
+export interface AlertHostViewProps extends BaseViewProps<AlertHostViewModel>, AlertHostProps {
 }
 
 export class AlertHostView extends BaseView<AlertHostViewProps, AlertHostViewModel> {

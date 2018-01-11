@@ -14,16 +14,16 @@ export interface PageFooterProps {
   hideDimensions?: boolean;
 }
 
-export interface PageFooterViewProps extends BaseViewProps<PageFooterViewModel, PageFooterView>, PageFooterProps {
+export interface PageFooterViewProps extends BaseViewProps<PageFooterViewModel>, PageFooterProps {
 }
 
 export class PageFooterView extends BaseView<PageFooterViewProps, PageFooterViewModel> {
   public static displayName = 'PageFooterView';
 
-  static defaultProps = {
+  static defaultProps: Partial<PageFooterProps> = {
   };
 
-  constructor(props?: PageFooterViewProps, context?: any) {
+  constructor(props: PageFooterViewProps, context?: any) {
     super(props, context);
 
     this.bindObservableToCommand(

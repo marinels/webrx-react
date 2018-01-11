@@ -21,7 +21,7 @@ export interface Property<T> extends ReadOnlyProperty<T> {
   value: T;
 }
 
-export interface Command<T> {
+export interface Command<T = any> {
   readonly isExecutingObservable: Observable<boolean>;
   readonly canExecuteObservable: Observable<boolean>;
   readonly requests: Observable<T>;

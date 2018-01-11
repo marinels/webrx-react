@@ -137,6 +137,10 @@ export function create(content: any, header?: string, style?: string, timeout?: 
   Default.create(content, header, style, timeout);
 }
 
+export type AlertCreator = typeof create;
+
 export function createForError<TError>(error: TError, header?: string, style?: string, timeout?: number, formatter?: (e: TError) => any) {
   Default.createForError(error, header, style, timeout, formatter);
 }
+
+export type ErrorAlertCreator = typeof createForError;

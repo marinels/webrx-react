@@ -5,25 +5,31 @@ import { Icon } from 'react-fa';
 import { BaseView, BaseViewProps } from '../../React';
 import { SortDirection } from '../../../Utils/Compare';
 import { ListItemsView, ListItemsProps } from '../ListItems/ListItemsView';
-import { PanelFragment } from '../Panel/Panel';
+import { PanelFragment, PanelItemContext } from '../Panel/Panel';
 import { ItemsPresenter } from '../Items/ItemsPresenter';
-import { GridView, GridViewProps, GridViewColumn } from '../ListItems/GridView';
+import { GridViewColumns, GridViewColumn } from '../ListItems/GridViewColumn';
+import { GridView } from '../ListItems/GridView';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { PagerView, PagerProps } from '../Pager/PagerView';
+import { Loading } from '../Loading/Loading';
 import { DataGridViewModel, DataSourceRequest } from './DataGridViewModel';
 
-export interface DataGridProps extends ListItemsProps {
+export interface DataGridProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ListItemsProps<T, TContext> {
   pager?: boolean | PagerProps | {};
+  loadingContent?: React.ReactNode | (() => React.ReactNode);
 }
 
-export interface DataGridViewProps extends BaseViewProps<DataGridViewModel<{}>, DataGridView>, DataGridProps {
+export interface DataGridViewProps extends BaseViewProps<DataGridViewModel<{}>>, DataGridProps {
   fill?: boolean;
 }
 
 export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<{}>> {
   public static displayName = 'DataGridView';
 
-  static defaultProps = {
+  public static readonly Columns = GridViewColumns;
+
+  static defaultProps: Partial<DataGridProps> = {
+    loadingContent: 'Loading Data...',
   };
 
   updateOn(viewModel: Readonly<DataGridViewModel<{}>>) {
@@ -34,42 +40,51 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
 
   render() {
     const { className, children, props, rest } = this.restProps(x => {
-      const { pager, fill, view, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact } = x;
-      return { pager, fill, view, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact };
+      const { pager, loadingContent, fill, view, viewProps, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent } = x;
+      return { pager, loadingContent, fill, view, viewProps, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent };
     });
 
-    return this.wxr.renderSizedLoadable(this.viewModel.isLoading,
-      'Loading Data...',
-      25,
-      () => {
-        const dataGridView = ListItemsView.getListItemsView(this.props, this.renderDefaultDataGridView.bind(this));
+    return (
+      <div { ...rest } className={ this.wxr.classNames('DataGrid', className) }>
+        {
+          Loading.renderLoadable(
+            this.viewModel.isLoading,
+            props.loadingContent!,
+            () => {
+              const dataGridView = ListItemsView.getListItemsView(this.props, this.renderDefaultDataGridView.bind(this));
 
-        const pagerView = this.wxr.renderNullable(
-          props.pager,
-          x => React.isValidElement(x) ? x : (
-            <PagerView viewModel={ this.viewModel.pager! } { ...(x === true ? {} : x) } />
-          ),
-          undefined,
-          x => x !== false && this.viewModel.pager != null,
-        );
+              const pagerView = this.wxr
+                .renderNullable(
+                  props.pager,
+                  x => React.isValidElement(x) ? x : (
+                    <PagerView viewModel={ this.viewModel.pager! } { ...(x === true ? {} : x) } />
+                  ),
+                  undefined,
+                  x => x !== false && this.viewModel.pager != null,
+                );
 
-        return (
-          <div { ...rest } className={ this.wxr.classNames('DataGrid', className) }>
-            <ListItemsView
-              viewModel={ this.viewModel }
-              view={ dataGridView }
-              viewTemplate={ props.viewTemplate }
-              itemsPanelTemplate={ props.itemsPanelTemplate }
-              itemTemplate={ props.itemTemplate }
-              itemClassName={ props.itemClassName }
-              itemStyle={ props.itemStyle }
-              itemProps={ props.itemProps }
-              compact={ props.compact }
-            />
-            { pagerView }
-          </div>
-        );
-      },
+              return (
+                <div className='DataGrid-container'>
+                  <ListItemsView
+                    viewModel={ this.viewModel }
+                    view={ dataGridView }
+                    viewProps={ props.viewProps }
+                    viewTemplate={ props.viewTemplate }
+                    itemsPanelTemplate={ props.itemsPanelTemplate }
+                    itemTemplate={ props.itemTemplate }
+                    itemClassName={ props.itemClassName }
+                    itemStyle={ props.itemStyle }
+                    itemProps={ props.itemProps }
+                    compact={ props.compact }
+                    emptyContent={ props.emptyContent }
+                  />
+                  { pagerView }
+                </div>
+              );
+            },
+          )
+        }
+      </div>
     );
   }
 

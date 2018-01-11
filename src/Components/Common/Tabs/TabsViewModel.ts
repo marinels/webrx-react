@@ -1,13 +1,13 @@
 import { Observable } from 'rxjs';
 
 import { ReadOnlyProperty, Command } from '../../../WebRx';
-import { BaseViewModel, RoutingStateHandler } from '../../React';
+import { BaseViewModel, RoutingStateHandler, HandlerRoutingStateChanged } from '../../React';
 
 export interface TabsRoutingState {
   tab?: number;
 }
 
-export class TabsViewModel<T> extends BaseViewModel implements RoutingStateHandler<TabsRoutingState> {
+export class TabsViewModel<T = any> extends BaseViewModel implements RoutingStateHandler<TabsRoutingState> {
   public static displayName = 'TabsViewModel';
 
   public readonly tabs: ReadOnlyProperty<T[]>;
@@ -74,13 +74,15 @@ export class TabsViewModel<T> extends BaseViewModel implements RoutingStateHandl
     return true;
   }
 
-  createRoutingState(): TabsRoutingState {
+  createRoutingState(changed?: HandlerRoutingStateChanged): TabsRoutingState {
     return Object.trim({
-      tab: this.getRoutingStateValue(this.selectedIndex.value, 1),
+      tab: this.getRoutingStateValue(this.selectedIndex.value, 0),
     });
   }
 
   applyRoutingState(state: TabsRoutingState) {
-    this.selectIndex.execute(state.tab || 1);
+    if (this.selectedIndex.value !== state.tab) {
+      this.selectIndex.execute(state.tab == null ? 0 : state.tab);
+    }
   }
 }

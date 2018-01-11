@@ -14,7 +14,7 @@ export interface ProfilePictureProps {
   iconSize?: IconSize;
 }
 
-export interface ProfilePictureComponentProps extends React.HTMLProps<ProfilePicture>, ProfilePictureProps {
+export interface ProfilePictureComponentProps extends React.HTMLProps<any>, ProfilePictureProps {
 }
 
 const dataUriPrefix = 'data:image;base64,';
@@ -22,7 +22,7 @@ const dataUriPrefix = 'data:image;base64,';
 export class ProfilePicture extends React.Component<ProfilePictureComponentProps> {
   public static displayName = 'ProfilePicture';
 
-  static defaultProps = {
+  static defaultProps: Partial<ProfilePictureProps> = {
     size: 65,
     responsive: false,
     rounded: false,
@@ -75,7 +75,7 @@ export class ProfilePicture extends React.Component<ProfilePictureComponentProps
 
     return (
       <div { ...rest } className={ this.wxr.classNames('ProfilePicture', 'ProfilePicture-icon', iconClassNames, className) } style={ iconStyle }>
-        <Icon name={ props.defaultIcon! } size={ props.iconSize } style={ ({ lineHeight: `${ props.size }px` }) } />
+        <Icon name={ props.defaultIcon! } size={ props.iconSize } />
       </div>
     );
   }
