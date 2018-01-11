@@ -52,21 +52,21 @@ export const demoViewMap: ViewActivatorMap = {
       <InputGroup>
         <FormControl id='CommandButtonParamInput' type='text' placeholder='Enter Command Parameter Text Here...' />
         <InputGroup.Button>
-          <Components.CommandButton bsSize='large'
+          <Components.CommandButton id='demo-cmd-btn-1' bsSize='large'
             commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
             command={Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
             tooltip='Embedded Command Tooltips!!!'
           >
             Execute Command
           </Components.CommandButton>
-          <Components.CommandButton bsSize='large'
+          <Components.CommandButton id='demo-cmd-btn-2' bsSize='large'
             commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
             command={Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
             tooltip={ (<Popover id='cmd-btn-custom-tt' placement='top'>Custom Tooltip</Popover>) }
           >
             Same Command
           </Components.CommandButton>
-          <Components.CommandButton bsSize='large'
+          <Components.CommandButton id='demo-cmd-btn-3' bsSize='large'
             commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
             command={Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
             tooltip={(
@@ -260,83 +260,83 @@ export const demoViewMap: ViewActivatorMap = {
       <Grid fluid>
         <Row>
           <Col md={ 3 }>
-            <Components.ContentTooltip content='Just Text'>
+            <Components.ContentTooltip id='demo-content-tooltip-1' content='Just Text'>
               <Well>text content tooltip</Well>
             </Components.ContentTooltip>
           </Col>
           <Col md={ 3 }>
-            <Components.ContentTooltip content='Just Text' id='content-tt-1' className='content-tt-1' placement='top'>
-              <Well>text content tooltip with id, className, placement</Well>
+            <Components.ContentTooltip id='demo-content-tooltip-2' content='Just Text' className='content-tt-2' placement='top'>
+              <Well>text content tooltip with className, placement</Well>
             </Components.ContentTooltip>
           </Col>
           <Col md={ 3 }>
-            <Components.ContentTooltip content='Just Text' popover>
+            <Components.ContentTooltip id='demo-content-tooltip-3' content='Just Text' popover>
               <Well>text content tooltip as popover</Well>
             </Components.ContentTooltip>
           </Col>
           <Col md={ 3 }>
-            <Components.ContentTooltip content='Just Text' title='Popover Mode'>
+            <Components.ContentTooltip id='demo-content-tooltip-4' content='Just Text' title='Popover Mode'>
               <Well>text content tooltip as popover with title</Well>
             </Components.ContentTooltip>
           </Col>
         </Row>
         <Row>
           <Col md={ 3 }>
-            <Components.ContentTooltip content={ (<Tooltip children='Tooltip Component'/>) }>
+            <Components.ContentTooltip id='demo-content-tooltip-5' content={ (<Tooltip id='content-tt-5t' children='Tooltip Component'/>) }>
               <Well>Tooltip content tooltip</Well>
             </Components.ContentTooltip>
           </Col>
           <Col md={ 3 }>
-            <Components.ContentTooltip content={ (<Tooltip children='Tooltip Component'/>) } id='content-tt-2' className='content-tt-2' placement='top'>
-              <Well>Tooltip content tooltip with id, className, placement</Well>
+            <Components.ContentTooltip id='demo-content-tooltip-6' content={ (<Tooltip id='content-tt-6t' children='Tooltip Component'/>) } className='content-tt-6' placement='top'>
+              <Well>Tooltip content tooltip with className, placement</Well>
             </Components.ContentTooltip>
           </Col>
           <Col md={ 3 }>
-            <Components.ContentTooltip content={ (<Tooltip children='Tooltip Component'/>) } popover>
+            <Components.ContentTooltip id='demo-content-tooltip-7' content={ (<Tooltip id='content-tt-7t' children='Tooltip Component'/>) } popover>
               <Well>Tooltip content tooltip as popover</Well>
             </Components.ContentTooltip>
           </Col>
           <Col md={ 3 }>
-            <Components.ContentTooltip content={ (<Tooltip children='Tooltip Component'/>) } title='Popover Mode'>
+            <Components.ContentTooltip id='demo-content-tooltip-8' content={ (<Tooltip id='content-tt-8t' children='Tooltip Component'/>) } title='Popover Mode'>
               <Well>Tooltip content tooltip as popover with title</Well>
             </Components.ContentTooltip>
           </Col>
         </Row>
         <Row>
           <Col md={ 3 }>
-            <Components.ContentTooltip content={ (<Popover children='Popover Component'/>) }>
+            <Components.ContentTooltip id='demo-content-tooltip-9' content={ (<Popover id='content-tt-9p' children='Popover Component'/>) }>
               <Well>Popover content tooltip</Well>
             </Components.ContentTooltip>
           </Col>
           <Col md={ 3 }>
-            <Components.ContentTooltip content={ (<Popover children='Popover Component'/>) } id='content-tt-3' className='content-tt-3' placement='top'>
-              <Well>Popover content tooltip with id, className, placement</Well>
+            <Components.ContentTooltip id='demo-content-tooltip-10' content={ (<Popover id='content-tt-10p' children='Popover Component'/>) } className='content-tt-10' placement='top'>
+              <Well>Popover content tooltip with className, placement</Well>
             </Components.ContentTooltip>
           </Col>
           <Col md={ 3 }>
-            <Components.ContentTooltip content={ (<Popover children='Popover Component'/>) } popover>
+            <Components.ContentTooltip id='demo-content-tooltip-11' content={ (<Popover id='content-tt-11p' children='Popover Component'/>) } popover>
               <Well>Popover content tooltip as popover</Well>
             </Components.ContentTooltip>
           </Col>
           <Col md={ 3 }>
-            <Components.ContentTooltip content={ (<Popover children='Popover Component'/>) } title='Popover Mode'>
+            <Components.ContentTooltip id='demo-content-tooltip-12' content={ (<Popover id='content-tt-12p' children='Popover Component'/>) } title='Popover Mode'>
               <Well>Popover content tooltip as popover with title</Well>
             </Components.ContentTooltip>
           </Col>
         </Row>
         <Row>
           <Col md={ 3 }>
-            <Components.ContentTooltip content={ (<Tooltip children='Tooltip Component' id='content-tt-4' className='content-tt-4' placement='top' />) } id='content-tt-5' className='content-tt-5' placement='bottom'>
+            <Components.ContentTooltip id='demo-content-tooltip-13' content={ (<Tooltip id='content-tt-13t' children='Tooltip Component' className='content-tt-13t' placement='top' />) } className='content-tt-13' placement='bottom'>
               <Well>Tooltip content tooltip with overrides</Well>
             </Components.ContentTooltip>
           </Col>
           <Col md={ 3 }>
-            <Components.ContentTooltip content={ (<Popover children='Popover Component' id='content-tt-6' className='content-tt-6' placement='top' />) } id='content-tt-7' className='content-tt-7' placement='bottom'>
+            <Components.ContentTooltip id='demo-content-tooltip-14' content={ (<Popover id='content-tt-14p' children='Popover Component' className='content-tt-14p' placement='top' />) } className='content-tt-14' placement='bottom'>
               <Well>Popover content tooltip with overrides</Well>
             </Components.ContentTooltip>
           </Col>
           <Col md={ 3 }>
-            <Components.ContentTooltip content={ (<OverlayTrigger overlay={ (<Tooltip children='Tooltip Component' id='content-tt-7' className='content-tt-7' placement='top' />) } placement='left' />) } id='content-tt-8' className='content-tt-8' placement='bottom'>
+            <Components.ContentTooltip id='demo-content-tooltip-15' content={ (<OverlayTrigger overlay={ (<Tooltip id='content-tt-15t' children='Tooltip Component' className='content-tt-15t' placement='top' />) } placement='left' />) } className='content-tt-15' placement='bottom'>
               <Well>OverlayTrigger content tooltip with overrides</Well>
             </Components.ContentTooltip>
           </Col>
