@@ -56,12 +56,15 @@ export class ContextMenu extends React.Component<ContextMenuComponentProps, Cont
       e.stopPropagation();
       e.preventDefault();
 
+      const left = e.pageX;
+      const top = e.pageY - ArrowOffset;
+
       // update our state
       this.setState((prevState, props) => {
         return {
           isVisible,
-          left: e.pageX,
-          top: e.pageY - ArrowOffset,
+          left,
+          top,
         };
       });
     }
