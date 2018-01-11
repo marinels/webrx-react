@@ -25,6 +25,9 @@ module.exports = {
     // do not permit units applied to zero values
     'length-zero-no-unit': true,
 
+    // disable the descending-specificity rule (it forces out of context ordering of styles)
+    'no-descending-specificity': null,
+
     // ensure all properties are in alphabetical order
     'order/properties-alphabetical-order': true,
 

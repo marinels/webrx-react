@@ -96,6 +96,19 @@ export function getName(
 
   const nameSource: NamedObject = source;
 
+  // now check the instance sources
+  if (!String.isNullOrEmpty(nameSource.displayName)) {
+    return nameSource.displayName;
+  }
+
+  if (!String.isNullOrEmpty(nameSource.typeName)) {
+    return nameSource.typeName;
+  }
+
+  if (!String.isNullOrEmpty(nameSource.name)) {
+    return nameSource.name;
+  }
+
   // then check the static sources
   if (nameSource.constructor != null) {
     if (!String.isNullOrEmpty(nameSource.constructor.displayName)) {
@@ -109,19 +122,6 @@ export function getName(
     if (!String.isNullOrEmpty(nameSource.constructor.name)) {
       return nameSource.constructor.name;
     }
-  }
-
-  // now check the instance sources
-  if (!String.isNullOrEmpty(nameSource.displayName)) {
-    return nameSource.displayName;
-  }
-
-  if (!String.isNullOrEmpty(nameSource.typeName)) {
-    return nameSource.typeName;
-  }
-
-  if (!String.isNullOrEmpty(nameSource.name)) {
-    return nameSource.name;
   }
 
   // try and extract the name from the toString() reprenstation

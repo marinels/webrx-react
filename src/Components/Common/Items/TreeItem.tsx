@@ -67,6 +67,11 @@ export interface TreeItemRenderProps {
    * default is a '+' in a rounded square
    */
   collapsedIconName?: string;
+
+  /**
+   * flag to enable clicking anywhere on the node to toggle expansion state
+   */
+  clickToExpand?: boolean;
 }
 
 export interface TreeItemFacadeProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends TreeItemSourceProps<T>, TreeItemTemplateProps<T>, TreeItemRenderProps, ItemsPresenterTemplateProps<T>, PanelItemProps<T, TContext>, PanelRenderProps {
@@ -126,6 +131,7 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
         overrideExpanded={ props.overrideExpanded }
         expandedIconName={ props.expandedIconName }
         collapsedIconName={ props.collapsedIconName }
+        clickToExpand={ props.clickToExpand }
         viewTemplate={ props.viewTemplate }
         itemsPanelTemplate={ props.itemsPanelTemplate }
         itemTemplate={ props.itemTemplate }
@@ -140,7 +146,7 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
 
   public static defaultHeaderTemplate(item: {}, index: number, indent: Array<PanelFragment>, expander: PanelFragment, headerContent: PanelFragment, view: TreeItem) {
     return (
-      <div className='TreeItem-Header'>
+      <div className='TreeItem-Header' onClick={ view.props.clickToExpand ? view.toggleExpansion.bind(view) : undefined }>
         { indent }
         <div className='TreeItem-Expander'>
           { expander }
@@ -207,8 +213,8 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
 
   render() {
     const { className, props, rest, children } = this.restProps(x => {
-      const { item, index, itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, overrideExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent } = x;
-      return { item, index, itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, overrideExpanded, expandedIconName, collapsedIconName, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent };
+      const { item, index, itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, overrideExpanded, expandedIconName, collapsedIconName, clickToExpand, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent } = x;
+      return { item, index, itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, overrideExpanded, expandedIconName, collapsedIconName, clickToExpand, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent };
     });
 
     const headerContent = this.renderHeaderContent();
