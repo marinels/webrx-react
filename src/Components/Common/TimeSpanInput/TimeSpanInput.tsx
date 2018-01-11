@@ -155,16 +155,33 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
         bsClass={ props.bsClass } bsSize={ props.bsSize } controlId={ props.controlId }
         validationState={ String.isNullOrEmpty(this.state.error) ? undefined : 'error' }
       >
-        { this.renderButtons() }
+        { this.renderFormInput() }
         <FormControl.Feedback />
         { this.renderHelp() }
       </FormGroup>
     );
   }
 
-  protected renderInput() {
-    if (React.Children.count(this.props.children) > 0) {
-      return this.props.children;
+  protected renderFormInput() {
+    return (
+      <InputGroup>
+        { this.renderTextInput() }
+        { this.renderButtons() }
+      </InputGroup>
+    );
+  }
+
+  protected renderTextInput() {
+    if (React.Children.count(this.props.children) === 1) {
+      const formControl = React.Children.only(this.props.children);
+
+      const props = Object.assign({
+        value: this.state.input,
+        onChange: this.handleInput.bind(this),
+        onBlur: this.handleParse.bind(this),
+      }, formControl.props);
+
+      return React.cloneElement(formControl, props);
     }
 
     return (
@@ -178,24 +195,21 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
 
   protected renderButtons() {
     return (
-      <InputGroup>
-        { this.renderInput() }
-        <InputGroup.Button>
-          {
-            // this is a fake button to simulate a request to parse, but it really only forces blur
-          }
-          <CommandButton className='TimeSpanInput-adjustButton' onClick={ () => { return; } }>
-            <Icon name='refresh'/>
-          </CommandButton>
-          { this.renderDropdown() }
-          <CommandButton className='TimeSpanInput-adjustButton' componentClass='button' onClick={ this.handleIncreaseDuration.bind(this) }>
-            <Icon name='chevron-up'/>
-          </CommandButton>
-          <CommandButton className='TimeSpanInput-adjustButton' componentClass='button' onClick={ this.handleDecreaseDuration.bind(this) }>
-            <Icon name='chevron-down'/>
-          </CommandButton>
-        </InputGroup.Button>
-      </InputGroup>
+      <InputGroup.Button>
+        <CommandButton className='TimeSpanInput-adjustButton'
+          // this is a fake button to simulate a request to parse, but it really only forces blur
+          onClick={ () => { return; } }
+        >
+          <Icon name='refresh'/>
+        </CommandButton>
+        { this.renderDropdown() }
+        <CommandButton className='TimeSpanInput-adjustButton' componentClass='button' onClick={ this.handleIncreaseDuration.bind(this) }>
+          <Icon name='chevron-up'/>
+        </CommandButton>
+        <CommandButton className='TimeSpanInput-adjustButton' componentClass='button' onClick={ this.handleDecreaseDuration.bind(this) }>
+          <Icon name='chevron-down'/>
+        </CommandButton>
+      </InputGroup.Button>
     );
   }
 
