@@ -72,16 +72,20 @@ export class SelectableListItem extends React.Component<SelectableListItemCompon
   }
 
   protected getListItemProps(elem: React.ReactElement<any>): ListGroupItemProps {
+    const onClickElement: Function | undefined = elem.props.onClick;
+
     return Object.assign(
       {},
       this.props.selectedProps!(this.getIsSelected(), elem),
       {
-        onClick: this.handleClick.bind(this),
+        onClick: (e: React.MouseEvent<any>) => {
+          this.handleClick(e, onClickElement);
+        },
       },
     );
   }
 
-  protected handleClick(e: React.MouseEvent<any>) {
+  protected handleClick(e: React.MouseEvent<any>, onClickElement: Function | undefined) {
     e.stopPropagation();
     e.preventDefault();
 
@@ -102,6 +106,10 @@ export class SelectableListItem extends React.Component<SelectableListItemCompon
     }
     else {
       this.props.listItems.selectItem.execute(this.props.item);
+    }
+
+    if (onClickElement != null) {
+      onClickElement(e);
     }
   }
 }
