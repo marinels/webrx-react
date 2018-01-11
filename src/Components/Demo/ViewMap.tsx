@@ -578,7 +578,7 @@ export const demoViewMap: ViewActivatorMap = {
   TreeListItemsViewModel: (viewModel: Components.TreeListItemsViewModel<{}>, componentRoute: string) => {
     return (
       <Components.ListItemsView viewModel={ viewModel } itemTemplate={ sampleDataTemplate }>
-        <Components.TreeView itemsSource={ (x: SampleTreeData) => x.items } />
+        <Components.TreeView itemsSource={ (x: SampleTreeData) => x.items } clickToExpand />
       </Components.ListItemsView>
     );
   },
