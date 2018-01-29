@@ -97,6 +97,10 @@ export class CommonPanel extends React.Component<CommonPanelProps> {
             return a;
           }
 
+          if (a instanceof Function) {
+            return a(this);
+          }
+
           return (
             <CommonPanelActions section={ section }>
               {
