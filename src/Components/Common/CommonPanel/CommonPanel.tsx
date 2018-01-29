@@ -90,7 +90,11 @@ export class CommonPanel extends React.Component<CommonPanelProps> {
         actions,
         a => {
           if (React.isValidElement<any>(a)) {
-            return React.cloneElement(a, { section });
+            if (a.type === CommonPanelActions) {
+              return React.cloneElement(a, { section });
+            }
+
+            return a;
           }
 
           return (
