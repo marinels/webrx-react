@@ -66,9 +66,11 @@ export class ConsoleLogManager extends DelegateLogManager {
       );
 
       if (args != null && args.length > 0) {
-        args.forEach(x => {
-          this.logToConsole(level, x);
-        });
+        args
+          .filterNull()
+          .forEach(x => {
+            this.logToConsole(level, x);
+          });
       }
     } catch (e) {
       // do nothing
