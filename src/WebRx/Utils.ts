@@ -198,13 +198,14 @@ export function getObservableOrAlert<T, TError = Error>(
   style?: string,
   timeout?: number,
   errorFormatter?: (e: TError) => string,
+  errorResult = Observable.empty<T>(),
 ) {
   return Observable
     .defer(observableFactory)
     .catch(err => {
       Alert.createForError(err, header, style, timeout, errorFormatter);
 
-      return Observable.empty<T>();
+      return errorResult;
     });
 }
 
@@ -214,6 +215,7 @@ export function getObservableResultOrAlert<TResult, TError = Error>(
   style?: string,
   timeout?: number,
   errorFormatter?: (e: TError) => string,
+  errorResult?: Observable<TResult>,
 ) {
   return getObservableOrAlert(
     () => getObservable(resultFactory()),
@@ -221,6 +223,7 @@ export function getObservableResultOrAlert<TResult, TError = Error>(
     style,
     timeout,
     errorFormatter,
+    errorResult,
   );
 }
 
@@ -231,6 +234,7 @@ export function subscribeOrAlert<T, TError = Error>(
   style?: string,
   timeout?: number,
   errorFormatter?: (e: TError) => string,
+  errorResult?: Observable<T>,
 ): Subscription {
   return getObservableOrAlert(
     observableFactory,
@@ -238,6 +242,7 @@ export function subscribeOrAlert<T, TError = Error>(
     style,
     timeout,
     errorFormatter,
+    errorResult,
   ).subscribe(x => {
     try {
       onNext(x);
