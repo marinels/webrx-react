@@ -51,7 +51,7 @@
     "core-js": "^2.0.0",
     "ix": "^2.0.0",
     "jquery-deparam": "^0.5.0",
-    "jquery-param": "^0.2.0",
+    "jquery-param": "^1.0.0",
     "moment": "^2.0.0",
     "react": "^16.0.0",
     "react-bootstrap": "^0.31.0",
