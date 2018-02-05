@@ -16,32 +16,28 @@
   &.Grid .TablePanel {
     th,
     td {
+      // setting height to 1px allows cell content to stretch to 100% and cells to stretch all
+      // content to the max height of all cells
+      height: 1px;
       padding: 0;
       vertical-align: middle;
+
+      &.NavButtonColumn {
+        width: 49px;
+
+        // stylelint-disable selector-max-specificity
+        .GridViewColumn-cellContent {
+          height: 100%;
+          padding: 0;
+          position: relative;
+        }
+        // stylelint-enable selector-max-specificity
+      }
     }
 
     .GridViewColumn-headerContent,
     .GridViewColumn-cellContent {
       padding: @default-padding;
-    }
-
-    td.NavButtonColumn {
-      position: relative;
-
-      // stylelint-disable selector-max-specificity
-      .GridViewColumn-cellContent {
-        height: 100%;
-        left: 0;
-        padding: 0;
-        position: absolute;
-        top: 0;
-        width: 100%;
-
-        .NavButton {
-          width: 100%;
-        }
-      }
-      // stylelint-enable selector-max-specificity
     }
   }
 }

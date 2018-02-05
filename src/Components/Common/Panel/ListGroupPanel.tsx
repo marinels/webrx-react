@@ -14,11 +14,15 @@ export interface ListGroupPanelComponentProps extends ListGroupProps, ListGroupP
 export class ListGroupPanel extends Panel<ListGroupPanelComponentProps> {
   public static displayName = 'ListGroupPanel';
 
+  static defaultProps: Partial<ListGroupPanelComponentProps> = {
+    itemClassName: 'list-group-item',
+  };
+
   render() {
     return this.renderPanel('ListGroupPanel', this.props, ListGroup);
   }
 
   renderItems(children?: React.ReactNode, componentClass?: React.ReactType) {
-    return super.renderItems(children, componentClass || ListGroupItem);
+    return super.renderItems(children, componentClass || 'div');
   }
 }
