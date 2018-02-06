@@ -12,7 +12,7 @@ describe('ObservableApi', () => {
   const data = { item1: 'item1 value' };
   const body = String.stringify(data, null, 2);
   const params = { param1: 'param1 value' };
-  const uriParams = 'param1=param1+value';
+  const uriParams = 'param1=param1%20value';
   const options: AjaxRequest = {
     createXHR: () => {
       const xhr = new XMLHttpRequest();

@@ -25,6 +25,7 @@ function copySrcFiles(pattern: string, opts: Partial<cpy.Options> = {}) {
 
 copySrcFiles('**/*.less')
   .then(() => copySrcFiles('**/*.d.ts'))
+  .then(() => cpy('src/types/augmentations.ts', path.resolve(args.env.src, 'types'), { rename: 'augmentations.d.ts' }))
   .then(() => copySrcFiles('Assets/**/*', { ignore: [ 'Assets/index.ts' ] }))
   .then(() => cpy('**/*', args.env.dest, { cwd: args.env.src, parents: true, nodir: true }))
   .then(() => {
