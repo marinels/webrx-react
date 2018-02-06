@@ -7,6 +7,7 @@ import { commonConfig, args } from './webpack.common';
 const devConfig: Partial<webpack.Configuration> = {
   entry: {
     app: [
+      'core-js',
       'react-hot-loader/patch',
       './src/app.tsx',
     ],
