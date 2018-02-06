@@ -10,6 +10,13 @@ export class GridViewColumns extends React.Component {
   }
 }
 
+export enum GridColumnComponentType {
+  Header,
+  Cell,
+  Content,
+  Tooltip,
+}
+
 export interface GridViewColumnProps {
   /**
    * internal passthru property
@@ -109,7 +116,7 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnCompon
     );
 
     return (
-      <th className={ this.props.className } { ...props }>
+      <th className={ this.getClassNameForComponent(GridColumnComponentType.Header) } { ...props }>
         { this.renderTooltip(tooltipContent, headerContent) }
       </th>
     );
@@ -148,7 +155,7 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnCompon
     );
 
     return (
-      <td className={ this.props.className } { ...props }>
+      <td className={ this.getClassNameForComponent(GridColumnComponentType.Cell) } { ...props }>
         { this.renderTooltip(tooltipContent, cellContent) }
       </td>
     );
@@ -174,14 +181,18 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnCompon
         content.props.context == null &&
         React.Children.count(content.props.children) === 0
       ) ? context : undefined;
-      return React.cloneElement(content, { id, className: this.props.className, ...content.props }, child);
+      return React.cloneElement(content, { id, className: this.getClassNameForComponent(GridColumnComponentType.Content), ...content.props }, child);
     }
 
     return (
-      <ContentTooltip id={ id } className={ this.props.className } content={ content }>
+      <ContentTooltip id={ id } className={ this.getClassNameForComponent(GridColumnComponentType.Tooltip) } content={ content }>
         { context }
       </ContentTooltip>
     );
+  }
+
+  protected getClassNameForComponent(type: GridColumnComponentType) {
+    return this.props.className;
   }
 }
 
@@ -193,12 +204,12 @@ export interface NavButtonColumnComponentProps extends NavButtonColumnProps {
 }
 
 export class NavButtonColumn extends GridViewColumn<NavButtonColumnComponentProps> {
-  static defaultProps: Partial<NavButtonColumnProps> = {
-    className: 'NavButtonColumn',
-  };
-
   renderCell() {
     return super.renderCell(this.renderNavButton.bind(this));
+  }
+
+  getClassNameForComponent(type: GridColumnComponentType) {
+    return this.wxr.classNames('NavButtonColumn', super.getClassNameForComponent(type));
   }
 
   protected renderNavButton(item: {}, field: string | undefined): PanelFragment {
