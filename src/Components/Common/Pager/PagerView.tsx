@@ -85,11 +85,11 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
   }
 
   protected renderComponents() {
-    if (this.props.info === true && this.isEmpty()) {
+    if (this.isEmpty() && String.isNullOrEmpty(this.props.emptyInfo)) {
       return (
         <Row>
           <Col className='Pager-col'>
-            { this.renderInfo() }
+            { this.props.emptyInfo }
           </Col>
         </Row>
       );
@@ -113,11 +113,16 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
   }
 
   private shouldRenderPager() {
-    return (
+    return (this.props.order || []).length > 0 && (
+      this.shouldRenderEmpty() ||
       this.shouldRenderInfo() ||
       this.shouldRenderControls() ||
       this.shouldRenderLimit()
-    ) && (this.props.order || []).length > 0;
+    );
+  }
+
+  private shouldRenderEmpty() {
+    return this.isEmpty() && String.isNullOrEmpty(this.props.emptyInfo) === false;
   }
 
   private shouldRenderInfo() {
@@ -136,16 +141,22 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     return this.wxr.renderNullable(type, x => this.renderFunctions[x].apply(this));
   }
 
+  private renderEmpty() {
+    return (
+      <Row>
+        <Col className='Pager-col'>
+          <div className='Pager-empty'>
+            { this.props.emptyInfo }
+          </div>
+        </Col>
+      </Row>
+    );
+  }
+
   private renderInfo() {
     return this.wxr.renderConditional(this.shouldRenderInfo(), () => (
       <div className='Pager-info'>
-          {
-            this.wxr.renderConditional(
-              this.isEmpty(),
-              () => this.props.emptyInfo,
-              () => `Showing Items ${ this.viewModel.offset.value + 1 } through ${ Math.min(this.viewModel.itemCount.value, this.viewModel.offset.value + (this.viewModel.limit.value || 0)) } of ${ this.viewModel.itemCount.value }`,
-            )
-          }
+        { `Showing Items ${ this.viewModel.offset.value + 1 } through ${ Math.min(this.viewModel.itemCount.value, this.viewModel.offset.value + (this.viewModel.limit.value || 0)) } of ${ this.viewModel.itemCount.value }` }
       </div>
     ), () => '');
   }
