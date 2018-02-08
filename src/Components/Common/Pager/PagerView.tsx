@@ -85,28 +85,47 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
   }
 
   protected renderComponents() {
-    if (this.isEmpty() && String.isNullOrEmpty(this.props.emptyInfo)) {
+    if (this.shouldRenderEmpty()) {
+      return this.renderEmpty();
+    }
+
+    const types = this.props.order || [];
+    const components = types
+      .map(x => this.renderComponent(x));
+
+    if (components.length === 1) {
       return (
         <Row>
-          <Col className='Pager-col'>
-            { this.props.emptyInfo }
+          <Col className='Pager-col Pager-col-center'>
+            { components[0] }
           </Col>
         </Row>
       );
     }
 
-    const types = this.props.order || [];
+    if (components.length === 2) {
+      return (
+        <Row>
+          <Col className='Pager-col Pager-col-left' md={ 6 }>
+            { components[0] }
+          </Col>
+          <Col className='Pager-col Pager-col-right' md={ 6 }>
+            { components[1] }
+          </Col>
+        </Row>
+      );
+    }
 
     return (
       <Row>
         <Col className='Pager-col Pager-col-left' md={ 4 }>
-          { this.renderComponent(types[0]) }
+          { components[0] }
         </Col>
         <Col className='Pager-col Pager-col-center' md={ 4 }>
-          { this.renderComponent(types[1]) }
+          { components[1] }
         </Col>
         <Col className='Pager-col Pager-col-right' md={ 4 }>
-          { this.renderComponent(types[2]) }
+          { components[2] }
         </Col>
       </Row>
     );
