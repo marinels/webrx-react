@@ -78,7 +78,7 @@ if (args.env.outputTag == null) {
 console.log(`webpack args: ${ JSON.stringify(args, null, 2) }`);
 
 export const commonConfig: Partial<webpack.Configuration> = {
-  devtool: 'source-map',
+  devtool: args.env.sourceMap ? 'source-map' : undefined,
   externals: {
     jquery: 'var null',
   },
