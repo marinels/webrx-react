@@ -2,6 +2,10 @@ import * as path from 'path';
 import * as webpack from 'webpack';
 import * as HtmlWebpackPlugin from 'html-webpack-plugin';
 
+defaultArgs = {
+  'env.releasePath': 'watch',
+};
+
 import { commonConfig, args } from './webpack.common';
 
 const devConfig: Partial<webpack.Configuration> = {
@@ -13,8 +17,8 @@ const devConfig: Partial<webpack.Configuration> = {
     ],
   },
   output: {
-    path: path.resolve(args.env.buildPath, 'watch'),
-    filename: `${ args.env.outputFilename }.js`,
+    path: path.resolve(args.env.buildPath, args.env.releasePath),
+    filename: `${ args.env.outputFilename }${ args.env.outputTag }.js`,
   },
   devtool: 'eval',
   devServer: {

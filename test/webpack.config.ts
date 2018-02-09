@@ -17,7 +17,7 @@ const testConfig: Partial<webpack.Configuration> = {
   },
   output: {
     path: path.resolve(args.env.buildPath, args.env.releasePath),
-    filename: `${ args.env.outputFilename }.js`,
+    filename: `${ args.env.outputFilename }${ args.env.outputTag }.js`,
   },
   module: {
     rules: [
