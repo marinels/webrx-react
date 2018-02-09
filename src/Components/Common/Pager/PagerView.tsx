@@ -85,39 +85,63 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
   }
 
   protected renderComponents() {
-    if (this.props.info === true && this.isEmpty()) {
+    if (this.shouldRenderEmpty()) {
+      return this.renderEmpty();
+    }
+
+    const types = this.props.order || [];
+    const components = types
+      .map(x => this.renderComponent(x));
+
+    if (components.length === 1) {
       return (
         <Row>
-          <Col className='Pager-col'>
-            { this.renderInfo() }
+          <Col className='Pager-col Pager-col-center'>
+            { components[0] }
           </Col>
         </Row>
       );
     }
 
-    const types = this.props.order || [];
+    if (components.length === 2) {
+      return (
+        <Row>
+          <Col className='Pager-col Pager-col-left' md={ 6 }>
+            { components[0] }
+          </Col>
+          <Col className='Pager-col Pager-col-right' md={ 6 }>
+            { components[1] }
+          </Col>
+        </Row>
+      );
+    }
 
     return (
       <Row>
         <Col className='Pager-col Pager-col-left' md={ 4 }>
-          { this.renderComponent(types[0]) }
+          { components[0] }
         </Col>
         <Col className='Pager-col Pager-col-center' md={ 4 }>
-          { this.renderComponent(types[1]) }
+          { components[1] }
         </Col>
         <Col className='Pager-col Pager-col-right' md={ 4 }>
-          { this.renderComponent(types[2]) }
+          { components[2] }
         </Col>
       </Row>
     );
   }
 
   private shouldRenderPager() {
-    return (
+    return (this.props.order || []).length > 0 && (
+      this.shouldRenderEmpty() ||
       this.shouldRenderInfo() ||
       this.shouldRenderControls() ||
       this.shouldRenderLimit()
-    ) && (this.props.order || []).length > 0;
+    );
+  }
+
+  private shouldRenderEmpty() {
+    return this.isEmpty() && String.isNullOrEmpty(this.props.emptyInfo) === false;
   }
 
   private shouldRenderInfo() {
@@ -136,16 +160,22 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     return this.wxr.renderNullable(type, x => this.renderFunctions[x].apply(this));
   }
 
+  private renderEmpty() {
+    return (
+      <Row>
+        <Col className='Pager-col'>
+          <div className='Pager-empty'>
+            { this.props.emptyInfo }
+          </div>
+        </Col>
+      </Row>
+    );
+  }
+
   private renderInfo() {
     return this.wxr.renderConditional(this.shouldRenderInfo(), () => (
       <div className='Pager-info'>
-          {
-            this.wxr.renderConditional(
-              this.isEmpty(),
-              () => this.props.emptyInfo,
-              () => `Showing Items ${ this.viewModel.offset.value + 1 } through ${ Math.min(this.viewModel.itemCount.value, this.viewModel.offset.value + (this.viewModel.limit.value || 0)) } of ${ this.viewModel.itemCount.value }`,
-            )
-          }
+        { `Showing Items ${ this.viewModel.offset.value + 1 } through ${ Math.min(this.viewModel.itemCount.value, this.viewModel.offset.value + (this.viewModel.limit.value || 0)) } of ${ this.viewModel.itemCount.value }` }
       </div>
     ), () => '');
   }
