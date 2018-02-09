@@ -9,12 +9,12 @@ const devConfig: Partial<webpack.Configuration> = {
     app: [
       'core-js',
       'react-hot-loader/patch',
-      './src/app.tsx',
+      args.env.entryPath,
     ],
   },
   output: {
     path: path.resolve(args.env.buildPath, 'watch'),
-    filename: '[name].js',
+    filename: `${ args.env.outputFilename }.js`,
   },
   devtool: 'eval',
   devServer: {

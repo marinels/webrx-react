@@ -3,6 +3,7 @@ import * as webpack from 'webpack';
 import * as HtmlWebpackPlugin from 'html-webpack-plugin';
 
 defaultArgs = {
+  'env.entryPath': path.resolve(__dirname, 'app.spec.ts'),
   'env.templatePath': path.resolve(__dirname, 'index.ejs'),
 };
 
@@ -10,13 +11,13 @@ import { commonConfig, args } from '../webpack.common';
 
 const testConfig: Partial<webpack.Configuration> = {
   entry: {
-    spec: [
-      path.resolve(__dirname, 'app.spec.ts'),
+    'app.spec': [
+      args.env.entryPath,
     ],
   },
   output: {
     path: path.resolve(args.env.buildPath, 'watch'),
-    filename: '[name].js',
+    filename: `${ args.env.outputFilename }.js`,
   },
   devtool: 'eval',
   devServer: {
