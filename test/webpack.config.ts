@@ -15,10 +15,6 @@ const testConfig: Partial<webpack.Configuration> = {
       args.env.entryPath,
     ],
   },
-  output: {
-    path: path.resolve(args.env.buildPath, args.env.releasePath),
-    filename: `${ args.env.outputFilename }${ args.env.outputTag }.js`,
-  },
   module: {
     rules: [
       { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
