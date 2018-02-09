@@ -188,6 +188,26 @@ describe('WebRx', () => {
       cmd.canExecute.should.be.false;
     });
 
+    it('can interrogate canExecuteFor with a parameter', () => {
+      const canExecute = new BehaviorSubject('true');
+      const cmd = wx.command(() => undefined, canExecute, (c, x) => c === x, '');
+
+      cmd.canExecuteFor('false').should.be.false;
+      cmd.canExecuteFor('true').should.be.true;
+    });
+
+    it('can interrogate canExecuteFor without an interrogation action', () => {
+      const cmd1 = wx.command(() => undefined);
+
+      cmd1.canExecuteFor('false').should.be.true;
+      cmd1.canExecuteFor('true').should.be.true;
+
+      const cmd2 = wx.command(() => undefined, Observable.of(false));
+
+      cmd2.canExecuteFor('false').should.be.false;
+      cmd2.canExecuteFor('true').should.be.false;
+    });
+
     it('can observe execution', () => {
       let result: string | undefined;
       const cmd = wx.command<string>();
