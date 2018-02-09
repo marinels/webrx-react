@@ -66,7 +66,7 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
       // no command was supplied so check both href and onClick to see if this button is enabled
       String.isNullOrEmpty(rest.href) === false || this.props.onClick != null :
       // use the command to see if this button is enabled
-      cmd.canExecute;
+      cmd.canExecuteFor(this.props.commandParameter);
 
     const disabled = this.props.disabled || canExecute !== true;
 
