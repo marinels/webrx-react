@@ -68,11 +68,13 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
       // use the command to see if this button is enabled
       cmd.canExecute;
 
+    const disabled = this.props.disabled || canExecute !== true;
+
     const button = (
       <Button { ...rest }
         className={ this.wxr.classNames('CommandButton', this.props.className, { plain: this.props.plain }) }
-        disabled={ canExecute !== true }
-        onClick={ this.props.disabled ? undefined : e => this.handleClick(e) }
+        disabled={ disabled }
+        onClick={ disabled ? undefined : this.handleClick.bind(this) }
         componentClass={ this.getComponentClass() }
       >
         { this.props.children }
