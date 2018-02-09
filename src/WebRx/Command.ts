@@ -5,9 +5,19 @@ import { Command, ObservableOrValue } from './Interfaces';
 import { isObservable, asObservable, handleError } from './Utils';
 
 export type ExecutionAction<T = any> = (parameter: any) => ObservableOrValue<T>;
+export type InterrogationAction<T = any> = (condition: T, parameter?: any) => boolean;
 
-export class ObservableCommand<T = any> extends Subscription implements Command<T> {
+export class ObservableCommand<T = any, TCondition = any> extends Subscription implements Command<T> {
+  static coerceCondition<T>(condition: T) {
+    if (typeof condition === 'boolean') {
+      return condition;
+    }
+
+    return condition != null;
+  }
+
   protected isExecutingSubject: BehaviorSubject<boolean>;
+  protected conditionSubject: BehaviorSubject<TCondition | undefined>;
   protected canExecuteSubject: BehaviorSubject<boolean>;
   protected requestsSubject: Subject<T>;
   protected resultsSubject: Subject<T>;
@@ -15,25 +25,42 @@ export class ObservableCommand<T = any> extends Subscription implements Command<
 
   constructor(
     protected readonly executeAction: ExecutionAction<T>,
-    canExecute?: Observable<boolean>,
+    protected readonly interrogationAction: InterrogationAction<TCondition | undefined> = x => ObservableCommand.coerceCondition(x),
+    private condition?: Observable<TCondition>,
+    private initialCondition?: TCondition,
   ) {
     super();
 
     this.isExecutingSubject = this.addSubscription(new BehaviorSubject<boolean>(false));
-    this.canExecuteSubject = this.addSubscription(new BehaviorSubject<boolean>(canExecute == null));
+    this.conditionSubject = this.addSubscription(new BehaviorSubject<TCondition | undefined>(initialCondition));
+    this.canExecuteSubject = this.addSubscription(new BehaviorSubject<boolean>(condition == null));
     this.requestsSubject = this.addSubscription(new Subject<T>());
     this.resultsSubject = this.addSubscription(new Subject<T>());
     this.thrownErrorsSubject = this.addSubscription(new Subject<Error>());
 
-    this.add((canExecute || asObservable(true))
-      .combineLatest(this.isExecutingSubject, (ce, ie) => ce === true && ie === false)
-      .catch(e => {
-        handleError(e, this.thrownErrorsSubject);
+    if (condition != null) {
+      this.add(
+        condition
+          .subscribe(this.conditionSubject),
+      );
+    }
 
-        return asObservable(false);
-      })
-      .distinctUntilChanged()
-      .subscribe(this.canExecuteSubject),
+    const canExecute = condition == null ?
+      asObservable(true) :
+      condition.map(x => this.interrogationAction(x));
+
+    this.add(
+      canExecute
+        .combineLatest(
+          this.isExecutingSubject,
+          (ce, ie) => ce === true && ie === false)
+        .catch(e => {
+          handleError(e, this.thrownErrorsSubject);
+
+          return asObservable(false);
+        })
+        .distinctUntilChanged()
+        .subscribe(this.canExecuteSubject),
     );
   }
 
@@ -57,6 +84,13 @@ export class ObservableCommand<T = any> extends Subscription implements Command<
 
   isCommand() {
     return true;
+  }
+
+  canExecuteFor(parameter: any) {
+    return this.interrogationAction(
+      this.conditionSubject.getValue(),
+      parameter,
+    );
   }
 
   observeExecution(parameter?: any): Observable<T> {
@@ -138,19 +172,30 @@ export function command<T = any>(): Command<T>;
 export function command<T>(execute: ExecutionAction<T>): Command<T>;
 export function command<T>(canExecute: Observable<boolean>, execute?: ExecutionAction<T>): Command<T>;
 export function command<T>(execute: ExecutionAction<T>, canExecute: Observable<boolean>): Command<T>;
-export function command<T>(arg1?: ExecutionAction<T> | Observable<boolean>, arg2?: ExecutionAction<T> | Observable<boolean>): Command<T> {
-  let canExecute: Observable<boolean> | undefined;
+export function command<T, TCondition>(
+  execute: ExecutionAction<T>,
+  condition: Observable<TCondition>,
+  interrogation: InterrogationAction<TCondition>,
+  initialCondition?: TCondition,
+): Command<T>;
+export function command<T>(
+  arg1?: ExecutionAction<T> | Observable<any>,
+  arg2?: ExecutionAction<T> | Observable<any>,
+  interrogation?: InterrogationAction<any>,
+  initialCondition?: any,
+): Command<T> {
+  let condition: Observable<any> | undefined;
   let execute: ExecutionAction<T> = (x: T) => x;
 
   if (isObservable(arg1)) {
-    canExecute = arg1;
+    condition = arg1;
 
     if (arg2 instanceof Function) {
       execute = arg2;
     }
   }
   else if (isObservable(arg2)) {
-    canExecute = arg2;
+    condition = arg2;
 
     if (arg1 instanceof Function) {
       execute = arg1;
@@ -164,5 +209,14 @@ export function command<T>(arg1?: ExecutionAction<T> | Observable<boolean>, arg2
     }
   }
 
-  return new ObservableCommand((parameter: any) => execute(parameter), canExecute);
+  if (condition == null) {
+    initialCondition = true;
+  }
+
+  return new ObservableCommand(
+    execute,
+    interrogation,
+    condition,
+    initialCondition,
+  );
 }

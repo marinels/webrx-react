@@ -32,6 +32,8 @@ export interface Command<T = any> {
 
   isCommand(): boolean;
 
+  canExecuteFor(parameter: any): boolean;
+
   observeExecution(parameter?: any): Observable<T>;
 
   execute(
