@@ -58,3 +58,14 @@ npm run version-modules && npm run build-modules && npm run deploy-modules -- --
 ### Deploying Github Pages
 
 The Github pages bundle can be deployed using the `npm run bundle-docs` script. Once run, the changes need to be pushed up to the `master` branch in order for the changes to be visible on Github pages.
+
+### Bundle Profiling
+
+Webpack bundles can be profiled to validate optimized bundling, minimizing size, and deduplication of modules. Profiled bundles produce a `stats.json` file beside the bundler output.
+
+The following tools are useful at processing profiled bundle stats files:
+
+* https://webpack.github.io/analyse/
+* https://chrisbateman.github.io/webpack-visualizer/
+* https://alexkuz.github.io/webpack-chart/
+* https://alexkuz.github.io/stellar-webpack/
