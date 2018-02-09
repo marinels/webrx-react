@@ -78,19 +78,13 @@ if (args.env.outputTag == null) {
 console.log(`webpack args: ${ JSON.stringify(args, null, 2) }`);
 
 export const commonConfig: Partial<webpack.Configuration> = {
-  devtool: 'source-map',
+  output: {
+    path: path.resolve(args.env.buildPath, args.env.releasePath),
+    filename: `${ args.env.outputFilename }${ args.env.outputTag }.js`,
+  },
+  devtool: args.env.sourceMap ? 'source-map' : undefined,
   externals: {
     jquery: 'var null',
-  },
-  module: {
-    rules: [
-      { test: /\.css$/, loaders: [ 'style-loader', 'css-loader' ] },
-      { test: /\.less$/, loaders: [ 'style-loader', 'css-loader', 'less-loader' ] },
-      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader?mimetype=application/font-woff' },
-      { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader' },
-      { test: /\.(png|jpg|gif)$/, loader: 'url-loader' },
-      { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
-    ],
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -112,6 +106,8 @@ export const commonConfig: Partial<webpack.Configuration> = {
     },
   },
 };
+
+const rules: webpack.Rule[] = [];
 
 if (args.env.extractText) {
   const cssLoader = ExtractTextPlugin.extract(
@@ -148,7 +144,7 @@ if (args.env.extractText) {
     },
   );
 
-  (commonConfig.module as webpack.NewModule).rules.splice(0, 2,
+  rules.push(
     { test: /\.css$/, use: cssLoader },
     { test: /\.less$/, use: lessLoader },
   );
@@ -157,24 +153,49 @@ if (args.env.extractText) {
     new ExtractTextPlugin(`${ args.env.outputFilename }${ args.env.outputTag }.css`),
   );
 }
+else {
+  rules.push(
+    { test: /\.css$/, loaders: [ 'style-loader', 'css-loader' ] },
+    { test: /\.less$/, loaders: [ 'style-loader', 'css-loader', 'less-loader' ] },
+  );
+}
 
 if (args.env.extractFont) {
-  (commonConfig.module as webpack.NewModule).rules.splice(2, 2,
+  rules.push(
     { test: /\.(woff|woff2|ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file-loader?name=fonts/[name].[ext]' },
+  );
+}
+else {
+  rules.push(
+    { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader?mimetype=application/font-woff' },
+    { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'url-loader' },
   );
 }
 
 if (args.env.extractImage) {
-  (commonConfig.module as webpack.NewModule).rules.splice(4, 1,
+  rules.push(
     { test: /\.(png|jpg|gif)$/, loader: 'file-loader?name=img/[name].[ext]' },
+  );
+}
+else {
+  rules.push(
+    { test: /\.(png|jpg|gif)$/, loader: 'url-loader' },
   );
 }
 
 if (args.env.extractLocale) {
-  (commonConfig.module as webpack.NewModule).rules.splice(2, 0,
+  rules.push(
     { test: /moment[\\/]locale/, loader: 'file-loader?name=locale/moment/[name].[ext]' },
   );
 }
+
+rules.push(
+  { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
+);
+
+commonConfig.module = {
+  rules,
+};
 
 if (args.env.release) {
   const defines: any = commonConfig.plugins![0];
