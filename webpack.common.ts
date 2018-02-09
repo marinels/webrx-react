@@ -5,6 +5,7 @@ import * as webpack from 'webpack';
 import * as minimist from 'minimist';
 import * as HtmlWebpackPlugin from 'html-webpack-plugin';
 import * as FaviconsWebpackPlugin from 'favicons-webpack-plugin';
+import * as ExtractTextPlugin from 'extract-text-webpack-plugin';
 
 // sanitize default args to an empty object
 if (typeof defaultArgs === 'undefined') {
@@ -20,11 +21,17 @@ const defaults = Object.assign(
     'env.buildPath': path.resolve(__dirname, 'build'),
     'env.entryPath': path.resolve(__dirname, 'src', 'app.tsx'),
     'env.templatePath': path.resolve(__dirname, 'src', 'index.ejs'),
+    'env.outputFilename': '[name]',
     'env.templateOutputPath': 'index.html',
     'env.port': 3000,
     'env.templateInject': true,
     'env.release': false,
+    'env.extractText': false,
+    'env.extractLocale': false,
+    'env.extractFont': false,
+    'env.extractImage': false,
     'env.min': false,
+    'env.sourceMap': true,
     'env.profile': false,
   },
   defaultArgs,
@@ -35,6 +42,9 @@ const options = {
     'env.buildPath',
     'env.entryPath',
     'env.templatePath',
+    'env.outputFilename',
+    'env.outputTag',
+    'env.releasePath',
     'env.templateOutputPath',
   ],
   number: [
@@ -43,13 +53,29 @@ const options = {
   boolean: [
     'env.templateInject',
     'env.release',
+    'env.extractText',
+    'env.extractLocale',
+    'env.extractFont',
+    'env.extractImage',
     'env.min',
+    'env.sourceMap',
     'env.profile',
   ],
   default: defaults,
 };
 
 export const args = minimist(process.argv, options);
+
+if (args.env.releasePath == null) {
+  args.env.releasePath = args.env.release ? 'release' : 'debug';
+}
+
+if (args.env.outputTag == null) {
+  args.env.outputTag = args.env.min ? '.min' : '';
+}
+
+// tslint:disable-next-line:no-console
+console.log(`webpack args: ${ JSON.stringify(args, null, 2) }`);
 
 export const commonConfig: Partial<webpack.Configuration> = {
   devtool: 'source-map',
@@ -87,6 +113,69 @@ export const commonConfig: Partial<webpack.Configuration> = {
   },
 };
 
+if (args.env.extractText) {
+  const cssLoader = ExtractTextPlugin.extract(
+    {
+      fallback: 'style-loader',
+      use: {
+        loader: 'css-loader',
+        options: {
+          sourceMap: args.env.sourceMap,
+          minimize: args.env.min,
+        },
+      },
+    },
+  );
+
+  const lessLoader = ExtractTextPlugin.extract(
+    {
+      fallback: 'style-loader',
+      use: [
+        {
+          loader: 'css-loader',
+          options: {
+            sourceMap: args.env.sourceMap,
+            minimize: args.env.min,
+          },
+        },
+        {
+          loader: 'less-loader',
+          options: {
+            sourceMap: args.env.sourceMap,
+          },
+        },
+      ],
+    },
+  );
+
+  (commonConfig.module as webpack.NewModule).rules.splice(0, 2,
+    { test: /\.css$/, use: cssLoader },
+    { test: /\.less$/, use: lessLoader },
+  );
+
+  commonConfig.plugins.push(
+    new ExtractTextPlugin(`${ args.env.outputFilename }${ args.env.outputTag }.css`),
+  );
+}
+
+if (args.env.extractFont) {
+  (commonConfig.module as webpack.NewModule).rules.splice(2, 2,
+    { test: /\.(woff|woff2|ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file-loader?name=fonts/[name].[ext]' },
+  );
+}
+
+if (args.env.extractImage) {
+  (commonConfig.module as webpack.NewModule).rules.splice(4, 1,
+    { test: /\.(png|jpg|gif)$/, loader: 'file-loader?name=img/[name].[ext]' },
+  );
+}
+
+if (args.env.extractLocale) {
+  (commonConfig.module as webpack.NewModule).rules.splice(2, 0,
+    { test: /moment[\\/]locale/, loader: 'file-loader?name=locale/moment/[name].[ext]' },
+  );
+}
+
 if (args.env.release) {
   const defines: any = commonConfig.plugins![0];
 
@@ -102,7 +191,7 @@ if (args.env.min) {
       compress: {
         warnings: false,
       },
-      sourceMap: true,
+      sourceMap: args.env.sourceMap,
     }),
   );
 }

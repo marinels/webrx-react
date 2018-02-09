@@ -1,6 +1,6 @@
 {
   "name": "webrx-react",
-  "version": "0.17.3",
+  "version": "0.17.4",
   "description": "ReactJS + WebRx + RxJS + Bootstrap: MVVM for Single Page Web Applications",
   "scripts": {
     "start": "npm run watch",
@@ -11,7 +11,7 @@
     "lint-ts": "tslint -t verbose ./src/**/*.ts ./src/**/*.tsx ./test/**/*.ts",
     "lint-less": "stylelint -s less -f string ./src/**/*.less",
     "bundle": "webpack --config webpack.config.ts",
-    "bundle-docs": "del-cli ./docs && npm run bundle -- --env.release --env.min --env.buildPath ./docs --env.entryPath ./src/app.tsx",
+    "bundle-docs": "del-cli ./docs && npm run bundle -- --env.release --env.releasePath . --env.outputFilename app --env.outputTag= --env.min --env.sourceMap=false --env.extractText=false --env.extractLocale --env.extractFont --env.buildPath ./docs --env.entryPath ./src/app.tsx",
     "bundle-test": "webpack --config test/webpack.config.ts",
     "mocha-test": "mocha --reporter spec build/test/app.spec.js",
     "watch": "webpack-dev-server --config webpack.dev.config.ts",
