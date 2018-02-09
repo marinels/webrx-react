@@ -11,7 +11,7 @@ import { commonConfig, args } from '../webpack.common';
 
 const testConfig: Partial<webpack.Configuration> = {
   entry: {
-    spec: [
+    'app.spec': [
       args.env.entryPath,
     ],
   },

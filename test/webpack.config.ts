@@ -10,12 +10,14 @@ defaultArgs = {
 import { commonConfig, args } from '../webpack.common';
 
 const testConfig: Partial<webpack.Configuration> = {
-  entry: [
-    args.env.entryPath,
-  ],
+  entry: {
+    'app.spec': [
+      args.env.entryPath,
+    ],
+  },
   output: {
     path: path.resolve(args.env.buildPath, args.env.releasePath),
-    filename: `${ args.env.outputFilename }.spec.js`,
+    filename: `${ args.env.outputFilename }.js`,
   },
   module: {
     rules: [
