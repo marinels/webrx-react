@@ -5,6 +5,7 @@ import * as HtmlWebpackPlugin from 'html-webpack-plugin';
 defaultArgs = {
   'env.entryPath': path.resolve(__dirname, 'app.spec.ts'),
   'env.templatePath': path.resolve(__dirname, 'index.ejs'),
+  'env.releasePath': 'watch',
 };
 
 import { commonConfig, args } from '../webpack.common';
@@ -14,10 +15,6 @@ const testConfig: Partial<webpack.Configuration> = {
     'app.spec': [
       args.env.entryPath,
     ],
-  },
-  output: {
-    path: path.resolve(args.env.buildPath, 'watch'),
-    filename: `${ args.env.outputFilename }.js`,
   },
   devtool: 'eval',
   devServer: {
@@ -39,6 +36,7 @@ const definePlugin: any = config.plugins![0];
 
 if (definePlugin != null) {
   definePlugin.definitions.TEST = true;
+  definePlugin.definitions.WEBPACK_DEV_SERVER = true;
 }
 
 config.plugins!.push(
