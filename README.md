@@ -61,7 +61,9 @@ The Github pages bundle can be deployed using the `npm run bundle-docs` script. 
 
 ### Bundle Profiling
 
-Webpack bundles can be profiled to validate optimized bundling, minimizing size, and deduplication of modules. Profiled bundles produce a `stats.json` file beside the bundler output.
+Webpack bundles can be profiled to validate optimized bundling, minimizing size, and deduplication of modules. Profiled bundles produce a `stats.json` file beside the bundler output. To profile a webpack bundle, use the `--env.profile` flag. i.e.,
+
+`npm run bundle -- --env.profile`
 
 The following tools are useful at processing profiled bundle stats files:
 
