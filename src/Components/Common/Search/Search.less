@@ -9,6 +9,10 @@
 
     & > .form-control {
       padding-right: @search-icon-width * 2;
+
+      &::-ms-clear {
+        display: none;
+      }
     }
 
     & > .Search-icon {
