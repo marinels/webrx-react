@@ -45,6 +45,9 @@
     }
   }
 
+  // the item list panel uses the panel border for the pager border
+  // so we can disable the default datagrid pager border styles by setting it to 0px
+  // we do require an internal top border, since filled table borders are removed inside of a panel
   .DataGrid > .DataGrid-container > .Pager {
     border: 0 solid @table-border-color;
     border-top-width: 1px;

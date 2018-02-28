@@ -25,6 +25,8 @@
   }
 
   & > .DataGrid-container > .Pager {
+    // data grid will border the pager
+    // (but disable the top border because it is shared with the bottom border of the table)
     border: 1px solid @table-border-color;
     border-top-width: 0;
     padding: @default-padding;
