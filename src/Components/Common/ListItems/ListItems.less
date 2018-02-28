@@ -24,17 +24,17 @@
 
       &.NavButtonColumn {
         width: 49px;
-
-        // stylelint-disable selector-max-specificity
-        .GridViewColumn-cellContent {
-          height: 100%;
-          min-height: 30px;
-          padding: 0;
-          position: relative;
-        }
-        // stylelint-enable selector-max-specificity
       }
     }
+
+    // stylelint-disable selector-max-specificity
+    td.NavButtonColumn .GridViewColumn-cellContent {
+      height: 100%;
+      min-height: 30px;
+      padding: 0;
+      position: relative;
+    }
+    // stylelint-enable selector-max-specificity
 
     .GridViewColumn-headerContent,
     .GridViewColumn-cellContent {
