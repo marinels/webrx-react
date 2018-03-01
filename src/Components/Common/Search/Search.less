@@ -9,6 +9,12 @@
 
     & > .form-control {
       padding-right: @search-icon-width * 2;
+
+      // edge annoyingly auto adds a clear button to inputs
+      // since search provides its own we will tell edge to stop this behaviour
+      &::-ms-clear {
+        display: none;
+      }
     }
 
     & > .Search-icon {
