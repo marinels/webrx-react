@@ -40,6 +40,7 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
 
     if (cmd != null) {
       this.canExecuteSubscription = cmd.canExecuteObservable
+        .merge(cmd.conditionObservable)
         .subscribe(() => {
           this.forceUpdate();
         });

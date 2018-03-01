@@ -47,6 +47,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
       .whenAny(this.currentRoute, x => x)
       // we also need to filter out null routes here (this should only occur for the first event)
       .filterNull()
+      .debounceTime(100)
       .map(x => {
         // load the routed activator from our routing map
         return this.getActivator(x);

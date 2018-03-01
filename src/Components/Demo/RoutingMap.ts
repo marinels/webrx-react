@@ -227,6 +227,25 @@ demoRoutingMap.addRoute('React', 'Loading', 'Loading', (state: any) => 'Loading'
 demoRoutingMap.addRoute('React', 'SizedLoading', 'Sized Loading', (state: any) => 'SizedLoading');
 demoRoutingMap.addRoute('React', 'Splash', 'Splash', (state: any) => 'Splash');
 demoRoutingMap.addRoute('React', 'CommandButton', 'Command Button', (state: any) => 'CommandButton');
+demoRoutingMap.addRoute('React', 'CommandButtonCondition', 'Command Button (condition)', (state: any) => {
+  const condition = Components.CommandButton.wx.property(0);
+  const cmd = Components.CommandButton.wx.command(
+    x => {
+      return ++condition.value;
+    },
+    condition.changed,
+    (c, x) => {
+      return x == null || c <= x;
+    },
+    condition.value,
+  );
+
+  return {
+    displayName: 'CommandButtonCondition',
+    condition,
+    cmd,
+  };
+});
 demoRoutingMap.addRoute('React', 'Alert', 'Alert', (state: any) => 'Alert');
 demoRoutingMap.addRoute('React', 'ContextMenu', 'Context Menu', (state: any) => 'ContextMenu');
 demoRoutingMap.addRoute('React', 'ProfilePicture', 'Profile Picture', (state: any) => 'ProfilePicture');

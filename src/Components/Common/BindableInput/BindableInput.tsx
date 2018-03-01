@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Subscription } from 'rxjs';
 
 import { Property } from '../../../WebRx';
 
@@ -59,12 +60,25 @@ export class BindableInput extends React.Component<BindableInputComponentProps> 
     },
   };
 
+  private changedSubscription = Subscription.EMPTY;
+
   componentWillMount() {
     validateBindableProperty(this.props.boundProperty);
+
+    if (this.wx.isProperty(this.props.boundProperty)) {
+      this.changedSubscription = this.props.boundProperty.changed
+        .subscribe((x) => {
+          this.forceUpdate();
+        });
+    }
   }
 
   componentWillReceiveProps(nextProps: Readonly<BindableInputComponentProps>) {
     validateBindableProperty(nextProps.boundProperty);
+  }
+
+  componentWillUnmount() {
+    this.changedSubscription = Subscription.unsubscribe(this.changedSubscription);
   }
 
   render() {
