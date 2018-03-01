@@ -7,7 +7,7 @@ import { isObservable, asObservable, handleError } from './Utils';
 export type ExecutionAction<T = any> = (parameter: any) => ObservableOrValue<T>;
 export type InterrogationAction<T = any> = (condition: T, parameter?: any) => boolean;
 
-export class ObservableCommand<T = any, TCondition = any> extends Subscription implements Command<T> {
+export class ObservableCommand<T = any, TCondition = any> extends Subscription implements Command<T, TCondition> {
   static coerceCondition<T>(condition: T) {
     if (typeof condition === 'boolean') {
       return condition;
@@ -33,7 +33,7 @@ export class ObservableCommand<T = any, TCondition = any> extends Subscription i
 
     this.isExecutingSubject = this.addSubscription(new BehaviorSubject<boolean>(false));
     this.conditionSubject = this.addSubscription(new BehaviorSubject<TCondition | undefined>(initialCondition));
-    this.canExecuteSubject = this.addSubscription(new BehaviorSubject<boolean>(condition == null));
+
     this.requestsSubject = this.addSubscription(new Subject<T>());
     this.resultsSubject = this.addSubscription(new Subject<T>());
     this.thrownErrorsSubject = this.addSubscription(new Subject<Error>());
@@ -45,9 +45,13 @@ export class ObservableCommand<T = any, TCondition = any> extends Subscription i
       );
     }
 
+    this.canExecuteSubject = this.addSubscription(new BehaviorSubject<boolean>(
+      condition == null || this.conditionValue == null || this.interrogationAction(this.conditionValue),
+    ));
+
     const canExecute = condition == null ?
       asObservable(true) :
-      condition.map(x => this.interrogationAction(x));
+      this.conditionSubject.map(x => this.interrogationAction(x));
 
     this.add(
       canExecute
@@ -73,9 +77,18 @@ export class ObservableCommand<T = any, TCondition = any> extends Subscription i
     return this.isExecutingSubject.getValue();
   }
 
+  get conditionObservable() {
+    return this.conditionSubject
+      .distinctUntilChanged();
+  }
+
   get canExecuteObservable() {
     return this.canExecuteSubject
       .distinctUntilChanged();
+  }
+
+  get conditionValue() {
+    return this.conditionSubject.getValue();
   }
 
   get canExecute() {
@@ -95,7 +108,11 @@ export class ObservableCommand<T = any, TCondition = any> extends Subscription i
 
   observeExecution(parameter?: any): Observable<T> {
     if (this.canExecute === false) {
-      return Observable.throw(new Error('canExecute currently forbids execution'));
+      const error = new Error('canExecute currently forbids execution');
+
+      handleError(error);
+
+      return Observable.throw(error);
     }
 
     return Observable

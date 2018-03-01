@@ -21,13 +21,15 @@ export interface Property<T> extends ReadOnlyProperty<T> {
   value: T;
 }
 
-export interface Command<T = any> {
+export interface Command<T = any, TCondition = any> {
   readonly isExecutingObservable: Observable<boolean>;
+  readonly conditionObservable: Observable<TCondition | undefined>;
   readonly canExecuteObservable: Observable<boolean>;
   readonly requests: Observable<T>;
   readonly results: Observable<T>;
   readonly thrownErrors: Observable<Error>;
   readonly isExecuting: boolean;
+  readonly conditionValue: TCondition | undefined;
   readonly canExecute: boolean;
 
   isCommand(): boolean;
