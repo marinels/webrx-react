@@ -81,6 +81,20 @@ export const demoViewMap: ViewActivatorMap = {
       </InputGroup>
     </FormGroup>
   ),
+  CommandButtonCondition: (data: { condition: Observable<any>, cmd: Command }) => {
+    return (
+      <FormGroup bsSize='large' style={({ marginBottom: 0 })}>
+        <InputGroup>
+          <Components.BindableInput boundProperty={ data.condition } converter={ x => Number(x) }>
+            <FormControl type='text' />
+          </Components.BindableInput>
+          <InputGroup.Button>
+            <Components.CommandButton command={ data.cmd } commandParameter={ 1 } bsSize='large' children='Test' />
+          </InputGroup.Button>
+        </InputGroup>
+      </FormGroup>
+    );
+  },
   Alert: () => (
     <div>
       <Button onClick={() => Alert.create(`Alert Content: ${new Date()}`, 'Info Alert', 'info')}>Info Alert</Button>
