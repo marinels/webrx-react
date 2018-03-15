@@ -1,3 +1,5 @@
+import { Observable, Subscription, Scheduler } from 'rxjs';
+
 import { ReadOnlyProperty } from '../WebRx';
 import { Logging } from '../Utils';
 import { HashCodec } from './HashCodec';
@@ -5,30 +7,36 @@ import { Route, HashManager } from './Interfaces';
 import { historyStateHashManager, windowLocationHashManager } from './HashManager';
 import { getPath, normalizePath } from './Helpers';
 
-export class RouteManager {
+export class RouteManager extends Subscription {
   public static displayName = 'RouteManager';
 
   private readonly logger = Logging.getLogger(RouteManager.displayName);
+  private readonly redirectSubscription: Subscription;
   private readonly hashManager: HashManager;
   public readonly currentRoute: ReadOnlyProperty<Route>;
 
   constructor(hashManager?: HashManager, public readonly hashCodec = HashCodec.Default) {
+    super();
+
     if (hashManager == null) {
       hashManager = historyStateHashManager;
     }
 
     this.hashManager = hashManager;
 
-    this.currentRoute = this.hashManager.hashChanged
+    const routingEvents = this.hashManager.hashChanged
       .startWith(window.location.hash)
       .distinctUntilChanged()
       .map(x => {
-        const route = hashCodec.decode(x, (path, params, state) => <Route>{ path, params, state });
+        const change = {
+          route: hashCodec.decode(x, (path, params, state) => <Route>{ path, params, state }),
+          redirect: false,
+        };
 
         // reconstruct the route hash
-        let hash = '#' + route.path;
-        if (route.params && route.params.length > 0) {
-          hash += route.params;
+        let hash = '#' + change.route.path;
+        if (change.route.params && change.route.params.length > 0) {
+          hash += change.route.params;
         }
 
         // if the reconstructed route hash differs from the current hash
@@ -38,15 +46,29 @@ export class RouteManager {
         // i.e., if no route is supplied (no hash) then a default route of #/ is
         //       coerced from the decode function.
         if (hash !== x) {
-          this.navTo(route.path, route.state, true);
-          // set the current route to null to ignore further processing
-          return undefined;
+          change.redirect = true;
         }
 
-        return route;
+        return change;
       })
-      .filterNull()
+      // we must use the async scheduler to prevent recursive re-entrancy calls
+      // re-entrancy can occur on redirects, we want each new route to be handled
+      // as its own routing state change in sequence, which the async scheduler permits.
+      .observeOn(Scheduler.async)
+      .share();
+
+    this.currentRoute = routingEvents
+      .filter(x => x.redirect === false)
+      .map(x => x.route)
       .toProperty();
+
+    this.addSubscription(
+      this.redirectSubscription = routingEvents
+        .filter(x => x.redirect)
+        .subscribe(x => {
+          this.navTo(x.route.path, x.route.state, true);
+        }),
+      );
   }
 
   public navTo(path: string, state?: any, replace = false, uriEncode = false) {
