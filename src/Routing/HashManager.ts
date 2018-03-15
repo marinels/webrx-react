@@ -37,11 +37,7 @@ export class HistoryStateHashManager implements HashManager {
       .merge(
         this.changeHash.results,
         this.fallbackManager.hashChanged,
-      )
-      // we must use the async scheduler to prevent recursive re-entrancy calls
-      // re-entrancy can occur on redirects, we want each new route to be handled
-      // as its own routing state change in sequence, which the async scheduler permits.
-      .observeOn(Scheduler.async);
+      );
   }
 }
 
