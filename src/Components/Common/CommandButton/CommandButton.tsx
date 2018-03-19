@@ -12,6 +12,7 @@ export interface CommandButtonProps extends Omit<ButtonProps, React.HTMLProps<Bu
   stopPropagation?: boolean;
   preventDefault?: boolean;
   plain?: boolean;
+  compact?: boolean;
   tooltip?: any;
 }
 
@@ -53,8 +54,8 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
 
   render() {
     const { rest } = this.restProps(x => {
-      const { onClick, command, commandParameter, stopPropagation, preventDefault, plain, tooltip, disabled, componentClass } = x;
-      return { onClick, command, commandParameter, stopPropagation, preventDefault, plain, tooltip, disabled, componentClass };
+      const { onClick, command, commandParameter, stopPropagation, preventDefault, plain, compact, tooltip, disabled, componentClass } = x;
+      return { onClick, command, commandParameter, stopPropagation, preventDefault, plain, compact, tooltip, disabled, componentClass };
     });
 
     return this.renderButton(rest);
@@ -71,9 +72,18 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
 
     const disabled = this.props.disabled || canExecute !== true;
 
+    const classNames = this.wxr.classNames(
+      'CommandButton',
+      this.props.className,
+      {
+        plain: this.props.plain,
+        compact: this.props.compact,
+      },
+    );
+
     const button = (
       <Button { ...rest }
-        className={ this.wxr.classNames('CommandButton', this.props.className, { plain: this.props.plain }) }
+        className={ classNames }
         disabled={ disabled }
         onClick={ disabled ? undefined : this.handleClick.bind(this) }
         componentClass={ this.getComponentClass() }
