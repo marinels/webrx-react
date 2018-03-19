@@ -20,3 +20,9 @@ declare module 'ix/asynciterable/merge' {
   // @ts-ignore: static function overload augmentation
   function merge<T>(source: AsyncIterableX<T>, ...args: AsyncIterable<T>[]): AsyncIterableX<T>;
 }
+
+declare global {
+  interface Function {
+    bind<T extends Function>(this: T, thisArg: any, ...argArray: any[]): T;
+  }
+}
