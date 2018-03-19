@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { FormGroup, InputGroup, Sizes, FormControl, FormControlProps, DropdownButton, MenuItem, HelpBlock } from 'react-bootstrap';
+import { FormEventHandler } from 'react';
+import { FormGroup, InputGroup, Sizes, FormControl, FormControlProps, DropdownButton, MenuItem, HelpBlock, SelectCallback } from 'react-bootstrap';
 import { Icon } from 'react-fa';
 import * as moment from 'moment';
 
@@ -187,8 +188,8 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
     return (
       <FormControl type='text' placeholder={ this.props.placeholder }
         value={ this.state.input }
-        onChange={ this.handleInput.bind(this) }
-        onBlur={ this.handleParse.bind(this) }
+        onChange={ this.handleInput.bind<FormEventHandler<any>>(this) }
+        onBlur={ this.handleParse.bind<any>(this) }
       />
     );
   }
@@ -218,7 +219,7 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
       <DropdownButton id={ `TimeSpanInput-units-${ this.props.id }` }
         className='TimeSpanInput-unitDropdown'
         title={ this.state.unit } bsSize={ this.props.bsSize }
-        onSelect={ this.handleChangeUnit.bind(this) }
+        onSelect={ this.handleChangeUnit.bind<any>(this) }
       >
         {
           this.props.units!

@@ -1,5 +1,6 @@
 import { Iterable } from 'ix';
 import * as React from 'react';
+import { MouseEventHandler, MouseEvent } from 'react';
 import { Button } from 'react-bootstrap';
 import { Icon } from 'react-fa';
 
@@ -146,7 +147,7 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
 
   public static defaultHeaderTemplate(item: {}, index: number, indent: Array<PanelFragment>, expander: PanelFragment, headerContent: PanelFragment, view: TreeItem) {
     return (
-      <div className='TreeItem-Header' onClick={ view.props.clickToExpand ? view.toggleExpansion.bind(view) : undefined }>
+      <div className='TreeItem-Header' onClick={ view.props.clickToExpand ? view.toggleExpansion.bind<MouseEventHandler<any>>(view) : undefined }>
         { indent }
         <div className='TreeItem-Expander'>
           { expander }
@@ -259,7 +260,7 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
     return this.state.isExpanded || false;
   }
 
-  protected toggleExpansion(e: MouseEvent) {
+  protected toggleExpansion(e: MouseEvent<any>) {
     e.stopPropagation();
 
     this.setState((prevState, props) => {
