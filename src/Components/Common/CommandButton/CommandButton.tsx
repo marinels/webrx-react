@@ -92,7 +92,7 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
       </Button>
     );
 
-    if (this.props.tooltip == null) {
+    if (this.props.tooltip == null || this.props.tooltip === false) {
       return button;
     }
 
