@@ -20,7 +20,7 @@ export class ContentTooltip extends React.Component<ContentTooltipComponentProps
     const content = this.props.content;
     const context = this.props.context || React.Children.only(this.props.children);
 
-    if (String.isNullOrEmpty(content)) {
+    if (String.isNullOrEmpty(content) || content === false) {
       return context;
     }
 
