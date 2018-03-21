@@ -58,8 +58,14 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
   }
 
   public static parseDuration(state: TimeSpanInputState, props: TimeSpanInputProps): TimeSpanInputState {
-    if (String.isNullOrEmpty(state.input)) {
+    if (state.input == null) {
       return state;
+    }
+
+    if (state.input === '') {
+      return Object.assign({}, state, {
+        duration: undefined,
+      });
     }
 
     const match: RegExpMatchArray = state.input.match(/\s*([\d\.]+)(\s+(\w+))?\s*$/) || [];
