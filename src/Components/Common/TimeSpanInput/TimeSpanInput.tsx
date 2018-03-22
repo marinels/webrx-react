@@ -70,7 +70,7 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
       });
     }
 
-    const match: RegExpMatchArray = state.input.match(/\s*([\d\.]+)(\s+(\w+))?\s*$/) || [];
+    const match: RegExpMatchArray = state.input.match(/^\s*([\d\.]+)(\s+(\w+))?\s*$/) || [];
     let [ _1, value, _2, unitInput ] = match;
 
     if (Number.isNumeric(value)) {
