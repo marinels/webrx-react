@@ -20,7 +20,7 @@ export interface TimeSpanInputProps {
   initialDuration?: moment.Duration;
   precision?: number;
 
-  onDurationChanged?: (duration: moment.Duration | undefined) => void;
+  onMomentDurationChanged?: (duration: moment.Duration | undefined) => void;
 }
 
 export interface TimeSpanInputComponentProps extends React.HTMLProps<any>, TimeSpanInputProps {
@@ -136,15 +136,15 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
     prevState: Readonly<TimeSpanInputState>,
     prevContext: any,
   ) {
-    if (this.props.onDurationChanged != null && prevState != null && this.state != null) {
+    if (this.props.onMomentDurationChanged != null && prevState != null && this.state != null) {
       if (prevState.duration != null) {
         if (this.state.duration == null || prevState.duration !== this.state.duration) {
-          this.props.onDurationChanged(this.state.duration);
+          this.props.onMomentDurationChanged(this.state.duration);
         }
       }
       else if (this.state.duration != null) {
         if (prevState.duration == null || prevState.duration !== this.state.duration) {
-          this.props.onDurationChanged(this.state.duration);
+          this.props.onMomentDurationChanged(this.state.duration);
         }
       }
     }
@@ -152,8 +152,8 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { bsClass, bsSize, controlId, units, initialUnit, initialDuration, precision, onDurationChanged } = x;
-      return { bsClass, bsSize, controlId, units, initialUnit, initialDuration, precision, onDurationChanged };
+      const { bsClass, bsSize, controlId, units, initialUnit, initialDuration, precision, onMomentDurationChanged } = x;
+      return { bsClass, bsSize, controlId, units, initialUnit, initialDuration, precision, onMomentDurationChanged };
     });
 
     return (
