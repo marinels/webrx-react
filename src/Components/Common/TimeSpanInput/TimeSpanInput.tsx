@@ -318,7 +318,6 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
     this.setState((prevState, props) => {
       return Object.assign({}, prevState, {
         input,
-        error: undefined,
       });
     });
   }
