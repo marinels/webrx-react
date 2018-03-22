@@ -19,7 +19,7 @@ export interface TimeSpanInputProps {
   initialUnit?: TimeSpanInputUnit;
   initialDuration?: moment.Duration;
   precision?: number;
-  refreshButton?: boolean;
+  reparseButton?: boolean;
 
   onMomentDurationChanged?: (duration: moment.Duration | undefined) => void;
   onMomentUnitChanged?: (unit: TimeSpanInputUnit) => void;
@@ -221,12 +221,12 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
         {
           // this is a fake button to simulate a request to parse, but it really only forces blur
           this.wxr.renderConditional(
-            this.props.refreshButton,
+            this.props.reparseButton,
             () => (
               <CommandButton className='TimeSpanInput-adjustButton'
-                onClick={ () => { return; } }
+                onClick={ () => { return; } } tooltip='Reparse input'
               >
-                <Icon name='refresh'/>
+                <Icon name='check'/>
               </CommandButton>
             ),
           )
