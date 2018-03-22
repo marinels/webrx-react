@@ -19,6 +19,7 @@ export interface TimeSpanInputProps {
   initialUnit?: TimeSpanInputUnit;
   initialDuration?: moment.Duration;
   precision?: number;
+  refreshButton?: boolean;
 
   onMomentDurationChanged?: (duration: moment.Duration | undefined) => void;
   onMomentUnitChanged?: (unit: TimeSpanInputUnit) => void;
@@ -217,12 +218,19 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
   protected renderButtons() {
     return (
       <InputGroup.Button>
-        <CommandButton className='TimeSpanInput-adjustButton'
+        {
           // this is a fake button to simulate a request to parse, but it really only forces blur
-          onClick={ () => { return; } }
-        >
-          <Icon name='refresh'/>
-        </CommandButton>
+          this.wxr.renderConditional(
+            this.props.refreshButton,
+            () => (
+              <CommandButton className='TimeSpanInput-adjustButton'
+                onClick={ () => { return; } }
+              >
+                <Icon name='refresh'/>
+              </CommandButton>
+            ),
+          )
+        }
         { this.renderDropdown() }
         <CommandButton className='TimeSpanInput-adjustButton' componentClass='button' onClick={ this.handleIncreaseDuration.bind(this) }>
           <Icon name='chevron-up'/>
