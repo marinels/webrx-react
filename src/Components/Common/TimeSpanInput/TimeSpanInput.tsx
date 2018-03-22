@@ -38,6 +38,7 @@ export interface TimeSpanInputState {
 export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, TimeSpanInputState> {
   public static DefaultPrecision = 2;
   public static InvalidFormatError = 'Invalid Duration Format';
+  public static InvalidAmountError = 'Invalid Duration Amount';
   public static InvalidUnitError = 'Invalid Unit';
 
   static defaultProps: Partial<TimeSpanInputProps> = {
@@ -74,11 +75,20 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
     let [ _1, value, _2, unitInput ] = match;
 
     if (Number.isNumeric(value)) {
-      // only process if it's numeric
+      // only process if it's numeric and valid
+      const numeric = Number(value);
+
+      if (isNaN(numeric) || numeric < 0) {
+        return Object.assign({}, state, {
+          duration: undefined,
+          error: TimeSpanInput.InvalidAmountError,
+        });
+      }
+
       if (String.isNullOrEmpty(unitInput)) {
         // single arg
         // just assume we're using the state units
-        const duration = moment.duration(Number(value), state.unit);
+        const duration = moment.duration(numeric, state.unit);
         const input = TimeSpanInput.formatDuration(duration, state.unit, props.precision);
 
         return Object.assign({}, state, {
@@ -98,7 +108,7 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
           }
 
           if (props.units!.indexOf(unit) >= 0) {
-            const duration = moment.duration(Number(value), unit);
+            const duration = moment.duration(numeric, unit);
             const input = TimeSpanInput.formatDuration(duration, unit, props.precision);
 
             return Object.assign({}, state, {
@@ -294,7 +304,7 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
       return Object.assign({}, prevState, {
         input,
         duration,
-        error: undefined,
+        error: duration.valueOf() < 0 ? TimeSpanInput.InvalidAmountError : undefined,
       });
     });
   }
@@ -307,7 +317,7 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
       return Object.assign({}, prevState, {
         input,
         duration,
-        error: undefined,
+        error: duration.valueOf() < 0 ? TimeSpanInput.InvalidAmountError : undefined,
       });
     });
   }
