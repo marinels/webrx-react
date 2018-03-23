@@ -107,7 +107,7 @@ export const demoViewMap: ViewActivatorMap = {
   TimeSpanInput: () => (
     <div>
       <Components.TimeSpanInput placeholder='Manual input is parsed on blur' />
-      <Components.TimeSpanInput units={ [ 'hours', 'days' ] } initialUnit='hours' />
+      <Components.TimeSpanInput units={ [ 'hours', 'days' ] } initialUnit='hours' placeholder='custom units + reparse' reparseButton />
       <Components.TimeSpanInput>
         <FormControl type='text' id='custom' placeholder='You can also use your own custom control component' />
       </Components.TimeSpanInput>
