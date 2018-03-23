@@ -121,6 +121,7 @@ export class TimeSpan {
   public static DefaultDurationHoursPrecision = 1;
   public static DefaultDurationDaysPrecision = 1;
   public static DefaultDurationHoursPerDay = 8;
+  public static DefaultFormatMaxHours = 24;
 
   /**
    * Standardized hours string representation of a duration
@@ -130,16 +131,34 @@ export class TimeSpan {
   }
 
   /**
-   * Convert a duration into a work day duration based on a number of hours per work day
-   */
-  public static getWorkDaysDuration(value: moment.Duration, hoursPerDay = TimeSpan.DefaultDurationHoursPerDay, precision = TimeSpan.DefaultDurationDaysPrecision) {
-    return moment.duration(parseFloat((value.asHours() / hoursPerDay).toFixed(precision)), 'days');
-  }
-
-  /**
    * Standardized days string representation of a duration
    */
   public static formatDays(value: moment.Duration | undefined, defaultValue: any = null) {
     return value == null ? defaultValue : value.humanize();
+  }
+
+  /**
+   * Standardized duration string representation that will format hours or days based on maxHours
+   */
+  public static format(value: moment.Duration | undefined, maxHours = TimeSpan.DefaultFormatMaxHours, precision = TimeSpan.DefaultDurationHoursPrecision, defaultValue: any = null) {
+    if (value == null) {
+      return defaultValue;
+    }
+
+    return value.asHours() < maxHours ? TimeSpan.formatHours(value, precision) : TimeSpan.formatDays(value);
+  }
+
+  /**
+   * Convert a full day duration into a work day duration based on a number of hours per work day
+   */
+  public static getWorkDaysFromFullDays(value: moment.Duration, hoursPerDay = TimeSpan.DefaultDurationHoursPerDay) {
+    return moment.duration(value.asDays() * 24.0 / hoursPerDay, 'days');
+  }
+
+  /**
+   * Convert a workday based duration into a cumulative duration based on a number of hours per work day
+   */
+  public static getFullDaysFromWorkDays(value: moment.Duration, hoursPerDay = TimeSpan.DefaultDurationHoursPerDay) {
+    return moment.duration(value.asDays() * hoursPerDay / 24.0, 'days');
   }
 }

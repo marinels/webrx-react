@@ -15,12 +15,15 @@ export interface TimeSpanInputProps {
   bsSize?: Sizes;
   controlId?: string;
 
+  duration?: moment.Duration;
   units?: Array<TimeSpanInputUnit>;
   initialUnit?: TimeSpanInputUnit;
   initialDuration?: moment.Duration;
   precision?: number;
+  reparseButton?: boolean;
 
-  onDurationChanged?: (duration: moment.Duration | undefined) => void;
+  onMomentDurationChanged?: (duration: moment.Duration | undefined, unit: TimeSpanInputUnit) => void;
+  onMomentUnitChanged?: (unit: TimeSpanInputUnit, duration: moment.Duration | undefined) => void;
 }
 
 export interface TimeSpanInputComponentProps extends React.HTMLProps<any>, TimeSpanInputProps {
@@ -36,6 +39,7 @@ export interface TimeSpanInputState {
 export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, TimeSpanInputState> {
   public static DefaultPrecision = 2;
   public static InvalidFormatError = 'Invalid Duration Format';
+  public static InvalidAmountError = 'Invalid Duration Amount';
   public static InvalidUnitError = 'Invalid Unit';
 
   static defaultProps: Partial<TimeSpanInputProps> = {
@@ -68,15 +72,24 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
       });
     }
 
-    const match: RegExpMatchArray = state.input.match(/\s*([\d\.]+)(\s+(\w+))?\s*$/) || [];
+    const match: RegExpMatchArray = state.input.match(/^\s*([\d\.]+)(\s+(\w+))?\s*$/) || [];
     let [ _1, value, _2, unitInput ] = match;
 
     if (Number.isNumeric(value)) {
-      // only process if it's numeric
+      // only process if it's numeric and valid
+      const numeric = Number(value);
+
+      if (isNaN(numeric) || numeric < 0) {
+        return Object.assign({}, state, {
+          duration: undefined,
+          error: TimeSpanInput.InvalidAmountError,
+        });
+      }
+
       if (String.isNullOrEmpty(unitInput)) {
         // single arg
         // just assume we're using the state units
-        const duration = moment.duration(Number(value), state.unit);
+        const duration = moment.duration(numeric, state.unit);
         const input = TimeSpanInput.formatDuration(duration, state.unit, props.precision);
 
         return Object.assign({}, state, {
@@ -96,7 +109,7 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
           }
 
           if (props.units!.indexOf(unit) >= 0) {
-            const duration = moment.duration(Number(value), unit);
+            const duration = moment.duration(numeric, unit);
             const input = TimeSpanInput.formatDuration(duration, unit, props.precision);
 
             return Object.assign({}, state, {
@@ -136,24 +149,48 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
     prevState: Readonly<TimeSpanInputState>,
     prevContext: any,
   ) {
-    if (this.props.onDurationChanged != null && prevState != null && this.state != null) {
+    if (this.props.onMomentDurationChanged != null && prevState != null && this.state != null) {
       if (prevState.duration != null) {
         if (this.state.duration == null || prevState.duration !== this.state.duration) {
-          this.props.onDurationChanged(this.state.duration);
+          this.props.onMomentDurationChanged(this.state.duration, this.state.unit);
         }
       }
       else if (this.state.duration != null) {
         if (prevState.duration == null || prevState.duration !== this.state.duration) {
-          this.props.onDurationChanged(this.state.duration);
+          this.props.onMomentDurationChanged(this.state.duration, this.state.unit);
         }
       }
+    }
+
+    if (this.props.onMomentUnitChanged != null && prevState != null && this.state != null) {
+      if (prevState.unit != null) {
+        if (this.state.unit == null || prevState.unit !== this.state.unit) {
+          this.props.onMomentUnitChanged(this.state.unit, this.state.duration);
+        }
+      }
+      else if (this.state.unit != null) {
+        if (prevState.unit == null || prevState.unit !== this.state.unit) {
+          this.props.onMomentUnitChanged(this.state.unit, this.state.duration);
+        }
+      }
+    }
+
+    if (this.props.duration != null && prevState.duration !== this.props.duration) {
+      this.setState((ps, p) => {
+        return Object.assign({}, ps, {
+          input: this.props.duration == null ?
+            ps.input :
+            TimeSpanInput.formatDuration(this.props.duration, ps.unit, this.props.precision),
+          duration: this.props.duration,
+        });
+      });
     }
   }
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { bsClass, bsSize, controlId, units, initialUnit, initialDuration, precision, onDurationChanged } = x;
-      return { bsClass, bsSize, controlId, units, initialUnit, initialDuration, precision, onDurationChanged };
+      const { bsClass, bsSize, controlId, duration, units, initialUnit, initialDuration, precision, onMomentDurationChanged, onMomentUnitChanged } = x;
+      return { bsClass, bsSize, controlId, duration, units, initialUnit, initialDuration, precision, onMomentDurationChanged, onMomentUnitChanged };
     });
 
     return (
@@ -203,12 +240,19 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
   protected renderButtons() {
     return (
       <InputGroup.Button>
-        <CommandButton className='TimeSpanInput-adjustButton'
+        {
           // this is a fake button to simulate a request to parse, but it really only forces blur
-          onClick={ () => { return; } }
-        >
-          <Icon name='refresh'/>
-        </CommandButton>
+          this.wxr.renderConditional(
+            this.props.reparseButton,
+            () => (
+              <CommandButton className='TimeSpanInput-adjustButton'
+                onClick={ () => { return; } } tooltip='Reparse input'
+              >
+                <Icon name='check'/>
+              </CommandButton>
+            ),
+          )
+        }
         { this.renderDropdown() }
         <CommandButton className='TimeSpanInput-adjustButton' componentClass='button' onClick={ this.handleIncreaseDuration.bind(this) }>
           <Icon name='chevron-up'/>
@@ -272,7 +316,7 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
       return Object.assign({}, prevState, {
         input,
         duration,
-        error: undefined,
+        error: duration.valueOf() < 0 ? TimeSpanInput.InvalidAmountError : undefined,
       });
     });
   }
@@ -285,7 +329,7 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
       return Object.assign({}, prevState, {
         input,
         duration,
-        error: undefined,
+        error: duration.valueOf() < 0 ? TimeSpanInput.InvalidAmountError : undefined,
       });
     });
   }
@@ -296,7 +340,6 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
     this.setState((prevState, props) => {
       return Object.assign({}, prevState, {
         input,
-        error: undefined,
       });
     });
   }
