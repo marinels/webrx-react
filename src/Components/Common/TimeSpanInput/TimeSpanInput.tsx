@@ -15,14 +15,15 @@ export interface TimeSpanInputProps {
   bsSize?: Sizes;
   controlId?: string;
 
+  duration?: moment.Duration;
   units?: Array<TimeSpanInputUnit>;
   initialUnit?: TimeSpanInputUnit;
   initialDuration?: moment.Duration;
   precision?: number;
   reparseButton?: boolean;
 
-  onMomentDurationChanged?: (duration: moment.Duration | undefined) => void;
-  onMomentUnitChanged?: (unit: TimeSpanInputUnit) => void;
+  onMomentDurationChanged?: (duration: moment.Duration | undefined, unit: TimeSpanInputUnit) => void;
+  onMomentUnitChanged?: (unit: TimeSpanInputUnit, duration: moment.Duration | undefined) => void;
 }
 
 export interface TimeSpanInputComponentProps extends React.HTMLProps<any>, TimeSpanInputProps {
@@ -151,12 +152,12 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
     if (this.props.onMomentDurationChanged != null && prevState != null && this.state != null) {
       if (prevState.duration != null) {
         if (this.state.duration == null || prevState.duration !== this.state.duration) {
-          this.props.onMomentDurationChanged(this.state.duration);
+          this.props.onMomentDurationChanged(this.state.duration, this.state.unit);
         }
       }
       else if (this.state.duration != null) {
         if (prevState.duration == null || prevState.duration !== this.state.duration) {
-          this.props.onMomentDurationChanged(this.state.duration);
+          this.props.onMomentDurationChanged(this.state.duration, this.state.unit);
         }
       }
     }
@@ -164,21 +165,32 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
     if (this.props.onMomentUnitChanged != null && prevState != null && this.state != null) {
       if (prevState.unit != null) {
         if (this.state.unit == null || prevState.unit !== this.state.unit) {
-          this.props.onMomentUnitChanged(this.state.unit);
+          this.props.onMomentUnitChanged(this.state.unit, this.state.duration);
         }
       }
       else if (this.state.unit != null) {
         if (prevState.unit == null || prevState.unit !== this.state.unit) {
-          this.props.onMomentUnitChanged(this.state.unit);
+          this.props.onMomentUnitChanged(this.state.unit, this.state.duration);
         }
       }
+    }
+
+    if (this.props.duration != null && prevState.duration !== this.props.duration) {
+      this.setState((ps, p) => {
+        return Object.assign({}, ps, {
+          input: this.props.duration == null ?
+            ps.input :
+            TimeSpanInput.formatDuration(this.props.duration, ps.unit, this.props.precision),
+          duration: this.props.duration,
+        });
+      });
     }
   }
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { bsClass, bsSize, controlId, units, initialUnit, initialDuration, precision, onMomentDurationChanged } = x;
-      return { bsClass, bsSize, controlId, units, initialUnit, initialDuration, precision, onMomentDurationChanged };
+      const { bsClass, bsSize, controlId, duration, units, initialUnit, initialDuration, precision, onMomentDurationChanged, onMomentUnitChanged } = x;
+      return { bsClass, bsSize, controlId, duration, units, initialUnit, initialDuration, precision, onMomentDurationChanged, onMomentUnitChanged };
     });
 
     return (
