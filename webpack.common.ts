@@ -94,7 +94,6 @@ export const commonConfig: Partial<webpack.Configuration> = {
       WEBPACK_DEV_SERVER: false,
       VERSION: JSON.stringify(npmPackage.version),
     }),
-    new webpack.NamedModulesPlugin(),
     new FaviconsWebpackPlugin('./src/Assets/logo.png'),
   ],
   resolve: {
@@ -106,6 +105,15 @@ export const commonConfig: Partial<webpack.Configuration> = {
     },
   },
   mode: args.env.release ? 'production' : 'development',
+  optimization: {
+    minimize: args.env.min,
+    removeAvailableModules: args.env.release,
+    removeEmptyChunks: args.env.release,
+    mergeDuplicateChunks: args.env.release,
+    flagIncludedChunks: args.env.release,
+    namedModules: !args.env.release,
+    namedChunks: !args.env.release,
+  },
 };
 
 const rules: webpack.Rule[] = [];
@@ -204,18 +212,6 @@ if (args.env.release) {
   defines.definitions['process.env'] = {
     'NODE_ENV': JSON.stringify('production'),
   };
-}
-
-if (args.env.min) {
-  commonConfig.plugins!.push(
-    new webpack.optimize.UglifyJsPlugin({
-      comments: false,
-      compress: {
-        warnings: false,
-      },
-      sourceMap: args.env.sourceMap,
-    }),
-  );
 }
 
 if (args.env.templatePath) {

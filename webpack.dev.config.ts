@@ -26,7 +26,7 @@ const devConfig: Partial<webpack.Configuration> = {
 
 const config: webpack.Configuration = Object.assign({}, commonConfig, devConfig);
 
-(config.module as webpack.NewModule).rules.splice(-1, 1,
+(config.module as webpack.Module).rules.splice(-1, 1,
   { test: /\.tsx?$/, loaders: [ 'react-hot-loader/webpack', 'awesome-typescript-loader' ] },
 );
 
