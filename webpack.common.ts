@@ -105,6 +105,7 @@ export const commonConfig: Partial<webpack.Configuration> = {
       'rxjs$': 'rxjs/Rx',
     },
   },
+  mode: args.env.release ? 'production' : 'development',
 };
 
 const rules: webpack.Rule[] = [];
