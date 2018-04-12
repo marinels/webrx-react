@@ -10496,6 +10496,10 @@
         "camelcase": "4.1.0"
       }
     },
+    "yarn": {
+      "version": "1.5.1",
+      "dev": true
+    },
     "yauzl": {
       "version": "2.4.1",
       "dev": true,

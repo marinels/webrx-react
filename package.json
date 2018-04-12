@@ -3,15 +3,15 @@
   "version": "0.18.0",
   "description": "ReactJS + WebRx + RxJS + Bootstrap: MVVM for Single Page Web Applications",
   "scripts": {
-    "start": "npm run watch",
-    "test": "npm run lint && npm run bundle-test && npm run mocha-test",
-    "clean": "del-cli build dist && npm run clean-modules",
+    "start": "yarn watch",
+    "test": "yarn lint && yarn bundle-test && yarn mocha-test",
+    "clean": "del-cli build dist && yarn clean-modules",
     "clean-modules": "git clean -df Assets Components Events Extensions Routing Stores Style Utils WebRx types webrx-react.* globals.* version.*",
-    "lint": "npm run lint-ts && npm run lint-less",
+    "lint": "yarn lint-ts && yarn lint-less",
     "lint-ts": "tslint -t verbose ./src/**/*.ts ./src/**/*.tsx ./test/**/*.ts",
     "lint-less": "stylelint -s less -f string ./src/**/*.less",
     "bundle": "webpack --config webpack.config.ts",
-    "bundle-docs": "del-cli ./docs && npm run bundle -- --env.release --env.releasePath . --env.outputFilename app --env.outputTag= --env.min --env.sourceMap=false --env.extractText=false --env.extractLocale --env.extractFont --env.buildPath ./docs --env.entryPath ./src/app.tsx",
+    "bundle-docs": "del-cli ./docs && yarn bundle --env.release --env.releasePath . --env.outputFilename app --env.outputTag= --env.min --env.sourceMap=false --env.extractText=false --env.extractLocale --env.extractFont --env.buildPath ./docs --env.entryPath ./src/app.tsx",
     "bundle-test": "webpack --config test/webpack.config.ts",
     "mocha-test": "mocha --reporter spec build/test/app.spec.js",
     "watch": "webpack-dev-server --config webpack.dev.config.ts",
@@ -19,7 +19,7 @@
     "version-modules": "git checkout ./src/version.ts && replace-in-file --configFile ./version-config.js ./src/version.ts",
     "build-modules": "tsc -p tsconfig.build.json",
     "deploy-modules": "ts-node ./deploy.ts",
-    "dist": "npm run test && npm run bundle -- --env.release --env.buildPath ./dist && npm run bundle -- --env.release --env.min --env.buildPath ./dist && npm run version-modules && npm run build-modules && npm run deploy-modules",
+    "dist": "yarn test && yarn bundle --env.release --env.buildPath ./dist && yarn bundle --env.release --env.min --env.buildPath ./dist && yarn version-modules && yarn build-modules && yarn deploy-modules",
     "tr": "tsc --traceResolution --noEmit > tsctr.log"
   },
   "author": "Pat Sissons <pat@marinels.com> (http://github.com/patsissons)",
@@ -104,6 +104,7 @@
     "webpack": "^4.0.0",
     "webpack-cli": "^2.0.0",
     "webpack-dev-server": "^3.0.0",
-    "webpack-stats-plugin": "^0.2.0"
+    "webpack-stats-plugin": "^0.2.0",
+    "yarn": "^1.0.0"
   }
 }
