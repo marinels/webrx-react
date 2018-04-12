@@ -13,7 +13,7 @@ notifications:
   #   on_start: never     # options: [always|never|change] default: always
 
 script:
-  - yarn dist
+  - travis_wait 30 yarn dist
 
 after_success:
 
