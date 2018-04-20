@@ -7,7 +7,7 @@ import { FormGroup, InputGroup, FormControl, Sizes } from 'react-bootstrap';
 import { BaseView, BaseViewProps } from '../../React';
 import { BindableInput, BindableProps } from '../BindableInput/BindableInput';
 import { CommandButton } from '../CommandButton/CommandButton';
-import { ContentTooltip } from '../ContentTooltip/ContentTooltip';
+import { ContentTooltip, TooltipPlacement } from '../ContentTooltip/ContentTooltip';
 import { InlineEditViewModel } from './InlineEditViewModel';
 
 export interface InlineEditProps extends BindableProps {
@@ -20,7 +20,7 @@ export interface InlineEditProps extends BindableProps {
   template?: (value: any, view: InlineEditView) => any;
   editTemplate?: (value: any, view: InlineEditView) => any;
   errorContent?: any | ((viewModel: Readonly<InlineEditViewModel<{}>>, view: InlineEditView) => any);
-  errorPlacement?: string;
+  errorPlacement?: TooltipPlacement;
 }
 
 export interface InlineEditViewProps extends BaseViewProps<InlineEditViewModel<{}>>, InlineEditProps {

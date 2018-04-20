@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subscription } from  'rxjs';
 import { Button, ButtonProps } from 'react-bootstrap';
 
-import { ContentTooltip } from '../ContentTooltip/ContentTooltip';
+import { ContentTooltip, TooltipPlacement } from '../ContentTooltip/ContentTooltip';
 import { Command } from '../../../WebRx';
 
 export interface CommandButtonProps extends Omit<ButtonProps, React.HTMLProps<Button>> {
@@ -14,6 +14,7 @@ export interface CommandButtonProps extends Omit<ButtonProps, React.HTMLProps<Bu
   plain?: boolean;
   compact?: boolean;
   tooltip?: any;
+  tooltipPlacement?: TooltipPlacement;
 }
 
 export interface CommandButtonComponentProps extends React.HTMLProps<any>, CommandButtonProps {
@@ -21,6 +22,10 @@ export interface CommandButtonComponentProps extends React.HTMLProps<any>, Comma
 
 export class CommandButton extends React.Component<CommandButtonComponentProps> {
   public static displayName = 'CommandButton';
+
+  static defaultProps = {
+    tooltipPlacement: 'top',
+  };
 
   private canExecuteSubscription = Subscription.EMPTY;
 
@@ -54,8 +59,8 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
 
   render() {
     const { rest } = this.restProps(x => {
-      const { onClick, command, commandParameter, stopPropagation, preventDefault, plain, compact, tooltip, disabled, componentClass } = x;
-      return { onClick, command, commandParameter, stopPropagation, preventDefault, plain, compact, tooltip, disabled, componentClass };
+      const { onClick, command, commandParameter, stopPropagation, preventDefault, plain, compact, tooltip, tooltipPlacement, disabled, componentClass } = x;
+      return { onClick, command, commandParameter, stopPropagation, preventDefault, plain, compact, tooltip, tooltipPlacement, disabled, componentClass };
     });
 
     return this.renderButton(rest);
@@ -99,7 +104,7 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
     const ttId = this.props.id ? `${ this.props.id }-tt` : undefined;
 
     return (
-      <ContentTooltip id={ ttId } className={ this.props.className } content={ this.props.tooltip }>
+      <ContentTooltip id={ ttId } className={ this.props.className } content={ this.props.tooltip } placement={ this.props.tooltipPlacement }>
         { button }
       </ContentTooltip>
     );
