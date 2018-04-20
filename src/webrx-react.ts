@@ -13,6 +13,11 @@ import './types/augmentations';
 // import extensions
 import './Extensions';
 
+import { getLogger } from './Utils/Logging';
+
+// inform the user which version we are using
+getLogger('webrx-react').info(`Initializing webrx-react (v${ version })`);
+
 // import webrx-react helper submodules
 import * as Events from './Events';
 import { Logging, PubSub, Alert, Compare, Moment } from './Utils';
@@ -28,7 +33,3 @@ import * as Components from './Components';
 // export everything
 export { version, wx, Logging, PubSub, Alert, Compare, Moment };
 export { Events, Routing, Stores, Components };
-
-// inform the user which version we are using
-// tslint:disable-next-line:no-console
-Logging.getLogger('webrx-react').debug(`Loaded webrx-react: ${ version }`);
