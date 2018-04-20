@@ -23,6 +23,10 @@ export interface CommandButtonComponentProps extends React.HTMLProps<any>, Comma
 export class CommandButton extends React.Component<CommandButtonComponentProps> {
   public static displayName = 'CommandButton';
 
+  static defaultProps = {
+    tooltipPlacement: 'top',
+  };
+
   private canExecuteSubscription = Subscription.EMPTY;
 
   private getCommand(): Command<any> | undefined {
