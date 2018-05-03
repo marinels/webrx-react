@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as CSS from 'csstype';
 import { Observable } from 'rxjs';
 import { Icon } from 'react-fa';
 import { Grid, Row, Col, Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab,
@@ -869,7 +870,7 @@ export const demoViewMap: ViewActivatorMap = {
     <TodoListView style={({ padding: 20 })} viewModel={ viewModel } shadow />
   ),
   Help: () => {
-    const helpStyle: (top?: number, left?: number, textAlign?: string, zIndex?: number) => React.CSSProperties = (top = 0, left = 0, textAlign = 'center', zIndex = 1000) => ({
+    const helpStyle: (top?: number, left?: number, textAlign?: CSS.TextAlignProperty, zIndex?: number) => React.CSSProperties = (top = 0, left = 0, textAlign = 'center', zIndex = 1000) => ({
       display: 'inline-block',
       position: 'absolute',
       textAlign,
@@ -878,7 +879,7 @@ export const demoViewMap: ViewActivatorMap = {
       left,
     });
 
-    const helpItem = (text: string, top = 0, left = 0, iconName = 'arrow-up', textAlign = 'center', zIndex = 1000) => (
+    const helpItem = (text: string, top = 0, left = 0, iconName = 'arrow-up', textAlign: CSS.TextAlignProperty = 'center', zIndex = 1000) => (
       <div style={ helpStyle(top, left, textAlign, zIndex) }>
         <div>
           <Icon name={ iconName } />
