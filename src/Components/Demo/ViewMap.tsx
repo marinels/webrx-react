@@ -603,7 +603,7 @@ export const demoViewMap: ViewActivatorMap = {
       <Components.ModalDialogView viewModel={ data.viewModel }  bsSize='lg' canClose
         modalTitle='Demo Modal Confirmation Dialog'
         modalBody={ () => (<FormControl type='text' defaultValue={ data.viewModel.context.value } />) }
-        acceptCommand={ data.viewModel.hideOnExecute(data.accept) } acceptCommandParameter={ () => 'something else' }
+        acceptCommand={ data.viewModel.hideOnExecute(data.accept) } acceptCommandParameter={ (x: string) => `something else with ${ x }` }
       >
         <Components.CommandButton bsStyle='primary' command={ data.viewModel.hideOnExecute(data.accept) } commandParameter={ () => data.viewModel.context.value }>Accept</Components.CommandButton>
         <Components.CommandButton bsStyle='danger' command={ data.viewModel.hideOnExecute(data.reject) } commandParameter={ () => data.viewModel.context.value }>Reject</Components.CommandButton>

@@ -13,7 +13,7 @@ export interface ModalDialogProps extends BootstrapModalProps {
   modalBody?: {};
   modalFooter?: {};
   canClose?: boolean;
-  acceptCommand?: Command;
+  acceptCommand?: Command | { (ctx: {}): Command };
   acceptCommandParameter?: any;
 }
 
@@ -103,12 +103,16 @@ export class ModalDialogView extends BaseView<ModalDialogViewProps, ModalDialogV
 
   private handleKeyDown(e: React.KeyboardEvent<any>) {
     if (this.props.acceptCommand && e.keyCode === 13) {
+      const ctx = this.viewModel.context.value;
+      const cmd = this.props.acceptCommand instanceof Function ?
+        this.props.acceptCommand(ctx) :
+        this.props.acceptCommand;
       const param = this.props.acceptCommandParameter instanceof Function ?
-        this.props.acceptCommandParameter() :
+        this.props.acceptCommandParameter(ctx) :
         this.props.acceptCommandParameter;
 
-      if (this.props.acceptCommand.canExecuteFor(param)) {
-        return this.props.acceptCommand.execute(param);
+      if (cmd.canExecuteFor(param)) {
+        return cmd.execute(param);
       }
     }
 
