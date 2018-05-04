@@ -4,6 +4,7 @@ import { Modal, ModalProps } from 'react-bootstrap';
 
 import { BaseView, BaseViewProps } from '../../React';
 import { ModalDialogViewModel } from './ModalDialogViewModel';
+import { Command } from '../../../WebRx';
 
 export type BootstrapModalProps = Omit2<ModalProps, React.HTMLProps<Modal>, { onHide: Function; }>;
 
@@ -12,6 +13,8 @@ export interface ModalDialogProps extends BootstrapModalProps {
   modalBody?: {};
   modalFooter?: {};
   canClose?: boolean;
+  acceptCommand?: Command;
+  acceptCommandParameter?: any;
 }
 
 export interface ModalDialogViewProps extends BaseViewProps<ModalDialogViewModel<{}>>, ModalDialogProps {
@@ -33,8 +36,8 @@ export class ModalDialogView extends BaseView<ModalDialogViewProps, ModalDialogV
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { modalTitle, modalBody, modalFooter, canClose }  = x;
-      return { modalTitle, modalBody, modalFooter, canClose };
+      const { modalTitle, modalBody, modalFooter, canClose, acceptCommand, acceptCommandParameter }  = x;
+      return { modalTitle, modalBody, modalFooter, canClose, acceptCommand, acceptCommandParameter };
     });
 
     return this.wxr.renderConditional(this.viewModel.isVisible, () => (
@@ -75,7 +78,7 @@ export class ModalDialogView extends BaseView<ModalDialogViewProps, ModalDialogV
     return this.wxr.renderNullable(
       this.props.modalBody,
       body => (
-        <Modal.Body>
+        <Modal.Body onKeyDown={ this.handleKeyDown.bind(this) }>
           { body instanceof Function ? body(this) : body }
         </Modal.Body>
       ),
@@ -96,5 +99,19 @@ export class ModalDialogView extends BaseView<ModalDialogViewProps, ModalDialogV
         );
       },
     );
+  }
+
+  private handleKeyDown(e: React.KeyboardEvent<any>) {
+    if (this.props.acceptCommand && e.keyCode === 13) {
+      const param = this.props.acceptCommandParameter instanceof Function ?
+        this.props.acceptCommandParameter() :
+        this.props.acceptCommandParameter;
+
+      if (this.props.acceptCommand.canExecuteFor(param)) {
+        return this.props.acceptCommand.execute(param);
+      }
+    }
+
+    return undefined;
   }
 }

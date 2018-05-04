@@ -13,6 +13,9 @@ export class TodoListApi extends ObservableApi {
   }
 
   constructor() {
-    super('api/TodoList', TodoListApi.createSampleData);
+    super('api/TodoList');
+
+    // always use the sample data for this api
+    this.sampleDataCreator = TodoListApi.createSampleData;
   }
 }

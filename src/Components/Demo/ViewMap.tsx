@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as CSS from 'csstype';
 import { Observable } from 'rxjs';
 import { Icon } from 'react-fa';
 import { Grid, Row, Col, Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab,
@@ -599,7 +600,11 @@ export const demoViewMap: ViewActivatorMap = {
   ModalDialogViewModel: (data: { viewModel: Components.ModalDialogViewModel<string>, createContext: Command<string>, accept: Command<any>, reject: Command<any> }) => (
     <div>
       <Button onClick={ wxr.bindEventToCommand(data.viewModel, x => data.createContext, () => 'You can put custom content here') }>Show Confirmation Dialog</Button>
-      <Components.ModalDialogView viewModel={ data.viewModel } modalTitle='Demo Modal Confirmation Dialog' modalBody={ () => data.viewModel.context.value } bsSize='lg'>
+      <Components.ModalDialogView viewModel={ data.viewModel }  bsSize='lg' canClose
+        modalTitle='Demo Modal Confirmation Dialog'
+        modalBody={ () => (<FormControl type='text' defaultValue={ data.viewModel.context.value } />) }
+        acceptCommand={ data.viewModel.hideOnExecute(data.accept) } acceptCommandParameter={ () => 'something else' }
+      >
         <Components.CommandButton bsStyle='primary' command={ data.viewModel.hideOnExecute(data.accept) } commandParameter={ () => data.viewModel.context.value }>Accept</Components.CommandButton>
         <Components.CommandButton bsStyle='danger' command={ data.viewModel.hideOnExecute(data.reject) } commandParameter={ () => data.viewModel.context.value }>Reject</Components.CommandButton>
         <Components.CommandButton bsStyle='default' command={ data.viewModel.hide }>Cancel</Components.CommandButton>
@@ -865,7 +870,7 @@ export const demoViewMap: ViewActivatorMap = {
     <TodoListView style={({ padding: 20 })} viewModel={ viewModel } shadow />
   ),
   Help: () => {
-    const helpStyle: (top?: number, left?: number, textAlign?: string, zIndex?: number) => React.CSSProperties = (top = 0, left = 0, textAlign = 'center', zIndex = 1000) => ({
+    const helpStyle: (top?: number, left?: number, textAlign?: CSS.TextAlignProperty, zIndex?: number) => React.CSSProperties = (top = 0, left = 0, textAlign = 'center', zIndex = 1000) => ({
       display: 'inline-block',
       position: 'absolute',
       textAlign,
@@ -874,7 +879,7 @@ export const demoViewMap: ViewActivatorMap = {
       left,
     });
 
-    const helpItem = (text: string, top = 0, left = 0, iconName = 'arrow-up', textAlign = 'center', zIndex = 1000) => (
+    const helpItem = (text: string, top = 0, left = 0, iconName = 'arrow-up', textAlign: CSS.TextAlignProperty = 'center', zIndex = 1000) => (
       <div style={ helpStyle(top, left, textAlign, zIndex) }>
         <div>
           <Icon name={ iconName } />

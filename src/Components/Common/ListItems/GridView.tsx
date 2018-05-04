@@ -135,7 +135,9 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
             this.columns
               .map(x => {
                 if (React.isValidElement(x)) {
-                  return React.cloneElement<GridViewColumnProps, any>(x, props);
+                  return (
+                    <x.type { ...x.props } { ...props } />
+                  );
                 }
 
                 return '';
@@ -161,7 +163,9 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
           columns
             .map(x => {
               if (React.isValidElement(x)) {
-                return React.cloneElement<GridViewColumnProps, any>(x, props);
+                return (
+                  <x.type { ...x.props } { ...props } />
+                );
               }
 
               return '';

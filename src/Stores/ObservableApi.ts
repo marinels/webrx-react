@@ -13,7 +13,7 @@ export class ObservableApi implements StoreApi {
   protected readonly logger: Logger;
   protected readonly wx: WebRxStatic;
   protected sampleData: SampleDataApi | undefined;
-  protected readonly sampleDataCreator: SampleDataCreator | undefined;
+  protected sampleDataCreator: SampleDataCreator | undefined;
 
   public readonly path: string;
   public readonly base: string;
