@@ -103,8 +103,12 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
 
     const ttId = this.props.id ? `${ this.props.id }-tt` : undefined;
 
+    const tooltipContent = this.props.tooltip instanceof Function ?
+      this.props.tooltip(disabled) :
+      this.props.tooltip;
+
     return (
-      <ContentTooltip id={ ttId } className={ this.props.className } content={ this.props.tooltip } placement={ this.props.tooltipPlacement }>
+      <ContentTooltip id={ ttId } className={ this.props.className } content={ tooltipContent } placement={ this.props.tooltipPlacement }>
         { button }
       </ContentTooltip>
     );
