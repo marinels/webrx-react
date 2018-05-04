@@ -111,7 +111,7 @@ export class ModalDialogView extends BaseView<ModalDialogViewProps, ModalDialogV
         this.props.acceptCommandParameter(ctx) :
         this.props.acceptCommandParameter;
 
-      if (cmd.canExecuteFor(param)) {
+      if (cmd && cmd.canExecuteFor(param)) {
         return cmd.execute(param);
       }
     }
