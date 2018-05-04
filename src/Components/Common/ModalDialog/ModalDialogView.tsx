@@ -13,7 +13,7 @@ export interface ModalDialogProps extends BootstrapModalProps {
   modalBody?: {};
   modalFooter?: {};
   canClose?: boolean;
-  acceptCommand?: Command | { (ctx: {}): Command };
+  acceptCommand?: Command | { (ctx: {}): Command | undefined };
   acceptCommandParameter?: any;
 }
 
