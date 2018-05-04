@@ -13,7 +13,7 @@ export interface ModalDialogProps extends BootstrapModalProps {
   modalBody?: {};
   modalFooter?: {};
   canClose?: boolean;
-  acceptCommand?: Command | { (ctx: {}): Command };
+  acceptCommand?: Command | { (ctx: {}): Command | undefined };
   acceptCommandParameter?: any;
 }
 
@@ -111,7 +111,7 @@ export class ModalDialogView extends BaseView<ModalDialogViewProps, ModalDialogV
         this.props.acceptCommandParameter(ctx) :
         this.props.acceptCommandParameter;
 
-      if (cmd.canExecuteFor(param)) {
+      if (cmd && cmd.canExecuteFor(param)) {
         return cmd.execute(param);
       }
     }
