@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { Tooltip, Popover, OverlayTrigger } from 'react-bootstrap';
 
+export type TooltipPlacement = 'top' | 'right' | 'bottom' | 'left';
+
 export interface ContentTooltipProps {
   content: any;
   id?: string;
   className?: string;
-  placement?: string;
+  placement?: TooltipPlacement;
   title?: any;
   trigger?: string | string[];
   popover?: boolean;
