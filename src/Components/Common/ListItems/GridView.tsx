@@ -136,7 +136,7 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
               .map(x => {
                 if (React.isValidElement(x)) {
                   return (
-                    <x.type { ...x.props } { ...props } />
+                    <x.type key={ x.key } { ...x.props } { ...props } />
                   );
                 }
 
@@ -164,7 +164,7 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
             .map(x => {
               if (React.isValidElement(x)) {
                 return (
-                  <x.type { ...x.props } { ...props } />
+                  <x.type key={ x.key } { ...x.props } { ...props } />
                 );
               }
 
