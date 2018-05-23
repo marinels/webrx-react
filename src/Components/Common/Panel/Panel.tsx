@@ -105,6 +105,7 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
         return this.renderItem(x, i, componentClass);
       })
       .asIterable()
+      .filter(x => x ? true : false)
       .defaultIfEmpty(this.renderEmpty())
       .toArray();
   }
@@ -127,26 +128,41 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
     componentClass?: React.ReactType,
   ): PanelFragment {
     const context = { index };
-    const key = this.getItemKey(itemTemplate, index);
-    const className = this.wxr.classNames('Panel-Item', Panel.getPanelItemPropValue(this.props.itemClassName, context));
-    const style = Panel.getPanelItemPropValue(this.props.itemStyle, context);
-    const props: {} | undefined = Panel.getPanelItemPropValue(this.props.itemProps, context) || {};
-    const template = this.props.itemTemplate;
-    const Component = componentClass == null ? Panel.defaultComponentClass : componentClass;
 
-    const fragment = Component === '' && React.isValidElement<any>(itemTemplate) ?
-      React.cloneElement(itemTemplate, { key, className, style, ...props }) :
-      (
-        <Component key={ key } className={ className } style={ style } { ...props }>
-          { itemTemplate }
-        </Component>
-      );
+    const fragment = this.renderItemFragment(
+      itemTemplate,
+      context,
+      componentClass == null ? Panel.defaultComponentClass : componentClass,
+    );
 
-    if (template == null) {
+    if (this.props.itemTemplate == null) {
       return fragment;
     }
 
-    return template(fragment, context);
+    return this.props.itemTemplate(fragment, context);
+  }
+
+  protected renderItemFragment(
+    itemTemplate: PanelFragment,
+    context: PanelItemContext,
+    Component: React.ReactType,
+  ): PanelFragment {
+    if (itemTemplate) {
+      const key = this.getItemKey(itemTemplate, context.index);
+      const className = this.wxr.classNames('Panel-Item', Panel.getPanelItemPropValue(this.props.itemClassName, context));
+      const style = Panel.getPanelItemPropValue(this.props.itemStyle, context);
+      const props: {} | undefined = Panel.getPanelItemPropValue(this.props.itemProps, context) || {};
+
+      return Component === '' && React.isValidElement<any>(itemTemplate) ?
+        React.cloneElement(itemTemplate, { key, className, style, ...props }) :
+        (
+          <Component key={ key } className={ className } style={ style } { ...props }>
+            { itemTemplate }
+          </Component>
+        );
+    }
+
+    return null;
   }
 
   protected getItemKey(
