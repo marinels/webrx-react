@@ -68,6 +68,9 @@ export class BootstrapGuide extends React.Component<BootstrapGuideProps> {
   }
 
   private calculateTop(guide: HTMLDivElement, e: MouseEvent) {
-    return Math.max(0, e.clientY - guide.clientHeight - BootstrapGuideOffset);
+    const parent = (guide.offsetParent as HTMLDivElement);
+    const offset = parent.offsetTop;
+    const maxY = parent.clientHeight - guide.clientHeight;
+    return Math.min(maxY, Math.max(0, e.pageY - guide.clientHeight - offset - BootstrapGuideOffset));
   }
 }
