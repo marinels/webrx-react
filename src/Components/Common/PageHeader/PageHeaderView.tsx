@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import { Observable } from 'rxjs';
 import { Icon, IconStack } from 'react-fa';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
@@ -12,9 +13,9 @@ import { PageHeaderViewModel } from './PageHeaderViewModel';
 import { SearchViewModel } from '../Search/SearchViewModel';
 
 export interface PageHeaderProps {
-  id?: string;
   brand?: any;
   branduri?: string;
+  fixed?: boolean;
 }
 
 export interface PageHeaderViewProps extends BaseViewProps<PageHeaderViewModel>, PageHeaderProps {
@@ -24,9 +25,11 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
   public static displayName = 'PageHeaderView';
 
   static defaultProps: Partial<PageHeaderProps> = {
-    id: 'page-header',
     brand: 'webrx-react Rocks!!!',
   };
+
+  private containerRef = React.createRef<HTMLDivElement>();
+  private navBarRef = React.createRef<Navbar>();
 
   updateOn(viewModel: Readonly<PageHeaderViewModel>) {
     return [
@@ -70,34 +73,29 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
     );
   }
 
-  private updatePadding() {
-    const elem = document.getElementById(this.props.id!) as HTMLElement;
-    const padding = ((elem.children.item(0) || {}).clientHeight || 0);
-
-    if (elem != null && padding > 0) {
-      elem.style.paddingBottom = `${ padding + 1 }px`;
-    }
-  }
-
   loaded() {
     super.loaded();
 
-    window.onresize = () => {
-      this.updatePadding();
-    };
+    if (this.props.fixed) {
+      window.onresize = () => {
+        this.layoutNavBar();
+      };
 
-    this.updatePadding();
+      this.layoutNavBar();
+    }
   }
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { brand, branduri } = x;
-      return { brand, branduri };
+      const { brand, branduri, fixed } = x;
+      return { brand, branduri, fixed };
     });
 
     return (
-      <div { ...rest } className={ this.wxr.classNames('PageHeader', className) }>
-        <Navbar fixedTop fluid>
+      <div ref={ this.containerRef } { ...rest }
+        className={ this.wxr.classNames('PageHeader', className) }
+      >
+        <Navbar ref={ this.navBarRef } fixedTop={ props.fixed } fluid>
           <Navbar.Header>
             <Navbar.Brand>
               { this.renderBrandButton() }
@@ -120,6 +118,17 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
         { this.wxr.renderConditional(this.isSidebarEnabled(), () => this.renderSidebar()) }
       </div>
     );
+  }
+
+  private layoutNavBar() {
+    const container = this.containerRef.current;
+    const navBar = this.navBarRef.current && ReactDOM.findDOMNode(this.navBarRef.current) as HTMLDivElement;
+
+    if (container && navBar) {
+      const rect = container.getBoundingClientRect();
+
+      container.style.paddingBottom = `${ navBar.clientHeight + 1 }px`;
+    }
   }
 
   private renderBrandButton() {
