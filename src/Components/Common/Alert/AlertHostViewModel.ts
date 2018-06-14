@@ -1,10 +1,10 @@
 import { Observable } from 'rxjs';
 
+import { AlertCreated, AlertCreatedKey } from '../../../Events';
+import { Default as pubSub } from '../../../Utils/PubSub';
 import { ReadOnlyProperty } from '../../../WebRx';
 import { BaseViewModel } from '../../React';
 import { AlertViewModel } from '../Alert/AlertViewModel';
-import { Default as pubSub } from '../../../Utils/PubSub';
-import { AlertCreatedKey, AlertCreated } from '../../../Events';
 
 interface AlertEvent {
   add?: AlertViewModel;
@@ -24,8 +24,8 @@ export class AlertHostViewModel extends BaseViewModel {
 
     const events = Observable
       .merge(
-        addAlert.results.map(add => <AlertEvent>{ add }),
-        removeAlert.results.map(remove => <AlertEvent>{ remove }),
+        addAlert.results.map(add => ({ add } as AlertEvent)),
+        removeAlert.results.map(remove => ({ remove } as AlertEvent)),
       );
 
     this.alerts = events

@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { Grid, Alert } from 'react-bootstrap';
+import { Alert, Grid } from 'react-bootstrap';
 import RTG = require('react-transition-group');
 
-import { BaseView, BaseViewProps, isViewModel, isRoutableViewModel } from '../../React';
-import { RouteHandlerViewModel, SplashKey, DefaultKey } from './RouteHandlerViewModel';
-import { Breadcrumbs } from './Breadcrumbs';
 import { ViewMapper } from '../../../Routing';
+import { BaseView, BaseViewProps, isRoutableViewModel, isViewModel } from '../../React';
+import { Breadcrumbs } from './Breadcrumbs';
+import { DefaultKey, RouteHandlerViewModel, SplashKey } from './RouteHandlerViewModel';
 
 export interface RouteHandlerProps {
   viewMap: ViewMapper;
@@ -88,7 +88,7 @@ export class RouteHandlerView extends BaseView<RouteHandlerViewProps, RouteHandl
   }
 
   private renderRoutedView(key: string): any {
-    let component = this.viewModel.routedComponent.value;
+    const component = this.viewModel.routedComponent.value;
 
     let activator = this.props.viewMap[key];
     if (activator == null && key !== SplashKey) {

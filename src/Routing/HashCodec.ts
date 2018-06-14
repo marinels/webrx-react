@@ -1,5 +1,5 @@
-import param = require('jquery-param');
 import deparam = require('jquery-deparam');
+import param = require('jquery-param');
 
 export class HashCodec {
   public static readonly displayName = 'HashCodec';

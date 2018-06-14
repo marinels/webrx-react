@@ -1,9 +1,9 @@
-import { Observable, AjaxRequest } from 'rxjs';
+import { AjaxRequest, Observable } from 'rxjs';
 
-import { should, fail, logger, sandbox, sinon } from '../setup';
-import { wx } from '../../src/WebRx';
 import { HttpRequestMethod, ObservableApi } from '../../src/Stores';
 import * as Helpers from '../../src/Stores/Helpers';
+import { wx } from '../../src/WebRx';
+import { fail, logger, sandbox, should, sinon } from '../setup';
 
 describe('ObservableApi', () => {
   const baseUri = 'http://test1.com/';
@@ -36,7 +36,15 @@ describe('ObservableApi', () => {
 
       result.subscribe();
       stub.should.have.been.calledOnce;
-      stub.should.have.been.calledWith(action, `${ baseUriOverride }${ action }`, sinon.match.any, HttpRequestMethod.GET, params, data, options);
+      stub.should.have.been.calledWith(
+        action,
+        `${ baseUriOverride }${ action }`,
+        sinon.match.any,
+        HttpRequestMethod.GET,
+        params,
+        data,
+        options,
+      );
     });
 
     it('creates a POST request', () => {
@@ -50,7 +58,15 @@ describe('ObservableApi', () => {
 
       result.subscribe();
       stub.should.have.been.calledOnce;
-      stub.should.have.been.calledWith(action, `${ baseUriOverride }${ action }`, sinon.match.any, HttpRequestMethod.POST, params, data, options);
+      stub.should.have.been.calledWith(
+        action,
+        `${ baseUriOverride }${ action }`,
+        sinon.match.any,
+        HttpRequestMethod.POST,
+        params,
+        data,
+        options,
+      );
     });
 
     it('composes GET request options from the provided parameters', () => {

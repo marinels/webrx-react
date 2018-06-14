@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { PanelProps, Panel } from './Panel';
+import { Panel, PanelProps } from './Panel';
 
 export enum StackPanelOrientation {
   Horizontal,

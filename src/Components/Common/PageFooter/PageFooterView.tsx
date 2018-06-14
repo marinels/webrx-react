@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { Observable } from 'rxjs';
 import * as moment from 'moment';
-import { Grid, Row, Col } from 'react-bootstrap';
+import * as React from 'react';
+import { Col, Grid, Row } from 'react-bootstrap';
+import { Observable } from 'rxjs';
 
 import { BaseView, BaseViewProps } from '../../React';
 import { PageFooterViewModel, ViewportDimensions } from './PageFooterViewModel';

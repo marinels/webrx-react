@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subscription } from 'rxjs';
 
-import { ObservableLike, Property, Command, isCommand, getObservable } from '../../WebRx';
+import { Command, getObservable, isCommand, ObservableLike, Property } from '../../WebRx';
 import { BaseViewModel } from './BaseViewModel';
 
 /**
@@ -15,7 +15,7 @@ export function bindObservableToCommand<TViewModel extends BaseViewModel, TInput
   onError?: (exception: any) => void,
   onCompleted?: () => void,
 ): Subscription {
-  return (<TViewModel>viewModel).addSubscription(
+  return (viewModel as TViewModel).addSubscription(
     getObservable(observableLike)
       .invokeCommand(commandSelector(viewModel), onNext, onError, onCompleted),
   );
@@ -24,7 +24,11 @@ export function bindObservableToCommand<TViewModel extends BaseViewModel, TInput
 /**
  * Binds a DOM event to an observable property on the view model
  */
-export function bindEventToProperty<TViewModel extends BaseViewModel, TValue, TEvent extends Event | React.SyntheticEvent<any>>(
+export function bindEventToProperty<
+  TViewModel extends BaseViewModel,
+  TValue,
+  TEvent extends Event | React.SyntheticEvent<any>,
+>(
   viewModel: Readonly<TViewModel>,
   targetSelector: (viewModel: Readonly<TViewModel>) => Property<TValue>,
   valueSelector?: (eventKey: any, event: TEvent) => TValue,
@@ -43,7 +47,12 @@ export function bindEventToProperty<TViewModel extends BaseViewModel, TValue, TE
 /**
  * Binds a DOM event to an observable command on the view model
  */
-export function bindEventToCommand<TViewModel extends BaseViewModel, TParameter, TCommand, TEvent extends Event | React.SyntheticEvent<any>>(
+export function bindEventToCommand<
+  TViewModel extends BaseViewModel,
+  TParameter,
+  TCommand,
+  TEvent extends Event | React.SyntheticEvent<any>,
+>(
   viewModel: Readonly<TViewModel>,
   commandSelector: (viewModel: Readonly<TViewModel>) => Command<TCommand>,
   paramSelector?: (eventKey: any, event: TEvent) => TParameter,

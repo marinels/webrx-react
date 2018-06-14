@@ -1,4 +1,4 @@
-import { ReadOnlyProperty, Command } from '../../../WebRx';
+import { Command, ReadOnlyProperty } from '../../../WebRx';
 import { BaseViewModel } from '../../React';
 
 export interface ViewportDimensions {

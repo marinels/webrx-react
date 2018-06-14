@@ -1,13 +1,13 @@
 import { Iterable } from 'ix';
-import { Observable } from 'rxjs';
 import * as moment from 'moment';
+import { Observable } from 'rxjs';
 
-import { wx } from '../../WebRx';
-import { Alert, Compare } from '../../Utils';
-import * as Components from '../Common';
-import { TodoListViewModel } from './TodoList/TodoListViewModel';
 import { RouteMap as AppRouteMap } from '../../Routing';
+import { Alert, Compare } from '../../Utils';
+import { wx } from '../../WebRx';
+import * as Components from '../Common';
 import { ComponentDemoViewModel, RoutingMap } from './ComponentDemoViewModel';
+import { TodoListViewModel } from './TodoList/TodoListViewModel';
 
 export const demoRoutingMap = new RoutingMap();
 
@@ -19,7 +19,7 @@ export interface SampleData {
 }
 
 export interface SampleTreeData extends SampleData {
-  items?: Array<SampleTreeData>;
+  items?: SampleTreeData[];
 }
 
 export function createSampleItem(
@@ -37,7 +37,7 @@ export function createSampleItem(
 }
 
 export function cloneSampleItem<T extends SampleData>(item: T) {
-  return <T>createSampleItem(item.cat, item.name, item.requiredBy, item.id);
+  return createSampleItem(item.cat, item.name, item.requiredBy, item.id) as T;
 }
 
 export function cloneSampleTreeItem(item: SampleTreeData, items: Iterable<SampleTreeData>) {
@@ -49,7 +49,7 @@ export function cloneSampleTreeItem(item: SampleTreeData, items: Iterable<Sample
   return item;
 }
 
-export const sampleListData: Array<SampleData> = [
+export const sampleListData: SampleData[] = [
   createSampleItem('item', 'test 1', 'now'),
   createSampleItem('item', 'test 2', 'tomorrow'),
   createSampleItem('item', 'test 3', 'yesterday'),
@@ -63,7 +63,7 @@ export const sampleListData: Array<SampleData> = [
   createSampleItem('test', 'test 11', 'test11'),
 ].map((x, i) => Object.assign(x, { id: i + 1 }));
 
-export const sampleTreeData: Array<SampleTreeData> = sampleListData
+export const sampleTreeData: SampleTreeData[] = sampleListData
   .map(x => Object
     .assign({
       items: sampleListData
@@ -156,10 +156,10 @@ function sampleDataSource<TContext = any>(request: Components.DataSourceRequest<
 
       const items = query.toArray();
 
-      return <Components.DataSourceResponse<SampleData>>{
+      return {
         items,
         count,
-      };
+      } as Components.DataSourceResponse<SampleData>;
     });
 }
 
@@ -215,10 +215,10 @@ function sampleTreeDataSource<TContext = any>(request: Components.DataSourceRequ
 
       const items = query.toArray();
 
-      return <Components.DataSourceResponse<SampleTreeData>>{
+      return {
         items,
         count,
-      };
+      } as Components.DataSourceResponse<SampleTreeData>;
     });
 }
 
@@ -251,7 +251,9 @@ demoRoutingMap.addRoute('React', 'ProfilePicture', 'Profile Picture', (state: an
 demoRoutingMap.addRoute('React', 'ItemsPanel', 'Items Panel', (state: any) => 'ItemsPanel');
 demoRoutingMap.addRoute('React', 'ItemsPanelBound', 'Items Panel (Bound)', (state: any) => 'ItemsPanelBound');
 demoRoutingMap.addRoute('React', 'ListGroupPanel', 'ListGroup Panel', (state: any) => 'ListGroupPanel');
-demoRoutingMap.addRoute('React', 'ListGroupPanelBound', 'ListGroup Panel (Bound)', (state: any) => 'ListGroupPanelBound');
+demoRoutingMap.addRoute('React', 'ListGroupPanelBound', 'ListGroup Panel (Bound)',
+  (state: any) => 'ListGroupPanelBound',
+);
 demoRoutingMap.addRoute('React', 'GridPanel', 'Grid Panel', (state: any) => 'GridPanel');
 demoRoutingMap.addRoute('React', 'StackPanel', 'Stack Panel', (state: any) => 'StackPanel');
 demoRoutingMap.addRoute('React', 'UniformGridPanel', 'Uniform Grid Panel', (state: any) => 'UniformGridPanel');
@@ -260,9 +262,15 @@ demoRoutingMap.addRoute('React', 'ContentTooltip', 'Content Tooltip', (state: an
 demoRoutingMap.addRoute('React', 'NavButton', 'Nav Button', (state: any) => 'NavButton');
 demoRoutingMap.addRoute('React', 'TreeItem', 'Tree Item', (state: any) => 'TreeItem');
 demoRoutingMap.addRoute('React', 'TreeItemPresenter', 'Tree Item Presenter', (state: any) => 'TreeItemPresenter');
-demoRoutingMap.addRoute('React', 'HorizontalTreeItemPresenter', 'Tree Item Presenter (Horizontal)', (state: any) => 'HorizontalTreeItemPresenter');
-demoRoutingMap.addRoute('React', 'HorizontalItemsTreeItemPresenter', 'Tree Item Presenter (Horizontal Items)', (state: any) => 'HorizontalItemsTreeItemPresenter');
-demoRoutingMap.addRoute('React', 'HorizontalRootTreeItemPresenter', 'Tree Item Presenter (Horizontal Root)', (state: any) => 'HorizontalRootTreeItemPresenter');
+demoRoutingMap.addRoute('React', 'HorizontalTreeItemPresenter', 'Tree Item Presenter (Horizontal)',
+  (state: any) => 'HorizontalTreeItemPresenter',
+);
+demoRoutingMap.addRoute('React', 'HorizontalItemsTreeItemPresenter', 'Tree Item Presenter (Horizontal Items)',
+  (state: any) => 'HorizontalItemsTreeItemPresenter',
+);
+demoRoutingMap.addRoute('React', 'HorizontalRootTreeItemPresenter', 'Tree Item Presenter (Horizontal Root)',
+  (state: any) => 'HorizontalRootTreeItemPresenter',
+);
 demoRoutingMap.addRoute('React', 'CommonPanel', 'Common Panel', (state: any) => 'CommonPanel');
 demoRoutingMap.addRoute('React', 'CommonPanelList', 'Common Panel (List)', (state: any) => 'CommonPanelList');
 demoRoutingMap.addRoute('React', 'CommonPanelTable', 'Common Panel (Table)', (state: any) => 'CommonPanelTable');
@@ -282,19 +290,45 @@ demoRoutingMap.addRoute('webrx-react', 'Search', 'Search', (state: any) => {
 
   return viewModel;
 });
-demoRoutingMap.addRoute('webrx-react', 'ItemsList', 'Items (List)', (state: any) => new Components.ItemsViewModel(sampleListData));
-demoRoutingMap.addRoute('webrx-react', 'ItemsWrap', 'Items (Wrap)', (state: any) => new Components.ItemsViewModel(sampleListData));
-demoRoutingMap.addRoute('webrx-react', 'ItemsUGrid', 'Items (Uniform Grid)', (state: any) => new Components.ItemsViewModel(sampleListData));
-demoRoutingMap.addRoute('webrx-react', 'ItemsHStack', 'Items (Horizontal Stack)', (state: any) => new Components.ItemsViewModel(sampleListData));
-demoRoutingMap.addRoute('webrx-react', 'ItemsGrid', 'Items (Grid)', (state: any) => new Components.ItemsViewModel(sampleListData));
-demoRoutingMap.addRoute('webrx-react', 'ItemsTree', 'Items (Tree)', (state: any) => new Components.ItemsViewModel(sampleTreeData));
-demoRoutingMap.addRoute('webrx-react', 'ListItemsDefault', 'ListItems (default)', (state: any) => new Components.ListItemsViewModel(sampleListData));
-demoRoutingMap.addRoute('webrx-react', 'ListItemsListGroup', 'ListItems (ListGroupPanel)', (state: any) => new Components.ListItemsViewModel(sampleListData));
-demoRoutingMap.addRoute('webrx-react', 'ListItemsPanel', 'ListItems (Default Panel)', (state: any) => new Components.ListItemsViewModel(sampleListData));
-demoRoutingMap.addRoute('webrx-react', 'ListItemsUGrid', 'ListItems (Uniform Grid)', (state: any) => new Components.ListItemsViewModel(sampleListData));
-demoRoutingMap.addRoute('webrx-react', 'ListItemsGrid', 'ListItems (Grid)', (state: any) => new Components.ListItemsViewModel(sampleListData));
-demoRoutingMap.addRoute('webrx-react', 'ListItemsGridAuto', 'ListItems (Auto Grid)', (state: any) => new Components.ListItemsViewModel(sampleListData));
-demoRoutingMap.addRoute('webrx-react', 'ListItemsTree', 'ListItems (Tree)', (state: any) => new Components.TreeListItemsViewModel(sampleTreeData, x => x.items));
+demoRoutingMap.addRoute('webrx-react', 'ItemsList', 'Items (List)',
+  (state: any) => new Components.ItemsViewModel(sampleListData),
+);
+demoRoutingMap.addRoute('webrx-react', 'ItemsWrap', 'Items (Wrap)',
+  (state: any) => new Components.ItemsViewModel(sampleListData),
+);
+demoRoutingMap.addRoute('webrx-react', 'ItemsUGrid', 'Items (Uniform Grid)',
+  (state: any) => new Components.ItemsViewModel(sampleListData),
+);
+demoRoutingMap.addRoute('webrx-react', 'ItemsHStack', 'Items (Horizontal Stack)',
+  (state: any) => new Components.ItemsViewModel(sampleListData),
+);
+demoRoutingMap.addRoute('webrx-react', 'ItemsGrid', 'Items (Grid)',
+  (state: any) => new Components.ItemsViewModel(sampleListData),
+);
+demoRoutingMap.addRoute('webrx-react', 'ItemsTree', 'Items (Tree)',
+  (state: any) => new Components.ItemsViewModel(sampleTreeData),
+);
+demoRoutingMap.addRoute('webrx-react', 'ListItemsDefault', 'ListItems (default)',
+  (state: any) => new Components.ListItemsViewModel(sampleListData),
+);
+demoRoutingMap.addRoute('webrx-react', 'ListItemsListGroup', 'ListItems (ListGroupPanel)',
+  (state: any) => new Components.ListItemsViewModel(sampleListData),
+);
+demoRoutingMap.addRoute('webrx-react', 'ListItemsPanel', 'ListItems (Default Panel)',
+  (state: any) => new Components.ListItemsViewModel(sampleListData),
+);
+demoRoutingMap.addRoute('webrx-react', 'ListItemsUGrid', 'ListItems (Uniform Grid)',
+  (state: any) => new Components.ListItemsViewModel(sampleListData),
+);
+demoRoutingMap.addRoute('webrx-react', 'ListItemsGrid', 'ListItems (Grid)',
+  (state: any) => new Components.ListItemsViewModel(sampleListData),
+);
+demoRoutingMap.addRoute('webrx-react', 'ListItemsGridAuto', 'ListItems (Auto Grid)',
+  (state: any) => new Components.ListItemsViewModel(sampleListData),
+);
+demoRoutingMap.addRoute('webrx-react', 'ListItemsTree', 'ListItems (Tree)',
+  (state: any) => new Components.TreeListItemsViewModel(sampleTreeData, x => x.items),
+);
 demoRoutingMap.addRoute('webrx-react', 'ModalDialog', 'Modal Dialog', (state: any) => {
   const createContext = wx.command<string>(x => `[${ moment().format() }] ${ x }`);
   // we are simulating a modal being contained within another view model
@@ -322,12 +356,24 @@ demoRoutingMap.addRoute('webrx-react', 'DataGrid', 'Data Grid', (state: any) => 
 
   return new Components.DataGridViewModel(data);
 });
-demoRoutingMap.addRoute('webrx-react', 'DataGridAutoCol', 'Data Grid (Automatic Columns)', (state: any) => new Components.DataGridViewModel(sampleListData));
-demoRoutingMap.addRoute('webrx-react', 'DataGridNoPager', 'Data Grid (No Pager)', (state: any) => new Components.DataGridViewModel(sampleListData, null));
-demoRoutingMap.addRoute('webrx-react', 'DataGridPager', 'Data Grid (Custom Pager)', (state: any) => new Components.DataGridViewModel(sampleListData));
-demoRoutingMap.addRoute('webrx-react', 'DataGridList', 'Data Grid (List View)', (state: any) => new Components.DataGridViewModel(sampleListData));
-demoRoutingMap.addRoute('webrx-react', 'DataGridUGrid', 'Data Grid (Uniform Grid Panel)', (state: any) => new Components.DataGridViewModel(sampleListData));
-demoRoutingMap.addRoute('webrx-react', 'DataGridAsync', 'Data Grid (Async)', (state: any) => new Components.AsyncDataGridViewModel(sampleDataSource));
+demoRoutingMap.addRoute('webrx-react', 'DataGridAutoCol', 'Data Grid (Automatic Columns)',
+  (state: any) => new Components.DataGridViewModel(sampleListData),
+);
+demoRoutingMap.addRoute('webrx-react', 'DataGridNoPager', 'Data Grid (No Pager)',
+  (state: any) => new Components.DataGridViewModel(sampleListData, null),
+);
+demoRoutingMap.addRoute('webrx-react', 'DataGridPager', 'Data Grid (Custom Pager)',
+  (state: any) => new Components.DataGridViewModel(sampleListData),
+);
+demoRoutingMap.addRoute('webrx-react', 'DataGridList', 'Data Grid (List View)',
+  (state: any) => new Components.DataGridViewModel(sampleListData),
+);
+demoRoutingMap.addRoute('webrx-react', 'DataGridUGrid', 'Data Grid (Uniform Grid Panel)',
+  (state: any) => new Components.DataGridViewModel(sampleListData),
+);
+demoRoutingMap.addRoute('webrx-react', 'DataGridAsync', 'Data Grid (Async)',
+  (state: any) => new Components.AsyncDataGridViewModel(sampleDataSource),
+);
 demoRoutingMap.addRoute('webrx-react', 'ItemListPanel', 'Item List Panel', (state: any) =>
   new Components.ItemListPanelViewModel(sampleListData, (x, s) => s.regex.test(x.name)),
 );
@@ -335,7 +381,12 @@ demoRoutingMap.addRoute('webrx-react', 'ItemListPanelList', 'Item List Panel (Li
   new Components.ItemListPanelViewModel(sampleListData, (x, s) => s.regex.test(x.name)),
 );
 demoRoutingMap.addRoute('webrx-react', 'ItemListPanelTree', 'Item List Panel (Tree)', (state: any) =>
-  new Components.TreeItemListPanelViewModel(sampleTreeData, x => x.items, (x, items) => cloneSampleTreeItem(x, items), (x, s) => s.regex.test(x.name)),
+  new Components.TreeItemListPanelViewModel(
+    sampleTreeData,
+    x => x.items,
+    (x, items) => cloneSampleTreeItem(x, items),
+    (x, s) => s.regex.test(x.name),
+  ),
 );
 demoRoutingMap.addRoute('webrx-react', 'AsyncItemListPanel', 'ItemListPanel (Async)', (state: any) => {
   return new Components.AsyncItemListPanelViewModel(sampleDataSource);

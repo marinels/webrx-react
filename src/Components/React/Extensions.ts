@@ -2,8 +2,8 @@
 
 import * as React from 'react';
 
-import { wx, WebRxStatic } from '../../WebRx';
-import { wxr, WebRxReactStatic } from './Static';
+import { WebRxStatic, wx } from '../../WebRx';
+import { WebRxReactStatic, wxr } from './Static';
 
 declare module 'react' {
   interface Component<P> {

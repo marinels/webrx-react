@@ -24,7 +24,7 @@ export class TodoListStore extends BaseApiStore<TodoListApi> {
   }
 
   public getItems() {
-    return this.getObservable<Array<TodoListItem>>(TodoListActions.GetItems);
+    return this.getObservable<TodoListItem[]>(TodoListActions.GetItems);
   }
 
   public addItem(content: string) {

@@ -2,16 +2,13 @@ import * as React from 'react';
 import { Modal } from 'react-bootstrap';
 
 export interface SidebarProps {
-  onHide: Function;
+  onHide: () => void;
   isVisible?: boolean;
   side?: string;
   header?: any;
 }
 
-export interface SidebarComponentProps extends SidebarProps {
-}
-
-export class Sidebar extends React.Component<SidebarComponentProps> {
+export class Sidebar extends React.Component<SidebarProps> {
   public static displayName = 'Sidebar';
 
   static defaultProps: Partial<SidebarProps> = {

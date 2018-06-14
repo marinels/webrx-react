@@ -1,11 +1,14 @@
 import * as React from 'react';
 
 import { BaseView, BaseViewProps } from '../../React';
-import { ItemsViewModel } from './ItemsViewModel';
-import { PanelItemProps, PanelItemContext, PanelRenderProps } from '../Panel';
+import { PanelItemContext, PanelItemProps, PanelRenderProps } from '../Panel';
 import { ItemsPresenter, ItemsPresenterTemplateProps } from './ItemsPresenter';
+import { ItemsViewModel } from './ItemsViewModel';
 
-export interface ItemsProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ItemsPresenterTemplateProps<T>, PanelItemProps<T, TContext>, PanelRenderProps {
+export interface ItemsProps<
+  T = {},
+  TContext extends PanelItemContext = PanelItemContext,
+> extends ItemsPresenterTemplateProps<T>, PanelItemProps<T, TContext>, PanelRenderProps {
 }
 
 export interface ItemsViewProps extends BaseViewProps<ItemsViewModel<{}>>, ItemsProps {
@@ -23,8 +26,14 @@ export class ItemsView extends BaseView<ItemsViewProps, ItemsViewModel<{}>> {
 
   render() {
     const { className, children, props, rest } = this.restProps(x => {
-      const { viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent, fill } = x;
-      return { viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent, fill };
+      const {
+        viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent,
+        fill,
+      } = x;
+      return {
+        viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent,
+        fill,
+      };
     });
 
     return (

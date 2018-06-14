@@ -2,7 +2,7 @@ import { BaseSampleDataStore } from '../../../../Stores/SampleData/BaseSampleDat
 import { TodoListActions, TodoListItem } from '../TodoListStore';
 
 export interface TodoListSampleData {
-  items: Array<TodoListItem>;
+  items: TodoListItem[];
 }
 
 export class TodoListStore extends BaseSampleDataStore {

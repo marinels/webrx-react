@@ -33,7 +33,7 @@ export class ProfilePicture extends React.Component<ProfilePictureComponentProps
   };
 
   private getImageSource() {
-    let src = this.props.src || this.props.defaultSrc;
+    const src = this.props.src || this.props.defaultSrc;
 
     if (String.isNullOrEmpty(src)) {
       return src;
@@ -74,7 +74,9 @@ export class ProfilePicture extends React.Component<ProfilePictureComponentProps
     });
 
     return (
-      <div { ...rest } className={ this.wxr.classNames('ProfilePicture', 'ProfilePicture-icon', iconClassNames, className) } style={ iconStyle }>
+      <div { ...rest } style={ iconStyle }
+        className={ this.wxr.classNames('ProfilePicture', 'ProfilePicture-icon', iconClassNames, className) }
+      >
         <Icon name={ props.defaultIcon! } size={ props.iconSize } />
       </div>
     );
@@ -103,7 +105,9 @@ export class ProfilePicture extends React.Component<ProfilePictureComponentProps
     const imageStyle = this.props.responsive ? undefined : { maxHeight: props.size, maxWidth: props.size };
 
     return (
-      <div { ...rest } className={ this.wxr.classNames('ProfilePicture', 'ProfilePicture-image', className) } style={ responsiveStyle }>
+      <div { ...rest } className={ this.wxr.classNames('ProfilePicture', 'ProfilePicture-image', className) }
+        style={ responsiveStyle }
+      >
         <Image { ...imageProps } style={ imageStyle } />
       </div>
     );

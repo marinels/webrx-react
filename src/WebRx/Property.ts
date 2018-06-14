@@ -1,7 +1,7 @@
-import { Observable, Subject, BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 
 import { Property } from './Interfaces';
-import { isObservable, isSubject, handleError } from './Utils';
+import { handleError, isObservable, isSubject } from './Utils';
 
 export class ObservableProperty<T> extends Subscription implements Property<T> {
   protected changedSubject: BehaviorSubject<T>;

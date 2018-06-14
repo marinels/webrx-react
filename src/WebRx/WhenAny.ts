@@ -94,7 +94,7 @@ export function whenAny<TRet, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
 ): Observable<TRet>;
 
 export function whenAny(
-  ...args: ObservableLike<any>[],
+  ...args: Array<ObservableLike<any>>,
 ): Observable<any[]>;
 
 export function whenAny<TRet>(...args: any[]): Observable<TRet> {
@@ -103,7 +103,7 @@ export function whenAny<TRet>(...args: any[]): Observable<TRet> {
   if (!(selector instanceof Function)) {
     args.push(selector);
 
-    selector = function(...values: any[]) {
+    selector = (...values: any[]) => {
       return values;
     };
   }

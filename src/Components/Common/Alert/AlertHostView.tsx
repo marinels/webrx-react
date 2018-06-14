@@ -2,13 +2,10 @@ import * as React from 'react';
 import RTG = require('react-transition-group');
 
 import { BaseView, BaseViewProps } from '../../React';
-import { AlertView } from './AlertView';
 import { AlertHostViewModel } from './AlertHostViewModel';
+import { AlertView } from './AlertView';
 
-export interface AlertHostProps {
-}
-
-export interface AlertHostViewProps extends BaseViewProps<AlertHostViewModel>, AlertHostProps {
+export interface AlertHostViewProps extends BaseViewProps<AlertHostViewModel> {
 }
 
 export class AlertHostView extends BaseView<AlertHostViewProps, AlertHostViewModel> {

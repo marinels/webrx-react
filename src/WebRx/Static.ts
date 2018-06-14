@@ -1,14 +1,14 @@
-import {
-  isIterable, isAsyncIterable,
-  isSubscription, isObservable, isObserver, isSubject, isProperty, isCommand,
-  asObservable, getObservable, getProperty, handleError, logError,
-  logObservable, logMemberObservables,
-  getObservableOrAlert, getObservableResultOrAlert, subscribeOrAlert,
-} from './Utils';
-import { property } from './Property';
-import { command } from './Command';
-import { whenAny } from './WhenAny';
 import * as utils from '../Utils';
+import { command } from './Command';
+import { property } from './Property';
+import {
+  asObservable, getObservable,
+  getObservableOrAlert, getObservableResultOrAlert, getProperty, handleError, isAsyncIterable, isCommand,
+  isIterable, isObservable, isObserver, isProperty, isSubject,
+  isSubscription, logError,
+  logMemberObservables, logObservable, subscribeOrAlert,
+} from './Utils';
+import { whenAny } from './WhenAny';
 
 export function create() {
   return {

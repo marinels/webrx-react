@@ -9,7 +9,7 @@ import './Style/Bootstrap.less';
 import './webrx-react';
 
 // import the App view and view model
-import { AppViewModel, AppView } from './Components';
+import { AppView, AppViewModel } from './Components';
 
 // import the demos
 import './Components/Demo';

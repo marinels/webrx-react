@@ -1,21 +1,21 @@
 import { Iterable } from 'ix';
 import { Observable } from 'rxjs';
 
-import { IterableLike, ObservableLike, ReadOnlyProperty, Command } from '../../../WebRx';
+import { Command, IterableLike, ObservableLike, ReadOnlyProperty } from '../../../WebRx';
 import { ItemsViewModel } from '../Items/ItemsViewModel';
 
 export class ListItemsViewModel<T> extends ItemsViewModel<T> {
   public static displayName = 'ListItemsViewModel';
 
   public readonly selectedItem: ReadOnlyProperty<T>;
-  public readonly selectedItems: ReadOnlyProperty<Array<T>>;
+  public readonly selectedItems: ReadOnlyProperty<T[]>;
   public readonly selectedIndex: ReadOnlyProperty<number>;
-  public readonly selectedIndicies: ReadOnlyProperty<Array<number>>;
+  public readonly selectedIndicies: ReadOnlyProperty<number[]>;
 
   public readonly selectItem: Command<T>;
-  public readonly selectItems: Command<Array<T>>;
+  public readonly selectItems: Command<T[]>;
   public readonly selectIndex: Command<number>;
-  public readonly selectIndicies: Command<Array<number>>;
+  public readonly selectIndicies: Command<number[]>;
   public readonly selectRange: Command<{ from: T, to: T }>;
 
   constructor(
@@ -24,9 +24,9 @@ export class ListItemsViewModel<T> extends ItemsViewModel<T> {
     super(source);
 
     this.selectItem = this.wx.command<T>();
-    this.selectItems = this.wx.command<Array<T>>();
+    this.selectItems = this.wx.command<T[]>();
     this.selectIndex = this.wx.command<number>();
-    this.selectIndicies = this.wx.command<Array<number>>();
+    this.selectIndicies = this.wx.command<number[]>();
     this.selectRange = this.wx.command<{ from: T, to: T }>();
 
     this.selectedItems = Observable
@@ -106,7 +106,7 @@ export class ListItemsViewModel<T> extends ItemsViewModel<T> {
     );
   }
 
-  protected getItemsForIndicies(indicies: IterableLike<number>): Array<T> | undefined {
+  protected getItemsForIndicies(indicies: IterableLike<number>): T[] | undefined {
     const source = Iterable
       .from(indicies);
 
@@ -122,7 +122,7 @@ export class ListItemsViewModel<T> extends ItemsViewModel<T> {
       .toArray();
   }
 
-  protected getIndiciesForItems(items: IterableLike<T>): Array<number> | undefined {
+  protected getIndiciesForItems(items: IterableLike<T>): number[] | undefined {
     const source = Iterable
       .from(items);
 

@@ -1,13 +1,13 @@
-import * as React from 'react';
 import { Iterable } from 'ix';
+import * as React from 'react';
 import { Observable, Subscription } from 'rxjs';
 import { AnonymousSubscription, TeardownLogic } from 'rxjs/Subscription';
 
-import { IterableLike, Property, Command } from '../../WebRx';
-import { ReactSpreadResult, ReactSpreadRestrictedProps, reactRestrictedProps } from '../../Extensions/React';
+import { reactRestrictedProps, ReactSpreadRestrictedProps, ReactSpreadResult } from '../../Extensions/React';
 import { Alert, Logging } from '../../Utils';
+import { Command, IterableLike, Property } from '../../WebRx';
 import { BaseViewModel, isViewModelLifecycle } from './BaseViewModel';
-import { bindObservableToCommand, bindEventToProperty, bindEventToCommand } from './BindingHelpers';
+import { bindEventToCommand, bindEventToProperty, bindObservableToCommand } from './BindingHelpers';
 
 export interface ViewModelProps<T extends BaseViewModel> {
   viewModel: Readonly<T>;
@@ -20,14 +20,20 @@ export const reactSpreadRestrictedViewModelProps: ReactSpreadRestrictedViewModel
   reactRestrictedProps,
 );
 
-export interface BaseViewProps<TViewModel extends BaseViewModel, TView = any> extends ViewModelProps<TViewModel>, React.HTMLProps<TView> {
+export interface BaseViewProps<
+  TViewModel extends BaseViewModel,
+  TView = any,
+> extends ViewModelProps<TViewModel>, React.HTMLProps<TView> {
 }
 
 export interface ViewModelState<T extends BaseViewModel> {
   viewModel: T;
 }
 
-export abstract class BaseView<TViewProps extends ViewModelProps<TViewModel>, TViewModel extends BaseViewModel> extends React.Component<TViewProps, ViewModelState<TViewModel>> implements AnonymousSubscription {
+export abstract class BaseView<
+  TViewProps extends ViewModelProps<TViewModel>,
+  TViewModel extends BaseViewModel,
+> extends React.Component<TViewProps, ViewModelState<TViewModel>> implements AnonymousSubscription {
   public static displayName = 'BaseView';
 
   private updateSubscription: Subscription;
@@ -98,7 +104,11 @@ export abstract class BaseView<TViewProps extends ViewModelProps<TViewModel>, TV
     }
   }
 
-  componentWillUpdate(nextProps: Readonly<TViewProps>, nextState: Readonly<ViewModelState<TViewModel>>, nextContext: any) {
+  componentWillUpdate(
+    nextProps: Readonly<TViewProps>,
+    nextState: Readonly<ViewModelState<TViewModel>>,
+    nextContext: any,
+  ) {
     this.updatingView(nextProps, nextState);
 
     // get the next view model
@@ -128,7 +138,11 @@ export abstract class BaseView<TViewProps extends ViewModelProps<TViewModel>, TV
     this.logger.debug('re-rendering');
   }
 
-  componentDidUpdate(prevProps: Readonly<TViewProps>, prevState: Readonly<ViewModelState<TViewModel>>, prevContext: any) {
+  componentDidUpdate(
+    prevProps: Readonly<TViewProps>,
+    prevState: Readonly<ViewModelState<TViewModel>>,
+    prevContext: any,
+  ) {
     this.updatedView(prevProps, prevState);
   }
 
@@ -267,7 +281,15 @@ export abstract class BaseView<TViewProps extends ViewModelProps<TViewModel>, TV
     onError?: (exception: any) => void,
     onCompleted?: () => void,
   ) {
-    return bindEventToCommand(this.viewModel, commandSelector, paramSelector, conditionSelector, onNext, onError, onCompleted);
+    return bindEventToCommand(
+      this.viewModel,
+      commandSelector,
+      paramSelector,
+      conditionSelector,
+      onNext,
+      onError,
+      onCompleted,
+    );
   }
   // -----------------------------------------
 

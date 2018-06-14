@@ -1,11 +1,11 @@
 import { Iterable } from 'ix';
 import { Observable } from 'rxjs';
 
-import { IterableLike, ObservableOrValue, ObservableLike, ReadOnlyProperty, Command } from '../../../WebRx';
 import { ObjectComparer, SortDirection } from '../../../Utils/Compare';
-import { RoutingStateHandler, HandlerRoutingStateChanged } from '../../React';
+import { Command, IterableLike, ObservableLike, ObservableOrValue, ReadOnlyProperty } from '../../../WebRx';
+import { HandlerRoutingStateChanged, RoutingStateHandler } from '../../React';
 import { ListItemsViewModel } from '../ListItems/ListItemsViewModel';
-import { PagerViewModel, PageRequest, PagerRoutingState } from '../Pager/PagerViewModel';
+import { PageRequest, PagerRoutingState, PagerViewModel } from '../Pager/PagerViewModel';
 
 export interface SortArgs {
   field: string;
@@ -28,12 +28,15 @@ export interface DataGridRoutingState {
   sorting?: SortArgs;
 }
 
-export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewModel<T> implements RoutingStateHandler<DataGridRoutingState> {
+export class DataGridViewModel<
+  T,
+  TRequestContext = any
+> extends ListItemsViewModel<T> implements RoutingStateHandler<DataGridRoutingState> {
   public static displayName = 'DataGridViewModel';
 
   public static DefaultRateLimit = 100;
 
-  protected readonly processRequests: Command<any>;
+  protected readonly processRequests: Command;
   protected readonly comparer: ObjectComparer<T>;
 
   public readonly pager: PagerViewModel | null;
@@ -257,7 +260,9 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
       );
   }
 
-  protected getResponse(request: DataSourceRequest<TRequestContext> | undefined): ObservableOrValue<DataSourceResponse<T> | undefined> {
+  protected getResponse(
+    request: DataSourceRequest<TRequestContext> | undefined,
+  ): ObservableOrValue<DataSourceResponse<T> | undefined> {
     if (request == null) {
       return undefined;
     }
@@ -268,10 +273,18 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
     return this.getResponseFromItems(items, request);
   }
 
-  protected getResponseFromItems(items: Iterable<T>, request: DataSourceRequest<TRequestContext>): ObservableOrValue<DataSourceResponse<T> | undefined> {
+  protected getResponseFromItems(
+    items: Iterable<T>,
+    request: DataSourceRequest<TRequestContext>,
+  ): ObservableOrValue<DataSourceResponse<T> | undefined> {
     const count = items.count();
 
-    if (this.comparer != null && request.sort != null && !String.isNullOrEmpty(request.sort.field) && request.sort.direction != null) {
+    if (
+      this.comparer != null &&
+      request.sort != null &&
+      !String.isNullOrEmpty(request.sort.field) &&
+      request.sort.direction != null
+    ) {
       items = this.comparer.sortIterable(items, request.sort.field, request.sort.direction);
     }
 

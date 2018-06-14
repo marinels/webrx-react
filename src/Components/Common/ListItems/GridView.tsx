@@ -1,14 +1,14 @@
-import * as React from 'react';
-import { Iterable } from 'ix';
 import * as classNames from 'classnames';
+import { Iterable } from 'ix';
+import * as React from 'react';
 
 import { Logging } from '../../../Utils';
-import { PanelView } from './PanelView';
 import { ItemsPresenter } from '../Items/ItemsPresenter';
-import { GridViewColumns, GridViewColumn } from './GridViewColumn';
-import { ListItemsViewTemplate, ListItemsViewTemplateProps } from './ListItemsViewTemplate';
 import { PanelFragment, PanelItemContext } from '../Panel/Panel';
-import { TablePanel, BootstrapTableProps } from '../Panel/TablePanel';
+import { BootstrapTableProps, TablePanel } from '../Panel/TablePanel';
+import { GridViewColumn, GridViewColumns } from './GridViewColumn';
+import { ListItemsViewTemplate, ListItemsViewTemplateProps } from './ListItemsViewTemplate';
+import { PanelView } from './PanelView';
 
 export interface GridTemplateProps<T = {}> {
   headerTemplate?: (header: PanelFragment, item: T | undefined, field: string | undefined) => PanelFragment;
@@ -19,7 +19,10 @@ export interface GridTableRenderProps extends BootstrapTableProps {
   fixedLayout?: boolean;
 }
 
-export interface GridViewProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends GridTemplateProps<T>, ListItemsViewTemplateProps<T, TContext>, GridTableRenderProps {
+export interface GridViewProps<
+  T = {},
+  TContext extends PanelItemContext = PanelItemContext,
+> extends GridTemplateProps<T>, ListItemsViewTemplateProps<T, TContext>, GridTableRenderProps {
 }
 
 export interface GridViewComponentProps extends React.HTMLProps<any>, GridViewProps {
@@ -31,12 +34,18 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
   public static readonly Columns = GridViewColumns;
 
   private readonly logger: Logging.Logger = Logging.getLogger(GridView.displayName);
-  private columns: Array<React.ReactChild> | undefined;
+  private columns: React.ReactChild[] | undefined;
 
   render() {
     const { className, children, props, rest } = this.restProps(x => {
-      const { headerTemplate, cellTemplate, bordered, condensed, hover, responsive, striped, bsClass, fixedLayout, listItems, itemsProps } = x;
-      return { headerTemplate, cellTemplate, bordered, condensed, hover, responsive, striped, bsClass, fixedLayout, listItems, itemsProps };
+      const {
+        headerTemplate, cellTemplate, bordered, condensed, hover, responsive, striped, bsClass, fixedLayout, listItems,
+        itemsProps,
+      } = x;
+      return {
+        headerTemplate, cellTemplate, bordered, condensed, hover, responsive, striped, bsClass, fixedLayout, listItems,
+        itemsProps,
+      };
     });
 
     this.columns = this.getColumnDefinitions();
@@ -63,7 +72,11 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
     );
   }
 
-  protected renderTablePanel(itemTemplates: Array<React.ReactNode>, itemsPresenter: ItemsPresenter, items: Array<{}> | undefined) {
+  protected renderTablePanel(
+    itemTemplates: React.ReactNode[],
+    itemsPresenter: ItemsPresenter,
+    items: Array<{}> | undefined,
+  ) {
     const { props } = this.restProps(x => {
       const { bordered, condensed, hover, responsive, striped, bsClass, fixedLayout } = x;
       return { bordered, condensed, hover, responsive, striped, bsClass, fixedLayout };
@@ -79,7 +92,7 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
     );
   }
 
-  protected getColumnDefinitions(): Array<React.ReactChild> | undefined {
+  protected getColumnDefinitions(): React.ReactChild[] | undefined {
     const count = React.Children.count(this.props.children);
 
     if (count === 0) {

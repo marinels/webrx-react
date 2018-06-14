@@ -1,13 +1,16 @@
 import { Iterable } from 'ix';
 
-import { ObservableOrValue, ObservableLike, IterableLike } from '../../../WebRx';
+import { IterableLike, ObservableLike, ObservableOrValue } from '../../../WebRx';
+import { AsyncDataGridViewModel, DataSourceResponseSelector } from '../DataGrid/AsyncDataGridViewModel';
+import { DataSourceRequest, DataSourceResponse } from '../DataGrid/DataGridViewModel';
+import { SearchViewModel } from '../Search/SearchViewModel';
 import { ItemListPanelContext } from './ItemListPanelViewModel';
 import { TreeItemListPanelViewModel } from './TreeItemListPanelViewModel';
-import { DataSourceRequest, DataSourceResponse } from '../DataGrid/DataGridViewModel';
-import { AsyncDataGridViewModel } from '../DataGrid/AsyncDataGridViewModel';
-import { SearchViewModel } from '../Search/SearchViewModel';
 
-export class AsyncTreeItemListPanelViewModel<T, TRequestContext = any> extends TreeItemListPanelViewModel<T, TRequestContext> {
+export class AsyncTreeItemListPanelViewModel<
+  T,
+  TRequestContext = any,
+> extends TreeItemListPanelViewModel<T, TRequestContext> {
   public static displayName = 'AsyncTreeItemListPanelViewModel';
 
   /**
@@ -17,7 +20,7 @@ export class AsyncTreeItemListPanelViewModel<T, TRequestContext = any> extends T
    * @param context request context included in projection requests. if included requests are bound to context events.
    */
   constructor(
-    protected readonly responseSelector: (request: DataSourceRequest<ItemListPanelContext<TRequestContext>> | undefined) => ObservableOrValue<DataSourceResponse<T> | undefined>,
+    protected readonly responseSelector: DataSourceResponseSelector<T, TRequestContext>,
     itemsSource: (item: T) => (IterableLike<T> | undefined),
     search?: SearchViewModel | null,
     context?: ObservableLike<TRequestContext>,

@@ -1,7 +1,7 @@
 import * as React from 'react';
+import { FormControl, FormGroup, InputGroup, Sizes } from 'react-bootstrap';
 import { findDOMNode } from 'react-dom';
 import { Icon } from 'react-fa';
-import { FormGroup, InputGroup, FormControl, Sizes } from 'react-bootstrap';
 
 import { BaseView, BaseViewProps } from '../../React';
 import { BindableInput, BindableProps } from '../BindableInput/BindableInput';
@@ -110,8 +110,14 @@ export class InlineEditView extends BaseView<InlineEditViewProps, InlineEditView
 
   private renderEditor() {
     const { className, props, rest } = this.restProps(x => {
-      const { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, clickToEdit, template, editTemplate, errorContent, errorPlacement } = x;
-      return { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, clickToEdit, template, editTemplate, errorContent, errorPlacement };
+      const {
+        controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter,
+        keyboard, clickToEdit, template, editTemplate, errorContent, errorPlacement,
+      } = x;
+      return {
+        controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter,
+        keyboard, clickToEdit, template, editTemplate, errorContent, errorPlacement,
+      };
     });
 
     return (
@@ -157,7 +163,9 @@ export class InlineEditView extends BaseView<InlineEditViewProps, InlineEditView
     const onKeyDown = this.props.keyboard === true ? (e: React.KeyboardEvent<any>) => this.handleKeyDown(e) : undefined;
 
     return (
-      <BindableInput { ...props } boundProperty={ this.viewModel.editValue } onKeyDown={ onKeyDown } disabled={ this.viewModel.save.canExecute === false } >
+      <BindableInput { ...props } boundProperty={ this.viewModel.editValue } onKeyDown={ onKeyDown }
+        disabled={ this.viewModel.save.canExecute === false }
+      >
         {
           React.cloneElement(
             this.props.editTemplate!(this.viewModel.editValue.value, this),
@@ -170,8 +178,14 @@ export class InlineEditView extends BaseView<InlineEditViewProps, InlineEditView
 
   private renderValue() {
     const { className, props, rest } = this.restProps(x => {
-      const { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, clickToEdit, template, editTemplate, errorContent, errorPlacement } = x;
-      return { controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter, keyboard, clickToEdit, template, editTemplate, errorContent, errorPlacement };
+      const {
+        controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter,
+        keyboard, clickToEdit, template, editTemplate, errorContent, errorPlacement,
+      } = x;
+      return {
+        controlId, inputType, placeholder, converter, valueProperty, onChangeProperty, valueGetter, valueSetter,
+        keyboard, clickToEdit, template, editTemplate, errorContent, errorPlacement,
+      };
     });
 
     const displayContent = (
@@ -181,7 +195,9 @@ export class InlineEditView extends BaseView<InlineEditViewProps, InlineEditView
     return this.wxr.renderConditional(
       props.clickToEdit === true,
       () => (
-        <CommandButton { ...rest } className={ this.wxr.classNames('InlineEditView', className)} bsStyle='link' command={ this.viewModel.edit }>
+        <CommandButton { ...rest } className={ this.wxr.classNames('InlineEditView', className)}
+          bsStyle='link' command={ this.viewModel.edit }
+        >
           { displayContent }
         </CommandButton>
       ),

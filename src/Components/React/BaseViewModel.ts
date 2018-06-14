@@ -1,11 +1,11 @@
 import { Subscription } from 'rxjs';
 
-import { wx, WebRxStatic, Command } from '../../WebRx';
-import { Logger, LogLevel, getLogger } from '../../Utils/Logging';
-import { Alert, PubSub } from '../../Utils';
 import { RoutingStateChangedKey } from '../../Events';
 import { routeManager, RouteManager } from '../../Routing/RouteManager';
-import { ViewModelLifecyle, HandlerRoutingStateChanged, RoutingStateHandler } from './Interfaces';
+import { Alert, PubSub } from '../../Utils';
+import { getLogger, Logger, LogLevel } from '../../Utils/Logging';
+import { Command, WebRxStatic, wx } from '../../WebRx';
+import { HandlerRoutingStateChanged, RoutingStateHandler, ViewModelLifecyle } from './Interfaces';
 
 export function isRoutingStateHandler(value: any): value is RoutingStateHandler<{}> {
   if (value == null) {
@@ -43,10 +43,24 @@ export function isViewModel(source: any): source is BaseViewModel {
   return false;
 }
 
-export function getRoutingStateValue<T>(value: T | null | undefined, defaultValue?: T): T | undefined;
-export function getRoutingStateValue<T, R>(value: T | null | undefined, selector: (x: T) => R): R | undefined;
-export function getRoutingStateValue<T, R>(value: T | null | undefined, defaultValue: T, selector: (x: T) => R): R | undefined;
-export function getRoutingStateValue<T, R>(value: T | null | undefined, arg2?: T | ((x: T) => R), selector?: (x: T) => R): R | undefined {
+export function getRoutingStateValue<T>(
+  value: T | null | undefined,
+  defaultValue?: T,
+): T | undefined;
+export function getRoutingStateValue<T, R>(
+  value: T | null | undefined,
+  selector: (x: T) => R,
+): R | undefined;
+export function getRoutingStateValue<T, R>(
+  value: T | null | undefined,
+  defaultValue: T,
+  selector: (x: T) => R,
+): R | undefined;
+export function getRoutingStateValue<T, R>(
+  value: T | null | undefined,
+  arg2?: T | ((x: T) => R),
+  selector?: (x: T) => R,
+): R | undefined {
   if (value == null) {
     return undefined;
   }
@@ -65,7 +79,7 @@ export function getRoutingStateValue<T, R>(value: T | null | undefined, arg2?: T
 
   // we need a direct cast here because no selector was supplied
   // this just means that T === R
-  return <any>value;
+  return value as any;
 }
 
 export type RoutingStateValueCreator = typeof getRoutingStateValue;

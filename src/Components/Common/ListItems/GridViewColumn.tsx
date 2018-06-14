@@ -1,8 +1,10 @@
+// tslint:disable:max-classes-per-file
+
 import * as React from 'react';
 
-import { PanelFragment } from '../Panel/Panel';
 import { ContentTooltip } from '../ContentTooltip/ContentTooltip';
 import { NavButton } from '../NavButton/NavButton';
+import { PanelFragment } from '../Panel/Panel';
 
 export class GridViewColumns extends React.Component {
   render() {
@@ -39,10 +41,7 @@ export interface GridViewColumnProps {
   width?: number | string;
 }
 
-export interface GridViewColumnComponentProps extends GridViewColumnProps {
-}
-
-export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnComponentProps> extends React.Component<T> {
+export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnProps> extends React.Component<T> {
   public static displayName = 'GridViewColumn';
 
   public static canRenderHeader(column: React.ReactChild) {
@@ -78,7 +77,12 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnCompon
     return (col == null || React.isValidElement(col)) ? col : (<div>{ col || null }</div>);
   }
 
-  protected renderContent(type: 'header' | 'cell', content: PanelFragment, item: {} | undefined, field: string | undefined) {
+  protected renderContent(
+    type: 'header' | 'cell',
+    content: PanelFragment,
+    item: {} | undefined,
+    field: string | undefined,
+  ) {
     const fragment = (
       <div className={ `GridViewColumn-${ type }Content` }>
         { GridViewColumn.sanitizeFragment(content) }
@@ -181,11 +185,18 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnCompon
         content.props.context == null &&
         React.Children.count(content.props.children) === 0
       ) ? context : undefined;
-      return React.cloneElement(content, { id, className: this.getClassNameForComponent(GridColumnComponentType.Content), ...content.props }, child);
+      return React.cloneElement(
+        content,
+        { id, className: this.getClassNameForComponent(GridColumnComponentType.Content), ...content.props },
+        child,
+      );
     }
 
     return (
-      <ContentTooltip id={ id } className={ this.getClassNameForComponent(GridColumnComponentType.Tooltip) } content={ content }>
+      <ContentTooltip id={ id }
+        className={ this.getClassNameForComponent(GridColumnComponentType.Tooltip) }
+        content={ content }
+      >
         { context }
       </ContentTooltip>
     );
@@ -200,10 +211,7 @@ export interface NavButtonColumnProps extends GridViewColumnProps {
   href: string | undefined | ((item: {}, field: string | undefined) => (string | undefined));
 }
 
-export interface NavButtonColumnComponentProps extends NavButtonColumnProps {
-}
-
-export class NavButtonColumn extends GridViewColumn<NavButtonColumnComponentProps> {
+export class NavButtonColumn extends GridViewColumn<NavButtonColumnProps> {
   renderCell() {
     return super.renderCell(this.renderNavButton.bind(this));
   }

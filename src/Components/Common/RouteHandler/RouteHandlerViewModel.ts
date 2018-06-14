@@ -1,12 +1,12 @@
-import { Observable, Subscription } from 'rxjs';
 import 'ix';
+import { Observable, Subscription } from 'rxjs';
 
-import { ReadOnlyProperty, Command } from '../../../WebRx';
-import { BaseViewModel, isRoutableViewModel, RoutingBreadcrumb, HandlerRoutingStateChanged } from '../../React';
-import { Route, RouteMapper, ComponentActivator, RoutedComponentActivator } from '../../../Routing';
+import { RoutingStateChangedKey } from '../../../Events/RoutingStateChanged';
+import { ComponentActivator, Route, RoutedComponentActivator, RouteMapper } from '../../../Routing';
 import { routeManager } from '../../../Routing/RouteManager';
 import { PubSub } from '../../../Utils';
-import { RoutingStateChangedKey } from '../../../Events/RoutingStateChanged';
+import { Command, ReadOnlyProperty } from '../../../WebRx';
+import { BaseViewModel, HandlerRoutingStateChanged, isRoutableViewModel, RoutingBreadcrumb } from '../../React';
 
 export const SplashKey = 'Splash';
 export const DefaultKey = '*';
@@ -29,7 +29,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
   public routingBreadcrumbs: ReadOnlyProperty<RoutingBreadcrumb[] | undefined>;
   public isLoading: ReadOnlyProperty<boolean>;
 
-  private loadComponent: Command<any>;
+  private loadComponent: Command;
 
   constructor(
     public routingMap: RouteMapper,
@@ -77,13 +77,13 @@ export class RouteHandlerViewModel extends BaseViewModel {
           // build a prev/next pair of activator results
           // we will use the previous activator to confirm if we create a new view model or not
           // we use || null here to ensure our undefined values are always null (consistency)
-          return <LoadComponentParams>{
+          return {
             prev: x.next || null,
             next: next || null,
-          };
+          } as LoadComponentParams;
         },
         // this initializes the scan operator with an empty object (the first `x` value)
-        <LoadComponentParams>{},
+        {} as LoadComponentParams,
       )
       // publish is required here because we use this Observable in multiple streams
       // we use publish instead of share so we can kick this engine off at the end of stream composition
@@ -106,11 +106,11 @@ export class RouteHandlerViewModel extends BaseViewModel {
         () => {
           // we need to construct an activated component structure so we can send routing state
           // into the viewModel (if it exists)
-          return <ActivatedComponent>{
+          return {
             activator: p.next,
             // NOTE: getComponent can return null
             component: this.getComponent(p.prev, p.next),
-          };
+          } as ActivatedComponent;
         })
         .map(x => {
           // send the routing state to the view model (if it exists)
@@ -294,7 +294,10 @@ export class RouteHandlerViewModel extends BaseViewModel {
             ` ('${ result.activator.path }')` :
             '';
 
-          this.logger.debug(`Matched RegExp Routing Path '${ route.path }' with '${ result.key }'${ activatorPath }`, route);
+          this.logger.debug(
+            `Matched RegExp Routing Path '${ route.path }' with '${ result.key }'${ activatorPath }`,
+            route,
+          );
 
           activator = result.activator;
         }

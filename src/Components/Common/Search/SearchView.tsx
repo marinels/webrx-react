@@ -1,11 +1,11 @@
 import * as React from 'react';
+import { FormControl, FormGroup } from 'react-bootstrap';
 import { Icon } from 'react-fa';
-import { FormGroup, FormControl } from 'react-bootstrap';
 
 import { BaseView, BaseViewProps } from '../../React';
 import { BindableInput } from '../BindableInput/BindableInput';
-import { SearchViewModel } from './SearchViewModel';
 import { CommandButton } from '../CommandButton/CommandButton';
+import { SearchViewModel } from './SearchViewModel';
 
 const EnterKey = 13;
 
@@ -40,7 +40,11 @@ export class SearchView extends BaseView<SearchViewProps, SearchViewModel> {
         <FormGroup>
           <BindableInput boundProperty={ this.viewModel.filter }>
             <FormControl className='Search-text' type='text' placeholder={ this.props.placeholder }
-              onKeyDown={ this.bindEventToCommand(x => x.search, undefined, (e: React.KeyboardEvent<any>) => e.keyCode === EnterKey) }
+              onKeyDown={ this.bindEventToCommand(
+                x => x.search,
+                undefined,
+                (e: React.KeyboardEvent<any>) => e.keyCode === EnterKey,
+              ) }
             />
           </BindableInput>
           {

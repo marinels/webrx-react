@@ -8,6 +8,7 @@ export interface WebRxReactGlobals {
 
 declare global {
   namespace NodeJS {
+    // tslint:disable-next-line:no-empty-interface
     interface Global extends WebRxReactGlobals {
     }
   }
@@ -54,10 +55,14 @@ const debugOverride = (window && window.location) ?
   undefined;
 
 // we need to untype global to allow us to inject fallbacks
-let g: any = global;
+const g: any = global;
 
 // if we don't have a webpack environment then we'll fallback onto defaults
-g.DEBUG = getValueOrDefault(() => debugOverride == null ? DEBUG : debugOverride, env => env.NODE_ENV === 'debug', false);
+g.DEBUG = getValueOrDefault(() =>
+  debugOverride == null ? DEBUG : debugOverride,
+  env => env.NODE_ENV === 'debug',
+  false,
+);
 g.PRODUCTION = getValueOrDefault(() => PRODUCTION, env => env.NODE_ENV === 'production', true);
 g.TEST = getValueOrDefault(() => TEST, env => env.NODE_ENV === 'test', false);
 g.WEBPACK_DEV_SERVER = getValueOrDefault(() => WEBPACK_DEV_SERVER, env => env.NODE_ENV === 'webpack', false);

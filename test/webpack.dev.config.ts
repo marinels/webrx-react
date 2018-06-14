@@ -1,6 +1,6 @@
+import * as HtmlWebpackPlugin from 'html-webpack-plugin';
 import * as path from 'path';
 import * as webpack from 'webpack';
-import * as HtmlWebpackPlugin from 'html-webpack-plugin';
 
 defaultArgs = {
   'env.entryPath': path.resolve(__dirname, 'app.spec.ts'),
@@ -8,7 +8,7 @@ defaultArgs = {
   'env.releasePath': 'watch',
 };
 
-import { commonConfig, args } from '../webpack.common';
+import { args, commonConfig } from '../webpack.common';
 
 const testConfig: Partial<webpack.Configuration> = {
   entry: {

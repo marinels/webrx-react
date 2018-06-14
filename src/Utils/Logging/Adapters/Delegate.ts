@@ -1,5 +1,7 @@
-import { LogLevel } from '../LogLevel';
+// tslint:disable:max-classes-per-file
+
 import { BaseLogger, MessageDelegate } from '../Logger';
+import { LogLevel } from '../LogLevel';
 import { LogManager } from '../LogManager';
 
 export type DelegateLoggerAction = (logger: DelegateLogger, level: LogLevel, text: string, args: any[]) => void;

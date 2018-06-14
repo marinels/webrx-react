@@ -1,9 +1,9 @@
 import { Iterable } from 'ix';
 
-import { ObservableLike, IterableLike } from '../../../WebRx';
-import { ItemListPanelViewModel } from './ItemListPanelViewModel';
-import { SearchViewModel, SearchRequest } from '../Search/SearchViewModel';
+import { IterableLike, ObservableLike } from '../../../WebRx';
 import { flattenItems } from '../ListItems/TreeListItemsViewModel';
+import { SearchRequest, SearchViewModel } from '../Search/SearchViewModel';
+import { ItemListPanelViewModel } from './ItemListPanelViewModel';
 
 export function filterTreeItems<T>(
   items: IterableLike<T> | undefined,

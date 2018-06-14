@@ -1,21 +1,21 @@
-import * as React from 'react';
 import * as CSS from 'csstype';
-import { Observable } from 'rxjs';
-import { Icon } from 'react-fa';
-import { Grid, Row, Col, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab,
-  Well, ListGroup, ListGroupItem, Table, OverlayTrigger, Tooltip, Popover, Label,
+import * as React from 'react';
+import { Button, Col, FormControl, FormGroup, Grid, InputGroup, Label, ListGroup, ListGroupItem, MenuItem,
+  OverlayTrigger, Panel, Popover, Row, Tab, Table, Tooltip, Well,
 } from 'react-bootstrap';
+import { Icon } from 'react-fa';
+import { Observable } from 'rxjs';
 
-import { Property, Command } from '../../WebRx';
+import { ViewMap as AppViewMap } from '../../Routing';
 import { Alert } from '../../Utils';
-import { wxr } from '../React';
-import { SampleData, SampleTreeData, sampleListData, sampleTreeData } from './RoutingMap';
+import { Command, Property } from '../../WebRx';
 import * as Components from '../Common';
+import { wxr } from '../React';
+import { ComponentDemoView, ViewActivatorMap } from './ComponentDemoView';
+import { ComponentDemoViewModel } from './ComponentDemoViewModel';
+import { SampleData, sampleListData, SampleTreeData, sampleTreeData } from './RoutingMap';
 import { TodoListView } from './TodoList/TodoListView';
 import { TodoListViewModel } from './TodoList/TodoListViewModel';
-import { ComponentDemoViewModel } from './ComponentDemoViewModel';
-import { ComponentDemoView, ViewActivatorMap } from './ComponentDemoView';
-import { ViewMap as AppViewMap } from '../../Routing';
 
 const sampleDataTemplate = (x: SampleData) => {
   return (
@@ -52,21 +52,27 @@ export const demoViewMap: ViewActivatorMap = {
         <FormControl id='CommandButtonParamInput' type='text' placeholder='Enter Command Parameter Text Here...' />
         <InputGroup.Button>
           <Components.CommandButton id='demo-cmd-btn-1' bsSize='large'
-            commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
+            commandParameter={
+              () => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value
+            }
             command={Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
             tooltip='Embedded Command Tooltips!!!'
           >
             Execute Command
           </Components.CommandButton>
           <Components.CommandButton id='demo-cmd-btn-2' bsSize='large'
-            commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
+            commandParameter={
+              () => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value
+            }
             command={Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
             tooltip={ (<Popover id='cmd-btn-custom-tt' placement='top'>Custom Tooltip</Popover>) }
           >
             Same Command
           </Components.CommandButton>
           <Components.CommandButton id='demo-cmd-btn-3' bsSize='large'
-            commandParameter={() => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value }
+            commandParameter={
+              () => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value
+            }
             command={Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
             tooltip={(
               <OverlayTrigger placement='bottom'
@@ -97,16 +103,28 @@ export const demoViewMap: ViewActivatorMap = {
   Alert: () => (
     <div>
       <Button onClick={() => Alert.create(`Alert Content: ${new Date()}`, 'Info Alert', 'info')}>Info Alert</Button>
-      <Button onClick={() => Alert.createForError(new Error(`Error Message: ${new Date()}`), 'Error Alert')}>Error Alert</Button>
+      <Button onClick={() =>
+        Alert.createForError(new Error(`Error Message: ${new Date()}`), 'Error Alert')
+      }>
+        Error Alert
+      </Button>
     </div>
   ),
   ObservableWrapper: () => (
-    <Components.ObservableWrapper observable={ Observable.timer(0, 1000) } render={ x => (<div>Current Value is { x }</div>) } />
+    <Components.ObservableWrapper
+      observable={ Observable.timer(0, 1000) }
+      render={ x => (<div>Current Value is { x }</div>) }
+    />
   ),
   TimeSpanInput: () => (
     <div>
       <Components.TimeSpanInput placeholder='Manual input is parsed on blur' />
-      <Components.TimeSpanInput units={ [ 'hours', 'days' ] } initialUnit='hours' placeholder='custom units + reparse' reparseButton />
+      <Components.TimeSpanInput
+        units={ [ 'hours', 'days' ] }
+        initialUnit='hours'
+        placeholder='custom units + reparse'
+        reparseButton
+      />
       <Components.TimeSpanInput>
         <FormControl type='text' id='custom' placeholder='You can also use your own custom control component' />
       </Components.TimeSpanInput>
@@ -136,8 +154,9 @@ export const demoViewMap: ViewActivatorMap = {
     </div>
   ),
   ProfilePicture: () => {
-    let style = { margin: '5px' };
-    let imageData = 'iVBORw0KGgoAAAANSUhEUgAAAEAAAAA8CAYAAADWibxkAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA+5JREFUeNrkm0tIVFEYx8+dhzajNGZqOjqZj9TULJkwe1CL0DQpI4yoaBVCQbZw06IHTLSqoNrMoiKIQiNqyLAs2gypEBUY0cwqe4gERkHhlJTp9P/yDIQ6mcw513vn/uGHgnruPf8533e+81Bxu91sDmQF28FmUAlc4Bu4A06Bz6IeNDo6ylwuF+vs7Jz25xaVO54GtoG9oBzMA4n8PRaAZrAYnAGvQEj2C6llgAJ2AA8om+F96Pe2gucgCLpBF/go48VMKnSePuHz4OYMnZ8cImvAfnAF9ICdejTABi6BwzE8i/5uKWgDLXoz4CTYJzBcKTfU6MWAWnBIQji16MEAiuFWnuVFaz3I0roBy/kcLyuppmvdgAaJoWXiyVXTBpRLriksWjcgi8mVpg1I5iWvYUeAQ2SM6jEHUJY2Sx7+2Vo2QOHIVCM3WpMGhFVYYOWKqgVkGDAGxiUbQPsEw1o1gHZ2fko24DX4qlUDPnFk6oHWC6EuiZ1/J7J9WQZcAH2S2j4rcoTJMoDi87SEdm+Bi3rYDyDdBfcEtvcFnAOjejHgOzjCxO3xvwFPZdTVMhUAzwS19Qj80psBJL+ANkbANVkrK9nqFtDGE1786NKAPgHzNp0S/dCrATR8fTG28Vbm5oIa+hDjJ5iqdwPyY1y/14ha/6ttAJ3pednEqXAs2giOgxQ9GUAHIw/BQUFD+CigWw6FejBgN7gB8gS3uw60A6dWDSgFl8FVGcOVaxV/RpoWDKDd3xw2caujjRcsdKnBKjm31PNwqI81vGZ7wEC7vYvACkC3q+gQlG5y5DL1tRrcBy95uU3fP+Z1hzADaOqhY65qUMG/0pSWweQefsxGFZwD4AW4zemPxYCVoAls4nE9n2lfCaCKc4zvRfj4Evp91Bh2Oqck1EK+mdHI4zuR6U/0znRC3aQoSmMoFMrNzMwMlJSUDP9PEqTEUsDiQ4rJZMofGxtr9Xg8PXV1dbuCweA/DaCQaGBxJovlT6QvGRgYuN7c3LwnEAhENSCHFxtxJ4wElpSUZBkcHDzh9/vToxlA01syi1OFw2FmtVpdNputMpoBFSz+ZWcT95KnNWBtvPfe4XAwr9e7ob+/f4oBjjmq6NSdFhSFjYyMNHV0dBRNNoBKW5cBQoDyQIbP56udbEB1PCfAyaMACXELTYemv+Z/NzOIzGYzGxoaKm5vb7dFDFgIljEDCXVBBqbDvIgBaRJ2b/QwHRZHDIj8/46hBgHIjhhQZLDO00zAUBY7IwaUGs0Au93Oent7C0w8AZYZzQBaFyQkJKSSASVM3g6u5itjMqDKgAkwohQLXwHSbi/dvRk3UOep77bfAgwAst2xTAPm/mIAAAAASUVORK5CYII=';
+    const style = { margin: '5px' };
+    // tslint:disable-next-line:max-line-length
+    const imageData = 'iVBORw0KGgoAAAANSUhEUgAAAEAAAAA8CAYAAADWibxkAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA+5JREFUeNrkm0tIVFEYx8+dhzajNGZqOjqZj9TULJkwe1CL0DQpI4yoaBVCQbZw06IHTLSqoNrMoiKIQiNqyLAs2gypEBUY0cwqe4gERkHhlJTp9P/yDIQ6mcw513vn/uGHgnruPf8533e+81Bxu91sDmQF28FmUAlc4Bu4A06Bz6IeNDo6ylwuF+vs7Jz25xaVO54GtoG9oBzMA4n8PRaAZrAYnAGvQEj2C6llgAJ2AA8om+F96Pe2gucgCLpBF/go48VMKnSePuHz4OYMnZ8cImvAfnAF9ICdejTABi6BwzE8i/5uKWgDLXoz4CTYJzBcKTfU6MWAWnBIQji16MEAiuFWnuVFaz3I0roBy/kcLyuppmvdgAaJoWXiyVXTBpRLriksWjcgi8mVpg1I5iWvYUeAQ2SM6jEHUJY2Sx7+2Vo2QOHIVCM3WpMGhFVYYOWKqgVkGDAGxiUbQPsEw1o1gHZ2fko24DX4qlUDPnFk6oHWC6EuiZ1/J7J9WQZcAH2S2j4rcoTJMoDi87SEdm+Bi3rYDyDdBfcEtvcFnAOjejHgOzjCxO3xvwFPZdTVMhUAzwS19Qj80psBJL+ANkbANVkrK9nqFtDGE1786NKAPgHzNp0S/dCrATR8fTG28Vbm5oIa+hDjJ5iqdwPyY1y/14ha/6ttAJ3pednEqXAs2giOgxQ9GUAHIw/BQUFD+CigWw6FejBgN7gB8gS3uw60A6dWDSgFl8FVGcOVaxV/RpoWDKDd3xw2caujjRcsdKnBKjm31PNwqI81vGZ7wEC7vYvACkC3q+gQlG5y5DL1tRrcBy95uU3fP+Z1hzADaOqhY65qUMG/0pSWweQefsxGFZwD4AW4zemPxYCVoAls4nE9n2lfCaCKc4zvRfj4Evp91Bh2Oqck1EK+mdHI4zuR6U/0znRC3aQoSmMoFMrNzMwMlJSUDP9PEqTEUsDiQ4rJZMofGxtr9Xg8PXV1dbuCweA/DaCQaGBxJovlT6QvGRgYuN7c3LwnEAhENSCHFxtxJ4wElpSUZBkcHDzh9/vToxlA01syi1OFw2FmtVpdNputMpoBFSz+ZWcT95KnNWBtvPfe4XAwr9e7ob+/f4oBjjmq6NSdFhSFjYyMNHV0dBRNNoBKW5cBQoDyQIbP56udbEB1PCfAyaMACXELTYemv+Z/NzOIzGYzGxoaKm5vb7dFDFgIljEDCXVBBqbDvIgBaRJ2b/QwHRZHDIj8/46hBgHIjhhQZLDO00zAUBY7IwaUGs0Au93Oent7C0w8AZYZzQBaFyQkJKSSASVM3g6u5itjMqDKgAkwohQLXwHSbi/dvRk3UOep77bfAgwAst2xTAPm/mIAAAAASUVORK5CYII=';
 
     return (
       <div>
@@ -145,17 +164,29 @@ export const demoViewMap: ViewActivatorMap = {
           <Components.ProfilePicture style={ style } src={ undefined } title='Basic Icon' />
           <Components.ProfilePicture style={ style } src={ undefined } iconSize='2x' title='2x Size Icon' />
           <Components.ProfilePicture style={ style } src={ undefined } thumbnail title='Thumbnail Icon' />
-          <Components.ProfilePicture style={ style } src={ undefined } thumbnail rounded title='Rounded Thumbnail Icon' />
-          <Components.ProfilePicture style={ style } src={ undefined } iconSize='2x' thumbnail size={ 40 } title='Fixed Width/Height Icon' />
-          <Components.ProfilePicture style={ style } src={ undefined } iconSize='2x' thumbnail rounded size={ 40 } title='Rounded Fixed Width/Height Icon' />
+          <Components.ProfilePicture style={ style } src={ undefined }
+            thumbnail rounded title='Rounded Thumbnail Icon'
+          />
+          <Components.ProfilePicture style={ style } src={ undefined }
+            iconSize='2x' thumbnail size={ 40 } title='Fixed Width/Height Icon'
+          />
+          <Components.ProfilePicture style={ style } src={ undefined }
+            iconSize='2x' thumbnail rounded size={ 40 } title='Rounded Fixed Width/Height Icon'
+          />
         </div>
         <div>
           <Components.ProfilePicture style={ style } src={ imageData } title='Basic Image' />
           <Components.ProfilePicture style={ style } src={ imageData } rounded title='Rounded Image' />
           <Components.ProfilePicture style={ style } src={ imageData } thumbnail title='Thumbnail Image' />
-          <Components.ProfilePicture style={ style } src={ imageData } thumbnail rounded title='Rounded Thumbnail Image' />
-          <Components.ProfilePicture style={ style } src={ imageData } thumbnail size={ 40} title='Fixed Width/Height Image' />
-          <Components.ProfilePicture style={ style } src={ imageData } thumbnail rounded size={ 40 } title='Rounded Fixed Width/Height Image' />
+          <Components.ProfilePicture style={ style } src={ imageData }
+            thumbnail rounded title='Rounded Thumbnail Image'
+          />
+          <Components.ProfilePicture style={ style } src={ imageData }
+            thumbnail size={ 40} title='Fixed Width/Height Image'
+          />
+          <Components.ProfilePicture style={ style } src={ imageData }
+            thumbnail rounded size={ 40 } title='Rounded Fixed Width/Height Image'
+          />
         </div>
         <div>
           <Components.ProfilePicture style={ style } src='http://via.placeholder.com/50x30' title='Wide Image' />
@@ -164,8 +195,12 @@ export const demoViewMap: ViewActivatorMap = {
           <Components.ProfilePicture style={ style } src='http://via.placeholder.com/60x100' title='X-Tall Image' />
         </div>
         <div style={ ({ height: 250 }) }>
-          <Components.ProfilePicture style={ style } src={ imageData } thumbnail responsive title='Responsive Thumbnail Image' />
-          <Components.ProfilePicture style={ style } src={ imageData } thumbnail rounded responsive title='Responsive Rounded Thumbnail Image' />
+          <Components.ProfilePicture style={ style } src={ imageData }
+            thumbnail responsive title='Responsive Thumbnail Image'
+          />
+          <Components.ProfilePicture style={ style } src={ imageData }
+            thumbnail rounded responsive title='Responsive Rounded Thumbnail Image'
+          />
         </div>
       </div>
     );
@@ -278,7 +313,9 @@ export const demoViewMap: ViewActivatorMap = {
             </Components.ContentTooltip>
           </Col>
           <Col md={ 3 }>
-            <Components.ContentTooltip id='demo-content-tooltip-2' content='Just Text' className='content-tt-2' placement='top'>
+            <Components.ContentTooltip id='demo-content-tooltip-2' className='content-tt-2'
+              content='Just Text' placement='top'
+            >
               <Well>text content tooltip with className, placement</Well>
             </Components.ContentTooltip>
           </Col>
@@ -295,61 +332,95 @@ export const demoViewMap: ViewActivatorMap = {
         </Row>
         <Row>
           <Col md={ 3 }>
-            <Components.ContentTooltip id='demo-content-tooltip-5' content={ (<Tooltip id='content-tt-5t' children='Tooltip Component'/>) }>
+            <Components.ContentTooltip id='demo-content-tooltip-5'
+              content={ (<Tooltip id='content-tt-5t' children='Tooltip Component'/>) }
+            >
               <Well>Tooltip content tooltip</Well>
             </Components.ContentTooltip>
           </Col>
           <Col md={ 3 }>
-            <Components.ContentTooltip id='demo-content-tooltip-6' content={ (<Tooltip id='content-tt-6t' children='Tooltip Component'/>) } className='content-tt-6' placement='top'>
+            <Components.ContentTooltip id='demo-content-tooltip-6' className='content-tt-6'
+              content={ (<Tooltip id='content-tt-6t' children='Tooltip Component'/>) } placement='top'
+            >
               <Well>Tooltip content tooltip with className, placement</Well>
             </Components.ContentTooltip>
           </Col>
           <Col md={ 3 }>
-            <Components.ContentTooltip id='demo-content-tooltip-7' content={ (<Tooltip id='content-tt-7t' children='Tooltip Component'/>) } popover>
+            <Components.ContentTooltip id='demo-content-tooltip-7'
+              content={ (<Tooltip id='content-tt-7t' children='Tooltip Component'/>) } popover
+            >
               <Well>Tooltip content tooltip as popover</Well>
             </Components.ContentTooltip>
           </Col>
           <Col md={ 3 }>
-            <Components.ContentTooltip id='demo-content-tooltip-8' content={ (<Tooltip id='content-tt-8t' children='Tooltip Component'/>) } title='Popover Mode'>
+            <Components.ContentTooltip id='demo-content-tooltip-8'
+              content={ (<Tooltip id='content-tt-8t' children='Tooltip Component'/>) } title='Popover Mode'
+            >
               <Well>Tooltip content tooltip as popover with title</Well>
             </Components.ContentTooltip>
           </Col>
         </Row>
         <Row>
           <Col md={ 3 }>
-            <Components.ContentTooltip id='demo-content-tooltip-9' content={ (<Popover id='content-tt-9p' children='Popover Component'/>) }>
+            <Components.ContentTooltip id='demo-content-tooltip-9'
+              content={ (<Popover id='content-tt-9p' children='Popover Component'/>) }
+            >
               <Well>Popover content tooltip</Well>
             </Components.ContentTooltip>
           </Col>
           <Col md={ 3 }>
-            <Components.ContentTooltip id='demo-content-tooltip-10' content={ (<Popover id='content-tt-10p' children='Popover Component'/>) } className='content-tt-10' placement='top'>
+            <Components.ContentTooltip id='demo-content-tooltip-10' className='content-tt-10'
+              content={ (<Popover id='content-tt-10p' children='Popover Component'/>) } placement='top'
+            >
               <Well>Popover content tooltip with className, placement</Well>
             </Components.ContentTooltip>
           </Col>
           <Col md={ 3 }>
-            <Components.ContentTooltip id='demo-content-tooltip-11' content={ (<Popover id='content-tt-11p' children='Popover Component'/>) } popover>
+            <Components.ContentTooltip id='demo-content-tooltip-11'
+              content={ (<Popover id='content-tt-11p' children='Popover Component'/>) } popover
+            >
               <Well>Popover content tooltip as popover</Well>
             </Components.ContentTooltip>
           </Col>
           <Col md={ 3 }>
-            <Components.ContentTooltip id='demo-content-tooltip-12' content={ (<Popover id='content-tt-12p' children='Popover Component'/>) } title='Popover Mode'>
+            <Components.ContentTooltip id='demo-content-tooltip-12'
+              content={ (<Popover id='content-tt-12p' children='Popover Component'/>) } title='Popover Mode'
+            >
               <Well>Popover content tooltip as popover with title</Well>
             </Components.ContentTooltip>
           </Col>
         </Row>
         <Row>
           <Col md={ 3 }>
-            <Components.ContentTooltip id='demo-content-tooltip-13' content={ (<Tooltip id='content-tt-13t' children='Tooltip Component' className='content-tt-13t' placement='top' />) } className='content-tt-13' placement='bottom'>
+            <Components.ContentTooltip id='demo-content-tooltip-13' className='content-tt-13t'
+              content={ (<Tooltip id='content-tt-13t' children='Tooltip Component' placement='top' />) }
+              placement='bottom'
+            >
               <Well>Tooltip content tooltip with overrides</Well>
             </Components.ContentTooltip>
           </Col>
           <Col md={ 3 }>
-            <Components.ContentTooltip id='demo-content-tooltip-14' content={ (<Popover id='content-tt-14p' children='Popover Component' className='content-tt-14p' placement='top' />) } className='content-tt-14' placement='bottom'>
+            <Components.ContentTooltip id='demo-content-tooltip-14' className='content-tt-14p'
+              content={ (<Popover id='content-tt-14p' children='Popover Component' placement='top' />) }
+              placement='bottom'
+            >
               <Well>Popover content tooltip with overrides</Well>
             </Components.ContentTooltip>
           </Col>
           <Col md={ 3 }>
-            <Components.ContentTooltip id='demo-content-tooltip-15' content={ (<OverlayTrigger overlay={ (<Tooltip id='content-tt-15t' children='Tooltip Component' className='content-tt-15t' placement='top' />) } placement='left' />) } className='content-tt-15' placement='bottom'>
+            <Components.ContentTooltip id='demo-content-tooltip-15' className='content-tt-15'
+              content={ (
+                <OverlayTrigger
+                  overlay={ (
+                    <Tooltip id='content-tt-15t' className='content-tt-15t'
+                      children='Tooltip Component' placement='top'
+                    />
+                  ) }
+                  placement='left'
+                />
+              ) }
+              placement='bottom'
+            >
               <Well>OverlayTrigger content tooltip with overrides</Well>
             </Components.ContentTooltip>
           </Col>
@@ -468,7 +539,11 @@ export const demoViewMap: ViewActivatorMap = {
         return (
           <Components.ItemsView
             viewModel={ viewModel }
-            itemTemplate={ (x: SampleData) => (<Label key={ x.id } style={({ marginRight: 5 })}>{ `name = ${ x.name }, requiredBy = ${ x.requiredBy }` }</Label>) }
+            itemTemplate={ (x: SampleData) => (
+              <Label key={ x.id } style={({ marginRight: 5 })}>
+                { `name = ${ x.name }, requiredBy = ${ x.requiredBy }` }
+              </Label>
+            ) }
           >
             <Components.WrapPanel />
           </Components.ItemsView>
@@ -492,7 +567,11 @@ export const demoViewMap: ViewActivatorMap = {
         return (
           <Components.ItemsView
             viewModel={ viewModel }
-            itemTemplate={ (x: SampleData) => (<Label key={ x.id } style={({ marginRight: 5 })}>{ `name = ${ x.name }, requiredBy = ${ x.requiredBy }` }</Label>) }
+            itemTemplate={ (x: SampleData) => (
+              <Label key={ x.id } style={({ marginRight: 5 })}>
+                { `name = ${ x.name }, requiredBy = ${ x.requiredBy }` }
+              </Label>
+            ) }
           >
             <Components.StackPanel orientation='Horizontal' />
           </Components.ItemsView>
@@ -576,7 +655,11 @@ export const demoViewMap: ViewActivatorMap = {
               <Components.GridViewColumn header='Id' cellTemplate={ (x: SampleData) => x.id } />
               <Components.GridViewColumn header='Category' cellTemplate={ (x: SampleData) => x.cat } />
               <Components.GridViewColumn header='Name' cellTemplate={ (x: SampleData) => x.name } />
-              <Components.GridViewColumn header='Required By' cellTemplate={ (x: SampleData) => (<div>{ x.requiredBy }</div>) } />
+              <Components.GridViewColumn header='Required By' cellTemplate={
+                (x: SampleData) => (
+                  <div>{ x.requiredBy }</div>
+                ) }
+              />
             </Components.GridView>
           </Components.ListItemsView>
         );
@@ -595,17 +678,41 @@ export const demoViewMap: ViewActivatorMap = {
       </Components.ListItemsView>
     );
   },
-  ModalDialogViewModel: (data: { viewModel: Components.ModalDialogViewModel<string>, createContext: Command<string>, accept: Command<any>, reject: Command<any> }) => (
+  ModalDialogViewModel: (data: {
+    viewModel: Components.ModalDialogViewModel<string>,
+    createContext: Command<string>,
+    accept: Command,
+    reject: Command,
+  }) => (
     <div>
-      <Button onClick={ wxr.bindEventToCommand(data.viewModel, x => data.createContext, () => 'You can put custom content here') }>Show Confirmation Dialog</Button>
+      <Button onClick={
+        wxr.bindEventToCommand(data.viewModel, x => data.createContext, () => 'You can put custom content here')
+      }>
+        Show Confirmation Dialog
+      </Button>
       <Components.ModalDialogView viewModel={ data.viewModel }  bsSize='lg' canClose
         modalTitle='Demo Modal Confirmation Dialog'
         modalBody={ () => (<FormControl type='text' defaultValue={ data.viewModel.context.value } />) }
-        acceptCommand={ data.viewModel.hideOnExecute(data.accept) } acceptCommandParameter={ (x: string) => `something else with ${ x }` }
+        acceptCommand={ data.viewModel.hideOnExecute(data.accept) }
+        acceptCommandParameter={ (x: string) => `something else with ${ x }` }
       >
-        <Components.CommandButton bsStyle='primary' command={ data.viewModel.hideOnExecute(data.accept) } commandParameter={ () => data.viewModel.context.value }>Accept</Components.CommandButton>
-        <Components.CommandButton bsStyle='danger' command={ data.viewModel.hideOnExecute(data.reject) } commandParameter={ () => data.viewModel.context.value }>Reject</Components.CommandButton>
-        <Components.CommandButton bsStyle='default' command={ data.viewModel.hide }>Cancel</Components.CommandButton>
+        <Components.CommandButton bsStyle='primary'
+          command={ data.viewModel.hideOnExecute(data.accept) }
+          commandParameter={ () => data.viewModel.context.value }
+        >
+          Accept
+        </Components.CommandButton>
+        <Components.CommandButton bsStyle='danger'
+          command={ data.viewModel.hideOnExecute(data.reject) }
+          commandParameter={ () => data.viewModel.context.value }
+        >
+          Reject
+        </Components.CommandButton>
+        <Components.CommandButton bsStyle='default'
+          command={ data.viewModel.hide }
+        >
+          Cancel
+        </Components.CommandButton>
       </Components.ModalDialogView>
     </div>
   ),
@@ -638,8 +745,14 @@ export const demoViewMap: ViewActivatorMap = {
     }
   },
   CommonPanel: () => (
-    <Components.CommonPanel headerContent='Common Panel Demo' footerContent='Add Status Content to the Footer' collapsible
-      headerActions={[ { id: 'header-action-1', children: 'Header Button 1' }, { id: 'header-action-2', children: 'Header Button 2' } ]}
+    <Components.CommonPanel
+      headerContent='Common Panel Demo'
+      footerContent='Add Status Content to the Footer'
+      collapsible
+      headerActions={[
+        { id: 'header-action-1', children: 'Header Button 1' },
+        { id: 'header-action-2', children: 'Header Button 2' },
+      ]}
       footerActions={(
         <Components.CommonPanel.Actions>
           <Components.CommandButton children='Footer CommandButton' />
@@ -653,7 +766,10 @@ export const demoViewMap: ViewActivatorMap = {
     </Components.CommonPanel>
   ),
   CommonPanelList: () => (
-    <Components.CommonPanel headerContent='Common Panel Demo' footerContent='Add Status Content to the Footer' collapsible
+    <Components.CommonPanel
+      headerContent='Common Panel Demo'
+      footerContent='Add Status Content to the Footer'
+      collapsible
       headerActions={ (<Components.CommandButton children='Header Action' />) }
       footerActions={ (<Button children='Footer Action' />) }
     >
@@ -665,7 +781,10 @@ export const demoViewMap: ViewActivatorMap = {
     </Components.CommonPanel>
   ),
   CommonPanelTable: () => (
-    <Components.CommonPanel headerContent='Common Panel Demo' footerContent='Add Status Content to the Footer' collapsible
+    <Components.CommonPanel
+      headerContent='Common Panel Demo'
+      footerContent='Add Status Content to the Footer'
+      collapsible
       headerActions={ (<Components.CommandButton children='Header Action' />) }
       footerActions={ (<Button children='Footer Action' />) }
     >
@@ -706,16 +825,32 @@ export const demoViewMap: ViewActivatorMap = {
         Content
       </Components.CommonPanel>
       <Components.CommonPanel style={({ marginTop: 5 })}
+        // tslint:disable-next-line:max-line-length
         headerContent='Long text -- asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf'
+        // tslint:disable-next-line:max-line-length
         footerContent='long header, long footer with buttons -- asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf'
-        headerActions={[ { id: 'header-action-1', children: 'Header Button 1' }, { id: 'header-action-2', children: 'Header Button 2' } ]}
-        footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' }, { id: 'footer-action-2', children: 'Footer Button 2' } ]}
+        headerActions={[
+          { id: 'header-action-1', children: 'Header Button 1' },
+          { id: 'header-action-2', children: 'Header Button 2' },
+        ]}
+        footerActions={[
+          { id: 'footer-action-1', children: 'Footer Button 1' },
+          { id: 'footer-action-2', children: 'Footer Button 2' },
+        ]}
       />
       <Components.CommonPanel style={({ marginTop: 5 })} collapsible
+        // tslint:disable-next-line:max-line-length
         headerContent='Collapsible Long text -- asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf'
+        // tslint:disable-next-line:max-line-length
         footerContent='long collapsible header, long footer with buttons -- asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf'
-        headerActions={[ { id: 'header-action-1', children: 'Header Button 1' }, { id: 'header-action-2', children: 'Header Button 2' } ]}
-        footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' }, { id: 'footer-action-2', children: 'Footer Button 2' } ]}
+        headerActions={[
+          { id: 'header-action-1', children: 'Header Button 1' },
+          { id: 'header-action-2', children: 'Header Button 2' },
+        ]}
+        footerActions={[
+          { id: 'footer-action-1', children: 'Footer Button 1' },
+          { id: 'footer-action-2', children: 'Footer Button 2' },
+        ]}
       >
         Content
       </Components.CommonPanel>
@@ -727,9 +862,20 @@ export const demoViewMap: ViewActivatorMap = {
         return (
           <Components.DataGridView viewModel={ viewModel } pager viewProps={ ({ bordered: false }) }>
             <Components.GridViewColumn field='id' cellTooltipTemplate={ (x: SampleData) => `Item ${ x.id }` } />
-            <Components.GridViewColumn id='cat' header='Category' cellTemplate={ (x: SampleData) => x.cat } headerTooltipTemplate='Simple Header Tooltip' />
-            <Components.GridViewColumn field='requiredBy' header='Required By' cellTooltipTemplate={ (x: SampleData) => (<Components.ContentTooltip content={ `Popover Content for ${ x.name }` } title='Fancy Tooltip' />) } />
-            <Components.GridViewColumn id='name' header='Name' cellTemplate={ (x: SampleData) => (<a href='#'>{ x.name }</a>) } headerTooltipTemplate={(<Components.ContentTooltip content='Fancy Header Popover' popover placement='top' />)} />
+            <Components.GridViewColumn id='cat' header='Category'
+              cellTemplate={ (x: SampleData) => x.cat } headerTooltipTemplate='Simple Header Tooltip'
+            />
+            <Components.GridViewColumn field='requiredBy' header='Required By'
+              cellTooltipTemplate={ (x: SampleData) => (
+                <Components.ContentTooltip content={ `Popover Content for ${ x.name }` } title='Fancy Tooltip' />
+              ) }
+            />
+            <Components.GridViewColumn id='name' header='Name'
+              cellTemplate={ (x: SampleData) => (<a href='#'>{ x.name }</a>) }
+              headerTooltipTemplate={ (
+                <Components.ContentTooltip content='Fancy Header Popover' popover placement='top' />
+              ) }
+            />
             <Components.NavButtonColumn href='#' />
           </Components.DataGridView>
         );
@@ -792,9 +938,19 @@ export const demoViewMap: ViewActivatorMap = {
             footerContent={ (<Components.CountFooterContent count={ viewModel.projectedCount } suffix='Things' />) }
           >
             <Components.GridViewColumn field='id' cellTooltipTemplate={ (x: SampleData) => `Item ${ x.id }` } />
-            <Components.GridViewColumn id='cat' header='Category' cellTemplate={ (x: SampleData) => x.cat } headerTooltipTemplate='Simple Header Tooltip' />
-            <Components.GridViewColumn field='requiredBy' header='Required By' cellTooltipTemplate={ (x: SampleData) => (<Components.ContentTooltip content={ `Popover Content for ${ x.name }` } title='Fancy Tooltip' />) } />
-            <Components.GridViewColumn id='name' header='Name' cellTemplate={ (x: SampleData) => (<a href='#'>{ x.name }</a>) } headerTooltipTemplate={(<Components.ContentTooltip content='Fancy Header Popover' popover placement='top' />)} />
+            <Components.GridViewColumn id='cat' header='Category'
+              cellTemplate={ (x: SampleData) => x.cat } headerTooltipTemplate='Simple Header Tooltip' />
+            <Components.GridViewColumn field='requiredBy' header='Required By'
+              cellTooltipTemplate={ (x: SampleData) => (
+                <Components.ContentTooltip content={ `Popover Content for ${ x.name }` } title='Fancy Tooltip' />
+              ) }
+            />
+            <Components.GridViewColumn id='name' header='Name'
+              cellTemplate={ (x: SampleData) => (<a href='#'>{ x.name }</a>) }
+              headerTooltipTemplate={ (
+                <Components.ContentTooltip content='Fancy Header Popover' popover placement='top' />
+              ) }
+            />
             <Components.NavButtonColumn href='#' />
           </Components.ItemListPanelView>
         );
@@ -832,9 +988,18 @@ export const demoViewMap: ViewActivatorMap = {
       footerContent={ (<Components.CountFooterContent count={ viewModel.projectedCount } suffix='Things' />) }
     >
       <Components.GridViewColumn field='id' cellTooltipTemplate={ (x: SampleData) => `Item ${ x.id }` } />
-      <Components.GridViewColumn id='cat' header='Category' cellTemplate={ (x: SampleData) => x.cat } headerTooltipTemplate='Simple Header Tooltip' />
-      <Components.GridViewColumn field='requiredBy' header='Required By' cellTooltipTemplate={ (x: SampleData) => (<Components.ContentTooltip content={ `Popover Content for ${ x.name }` } title='Fancy Tooltip' />) } />
-      <Components.GridViewColumn id='name' header='Name' cellTemplate={ (x: SampleData) => (<a href='#'>{ x.name }</a>) } headerTooltipTemplate={(<Components.ContentTooltip content='Fancy Header Popover' popover placement='top' />)} />
+      <Components.GridViewColumn id='cat' header='Category'
+        cellTemplate={ (x: SampleData) => x.cat } headerTooltipTemplate='Simple Header Tooltip'
+      />
+      <Components.GridViewColumn field='requiredBy' header='Required By'
+        cellTooltipTemplate={ (x: SampleData) => (
+          <Components.ContentTooltip content={ `Popover Content for ${ x.name }` } title='Fancy Tooltip' />
+        ) }
+      />
+      <Components.GridViewColumn id='name' header='Name'
+        cellTemplate={ (x: SampleData) => (<a href='#'>{ x.name }</a>) }
+        headerTooltipTemplate={ (<Components.ContentTooltip content='Fancy Header Popover' popover placement='top' />) }
+      />
     </Components.ItemListPanelView>
   ),
   AsyncTreeItemListPanelViewModel: (viewModel: Components.AsyncTreeItemListPanelViewModel<{}>) => (
@@ -868,16 +1033,28 @@ export const demoViewMap: ViewActivatorMap = {
     <TodoListView style={({ padding: 20 })} viewModel={ viewModel } shadow />
   ),
   Help: () => {
-    const helpStyle: (top?: number, left?: number, textAlign?: CSS.TextAlignProperty, zIndex?: number) => React.CSSProperties = (top = 0, left = 0, textAlign = 'center', zIndex = 1000) => ({
+    const helpStyle = (
+      top = 0,
+      left = 0,
+      textAlign: CSS.TextAlignProperty = 'center',
+      zIndex = 1000,
+    ) => ({
       display: 'inline-block',
       position: 'absolute',
       textAlign,
       zIndex,
       top,
       left,
-    });
+    } as React.CSSProperties);
 
-    const helpItem = (text: string, top = 0, left = 0, iconName = 'arrow-up', textAlign: CSS.TextAlignProperty = 'center', zIndex = 1000) => (
+    const helpItem = (
+      text: string,
+      top = 0,
+      left = 0,
+      iconName = 'arrow-up',
+      textAlign: CSS.TextAlignProperty = 'center',
+      zIndex = 1000,
+    ) => (
       <div style={ helpStyle(top, left, textAlign, zIndex) }>
         <div>
           <Icon name={ iconName } />

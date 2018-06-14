@@ -18,7 +18,11 @@ export interface ReactSpreadRestrictedProps extends ReactSpreadResultProps {
   ref?: React.Ref<any>;
 }
 
-export interface ReactSpreadResult<P, T, R extends ReactSpreadRestrictedProps> extends RestResult<P, T, R>, ReactSpreadResultProps {
+export interface ReactSpreadResult<
+  P,
+  T,
+  R extends ReactSpreadRestrictedProps,
+> extends RestResult<P, T, R>, ReactSpreadResultProps {
 }
 
 export const reactRestrictedProps: ReactSpreadRestrictedProps = {
@@ -43,7 +47,7 @@ export function restPropsStatic<P, T, R extends ReactSpreadRestrictedProps = Rea
   restrictedProps?: R,
 ): ReactSpreadResult<P, T, R> {
   if (restrictedProps == null) {
-    restrictedProps = <R>reactRestrictedProps;
+    restrictedProps = reactRestrictedProps as R;
   }
 
   const result = Object.rest(props, propsCreator, restrictedProps);
@@ -114,5 +118,5 @@ React.Component.prototype.trimProps = trimPropsStatic;
 React.Component.prototype.restProps = restProps;
 React.Component.trimProps = trimPropsStatic;
 React.Component.restProps = restPropsStatic;
-(<any>React).isType = isTypeStatic;
-(<any>React).isValidType = isValidTypeStatic;
+(React as any).isType = isTypeStatic;
+(React as any).isValidType = isValidTypeStatic;

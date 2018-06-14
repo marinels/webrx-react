@@ -2,20 +2,20 @@
 // tslint:disable no-shadowed-variable
 
 import { Iterable } from 'ix';
-import { Subscription, TeardownLogic } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import { PartialObserver } from 'rxjs/Observer';
 import { IScheduler } from 'rxjs/Scheduler';
+import { Subscription, TeardownLogic } from 'rxjs/Subscription';
 
 import { Command, Property } from './Interfaces';
-import { isSubscription } from './Utils';
 import { property } from './Property';
+import { isSubscription } from './Utils';
 
 export function filterNullIterable<TFiltered>(
   this: Iterable<TFiltered | undefined | null>,
   callbackfn?: (value: TFiltered, index: number) => boolean,
 ): Iterable<TFiltered> {
-  return (<Iterable<TFiltered>>this)
+  return (this as Iterable<TFiltered>)
     .filter((x, i) => {
       if (x == null) {
         return false;
@@ -31,7 +31,7 @@ export function addSubscription<T extends TeardownLogic>(this: Subscription, sub
   return subscription;
 }
 
-export function addSubscriptions<T extends TeardownLogic>(this: Subscription, ...subscriptions: T[]): Array<T> {
+export function addSubscriptions<T extends TeardownLogic>(this: Subscription, ...subscriptions: T[]): T[] {
   return subscriptions
     .map(x => this.addSubscription(x));
 }
@@ -40,7 +40,7 @@ export function unsubscribeStatic<T>(subscription: T, unsubscribedValue?: T): T 
   if (isSubscription(subscription)) {
     subscription.unsubscribe();
 
-    return unsubscribedValue || <any>Subscription.EMPTY;
+    return unsubscribedValue || Subscription.EMPTY as any;
   }
 
   return subscription;
@@ -50,7 +50,7 @@ export function filterNullObservable<T>(
   this: Observable<T | undefined | null>,
   callbackfn?: (value: T, index: number) => boolean,
 ): Observable<T> {
-  return (<Observable<T>>this)
+  return (this as Observable<T>)
     .filter((x, i) => {
       if (x == null) {
         return false;

@@ -1,12 +1,12 @@
-import { should, sandbox, sinon } from '../setup';
-import { Alert, Default as AlertDefault, create, createForError } from '../../src/Utils/Alert';
-import { PubSub, Default as PubSubDefault } from '../../src/Utils/PubSub';
-import { AlertCreatedKey, AlertCreated } from '../../src/Events/AlertCreated';
+import { AlertCreated, AlertCreatedKey } from '../../src/Events/AlertCreated';
+import { Alert, create, createForError, Default as AlertDefault } from '../../src/Utils/Alert';
+import { Default as PubSubDefault, PubSub } from '../../src/Utils/PubSub';
+import { sandbox, should, sinon } from '../setup';
 
 describe('Utils', () => {
   describe('Alert', () => {
-    const mock = <{ publish: sinon.SinonStub }>{};
-    const pubSub = <PubSub><any>mock;
+    const mock = {} as { publish: sinon.SinonStub };
+    const pubSub = mock as any as PubSub;
 
     describe('create', () => {
       it('publishes alerts with only content', () => {
@@ -69,7 +69,7 @@ describe('Utils', () => {
     describe('Default', () => {
       it('is a default alert instance that uses the default PubSub', () => {
         should.exist(AlertDefault);
-        (<any>AlertDefault).pubSub.should.equal(PubSubDefault);
+        (AlertDefault as any).pubSub.should.equal(PubSubDefault);
       });
     });
 

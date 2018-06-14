@@ -1,12 +1,14 @@
 import { Iterable } from 'ix';
 import { Observable } from 'rxjs';
 
-import { IterableLike, ObservableOrValue, ObservableLike } from '../../../WebRx';
-import { RoutingStateHandler, HandlerRoutingStateChanged } from '../../React';
-import { DataGridViewModel, DataSourceRequest, DataSourceResponse, DataGridRoutingState } from '../DataGrid/DataGridViewModel';
-import { SearchViewModel, SearchRequest, SearchRoutingState } from '../Search/SearchViewModel';
 import { ObjectComparer } from '../../../Utils/Compare';
+import { IterableLike, ObservableLike, ObservableOrValue } from '../../../WebRx';
+import { HandlerRoutingStateChanged, RoutingStateHandler } from '../../React';
+import {
+  DataGridRoutingState, DataGridViewModel, DataSourceRequest, DataSourceResponse,
+} from '../DataGrid/DataGridViewModel';
 import { PagerViewModel } from '../Pager/PagerViewModel';
+import { SearchRequest, SearchRoutingState, SearchViewModel } from '../Search/SearchViewModel';
 
 export interface ItemListPanelRequestContext {
   search?: SearchRequest;
@@ -18,7 +20,13 @@ export interface ItemListPanelRoutingState extends DataGridRoutingState {
   search?: SearchRoutingState;
 }
 
-export class ItemListPanelViewModel<T, TRequestContext = any> extends DataGridViewModel<T, ItemListPanelContext<TRequestContext>> implements RoutingStateHandler<ItemListPanelRoutingState> {
+export class ItemListPanelViewModel<
+  T,
+  TRequestContext = any,
+> extends DataGridViewModel<
+  T,
+  ItemListPanelContext<TRequestContext>
+> implements RoutingStateHandler<ItemListPanelRoutingState> {
   public static displayName = 'ItemListPanelViewModel';
 
   protected static getItemListPanelSearch(search: SearchViewModel | undefined | null) {
@@ -50,7 +58,7 @@ export class ItemListPanelViewModel<T, TRequestContext = any> extends DataGridVi
 
     if (context == null) {
       // no custom context supplied so just use the standard item list panel context
-      return <Observable<ItemListPanelContext<TRequestContext>>>itemListPanelContext;
+      return itemListPanelContext as Observable<ItemListPanelContext<TRequestContext>>;
     }
 
     return this.wx
@@ -144,7 +152,10 @@ export class ItemListPanelViewModel<T, TRequestContext = any> extends DataGridVi
     super.applyRoutingState(state);
   }
 
-  getResponseFromItems(items: Iterable<T>, request: DataSourceRequest<ItemListPanelContext<TRequestContext>>): ObservableOrValue<DataSourceResponse<T> | undefined> {
+  getResponseFromItems(
+    items: Iterable<T>,
+    request: DataSourceRequest<ItemListPanelContext<TRequestContext>>,
+  ): ObservableOrValue<DataSourceResponse<T> | undefined> {
     // if no filterer was defined then just return default response
     if (this.filterer == null) {
       return super.getResponseFromItems(items, request);

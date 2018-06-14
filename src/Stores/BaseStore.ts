@@ -1,9 +1,11 @@
-import { Observable, Subscription, AjaxRequest } from 'rxjs';
+// tslint:disable:max-classes-per-file
 
-import { Logger, getLogger } from '../Utils/Logging';
-import { wx, WebRxStatic } from '../WebRx';
-import { SampleDataCreator, StoreApi } from './Interfaces';
+import { AjaxRequest, Observable, Subscription } from 'rxjs';
+
+import { getLogger, Logger } from '../Utils/Logging';
+import { WebRxStatic, wx } from '../WebRx';
 import { isStoreApi } from './Helpers';
+import { SampleDataCreator, StoreApi } from './Interfaces';
 import { ObservableApi } from './ObservableApi';
 
 export class BaseStore extends Subscription {
@@ -15,7 +17,12 @@ export class BaseStore extends Subscription {
 
   constructor(path: string, base?: string, sampleData?: SampleDataCreator, unsubscribe?: () => void);
   constructor(api: StoreApi, unsubscribe?: () => void);
-  constructor(pathOrApi: string | StoreApi, baseOrUnsubscribe?: string | (() => void), sampleData?: SampleDataCreator, unsubscribe?: () => void) {
+  constructor(
+    pathOrApi: string | StoreApi,
+    baseOrUnsubscribe?: string | (() => void),
+    sampleData?: SampleDataCreator,
+    unsubscribe?: () => void,
+  ) {
     unsubscribe = baseOrUnsubscribe instanceof Function ? baseOrUnsubscribe : unsubscribe;
     const base = String.isString(baseOrUnsubscribe) ? baseOrUnsubscribe : undefined;
 
@@ -36,12 +43,23 @@ export class BaseStore extends Subscription {
     this.logger.debug('Store Created');
   }
 
-  protected getObservable<T = any>(action: string, params?: any, options?: AjaxRequest, baseUri?: string): Observable<T> {
+  protected getObservable<T = any>(
+    action: string,
+    params?: any,
+    options?: AjaxRequest,
+    baseUri?: string,
+  ): Observable<T> {
     return this.api
       .getObservable<T>(action, params, options, baseUri);
   }
 
-  protected postObservable<T = any>(action: string, data?: any, params?: any, options?: AjaxRequest, baseUri?: string): Observable<T> {
+  protected postObservable<T = any>(
+    action: string,
+    data?: any,
+    params?: any,
+    options?: AjaxRequest,
+    baseUri?: string,
+  ): Observable<T> {
     return this.api
       .postObservable<T>(action, data, params, options, baseUri);
   }

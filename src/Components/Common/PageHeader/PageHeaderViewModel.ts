@@ -1,10 +1,10 @@
 import { Observable, Subscription } from 'rxjs';
 
-import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
+import { Command, Property, ReadOnlyProperty } from '../../../WebRx';
 import {
-  BaseViewModel, Search,
-  BaseRoutableViewModel, isRoutableViewModel,
-  HeaderAction, HeaderCommandAction, HeaderMenu, isHeaderCommandAction } from '../../React';
+  BaseRoutableViewModel,
+  BaseViewModel, HeaderAction,
+  HeaderCommandAction, HeaderMenu, isHeaderCommandAction, isRoutableViewModel } from '../../React';
 import { RouteHandlerViewModel } from '../RouteHandler/RouteHandlerViewModel';
 
 export class PageHeaderViewModel extends BaseViewModel {
@@ -12,7 +12,7 @@ export class PageHeaderViewModel extends BaseViewModel {
 
   private dynamicSubscriptions = Subscription.EMPTY;
 
-  public search: Search | undefined;
+  public search: {} | undefined;
 
   public readonly sidebarMenus: Property<HeaderMenu[]>;
   public readonly navbarMenus: Property<HeaderMenu[]>;
@@ -23,7 +23,7 @@ export class PageHeaderViewModel extends BaseViewModel {
   public readonly isSidebarVisible: ReadOnlyProperty<boolean>;
 
   public readonly menuItemSelected: Command<HeaderCommandAction>;
-  public readonly menuItemChanged: Command<any>;
+  public readonly menuItemChanged: Command;
   public readonly toggleSideBar: Command<boolean>;
 
   constructor(
@@ -100,7 +100,7 @@ export class PageHeaderViewModel extends BaseViewModel {
   }
 
   public updateDynamicContent() {
-    let component = this.routeHandler.routedComponent.value;
+    const component = this.routeHandler.routedComponent.value;
 
     this.logger.debug('Updating Page Header Dynamic Content', component);
 
@@ -123,14 +123,19 @@ export class PageHeaderViewModel extends BaseViewModel {
     this.addItems(this.userMenuItems, this.staticUserMenuItems, component, x => x.getUserMenuItems);
   }
 
-  private addItems<T extends HeaderAction>(list: Property<T[]>, staticItems: T[], component?: any, delegateSelector?: (viewModel: BaseRoutableViewModel<any>) => (() => T[])) {
+  private addItems<T extends HeaderAction>(
+    list: Property<T[]>,
+    staticItems: T[],
+    component?: any,
+    delegateSelector?: (viewModel: BaseRoutableViewModel<any>,
+  ) => (() => T[])) {
     let routedItems: T[] | undefined;
 
     // interrogate the routed component for items from the delegate selector
     if (delegateSelector != null && isRoutableViewModel(component)) {
-      let selector = delegateSelector(component);
+      const selector = delegateSelector(component);
       if (selector != null) {
-        routedItems = <T[]>selector.apply(component);
+        routedItems = selector.apply(component) as T[];
       }
     }
 

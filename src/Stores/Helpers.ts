@@ -1,8 +1,8 @@
-import { Observable, AjaxRequest, AjaxError } from 'rxjs';
 import param = require('jquery-param');
+import { AjaxError, AjaxRequest, Observable } from 'rxjs';
 
-import { Logging } from '../Utils';
 import { getWindowLocation } from '../Routing';
+import { Logging } from '../Utils';
 import { HttpRequestMethod, ObservableApiError, StoreApi } from './Interfaces';
 
 export function sanitizeUri(uri: string) {
@@ -149,7 +149,15 @@ export let defaultHeaders = {
   'Content-Type': 'application/json',
 };
 
-export function getRequest<T>(action: string, url: string, logger: Logging.Logger, method = HttpRequestMethod.GET, params?: any, data?: any, options?: AjaxRequest) {
+export function getRequest<T>(
+  action: string,
+  url: string,
+  logger: Logging.Logger,
+  method = HttpRequestMethod.GET,
+  params?: any,
+  data?: any,
+  options?: AjaxRequest,
+) {
   logger.debug(`getRequest: [${ method }] ${ action }`, { url, params, data, options });
 
   url = getUriFromParams(url, params);
@@ -168,7 +176,7 @@ export function getRequest<T>(action: string, url: string, logger: Logging.Logge
 
   return Observable
     .ajax(options)
-    .map(x => <T>x.response)
+    .map(x => x.response as T)
     .do(x => {
       logger.info(`API  Result: ${ action } (${ url })`, x);
     })

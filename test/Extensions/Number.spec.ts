@@ -49,7 +49,7 @@ describe('Number Extensions', () => {
     });
 
     it('acts as a type guard for a non-numeric value', () => {
-      let val: any = 123;
+      const val: any = 123;
 
       Number.isNumber(val) && val.toFixed(1).should.eql('123.0');
     });

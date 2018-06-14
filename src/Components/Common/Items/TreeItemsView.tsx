@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import { ItemsProps, ItemsViewProps, ItemsView } from './ItemsView';
-import { TreeItemFacadeProps, TreeItem } from './TreeItem';
+import { ItemsProps, ItemsView, ItemsViewProps } from './ItemsView';
+import { TreeItem, TreeItemFacadeProps } from './TreeItem';
 
 export interface TreeItemsProps extends ItemsProps, TreeItemFacadeProps {
 }
@@ -15,8 +15,16 @@ export class TreeItemsView extends React.Component<TreeItemsViewProps> {
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, overrideExpanded, expandedIconName, collapsedIconName, clickToExpand, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent } = x;
-      return { itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, overrideExpanded, expandedIconName, collapsedIconName, clickToExpand, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent };
+      const {
+        itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, overrideExpanded,
+        expandedIconName, collapsedIconName, clickToExpand, viewTemplate, itemsPanelTemplate, itemTemplate,
+        itemClassName, itemStyle, itemProps, compact, emptyContent,
+      } = x;
+      return {
+        itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, overrideExpanded,
+        expandedIconName, collapsedIconName, clickToExpand, viewTemplate, itemsPanelTemplate, itemTemplate,
+        itemClassName, itemStyle, itemProps, compact, emptyContent,
+      };
     });
 
     return (

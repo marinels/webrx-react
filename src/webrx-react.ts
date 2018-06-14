@@ -20,15 +20,15 @@ getLogger('webrx-react').info(`Initializing webrx-react (v${ version })`);
 
 // import webrx-react helper submodules
 import * as Events from './Events';
-import { Logging, PubSub, Alert, Compare, Moment } from './Utils';
+import { Alert, Compare, Logging, Moment, PubSub } from './Utils';
 
 // import WebRx framework
 import * as wx from './WebRx';
 
 // import webrx-react framework submodules
+import * as Components from './Components';
 import * as Routing from './Routing';
 import * as Stores from './Stores';
-import * as Components from './Components';
 
 // export everything
 export { version, wx, Logging, PubSub, Alert, Compare, Moment };

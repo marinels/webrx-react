@@ -1,9 +1,9 @@
 import * as React from 'react';
 
-import { PanelItemContext } from '../Panel/Panel';
 import { ItemsProps } from '../Items/ItemsView';
-import { SelectableListItem, SelectedPropsFunction } from './SelectableListItem';
+import { PanelItemContext } from '../Panel/Panel';
 import { ListItemsViewModel } from './ListItemsViewModel';
+import { SelectableListItem, SelectedPropsFunction } from './SelectableListItem';
 
 export interface ListItemsViewTemplateProps<T = {}, TContext extends PanelItemContext = PanelItemContext> {
   /**

@@ -1,14 +1,14 @@
 import { Iterable } from 'ix';
 
-export function asIterable<T>(this: Array<T>): Iterable<T> {
+export function asIterable<T>(this: T[]): Iterable<T> {
   return Iterable.from(this);
 }
 
 export function filterNull<T>(
   this: Array<T | undefined | null>,
   callbackfn?: (value: T, index: number, array: Array<T | undefined | null>) => boolean,
-): Array<T> {
-  return (<Array<T>>this)
+): T[] {
+  return (this as T[])
     .filter((x, i, a) => {
       if (x == null) {
         return false;

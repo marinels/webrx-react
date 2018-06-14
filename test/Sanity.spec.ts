@@ -1,6 +1,6 @@
-import { Observable, BehaviorSubject, TestScheduler } from 'rxjs';
+import { BehaviorSubject, Observable, TestScheduler } from 'rxjs';
 
-import { should, sandbox } from './setup';
+import { sandbox, should } from './setup';
 
 describe('Sanity Tests', () => {
   describe('for mocha', () => {
@@ -35,7 +35,7 @@ describe('Sanity Tests', () => {
 
     it('can create spys', () => {
       const obj = {
-        fn: function(arg: string) {
+        fn: (arg: string) => {
           return arg;
         },
       };

@@ -1,7 +1,7 @@
-import { wx, WebRxStatic } from '../../WebRx';
 import { Alert } from '../../Utils';
-import { Logger, getLogger } from '../../Utils/Logging';
-import { SampleDataStore, SampleDataAction, SampleDataActionSet } from '../Interfaces';
+import { getLogger, Logger } from '../../Utils/Logging';
+import { WebRxStatic, wx } from '../../WebRx';
+import { SampleDataAction, SampleDataActionSet, SampleDataStore } from '../Interfaces';
 
 export abstract class BaseSampleDataStore implements SampleDataStore {
   public static displayName = 'BaseSampleDataStore';

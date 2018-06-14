@@ -1,5 +1,5 @@
-import './Object';
-import './String';
-import './Number';
 import './Array';
+import './Number';
+import './Object';
 import './React';
+import './String';

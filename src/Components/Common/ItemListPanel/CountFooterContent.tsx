@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Subscription } from 'rxjs';
 import { Badge } from 'react-bootstrap';
+import { Subscription } from 'rxjs';
 
 import { ObservableLike } from '../../../WebRx';
 

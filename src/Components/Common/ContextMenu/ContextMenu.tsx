@@ -1,14 +1,13 @@
+// tslint:disable:max-classes-per-file
+
 import * as React from 'react';
-import { Overlay, Popover, MenuItemProps, PopoverProps } from 'react-bootstrap';
+import { MenuItemProps, Overlay, Popover, PopoverProps } from 'react-bootstrap';
 
 export interface ContextMenuProps {
   key?: string | number;
   id: string;
   header?: string;
   onSelect?: (item: MenuItemProps) => void;
-}
-
-export interface ContextMenuComponentProps extends ContextMenuProps {
 }
 
 export interface ContextMenuState {
@@ -36,10 +35,10 @@ class ContextMenuContainer extends React.Component<PopoverProps> {
 
 const ArrowOffset = 20;
 
-export class ContextMenu extends React.Component<ContextMenuComponentProps, ContextMenuState> {
+export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuState> {
   public static displayName = 'ContextMenu';
 
-  constructor(props: ContextMenuComponentProps, context?: any) {
+  constructor(props: any, context?: any) {
     super(props, context);
 
     this.state = {
