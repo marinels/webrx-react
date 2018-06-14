@@ -1,12 +1,15 @@
 import * as React from 'react';
 
-import { PanelView } from './PanelView';
 import { ItemsPresenter } from '../Items/ItemsPresenter';
-import { ListItemsViewTemplate, ListItemsViewTemplateProps } from './ListItemsViewTemplate';
 import { ListGroupPanel } from '../Panel/ListGroupPanel';
 import { PanelItemContext } from '../Panel/Panel';
+import { ListItemsViewTemplate, ListItemsViewTemplateProps } from './ListItemsViewTemplate';
+import { PanelView } from './PanelView';
 
-export interface ListGroupViewProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ListItemsViewTemplateProps<T, TContext> {
+export interface ListGroupViewProps<
+  T = {},
+  TContext extends PanelItemContext = PanelItemContext,
+> extends ListItemsViewTemplateProps<T, TContext> {
   fill?: boolean;
 }
 
@@ -33,7 +36,11 @@ export class ListGroupView extends ListItemsViewTemplate<ListGroupViewComponentP
     );
   }
 
-  protected renderListItemPanel(itemTemplates: Array<React.ReactNode>, itemsPresenter: ItemsPresenter, items: Array<{}> | undefined) {
+  protected renderListItemPanel(
+    itemTemplates: React.ReactNode[],
+    itemsPresenter: ItemsPresenter,
+    items: Array<{}> | undefined,
+  ) {
     return (
       <ListGroupPanel fill={ this.props.fill }>
         { itemTemplates }

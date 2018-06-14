@@ -7,9 +7,9 @@ export * from './Adapters/Delegate';
 export * from './Adapters/Console';
 
 // export helper functions
+import { Default as defaultLogManager } from './Adapters/Console';
 import { LogLevel } from './LogLevel';
 import { LogManager } from './LogManager';
-import { Default as defaultLogManager } from './Adapters/Console';
 
 let manager: LogManager;
 

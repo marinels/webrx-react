@@ -14,13 +14,15 @@ export type PanelFragment = React.ReactNode;
  * panel item prop can be statically assigned or dynamically determined
  * based on a provided item context
  */
-export type PanelItemProp<TValue, TContext extends PanelItemContext = PanelItemContext> = TValue | ((context: TContext) => TValue);
+export type PanelItemProp<TValue, TContext extends PanelItemContext = PanelItemContext> =
+  TValue | ((context: TContext) => TValue);
 
 /**
  * panel items can be wrapped in a different component
  * this allows composing new items with an existing panel
  */
-export type PanelItemTemplate<TContext extends PanelItemContext = PanelItemContext> = (fragment: PanelFragment, context: TContext) => PanelFragment;
+export type PanelItemTemplate<TContext extends PanelItemContext = PanelItemContext> =
+  (fragment: PanelFragment, context: TContext) => PanelFragment;
 
 /**
  * panel item props allow component to inject props to the rendered
@@ -59,7 +61,10 @@ export interface PanelRenderProps {
   emptyContent?: PanelFragment;
 }
 
-export interface PanelProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends PanelItemProps<T, TContext>, PanelTemplateProps<TContext>, PanelRenderProps {
+export interface PanelProps<
+  T = {},
+  TContext extends PanelItemContext = PanelItemContext,
+> extends PanelItemProps<T, TContext>, PanelTemplateProps<TContext>, PanelRenderProps {
   fill?: boolean;
 }
 
@@ -68,7 +73,10 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
 
   public static defaultComponentClass = 'div';
 
-  public static getPanelItemPropValue<TValue, TContext extends PanelItemContext>(prop: (PanelItemProp<TValue, TContext>) | undefined, context: TContext) {
+  public static getPanelItemPropValue<TValue, TContext extends PanelItemContext>(
+    prop: (PanelItemProp<TValue, TContext>) | undefined,
+    context: TContext,
+  ) {
     if (prop instanceof Function) {
       return prop(context);
     }
@@ -76,7 +84,7 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
     return prop;
   }
 
-  protected renderPanel(panelClassName?: string, panelProps?: PanelProps, componentClass?: React.ReactType): JSX.Element {
+  protected renderPanel(panelClassName?: string, panelProps?: PanelProps, componentClass?: React.ReactType) {
     const { className, children, props, rest } = React.Component.restProps(panelProps || this.props, x => {
       const { itemClassName, itemStyle, itemProps, itemTemplate, compact, emptyContent } = x;
       return { itemClassName, itemStyle, itemProps, itemTemplate, compact, emptyContent };
@@ -85,7 +93,7 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
     const Component = componentClass || Panel.defaultComponentClass;
     const componentClassName = this.wxr.classNames(
       'Panel',
-      { 'compact': props.compact },
+      { compact: props.compact },
       panelClassName,
       className,
     );
@@ -149,7 +157,10 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
   ): PanelFragment {
     if (itemTemplate) {
       const key = this.getItemKey(itemTemplate, context.index);
-      const className = this.wxr.classNames('Panel-Item', Panel.getPanelItemPropValue(this.props.itemClassName, context));
+      const className = this.wxr.classNames(
+        'Panel-Item',
+        Panel.getPanelItemPropValue(this.props.itemClassName, context),
+      );
       const style = Panel.getPanelItemPropValue(this.props.itemStyle, context);
       const props: {} | undefined = Panel.getPanelItemPropValue(this.props.itemProps, context) || {};
 

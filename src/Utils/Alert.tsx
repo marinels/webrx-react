@@ -1,9 +1,9 @@
 import * as React from 'react';
 
+import { AlertCreated, AlertCreatedKey } from '../Events';
 import '../Extensions/String';
 import { getLogger } from './Logging';
-import { PubSub, Default as PubSubInstance } from './PubSub';
-import { AlertCreatedKey, AlertCreated } from '../Events';
+import { Default as PubSubInstance, PubSub } from './PubSub';
 
 export class Alert {
   private static displayName = 'Alert';
@@ -19,7 +19,14 @@ export class Alert {
     }
   }
 
-  public createForError<TError>(error: TError, header?: string, style = 'danger', timeout?: number, formatter?: (e: TError) => any, logErrorObject = false) {
+  public createForError<TError>(
+    error: TError,
+    header?: string,
+    style = 'danger',
+    timeout?: number,
+    formatter?: (e: TError) => any,
+    logErrorObject = false,
+  ) {
     if (error != null) {
       let content: any;
       let text: string | undefined;
@@ -36,7 +43,7 @@ export class Alert {
           code = childError.status || childError.Status || childError.code || childError.Code;
         }
 
-        let reason = anyError.reason || anyError.Reason;
+        const reason = anyError.reason || anyError.Reason;
         if (code == null && childError != null) {
           code = childError.reason || childError.Reason;
         }
@@ -54,7 +61,9 @@ export class Alert {
           messageDetail = childError.messageDetail || childError.MessageDetail;
         }
 
-        text = `${ String.isNullOrEmpty(code) ? '' : `Error ${ code }: ` }${ String.isNullOrEmpty(reason) ? '' : `(${ reason }): ` }${ message || String.stringify(error) }`;
+        const codeText = String.isNullOrEmpty(code) ? '' : `Error ${ code }: `;
+        const reasonText = String.isNullOrEmpty(reason) ? '' : `(${ reason }): `;
+        text = `${ codeText }${ reasonText }${ message || String.stringify(error) }`;
         header = header || reason || 'Unknown Error';
 
         let uri = anyError.uri || anyError.Uri || anyError.url || anyError.Url;
@@ -139,7 +148,13 @@ export function create(content: any, header?: string, style?: string, timeout?: 
 
 export type AlertCreator = typeof create;
 
-export function createForError<TError>(error: TError, header?: string, style?: string, timeout?: number, formatter?: (e: TError) => any) {
+export function createForError<TError>(
+  error: TError,
+  header?: string,
+  style?: string,
+  timeout?: number,
+  formatter?: (e: TError) => any,
+) {
   Default.createForError(error, header, style, timeout, formatter);
 }
 

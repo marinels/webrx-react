@@ -1,15 +1,15 @@
+import * as classNamesFunc from 'classnames';
+import { Iterable } from 'ix';
 import * as React from 'react';
 import { findDOMNode } from 'react-dom';
-import { Iterable } from 'ix';
-import * as classNamesFunc from 'classnames';
 
-import { Property, IterableLike } from '../../WebRx';
-import { ValueComparison, ValueComparer } from '../../Utils/Compare';
+import { ValueComparer, ValueComparison } from '../../Utils/Compare';
+import { IterableLike, Property } from '../../WebRx';
 
 export function renderIterable<T>(
   source: IterableLike<T> | undefined,
-  selector: (item: T, index: number, items: Array<T>) => React.ReactNode = item => item,
-  projector: (items: Array<React.ReactNode>) => React.ReactNode = items => items,
+  selector: (item: T, index: number, items: T[]) => React.ReactNode = item => item,
+  projector: (items: React.ReactNode[]) => React.ReactNode = items => items,
   sortKey?: (item: T) => any,
   sortComparer: ValueComparison<T> = ValueComparer.DefaultComparison,
   defaultSelector: () => T | undefined = () => undefined,

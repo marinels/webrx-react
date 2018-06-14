@@ -1,10 +1,10 @@
-import { Observable, AjaxRequest } from 'rxjs';
+import { AjaxRequest, Observable } from 'rxjs';
 
-import { wx, WebRxStatic } from '../WebRx';
-import { Logger, getLogger } from '../Utils/Logging';
 import { getWindowLocation, joinPath } from '../Routing';
-import { HttpRequestMethod, SampleDataStore, SampleDataApi, SampleDataCreator, StoreApi } from './Interfaces';
+import { getLogger, Logger } from '../Utils/Logging';
+import { WebRxStatic, wx } from '../WebRx';
 import { getRequest } from './Helpers';
+import { HttpRequestMethod, SampleDataApi, SampleDataCreator, SampleDataStore, StoreApi } from './Interfaces';
 
 export class ObservableApi implements StoreApi {
   public static displayName = 'ObservableApi';
@@ -21,7 +21,7 @@ export class ObservableApi implements StoreApi {
   constructor(path: string, sampleData?: SampleDataCreator);
   constructor(path: string, base?: string, sampleData?: SampleDataCreator)
   constructor(path: string, baseOrSampleData?: string | SampleDataCreator, sampleDataCreator?: SampleDataCreator) {
-    const windowLocation = getWindowLocation() || <Location>{};
+    const windowLocation = getWindowLocation() || {} as Location;
 
     this.logger = getLogger(ObservableApi.displayName);
     this.wx = wx;
@@ -68,7 +68,14 @@ export class ObservableApi implements StoreApi {
     return joinPath(action, baseUri || this.baseUri);
   }
 
-  public observe<T>(action: string, params?: any, data?: any, method?: HttpRequestMethod, options?: AjaxRequest, baseUri?: string) {
+  public observe<T>(
+    action: string,
+    params?: any,
+    data?: any,
+    method?: HttpRequestMethod,
+    options?: AjaxRequest,
+    baseUri?: string,
+  ) {
     const sampleData = this.getSampleData();
 
     return Observable

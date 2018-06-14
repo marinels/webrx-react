@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Icon, IconSize } from 'react-fa';
 import { ButtonProps } from 'react-bootstrap';
+import { Icon, IconSize } from 'react-fa';
 
 import { CommandButton, CommandButtonProps } from '../CommandButton/CommandButton';
 

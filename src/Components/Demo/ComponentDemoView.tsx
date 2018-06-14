@@ -1,15 +1,13 @@
-import * as React from 'react';
 import { Iterable } from 'ix';
-import { Grid, Row, Col, PageHeader, DropdownButton, MenuItem, Alert } from 'react-bootstrap';
+import * as React from 'react';
+import { Alert, Col, DropdownButton, Grid, MenuItem, PageHeader, Row } from 'react-bootstrap';
 
 import { BaseView, BaseViewProps } from '../React';
 import { ComponentDemoViewModel } from './ComponentDemoViewModel';
 
 import './ComponentDemo.less';
 
-export interface ViewActivator {
-  (component: any, componentRoute: string | undefined): any;
-}
+export type ViewActivator = (component: any, componentRoute: string | undefined) => any;
 
 export interface ViewActivatorMap {
   [key: string]: ViewActivator;
@@ -110,7 +108,11 @@ export class ComponentDemoView extends BaseView<ComponentDemoViewProps, Componen
     if (view == null) {
       view = (
         <Alert bsStyle='danger'>
-          { component == null ? `No Component for ${ this.viewModel.componentRoute.value }` : `No View Mapped for ${ componentName }`}
+          {
+            component == null ?
+              `No Component for ${ this.viewModel.componentRoute.value }` :
+              `No View Mapped for ${ componentName }`
+          }
         </Alert>
       );
     }

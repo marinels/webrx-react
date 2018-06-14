@@ -1,3 +1,5 @@
+// tslint:disable:max-classes-per-file
+
 import { should } from '../setup';
 
 import '../../src/Extensions/String';
@@ -5,27 +7,28 @@ import '../../src/Extensions/String';
 describe('String Extensions', () => {
   describe('String.IsNullOrEmpty', () => {
     it('Returns true when a string is undefined', () => {
+      // tslint:disable-next-line:prefer-const
       let str: string | undefined;
       String.isNullOrEmpty(str).should.be.true;
     });
 
     it('Returns true when a string is null', () => {
-      let str: string | null = null;
+      const str: string | null = null;
       String.isNullOrEmpty(str).should.be.true;
     });
 
     it('Returns true when a string is empty', () => {
-      let str: string = '';
+      const str: string = '';
       String.isNullOrEmpty(str).should.be.true;
     });
 
     it('Returns true when a string is empty', () => {
-      let str: string = '';
+      const str: string = '';
       String.isNullOrEmpty(str).should.be.true;
     });
 
     it('Returns false when a string is non-empty', () => {
-      let str: string = 'asdf';
+      const str: string = 'asdf';
       String.isNullOrEmpty(str).should.be.false;
     });
   });

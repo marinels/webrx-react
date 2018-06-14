@@ -1,7 +1,7 @@
-import { Observable, Subject, BehaviorSubject, Scheduler, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Scheduler, Subject, Subscription } from 'rxjs';
 
-import { should } from './setup';
 import { wx } from '../src/WebRx';
+import { should } from './setup';
 
 describe('WebRx', () => {
   describe('observable properties', () => {
@@ -254,7 +254,7 @@ describe('WebRx', () => {
       let isExecuting = false;
 
       const cmd = wx.command(() => {
-        isExecuting = (<any>cmd).isExecutingSubject.getValue();
+        isExecuting = (cmd as any).isExecutingSubject.getValue();
       });
 
       cmd.execute();

@@ -1,9 +1,9 @@
-import { Observable } from  'rxjs';
 import * as clone from 'clone';
+import { Observable } from 'rxjs';
 
+import { getLogger, Logger } from '../../Utils/Logging';
 import { wx } from '../../WebRx';
-import { Logger, getLogger } from '../../Utils/Logging';
-import { SampleDataStore, SampleDataApi, SampleDataActionSet, SampleDataAction } from '../Interfaces';
+import { SampleDataAction, SampleDataActionSet, SampleDataApi, SampleDataStore } from '../Interfaces';
 
 export class ObservableSampleDataApi implements SampleDataApi {
   public static displayName = 'ObservableSampleDataApi';
@@ -14,9 +14,9 @@ export class ObservableSampleDataApi implements SampleDataApi {
   protected readonly actions: SampleDataActionSet;
   protected readonly delay: number;
 
-  constructor(...stores: Array<SampleDataStore>);
-  constructor(delay: number, ...stores: Array<SampleDataStore>);
-  constructor(arg1: number | SampleDataStore, ...stores: Array<SampleDataStore>) {
+  constructor(...stores: SampleDataStore[]);
+  constructor(delay: number, ...stores: SampleDataStore[]);
+  constructor(arg1: number | SampleDataStore, ...stores: SampleDataStore[]) {
     this.stores = {};
     this.actions = {};
 
@@ -88,7 +88,7 @@ export class ObservableSampleDataApi implements SampleDataApi {
       return undefined;
     }
 
-    const value = selector(<TStore>store);
+    const value = selector(store as TStore);
 
     return value == null ?
       undefined :

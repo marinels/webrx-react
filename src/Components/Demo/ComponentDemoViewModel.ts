@@ -1,16 +1,16 @@
+// tslint:disable:max-classes-per-file
+
 import { Observable } from 'rxjs';
 
-import { ReadOnlyProperty, Command } from '../../WebRx';
 import { Route } from '../../Routing';
-import {
-  HeaderCommandAction, HeaderMenu, HandlerRoutingStateChanged, isRoutingStateHandler,
-  BaseRoutableViewModel, isRoutableViewModel, RoutingBreadcrumb } from '../React';
-import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
+import { Command, ReadOnlyProperty } from '../../WebRx';
 import { Current as App } from '../Common/App/AppViewModel';
+import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
+import {
+  BaseRoutableViewModel, HandlerRoutingStateChanged, HeaderCommandAction, HeaderMenu,
+  isRoutableViewModel, isRoutingStateHandler, RoutingBreadcrumb } from '../React';
 
-export interface ViewModelActivator {
-  (state: {}): any;
-}
+export type ViewModelActivator = (state: {}) => any;
 
 export interface ViewModelActivatorMap {
   [key: string]: ViewModelActivator;
@@ -29,19 +29,32 @@ export class RoutingMap {
   constructor(private baseUri = '#/demo', private defaultIconName = 'flask') {
   }
 
-  public addRoute(menuName: string, path: string, name: string, activator: ViewModelActivator, uri?: string, iconName?: string) {
+  public addRoute(
+    menuName: string,
+    path: string,
+    name: string,
+    activator: ViewModelActivator,
+    uri?: string,
+    iconName?: string,
+  ) {
     if (/^\w+$/.test(path)) {
       uri = uri || path;
       path = `^${ path }$`;
     }
 
     this.viewModelMap[path] = activator;
-    const menu = this.menuMap[menuName] = this.menuMap[menuName] || <HeaderMenu>{
+    const menu = this.menuMap[menuName] = this.menuMap[menuName] || {
       id: menuName,
       header: `${ menuName } Demos`,
       items: [],
-    };
-    menu.items.push(<HeaderCommandAction>{ id: path, header: name, uri: this.getUri(path, uri), iconName: iconName || this.defaultIconName, order: menu.items.length });
+    } as HeaderMenu;
+    menu.items.push({
+      id: path,
+      header: name,
+      uri: this.getUri(path, uri),
+      iconName: iconName || this.defaultIconName,
+      order: menu.items.length,
+    } as HeaderCommandAction);
   }
 
   public getUri(path: string, uri?: string) {
@@ -79,7 +92,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
 
   public readonly setComponent: Command<RoutedDemoComponent>;
   public readonly setColumns: Command<number>;
-  public readonly reRender: Command<any>;
+  public readonly reRender: Command;
 
   constructor(protected readonly routeMap: RoutingMap) {
     super();
@@ -148,12 +161,16 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     this.updateDocumentTitle.execute('Loading Demos...');
 
     // simulate some breadcrumbs
-    this.updateRoutingBreadcrumbs.execute(<RoutingBreadcrumb[]>[
+    this.updateRoutingBreadcrumbs.execute([
       { key: 1, content: 'Here', href: '#/demo', title: 'title-based tooltips supported' },
       { key: 2, content: 'Are', href: '#/demo', tooltip: 'simple string tooltip overlays' },
-      { key: 3, content: 'Some', href: '#/demo', tooltip: { id: 'demo-tt', title: 'Popovers!', children: 'custom props-based tooltip overlays' } },
+      { key: 3, content: 'Some', href: '#/demo', tooltip: {
+        id: 'demo-tt',
+        title: 'Popovers!',
+        children: 'custom props-based tooltip overlays',
+      } },
       { key: 4, content: 'Breadcrumbs', href: '#/demo', tooltip: { placement: 'top', children: 'regular tooltip' } },
-    ]);
+    ] as RoutingBreadcrumb[]);
 
     // this is very similar to what the route handler does for title updates
     // we are essentially projecting the demo title and passing it up the chain
@@ -236,7 +253,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
         // if no static route was found then we can attempt an expression route
         if (activator == null) {
           // project out the first expression route match (path, match, and activator)
-          let result = Object.keys(this.routeMap.viewModelMap)
+          const result = Object.keys(this.routeMap.viewModelMap)
             .asIterable()
             .filter(x => x != null && x.length > 0 && x[0] === '^')
             .map(x => ({ path: x, regex: new RegExp(x, 'i') }))
@@ -322,7 +339,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     return undefined;
   }
 
-  getSidebarMenus(): Array<HeaderMenu> {
+  getSidebarMenus(): HeaderMenu[] {
     return [
       {
         id: 'sidebar-demos',
@@ -335,54 +352,86 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
         id: 'sidebar-1',
         header: 'Section 1',
         items: [
-          Object.assign({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-1`, commandParameter: 'Sidebar Section 1 Menu Item' }),
+          Object.assign(
+            {},
+            this.demoAlertItem,
+            { id: `${ this.demoAlertItem.id }-sidebar-1`, commandParameter: 'Sidebar Section 1 Menu Item' },
+          ),
         ],
       },
       {
         id: 'sidebar-2',
         header: 'Section 2',
         items: [
-          Object.assign({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-2-1`, commandParameter: 'Sidebar Section 2 Menu Item 1' }),
-          Object.assign({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-sidebar-2-2`, commandParameter: 'Sidebar Section 2 Menu Item 2' }),
+          Object.assign(
+            {},
+            this.demoAlertItem,
+            { id: `${ this.demoAlertItem.id }-sidebar-2-1`, commandParameter: 'Sidebar Section 2 Menu Item 1' },
+          ),
+          Object.assign(
+            {},
+            this.demoAlertItem,
+            { id: `${ this.demoAlertItem.id }-sidebar-2-2`, commandParameter: 'Sidebar Section 2 Menu Item 2' },
+          ),
         ],
       },
     ];
   }
 
-  getNavbarMenus(): Array<HeaderMenu> {
+  getNavbarMenus(): HeaderMenu[] {
     return this.routeMap.menus
       .concat({
         id: `${ this.demoAlertItem.id }-menu`,
         header: 'Sample Routed Menu',
         order: -1,
         items: [
-          Object.assign({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-menuitem`, commandParameter: 'Routed Menu Item' }),
+          Object.assign(
+            {},
+            this.demoAlertItem,
+            { id: `${ this.demoAlertItem.id }-menuitem`, commandParameter: 'Routed Menu Item' },
+          ),
         ],
       });
   }
 
-  getNavbarActions(): Array<HeaderCommandAction> {
+  getNavbarActions(): HeaderCommandAction[] {
     return [
       { id: 'reRender', header: 'Re-Render', command: this.reRender, bsStyle: 'primary' },
-      Object.assign({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-navbar`, commandParameter: 'Navbar Action' }),
+      Object.assign(
+        {},
+        this.demoAlertItem,
+        { id: `${ this.demoAlertItem.id }-navbar`, commandParameter: 'Navbar Action' },
+      ),
     ];
   }
 
-  getHelpMenuItems(): Array<HeaderCommandAction> {
+  getHelpMenuItems(): HeaderCommandAction[] {
     return [
-      Object.assign({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-help`, commandParameter: 'Help Menu Item' }),
+      Object.assign(
+        {},
+        this.demoAlertItem,
+        { id: `${ this.demoAlertItem.id }-help`, commandParameter: 'Help Menu Item' },
+      ),
     ];
   }
 
-  getAdminMenuItems(): Array<HeaderCommandAction> {
+  getAdminMenuItems(): HeaderCommandAction[] {
     return [
-      Object.assign({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-admin`, commandParameter: 'Admin Menu Item' }),
+      Object.assign(
+        {},
+        this.demoAlertItem,
+        { id: `${ this.demoAlertItem.id }-admin`, commandParameter: 'Admin Menu Item' },
+      ),
     ];
   }
 
-  getUserMenuItems(): Array<HeaderCommandAction> {
+  getUserMenuItems(): HeaderCommandAction[] {
     return [
-      Object.assign({}, this.demoAlertItem, { id: `${ this.demoAlertItem.id }-user`, commandParameter: 'User Menu Item' }),
+      Object.assign(
+        {},
+        this.demoAlertItem,
+        { id: `${ this.demoAlertItem.id }-user`, commandParameter: 'User Menu Item' },
+      ),
     ];
   }
 }

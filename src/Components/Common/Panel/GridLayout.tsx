@@ -1,6 +1,10 @@
+// tslint:disable:max-classes-per-file
+
 import * as React from 'react';
 
-import { PanelItemContext, PanelItemProp, PanelItemProps, PanelTemplateProps, PanelRenderProps, PanelItemTemplate } from './Panel';
+import {
+  PanelItemContext, PanelItemProp, PanelItemProps, PanelItemTemplate, PanelRenderProps, PanelTemplateProps,
+} from './Panel';
 
 /**
  * a row context only knows about its row number
@@ -22,7 +26,10 @@ export interface GridColumnContext extends GridRowContext {
  * a layout element represents props for a component that helps define
  * the grid layout (i.e. GridRowDefinitions and RowDefinition)
  */
-export interface GridLayoutElementProps<T = {}, TContext extends GridRowContext = GridRowContext> extends PanelItemProps<T, TContext>, PanelTemplateProps<TContext>, PanelRenderProps {
+export interface GridLayoutElementProps<
+  T = {},
+  TContext extends GridRowContext = GridRowContext,
+> extends PanelItemProps<T, TContext>, PanelTemplateProps<TContext>, PanelRenderProps {
 }
 
 /**
@@ -85,7 +92,8 @@ export interface GridColumnDefinitionsProps<T = {}> extends GridLayoutElementPro
 export class GridColumnDefinitions extends React.Component<GridColumnDefinitionsProps> {
 }
 
-export type GridLayoutDefinitionGroupElement<T = {}> = React.ReactElement<GridRowDefinitionsProps<T> | GridColumnDefinitionsProps<T>>;
+export type GridLayoutDefinitionGroupElement<T = {}> =
+  React.ReactElement<GridRowDefinitionsProps<T> | GridColumnDefinitionsProps<T>>;
 export type GridLayoutDefinitionElement<T = {}> = React.ReactElement<RowDefinitionProps<T> | ColumnDefinitionProps<T>>;
 
 /**
@@ -105,7 +113,7 @@ export class GridLayoutDefinition {
   public readonly itemTemplate: PanelItemTemplate<GridRowContext | GridColumnContext> | undefined;
 
   constructor(definition?: GridLayoutDefinitionElement, definitionGroup?: GridLayoutDefinitionGroupElement) {
-    let { val, type } = this.getLayoutParam(definition);
+    const { val, type } = this.getLayoutParam(definition);
     let { amount, stretch } = this.getAmountAndStretch(val);
 
     if (type === RowDefinition && stretch === true) {

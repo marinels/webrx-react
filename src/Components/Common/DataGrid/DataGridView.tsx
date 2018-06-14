@@ -1,18 +1,21 @@
 import * as React from 'react';
 import { Icon } from 'react-fa';
 
-import { BaseView, BaseViewProps } from '../../React';
 import { SortDirection } from '../../../Utils/Compare';
-import { ListItemsView, ListItemsProps } from '../ListItems/ListItemsView';
-import { PanelFragment, PanelItemContext } from '../Panel/Panel';
-import { GridViewColumns } from '../ListItems/GridViewColumn';
-import { GridView } from '../ListItems/GridView';
+import { BaseView, BaseViewProps } from '../../React';
 import { CommandButton } from '../CommandButton/CommandButton';
-import { PagerView, PagerProps } from '../Pager/PagerView';
+import { GridView } from '../ListItems/GridView';
+import { GridViewColumns } from '../ListItems/GridViewColumn';
+import { ListItemsProps, ListItemsView } from '../ListItems/ListItemsView';
 import { Loading } from '../Loading/Loading';
+import { PagerProps, PagerView } from '../Pager/PagerView';
+import { PanelFragment, PanelItemContext } from '../Panel/Panel';
 import { DataGridViewModel, DataSourceRequest } from './DataGridViewModel';
 
-export interface DataGridProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ListItemsProps<T, TContext> {
+export interface DataGridProps<
+  T = {},
+  TContext extends PanelItemContext = PanelItemContext,
+> extends ListItemsProps<T, TContext> {
   pager?: boolean | PagerProps | {};
   loadingContent?: React.ReactNode | (() => React.ReactNode);
 }
@@ -38,8 +41,14 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
 
   render() {
     const { className, children, props, rest } = this.restProps(x => {
-      const { pager, loadingContent, fill, view, viewProps, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent } = x;
-      return { pager, loadingContent, fill, view, viewProps, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent };
+      const {
+        pager, loadingContent, fill, view, viewProps, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName,
+        itemStyle, itemProps, compact, emptyContent,
+      } = x;
+      return {
+        pager, loadingContent, fill, view, viewProps, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName,
+        itemStyle, itemProps, compact, emptyContent,
+      };
     });
 
     return (
@@ -49,7 +58,10 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
             this.viewModel.isLoading,
             props.loadingContent!,
             () => {
-              const dataGridView = ListItemsView.getListItemsView(this.props, this.renderDefaultDataGridView.bind(this));
+              const dataGridView = ListItemsView.getListItemsView(
+                this.props,
+                this.renderDefaultDataGridView.bind(this),
+              );
 
               const pagerView = this.wxr
                 .renderNullable(
@@ -122,7 +134,13 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
   }
 
   protected getSortIconName(field: string | undefined, request: DataSourceRequest | undefined) {
-    if (request == null || request.sort == null || request.sort.field == null || request.sort.direction == null || request.sort.field !== field) {
+    if (
+      request == null ||
+      request.sort == null ||
+      request.sort.field == null ||
+      request.sort.direction == null ||
+      request.sort.field !== field
+    ) {
       return undefined;
     }
 

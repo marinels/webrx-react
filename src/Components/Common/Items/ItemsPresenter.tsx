@@ -1,11 +1,12 @@
-import * as React from 'react';
 import { Iterable } from 'ix';
+import * as React from 'react';
 
 import { IterableLike } from '../../../WebRx';
-import { StackPanel, PanelItemProps, PanelItemContext, PanelRenderProps, PanelFragment } from '../Panel';
+import { PanelFragment, PanelItemContext, PanelItemProps, PanelRenderProps, StackPanel } from '../Panel';
 
 export type ViewTemplate = (itemsPanel: PanelFragment, itemsPresenter: ItemsPresenter) => JSX.Element | null | false;
-export type ItemsPanelTemplate<T = {}> = (itemTemplates: Array<PanelFragment>, itemsPresenter: ItemsPresenter, items: Array<T> | undefined) => PanelFragment;
+export type ItemsPanelTemplate<T = {}> =
+  (itemTemplates: PanelFragment[], itemsPresenter: ItemsPresenter, items: T[] | undefined) => PanelFragment;
 
 export interface ItemsPresenterTemplateProps<T = {}> {
   /**
@@ -36,7 +37,10 @@ export interface ItemsPresenterSourceProps<T = {}> {
   itemsSource?: IterableLike<T>;
 }
 
-export interface ItemsPresenterProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ItemsPresenterTemplateProps<T>, ItemsPresenterSourceProps<T>, PanelItemProps<T, TContext>, PanelRenderProps {
+export interface ItemsPresenterProps<
+  T = {},
+  TContext extends PanelItemContext = PanelItemContext,
+> extends ItemsPresenterTemplateProps<T>, ItemsPresenterSourceProps<T>, PanelItemProps<T, TContext>, PanelRenderProps {
 }
 
 export interface ItemsPresenterComponentProps extends React.HTMLProps<any>, ItemsPresenterProps {
@@ -52,7 +56,7 @@ export class ItemsPresenter extends React.Component<ItemsPresenterComponentProps
     );
   }
 
-  public static defaultPanelTemplate(itemTemplates: Array<PanelFragment>, itemsPresenter: ItemsPresenter) {
+  public static defaultPanelTemplate(itemTemplates: PanelFragment[], itemsPresenter: ItemsPresenter) {
     return (
       <StackPanel
         itemClassName={ itemsPresenter.props.itemClassName }
@@ -68,8 +72,14 @@ export class ItemsPresenter extends React.Component<ItemsPresenterComponentProps
 
   public static defaultViewTemplate(itemsPanel: PanelFragment, itemsPresenter: ItemsPresenter) {
     const { className, props, rest } = itemsPresenter.restProps(x => {
-      const { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent } = x;
-      return { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent };
+      const {
+        itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact,
+        emptyContent,
+      } = x;
+      return {
+        itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact,
+        emptyContent,
+      };
     });
 
     return (

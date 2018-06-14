@@ -1,11 +1,11 @@
+import * as utils from '../../Utils';
 import {
-  bindObservableToCommand, bindEventToProperty, bindEventToCommand,
+  bindEventToCommand, bindEventToProperty, bindObservableToCommand,
 } from './BindingHelpers';
 import {
-  renderIterable, renderConditional, renderNullable,
-  focusElement, classNames,
+  classNames, focusElement, renderConditional,
+  renderIterable, renderNullable,
 } from './RenderHelpers';
-import * as utils from '../../Utils';
 
 export function create() {
   return {

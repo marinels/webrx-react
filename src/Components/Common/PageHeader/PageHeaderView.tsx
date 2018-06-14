@@ -1,15 +1,15 @@
 import * as React from 'react';
+import { MenuItem, Nav, Navbar, NavDropdown, NavItem } from 'react-bootstrap';
 import { findDOMNode } from 'react-dom';
 import { Icon, IconStack } from 'react-fa';
-import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 
 import { BaseView, BaseViewProps, HeaderAction, HeaderCommandAction } from '../../React';
 import { CommandButton } from '../CommandButton/CommandButton';
-import { SearchView } from '../Search/SearchView';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
-import { Sidebar } from './Sidebar';
-import { PageHeaderViewModel } from './PageHeaderViewModel';
+import { SearchView } from '../Search/SearchView';
 import { SearchViewModel } from '../Search/SearchViewModel';
+import { PageHeaderViewModel } from './PageHeaderViewModel';
+import { Sidebar } from './Sidebar';
 
 export interface PageHeaderProps {
   brand?: any;
@@ -136,7 +136,9 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
     const command = isSidebarEnabled ? this.viewModel.toggleSideBar : undefined;
 
     return (
-      <CommandButton className='PageHeader-brand' bsStyle='link' active={ active } href={ this.props.branduri } command={ command }>
+      <CommandButton className='PageHeader-brand' bsStyle='link' active={ active }
+        href={ this.props.branduri } command={ command }
+      >
         { this.props.brand }
       </CommandButton>
     );
@@ -146,12 +148,18 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
     const visibleItems = this.getVisibleActions(items);
 
     return this.wxr.renderConditional(visibleItems.length > 0, () => (
-      <NavDropdown id={ id } key={ id } title={ header } noCaret={ noCaret } className={ this.wxr.classNames(`PageHeader-${ id }`, className) }>
+      <NavDropdown id={ id } key={ id } title={ header } noCaret={ noCaret }
+        className={ this.wxr.classNames(`PageHeader-${ id }`, className) }
+      >
         {
           visibleItems
             .map(x => (
               <MenuItem key={ x.id } disabled={ this.isActionDisabled(x) } href={ x.uri }
-                onSelect={ String.isNullOrEmpty(x.uri) === true ? this.bindEventToCommand(vm => vm.menuItemSelected, () => x) : null }
+                onSelect={
+                  String.isNullOrEmpty(x.uri) === true ?
+                    this.bindEventToCommand(vm => vm.menuItemSelected, () => x) :
+                    null
+                }
               >
                 { this.renderHeaderCommandActionIcon(x) }
                 { x.header }
@@ -226,7 +234,12 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
   private renderUserMenu() {
     return this.renderHeaderMenu(
       'userMenu',
-      (<ProfilePicture src={ this.viewModel.userImage } title={ this.viewModel.userDisplayName } iconSize='2x' size={ 30 } />),
+      (<ProfilePicture
+        src={ this.viewModel.userImage }
+        title={ this.viewModel.userDisplayName }
+        iconSize='2x'
+        size={ 30 }
+      />),
       this.viewModel.userMenuItems.value,
       true,
     );
@@ -287,7 +300,11 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
                       visibleActions
                         .map(x => (
                           <NavItem key={ x.id } disabled={ this.isActionDisabled(x) } href={ x.uri }
-                            onClick={ String.isNullOrEmpty(x.uri) === true ? this.bindEventToCommand(vm => vm.menuItemSelected, () => x) : this.bindEventToCommand(vm => vm.toggleSideBar, () => false) }
+                            onClick={
+                              String.isNullOrEmpty(x.uri) === true ?
+                                this.bindEventToCommand(vm => vm.menuItemSelected, () => x) :
+                                this.bindEventToCommand(vm => vm.toggleSideBar, () => false)
+                            }
                           >
                             { this.renderHeaderCommandActionIcon(x) }
                             { x.header }

@@ -1,6 +1,6 @@
-import { should } from '../setup';
 import * as moment from 'moment';
-import { DateTime, TimeSpan, TicksPerMillisecond } from '../../src/Utils/Moment';
+import { DateTime, TicksPerMillisecond, TimeSpan } from '../../src/Utils/Moment';
+import { should } from '../setup';
 
 const SampleDateTimeOffsetText = '2016-03-09 4:32:32 PM +00:00';
 const SampleDateTimeText = '2016-03-09 4:32:32 PM';

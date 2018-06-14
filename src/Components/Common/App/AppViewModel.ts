@@ -1,12 +1,12 @@
 import { Observable } from 'rxjs';
 
-import { ReadOnlyProperty, ObservableLike } from '../../../WebRx';
+import { RouteMap } from '../../../Routing';
+import { ObservableLike, ReadOnlyProperty } from '../../../WebRx';
 import { BaseViewModel } from '../../React';
 import { AlertHostViewModel } from '../Alert/AlertHostViewModel';
-import { PageHeaderViewModel } from '../PageHeader/PageHeaderViewModel';
 import { PageFooterViewModel } from '../PageFooter/PageFooterViewModel';
+import { PageHeaderViewModel } from '../PageHeader/PageHeaderViewModel';
 import { RouteHandlerViewModel, SplashKey } from '../RouteHandler/RouteHandlerViewModel';
-import { RouteMap } from '../../../Routing';
 
 // inject a default route
 RouteMap['/'] = { path: SplashKey };
@@ -23,7 +23,13 @@ export class AppViewModel extends BaseViewModel {
 
   public readonly isLoading: ReadOnlyProperty<boolean>;
 
-  constructor(alerts = false, header = false, footer = false, isLoading?: ObservableLike<boolean>, routingMap = RouteMap) {
+  constructor(
+    alerts = false,
+    header = false,
+    footer = false,
+    isLoading?: ObservableLike<boolean>,
+    routingMap = RouteMap,
+  ) {
     super();
 
     if (alerts === true) {

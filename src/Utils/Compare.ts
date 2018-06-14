@@ -1,3 +1,5 @@
+// tslint:disable:max-classes-per-file
+
 import { Iterable } from 'ix';
 import * as moment from 'moment';
 
@@ -6,12 +8,10 @@ export interface Comparable<T> {
 }
 
 export function isComparable<T>(obj: any): obj is Comparable<T> {
-  return (<Comparable<T>>obj).compareTo instanceof Function;
+  return (obj as Comparable<T>).compareTo instanceof Function;
 }
 
-export interface ValueComparison<T> {
-  (a: T, B: T): number;
-}
+export type ValueComparison<T> = (a: T, B: T) => number;
 
 export interface Comparer<T> {
   compare: ValueComparison<T>;
@@ -92,7 +92,11 @@ export class ObjectComparer<T extends StringMap<any>> {
   public static displayName = 'ObjectComparer';
   public static DefaultComparerKey = '';
 
-  public static createFieldComparer<TObj, TValue>(field: string, comparison: ValueComparison<TValue>, valueSelector?: (source: TObj, field: string) => TValue) {
+  public static createFieldComparer<TObj, TValue>(
+    field: string,
+    comparison: ValueComparison<TValue>,
+    valueSelector?: (source: TObj, field: string) => TValue,
+  ) {
     return {
       field,
       compare: comparison,
@@ -103,10 +107,10 @@ export class ObjectComparer<T extends StringMap<any>> {
   public readonly comparerMap: StringMap<FieldComparer<T, any>>;
   public readonly defaultComparer: FieldComparer<T, any> | undefined;
 
-  constructor(defaultSortField: string | undefined, ...comparers: FieldComparer<T, any>[]);
-  constructor(...comparers: FieldComparer<T, any>[]);
+  constructor(defaultSortField: string | undefined, ...comparers: Array<FieldComparer<T, any>>);
+  constructor(...comparers: Array<FieldComparer<T, any>>);
   constructor(...args: any[]) {
-    const comparers: FieldComparer<T, any>[] = args;
+    const comparers: Array<FieldComparer<T, any>> = args;
     const defaultSortField = (args[0] == null || !String.isNullOrEmpty(args[0])) ? args.shift() : undefined;
 
     this.comparerMap = {};

@@ -1,12 +1,12 @@
-import * as React from 'react';
 import { Iterable } from 'ix';
-import { MouseEventHandler, MouseEvent } from 'react';
+import * as React from 'react';
+import { MouseEvent, MouseEventHandler } from 'react';
 import { Button } from 'react-bootstrap';
 import { Icon } from 'react-fa';
 
 import { IterableLike } from '../../../WebRx';
-import { ItemsPresenterTemplateProps, ItemsPresenter } from './ItemsPresenter';
-import { PanelItemProps, PanelItemContext, PanelRenderProps, PanelFragment } from '../Panel/Panel';
+import { PanelFragment, PanelItemContext, PanelItemProps, PanelRenderProps } from '../Panel/Panel';
+import { ItemsPresenter, ItemsPresenterTemplateProps } from './ItemsPresenter';
 
 export type RecursiveItemsSource<T> = (item: T) => (IterableLike<T> | undefined);
 
@@ -28,7 +28,14 @@ export interface TreeItemTemplateProps<T = {}> {
    * Override the header template
    * compose a custom header out of the subcomponents
    */
-  headerTemplate?: (item: T, index: number, indent: Array<PanelFragment>, expander: PanelFragment, headerContent: PanelFragment, view: TreeItem) => PanelFragment;
+  headerTemplate?: (
+    item: T,
+    index: number,
+    indent: PanelFragment[],
+    expander: PanelFragment,
+    headerContent: PanelFragment,
+    view: TreeItem,
+  ) => PanelFragment;
 
   /**
    * template to render each item belonging to the bound item
@@ -75,10 +82,22 @@ export interface TreeItemRenderProps {
   clickToExpand?: boolean;
 }
 
-export interface TreeItemFacadeProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends TreeItemSourceProps<T>, TreeItemTemplateProps<T>, TreeItemRenderProps, ItemsPresenterTemplateProps<T>, PanelItemProps<T, TContext>, PanelRenderProps {
+export interface TreeItemFacadeProps<
+  T = {},
+  TContext extends PanelItemContext = PanelItemContext,
+> extends
+  TreeItemSourceProps<T>,
+  TreeItemTemplateProps<T>,
+  TreeItemRenderProps,
+  ItemsPresenterTemplateProps<T>,
+  PanelItemProps<T, TContext>,
+  PanelRenderProps {
 }
 
-export interface TreeItemProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends TreeItemFacadeProps<T, TContext> {
+export interface TreeItemProps<
+  T = {},
+  TContext extends PanelItemContext = PanelItemContext,
+> extends TreeItemFacadeProps<T, TContext> {
   /**
    * the item that this tree node represents
    */
@@ -145,9 +164,18 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
     );
   }
 
-  public static defaultHeaderTemplate(item: {}, index: number, indent: Array<PanelFragment>, expander: PanelFragment, headerContent: PanelFragment, view: TreeItem) {
+  public static defaultHeaderTemplate(
+    item: {},
+    index: number,
+    indent: PanelFragment[],
+    expander: PanelFragment,
+    headerContent: PanelFragment,
+    view: TreeItem,
+  ) {
     return (
-      <div className='TreeItem-Header' onClick={ view.props.clickToExpand ? view.toggleExpansion.bind<MouseEventHandler<any>>(view) : undefined }>
+      <div className='TreeItem-Header'
+        onClick={ view.props.clickToExpand ? view.toggleExpansion.bind<MouseEventHandler<any>>(view) : undefined }
+      >
         { indent }
         <div className='TreeItem-Expander'>
           { expander }
@@ -214,8 +242,16 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
 
   render() {
     const { className, props, rest, children } = this.restProps(x => {
-      const { item, index, itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, overrideExpanded, expandedIconName, collapsedIconName, clickToExpand, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent } = x;
-      return { item, index, itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded, overrideExpanded, expandedIconName, collapsedIconName, clickToExpand, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent };
+      const {
+        item, index, itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded,
+        overrideExpanded, expandedIconName, collapsedIconName, clickToExpand, viewTemplate, itemsPanelTemplate,
+        itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent,
+      } = x;
+      return {
+        item, index, itemsSource, expanderIconTemplate, headerTemplate, itemsTemplate, depth, startExpanded,
+        overrideExpanded, expandedIconName, collapsedIconName, clickToExpand, viewTemplate, itemsPanelTemplate,
+        itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent,
+      };
     });
 
     const headerContent = this.renderHeaderContent();
@@ -307,7 +343,7 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
     return itemTemplate(this.props.item, this.props.index, this.state);
   }
 
-  protected renderHeader(indent: Array<PanelFragment>, expander: PanelFragment, headerContent: PanelFragment) {
+  protected renderHeader(indent: PanelFragment[], expander: PanelFragment, headerContent: PanelFragment) {
     const template = this.props.headerTemplate || TreeItem.defaultHeaderTemplate;
 
     return template(this.props.item, this.props.index, indent, expander, headerContent, this);

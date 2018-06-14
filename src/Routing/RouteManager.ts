@@ -1,11 +1,11 @@
-import { Subscription, Scheduler } from 'rxjs';
+import { Scheduler, Subscription } from 'rxjs';
 
-import { ReadOnlyProperty } from '../WebRx';
 import { Logging } from '../Utils';
+import { ReadOnlyProperty } from '../WebRx';
 import { HashCodec } from './HashCodec';
-import { Route, HashManager } from './Interfaces';
 import { historyStateHashManager } from './HashManager';
 import { getPath, normalizePath } from './Helpers';
+import { HashManager, Route } from './Interfaces';
 
 export class RouteManager extends Subscription {
   public static displayName = 'RouteManager';
@@ -29,7 +29,7 @@ export class RouteManager extends Subscription {
       .distinctUntilChanged()
       .map(x => {
         const change = {
-          route: hashCodec.decode(x, (path, params, state) => <Route>{ path, params, state }),
+          route: hashCodec.decode(x, (path, params, state) => ({ path, params, state } as Route)),
           redirect: false,
         };
 

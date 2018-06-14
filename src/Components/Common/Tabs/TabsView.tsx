@@ -1,5 +1,7 @@
+// tslint:disable:max-classes-per-file
+
 import * as React from 'react';
-import { Tabs, Tab } from 'react-bootstrap';
+import { Tab, Tabs } from 'react-bootstrap';
 
 import { BaseView, BaseViewProps } from '../../React';
 import { TabsViewModel } from './TabsViewModel';
@@ -7,20 +9,39 @@ import { TabsViewModel } from './TabsViewModel';
 export class TabRenderTemplate<T> {
   public static displayName = 'TabViewTemplate';
 
-  protected readonly renderTemplateContainer: (content: () => any, item: T, index: number, viewModel: Readonly<TabsViewModel<T>>, view: TabsView) => any;
+  protected readonly renderTemplateContainer: (
+    content: () => any,
+    item: T,
+    index: number,
+    viewModel: Readonly<TabsViewModel<T>>,
+    view: TabsView,
+  ) => any;
 
   constructor(
-    protected readonly titleSelector: (item: T, index: number, viewModel: Readonly<TabsViewModel<T>>, view: TabsView) => string,
-    protected readonly renderItem: (item: T, index: number, viewModel: Readonly<TabsViewModel<T>>, view: TabsView) => any = x => x.toString(),
-    protected readonly keySelector: (item: T, index: number, viewModel: Readonly<TabsViewModel<T>>, view: TabsView) => any = (x, i) => i,
-    renderTemplateContainer?: (content: () => any, item: T, index: number, viewModel: Readonly<TabsViewModel<T>>, view: TabsView) => any,
+    protected readonly titleSelector:
+      (item: T, index: number, viewModel: Readonly<TabsViewModel<T>>, view: TabsView) => string,
+    protected readonly renderItem:
+      (item: T, index: number, viewModel: Readonly<TabsViewModel<T>>, view: TabsView) => any = x => x.toString(),
+    protected readonly keySelector:
+      (item: T, index: number, viewModel: Readonly<TabsViewModel<T>>, view: TabsView) => any = (x, i) => i,
+    renderTemplateContainer?:
+      (content: () => any, item: T, index: number, viewModel: Readonly<TabsViewModel<T>>, view: TabsView) => any,
   ) {
     this.renderTemplateContainer = renderTemplateContainer || this.renderDefaultTemplateContainer;
   }
 
-  protected renderDefaultTemplateContainer(content: () => any, item: T, index: number, viewModel: Readonly<TabsViewModel<T>>, view: TabsView) {
+  protected renderDefaultTemplateContainer(
+    content: () => any,
+    item: T,
+    index: number,
+    viewModel: Readonly<TabsViewModel<T>>,
+    view: TabsView,
+  ) {
     return (
-      <Tab key={ this.keySelector(item, index, viewModel, view) } title={ this.titleSelector(item, index, viewModel, view) } eventKey={ index }>
+      <Tab key={ this.keySelector(item, index, viewModel, view) }
+        title={ this.titleSelector(item, index, viewModel, view) }
+        eventKey={ index }
+      >
         { TabsView.wxr.renderConditional(index === viewModel.selectedIndex.value, content) }
       </Tab>
     );

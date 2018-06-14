@@ -52,7 +52,9 @@ export class Breadcrumbs extends React.Component<BreadcrumbsComponentProps> {
 
   protected renderCrumb(crumb: RoutingBreadcrumb, index: number, active: boolean) {
     const breadcrumb = (
-      <Breadcrumb.Item key={ crumb.key } active={ active } href={ crumb.href } title={ crumb.title } target={ crumb.target }>
+      <Breadcrumb.Item key={ crumb.key }
+        active={ active } href={ crumb.href } title={ crumb.title } target={ crumb.target }
+      >
         { crumb.content }
       </Breadcrumb.Item>
     );
@@ -61,7 +63,9 @@ export class Breadcrumbs extends React.Component<BreadcrumbsComponentProps> {
       .renderNullable(
         crumb.tooltip,
         x => (
-          <ContentTooltip key={ crumb.key } id={ `${ crumb.key }-tt` } content={ x } context={ breadcrumb } placement={ x.placement || 'bottom' } />
+          <ContentTooltip key={ crumb.key } id={ `${ crumb.key }-tt` }
+            content={ x } context={ breadcrumb } placement={ x.placement || 'bottom' }
+          />
         ),
         () => breadcrumb,
       );

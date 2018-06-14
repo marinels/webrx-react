@@ -1,16 +1,13 @@
+import { Iterable } from 'ix';
 import * as React from 'react';
+import { Col, Grid, Row } from 'react-bootstrap';
 import { findDOMNode } from 'react-dom';
 import { Observable, Subscription } from 'rxjs';
-import { Iterable } from 'ix';
-import { Grid, Row, Col } from 'react-bootstrap';
 
 // the offset is needed to prevent the guide from interfering with mouse clicks
 export const BootstrapGuideOffset = 5;
 
-export interface BootstrapGuideProps {
-}
-
-export class BootstrapGuide extends React.Component<BootstrapGuideProps> {
+export class BootstrapGuide extends React.Component {
   private mouseMoveSub = Subscription.EMPTY;
 
   componentDidMount() {

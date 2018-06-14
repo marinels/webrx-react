@@ -1,8 +1,8 @@
-import { Observable, Subject, BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 import { PartialObserver } from 'rxjs/Observer';
 
 import { Command, ObservableOrValue } from './Interfaces';
-import { isObservable, asObservable, handleError } from './Utils';
+import { asObservable, handleError, isObservable } from './Utils';
 
 export type ExecutionAction<T = any> = (parameter: any) => ObservableOrValue<T>;
 export type InterrogationAction<T = any> = (condition: T, parameter?: any) => boolean;
@@ -25,7 +25,8 @@ export class ObservableCommand<T = any, TCondition = any> extends Subscription i
 
   constructor(
     protected readonly executeAction: ExecutionAction<T>,
-    protected readonly interrogationAction: InterrogationAction<TCondition | undefined> = x => ObservableCommand.coerceCondition(x),
+    protected readonly interrogationAction: InterrogationAction<TCondition | undefined> =
+      x => ObservableCommand.coerceCondition(x),
     private condition?: Observable<TCondition>,
     private initialCondition?: TCondition,
   ) {
@@ -186,8 +187,11 @@ export class ObservableCommand<T = any, TCondition = any> extends Subscription i
 }
 
 export function command<T = any>(): Command<T>;
+// tslint:disable-next-line:unified-signatures
 export function command<T>(execute: ExecutionAction<T>): Command<T>;
+// tslint:disable-next-line:unified-signatures
 export function command<T>(canExecute: Observable<boolean>, execute?: ExecutionAction<T>): Command<T>;
+// tslint:disable-next-line:unified-signatures
 export function command<T>(execute: ExecutionAction<T>, canExecute: Observable<boolean>): Command<T>;
 export function command<T, TCondition>(
   execute: ExecutionAction<T>,

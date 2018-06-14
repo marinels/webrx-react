@@ -7,7 +7,7 @@ export interface HeaderAction {
 }
 
 export interface HeaderCommandAction extends HeaderAction {
-  command?: Command<any>;
+  command?: Command;
   commandParameter?: any;
   visibleWhenDisabled?: boolean;
   iconName?: string | string[];
@@ -20,9 +20,9 @@ export interface HeaderMenu extends HeaderAction {
 }
 
 export function isHeaderCommandAction(action: HeaderAction): action is HeaderCommandAction {
-  return isCommand((<HeaderCommandAction>action).command);
+  return isCommand((action as HeaderCommandAction).command);
 }
 
 export function isHeaderMenu(action: HeaderAction): action is HeaderMenu {
-  return Array.isArray((<HeaderMenu>action).items);
+  return Array.isArray((action as HeaderMenu).items);
 }

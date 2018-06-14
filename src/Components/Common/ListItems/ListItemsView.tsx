@@ -1,15 +1,18 @@
-import * as React from 'react';
 import * as classNames from 'classnames';
+import * as React from 'react';
 
 import { BaseView, BaseViewProps } from '../../React';
-import { PanelItemContext } from '../Panel/Panel';
-import { ListItemsViewTemplateProps } from './ListItemsViewTemplate';
 import { ItemsProps } from '../Items/ItemsView';
-import { ListGroupView } from './ListGroupView';
+import { PanelItemContext } from '../Panel/Panel';
 import { GridViewColumns } from './GridViewColumn';
+import { ListGroupView } from './ListGroupView';
 import { ListItemsViewModel } from './ListItemsViewModel';
+import { ListItemsViewTemplateProps } from './ListItemsViewTemplate';
 
-export interface ListItemsProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ItemsProps<T, TContext> {
+export interface ListItemsProps<
+  T = {},
+  TContext extends PanelItemContext = PanelItemContext,
+> extends ItemsProps<T, TContext> {
   view?: React.ReactElement<ListItemsViewTemplateProps<T, TContext>>;
   viewProps?: {};
   children?: React.ReactNode;

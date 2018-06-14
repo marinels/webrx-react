@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Grid, Row, Image } from 'react-bootstrap';
+import { Grid, Image, Row } from 'react-bootstrap';
 
 import { Property } from '../../../WebRx';
 import { Loading } from '../Loading/Loading';

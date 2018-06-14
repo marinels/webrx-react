@@ -1,3 +1,5 @@
+// tslint:disable:max-classes-per-file
+
 import * as moment from 'moment';
 
 /**
@@ -37,7 +39,10 @@ export class DateTime {
   static fromString(value: string, ...formats: string[]): moment.Moment;
   static fromString(value: string | undefined, ...formats: string[]): moment.Moment | undefined;
   public static fromString(value: string | undefined, ...formats: string[]) {
-    return String.isNullOrEmpty(value) ? undefined : moment.utc(value, formats.length === 0 ? DefaultDateTimeFormats : formats);
+    return String.isNullOrEmpty(value) ?
+      undefined :
+      moment.utc(value, formats.length === 0 ? DefaultDateTimeFormats : formats,
+    );
   }
 
   /**
@@ -72,7 +77,11 @@ export class DateTime {
   /**
    * Standardized string representation of a moment
    */
-  public static format(value: moment.Moment | undefined, format = DateTime.DefaultLongFormat, defaultValue: any = null) {
+  public static format(
+    value: moment.Moment | undefined,
+    format = DateTime.DefaultLongFormat,
+    defaultValue: any = null,
+  ) {
     return value == null ? defaultValue : value.format(format);
   }
 
@@ -125,7 +134,11 @@ export class TimeSpan {
   /**
    * Standardized hours string representation of a duration
    */
-  public static formatHours(value: moment.Duration | undefined, precision = TimeSpan.DefaultDurationHoursPrecision, defaultValue: any = null) {
+  public static formatHours(
+    value: moment.Duration | undefined,
+    precision = TimeSpan.DefaultDurationHoursPrecision,
+    defaultValue: any = null,
+  ) {
     return value == null ? defaultValue : `${ value.asHours().toFixed(precision) } Hours`;
   }
 
@@ -139,7 +152,12 @@ export class TimeSpan {
   /**
    * Standardized duration string representation that will format hours or days based on maxHours
    */
-  public static format(value: moment.Duration | undefined, maxHours = TimeSpan.DefaultFormatMaxHours, precision = TimeSpan.DefaultDurationHoursPrecision, defaultValue: any = null) {
+  public static format(
+    value: moment.Duration | undefined,
+    maxHours = TimeSpan.DefaultFormatMaxHours,
+    precision = TimeSpan.DefaultDurationHoursPrecision,
+    defaultValue: any = null,
+  ) {
     if (value == null) {
       return defaultValue;
     }

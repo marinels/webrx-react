@@ -1,15 +1,17 @@
+// tslint:disable:max-classes-per-file
+
 import { Observable } from 'rxjs';
 
-import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
-import { BaseViewModel, RoutingStateHandler, HandlerRoutingStateChanged } from '../../React';
-import { ItemListPanelViewModel, ItemListPanelRoutingState } from '../../Common/ItemListPanel/ItemListPanelViewModel';
-import { TodoListStore, TodoListItem } from './TodoListStore';
+import { Command, Property, ReadOnlyProperty } from '../../../WebRx';
+import { ItemListPanelRoutingState, ItemListPanelViewModel } from '../../Common/ItemListPanel/ItemListPanelViewModel';
+import { BaseViewModel, HandlerRoutingStateChanged, RoutingStateHandler } from '../../React';
+import { TodoListItem, TodoListStore } from './TodoListStore';
 
 export class TodoListViewModel extends BaseViewModel implements RoutingStateHandler<ItemListPanelRoutingState> {
   public static displayName = 'TodoListViewModel';
 
   public newItemContent: Property<string>;
-  public addItem: Command<any>;
+  public addItem: Command;
   public removeItem: Command<TodoItemViewModel>;
 
   public list: ItemListPanelViewModel<TodoItemViewModel>;
@@ -28,7 +30,7 @@ export class TodoListViewModel extends BaseViewModel implements RoutingStateHand
     this.removeItem = this.wx.command<TodoItemViewModel>();
 
     interface TodoListChange {
-      reset?: Array<TodoItemViewModel>;
+      reset?: TodoItemViewModel[];
       add?: TodoItemViewModel;
       remove?: number;
     }
@@ -70,9 +72,9 @@ export class TodoListViewModel extends BaseViewModel implements RoutingStateHand
 
     const todoListItems = Observable
       .merge(
-        initialItems.map(reset => <TodoListChange>{ reset }),
-        addedItems.map(add => <TodoListChange>{ add }),
-        removedItems.map(remove => <TodoListChange>{ remove }),
+        initialItems.map(reset => ({ reset } as TodoListChange)),
+        addedItems.map(add => ({ add } as TodoListChange)),
+        removedItems.map(remove => ({ remove } as TodoListChange)),
       )
       .scan(
         (items: TodoItemViewModel[], change: TodoListChange) => {
@@ -119,11 +121,10 @@ export class TodoItemViewModel extends BaseViewModel {
   public readonly id: number;
   public readonly content: string;
 
-  public readonly toggleCompleted: Command<any>;
+  public readonly toggleCompleted: Command;
   public readonly completed: ReadOnlyProperty<boolean>;
 
-  constructor(content: string, store?: TodoListStore);
-  constructor(model: TodoListItem, store?: TodoListStore);
+  constructor(contentOrModel: string | TodoListItem, store?: TodoListStore);
   constructor(arg: string | TodoListItem, protected store = TodoListStore.default) {
     super();
 

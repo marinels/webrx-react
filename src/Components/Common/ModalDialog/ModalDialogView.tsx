@@ -1,18 +1,18 @@
 import * as React from 'react';
 import { Modal, ModalProps } from 'react-bootstrap';
 
+import { Command } from '../../../WebRx';
 import { BaseView, BaseViewProps } from '../../React';
 import { ModalDialogViewModel } from './ModalDialogViewModel';
-import { Command } from '../../../WebRx';
 
-export type BootstrapModalProps = Omit2<ModalProps, React.HTMLProps<Modal>, { onHide: Function; }>;
+export type BootstrapModalProps = Omit2<ModalProps, React.HTMLProps<Modal>, { onHide: () => void; }>;
 
 export interface ModalDialogProps extends BootstrapModalProps {
   modalTitle?: {};
   modalBody?: {};
   modalFooter?: {};
   canClose?: boolean;
-  acceptCommand?: Command | { (ctx: {}): Command | undefined };
+  acceptCommand?: Command | ((ctx: {}) => Command | undefined);
   acceptCommandParameter?: any;
 }
 

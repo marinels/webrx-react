@@ -1,11 +1,11 @@
 import { Iterable } from 'ix';
 
-import { ObservableOrValue, ObservableLike } from '../../../WebRx';
-import { ItemListPanelViewModel, ItemListPanelContext } from './ItemListPanelViewModel';
+import { ObservableLike, ObservableOrValue } from '../../../WebRx';
+import { AsyncDataGridViewModel, DataSourceResponseSelector } from '../DataGrid/AsyncDataGridViewModel';
 import { DataSourceRequest, DataSourceResponse } from '../DataGrid/DataGridViewModel';
-import { AsyncDataGridViewModel } from '../DataGrid/AsyncDataGridViewModel';
-import { SearchViewModel } from '../Search/SearchViewModel';
 import { PagerViewModel } from '../Pager/PagerViewModel';
+import { SearchViewModel } from '../Search/SearchViewModel';
+import { ItemListPanelContext, ItemListPanelViewModel } from './ItemListPanelViewModel';
 
 export class AsyncItemListPanelViewModel<T, TRequestContext = any> extends ItemListPanelViewModel<T, TRequestContext> {
   public static displayName = 'AsyncItemListPanelViewModel';
@@ -18,7 +18,7 @@ export class AsyncItemListPanelViewModel<T, TRequestContext = any> extends ItemL
    * @param context request context included in projection requests. if included requests are bound to context events.
    */
   constructor(
-    protected readonly responseSelector: (request: DataSourceRequest<ItemListPanelContext<TRequestContext>> | undefined) => ObservableOrValue<DataSourceResponse<T> | undefined>,
+    protected readonly responseSelector: DataSourceResponseSelector<T, TRequestContext>,
     search?: SearchViewModel | null,
     pager?: PagerViewModel | null,
     context?: ObservableLike<TRequestContext>,

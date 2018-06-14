@@ -1,5 +1,5 @@
-import { ReadOnlyProperty, Command } from '../../../WebRx';
-import { BaseViewModel, RoutingStateHandler, HandlerRoutingStateChanged } from '../../React';
+import { Command, ReadOnlyProperty } from '../../../WebRx';
+import { BaseViewModel, HandlerRoutingStateChanged, RoutingStateHandler } from '../../React';
 
 export interface TabsRoutingState {
   tab?: number;
@@ -17,11 +17,11 @@ export class TabsViewModel<T = any> extends BaseViewModel implements RoutingStat
   public readonly selectTab: Command<T>;
   public readonly selectIndex: Command<number>;
 
-  constructor(initialTabs: Array<T> = []) {
+  constructor(initialTabs: T[] = []) {
     super();
 
     const tabs = this.wx.property<T[]>(initialTabs, false);
-    this.tabs = <ReadOnlyProperty<T[]>>tabs;
+    this.tabs = tabs as ReadOnlyProperty<T[]>;
 
     this.addTab = this.wx.command((tab: T) => {
       tabs.value = this.tabs.value.concat(tab);

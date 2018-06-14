@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
-import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
-import { BaseViewModel, RoutingStateHandler, HandlerRoutingStateChanged } from '../../React';
+import { Command, Property, ReadOnlyProperty } from '../../../WebRx';
+import { BaseViewModel, HandlerRoutingStateChanged, RoutingStateHandler } from '../../React';
 
 export interface SearchRequest {
   filter: string;
@@ -15,14 +15,14 @@ export interface SearchRoutingState {
 export class SearchViewModel extends BaseViewModel implements RoutingStateHandler<SearchRoutingState> {
   public static displayName = 'SearchViewModel';
 
-  protected readonly processRequests: Command<any>;
+  protected readonly processRequests: Command;
 
   public readonly filter: Property<string>;
   public readonly requests: ReadOnlyProperty<SearchRequest>;
   public readonly searchPending: ReadOnlyProperty<boolean>;
 
-  public readonly search: Command<any>;
-  public readonly clear: Command<any>;
+  public readonly search: Command;
+  public readonly clear: Command;
 
   constructor(private readonly liveSearchTimeout = 500, private readonly isCaseInsensitive = true) {
     super();
@@ -48,10 +48,10 @@ export class SearchViewModel extends BaseViewModel implements RoutingStateHandle
         x => x,
       )
       // then map into a search request with regex
-      .map(x => (<SearchRequest>{
+      .map(x => ({
         filter: this.filter.value,
         regex: this.createRegex(this.filter.value),
-      }))
+      } as SearchRequest))
       .toProperty();
 
     this.searchPending = Observable

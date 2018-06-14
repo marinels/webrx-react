@@ -1,4 +1,4 @@
-import { ReadOnlyProperty, Command } from '../../../WebRx';
+import { Command, ReadOnlyProperty } from '../../../WebRx';
 import { BaseViewModel } from '../../React';
 
 export interface Alert {
@@ -17,7 +17,7 @@ export class AlertViewModel extends BaseViewModel {
 
   public readonly isVisible: ReadOnlyProperty<boolean>;
 
-  public readonly dismiss: Command<any>;
+  public readonly dismiss: Command;
 
   constructor(
     public readonly key: any,

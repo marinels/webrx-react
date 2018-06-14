@@ -7,7 +7,7 @@ defaultArgs = {
   'env.releasePath': 'test',
 };
 
-import { commonConfig, args } from '../webpack.common';
+import { args, commonConfig } from '../webpack.common';
 
 const testConfig: Partial<webpack.Configuration> = {
   entry: {

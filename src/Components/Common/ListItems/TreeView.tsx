@@ -1,12 +1,15 @@
 import * as React from 'react';
 
-import { PanelView } from './PanelView';
+import { TreeItem, TreeItemRenderProps, TreeItemSourceProps } from '../Items/TreeItem';
 import { TreeItemsView } from '../Items/TreeItemsView';
-import { TreeItem, TreeItemSourceProps, TreeItemRenderProps } from '../Items/TreeItem';
-import { ListItemsViewTemplate, ListItemsViewTemplateProps } from './ListItemsViewTemplate';
 import { PanelFragment, PanelItemContext } from '../Panel/Panel';
+import { ListItemsViewTemplate, ListItemsViewTemplateProps } from './ListItemsViewTemplate';
+import { PanelView } from './PanelView';
 
-export interface TreeViewProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ListItemsViewTemplateProps<T, TContext>, TreeItemSourceProps<T>, TreeItemRenderProps {
+export interface TreeViewProps<
+  T = {},
+  TContext extends PanelItemContext = PanelItemContext,
+> extends ListItemsViewTemplateProps<T, TContext>, TreeItemSourceProps<T>, TreeItemRenderProps {
   fill?: boolean;
 }
 
@@ -33,7 +36,14 @@ export class TreeView extends ListItemsViewTemplate<TreeViewComponentProps> {
     );
   }
 
-  protected renderHeader(item: {}, index: number, indent: Array<PanelFragment>, expander: PanelFragment, headerContent: PanelFragment, view: TreeItem) {
+  protected renderHeader(
+    item: {},
+    index: number,
+    indent: PanelFragment[],
+    expander: PanelFragment,
+    headerContent: PanelFragment,
+    view: TreeItem,
+  ) {
     const fragment = TreeItem.defaultHeaderTemplate(item, index, indent, expander, headerContent, view);
 
     return this.renderListItem(

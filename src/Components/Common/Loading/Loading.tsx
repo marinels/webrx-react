@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Subscription } from  'rxjs';
 import { Grid, ProgressBar } from 'react-bootstrap';
+import { Subscription } from 'rxjs';
 
 import { Property } from '../../../WebRx';
 import { wxr } from '../../React';

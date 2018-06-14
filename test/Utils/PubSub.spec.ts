@@ -1,7 +1,7 @@
 import { Subscription } from 'rxjs';
 
-import { should } from '../setup';
 import { PubSub } from '../../src/Utils/PubSub';
+import { should } from '../setup';
 
 describe('PubSub', () => {
   it('Can subscribe and publish', () => {
@@ -20,19 +20,22 @@ describe('PubSub', () => {
   });
 
   it('Can publish on a different key with no subscribers', () => {
-    let pubsub = new PubSub();
+    const pubsub = new PubSub();
     let called = false;
-    let handle = pubsub.subscribe('test', () => called = true);
+    const handle = pubsub.subscribe('test', () => called = true);
     should.exist(handle);
     pubsub.publish('test2', undefined);
     called.should.eql(false);
   });
 
   it('Can handle anonymous publish args', () => {
-    let pubsub = new PubSub();
+    const pubsub = new PubSub();
     let testArg1: any;
     let testArg2: any;
-    let handle = pubsub.subscribe('test', (x: {arg1: string, arg2: string}) => { testArg1 = x.arg1; testArg2 = x.arg2; });
+    const handle = pubsub.subscribe(
+      'test',
+      (x: {arg1: string, arg2: string}) => { testArg1 = x.arg1; testArg2 = x.arg2; },
+    );
     should.exist(handle);
     pubsub.publish('test', {arg1: 'testing'});
     should.exist(testArg1);
@@ -49,36 +52,36 @@ describe('PubSub', () => {
       arg1: string;
       arg2: string;
     }
-    let pubsub = new PubSub();
+    const pubsub = new PubSub();
     let testArg1: any;
     let testArg2: any;
-    let handle = pubsub.subscribe<TestArgs>('test', x => { testArg1 = x.arg1; testArg2 = x.arg2; });
+    const handle = pubsub.subscribe<TestArgs>('test', x => { testArg1 = x.arg1; testArg2 = x.arg2; });
     should.exist(handle);
-    pubsub.publish('test', <TestArgs>{ arg1: 'testing' });
+    pubsub.publish('test', { arg1: 'testing' } as TestArgs);
     should.exist(testArg1);
     should.not.exist(testArg2);
     testArg1.should.eql('testing');
-    pubsub.publish('test', <TestArgs>{arg1: 'testing1', arg2: 'testing2'});
+    pubsub.publish('test', {arg1: 'testing1', arg2: 'testing2'} as TestArgs);
     should.exist(testArg2);
     testArg1.should.eql('testing1');
     testArg2.should.eql('testing2');
   });
 
   it('Can unsubscribe', () => {
-    let pubsub = new PubSub();
+    const pubsub = new PubSub();
     let called = false;
-    let handle = pubsub.subscribe('test', () => called = true);
+    const handle = pubsub.subscribe('test', () => called = true);
     handle.unsubscribe();
     pubsub.publish('test', undefined);
     called.should.eql(false);
   });
 
   it('Can handle multiple subscriptions on the same key', () => {
-    let pubsub = new PubSub();
+    const pubsub = new PubSub();
     let called1 = false;
     let called2 = false;
-    let handle1 = pubsub.subscribe('test', () => called1 = true);
-    let handle2 = pubsub.subscribe('test', () => called2 = true);
+    const handle1 = pubsub.subscribe('test', () => called1 = true);
+    const handle2 = pubsub.subscribe('test', () => called2 = true);
     should.exist(handle1);
     should.exist(handle2);
     pubsub.publish('test', undefined);
@@ -87,11 +90,11 @@ describe('PubSub', () => {
   });
 
   it('Can unsubscribe from a single handle with multiple subscriptions on the same key', () => {
-    let pubsub = new PubSub();
+    const pubsub = new PubSub();
     let called1 = false;
     let called2 = false;
-    let handle1 = pubsub.subscribe('test', () => called1 = true);
-    let handle2 = pubsub.subscribe('test', () => called2 = true);
+    const handle1 = pubsub.subscribe('test', () => called1 = true);
+    const handle2 = pubsub.subscribe('test', () => called2 = true);
     should.exist(handle1);
     should.exist(handle2);
     handle1.unsubscribe();

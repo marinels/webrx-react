@@ -1,14 +1,16 @@
+// tslint:disable:max-classes-per-file
+
 import * as React from 'react';
+import { FormControl, FormControlProps, FormGroup, InputGroup } from 'react-bootstrap';
 import { Icon } from 'react-fa';
-import { FormGroup, InputGroup, FormControl, FormControlProps } from 'react-bootstrap';
 
 import { Command } from '../../../WebRx';
-import { BaseView, BaseViewProps } from '../../React';
+import { BindableInput } from '../../Common/BindableInput/BindableInput';
+import { CommandButton } from '../../Common/CommandButton/CommandButton';
 import { ItemListPanelView } from '../../Common/ItemListPanel/ItemListPanelView';
 import { ListGroupView } from '../../Common/ListItems/ListGroupView';
-import { CommandButton } from '../../Common/CommandButton/CommandButton';
-import { BindableInput } from '../../Common/BindableInput/BindableInput';
-import { TodoListViewModel, TodoItemViewModel } from './TodoListViewModel';
+import { BaseView, BaseViewProps } from '../../React';
+import { TodoItemViewModel, TodoListViewModel } from './TodoListViewModel';
 
 import './TodoList.less';
 
@@ -81,8 +83,16 @@ export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel>
       <FormGroup className='TodoList-teaser'>
         <InputGroup>
           <BindableInput boundProperty={ this.viewModel.newItemContent }>
-            <FormControl ref={ x => this.onInputRef(x) } id='newItemContent' type='text' placeholder='Type in a todo item here...'
-              onKeyDown={ this.bindEventToCommand(x => x.addItem, undefined, (_, e: React.KeyboardEvent<any>) => e.keyCode === 13, () => this.focusInput()) }
+            <FormControl ref={ x => this.onInputRef(x) } id='newItemContent' type='text'
+              placeholder='Type in a todo item here...'
+              onKeyDown={
+                this.bindEventToCommand(
+                  x => x.addItem,
+                  undefined,
+                  (_, e: React.KeyboardEvent<any>) => e.keyCode === 13,
+                  () => this.focusInput(),
+                )
+              }
             />
           </BindableInput>
           <InputGroup.Button>
@@ -122,9 +132,13 @@ export class TodoItemView extends BaseView<TodoItemViewProps, TodoItemViewModel>
     });
 
     return (
-      <div { ...rest } className={ this.wxr.classNames('TodoItem', 'fa-lg', className, { completed: this.viewModel.completed.value }) }>
+      <div { ...rest } className={
+        this.wxr.classNames('TodoItem', 'fa-lg', className, { completed: this.viewModel.completed.value })
+      }>
         <div className='TodoItem-main'>
-          <CommandButton plain onClick={ this.bindEventToCommand(x => x.toggleCompleted) } stopPropagation preventDefault>
+          <CommandButton plain onClick={
+            this.bindEventToCommand(x => x.toggleCompleted)
+          } stopPropagation preventDefault>
             <Icon name={ this.viewModel.completed.value ? 'check-circle' : 'circle-o' } size='lg' fixedWidth />
           </CommandButton>
           <span className='text-muted'>{ `[ ${ this.viewModel.id } ] ` }</span>

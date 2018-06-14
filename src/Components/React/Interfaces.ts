@@ -16,6 +16,3 @@ export interface RoutingStateHandler<T extends {}> {
 export interface HandlerRoutingStateChanged extends RoutingStateChanged {
   source: RoutingStateHandler<any>;
 }
-
-export interface Search {
-}

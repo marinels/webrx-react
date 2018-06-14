@@ -1,10 +1,10 @@
-import * as React from 'react';
 import { Iterable } from 'ix';
-import { Subscription } from 'rxjs';
+import * as React from 'react';
 import { ListGroupItemProps } from 'react-bootstrap';
+import { Subscription } from 'rxjs';
 
-import { wx } from '../../../WebRx';
 import { compare } from '../../../Utils/Compare';
+import { wx } from '../../../WebRx';
 import { ListItemsViewModel } from './ListItemsViewModel';
 
 export type SelectedPropsFunction = (isSelected: boolean, elem: React.ReactElement<React.HTMLProps<any>>) => {};
@@ -15,10 +15,7 @@ export interface SelectableListItemProps<T = {}> {
   selectedProps?: SelectedPropsFunction;
 }
 
-export interface SelectableListItemComponentProps extends SelectableListItemProps {
-}
-
-export class SelectableListItem extends React.Component<SelectableListItemComponentProps> {
+export class SelectableListItem extends React.Component<SelectableListItemProps> {
   static defaultProps: Partial<SelectableListItemProps> = {
     selectedProps: () => ({}),
   };
@@ -47,7 +44,7 @@ export class SelectableListItem extends React.Component<SelectableListItemCompon
     this.subscribeToUpdates(this.props.listItems);
   }
 
-  componentWillUpdate(nextProps: Readonly<SelectableListItemComponentProps>) {
+  componentWillUpdate(nextProps: Readonly<SelectableListItemProps>) {
     this.subscribeToUpdates(nextProps.listItems);
   }
 
@@ -72,7 +69,7 @@ export class SelectableListItem extends React.Component<SelectableListItemCompon
   }
 
   protected getListItemProps(elem: React.ReactElement<any>): ListGroupItemProps {
-    const onClickElement: Function | undefined = elem.props.onClick;
+    const onClickElement: (() => void) | undefined = elem.props.onClick;
 
     return Object.assign(
       {},
@@ -85,6 +82,7 @@ export class SelectableListItem extends React.Component<SelectableListItemCompon
     );
   }
 
+  // tslint:disable-next-line:ban-types
   protected handleClick(e: React.MouseEvent<any>, onClickElement: Function | undefined) {
     e.stopPropagation();
     e.preventDefault();

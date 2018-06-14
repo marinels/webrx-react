@@ -1,18 +1,18 @@
 import * as React from 'react';
 import { Grid } from 'react-bootstrap';
 
-import { updateDefaultContainer } from './NamespacedPortal';
-import { BootstrapGuide } from './BootstrapGuide';
-import { BaseView, BaseViewProps } from '../../React';
-import { Splash } from '../Splash/Splash';
-import { AlertHostView } from '../Alert/AlertHostView';
-import { SplashKey } from '../RouteHandler/RouteHandlerViewModel';
-import { RouteHandlerView } from '../RouteHandler/RouteHandlerView';
-import { PageHeaderView, PageHeaderProps } from '../PageHeader/PageHeaderView';
-import { PageFooterView, PageFooterProps } from '../PageFooter/PageFooterView';
-import { AppViewModel } from './AppViewModel';
-import { ViewMap, ViewMapper } from '../../../Routing';
 import { logo } from '../../../Assets';
+import { ViewMap, ViewMapper } from '../../../Routing';
+import { BaseView, BaseViewProps } from '../../React';
+import { AlertHostView } from '../Alert/AlertHostView';
+import { PageFooterProps, PageFooterView } from '../PageFooter/PageFooterView';
+import { PageHeaderProps, PageHeaderView } from '../PageHeader/PageHeaderView';
+import { RouteHandlerView } from '../RouteHandler/RouteHandlerView';
+import { SplashKey } from '../RouteHandler/RouteHandlerViewModel';
+import { Splash } from '../Splash/Splash';
+import { AppViewModel } from './AppViewModel';
+import { BootstrapGuide } from './BootstrapGuide';
+import { updateDefaultContainer } from './NamespacedPortal';
 
 ViewMap[SplashKey] = () => (
   <Splash header='webrx-react' logo={ logo } />
@@ -47,8 +47,14 @@ export class AppView extends BaseView<AppViewProps, AppViewModel> {
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { viewMap, guide, brand, branduri, responsive, alerts, header, footer, copyright, copyrightYear, copyrightUri, footerContent, hideDimensions } = x;
-      return { viewMap, guide, brand, branduri, responsive, alerts, header, footer, copyright, copyrightYear, copyrightUri, footerContent, hideDimensions };
+      const {
+        viewMap, guide, brand, branduri, responsive, alerts, header, footer, copyright, copyrightYear, copyrightUri,
+        footerContent, hideDimensions,
+      } = x;
+      return {
+        viewMap, guide, brand, branduri, responsive, alerts, header, footer, copyright, copyrightYear, copyrightUri,
+        footerContent, hideDimensions,
+      };
     });
 
     const footerProps = {
@@ -77,9 +83,30 @@ export class AppView extends BaseView<AppViewProps, AppViewModel> {
                     </div>
                   ))
                 }
-                { this.wxr.renderConditional(props.header, () => (<PageHeaderView viewModel={ this.viewModel.header } brand={ props.brand } branduri={ props.branduri } responsive={ props.responsive } />)) }
+                {
+                  this.wxr
+                    .renderConditional(
+                      props.header,
+                      () => (
+                        <PageHeaderView
+                          viewModel={ this.viewModel.header }
+                          brand={ props.brand }
+                          branduri={ props.branduri }
+                          responsive={ props.responsive }
+                        />
+                      ),
+                    )
+                }
                 <RouteHandlerView viewModel={ this.viewModel.routeHandler } viewMap={ props.viewMap! } />
-                { this.wxr.renderConditional(props.footer, () => (<PageFooterView viewModel={ this.viewModel.footer } { ...footerProps } />)) }
+                {
+                  this.wxr
+                    .renderConditional(
+                      props.footer,
+                      () => (
+                        <PageFooterView viewModel={ this.viewModel.footer } { ...footerProps } />
+                      ),
+                    )
+                }
               </div>
             ))
           }

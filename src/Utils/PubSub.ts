@@ -1,6 +1,6 @@
 import { Subject, Subscription } from 'rxjs';
 
-import { Logger, getLogger } from './Logging';
+import { getLogger, Logger } from './Logging';
 
 export class PubSub extends Subscription {
   public static displayName = 'PubSub';
@@ -32,7 +32,12 @@ export class PubSub extends Subscription {
       .asObservable();
   }
 
-  public subscribe<T>(key: string, onNext?: (value: T) => void, onError?: (exception: any) => void, onCompleted?: () => void) {
+  public subscribe<T>(
+    key: string,
+    onNext?: (value: T) => void,
+    onError?: (exception: any) => void,
+    onCompleted?: () => void,
+  ) {
     if (onError == null) {
       onError = e => {
         this.logger.error('PubSub Error', e);
@@ -54,7 +59,12 @@ export function observe<T>(key: string) {
   return Default.observe<T>(key);
 }
 
-export function subscribe<T>(key: string, onNext?: (value: T) => void, onError?: (exception: any) => void, onCompleted?: () => void) {
+export function subscribe<T>(
+  key: string,
+  onNext?: (value: T) => void,
+  onError?: (exception: any) => void,
+  onCompleted?: () => void,
+) {
   return Default.subscribe(key, onNext, onError, onCompleted);
 }
 

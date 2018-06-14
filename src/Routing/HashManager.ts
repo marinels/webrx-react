@@ -1,6 +1,6 @@
-import { Observable } from  'rxjs';
+import { Observable } from 'rxjs';
 
-import { wx, Command } from '../WebRx';
+import { Command, wx } from '../WebRx';
 import { HashManager } from './Interfaces';
 
 // this is a more comprehensive hash manager that does support history replacement

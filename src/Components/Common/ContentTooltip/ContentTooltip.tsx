@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Tooltip, Popover, OverlayTrigger } from 'react-bootstrap';
+import { OverlayTrigger, Popover, Tooltip } from 'react-bootstrap';
 
 export type TooltipPlacement = 'top' | 'right' | 'bottom' | 'left';
 
@@ -14,10 +14,7 @@ export interface ContentTooltipProps {
   context?: React.ReactElement<any>;
 }
 
-export interface ContentTooltipComponentProps extends ContentTooltipProps {
-}
-
-export class ContentTooltip extends React.Component<ContentTooltipComponentProps> {
+export class ContentTooltip extends React.Component<ContentTooltipProps> {
   render() {
     const content = this.props.content;
     const context = this.props.context || React.Children.only(this.props.children);

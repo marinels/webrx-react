@@ -1,11 +1,11 @@
+import * as moment from 'moment';
 import * as React from 'react';
 import { FormEventHandler } from 'react';
-import { FormGroup, InputGroup, Sizes, FormControl, DropdownButton, MenuItem, HelpBlock } from 'react-bootstrap';
+import { DropdownButton, FormControl, FormGroup, HelpBlock, InputGroup, MenuItem, Sizes } from 'react-bootstrap';
 import { Icon } from 'react-fa';
-import * as moment from 'moment';
 
-import { CommandButton } from '../CommandButton/CommandButton';
 import { SyntheticEvent } from 'react';
+import { CommandButton } from '../CommandButton/CommandButton';
 
 export type TimeSpanInputUnit = moment.unitOfTime.Base;
 
@@ -15,7 +15,7 @@ export interface TimeSpanInputProps {
   controlId?: string;
 
   duration?: moment.Duration;
-  units?: Array<TimeSpanInputUnit>;
+  units?: TimeSpanInputUnit[];
   initialUnit?: TimeSpanInputUnit;
   initialDuration?: moment.Duration;
   precision?: number;
@@ -47,7 +47,11 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
     precision: TimeSpanInput.DefaultPrecision,
   };
 
-  public static formatDuration(duration: moment.Duration | undefined, unit: TimeSpanInputUnit, precision = TimeSpanInput.DefaultPrecision) {
+  public static formatDuration(
+    duration: moment.Duration | undefined,
+    unit: TimeSpanInputUnit,
+    precision = TimeSpanInput.DefaultPrecision,
+  ) {
     if (duration == null) {
       return '';
     }
@@ -72,7 +76,7 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
     }
 
     const match: RegExpMatchArray = state.input.match(/^\s*([\d\.]+)(\s+(\w+))?\s*$/) || [];
-    let [ _1, value, _2, unitInput ] = match;
+    const [ _1, value, _2, unitInput ] = match;
 
     if (Number.isNumeric(value)) {
       // only process if it's numeric and valid
@@ -188,8 +192,14 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { bsClass, bsSize, controlId, duration, units, initialUnit, initialDuration, precision, onMomentDurationChanged, onMomentUnitChanged } = x;
-      return { bsClass, bsSize, controlId, duration, units, initialUnit, initialDuration, precision, onMomentDurationChanged, onMomentUnitChanged };
+      const {
+        bsClass, bsSize, controlId, duration, units, initialUnit, initialDuration, precision, onMomentDurationChanged,
+        onMomentUnitChanged,
+      } = x;
+      return {
+        bsClass, bsSize, controlId, duration, units, initialUnit, initialDuration, precision, onMomentDurationChanged,
+        onMomentUnitChanged,
+      };
     });
 
     return (
@@ -253,10 +263,14 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
           )
         }
         { this.renderDropdown() }
-        <CommandButton className='TimeSpanInput-adjustButton' componentClass='button' onClick={ this.handleIncreaseDuration.bind(this) }>
+        <CommandButton className='TimeSpanInput-adjustButton' componentClass='button'
+          onClick={ this.handleIncreaseDuration.bind(this) }
+        >
           <Icon name='chevron-up'/>
         </CommandButton>
-        <CommandButton className='TimeSpanInput-adjustButton' componentClass='button' onClick={ this.handleDecreaseDuration.bind(this) }>
+        <CommandButton className='TimeSpanInput-adjustButton' componentClass='button'
+          onClick={ this.handleDecreaseDuration.bind(this) }
+        >
           <Icon name='chevron-down'/>
         </CommandButton>
       </InputGroup.Button>

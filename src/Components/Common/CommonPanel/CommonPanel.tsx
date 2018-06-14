@@ -1,5 +1,7 @@
+// tslint:disable:max-classes-per-file
+
 import * as React from 'react';
-import { Panel, PanelProps, ButtonToolbar, TransitionCallbacks } from 'react-bootstrap';
+import { ButtonToolbar, Panel, PanelProps, TransitionCallbacks } from 'react-bootstrap';
 
 import { CommandButton } from '../CommandButton/CommandButton';
 
@@ -51,8 +53,14 @@ export class CommonPanel extends React.Component<CommonPanelProps> {
 
   render() {
     const { className, children, props, rest } = this.restProps(x => {
-      const { headerContent, headerActions, headerFormat, teaserContent, summaryContent, footerContent, footerActions, footerFormat, shadow } = x;
-      return { headerContent, headerActions, headerFormat, teaserContent, summaryContent, footerContent, footerActions, footerFormat, shadow };
+      const {
+        headerContent, headerActions, headerFormat, teaserContent, summaryContent, footerContent, footerActions,
+        footerFormat, shadow,
+      } = x;
+      return {
+        headerContent, headerActions, headerFormat, teaserContent, summaryContent, footerContent, footerActions,
+        footerFormat, shadow,
+      };
     });
 
     const panelClassName = this.wxr.classNames(
@@ -66,8 +74,12 @@ export class CommonPanel extends React.Component<CommonPanelProps> {
 
     return (
       <Panel { ...rest } className={ panelClassName }
-        header={ rest.header || this.renderHeaderFooter(props.headerContent, props.headerActions, 'header', props.headerFormat) }
-        footer={ rest.footer || this.renderHeaderFooter(props.footerContent, props.footerActions, 'footer', props.footerFormat) }
+        header={
+          rest.header || this.renderHeaderFooter(props.headerContent, props.headerActions, 'header', props.headerFormat)
+        }
+        footer={
+          rest.footer || this.renderHeaderFooter(props.footerContent, props.footerActions, 'footer', props.footerFormat)
+        }
       >
         { this.renderContent(props.teaserContent, 'body', 'teaser') }
         { children }
@@ -76,9 +88,16 @@ export class CommonPanel extends React.Component<CommonPanelProps> {
     );
   }
 
-  private renderContent(content: CommonPannelContent | undefined, section: CommonPanelContentSection, sectionType?: CommonPanelContentType) {
+  private renderContent(
+    content: CommonPannelContent | undefined,
+    section: CommonPanelContentSection,
+    sectionType?: CommonPanelContentType,
+  ) {
     return this.wxr.renderNullable(content, x => (
-      <div className={ this.wxr.classNames(`CommonPanel-${ section }Content`, sectionType == null ? null : `CommonPanel-${ sectionType }`) }>
+      <div className={
+        this.wxr
+          .classNames(`CommonPanel-${ section }Content`, sectionType == null ? null : `CommonPanel-${ sectionType }`)
+      }>
         { x instanceof Function ? x(this) : x }
       </div>
     ), undefined, x => x !== false);
@@ -117,7 +136,12 @@ export class CommonPanel extends React.Component<CommonPanelProps> {
       );
   }
 
-  private renderHeaderFooter(content: CommonPannelContent | undefined, actions: any, section: CommonPanelContentSection, formatter: (section: any) => any = x => x) {
+  private renderHeaderFooter(
+    content: CommonPannelContent | undefined,
+    actions: any,
+    section: CommonPanelContentSection,
+    formatter: (section: any) => any = x => x,
+  ) {
     return this.wxr.renderConditional(
       content != null || actions != null,
       () => formatter(
