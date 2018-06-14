@@ -15,7 +15,7 @@ import { SearchViewModel } from '../Search/SearchViewModel';
 export interface PageHeaderProps {
   brand?: any;
   branduri?: string;
-  fixed?: boolean;
+  responsive?: boolean;
 }
 
 export interface PageHeaderViewProps extends BaseViewProps<PageHeaderViewModel>, PageHeaderProps {
@@ -76,7 +76,7 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
   loaded() {
     super.loaded();
 
-    if (this.props.fixed) {
+    if (!this.props.responsive) {
       window.onresize = () => {
         this.layoutNavBar();
       };
@@ -87,15 +87,15 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { brand, branduri, fixed } = x;
-      return { brand, branduri, fixed };
+      const { brand, branduri, responsive } = x;
+      return { brand, branduri, responsive };
     });
 
     return (
       <div ref={ this.containerRef } { ...rest }
         className={ this.wxr.classNames('PageHeader', className) }
       >
-        <Navbar ref={ this.navBarRef } fixedTop={ props.fixed } fluid>
+        <Navbar ref={ this.navBarRef } fixedTop={ !props.responsive } fluid>
           <Navbar.Header>
             <Navbar.Brand>
               { this.renderBrandButton() }

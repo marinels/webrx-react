@@ -38,7 +38,6 @@ export class AppView extends BaseView<AppViewProps, AppViewModel> {
   static defaultProps: Partial<AppProps> = {
     viewMap: ViewMap,
     guide: DEBUG,
-    fixed: true,
   };
 
   updateOn(viewModel: Readonly<AppViewModel>) {
@@ -49,8 +48,8 @@ export class AppView extends BaseView<AppViewProps, AppViewModel> {
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { viewMap, guide, brand, branduri, fixed, alerts, header, footer, copyright, copyrightYear, copyrightUri, footerContent, hideDimensions } = x;
-      return { viewMap, guide, brand, branduri, fixed, alerts, header, footer, copyright, copyrightYear, copyrightUri, footerContent, hideDimensions };
+      const { viewMap, guide, brand, branduri, responsive, alerts, header, footer, copyright, copyrightYear, copyrightUri, footerContent, hideDimensions } = x;
+      return { viewMap, guide, brand, branduri, responsive, alerts, header, footer, copyright, copyrightYear, copyrightUri, footerContent, hideDimensions };
     });
 
     const footerProps = {
@@ -79,7 +78,7 @@ export class AppView extends BaseView<AppViewProps, AppViewModel> {
                     </div>
                   ))
                 }
-                { this.wxr.renderConditional(props.header, () => (<PageHeaderView viewModel={ this.viewModel.header } brand={ props.brand } branduri={ props.branduri } fixed={ props.fixed } />)) }
+                { this.wxr.renderConditional(props.header, () => (<PageHeaderView viewModel={ this.viewModel.header } brand={ props.brand } branduri={ props.branduri } responsive={ props.responsive } />)) }
                 <RouteHandlerView viewModel={ this.viewModel.routeHandler } viewMap={ props.viewMap! } />
                 { this.wxr.renderConditional(props.footer, () => (<PageFooterView viewModel={ this.viewModel.footer } { ...footerProps } />)) }
               </div>
