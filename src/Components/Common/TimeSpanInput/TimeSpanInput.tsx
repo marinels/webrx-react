@@ -194,11 +194,11 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
     const { className, props, rest } = this.restProps(x => {
       const {
         bsClass, bsSize, controlId, duration, units, initialUnit, initialDuration, precision, onMomentDurationChanged,
-        onMomentUnitChanged,
+        onMomentUnitChanged, reparseButton,
       } = x;
       return {
         bsClass, bsSize, controlId, duration, units, initialUnit, initialDuration, precision, onMomentDurationChanged,
-        onMomentUnitChanged,
+        onMomentUnitChanged, reparseButton,
       };
     });
 
