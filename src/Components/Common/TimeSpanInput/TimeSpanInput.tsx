@@ -254,7 +254,7 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
           this.wxr.renderConditional(
             this.props.reparseButton,
             () => (
-              <CommandButton className='TimeSpanInput-adjustButton'
+              <CommandButton id={ `${ this.props.id }-reparse` } className='TimeSpanInput-adjustButton'
                 onClick={ () => { return; } } tooltip='Reparse input'
               >
                 <Icon name='check'/>
