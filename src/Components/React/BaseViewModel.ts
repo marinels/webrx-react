@@ -1,7 +1,6 @@
-import { Observable, Observer, Subject, Subscription } from 'rxjs';
-import { AnonymousSubscription, TeardownLogic } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
-import { wx, WebRxStatic, Property, Command } from '../../WebRx';
+import { wx, WebRxStatic, Command } from '../../WebRx';
 import { Logger, LogLevel, getLogger } from '../../Utils/Logging';
 import { Alert, PubSub } from '../../Utils';
 import { RoutingStateChangedKey } from '../../Events';

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Panel, PanelProps, ButtonToolbar, TransitionCallbacks } from 'react-bootstrap';
 
-import { CommandButton, CommandButtonProps } from '../CommandButton/CommandButton';
+import { CommandButton } from '../CommandButton/CommandButton';
 
 export type CommonPannelContent = ((x: CommonPanel) => any) | any;
 export type CommonPanelSectionFormatter = (section: any) => any;

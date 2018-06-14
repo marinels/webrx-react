@@ -1,17 +1,14 @@
 import * as React from 'react';
 import { Iterable } from 'ix';
 import * as classNames from 'classnames';
-import { Table } from 'react-bootstrap';
 
 import { Logging } from '../../../Utils';
 import { PanelView } from './PanelView';
 import { ItemsPresenter } from '../Items/ItemsPresenter';
-import { GridViewColumns, GridViewColumnProps, GridViewColumn } from './GridViewColumn';
+import { GridViewColumns, GridViewColumn } from './GridViewColumn';
 import { ListItemsViewTemplate, ListItemsViewTemplateProps } from './ListItemsViewTemplate';
 import { PanelFragment, PanelItemContext } from '../Panel/Panel';
 import { TablePanel, BootstrapTableProps } from '../Panel/TablePanel';
-import { ContentTooltip } from '../ContentTooltip/ContentTooltip';
-import { ListItemsViewModel } from './ListItemsViewModel';
 
 export interface GridTemplateProps<T = {}> {
   headerTemplate?: (header: PanelFragment, item: T | undefined, field: string | undefined) => PanelFragment;

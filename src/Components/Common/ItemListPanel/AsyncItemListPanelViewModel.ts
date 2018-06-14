@@ -1,11 +1,10 @@
 import { Iterable } from 'ix';
-import { Observable } from 'rxjs';
 
 import { ObservableOrValue, ObservableLike } from '../../../WebRx';
 import { ItemListPanelViewModel, ItemListPanelContext } from './ItemListPanelViewModel';
 import { DataSourceRequest, DataSourceResponse } from '../DataGrid/DataGridViewModel';
 import { AsyncDataGridViewModel } from '../DataGrid/AsyncDataGridViewModel';
-import { SearchViewModel, SearchRequest } from '../Search/SearchViewModel';
+import { SearchViewModel } from '../Search/SearchViewModel';
 import { PagerViewModel } from '../Pager/PagerViewModel';
 
 export class AsyncItemListPanelViewModel<T, TRequestContext = any> extends ItemListPanelViewModel<T, TRequestContext> {

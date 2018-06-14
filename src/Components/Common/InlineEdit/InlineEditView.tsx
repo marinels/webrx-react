@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { findDOMNode } from 'react-dom';
-import { Observable } from 'rxjs';
 import { Icon } from 'react-fa';
 import { FormGroup, InputGroup, FormControl, Sizes } from 'react-bootstrap';
 

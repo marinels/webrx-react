@@ -4,7 +4,6 @@ import * as moment from 'moment';
 
 import { wx } from '../../WebRx';
 import { Alert, Compare } from '../../Utils';
-import { HeaderMenu, HeaderCommandAction } from '../React';
 import * as Components from '../Common';
 import { TodoListViewModel } from './TodoList/TodoListViewModel';
 import { RouteMap as AppRouteMap } from '../../Routing';

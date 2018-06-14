@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { FormEventHandler } from 'react';
-import { FormGroup, InputGroup, Sizes, FormControl, FormControlProps, DropdownButton, MenuItem, HelpBlock, SelectCallback } from 'react-bootstrap';
+import { FormGroup, InputGroup, Sizes, FormControl, DropdownButton, MenuItem, HelpBlock } from 'react-bootstrap';
 import { Icon } from 'react-fa';
 import * as moment from 'moment';
 
-import { BindableInput, BindableInputProps } from '../BindableInput/BindableInput';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { SyntheticEvent } from 'react';
 

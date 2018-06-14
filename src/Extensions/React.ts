@@ -1,7 +1,6 @@
 // tslint:disable:no-shadowed-variable
 
 import * as React from 'react';
-import { Iterable } from 'ix';
 
 import { RestResult } from './Object';
 

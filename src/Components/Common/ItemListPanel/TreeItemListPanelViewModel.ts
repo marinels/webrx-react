@@ -1,7 +1,6 @@
 import { Iterable } from 'ix';
-import { Observable } from 'rxjs';
 
-import { ObservableOrValue, ObservableLike, IterableLike } from '../../../WebRx';
+import { ObservableLike, IterableLike } from '../../../WebRx';
 import { ItemListPanelViewModel } from './ItemListPanelViewModel';
 import { SearchViewModel, SearchRequest } from '../Search/SearchViewModel';
 import { flattenItems } from '../ListItems/TreeListItemsViewModel';

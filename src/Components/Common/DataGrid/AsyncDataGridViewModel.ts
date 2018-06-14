@@ -1,5 +1,4 @@
 import { Iterable } from 'ix';
-import { Observable } from 'rxjs';
 
 import { ObservableLike, ObservableOrValue } from '../../../WebRx';
 import { DataGridViewModel, DataSourceRequest, DataSourceResponse } from './DataGridViewModel';

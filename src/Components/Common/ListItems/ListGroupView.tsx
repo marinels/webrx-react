@@ -4,8 +4,7 @@ import { PanelView } from './PanelView';
 import { ItemsPresenter } from '../Items/ItemsPresenter';
 import { ListItemsViewTemplate, ListItemsViewTemplateProps } from './ListItemsViewTemplate';
 import { ListGroupPanel } from '../Panel/ListGroupPanel';
-import { PanelFragment, PanelItemContext } from '../Panel/Panel';
-import { ListItemsViewModel } from './ListItemsViewModel';
+import { PanelItemContext } from '../Panel/Panel';
 
 export interface ListGroupViewProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ListItemsViewTemplateProps<T, TContext> {
   fill?: boolean;

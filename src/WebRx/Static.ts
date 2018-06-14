@@ -1,6 +1,3 @@
-import { Observable, Observer, Subscription, Subject } from 'rxjs';
-import { AnonymousSubscription } from 'rxjs/Subscription';
-
 import {
   isIterable, isAsyncIterable,
   isSubscription, isObservable, isObserver, isSubject, isProperty, isCommand,
@@ -8,12 +5,10 @@ import {
   logObservable, logMemberObservables,
   getObservableOrAlert, getObservableResultOrAlert, subscribeOrAlert,
 } from './Utils';
-import { Property, Command } from './Interfaces';
 import { property } from './Property';
 import { command } from './Command';
 import { whenAny } from './WhenAny';
 import * as utils from '../Utils';
-import { Logger } from '../Utils/Logging';
 
 export function create() {
   return {

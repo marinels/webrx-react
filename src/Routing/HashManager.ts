@@ -1,4 +1,4 @@
-import { Observable, Scheduler } from  'rxjs';
+import { Observable } from  'rxjs';
 
 import { wx, Command } from '../WebRx';
 import { HashManager } from './Interfaces';

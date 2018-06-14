@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Observable } from 'rxjs';
 
 import { BaseView, BaseViewProps } from '../../React';
 import { PanelItemContext } from '../Panel/Panel';

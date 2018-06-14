@@ -1,11 +1,10 @@
 import { Observable } from 'rxjs';
-import { Tooltip } from 'react-bootstrap';
 
-import { ReadOnlyProperty, Property, Command } from '../../WebRx';
+import { ReadOnlyProperty, Command } from '../../WebRx';
 import { Route } from '../../Routing';
 import {
   HeaderCommandAction, HeaderMenu, HandlerRoutingStateChanged, isRoutingStateHandler,
-  BaseRoutableViewModel, isRoutableViewModel, RoutingBreadcrumb, Search } from '../React';
+  BaseRoutableViewModel, isRoutableViewModel, RoutingBreadcrumb } from '../React';
 import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
 import { Current as App } from '../Common/App/AppViewModel';
 

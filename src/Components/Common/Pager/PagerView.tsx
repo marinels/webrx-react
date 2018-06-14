@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Grid, Row, Col } from 'react-bootstrap';
-import { Observable } from 'rxjs';
-import { Pagination, PaginationProps, Sizes, SelectCallback, DropdownButton, DropdownButtonProps, MenuItem } from 'react-bootstrap';
+import { Pagination, PaginationProps, DropdownButton, DropdownButtonProps, MenuItem } from 'react-bootstrap';
 
 import { BaseView, BaseViewProps } from '../../React';
 import { PagerViewModel, StandardLimits } from './PagerViewModel';
@@ -22,8 +21,6 @@ export interface PagerViewProps extends BaseViewProps<PagerViewModel>, PagerProp
 
 export type PagerComponentTypes = 'info' | 'controls' | 'limit' | undefined;
 export const StandardPagerComponentOrder: PagerComponentTypes[] = [ 'info', 'controls', 'limit' ];
-
-const ComponentLocations = [ 'left', 'center', 'right' ];
 
 export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
   public static displayName = 'PagerView';

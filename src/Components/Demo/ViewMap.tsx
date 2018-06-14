@@ -2,12 +2,12 @@ import * as React from 'react';
 import * as CSS from 'csstype';
 import { Observable } from 'rxjs';
 import { Icon } from 'react-fa';
-import { Grid, Row, Col, Form, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab,
-  Well, ListGroup, ListGroupItem, Table, OverlayTrigger, Overlay, Tooltip, Popover, Label,
+import { Grid, Row, Col, FormGroup, InputGroup, FormControl, Button, MenuItem, Panel, Tab,
+  Well, ListGroup, ListGroupItem, Table, OverlayTrigger, Tooltip, Popover, Label,
 } from 'react-bootstrap';
 
 import { Property, Command } from '../../WebRx';
-import { Logging, Alert } from '../../Utils';
+import { Alert } from '../../Utils';
 import { wxr } from '../React';
 import { SampleData, SampleTreeData, sampleListData, sampleTreeData } from './RoutingMap';
 import * as Components from '../Common';
@@ -16,8 +16,6 @@ import { TodoListViewModel } from './TodoList/TodoListViewModel';
 import { ComponentDemoViewModel } from './ComponentDemoViewModel';
 import { ComponentDemoView, ViewActivatorMap } from './ComponentDemoView';
 import { ViewMap as AppViewMap } from '../../Routing';
-
-const logger = Logging.getLogger('Demo.ViewMap');
 
 const sampleDataTemplate = (x: SampleData) => {
   return (

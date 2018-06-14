@@ -1,6 +1,3 @@
-import { Iterable } from 'ix';
-import { Observable } from 'rxjs';
-
 import { BaseSampleDataStore } from '../../../../Stores/SampleData/BaseSampleDataStore';
 import { TodoListActions, TodoListItem } from '../TodoListStore';
 

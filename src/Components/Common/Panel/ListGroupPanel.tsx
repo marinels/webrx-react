@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ListGroup, ListGroupProps, ListGroupItem } from 'react-bootstrap';
+import { ListGroup, ListGroupProps } from 'react-bootstrap';
 
 import { PanelItemProps, PanelItemContext, PanelTemplateProps, Panel } from './Panel';
 

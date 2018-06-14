@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Iterable } from 'ix';
 
 import { IterableLike } from '../../../WebRx';
-import { Panel, StackPanel, PanelItemProps, PanelItemContext, PanelRenderProps, PanelFragment } from '../Panel';
+import { StackPanel, PanelItemProps, PanelItemContext, PanelRenderProps, PanelFragment } from '../Panel';
 
 export type ViewTemplate = (itemsPanel: PanelFragment, itemsPresenter: ItemsPresenter) => JSX.Element | null | false;
 export type ItemsPanelTemplate<T = {}> = (itemTemplates: Array<PanelFragment>, itemsPresenter: ItemsPresenter, items: Array<T> | undefined) => PanelFragment;

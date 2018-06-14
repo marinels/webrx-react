@@ -1,9 +1,7 @@
 import * as React from 'react';
-import { Iterable } from 'ix';
 
 import { ItemsProps, ItemsViewProps, ItemsView } from './ItemsView';
 import { TreeItemFacadeProps, TreeItem } from './TreeItem';
-import { ItemsPresenter } from './ItemsPresenter';
 
 export interface TreeItemsProps extends ItemsProps, TreeItemFacadeProps {
 }

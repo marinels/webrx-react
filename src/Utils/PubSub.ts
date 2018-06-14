@@ -1,4 +1,4 @@
-import { Observable, Subject, Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
 import { Logger, getLogger } from './Logging';
 

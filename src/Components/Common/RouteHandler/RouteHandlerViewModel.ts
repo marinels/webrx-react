@@ -6,7 +6,7 @@ import { BaseViewModel, isRoutableViewModel, RoutingBreadcrumb, HandlerRoutingSt
 import { Route, RouteMapper, ComponentActivator, RoutedComponentActivator } from '../../../Routing';
 import { routeManager } from '../../../Routing/RouteManager';
 import { PubSub } from '../../../Utils';
-import { RoutingStateChangedKey, RoutingStateChanged } from '../../../Events/RoutingStateChanged';
+import { RoutingStateChangedKey } from '../../../Events/RoutingStateChanged';
 
 export const SplashKey = 'Splash';
 export const DefaultKey = '*';

@@ -1,5 +1,3 @@
-import { Observable } from  'rxjs';
-
 import { ReadOnlyProperty, Command } from '../../../WebRx';
 import { BaseViewModel } from '../../React';
 

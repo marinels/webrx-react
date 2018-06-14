@@ -1,9 +1,6 @@
-import { Observable } from 'rxjs';
-
-import { ReadOnlyProperty, Property, Command } from '../../WebRx';
+import { ReadOnlyProperty, Command } from '../../WebRx';
 import { BaseViewModel } from './BaseViewModel';
 import { HeaderCommandAction, HeaderMenu } from './Actions';
-import { PubSub } from '../../Utils';
 import { HandlerRoutingStateChanged, RoutingStateHandler, Search } from './Interfaces';
 
 export function isRoutableViewModel(value: any): value is BaseRoutableViewModel<any> {

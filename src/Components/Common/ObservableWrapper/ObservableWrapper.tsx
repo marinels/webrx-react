@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 import { ObservableLike, ReadOnlyProperty } from '../../../WebRx';
 

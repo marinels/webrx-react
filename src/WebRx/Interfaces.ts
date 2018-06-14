@@ -1,6 +1,6 @@
 import { Iterable } from 'ix';
 import { AsyncIterableInput } from 'ix/asynciterable/asynciterablex';
-import { Observable, Observer, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { PartialObserver } from 'rxjs/Observer';
 
 export type IterableLike<T> = Iterable<T> | ArrayLike<T>;

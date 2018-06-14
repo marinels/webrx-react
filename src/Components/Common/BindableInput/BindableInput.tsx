@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { Subscription } from 'rxjs';
 
-import { Property } from '../../../WebRx';
-
 export function validateBindableProperty(property: any) {
   if (BindableInput.wx.isProperty(property) && property.isReadOnly) {
     BindableInput.wx.handleError('BindableInput bound to ReadOnlyProperty', property);

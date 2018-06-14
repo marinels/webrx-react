@@ -1,5 +1,3 @@
-import { Observable } from 'rxjs';
-
 import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
 import { BaseViewModel, RoutingStateHandler, HandlerRoutingStateChanged } from '../../React';
 

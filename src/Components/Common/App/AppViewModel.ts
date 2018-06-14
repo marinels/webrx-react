@@ -6,7 +6,7 @@ import { AlertHostViewModel } from '../Alert/AlertHostViewModel';
 import { PageHeaderViewModel } from '../PageHeader/PageHeaderViewModel';
 import { PageFooterViewModel } from '../PageFooter/PageFooterViewModel';
 import { RouteHandlerViewModel, SplashKey } from '../RouteHandler/RouteHandlerViewModel';
-import { RouteMap, RouteMapper } from '../../../Routing';
+import { RouteMap } from '../../../Routing';
 
 // inject a default route
 RouteMap['/'] = { path: SplashKey };

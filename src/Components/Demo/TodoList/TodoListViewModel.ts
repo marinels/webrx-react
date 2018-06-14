@@ -1,7 +1,6 @@
 import { Observable } from 'rxjs';
 
 import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
-import { Route } from '../../../Routing';
 import { BaseViewModel, RoutingStateHandler, HandlerRoutingStateChanged } from '../../React';
 import { ItemListPanelViewModel, ItemListPanelRoutingState } from '../../Common/ItemListPanel/ItemListPanelViewModel';
 import { TodoListStore, TodoListItem } from './TodoListStore';

@@ -1,5 +1,4 @@
 import { Iterable } from 'ix';
-import { Observable } from 'rxjs';
 
 import { ObservableOrValue, ObservableLike, IterableLike } from '../../../WebRx';
 import { ItemListPanelContext } from './ItemListPanelViewModel';

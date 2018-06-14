@@ -1,13 +1,10 @@
 import * as React from 'react';
-import { Observable } from 'rxjs';
-import { Grid, Alert, Breadcrumb } from 'react-bootstrap';
+import { Grid, Alert } from 'react-bootstrap';
 import RTG = require('react-transition-group');
-import { Icon } from 'react-fa';
 
 import { BaseView, BaseViewProps, isViewModel, isRoutableViewModel } from '../../React';
 import { RouteHandlerViewModel, SplashKey, DefaultKey } from './RouteHandlerViewModel';
 import { Breadcrumbs } from './Breadcrumbs';
-import { CommandButton } from '../CommandButton/CommandButton';
 import { ViewMapper } from '../../../Routing';
 
 export interface RouteHandlerProps {

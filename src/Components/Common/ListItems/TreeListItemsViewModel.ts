@@ -1,8 +1,6 @@
 import { Iterable } from 'ix';
-import { Observable } from 'rxjs';
 
 import { IterableLike, ObservableLike } from '../../../WebRx';
-import { ItemsViewModel } from '../Items/ItemsViewModel';
 import { ListItemsViewModel } from './ListItemsViewModel';
 
 export function flattenItems<T>(

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Iterable } from 'ix';
 
 import * as Layout from './GridLayout';
-import { PanelItemContext, PanelItemProp, PanelItemProps, PanelTemplateProps, PanelItemTemplate, PanelProps, Panel } from './Panel';
+import { PanelItemContext, PanelProps, Panel } from './Panel';
 
 export { RowDefinition, ColumnDefinition } from './GridLayout';
 

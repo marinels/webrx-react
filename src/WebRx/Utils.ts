@@ -3,7 +3,7 @@ import { Iterable } from 'ix';
 import { AnonymousSubscription } from 'rxjs/Subscription';
 import { Observable, Observer, Subject, Subscription } from 'rxjs';
 
-import { Property, Command, IterableLike, AsyncIterableLike, ObservableOrValue, ObservableLike } from './Interfaces';
+import { Property, Command, ObservableOrValue, ObservableLike } from './Interfaces';
 import { Logging, Alert } from '../Utils';
 import { Default as ConsoleLogger } from '../Utils/Logging/Adapters/Console';
 

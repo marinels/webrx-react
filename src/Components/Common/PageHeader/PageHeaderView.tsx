@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { Observable } from 'rxjs';
 import { findDOMNode } from 'react-dom';
 import { Icon, IconStack } from 'react-fa';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 
-import { BaseView, BaseViewProps, HeaderAction, HeaderCommandAction, HeaderMenu } from '../../React';
+import { BaseView, BaseViewProps, HeaderAction, HeaderCommandAction } from '../../React';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { SearchView } from '../Search/SearchView';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';

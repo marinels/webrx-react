@@ -1,4 +1,4 @@
-import { Observable, Scheduler } from  'rxjs';
+import { Observable } from  'rxjs';
 
 export interface Route {
   path: string;

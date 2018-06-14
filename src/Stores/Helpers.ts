@@ -2,7 +2,7 @@ import { Observable, AjaxRequest, AjaxError } from 'rxjs';
 import param = require('jquery-param');
 
 import { Logging } from '../Utils';
-import { getWindowLocation, joinPath } from '../Routing';
+import { getWindowLocation } from '../Routing';
 import { HttpRequestMethod, ObservableApiError, StoreApi } from './Interfaces';
 
 export function sanitizeUri(uri: string) {

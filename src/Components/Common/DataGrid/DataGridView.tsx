@@ -1,13 +1,11 @@
 import * as React from 'react';
-import { Observable } from 'rxjs';
 import { Icon } from 'react-fa';
 
 import { BaseView, BaseViewProps } from '../../React';
 import { SortDirection } from '../../../Utils/Compare';
 import { ListItemsView, ListItemsProps } from '../ListItems/ListItemsView';
 import { PanelFragment, PanelItemContext } from '../Panel/Panel';
-import { ItemsPresenter } from '../Items/ItemsPresenter';
-import { GridViewColumns, GridViewColumn } from '../ListItems/GridViewColumn';
+import { GridViewColumns } from '../ListItems/GridViewColumn';
 import { GridView } from '../ListItems/GridView';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { PagerView, PagerProps } from '../Pager/PagerView';

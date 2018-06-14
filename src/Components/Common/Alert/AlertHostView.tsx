@@ -1,11 +1,9 @@
 import * as React from 'react';
-import { Observable } from 'rxjs';
 import RTG = require('react-transition-group');
 
 import { BaseView, BaseViewProps } from '../../React';
 import { AlertView } from './AlertView';
 import { AlertHostViewModel } from './AlertHostViewModel';
-import { AlertViewModel } from './AlertViewModel';
 
 export interface AlertHostProps {
 }

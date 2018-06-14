@@ -2,14 +2,12 @@
 // tslint:disable no-shadowed-variable
 
 import { Iterable } from 'ix';
-import { Subscription, AnonymousSubscription, TeardownLogic } from 'rxjs/Subscription';
+import { Subscription, TeardownLogic } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import { PartialObserver } from 'rxjs/Observer';
-import { Observer } from 'rxjs';
 import { IScheduler } from 'rxjs/Scheduler';
-import { startWith } from 'rxjs/operator/startWith';
 
-import { ReadOnlyProperty, Command, Property } from './Interfaces';
+import { Command, Property } from './Interfaces';
 import { isSubscription } from './Utils';
 import { property } from './Property';
 

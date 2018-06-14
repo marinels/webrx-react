@@ -1,10 +1,10 @@
-import { Observable, Subscription, Scheduler } from 'rxjs';
+import { Subscription, Scheduler } from 'rxjs';
 
 import { ReadOnlyProperty } from '../WebRx';
 import { Logging } from '../Utils';
 import { HashCodec } from './HashCodec';
 import { Route, HashManager } from './Interfaces';
-import { historyStateHashManager, windowLocationHashManager } from './HashManager';
+import { historyStateHashManager } from './HashManager';
 import { getPath, normalizePath } from './Helpers';
 
 export class RouteManager extends Subscription {

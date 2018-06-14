@@ -6,7 +6,6 @@ import { AnonymousSubscription, TeardownLogic } from 'rxjs/Subscription';
 import { IterableLike, Property, Command } from '../../WebRx';
 import { ReactSpreadResult, ReactSpreadRestrictedProps, reactRestrictedProps } from '../../Extensions/React';
 import { Alert, Logging } from '../../Utils';
-import { ViewModelLifecyle } from './Interfaces';
 import { BaseViewModel, isViewModelLifecycle } from './BaseViewModel';
 import { bindObservableToCommand, bindEventToProperty, bindEventToCommand } from './BindingHelpers';
 

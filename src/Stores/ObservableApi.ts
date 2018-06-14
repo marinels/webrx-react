@@ -1,7 +1,6 @@
-import { Observable, Subject, Subscription, Observer, AjaxRequest } from 'rxjs';
-import { AnonymousSubscription } from 'rxjs/Subscription';
+import { Observable, AjaxRequest } from 'rxjs';
 
-import { wx, WebRxStatic, Property, Command } from '../WebRx';
+import { wx, WebRxStatic } from '../WebRx';
 import { Logger, getLogger } from '../Utils/Logging';
 import { getWindowLocation, joinPath } from '../Routing';
 import { HttpRequestMethod, SampleDataStore, SampleDataApi, SampleDataCreator, StoreApi } from './Interfaces';

@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-import { ReadOnlyProperty, Command } from '../../../WebRx';
+import { ReadOnlyProperty } from '../../../WebRx';
 import { BaseViewModel } from '../../React';
 import { AlertViewModel } from '../Alert/AlertViewModel';
 import { Default as pubSub } from '../../../Utils/PubSub';

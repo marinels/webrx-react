@@ -1,12 +1,12 @@
-import { Iterable } from 'ix';
 import * as React from 'react';
+import { Iterable } from 'ix';
 import { MouseEventHandler, MouseEvent } from 'react';
 import { Button } from 'react-bootstrap';
 import { Icon } from 'react-fa';
 
 import { IterableLike } from '../../../WebRx';
-import { ItemsPresenterProps, ItemsPresenterTemplateProps, ItemsPresenter } from './ItemsPresenter';
-import { PanelItemProps, PanelItemContext, PanelRenderProps, Panel, PanelFragment } from '../Panel/Panel';
+import { ItemsPresenterTemplateProps, ItemsPresenter } from './ItemsPresenter';
+import { PanelItemProps, PanelItemContext, PanelRenderProps, PanelFragment } from '../Panel/Panel';
 
 export type RecursiveItemsSource<T> = (item: T) => (IterableLike<T> | undefined);
 
