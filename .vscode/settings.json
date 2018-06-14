@@ -1,9 +1,11 @@
 // Place your settings in this file to overwrite default and user settings.
 {
-  "editor.tabSize": 2,
   "editor.insertSpaces": true,
+  "editor.rulers": [ 120 ],
+  "editor.tabSize": 2,
   "files.eol": "\n",
   "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
   "stylelint.enable": true,
   "typescript.tsdk": "node_modules/typescript/lib"
