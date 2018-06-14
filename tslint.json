@@ -1,5 +1,8 @@
 {
-  "extends": "tslint-config-unional/strict",
+  "extends": [
+    "tslint:recommended",
+    "tslint-config-unional/strict"
+  ],
   "rules": {
     // standardize on a linebreak
     "linebreak-style": [ true, "LF" ],
@@ -11,6 +14,17 @@
     "typedef": [ false ],
 
     // allow pascal case (for class imports) and ban any keywords
-    "variable-name": [ true, "check-format", "allow-pascal-case", "ban-keywords" ]
+    "variable-name": [ true, "check-format", "allow-pascal-case", "ban-keywords" ],
+
+    // temp disables
+    "ordered-imports": [ false ],
+    "max-line-length": [ false ],
+    "array-type": [ false ],
+    "unified-signatures": [ false ],
+    "no-empty-interface": [ false ],
+    "max-classes-per-file": [ false ],
+
+    // allow bare arrow params
+    "arrow-parens": [ false ]
   }
 }
