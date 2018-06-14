@@ -1,6 +1,6 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import { Observable } from 'rxjs';
+import { findDOMNode } from 'react-dom';
 import { Icon, IconStack } from 'react-fa';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 
@@ -122,7 +122,7 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
 
   private layoutNavBar() {
     const container = this.containerRef.current;
-    const navBar = this.navBarRef.current && ReactDOM.findDOMNode(this.navBarRef.current) as HTMLDivElement;
+    const navBar = this.navBarRef.current && findDOMNode(this.navBarRef.current) as HTMLDivElement;
 
     if (container && navBar) {
       const rect = container.getBoundingClientRect();
