@@ -217,8 +217,8 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
     );
   }
 
-  constructor(props: TreeItemComponentProps, context?: any) {
-    super(props, context);
+  constructor(props: any) {
+    super(props);
 
     this.state = {
       isExpanded: this.props.startExpanded || false,

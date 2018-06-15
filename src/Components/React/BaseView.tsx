@@ -45,8 +45,8 @@ export abstract class BaseView<
 
   protected readonly logger: Logging.Logger = Logging.getLogger(this.getDisplayName());
 
-  constructor(props: TViewProps, context?: any) {
-    super(props, context);
+  constructor(props: any) {
+    super(props);
 
     this.updateSubscription = this.subscriptions = Subscription.EMPTY;
     this.subscriptions = new Subscription();

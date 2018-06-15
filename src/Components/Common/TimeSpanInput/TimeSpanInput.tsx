@@ -137,8 +137,8 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
     });
   }
 
-  constructor(props: TimeSpanInputComponentProps, context?: any) {
-    super(props, context);
+  constructor(props: any) {
+    super(props);
 
     this.state = {
       unit: props.initialUnit!,

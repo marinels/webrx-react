@@ -38,8 +38,10 @@ const ArrowOffset = 20;
 export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuState> {
   public static displayName = 'ContextMenu';
 
-  constructor(props: any, context?: any) {
-    super(props, context);
+  constructor(props: any) {
+    super(props);
+
+    this.handleClick = this.handleClick.bind(this);
 
     this.state = {
       isVisible: false,
@@ -85,7 +87,7 @@ export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuSt
 
     return (
       <div className='ContextMenu'>
-        <div className='ContextMenu-target' onContextMenu={ e => this.handleClick(e) }>
+        <div className='ContextMenu-target' onContextMenu={ this.handleClick }>
           { menuItems.shift() }
         </div>
         <Overlay show={ this.state.isVisible } rootClose onHide={ () => this.hide() }>

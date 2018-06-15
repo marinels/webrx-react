@@ -18,8 +18,8 @@ export interface RouteHandlerViewProps extends BaseViewProps<RouteHandlerViewMod
 export class RouteHandlerView extends BaseView<RouteHandlerViewProps, RouteHandlerViewModel> {
   public static displayName = 'RouteHandlerView';
 
-  constructor(props: RouteHandlerViewProps, context?: any) {
-    super(props, context);
+  constructor(props: any) {
+    super(props);
 
     if (this.props.viewMap[DefaultKey] == null) {
       this.props.viewMap[DefaultKey] = () => this.renderError('View Not Found');
