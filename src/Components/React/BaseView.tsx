@@ -32,7 +32,7 @@ export interface ViewModelState<T extends BaseViewModel> {
 
 export abstract class BaseView<
   TViewProps extends ViewModelProps<TViewModel>,
-  TViewModel extends BaseViewModel,
+  TViewModel extends BaseViewModel
 > extends React.Component<TViewProps, ViewModelState<TViewModel>> implements AnonymousSubscription {
   public static displayName = 'BaseView';
 

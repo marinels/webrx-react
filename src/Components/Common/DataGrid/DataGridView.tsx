@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Icon } from 'react-fa';
+import { Observable } from 'rxjs';
 
 import { SortDirection } from '../../../Utils/Compare';
 import { BaseView, BaseViewProps } from '../../React';

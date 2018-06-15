@@ -2,6 +2,7 @@ import * as React from 'react';
 import { MenuItem, Nav, Navbar, NavDropdown, NavItem } from 'react-bootstrap';
 import { findDOMNode } from 'react-dom';
 import { Icon, IconStack } from 'react-fa';
+import { Observable } from 'rxjs';
 
 import { BaseView, BaseViewProps, HeaderAction, HeaderCommandAction } from '../../React';
 import { CommandButton } from '../CommandButton/CommandButton';

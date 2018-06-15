@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-import { RouteMap } from '../../../Routing';
+import { RouteMap, RouteMapper } from '../../../Routing';
 import { ObservableLike, ReadOnlyProperty } from '../../../WebRx';
 import { BaseViewModel } from '../../React';
 import { AlertHostViewModel } from '../Alert/AlertHostViewModel';

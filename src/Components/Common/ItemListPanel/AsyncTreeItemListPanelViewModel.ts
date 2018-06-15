@@ -9,7 +9,7 @@ import { TreeItemListPanelViewModel } from './TreeItemListPanelViewModel';
 
 export class AsyncTreeItemListPanelViewModel<
   T,
-  TRequestContext = any,
+  TRequestContext = any
 > extends TreeItemListPanelViewModel<T, TRequestContext> {
   public static displayName = 'AsyncTreeItemListPanelViewModel';
 

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Modal, ModalProps } from 'react-bootstrap';
+import { Observable } from 'rxjs';
 
 import { Command } from '../../../WebRx';
 import { BaseView, BaseViewProps } from '../../React';

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { FormControl, FormGroup } from 'react-bootstrap';
 import { Icon } from 'react-fa';
+import { Observable } from 'rxjs';
 
 import { BaseView, BaseViewProps } from '../../React';
 import { BindableInput } from '../BindableInput/BindableInput';

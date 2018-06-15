@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { FormControl, FormControlProps, FormGroup, InputGroup } from 'react-bootstrap';
 import { Icon } from 'react-fa';
+import { Observable } from 'rxjs';
 
 import { Command } from '../../../WebRx';
 import { BindableInput } from '../../Common/BindableInput/BindableInput';

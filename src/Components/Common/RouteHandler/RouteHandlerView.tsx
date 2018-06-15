@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Alert, Grid } from 'react-bootstrap';
 import RTG = require('react-transition-group');
+import { Observable } from 'rxjs';
 
 import { ViewMapper } from '../../../Routing';
 import { BaseView, BaseViewProps, isRoutableViewModel, isViewModel } from '../../React';

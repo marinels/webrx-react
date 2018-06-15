@@ -2,6 +2,7 @@ import * as React from 'react';
 import { FormControl, FormGroup, InputGroup, Sizes } from 'react-bootstrap';
 import { findDOMNode } from 'react-dom';
 import { Icon } from 'react-fa';
+import { Observable } from 'rxjs';
 
 import { BaseView, BaseViewProps } from '../../React';
 import { BindableInput, BindableProps } from '../BindableInput/BindableInput';

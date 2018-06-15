@@ -22,7 +22,7 @@ export interface ItemListPanelRoutingState extends DataGridRoutingState {
 
 export class ItemListPanelViewModel<
   T,
-  TRequestContext = any,
+  TRequestContext = any
 > extends DataGridViewModel<
   T,
   ItemListPanelContext<TRequestContext>
