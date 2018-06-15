@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Col, Grid, Row } from 'react-bootstrap';
 import { DropdownButton, DropdownButtonProps, MenuItem, Pagination, PaginationProps } from 'react-bootstrap';
+import { Observable } from 'rxjs';
 
 import { BaseView, BaseViewProps } from '../../React';
 import { PagerViewModel, StandardLimits } from './PagerViewModel';

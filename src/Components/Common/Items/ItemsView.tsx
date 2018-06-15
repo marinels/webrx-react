@@ -1,4 +1,6 @@
+import { Iterable } from 'ix';
 import * as React from 'react';
+import { Observable } from 'rxjs';
 
 import { BaseView, BaseViewProps } from '../../React';
 import { PanelItemContext, PanelItemProps, PanelRenderProps } from '../Panel';

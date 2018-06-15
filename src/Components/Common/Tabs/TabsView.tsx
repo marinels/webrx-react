@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { Tab, Tabs } from 'react-bootstrap';
+import { Observable } from 'rxjs';
 
 import { BaseView, BaseViewProps } from '../../React';
 import { TabsViewModel } from './TabsViewModel';

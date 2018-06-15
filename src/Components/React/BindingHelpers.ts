@@ -27,7 +27,7 @@ export function bindObservableToCommand<TViewModel extends BaseViewModel, TInput
 export function bindEventToProperty<
   TViewModel extends BaseViewModel,
   TValue,
-  TEvent extends Event | React.SyntheticEvent<any>,
+  TEvent extends Event | React.SyntheticEvent<any>
 >(
   viewModel: Readonly<TViewModel>,
   targetSelector: (viewModel: Readonly<TViewModel>) => Property<TValue>,
@@ -51,7 +51,7 @@ export function bindEventToCommand<
   TViewModel extends BaseViewModel,
   TParameter,
   TCommand,
-  TEvent extends Event | React.SyntheticEvent<any>,
+  TEvent extends Event | React.SyntheticEvent<any>
 >(
   viewModel: Readonly<TViewModel>,
   commandSelector: (viewModel: Readonly<TViewModel>) => Command<TCommand>,

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Grid } from 'react-bootstrap';
+import { Observable } from 'rxjs';
 
 import { logo } from '../../../Assets';
 import { ViewMap, ViewMapper } from '../../../Routing';

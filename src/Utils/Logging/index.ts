@@ -8,6 +8,7 @@ export * from './Adapters/Console';
 
 // export helper functions
 import { Default as defaultLogManager } from './Adapters/Console';
+import { Logger } from './Logger';
 import { LogLevel } from './LogLevel';
 import { LogManager } from './LogManager';
 

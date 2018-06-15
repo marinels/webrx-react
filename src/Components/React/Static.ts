@@ -1,4 +1,9 @@
+import { Iterable } from 'ix';
+import { Observable, Subscription } from 'rxjs';
+
 import * as utils from '../../Utils';
+import { Command, Property } from '../../WebRx';
+import { BaseViewModel } from './BaseViewModel';
 import {
   bindEventToCommand, bindEventToProperty, bindObservableToCommand,
 } from './BindingHelpers';
