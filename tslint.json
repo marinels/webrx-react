@@ -1,6 +1,8 @@
 {
   "extends": [
     "tslint:recommended",
+    "tslint-react",
+    "tslint-config-prettier",
     "tslint-config-unional/strict"
   ],
   "rules": {
@@ -15,6 +17,9 @@
 
     // allow pascal case (for class imports) and ban any keywords
     "variable-name": [ true, "check-format", "allow-pascal-case", "ban-keywords" ],
+
+    // allow flag props (i.e., bool props with the value part omitted)
+    "jsx-boolean-value": [ "never" ],
 
     // allow bare arrow params
     "arrow-parens": [ false ]
