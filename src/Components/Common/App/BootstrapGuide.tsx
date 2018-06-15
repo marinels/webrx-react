@@ -10,12 +10,16 @@ export const BootstrapGuideOffset = 5;
 export class BootstrapGuide extends React.Component {
   private mouseMoveSub = Subscription.EMPTY;
 
+  private guideRef = React.createRef<HTMLDivElement>();
+  private hlineRef = React.createRef<HTMLDivElement>();
+  private vlineRef = React.createRef<HTMLDivElement>();
+
   componentDidMount() {
-    const guide = findDOMNode(this.refs['guide']) as HTMLDivElement;
+    const guide = this.guideRef.current;
 
     if (guide != null) {
-      const hline = findDOMNode(this.refs['hline']) as HTMLDivElement;
-      const vline = findDOMNode(this.refs['vline']) as HTMLDivElement;
+      const hline = this.hlineRef.current;
+      const vline = this.vlineRef.current;
 
       this.mouseMoveSub = Observable
         .fromEvent(document, 'mousemove')
@@ -43,7 +47,7 @@ export class BootstrapGuide extends React.Component {
 
   render() {
     return (
-      <div ref='guide' className='BootstrapGuide'>
+      <div ref={ this.guideRef } className='BootstrapGuide'>
         <Grid>
           <Row>
             {
@@ -58,8 +62,8 @@ export class BootstrapGuide extends React.Component {
             }
           </Row>
         </Grid>
-        <div ref='hline' className='BootstrapGuide-line BootstrapGuide-hline'></div>
-        <div ref='vline' className='BootstrapGuide-line BootstrapGuide-vline'></div>
+        <div ref={ this.hlineRef } className='BootstrapGuide-line BootstrapGuide-hline' />
+        <div ref={ this.vlineRef } className='BootstrapGuide-line BootstrapGuide-vline' />
       </div>
     );
   }

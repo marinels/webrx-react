@@ -34,6 +34,12 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
     loadingContent: 'Loading Data...',
   };
 
+  constructor(props: any) {
+    super(props);
+
+    this.renderHeader = this.renderHeader.bind(this);
+  }
+
   updateOn(viewModel: Readonly<DataGridViewModel<{}>>) {
     return [
       viewModel.isLoading.changed,
@@ -101,7 +107,7 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
 
   protected renderDefaultDataGridView(props: DataGridProps) {
     return (
-      <GridView headerTemplate={ this.renderHeader.bind(this) }>
+      <GridView headerTemplate={ this.renderHeader }>
         { props.children }
       </GridView>
     );

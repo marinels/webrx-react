@@ -20,6 +20,12 @@ export class Breadcrumbs extends React.Component<BreadcrumbsComponentProps> {
     id: 'breadcrumbs',
   };
 
+  constructor(props: any) {
+    super(props);
+
+    this.toggleBreadcrumbsPin = this.toggleBreadcrumbsPin.bind(this);
+  }
+
   render() {
     const { className, props, rest } = this.restProps(x => {
       const { pinnable, items } = x;
@@ -38,7 +44,7 @@ export class Breadcrumbs extends React.Component<BreadcrumbsComponentProps> {
             {
               this.wxr.renderConditional(props.pinnable, () => (
                 <CommandButton className='Breadcrumbs-pin' bsStyle='link'
-                  onClick={ () => this.toggleBreadcrumbsPin() }
+                  onClick={ this.toggleBreadcrumbsPin }
                 >
                   <Icon name='thumb-tack' size='lg' rotate='90' />
                 </CommandButton>

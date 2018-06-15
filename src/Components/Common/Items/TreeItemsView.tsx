@@ -13,6 +13,12 @@ export interface TreeItemsViewProps extends ItemsViewProps, TreeItemsProps {
 export class TreeItemsView extends React.Component<TreeItemsViewProps> {
   public static displayName = 'TreeItemsView';
 
+  constructor(props: any) {
+    super(props);
+
+    this.renderItem = this.renderItem.bind(this);
+  }
+
   render() {
     const { className, props, rest } = this.restProps(x => {
       const {
@@ -33,9 +39,7 @@ export class TreeItemsView extends React.Component<TreeItemsViewProps> {
         viewModel={ this.props.viewModel }
         viewTemplate={ props.viewTemplate }
         itemsPanelTemplate={ props.itemsPanelTemplate }
-        itemTemplate={ (item: {}, index: number) => {
-          return this.renderItem(item, index);
-        }}
+        itemTemplate={ this.renderItem }
         itemClassName={ props.itemClassName }
         itemStyle={ props.itemStyle }
         itemProps={ props.itemProps }

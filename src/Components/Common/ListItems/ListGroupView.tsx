@@ -17,6 +17,12 @@ export interface ListGroupViewComponentProps extends React.HTMLProps<any>, ListG
 }
 
 export class ListGroupView extends ListItemsViewTemplate<ListGroupViewComponentProps> {
+  constructor(props: any) {
+    super(props);
+
+    this.renderListItemPanel = this.renderListItemPanel.bind(this);
+  }
+
   render() {
     const { className, children, props, rest } = this.restProps(x => {
       const { fill, listItems, itemsProps } = x;
@@ -26,7 +32,7 @@ export class ListGroupView extends ListItemsViewTemplate<ListGroupViewComponentP
     return (
       <PanelView
         className={ className }
-        itemsPanelTemplate={ this.renderListItemPanel.bind(this) }
+        itemsPanelTemplate={ this.renderListItemPanel }
         listItems={ props.listItems }
         itemsProps={ props.itemsProps }
         { ...this.trimProps(rest) }

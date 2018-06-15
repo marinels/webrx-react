@@ -188,14 +188,16 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
   public static defaultItemsTemplate(items: IterableLike<{}> | undefined, view: TreeItem) {
     const isExpanded = view.getIsExpanded();
 
+    const template = (item: {}, index: number) => {
+      return TreeItem.renderTreeItem(item, index, view.props);
+    };
+
     return (isExpanded === false || items == null) ? false : (
       <ItemsPresenter
         itemsSource={ items }
         viewTemplate={ view.props.viewTemplate }
         itemsPanelTemplate={ view.props.itemsPanelTemplate }
-        itemTemplate={ (item: {}, index: number) => {
-          return TreeItem.renderTreeItem(item, index, view.props);
-        }}
+        itemTemplate={ template }
         itemClassName={ view.props.itemClassName }
         itemStyle={ view.props.itemStyle }
         itemProps={ view.props.itemProps }
@@ -219,6 +221,8 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
 
   constructor(props: any) {
     super(props);
+
+    this.toggleExpansion = this.toggleExpansion.bind(this);
 
     this.state = {
       isExpanded: this.props.startExpanded || false,
@@ -311,7 +315,7 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
       .range(0, this.props.depth || 0)
       .map((x, i) => {
         return (
-          <div key={ i } className='TreeItem-Indent'></div>
+          <div key={ i } className='TreeItem-Indent' />
         ) as PanelFragment | false;
       })
       .defaultIfEmpty(false)
@@ -331,7 +335,7 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
       .isEmpty();
 
     return isEmpty ? false : (
-      <Button bsStyle='link' onClick={ this.toggleExpansion.bind(this) }>
+      <Button bsStyle='link' onClick={ this.toggleExpansion }>
         { this.renderExpanderIcon() }
       </Button>
     );

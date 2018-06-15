@@ -1,3 +1,5 @@
+// tslint:disable:jsx-no-lambda
+
 import * as CSS from 'csstype';
 import * as React from 'react';
 import { Button, Col, FormControl, FormGroup, Grid, InputGroup, Label, ListGroup, ListGroupItem, MenuItem,
@@ -424,8 +426,7 @@ export const demoViewMap: ViewActivatorMap = {
               <Well>OverlayTrigger content tooltip with overrides</Well>
             </Components.ContentTooltip>
           </Col>
-          <Col md={ 3 }>
-          </Col>
+          <Col md={ 3 } />
         </Row>
       </Grid>
     );

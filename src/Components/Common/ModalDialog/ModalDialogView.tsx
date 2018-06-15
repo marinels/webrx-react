@@ -28,6 +28,12 @@ export class ModalDialogView extends BaseView<ModalDialogViewProps, ModalDialogV
     modalFooter: (view: ModalDialogView) => view.props.children,
   };
 
+  constructor(props: any) {
+    super(props);
+
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+  }
+
   updateOn(viewModel: Readonly<ModalDialogViewModel<{}>>) {
     return [
       viewModel.isVisible.changed,
@@ -78,7 +84,7 @@ export class ModalDialogView extends BaseView<ModalDialogViewProps, ModalDialogV
     return this.wxr.renderNullable(
       this.props.modalBody,
       body => (
-        <Modal.Body onKeyDown={ this.handleKeyDown.bind(this) }>
+        <Modal.Body onKeyDown={ this.handleKeyDown }>
           { body instanceof Function ? body(this) : body }
         </Modal.Body>
       ),

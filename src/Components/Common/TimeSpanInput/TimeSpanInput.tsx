@@ -140,6 +140,10 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
   constructor(props: any) {
     super(props);
 
+    this.handleReparse = this.handleReparse.bind(this);
+    this.handleIncreaseDuration = this.handleIncreaseDuration.bind(this);
+    this.handleDecreaseDuration = this.handleDecreaseDuration.bind(this);
+
     this.state = {
       unit: props.initialUnit!,
       input: TimeSpanInput.formatDuration(props.initialDuration, props.initialUnit!),
@@ -250,12 +254,11 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
     return (
       <InputGroup.Button>
         {
-          // this is a fake button to simulate a request to parse, but it really only forces blur
           this.wxr.renderConditional(
             this.props.reparseButton,
             () => (
               <CommandButton id={ `${ this.props.id }-reparse` } className='TimeSpanInput-adjustButton'
-                onClick={ () => { return; } } tooltip='Reparse input'
+                onClick={ this.handleReparse } tooltip='Reparse input'
               >
                 <Icon name='check'/>
               </CommandButton>
@@ -264,12 +267,12 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
         }
         { this.renderDropdown() }
         <CommandButton className='TimeSpanInput-adjustButton' componentClass='button'
-          onClick={ this.handleIncreaseDuration.bind(this) }
+          onClick={ this.handleIncreaseDuration }
         >
           <Icon name='chevron-up'/>
         </CommandButton>
         <CommandButton className='TimeSpanInput-adjustButton' componentClass='button'
-          onClick={ this.handleDecreaseDuration.bind(this) }
+          onClick={ this.handleDecreaseDuration }
         >
           <Icon name='chevron-down'/>
         </CommandButton>
@@ -319,6 +322,10 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
         duration,
       });
     });
+  }
+
+  private handleReparse() {
+    // this is a fake handler to simulate a request to parse, but it really only forces a blur
   }
 
   protected handleIncreaseDuration() {

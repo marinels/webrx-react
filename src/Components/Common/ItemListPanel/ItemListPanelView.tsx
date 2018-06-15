@@ -24,6 +24,12 @@ export class ItemListPanelView extends BaseView<ItemListPanelViewProps, ItemList
   static defaultProps: Partial<ItemListPanelProps> = {
   };
 
+  constructor(props: any) {
+    super(props);
+
+    this.handleSearchClick = this.handleSearchClick.bind(this);
+  }
+
   updateOn(viewModel: Readonly<ItemListPanelViewModel<{}>>) {
     return [
       viewModel.isLoading.changed,
@@ -47,7 +53,7 @@ export class ItemListPanelView extends BaseView<ItemListPanelViewProps, ItemList
       x => React.isValidElement(x) ? x : (
         <SearchView viewModel={ this.viewModel.search! }
           disabled={ this.viewModel.isLoading.value }
-          onClick={ (e) => { e.stopPropagation(); } }
+          onClick={ this.handleSearchClick }
           { ...(x === true ? {} : x) }
         />
       ),
@@ -85,5 +91,9 @@ export class ItemListPanelView extends BaseView<ItemListPanelViewProps, ItemList
         { this.props.children }
       </DataGridView>
     );
+  }
+
+  protected handleSearchClick(e: React.MouseEvent<any>) {
+    e.stopPropagation();
   }
 }

@@ -25,6 +25,13 @@ export interface TodoListViewProps extends BaseViewProps<TodoListViewModel>, Tod
 export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel> {
   private input: React.Component<FormControlProps> | undefined;
 
+  constructor(props: any) {
+    super(props);
+
+    this.renderItem = this.renderItem.bind(this);
+    this.handleAddItem = this.handleAddItem.bind(this);
+  }
+
   private onInputRef(input: React.Component<FormControlProps> | null) {
     if (this.input == null && input != null) {
       this.input = input;
@@ -54,7 +61,7 @@ export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel>
         <ItemListPanelView viewModel={ this.viewModel.list } collapsible pager search compact
           emptyContent={ this.renderEmptyContent() }
           shadow={ this.props.shadow }
-          itemTemplate={ this.renderItem.bind(this) }
+          itemTemplate={ this.renderItem }
           headerContent='Canonical Todo List'
           teaserContent={ this.renderTeaser() } footerContent={ this.renderFooter() }
         >
@@ -96,7 +103,7 @@ export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel>
             />
           </BindableInput>
           <InputGroup.Button>
-            <CommandButton bsStyle='success' command={ this.viewModel.addItem } onClick={ () => this.focusInput() }>
+            <CommandButton bsStyle='success' command={ this.viewModel.addItem } onClick={ this.handleAddItem }>
               <Icon name='plus' />
               { ' Add New Todo Item' }
             </CommandButton>
@@ -109,6 +116,11 @@ export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel>
   protected renderFooter() {
     return null;
   }
+
+  protected handleAddItem() {
+    // this will allow the text input to regain focus after the command is executed
+    this.focusInput();
+  }
 }
 
 export interface TodoItemProps {
@@ -119,6 +131,12 @@ export interface TodoItemViewProps extends BaseViewProps<TodoItemViewModel>, Tod
 }
 
 export class TodoItemView extends BaseView<TodoItemViewProps, TodoItemViewModel> {
+  constructor(props: any) {
+    super(props);
+
+    this.getRemoveCommand = this.getRemoveCommand.bind(this);
+  }
+
   updateOn(viewModel: Readonly<TodoItemViewModel>) {
     return [
       viewModel.completed.changed,
@@ -146,12 +164,16 @@ export class TodoItemView extends BaseView<TodoItemViewProps, TodoItemViewModel>
         </div>
         <div className='TodoItem-actions'>
           <CommandButton bsStyle='danger' bsSize='xs' componentClass='a'
-            command={ () => props.remove } commandParameter={ this.viewModel }
+            command={ this.getRemoveCommand } commandParameter={ this.viewModel }
           >
             <Icon name='times' fixedWidth />
           </CommandButton>
         </div>
       </div>
     );
+  }
+
+  protected getRemoveCommand() {
+    return this.props.remove;
   }
 }

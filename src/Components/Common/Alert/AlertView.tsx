@@ -28,8 +28,7 @@ export class AlertView extends BaseView<AlertViewProps, AlertViewModel> {
       String.isString(this.viewModel.content),
       () => (
         <div className='Alert-content'>
-          <div className='Alert-text' dangerouslySetInnerHTML={ { __html: this.viewModel.content } }>
-          </div>
+          <div className='Alert-text' dangerouslySetInnerHTML={ { __html: this.viewModel.content } } />
         </div>
       ),
       () => this.viewModel.content,

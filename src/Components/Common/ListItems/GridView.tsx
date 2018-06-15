@@ -36,6 +36,12 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
   private readonly logger: Logging.Logger = Logging.getLogger(GridView.displayName);
   private columns: React.ReactChild[] | undefined;
 
+  constructor(props: any) {
+    super(props);
+
+    this.renderTablePanel = this.renderTablePanel.bind(this);
+  }
+
   render() {
     const { className, children, props, rest } = this.restProps(x => {
       const {
@@ -62,7 +68,7 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
     return (
       <PanelView
         className={ classNames('Grid', className) }
-        itemsPanelTemplate={ this.renderTablePanel.bind(this) }
+        itemsPanelTemplate={ this.renderTablePanel }
         listItems={ props.listItems }
         itemsProps={ gridProps }
         { ...this.trimProps(rest) }

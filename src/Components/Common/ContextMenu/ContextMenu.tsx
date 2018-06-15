@@ -42,6 +42,7 @@ export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuSt
     super(props);
 
     this.handleClick = this.handleClick.bind(this);
+    this.handleHide = this.handleHide.bind(this);
 
     this.state = {
       isVisible: false,
@@ -71,7 +72,7 @@ export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuSt
     }
   }
 
-  private hide() {
+  private handleHide() {
     this.setState((prevState, props) => {
       return {
         isVisible: false,
@@ -90,7 +91,7 @@ export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuSt
         <div className='ContextMenu-target' onContextMenu={ this.handleClick }>
           { menuItems.shift() }
         </div>
-        <Overlay show={ this.state.isVisible } rootClose onHide={ () => this.hide() }>
+        <Overlay show={ this.state.isVisible } rootClose onHide={ this.handleHide }>
           <ContextMenuContainer>
             { this.renderMenu(menuItems) }
           </ContextMenuContainer>

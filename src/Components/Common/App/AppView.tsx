@@ -71,7 +71,7 @@ export class AppView extends BaseView<AppViewProps, AppViewModel> {
         <div { ...rest } className={ this.wxr.classNames('App', className) }>
           {
             this.wxr.renderConditional(this.viewModel.isLoading, () => (
-              <i className='preload fa fa-spinner fa-5x fa-pulse' aria-hidden='true'></i>
+              <i className='preload fa fa-spinner fa-5x fa-pulse' aria-hidden='true' />
             ), () => (
               <div>
                 { this.wxr.renderConditional(props.guide, () => (<BootstrapGuide />)) }

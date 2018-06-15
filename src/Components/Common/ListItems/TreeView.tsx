@@ -17,6 +17,12 @@ export interface TreeViewComponentProps extends React.HTMLProps<any>, TreeViewPr
 }
 
 export class TreeView extends ListItemsViewTemplate<TreeViewComponentProps> {
+  constructor(props: any) {
+    super(props);
+
+    this.renderHeader = this.renderHeader.bind(this);
+  }
+
   render() {
     const { className, rest } = this.restProps(x => {
       const { fill, listItems, itemsProps } = x;
@@ -29,7 +35,7 @@ export class TreeView extends ListItemsViewTemplate<TreeViewComponentProps> {
       <TreeItemsView
         className={ className }
         viewModel={ this.getListItems() }
-        headerTemplate={ this.renderHeader.bind(this) }
+        headerTemplate={ this.renderHeader }
         { ...this.getItemsProps() }
         { ...treeItemProps }
       />
