@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { FormControl, FormControlProps, FormGroup, InputGroup } from 'react-bootstrap';
+import { findDOMNode } from 'react-dom';
 import { Icon } from 'react-fa';
 import { Observable } from 'rxjs';
 
@@ -23,31 +24,17 @@ export interface TodoListViewProps extends BaseViewProps<TodoListViewModel>, Tod
 }
 
 export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel> {
-  private input: React.Component<FormControlProps> | undefined;
+  private inputRef = React.createRef<FormControl>();
 
   constructor(props: any) {
     super(props);
 
     this.renderItem = this.renderItem.bind(this);
-    this.handleAddItem = this.handleAddItem.bind(this);
+    this.focusInput = this.focusInput.bind(this);
   }
 
-  private onInputRef(input: React.Component<FormControlProps> | null) {
-    if (this.input == null && input != null) {
-      this.input = input;
-
-      this.focusInput();
-    }
-  }
-
-  private focusInput() {
-    if (this.input != null) {
-      const elem = this.wxr.focusElement<HTMLInputElement>(this.input);
-
-      if (elem != null) {
-        elem.select();
-      }
-    }
+  componentDidMount() {
+    this.focusInput();
   }
 
   render() {
@@ -90,7 +77,7 @@ export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel>
       <FormGroup className='TodoList-teaser'>
         <InputGroup>
           <BindableInput boundProperty={ this.viewModel.newItemContent }>
-            <FormControl ref={ x => this.onInputRef(x) } id='newItemContent' type='text'
+            <FormControl ref={ this.inputRef } id='newItemContent' type='text'
               placeholder='Type in a todo item here...'
               onKeyDown={
                 this.bindEventToCommand(
@@ -103,7 +90,7 @@ export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel>
             />
           </BindableInput>
           <InputGroup.Button>
-            <CommandButton bsStyle='success' command={ this.viewModel.addItem } onClick={ this.handleAddItem }>
+            <CommandButton bsStyle='success' command={ this.viewModel.addItem } onClick={ this.focusInput }>
               <Icon name='plus' />
               { ' Add New Todo Item' }
             </CommandButton>
@@ -117,9 +104,14 @@ export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel>
     return null;
   }
 
-  protected handleAddItem() {
-    // this will allow the text input to regain focus after the command is executed
-    this.focusInput();
+  private focusInput() {
+    if (this.inputRef.current) {
+      const input = findDOMNode(this.inputRef.current);
+
+      if (input instanceof HTMLInputElement) {
+        input.focus();
+      }
+    }
   }
 }
 
