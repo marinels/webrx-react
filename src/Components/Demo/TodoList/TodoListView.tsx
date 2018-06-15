@@ -49,7 +49,6 @@ export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel>
       return { shadow };
     });
 
-    // emptyTemplate={ () => this.renderEmptyContent() }
     return (
       <div { ...rest } className={ this.wxr.classNames('TodoList', className) }>
         <ItemListPanelView viewModel={ this.viewModel.list } collapsible pager search compact
