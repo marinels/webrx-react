@@ -10,6 +10,7 @@ import { DefaultKey, RouteHandlerViewModel, SplashKey } from './RouteHandlerView
 
 export interface RouteHandlerProps {
   viewMap: ViewMapper;
+  responsive?: boolean;
 }
 
 export interface RouteHandlerViewProps extends BaseViewProps<RouteHandlerViewModel>, RouteHandlerProps {
@@ -68,8 +69,8 @@ export class RouteHandlerView extends BaseView<RouteHandlerViewProps, RouteHandl
 
   render() {
     const { className, rest } = this.restProps(x => {
-      const { viewMap } = x;
-      return { viewMap };
+      const { viewMap, responsive } = x;
+      return { viewMap, responsive };
     });
 
     const key = this.getViewKey();
@@ -99,7 +100,7 @@ export class RouteHandlerView extends BaseView<RouteHandlerViewProps, RouteHandl
     let view: any = activator;
 
     if (activator instanceof Function) {
-      view = activator(component);
+      view = activator(component, this.props.responsive);
     }
 
     this.logger.debug(`Rendering routed view for '${ Object.getName(component) }' (${ key })`);

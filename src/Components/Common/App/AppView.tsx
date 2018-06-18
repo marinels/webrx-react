@@ -68,7 +68,7 @@ export class AppView extends BaseView<AppViewProps, AppViewModel> {
 
     return (
       <div className='webrx-react bootstrap-3' ref={ updateDefaultContainer }>
-        <div { ...rest } className={ this.wxr.classNames('App', className) }>
+        <div { ...rest } className={ this.wxr.classNames('App', { responsive: props.responsive }, className) }>
           {
             this.wxr.renderConditional(this.viewModel.isLoading, () => (
               <i className='preload fa fa-spinner fa-5x fa-pulse' aria-hidden='true' />
@@ -78,7 +78,7 @@ export class AppView extends BaseView<AppViewProps, AppViewModel> {
                 {
                   this.wxr.renderConditional(props.alerts, () => (
                     <div className='float-container'>
-                      <Grid>
+                      <Grid fluid={ props.responsive }>
                         <AlertHostView viewModel={ this.viewModel.alerts } />
                       </Grid>
                     </div>
@@ -98,13 +98,13 @@ export class AppView extends BaseView<AppViewProps, AppViewModel> {
                       ),
                     )
                 }
-                <RouteHandlerView viewModel={ this.viewModel.routeHandler } viewMap={ props.viewMap! } />
+                <RouteHandlerView viewModel={ this.viewModel.routeHandler } viewMap={ props.viewMap! } responsive={ props.responsive } />
                 {
                   this.wxr
                     .renderConditional(
                       props.footer,
                       () => (
-                        <PageFooterView viewModel={ this.viewModel.footer } { ...footerProps } />
+                        <PageFooterView viewModel={ this.viewModel.footer } responsive={ props.responsive } { ...footerProps } />
                       ),
                     )
                 }

@@ -8,7 +8,11 @@ import { ComponentDemoViewModel } from './ComponentDemoViewModel';
 
 import './ComponentDemo.less';
 
-export type ViewActivator = (component: any, componentRoute: string | undefined) => any;
+export type ViewActivator = (
+  component: any,
+  componentRoute: string | undefined,
+  responsive: boolean | undefined,
+) => any;
 
 export interface ViewActivatorMap {
   [key: string]: ViewActivator;
@@ -16,6 +20,7 @@ export interface ViewActivatorMap {
 
 export interface ComponentDemoProps {
   viewMap: ViewActivatorMap;
+  responsive?: boolean;
 }
 
 export interface ComponentDemoViewProps extends BaseViewProps<ComponentDemoViewModel>, ComponentDemoProps {
@@ -33,8 +38,8 @@ export class ComponentDemoView extends BaseView<ComponentDemoViewProps, Componen
 
   render() {
     const { className, rest } = this.restProps(x => {
-      const { viewMap } = x;
-      return { viewMap };
+      const { viewMap, responsive } = x;
+      return { viewMap, responsive };
     });
 
     const cols = this.viewModel.columns.value;
@@ -102,7 +107,7 @@ export class ComponentDemoView extends BaseView<ComponentDemoViewProps, Componen
       const activator = this.props.viewMap[componentName];
 
       if (activator != null) {
-        view = activator(component, this.viewModel.componentRoute.value);
+        view = activator(component, this.viewModel.componentRoute.value, this.props.responsive);
       }
     }
 

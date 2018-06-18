@@ -12,6 +12,7 @@ export interface PageFooterProps {
   copyrightUri?: string;
   footerContent?: any;
   hideDimensions?: boolean;
+  responsive?: boolean;
 }
 
 export interface PageFooterViewProps extends BaseViewProps<PageFooterViewModel>, PageFooterProps {
@@ -53,8 +54,8 @@ export class PageFooterView extends BaseView<PageFooterViewProps, PageFooterView
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { copyright, copyrightYear, copyrightUri, footerContent, hideDimensions } = x;
-      return { copyright, copyrightYear, copyrightUri, footerContent, hideDimensions };
+      const { copyright, copyrightYear, copyrightUri, footerContent, hideDimensions, responsive } = x;
+      return { copyright, copyrightYear, copyrightUri, footerContent, hideDimensions, responsive };
     });
 
     const copyrightContent = this.wxr.renderConditional(
@@ -78,7 +79,7 @@ export class PageFooterView extends BaseView<PageFooterViewProps, PageFooterView
 
     return (
       <div { ...rest } className={ this.wxr.classNames('PageFooter', className) }>
-        <Grid>
+        <Grid fluid={ props.responsive }>
           <Row>
             <Col md={ 12 }>
               <div className='PageFooter-container'>
