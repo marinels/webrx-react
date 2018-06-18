@@ -262,14 +262,18 @@ export class PageHeaderView extends BaseView<
   }
 
   private renderUserMenu() {
-    return this.renderHeaderMenu(
-      'userMenu',
+    const profilePicture = (
       <ProfilePicture
         src={this.viewModel.userImage}
         title={this.viewModel.userDisplayName}
         iconSize="2x"
         size={30}
-      />,
+      />
+    );
+
+    return this.renderHeaderMenu(
+      'userMenu',
+      profilePicture,
       this.viewModel.userMenuItems.value,
       true,
     );

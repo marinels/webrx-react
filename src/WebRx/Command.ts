@@ -193,14 +193,14 @@ export class ObservableCommand<T = any, TCondition = any> extends Subscription
 export function command<T = any>(): Command<T>;
 // tslint:disable-next-line:unified-signatures
 export function command<T>(execute: ExecutionAction<T>): Command<T>;
-// tslint:disable-next-line:unified-signatures
 export function command<T>(
   canExecute: Observable<boolean>,
+  // tslint:disable-next-line:unified-signatures
   execute?: ExecutionAction<T>,
 ): Command<T>;
-// tslint:disable-next-line:unified-signatures
 export function command<T>(
   execute: ExecutionAction<T>,
+  // tslint:disable-next-line:unified-signatures
   canExecute: Observable<boolean>,
 ): Command<T>;
 export function command<T, TCondition>(

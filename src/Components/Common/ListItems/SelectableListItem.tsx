@@ -94,7 +94,7 @@ export class SelectableListItem extends React.Component<
   // tslint:disable-next-line:ban-types
   protected handleClick(
     e: React.MouseEvent<any>,
-    onClickElement: Function | undefined,
+    onClickElement: (() => void) | undefined,
   ) {
     e.stopPropagation();
     e.preventDefault();
