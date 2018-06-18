@@ -93,7 +93,8 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
     );
 
     const button = (
-      <Button { ...rest }
+      <Button
+        { ...rest }
         className={ classNames }
         disabled={ disabled }
         onClick={ disabled ? undefined : this.handleClick.bind(this) }

@@ -47,10 +47,14 @@ export class ModalDialogView extends BaseView<ModalDialogViewProps, ModalDialogV
     });
 
     return this.wxr.renderConditional(this.viewModel.isVisible, () => (
-      <Modal className={ this.wxr.classNames('ModalDialog', className) } autoFocus
-        keyboard={ props.canClose === true } enforceFocus={ props.canClose === false }
+      <Modal
+        className={ this.wxr.classNames('ModalDialog', className) }
+        autoFocus
+        keyboard={ props.canClose === true }
+        enforceFocus={ props.canClose === false }
         backdrop={ props.canClose === false ? 'static' : true }
-        show={ this.viewModel.isVisible.value } onHide={ this.bindEventToCommand(x => x.hide) }
+        show={ this.viewModel.isVisible.value }
+        onHide={ this.bindEventToCommand(x => x.hide) }
         { ...this.trimProps(rest) }
       >
         { this.renderHeader() }

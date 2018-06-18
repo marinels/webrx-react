@@ -129,8 +129,11 @@ export class UniformGridPanel extends Panel<UniformGridPanelComponentProps> {
             const colProps = Panel.getPanelItemPropValue(this.props.columnProps, context) || {};
 
             return (
-              <div key={ GridLayoutDefinition.generateKey(row, column) } style={ colStyle }
-                className={ this.wxr.classNames('Grid-Column', colClassName) } { ...colProps }
+              <div
+                key={ GridLayoutDefinition.generateKey(row, column) }
+                style={ colStyle }
+                className={ this.wxr.classNames('Grid-Column', colClassName) }
+                { ...colProps }
               >
                 { item }
               </div>
@@ -146,8 +149,11 @@ export class UniformGridPanel extends Panel<UniformGridPanelComponentProps> {
         const rowProps = Panel.getPanelItemPropValue(this.props.rowProps, context) || {};
 
         return (
-          <div key={ GridLayoutDefinition.generateKey(row) } style={ rowStyle }
-            className={ this.wxr.classNames('Grid-Row', rowClassName) } { ...rowProps }
+          <div
+            key={ GridLayoutDefinition.generateKey(row) }
+            style={ rowStyle }
+            className={ this.wxr.classNames('Grid-Row', rowClassName) }
+            { ...rowProps }
           >
             { cols }
           </div>

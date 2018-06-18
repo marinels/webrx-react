@@ -74,7 +74,9 @@ export class ProfilePicture extends React.Component<ProfilePictureComponentProps
     });
 
     return (
-      <div { ...rest } style={ iconStyle }
+      <div
+        { ...rest }
+        style={ iconStyle }
         className={ this.wxr.classNames('ProfilePicture', 'ProfilePicture-icon', iconClassNames, className) }
       >
         <Icon name={ props.defaultIcon! } size={ props.iconSize } />
@@ -105,7 +107,9 @@ export class ProfilePicture extends React.Component<ProfilePictureComponentProps
     const imageStyle = this.props.responsive ? undefined : { maxHeight: props.size, maxWidth: props.size };
 
     return (
-      <div { ...rest } className={ this.wxr.classNames('ProfilePicture', 'ProfilePicture-image', className) }
+      <div
+        { ...rest }
+        className={ this.wxr.classNames('ProfilePicture', 'ProfilePicture-image', className) }
         style={ responsiveStyle }
       >
         <Image { ...imageProps } style={ imageStyle } />

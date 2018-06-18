@@ -62,7 +62,7 @@ export class PageFooterView extends BaseView<PageFooterViewProps, PageFooterView
       props.copyright !== false,
       () => (
         <span className='PageFooter-text'>
-          { `© ${ this.renderCopyrightYear() } `}
+          { `© ${ this.renderCopyrightYear() } ` }
           { this.renderCopyrightText() }
         </span>
       ),

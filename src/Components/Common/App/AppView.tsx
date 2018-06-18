@@ -98,13 +98,21 @@ export class AppView extends BaseView<AppViewProps, AppViewModel> {
                       ),
                     )
                 }
-                <RouteHandlerView viewModel={ this.viewModel.routeHandler } viewMap={ props.viewMap! } responsive={ props.responsive } />
+                <RouteHandlerView
+                  viewModel={ this.viewModel.routeHandler }
+                  viewMap={ props.viewMap! }
+                  responsive={ props.responsive }
+                />
                 {
                   this.wxr
                     .renderConditional(
                       props.footer,
                       () => (
-                        <PageFooterView viewModel={ this.viewModel.footer } responsive={ props.responsive } { ...footerProps } />
+                        <PageFooterView
+                          viewModel={ this.viewModel.footer }
+                          responsive={ props.responsive }
+                          { ...footerProps }
+                        />
                       ),
                     )
                 }

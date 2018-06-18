@@ -51,7 +51,8 @@ export class ItemListPanelView extends BaseView<ItemListPanelViewProps, ItemList
     const searchView = this.wxr.renderNullable(
       props.search,
       x => React.isValidElement(x) ? x : (
-        <SearchView viewModel={ this.viewModel.search! }
+        <SearchView
+          viewModel={ this.viewModel.search! }
           disabled={ this.viewModel.isLoading.value }
           onClick={ this.handleSearchClick }
           { ...(x === true ? {} : x) }
@@ -66,7 +67,9 @@ export class ItemListPanelView extends BaseView<ItemListPanelViewProps, ItemList
       undefined;
 
     return (
-      <CommonPanel headerFormat={ headerFormat } { ...this.trimProps(rest) }
+      <CommonPanel
+        headerFormat={ headerFormat }
+        { ...this.trimProps(rest) }
         className={ this.wxr.classNames('ItemListPanel', className) }
       >
         { this.renderDataGrid(props) }

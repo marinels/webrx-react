@@ -131,7 +131,9 @@ export class ComponentDemoView extends BaseView<ComponentDemoViewProps, Componen
 
   private renderDropdown(cols: number) {
     return (
-      <DropdownButton id='col-width' bsStyle='info'
+      <DropdownButton
+        id='col-width'
+        bsStyle='info'
         title={ `Column Width (${ cols === 0 ? 'Full Width' : cols })` }
         onSelect={ this.bindEventToCommand(x => x.setColumns) }
       >

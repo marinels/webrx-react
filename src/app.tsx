@@ -25,8 +25,13 @@ function renderApp(newViewModel = false) {
   app = (newViewModel || app == null) ? new AppViewModel(true, true, true) : app;
 
   return (
-    <Components.AppView viewModel={ app } alerts header footer
-      copyright='webrx-react' copyrightUri='https://github.com/marinels/webrx-react'
+    <Components.AppView
+      viewModel={ app }
+      alerts
+      header
+      footer
+      copyright='webrx-react'
+      copyrightUri='https://github.com/marinels/webrx-react'
       footerContent={
         (
           <span>

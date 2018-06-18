@@ -1,9 +1,9 @@
 {
   "extends": [
     "tslint:recommended",
-    "tslint-react",
-    "tslint-config-prettier",
-    "tslint-config-unional/strict"
+    "tslint-config-unional/strict",
+    "tslint-react"
+    // "tslint-config-prettier"
   ],
   "rules": {
     // standardize on a linebreak
@@ -19,7 +19,13 @@
     "variable-name": [ true, "check-format", "allow-pascal-case", "ban-keywords" ],
 
     // allow flag props (i.e., bool props with the value part omitted)
-    "jsx-boolean-value": [ "never" ],
+    "jsx-boolean-value": [ false ],
+
+    // force spaces between braces for improved readability
+    "jsx-curly-spacing": [ true, "always" ],
+
+    // allow multiline js expressions inside of a JSX block
+    "jsx-no-multiline-js": [ false ],
 
     // allow bare arrow params
     "arrow-parens": [ false ]

@@ -173,7 +173,8 @@ export class TreeItem extends React.Component<TreeItemComponentProps, TreeItemSt
     view: TreeItem,
   ) {
     return (
-      <div className='TreeItem-Header'
+      <div
+        className='TreeItem-Header'
         onClick={ view.props.clickToExpand ? view.toggleExpansion.bind<MouseEventHandler<any>>(view) : undefined }
       >
         { indent }

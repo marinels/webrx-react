@@ -230,7 +230,7 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
         {
           this.props.limits!
             .map((x, i) => (
-              <MenuItem key={ i } eventKey={ x } selected={ this.viewModel.limit.value === x }>{x || 'All'}</MenuItem>
+              <MenuItem key={ i } eventKey={ x } selected={ this.viewModel.limit.value === x }>{ x || 'All' }</MenuItem>
             ))
         }
       </DropdownButton>

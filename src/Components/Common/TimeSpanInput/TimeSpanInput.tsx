@@ -207,9 +207,12 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
     });
 
     return (
-      <FormGroup { ...rest }
+      <FormGroup
+        { ...rest }
         className={ this.wxr.classNames('TimeSpanInput', className) }
-        bsClass={ props.bsClass } bsSize={ props.bsSize } controlId={ props.controlId }
+        bsClass={ props.bsClass }
+        bsSize={ props.bsSize }
+        controlId={ props.controlId }
         validationState={ String.isNullOrEmpty(this.state.error) ? undefined : 'error' }
       >
         { this.renderFormInput() }
@@ -242,7 +245,9 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
     }
 
     return (
-      <FormControl type='text' placeholder={ this.props.placeholder }
+      <FormControl
+        type='text'
+        placeholder={ this.props.placeholder }
         value={ this.state.input }
         onChange={ this.handleInput.bind<FormEventHandler<any>>(this) }
         onBlur={ this.handleParse.bind<any>(this) }
@@ -257,8 +262,11 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
           this.wxr.renderConditional(
             this.props.reparseButton,
             () => (
-              <CommandButton id={ `${ this.props.id }-reparse` } className='TimeSpanInput-adjustButton'
-                onClick={ this.handleReparse } tooltip='Reparse input'
+              <CommandButton
+                id={ `${ this.props.id }-reparse` }
+                className='TimeSpanInput-adjustButton'
+                onClick={ this.handleReparse }
+                tooltip='Reparse input'
               >
                 <Icon name='check'/>
               </CommandButton>
@@ -266,12 +274,16 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
           )
         }
         { this.renderDropdown() }
-        <CommandButton className='TimeSpanInput-adjustButton' componentClass='button'
+        <CommandButton
+          className='TimeSpanInput-adjustButton'
+          componentClass='button'
           onClick={ this.handleIncreaseDuration }
         >
           <Icon name='chevron-up'/>
         </CommandButton>
-        <CommandButton className='TimeSpanInput-adjustButton' componentClass='button'
+        <CommandButton
+          className='TimeSpanInput-adjustButton'
+          componentClass='button'
           onClick={ this.handleDecreaseDuration }
         >
           <Icon name='chevron-down'/>
@@ -282,9 +294,11 @@ export class TimeSpanInput extends React.Component<TimeSpanInputComponentProps, 
 
   protected renderDropdown() {
     return (
-      <DropdownButton id={ `TimeSpanInput-units-${ this.props.id }` }
+      <DropdownButton
+        id={ `TimeSpanInput-units-${ this.props.id }` }
         className='TimeSpanInput-unitDropdown'
-        title={ this.state.unit } bsSize={ this.props.bsSize }
+        title={ this.state.unit }
+        bsSize={ this.props.bsSize }
         onSelect={ this.handleChangeUnit.bind<any>(this) }
       >
         {

@@ -43,7 +43,9 @@ export class Breadcrumbs extends React.Component<BreadcrumbsComponentProps> {
             <Breadcrumb>{ x }</Breadcrumb>
             {
               this.wxr.renderConditional(props.pinnable, () => (
-                <CommandButton className='Breadcrumbs-pin' bsStyle='link'
+                <CommandButton
+                  className='Breadcrumbs-pin'
+                  bsStyle='link'
                   onClick={ this.toggleBreadcrumbsPin }
                 >
                   <Icon name='thumb-tack' size='lg' rotate='90' />
@@ -58,8 +60,12 @@ export class Breadcrumbs extends React.Component<BreadcrumbsComponentProps> {
 
   protected renderCrumb(crumb: RoutingBreadcrumb, index: number, active: boolean) {
     const breadcrumb = (
-      <Breadcrumb.Item key={ crumb.key }
-        active={ active } href={ crumb.href } title={ crumb.title } target={ crumb.target }
+      <Breadcrumb.Item
+        key={ crumb.key }
+        active={ active }
+        href={ crumb.href }
+        title={ crumb.title }
+        target={ crumb.target }
       >
         { crumb.content }
       </Breadcrumb.Item>
@@ -69,8 +75,12 @@ export class Breadcrumbs extends React.Component<BreadcrumbsComponentProps> {
       .renderNullable(
         crumb.tooltip,
         x => (
-          <ContentTooltip key={ crumb.key } id={ `${ crumb.key }-tt` }
-            content={ x } context={ breadcrumb } placement={ x.placement || 'bottom' }
+          <ContentTooltip
+            key={ crumb.key }
+            id={ `${ crumb.key }-tt` }
+            content={ x }
+            context={ breadcrumb }
+            placement={ x.placement || 'bottom' }
           />
         ),
         () => breadcrumb,

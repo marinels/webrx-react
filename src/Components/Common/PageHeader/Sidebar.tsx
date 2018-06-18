@@ -22,8 +22,13 @@ export class Sidebar extends React.Component<SidebarProps> {
     });
 
     return (
-      <Modal { ...rest } className={ this.wxr.classNames('Sidebar', props.side, className) }
-        onHide={ this.props.onHide } show={ this.props.isVisible } autoFocus keyboard
+      <Modal
+        { ...rest }
+        className={ this.wxr.classNames('Sidebar', props.side, className) }
+        onHide={ this.props.onHide }
+        show={ this.props.isVisible }
+        autoFocus
+        keyboard
       >
         <Modal.Header closeButton>
           <Modal.Title>{ props.header }</Modal.Title>

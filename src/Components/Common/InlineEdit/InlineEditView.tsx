@@ -122,16 +122,18 @@ export class InlineEditView extends BaseView<InlineEditViewProps, InlineEditView
     });
 
     return (
-      <FormGroup { ...rest } className={ this.wxr.classNames('InlineEditView', className)}>
+      <FormGroup { ...rest } className={ this.wxr.classNames('InlineEditView', className) }>
         <InputGroup>
           {
             this.wxr
               .renderConditional(
                 this.viewModel.hasSavingError,
                 () => (
-                  <ContentTooltip id={ `${ props.controlId || 'inlineedit' }-tt` }
+                  <ContentTooltip
+                    id={ `${ props.controlId || 'inlineedit' }-tt` }
                     className='InlineEditView-popover alert-danger'
-                    placement={ props.errorPlacement } popover
+                    placement={ props.errorPlacement }
+                    popover
                     content={ this.renderErrorTooltip() }
                   >
                     <InputGroup.Addon className='InlineEditView-error'>
@@ -164,7 +166,10 @@ export class InlineEditView extends BaseView<InlineEditViewProps, InlineEditView
     const onKeyDown = this.props.keyboard === true ? (e: React.KeyboardEvent<any>) => this.handleKeyDown(e) : undefined;
 
     return (
-      <BindableInput { ...props } boundProperty={ this.viewModel.editValue } onKeyDown={ onKeyDown }
+      <BindableInput
+        { ...props }
+        boundProperty={ this.viewModel.editValue }
+        onKeyDown={ onKeyDown }
         disabled={ this.viewModel.save.canExecute === false }
       >
         {
@@ -196,8 +201,11 @@ export class InlineEditView extends BaseView<InlineEditViewProps, InlineEditView
     return this.wxr.renderConditional(
       props.clickToEdit === true,
       () => (
-        <CommandButton { ...rest } className={ this.wxr.classNames('InlineEditView', className)}
-          bsStyle='link' command={ this.viewModel.edit }
+        <CommandButton
+          { ...rest }
+          className={ this.wxr.classNames('InlineEditView', className) }
+          bsStyle='link'
+          command={ this.viewModel.edit }
         >
           { displayContent }
         </CommandButton>

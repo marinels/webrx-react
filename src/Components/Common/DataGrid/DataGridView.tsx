@@ -119,8 +119,12 @@ export class DataGridView extends BaseView<DataGridViewProps, DataGridViewModel<
     }
 
     return (
-      <CommandButton className='DataGrid-header' block bsStyle='link'
-        command={ this.viewModel.toggleSortDirection } commandParameter={ field }
+      <CommandButton
+        className='DataGrid-header'
+        block
+        bsStyle='link'
+        command={ this.viewModel.toggleSortDirection }
+        commandParameter={ field }
       >
         { fragment }
         { this.renderSortIcon(field, this.viewModel.requests.value) }

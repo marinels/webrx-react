@@ -45,12 +45,18 @@ export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel>
 
     return (
       <div { ...rest } className={ this.wxr.classNames('TodoList', className) }>
-        <ItemListPanelView viewModel={ this.viewModel.list } collapsible pager search compact
+        <ItemListPanelView
+          viewModel={ this.viewModel.list }
+          collapsible
+          pager
+          search
+          compact
           emptyContent={ this.renderEmptyContent() }
           shadow={ this.props.shadow }
           itemTemplate={ this.renderItem }
           headerContent='Canonical Todo List'
-          teaserContent={ this.renderTeaser() } footerContent={ this.renderFooter() }
+          teaserContent={ this.renderTeaser() }
+          footerContent={ this.renderFooter() }
         >
           <ListGroupView />
         </ItemListPanelView>
@@ -77,7 +83,10 @@ export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel>
       <FormGroup className='TodoList-teaser'>
         <InputGroup>
           <BindableInput boundProperty={ this.viewModel.newItemContent }>
-            <FormControl ref={ this.inputRef } id='newItemContent' type='text'
+            <FormControl
+              ref={ this.inputRef }
+              id='newItemContent'
+              type='text'
               placeholder='Type in a todo item here...'
               onKeyDown={
                 this.bindEventToCommand(
@@ -142,21 +151,33 @@ export class TodoItemView extends BaseView<TodoItemViewProps, TodoItemViewModel>
     });
 
     return (
-      <div { ...rest } className={
-        this.wxr.classNames('TodoItem', 'fa-lg', className, { completed: this.viewModel.completed.value })
-      }>
+      <div
+        { ...rest }
+        className={
+          this.wxr.classNames('TodoItem', 'fa-lg', className, { completed: this.viewModel.completed.value })
+        }
+      >
         <div className='TodoItem-main'>
-          <CommandButton plain onClick={
-            this.bindEventToCommand(x => x.toggleCompleted)
-          } stopPropagation preventDefault>
+          <CommandButton
+            plain
+            onClick={
+              this.bindEventToCommand(x => x.toggleCompleted)
+            }
+            stopPropagation
+            preventDefault
+          >
             <Icon name={ this.viewModel.completed.value ? 'check-circle' : 'circle-o' } size='lg' fixedWidth />
           </CommandButton>
           <span className='text-muted'>{ `[ ${ this.viewModel.id } ] ` }</span>
           <span className='TodoItem-content'>{ this.viewModel.content }</span>
         </div>
         <div className='TodoItem-actions'>
-          <CommandButton bsStyle='danger' bsSize='xs' componentClass='a'
-            command={ this.getRemoveCommand } commandParameter={ this.viewModel }
+          <CommandButton
+            bsStyle='danger'
+            bsSize='xs'
+            componentClass='a'
+            command={ this.getRemoveCommand }
+            commandParameter={ this.viewModel }
           >
             <Icon name='times' fixedWidth />
           </CommandButton>

@@ -39,7 +39,8 @@ export class TabRenderTemplate<T> {
     view: TabsView,
   ) {
     return (
-      <Tab key={ this.keySelector(item, index, viewModel, view) }
+      <Tab
+        key={ this.keySelector(item, index, viewModel, view) }
         title={ this.titleSelector(item, index, viewModel, view) }
         eventKey={ index }
       >
@@ -96,7 +97,10 @@ export class TabsView extends BaseView<TabsViewProps, TabsViewModel<{}>> {
 
   private renderStaticTabs() {
     return (
-      <Tabs id={ this.props.id } unmountOnExit activeKey={ this.viewModel.selectedIndex.value }
+      <Tabs
+        id={ this.props.id }
+        unmountOnExit
+        activeKey={ this.viewModel.selectedIndex.value }
         onSelect={ this.bindEventToCommand(x => x.selectIndex) }
       >
         {
@@ -111,7 +115,9 @@ export class TabsView extends BaseView<TabsViewProps, TabsViewModel<{}>> {
 
   private renderDynamicTabs(template: TabRenderTemplate<any>) {
     return (
-      <Tabs id={ this.props.id } activeKey={ this.viewModel.selectedIndex.value }
+      <Tabs
+        id={ this.props.id }
+        activeKey={ this.viewModel.selectedIndex.value }
         onSelect={ this.bindEventToCommand(x => x.selectIndex) }
       >
         { template.render(this.viewModel, this) }

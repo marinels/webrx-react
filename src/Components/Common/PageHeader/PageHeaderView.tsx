@@ -92,7 +92,9 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
     });
 
     return (
-      <div ref={ this.containerRef } { ...rest }
+      <div
+        ref={ this.containerRef }
+        { ...rest }
         className={ this.wxr.classNames('PageHeader', className) }
       >
         <Navbar ref={ this.navBarRef } fixedTop={ !props.responsive } fluid>
@@ -137,8 +139,12 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
     const command = isSidebarEnabled ? this.viewModel.toggleSideBar : undefined;
 
     return (
-      <CommandButton className='PageHeader-brand' bsStyle='link' active={ active }
-        href={ this.props.branduri } command={ command }
+      <CommandButton
+        className='PageHeader-brand'
+        bsStyle='link'
+        active={ active }
+        href={ this.props.branduri }
+        command={ command }
       >
         { this.props.brand }
       </CommandButton>
@@ -149,13 +155,20 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
     const visibleItems = this.getVisibleActions(items);
 
     return this.wxr.renderConditional(visibleItems.length > 0, () => (
-      <NavDropdown id={ id } key={ id } title={ header } noCaret={ noCaret }
+      <NavDropdown
+        id={ id }
+        key={ id }
+        title={ header }
+        noCaret={ noCaret }
         className={ this.wxr.classNames(`PageHeader-${ id }`, className) }
       >
         {
           visibleItems
             .map(x => (
-              <MenuItem key={ x.id } disabled={ this.isActionDisabled(x) } href={ x.uri }
+              <MenuItem
+                key={ x.id }
+                disabled={ this.isActionDisabled(x) }
+                href={ x.uri }
                 onSelect={
                   String.isNullOrEmpty(x.uri) === true ?
                     this.bindEventToCommand(vm => vm.menuItemSelected, () => x) :
@@ -235,12 +248,14 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
   private renderUserMenu() {
     return this.renderHeaderMenu(
       'userMenu',
-      (<ProfilePicture
-        src={ this.viewModel.userImage }
-        title={ this.viewModel.userDisplayName }
-        iconSize='2x'
-        size={ 30 }
-      />),
+      (
+        <ProfilePicture
+          src={ this.viewModel.userImage }
+          title={ this.viewModel.userDisplayName }
+          iconSize='2x'
+          size={ 30 }
+        />
+      ),
       this.viewModel.userMenuItems.value,
       true,
     );
@@ -267,8 +282,13 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
           this.wxr.renderConditional(visibleActions.length > 0, () =>
             visibleActions
               .map(x => (
-                <CommandButton key={ x.id } className='PageHeader-actionButton' bsStyle={ x.bsStyle }
-                  href={ x.uri } command={ x.command } commandParameter={ x.commandParameter }
+                <CommandButton
+                  key={ x.id }
+                  className='PageHeader-actionButton'
+                  bsStyle={ x.bsStyle }
+                  href={ x.uri }
+                  command={ x.command }
+                  commandParameter={ x.commandParameter }
                 >
                   { this.renderHeaderCommandActionIcon(x, 'PageHeader-actionHeaderIcon', false) }
                   <span className='PageHeader-actionHeaderText'>{ x.header }</span>
@@ -282,7 +302,8 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
 
   private renderSidebar() {
     return (
-      <Sidebar isVisible={ this.viewModel.isSidebarVisible.value }
+      <Sidebar
+        isVisible={ this.viewModel.isSidebarVisible.value }
         header={ this.props.brand }
         onHide={ this.bindEventToCommand(x => x.toggleSideBar, () => false) }
       >
@@ -300,7 +321,10 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
                     {
                       visibleActions
                         .map(x => (
-                          <NavItem key={ x.id } disabled={ this.isActionDisabled(x) } href={ x.uri }
+                          <NavItem
+                            key={ x.id }
+                            disabled={ this.isActionDisabled(x) }
+                            href={ x.uri }
                             onClick={
                               String.isNullOrEmpty(x.uri) === true ?
                                 this.bindEventToCommand(vm => vm.menuItemSelected, () => x) :

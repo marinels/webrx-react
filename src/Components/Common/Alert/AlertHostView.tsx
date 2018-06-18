@@ -34,7 +34,7 @@ export class AlertHostView extends BaseView<AlertHostViewProps, AlertHostViewMod
   private renderAlerts() {
     return this.viewModel.alerts.value
       .map(x => (
-        <RTG.CSSTransition key={ x.key } classNames='alert' timeout={ ({ enter: 500, exit: 300 }) }>
+        <RTG.CSSTransition key={ x.key } classNames='alert' timeout={ { enter: 500, exit: 300 } }>
           <AlertView viewModel={ x } />
         </RTG.CSSTransition>
       ));

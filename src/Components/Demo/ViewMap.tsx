@@ -1,4 +1,4 @@
-// tslint:disable:jsx-no-lambda
+// tslint:disable:jsx-no-lambda jsx-alignment
 
 import * as CSS from 'csstype';
 import * as React from 'react';
@@ -35,7 +35,7 @@ const sampleDataTemplate = (x: SampleData) => {
 const sampleDataCmdTemplate = (x: SampleData) => {
   return (
     <Components.NavButton href='#'>
-      <Components.CommandButton block plain stopPropagation={ true } style={ ({ padding: 5 }) }
+      <Components.CommandButton block plain stopPropagation style={ { padding: 5 } }
         onClick={ () => Alert.create(JSON.stringify(x, undefined, 2), 'Element Clicked') }
       >
         { sampleDataTemplate(x) }
@@ -49,7 +49,7 @@ export const demoViewMap: ViewActivatorMap = {
   SizedLoading: (c, cr) => Components.Loading.renderSizedLoadable(true, '50px Loader...', 50),
   Splash: () => <Components.Splash fluid header='webrx-react Demo' logo='http://placehold.it/100x100?text=Logo' />,
   CommandButton: () => (
-    <FormGroup bsSize='large' style={({ marginBottom: 0 })}>
+    <FormGroup bsSize='large' style={ { marginBottom: 0 } }>
       <InputGroup>
         <FormControl id='CommandButtonParamInput' type='text' placeholder='Enter Command Parameter Text Here...' />
         <InputGroup.Button>
@@ -57,7 +57,7 @@ export const demoViewMap: ViewActivatorMap = {
             commandParameter={
               () => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value
             }
-            command={Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
+            command={ Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed')) }
             tooltip='Embedded Command Tooltips!!!'
           >
             Execute Command
@@ -66,7 +66,7 @@ export const demoViewMap: ViewActivatorMap = {
             commandParameter={
               () => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value
             }
-            command={Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
+            command={ Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed')) }
             tooltip={ (<Popover id='cmd-btn-custom-tt' placement='top'>Custom Tooltip</Popover>) }
           >
             Same Command
@@ -75,12 +75,12 @@ export const demoViewMap: ViewActivatorMap = {
             commandParameter={
               () => ((document.getElementById('CommandButtonParamInput') || {}) as HTMLInputElement).value
             }
-            command={Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed'))}
-            tooltip={(
+            command={ Components.CommandButton.wx.command(x => Alert.create(x, 'CommandButton Pressed')) }
+            tooltip={ (
               <OverlayTrigger placement='bottom'
                 overlay={ (<Tooltip id='cmd-btn-custom-tt'>Custom Overlay Tooltip</Tooltip>) }
               />
-            )}
+            ) }
           >
             Same Again
           </Components.CommandButton>
@@ -90,7 +90,7 @@ export const demoViewMap: ViewActivatorMap = {
   ),
   CommandButtonCondition: (data: { condition: Observable<any>, cmd: Command }) => {
     return (
-      <FormGroup bsSize='large' style={({ marginBottom: 0 })}>
+      <FormGroup bsSize='large' style={ { marginBottom: 0 } }>
         <InputGroup>
           <Components.BindableInput boundProperty={ data.condition } converter={ x => Number(x) }>
             <FormControl type='text' />
@@ -104,8 +104,8 @@ export const demoViewMap: ViewActivatorMap = {
   },
   Alert: () => (
     <div>
-      <Button onClick={() => Alert.create(`Alert Content: ${new Date()}`, 'Info Alert', 'info')}>Info Alert</Button>
-      <Button onClick={() =>
+      <Button onClick={ () => Alert.create(`Alert Content: ${new Date()}`, 'Info Alert', 'info') }>Info Alert</Button>
+      <Button onClick={ () =>
         Alert.createForError(new Error(`Error Message: ${new Date()}`), 'Error Alert')
       }>
         Error Alert
@@ -137,18 +137,18 @@ export const demoViewMap: ViewActivatorMap = {
   ),
   ContextMenu: () => (
     <div>
-      <Components.ContextMenu id='demo' header='Optional Header' onSelect={(item) => {
+      <Components.ContextMenu id='demo' header='Optional Header' onSelect={ (item) => {
         const content = String.isNullOrEmpty(item.eventKey) ?
           item.href :
           `eventKey = ${ String.stringify(item.eventKey) }`;
 
         Alert.create(content, 'Context Menu Item Clicked');
-      }}>
-        <div style={({ padding: 15, border: '1px dashed black' })}>Right Click Here for the Context Menu</div>
+      } }>
+        <div style={ { padding: 15, border: '1px dashed black' } }>Right Click Here for the Context Menu</div>
 
         <MenuItem header>Section Header</MenuItem>
         <MenuItem title='Item 1 Tooltip' href='#/demo/ContextMenu?clicked=1'>Item 1</MenuItem>
-        <MenuItem title='#/demo/ContextMenu' eventKey={({val: 1})}>Item 2</MenuItem>
+        <MenuItem title='#/demo/ContextMenu' eventKey={ {val: 1} }>Item 2</MenuItem>
         <MenuItem divider />
         <MenuItem header>Disabled Items</MenuItem>
         <MenuItem disabled>Item 3</MenuItem>
@@ -184,7 +184,7 @@ export const demoViewMap: ViewActivatorMap = {
             thumbnail rounded title='Rounded Thumbnail Image'
           />
           <Components.ProfilePicture style={ style } src={ imageData }
-            thumbnail size={ 40} title='Fixed Width/Height Image'
+            thumbnail size={ 40 } title='Fixed Width/Height Image'
           />
           <Components.ProfilePicture style={ style } src={ imageData }
             thumbnail rounded size={ 40 } title='Rounded Fixed Width/Height Image'
@@ -196,7 +196,7 @@ export const demoViewMap: ViewActivatorMap = {
           <Components.ProfilePicture style={ style } src='http://via.placeholder.com/100x60' title='X-Wide Image' />
           <Components.ProfilePicture style={ style } src='http://via.placeholder.com/60x100' title='X-Tall Image' />
         </div>
-        <div style={ ({ height: 250 }) }>
+        <div style={ { height: 250 } }>
           <Components.ProfilePicture style={ style } src={ imageData }
             thumbnail responsive title='Responsive Thumbnail Image'
           />
@@ -253,13 +253,15 @@ export const demoViewMap: ViewActivatorMap = {
     </Components.ItemsPresenter>
   ),
   GridPanel: () => (
-    <Components.Grid border style={({ height: 400 })}>
+    <Components.Grid border style={ { height: 400 } }>
       <Components.Grid.Rows>
         <Components.RowDefinition height={ 100 } />
         <Components.RowDefinition height={ 200 } />
         <Components.RowDefinition />
       </Components.Grid.Rows>
-      <Components.Grid.Columns itemClassName={ ctx => `Col-${ ctx.column }` } itemStyle={({ verticalAlign: 'middle' })}>
+      <Components.Grid.Columns
+        itemClassName={ ctx => `Col-${ ctx.column }` } itemStyle={ { verticalAlign: 'middle' } }
+      >
         <Components.ColumnDefinition width={ 200 } />
         <Components.ColumnDefinition width='2*' />
         <Components.ColumnDefinition />
@@ -277,12 +279,12 @@ export const demoViewMap: ViewActivatorMap = {
   ),
   StackPanel: () => (
     <div>
-      <Components.StackPanel orientation='Horizontal' itemStyle={({ marginRight: 5 })}>
+      <Components.StackPanel orientation='Horizontal' itemStyle={ { marginRight: 5 } }>
         <Label>Item 1</Label>
         <Label>Item 2</Label>
         <Label>Item 3</Label>
       </Components.StackPanel>
-      <Components.StackPanel itemStyle={({ marginBottom: 5 })}>
+      <Components.StackPanel itemStyle={ { marginBottom: 5 } }>
         <Label>Item 1</Label>
         <Label>Item 2</Label>
         <Label>Item 3</Label>
@@ -291,7 +293,7 @@ export const demoViewMap: ViewActivatorMap = {
   ),
   UniformGridPanel: () => (
     <Components.UniformGridPanel gridRows={ 3 } gridColumns={ 2 } border renderEmptyRows
-      columnStyle={({ height: 50, verticalAlign: 'middle' })}
+      columnStyle={ { height: 50, verticalAlign: 'middle' } }
     >
       <Label key={ 1 }>Item 1</Label>
       <Label key={ 2 }>Item 2</Label>
@@ -299,7 +301,7 @@ export const demoViewMap: ViewActivatorMap = {
     </Components.UniformGridPanel>
   ),
   WrapPanel: () => (
-    <Components.WrapPanel itemStyle={({ marginRight: 5 })}>
+    <Components.WrapPanel itemStyle={ { marginRight: 5 } }>
       <Label>Item 1</Label>
       <Label>Item 2</Label>
       <Label>Item 3</Label>
@@ -436,8 +438,8 @@ export const demoViewMap: ViewActivatorMap = {
       <div>
         <Components.NavButton />
         <Components.NavButton href='#' />
-        <div style={ ({ height: 100, textAlign: 'right' }) }>
-          <div style={ ({ height: '100%', display: 'inline-block' }) }>
+        <div style={ { height: 100, textAlign: 'right' } }>
+          <div style={ { height: '100%', display: 'inline-block' } }>
             <Components.NavButton href='#' compact />
           </div>
         </div>
@@ -480,7 +482,7 @@ export const demoViewMap: ViewActivatorMap = {
           itemTemplate={ (x: SampleTreeData) => x.name }
           startExpanded
         />
-      )}
+      ) }
     />
   ),
   HorizontalTreeItemPresenter: () => (
@@ -495,7 +497,7 @@ export const demoViewMap: ViewActivatorMap = {
           itemsPanelTemplate={ x => <Components.StackPanel orientation='Horizontal'>{ x }</Components.StackPanel> }
           itemTemplate={ (x: SampleTreeData) => x.name }
         />
-      )}
+      ) }
     />
   ),
   HorizontalItemsTreeItemPresenter: () => (
@@ -509,7 +511,7 @@ export const demoViewMap: ViewActivatorMap = {
           itemsPanelTemplate={ x => <Components.StackPanel orientation='Horizontal'>{ x }</Components.StackPanel> }
           itemTemplate={ (x: SampleTreeData) => x.name }
         />
-      )}
+      ) }
     />
   ),
   HorizontalRootTreeItemPresenter: () => (
@@ -523,7 +525,7 @@ export const demoViewMap: ViewActivatorMap = {
           itemsSource={ (x: SampleTreeData) => x.items }
           itemTemplate={ (x: SampleTreeData) => x.name }
         />
-      )}
+      ) }
     />
   ),
   ItemsViewModel: (viewModel: Components.ItemsViewModel<{}>, componentRoute: string) => {
@@ -533,7 +535,7 @@ export const demoViewMap: ViewActivatorMap = {
           <Components.ItemsView
             viewModel={ viewModel }
             itemTemplate={ (x: SampleData) => sampleDataTemplate(x) }
-            itemStyle={ ({ textAlign: 'left' }) }
+            itemStyle={ { textAlign: 'left' } }
           />
         );
       case 'ItemsWrap':
@@ -541,7 +543,7 @@ export const demoViewMap: ViewActivatorMap = {
           <Components.ItemsView
             viewModel={ viewModel }
             itemTemplate={ (x: SampleData) => (
-              <Label key={ x.id } style={({ marginRight: 5 })}>
+              <Label key={ x.id } style={ { marginRight: 5 } }>
                 { `name = ${ x.name }, requiredBy = ${ x.requiredBy }` }
               </Label>
             ) }
@@ -552,15 +554,15 @@ export const demoViewMap: ViewActivatorMap = {
       case 'ItemsUGrid':
         return (
           <Components.ItemsView
-            style={({ height: 400 })}
+            style={ { height: 400 } }
             viewModel={ viewModel }
             itemTemplate={ sampleDataTemplate }
             compact
           >
             <Components.UniformGridPanel
               gridRows={ 4 } gridColumns={ 4 } firstColumn={ 1 } border renderEmptyRows
-              rowStyle={({ height: 100 })}
-              columnStyle={({ verticalAlign: 'middle' })}
+              rowStyle={ { height: 100 } }
+              columnStyle={ { verticalAlign: 'middle' } }
             />
           </Components.ItemsView>
         );
@@ -569,7 +571,7 @@ export const demoViewMap: ViewActivatorMap = {
           <Components.ItemsView
             viewModel={ viewModel }
             itemTemplate={ (x: SampleData) => (
-              <Label key={ x.id } style={({ marginRight: 5 })}>
+              <Label key={ x.id } style={ { marginRight: 5 } }>
                 { `name = ${ x.name }, requiredBy = ${ x.requiredBy }` }
               </Label>
             ) }
@@ -580,7 +582,7 @@ export const demoViewMap: ViewActivatorMap = {
       case 'ItemsGrid':
         return (
           <Components.ItemsView
-            style={({ height: 400 })}
+            style={ { height: 400 } }
             viewModel={ viewModel }
             itemTemplate={ (x: SampleData, i: number) => {
               const row = Math.floor(i / 3) % 3;
@@ -598,7 +600,7 @@ export const demoViewMap: ViewActivatorMap = {
                 <Components.RowDefinition height={ 200 } />
                 <Components.RowDefinition />
               </Components.Grid.Rows>
-              <Components.Grid.Columns itemStyle={({ verticalAlign: 'middle' })}>
+              <Components.Grid.Columns itemStyle={ { verticalAlign: 'middle' } }>
                 <Components.ColumnDefinition width={ 100 } />
                 <Components.ColumnDefinition width='2*' />
                 <Components.ColumnDefinition />
@@ -720,9 +722,9 @@ export const demoViewMap: ViewActivatorMap = {
   TabsViewModel: (viewModel: Components.TabsViewModel<any>, componentRoute: string) => {
     if (componentRoute === 'StaticTabs') {
       return (
-        <Components.TabsView viewModel={viewModel} id='demo-tabs'>
-          <Tab title='First Static Tab'><Well style={({ margin: 0 })}>Content 1</Well></Tab>
-          <Tab title='Second Static Tab'><Well style={({ margin: 0 })}>Content 2</Well></Tab>
+        <Components.TabsView viewModel={ viewModel } id='demo-tabs'>
+          <Tab title='First Static Tab'><Well style={ { margin: 0 } }>Content 1</Well></Tab>
+          <Tab title='Second Static Tab'><Well style={ { margin: 0 } }>Content 2</Well></Tab>
         </Components.TabsView>
       );
     }
@@ -730,14 +732,14 @@ export const demoViewMap: ViewActivatorMap = {
       let c = 0;
 
       const template = new Components.TabRenderTemplate<any>((x, i) => `Tab ${ x }`, (x, i, vm) => (
-        <Button style={({ width: '100%', marginTop: 10 })} onClick={ () => { vm.removeTab.execute(i); } }>
+        <Button style={ { width: '100%', marginTop: 10 } } onClick={ () => { vm.removeTab.execute(i); } }>
           { `Close Tab ${ x }` }
         </Button>
       ));
 
       return (
         <div>
-          <Button style={({ width: '100%', marginBottom: 10 })} onClick={() => { viewModel.addTab.execute(++c); } }>
+          <Button style={ { width: '100%', marginBottom: 10 } } onClick={ () => { viewModel.addTab.execute(++c); } }>
             Create Tab
           </Button>
           <Components.TabsView viewModel={ viewModel } id='demo-tabs' template={ template } />
@@ -750,20 +752,20 @@ export const demoViewMap: ViewActivatorMap = {
       headerContent='Common Panel Demo'
       footerContent='Add Status Content to the Footer'
       collapsible
-      headerActions={[
+      headerActions={ [
         { id: 'header-action-1', children: 'Header Button 1' },
         { id: 'header-action-2', children: 'Header Button 2' },
-      ]}
-      footerActions={(
+      ] }
+      footerActions={ (
         <Components.CommonPanel.Actions>
           <Components.CommandButton children='Footer CommandButton' />
           <Button children='Footer Button' />
         </Components.CommonPanel.Actions>
-      )}
+      ) }
     >
       Add any content to the panel body!
       <Components.Loading fontSize={ 24 } text='Such as a Loader...' />
-      <Button onClick={() => Alert.create('Button Clicked', 'Common Panel Demo')}>Or Even a Button</Button>
+      <Button onClick={ () => Alert.create('Button Clicked', 'Common Panel Demo') }>Or Even a Button</Button>
     </Components.CommonPanel>
   ),
   CommonPanelList: () => (
@@ -801,57 +803,57 @@ export const demoViewMap: ViewActivatorMap = {
         headerContent='Basic'
         footerContent='no buttons'
       />
-      <Components.CommonPanel style={({ marginTop: 5 })}
+      <Components.CommonPanel style={ { marginTop: 5 } }
         headerContent='No Footer'
       />
-      <Components.CommonPanel style={({ marginTop: 5 })}
+      <Components.CommonPanel style={ { marginTop: 5 } }
         footerContent='no header'
       />
-      <Components.CommonPanel style={({ marginTop: 5 })}
+      <Components.CommonPanel style={ { marginTop: 5 } }
         headerContent='Footer only button'
-        footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' } ]}
+        footerActions={ [ { id: 'footer-action-1', children: 'Footer Button 1' } ] }
       />
-      <Components.CommonPanel style={({ marginTop: 5 })}
+      <Components.CommonPanel style={ { marginTop: 5 } }
         headerContent='Basic with buttons'
         footerContent='header and footer and buttons'
-        headerActions={[ { id: 'header-action-1', children: 'Header Button 1' } ]}
-        footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' } ]}
+        headerActions={ [ { id: 'header-action-1', children: 'Header Button 1' } ] }
+        footerActions={ [ { id: 'footer-action-1', children: 'Footer Button 1' } ] }
       />
-      <Components.CommonPanel style={({ marginTop: 5 })} collapsible
+      <Components.CommonPanel style={ { marginTop: 5 } } collapsible
         headerContent='Collapsible with buttons'
         footerContent='collapsible header and footer and buttons'
-        headerActions={[ { id: 'header-action-1', children: 'Header Button 1' } ]}
-        footerActions={[ { id: 'footer-action-1', children: 'Footer Button 1' } ]}
+        headerActions={ [ { id: 'header-action-1', children: 'Header Button 1' } ] }
+        footerActions={ [ { id: 'footer-action-1', children: 'Footer Button 1' } ] }
       >
         Content
       </Components.CommonPanel>
-      <Components.CommonPanel style={({ marginTop: 5 })}
+      <Components.CommonPanel style={ { marginTop: 5 } }
         // tslint:disable-next-line:max-line-length
         headerContent='Long text -- asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf'
         // tslint:disable-next-line:max-line-length
         footerContent='long header, long footer with buttons -- asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf'
-        headerActions={[
+        headerActions={ [
           { id: 'header-action-1', children: 'Header Button 1' },
           { id: 'header-action-2', children: 'Header Button 2' },
-        ]}
-        footerActions={[
+        ] }
+        footerActions={ [
           { id: 'footer-action-1', children: 'Footer Button 1' },
           { id: 'footer-action-2', children: 'Footer Button 2' },
-        ]}
+        ] }
       />
-      <Components.CommonPanel style={({ marginTop: 5 })} collapsible
+      <Components.CommonPanel style={ { marginTop: 5 } } collapsible
         // tslint:disable-next-line:max-line-length
         headerContent='Collapsible Long text -- asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf'
         // tslint:disable-next-line:max-line-length
         footerContent='long collapsible header, long footer with buttons -- asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf'
-        headerActions={[
+        headerActions={ [
           { id: 'header-action-1', children: 'Header Button 1' },
           { id: 'header-action-2', children: 'Header Button 2' },
-        ]}
-        footerActions={[
+        ] }
+        footerActions={ [
           { id: 'footer-action-1', children: 'Footer Button 1' },
           { id: 'footer-action-2', children: 'Footer Button 2' },
-        ]}
+        ] }
       >
         Content
       </Components.CommonPanel>
@@ -861,7 +863,7 @@ export const demoViewMap: ViewActivatorMap = {
     switch (componentRoute) {
       case 'DataGrid':
         return (
-          <Components.DataGridView viewModel={ viewModel } pager viewProps={ ({ bordered: false }) }>
+          <Components.DataGridView viewModel={ viewModel } pager viewProps={ { bordered: false } }>
             <Components.GridViewColumn field='id' cellTooltipTemplate={ (x: SampleData) => `Item ${ x.id }` } />
             <Components.GridViewColumn id='cat' header='Category'
               cellTemplate={ (x: SampleData) => x.cat } headerTooltipTemplate='Simple Header Tooltip'
@@ -933,7 +935,7 @@ export const demoViewMap: ViewActivatorMap = {
       case 'ItemListPanel':
         return (
           <Components.ItemListPanelView viewModel={ viewModel } collapsible pager search
-            viewProps={ ({ bordered: false }) }
+            viewProps={ { bordered: false } }
             headerContent='Sample Grid Data'
             headerActions={ [ { id: 'header', children: 'Header Action' } ] }
             footerContent={ (<Components.CountFooterContent count={ viewModel.projectedCount } suffix='Things' />) }
@@ -1016,7 +1018,7 @@ export const demoViewMap: ViewActivatorMap = {
   InlineEditViewModel: (viewModel: Components.InlineEditViewModel<any>, componentRoute: string) => {
     if (componentRoute === 'InlineEditObject') {
       return (
-        <Components.InlineEditView style={ ({ margin: 0 }) } viewModel={ viewModel } inputType='number'
+        <Components.InlineEditView style={ { margin: 0 } } viewModel={ viewModel } inputType='number'
           template={ x => `${ x.rank } of 10` } converter={ x => Number(x) } keyboard clickToEdit
           valueGetter={ (x: Property<any>) => x.value.rank } valueSetter={ (v, p: Property<any>) => p.value.rank = v }
         />
@@ -1024,14 +1026,14 @@ export const demoViewMap: ViewActivatorMap = {
     }
     else {
       return (
-        <Components.InlineEditView style={ ({ margin: 0 }) } viewModel={ viewModel } inputType='number'
+        <Components.InlineEditView style={ { margin: 0 } } viewModel={ viewModel } inputType='number'
           template={ x => `${ x } of 10` } converter={ x => Number(x) } keyboard clickToEdit
         />
       );
     }
   },
   TodoListViewModel: (viewModel: TodoListViewModel) => (
-    <TodoListView style={({ padding: 20 })} viewModel={ viewModel } shadow />
+    <TodoListView style={ { padding: 20 } } viewModel={ viewModel } shadow />
   ),
   Help: (c, cr, r) => {
     const helpStyle = (

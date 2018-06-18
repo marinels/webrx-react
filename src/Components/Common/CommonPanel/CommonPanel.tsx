@@ -73,7 +73,9 @@ export class CommonPanel extends React.Component<CommonPanelProps> {
     );
 
     return (
-      <Panel { ...rest } className={ panelClassName }
+      <Panel
+        { ...rest }
+        className={ panelClassName }
         header={
           rest.header || this.renderHeaderFooter(props.headerContent, props.headerActions, 'header', props.headerFormat)
         }
@@ -94,10 +96,12 @@ export class CommonPanel extends React.Component<CommonPanelProps> {
     sectionType?: CommonPanelContentType,
   ) {
     return this.wxr.renderNullable(content, x => (
-      <div className={
-        this.wxr
-          .classNames(`CommonPanel-${ section }Content`, sectionType == null ? null : `CommonPanel-${ sectionType }`)
-      }>
+      <div
+        className={
+          this.wxr
+            .classNames(`CommonPanel-${ section }Content`, sectionType == null ? null : `CommonPanel-${ sectionType }`)
+        }
+      >
         { x instanceof Function ? x(this) : x }
       </div>
     ), undefined, x => x !== false);

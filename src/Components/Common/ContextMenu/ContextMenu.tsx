@@ -103,8 +103,13 @@ export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuSt
   private renderMenu(menuItems: React.ReactChild[]) {
     return this.wxr.renderConditional(this.state.isVisible === true, () => {
       return (
-        <Popover id={ this.props.id } placement='right' title={ this.props.header }
-          arrowOffsetTop={ ArrowOffset } positionLeft={ this.state.left } positionTop={ this.state.top }
+        <Popover
+          id={ this.props.id }
+          placement='right'
+          title={ this.props.header }
+          arrowOffsetTop={ ArrowOffset }
+          positionLeft={ this.state.left }
+          positionTop={ this.state.top }
         >
           <ul className='dropdown-menu'>
             {

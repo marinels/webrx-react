@@ -110,7 +110,12 @@ export class Loading extends React.Component<LoadingComponentProps> {
 
     return (
       <Component { ...rest } className={ this.wxr.classNames('Loading', className) }>
-        <ProgressBar style={({ fontSize: props.fontSize })} active now={ this.getProgressValue() } label={ props.text }>
+        <ProgressBar
+          style={ { fontSize: props.fontSize } }
+          active
+          now={ this.getProgressValue() }
+          label={ props.text }
+        >
           { children }
         </ProgressBar>
       </Component>

@@ -46,7 +46,7 @@ export class Splash extends React.Component<SplashComponentProps> {
 
   private renderLogo() {
     return this.wxr.renderConditional(this.props.logo != null, () => (
-      <Image className='Splash-logo' src={this.props.logo} rounded />
+      <Image className='Splash-logo' src={ this.props.logo } rounded />
     ));
   }
 }

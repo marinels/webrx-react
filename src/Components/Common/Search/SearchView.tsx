@@ -40,7 +40,10 @@ export class SearchView extends BaseView<SearchViewProps, SearchViewModel> {
       <div { ...rest } className={ this.wxr.classNames('Search', className) }>
         <FormGroup>
           <BindableInput boundProperty={ this.viewModel.filter }>
-            <FormControl className='Search-text' type='text' placeholder={ this.props.placeholder }
+            <FormControl
+              className='Search-text'
+              type='text'
+              placeholder={ this.props.placeholder }
               onKeyDown={ this.bindEventToCommand(
                 x => x.search,
                 undefined,

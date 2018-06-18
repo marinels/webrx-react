@@ -193,7 +193,8 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnProps>
     }
 
     return (
-      <ContentTooltip id={ id }
+      <ContentTooltip
+        id={ id }
         className={ this.getClassNameForComponent(GridColumnComponentType.Tooltip) }
         content={ content }
       >
