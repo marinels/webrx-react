@@ -18,12 +18,9 @@ export interface ReactSpreadRestrictedProps extends ReactSpreadResultProps {
   ref?: React.Ref<any>;
 }
 
-export interface ReactSpreadResult<
-  P,
-  T,
-  R extends ReactSpreadRestrictedProps,
-> extends RestResult<P, T, R>, ReactSpreadResultProps {
-}
+export interface ReactSpreadResult<P, T, R extends ReactSpreadRestrictedProps>
+  extends RestResult<P, T, R>,
+    ReactSpreadResultProps {}
 
 export const reactRestrictedProps: ReactSpreadRestrictedProps = {
   key: undefined,
@@ -41,7 +38,11 @@ export const reactRestrictedProps: ReactSpreadRestrictedProps = {
 // You may omit any of the className, children, props, or rest props from the return value
 // you may additionally choose to omit any properties by name from the rest
 // object that is returned (like 'children' for example).
-export function restPropsStatic<P, T, R extends ReactSpreadRestrictedProps = ReactSpreadRestrictedProps>(
+export function restPropsStatic<
+  P,
+  T,
+  R extends ReactSpreadRestrictedProps = ReactSpreadRestrictedProps
+>(
   props: P,
   propsCreator?: (x: P) => T,
   restrictedProps?: R,
@@ -61,7 +62,11 @@ export function restPropsStatic<P, T, R extends ReactSpreadRestrictedProps = Rea
   };
 }
 
-export function restProps<P, T, R extends ReactSpreadRestrictedProps = ReactSpreadRestrictedProps>(
+export function restProps<
+  P,
+  T,
+  R extends ReactSpreadRestrictedProps = ReactSpreadRestrictedProps
+>(
   this: React.Component<P>,
   propsCreator?: (x: P) => T,
   restrictedProps?: R,
@@ -99,7 +104,10 @@ declare module 'react' {
     // sadly, we need to re-define this restProps function here instead of using
     // the normal restProps: typeof restProps
     // this is because a function property cannot be overridden in a derived class
-    restProps<T, R extends ReactSpreadRestrictedProps = ReactSpreadRestrictedProps>(
+    restProps<
+      T,
+      R extends ReactSpreadRestrictedProps = ReactSpreadRestrictedProps
+    >(
       propsCreator?: (x: P) => T,
       restrictedProps?: R,
     ): ReactSpreadResult<P, T, R>;

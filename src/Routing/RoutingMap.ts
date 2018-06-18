@@ -10,7 +10,6 @@ export interface RoutedComponentActivator extends ComponentActivator {
   route: Route;
 }
 
-export interface RouteMapper extends StringMap<ComponentActivator> {
-}
+export interface RouteMapper extends StringMap<ComponentActivator> {}
 
 export const RouteMap: RouteMapper = {};

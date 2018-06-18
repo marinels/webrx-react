@@ -5,7 +5,7 @@ export function isNumber(value: any): value is number {
 // jQuery implementation
 // see: https://github.com/jquery/jquery/blob/bf48c21d225c31f0f9b5441d95f73615ca3dcfdb/src/core.js#L206
 export function isNumeric(value: any): boolean {
-  return value == null ? false : (value - parseFloat(value) + 1) >= 0;
+  return value == null ? false : value - parseFloat(value) + 1 >= 0;
 }
 
 export function isInt(value: any): boolean {

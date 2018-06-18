@@ -104,8 +104,7 @@ describe('Object Extensions', () => {
     });
 
     it('Can return a name of an object instance', () => {
-      class TestObj {
-      }
+      class TestObj {}
       const obj = new TestObj();
 
       Object.getName(obj).should.eql('TestObj');

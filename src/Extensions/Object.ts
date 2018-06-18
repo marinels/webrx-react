@@ -6,18 +6,13 @@ export function isObject(value: any): value is {} {
 
 export function trim<T extends {}>(obj: T, trimNull = true): T {
   if (isObject(obj)) {
-    return Iterable
-      .from(Object.keys(obj))
-      .reduce(
-        (o: any, x) => {
-          if ((trimNull && o[x] === null) || o[x] === undefined) {
-            delete o[x];
-          }
+    return Iterable.from(Object.keys(obj)).reduce((o: any, x) => {
+      if ((trimNull && o[x] === null) || o[x] === undefined) {
+        delete o[x];
+      }
 
-          return o;
-        },
-        obj,
-      );
+      return o;
+    }, obj);
   }
 
   return obj;
@@ -49,16 +44,13 @@ export function rest<P extends {}, T, R extends {} = {}>(
     removals: {} as StringMap<any>,
   };
 
-  const restParams = Object
-    .keys(data)
-    .forEach(key => {
-      if (map.removals.hasOwnProperty(key)) {
-        result.removals[key] = map.data[key];
-      }
-      else if (map.props.hasOwnProperty(key) === false) {
-        result.rest[key] = map.data[key];
-      }
-    });
+  const restParams = Object.keys(data).forEach(key => {
+    if (map.removals.hasOwnProperty(key)) {
+      result.removals[key] = map.data[key];
+    } else if (map.props.hasOwnProperty(key) === false) {
+      result.rest[key] = map.data[key];
+    }
+  });
 
   return {
     props: map.props as T,
@@ -146,9 +138,10 @@ export interface EnumPropertyDescriptor<T> {
   type: T;
 }
 
-export function getEnumPropertyDescriptors<T>(type: any): Iterable<EnumPropertyDescriptor<T>> {
-  return Object
-    .keys(type)
+export function getEnumPropertyDescriptors<T>(
+  type: any,
+): Iterable<EnumPropertyDescriptor<T>> {
+  return Object.keys(type)
     .asIterable()
     .map(name => ({ name, value: parseInt(type[name]) }))
     .filter(x => x.value >= 0)

@@ -26,8 +26,13 @@ export interface ContextMenuState {
 class ContextMenuContainer extends React.Component<PopoverProps> {
   render() {
     return (
-      <div className={ this.wxr.classNames('ContextMenu-container', this.props.className) }>
-        { this.props.children }
+      <div
+        className={this.wxr.classNames(
+          'ContextMenu-container',
+          this.props.className,
+        )}
+      >
+        {this.props.children}
       </div>
     );
   }
@@ -35,7 +40,10 @@ class ContextMenuContainer extends React.Component<PopoverProps> {
 
 const ArrowOffset = 20;
 
-export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuState> {
+export class ContextMenu extends React.Component<
+  ContextMenuProps,
+  ContextMenuState
+> {
   public static displayName = 'ContextMenu';
 
   constructor(props: any) {
@@ -83,17 +91,18 @@ export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuSt
   }
 
   render() {
-    const menuItems: React.ReactChild[] = React.Children
-      .toArray(this.props.children);
+    const menuItems: React.ReactChild[] = React.Children.toArray(
+      this.props.children,
+    );
 
     return (
-      <div className='ContextMenu'>
-        <div className='ContextMenu-target' onContextMenu={ this.handleClick }>
-          { menuItems.shift() }
+      <div className="ContextMenu">
+        <div className="ContextMenu-target" onContextMenu={this.handleClick}>
+          {menuItems.shift()}
         </div>
-        <Overlay show={ this.state.isVisible } rootClose onHide={ this.handleHide }>
+        <Overlay show={this.state.isVisible} rootClose onHide={this.handleHide}>
           <ContextMenuContainer>
-            { this.renderMenu(menuItems) }
+            {this.renderMenu(menuItems)}
           </ContextMenuContainer>
         </Overlay>
       </div>
@@ -104,25 +113,23 @@ export class ContextMenu extends React.Component<ContextMenuProps, ContextMenuSt
     return this.wxr.renderConditional(this.state.isVisible === true, () => {
       return (
         <Popover
-          id={ this.props.id }
-          placement='right'
-          title={ this.props.header }
-          arrowOffsetTop={ ArrowOffset }
-          positionLeft={ this.state.left }
-          positionTop={ this.state.top }
+          id={this.props.id}
+          placement="right"
+          title={this.props.header}
+          arrowOffsetTop={ArrowOffset}
+          positionLeft={this.state.left}
+          positionTop={this.state.top}
         >
-          <ul className='dropdown-menu'>
-            {
-              // if onSelect is provided we need to inject it into all the menu items
-              this.wxr.renderNullable(
-                this.props.onSelect,
-                onSelect => React.Children
-                  .map(menuItems, (x: React.ReactElement<any>) =>
-                    React.cloneElement(x, { onSelect: () => onSelect(x.props) }),
-                  ),
-                () => menuItems,
-              )
-            }
+          <ul className="dropdown-menu">
+            {// if onSelect is provided we need to inject it into all the menu items
+            this.wxr.renderNullable(
+              this.props.onSelect,
+              onSelect =>
+                React.Children.map(menuItems, (x: React.ReactElement<any>) =>
+                  React.cloneElement(x, { onSelect: () => onSelect(x.props) }),
+                ),
+              () => menuItems,
+            )}
           </ul>
         </Popover>
       );

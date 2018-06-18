@@ -12,7 +12,10 @@ export interface ObservableWrapperState {
   value: any;
 }
 
-export class ObservableWrapper extends React.Component<ObservableWrapperProps, ObservableWrapperState> {
+export class ObservableWrapper extends React.Component<
+  ObservableWrapperProps,
+  ObservableWrapperState
+> {
   static defaultProps: Partial<ObservableWrapperProps> = {
     render: (x: any) => x,
   };
@@ -21,8 +24,7 @@ export class ObservableWrapper extends React.Component<ObservableWrapperProps, O
   private subscription: Subscription;
 
   componentWillMount() {
-    this.property = this.wx.getObservable(this.props.observable)
-      .toProperty();
+    this.property = this.wx.getObservable(this.props.observable).toProperty();
     this.subscription = this.wx
       .whenAny(this.property, x => x)
       .subscribe(value => {

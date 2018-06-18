@@ -16,7 +16,7 @@ import './Extensions';
 import { getLogger } from './Utils/Logging';
 
 // inform the user which version we are using
-getLogger('webrx-react').info(`Initializing webrx-react (v${ version })`);
+getLogger('webrx-react').info(`Initializing webrx-react (v${version})`);
 
 // import webrx-react helper submodules
 import * as Events from './Events';

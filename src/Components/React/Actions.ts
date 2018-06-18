@@ -19,7 +19,9 @@ export interface HeaderMenu extends HeaderAction {
   items: HeaderCommandAction[];
 }
 
-export function isHeaderCommandAction(action: HeaderAction): action is HeaderCommandAction {
+export function isHeaderCommandAction(
+  action: HeaderAction,
+): action is HeaderCommandAction {
   return isCommand((action as HeaderCommandAction).command);
 }
 

@@ -2,44 +2,59 @@ import { Iterable } from 'ix';
 import { Observable } from 'rxjs';
 
 import { ObjectComparer } from '../../../Utils/Compare';
-import { IterableLike, ObservableLike, ObservableOrValue } from '../../../WebRx';
+import {
+  IterableLike,
+  ObservableLike,
+  ObservableOrValue,
+} from '../../../WebRx';
 import { HandlerRoutingStateChanged, RoutingStateHandler } from '../../React';
 import {
-  DataGridRoutingState, DataGridViewModel, DataSourceRequest, DataSourceResponse,
+  DataGridRoutingState,
+  DataGridViewModel,
+  DataSourceRequest,
+  DataSourceResponse,
 } from '../DataGrid/DataGridViewModel';
 import { PagerViewModel } from '../Pager/PagerViewModel';
-import { SearchRequest, SearchRoutingState, SearchViewModel } from '../Search/SearchViewModel';
+import {
+  SearchRequest,
+  SearchRoutingState,
+  SearchViewModel,
+} from '../Search/SearchViewModel';
 
 export interface ItemListPanelRequestContext {
   search?: SearchRequest;
 }
 
-export type ItemListPanelContext<TRequestContext> = ItemListPanelRequestContext & TRequestContext;
+export type ItemListPanelContext<
+  TRequestContext
+> = ItemListPanelRequestContext & TRequestContext;
 
 export interface ItemListPanelRoutingState extends DataGridRoutingState {
   search?: SearchRoutingState;
 }
 
-export class ItemListPanelViewModel<
-  T,
-  TRequestContext = any
-> extends DataGridViewModel<
-  T,
-  ItemListPanelContext<TRequestContext>
-> implements RoutingStateHandler<ItemListPanelRoutingState> {
+export class ItemListPanelViewModel<T, TRequestContext = any>
+  extends DataGridViewModel<T, ItemListPanelContext<TRequestContext>>
+  implements RoutingStateHandler<ItemListPanelRoutingState> {
   public static displayName = 'ItemListPanelViewModel';
 
-  protected static getItemListPanelSearch(search: SearchViewModel | undefined | null) {
-    return search === null ? null : (search || new SearchViewModel());
+  protected static getItemListPanelSearch(
+    search: SearchViewModel | undefined | null,
+  ) {
+    return search === null ? null : search || new SearchViewModel();
   }
 
-  protected static createItemListPanelContext(search: SearchRequest): ItemListPanelRequestContext {
+  protected static createItemListPanelContext(
+    search: SearchRequest,
+  ): ItemListPanelRequestContext {
     return {
       search,
     };
   }
 
-  protected static getItemListPanelContext(search: SearchViewModel | null): Observable<ItemListPanelRequestContext> {
+  protected static getItemListPanelContext(
+    search: SearchViewModel | null,
+  ): Observable<ItemListPanelRequestContext> {
     if (search == null) {
       return Observable.of({});
     }
@@ -54,22 +69,25 @@ export class ItemListPanelViewModel<
     search: SearchViewModel | null,
     context?: ObservableLike<TRequestContext>,
   ): Observable<ItemListPanelContext<TRequestContext>> {
-    const itemListPanelContext = ItemListPanelViewModel.getItemListPanelContext(search);
+    const itemListPanelContext = ItemListPanelViewModel.getItemListPanelContext(
+      search,
+    );
 
     if (context == null) {
       // no custom context supplied so just use the standard item list panel context
-      return itemListPanelContext as Observable<ItemListPanelContext<TRequestContext>>;
+      return itemListPanelContext as Observable<
+        ItemListPanelContext<TRequestContext>
+      >;
     }
 
-    return this.wx
-      .whenAny(
-        itemListPanelContext,
-        context,
-        (ilpCtx, userCtx) => Object.assign({}, ilpCtx, userCtx),
-      );
+    return this.wx.whenAny(itemListPanelContext, context, (ilpCtx, userCtx) =>
+      Object.assign({}, ilpCtx, userCtx),
+    );
   }
 
-  public static getSearchRequest<TRequestContext>(request: DataSourceRequest<ItemListPanelContext<TRequestContext>>) {
+  public static getSearchRequest<TRequestContext>(
+    request: DataSourceRequest<ItemListPanelContext<TRequestContext>>,
+  ) {
     if (
       request.context == null ||
       request.context.search == null ||
@@ -86,11 +104,12 @@ export class ItemListPanelViewModel<
     searchRequest: SearchRequest,
     filterer: (item: T, search: SearchRequest) => boolean,
   ) {
-    return items
-      .filter(x => filterer(x, searchRequest));
+    return items.filter(x => filterer(x, searchRequest));
   }
 
-  protected readonly filterer: undefined | ((item: T, search: SearchRequest) => boolean);
+  protected readonly filterer:
+    | undefined
+    | ((item: T, search: SearchRequest) => boolean);
   public readonly search: SearchViewModel | null;
 
   /**
@@ -114,7 +133,13 @@ export class ItemListPanelViewModel<
     search = ItemListPanelViewModel.getItemListPanelSearch(search);
 
     // initialize the data grid with a composite context observable
-    super(source, pager, ItemListPanelViewModel.getDataGridContext(search, context), comparer, rateLimit);
+    super(
+      source,
+      pager,
+      ItemListPanelViewModel.getDataGridContext(search, context),
+      comparer,
+      rateLimit,
+    );
 
     this.filterer = filterer;
     this.search = search;
@@ -122,9 +147,7 @@ export class ItemListPanelViewModel<
     if (this.search != null) {
       // seed the search after routing state is loaded
       // we need to do this because we want an initial request even if the filter is empty
-      this.processRequests.results
-        .take(1)
-        .invokeCommand(this.search.search);
+      this.processRequests.results.take(1).invokeCommand(this.search.search);
     }
   }
 
@@ -132,14 +155,15 @@ export class ItemListPanelViewModel<
     return true;
   }
 
-  createRoutingState(changed?: HandlerRoutingStateChanged): ItemListPanelRoutingState {
+  createRoutingState(
+    changed?: HandlerRoutingStateChanged,
+  ): ItemListPanelRoutingState {
     return Object.trim(
-      Object.assign(
-        super.createRoutingState(changed),
-        {
-          search: this.getRoutingStateValue(this.search, x => x.createRoutingState(changed)),
-        },
-      ),
+      Object.assign(super.createRoutingState(changed), {
+        search: this.getRoutingStateValue(this.search, x =>
+          x.createRoutingState(changed),
+        ),
+      }),
     );
   }
 
@@ -177,6 +201,10 @@ export class ItemListPanelViewModel<
   }
 
   protected getFilteredItems(items: Iterable<T>, searchRequest: SearchRequest) {
-    return ItemListPanelViewModel.filterItems(items, searchRequest, this.filterer!);
+    return ItemListPanelViewModel.filterItems(
+      items,
+      searchRequest,
+      this.filterer!,
+    );
   }
 }

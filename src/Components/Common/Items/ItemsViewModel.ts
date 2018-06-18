@@ -11,20 +11,13 @@ export class ItemsViewModel<T> extends BaseViewModel {
   public readonly source: ReadOnlyProperty<IterableLike<T>>;
   public readonly count: ReadOnlyProperty<number>;
 
-  constructor(
-    source: ObservableLike<IterableLike<T>>,
-  ) {
+  constructor(source: ObservableLike<IterableLike<T>>) {
     super();
 
     this.source = this.wx
-      .getObservableOrAlert(
-        () => {
-          return this.wx
-            .getObservable(source)
-            .map(x => Iterable.from(x));
-        },
-        'Invalid Items Source',
-      )
+      .getObservableOrAlert(() => {
+        return this.wx.getObservable(source).map(x => Iterable.from(x));
+      }, 'Invalid Items Source')
       .toProperty(this.emptySource, false);
 
     this.count = this.wx
@@ -41,12 +34,10 @@ export class ItemsViewModel<T> extends BaseViewModel {
   }
 
   public getItems() {
-    return Iterable
-      .from(this.getItemsSource());
+    return Iterable.from(this.getItemsSource());
   }
 
   public getItemAt(index: number) {
-    return this.getItems()
-      .elementAt(index);
+    return this.getItems().elementAt(index);
   }
 }

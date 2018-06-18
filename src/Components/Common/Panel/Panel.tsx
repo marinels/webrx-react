@@ -14,21 +14,27 @@ export type PanelFragment = React.ReactNode;
  * panel item prop can be statically assigned or dynamically determined
  * based on a provided item context
  */
-export type PanelItemProp<TValue, TContext extends PanelItemContext = PanelItemContext> =
-  TValue | ((context: TContext) => TValue);
+export type PanelItemProp<
+  TValue,
+  TContext extends PanelItemContext = PanelItemContext
+> = TValue | ((context: TContext) => TValue);
 
 /**
  * panel items can be wrapped in a different component
  * this allows composing new items with an existing panel
  */
-export type PanelItemTemplate<TContext extends PanelItemContext = PanelItemContext> =
-  (fragment: PanelFragment, context: TContext) => PanelFragment;
+export type PanelItemTemplate<
+  TContext extends PanelItemContext = PanelItemContext
+> = (fragment: PanelFragment, context: TContext) => PanelFragment;
 
 /**
  * panel item props allow component to inject props to the rendered
  * block structure.
  */
-export interface PanelItemProps<T = {}, TContext extends PanelItemContext = PanelItemContext> {
+export interface PanelItemProps<
+  T = {},
+  TContext extends PanelItemContext = PanelItemContext
+> {
   /**
    * apply custom class name to the corresponding panel item
    */
@@ -45,7 +51,9 @@ export interface PanelItemProps<T = {}, TContext extends PanelItemContext = Pane
   itemProps?: PanelItemProp<T, TContext>;
 }
 
-export interface PanelTemplateProps<T extends PanelItemContext = PanelItemContext> {
+export interface PanelTemplateProps<
+  T extends PanelItemContext = PanelItemContext
+> {
   /**
    * apply a custom template to the renderd panel item
    */
@@ -63,20 +71,25 @@ export interface PanelRenderProps {
 
 export interface PanelProps<
   T = {},
-  TContext extends PanelItemContext = PanelItemContext,
-> extends PanelItemProps<T, TContext>, PanelTemplateProps<TContext>, PanelRenderProps {
+  TContext extends PanelItemContext = PanelItemContext
+>
+  extends PanelItemProps<T, TContext>,
+    PanelTemplateProps<TContext>,
+    PanelRenderProps {
   fill?: boolean;
 }
 
-export abstract class Panel<TProps extends PanelProps> extends React.Component<TProps> {
+export abstract class Panel<TProps extends PanelProps> extends React.Component<
+  TProps
+> {
   public static displayName = 'Panel';
 
   public static defaultComponentClass = 'div';
 
-  public static getPanelItemPropValue<TValue, TContext extends PanelItemContext>(
-    prop: (PanelItemProp<TValue, TContext>) | undefined,
-    context: TContext,
-  ) {
+  public static getPanelItemPropValue<
+    TValue,
+    TContext extends PanelItemContext
+  >(prop: (PanelItemProp<TValue, TContext>) | undefined, context: TContext) {
     if (prop instanceof Function) {
       return prop(context);
     }
@@ -84,11 +97,32 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
     return prop;
   }
 
-  protected renderPanel(panelClassName?: string, panelProps?: PanelProps, componentClass?: React.ReactType) {
-    const { className, children, props, rest } = React.Component.restProps(panelProps || this.props, x => {
-      const { itemClassName, itemStyle, itemProps, itemTemplate, compact, emptyContent } = x;
-      return { itemClassName, itemStyle, itemProps, itemTemplate, compact, emptyContent };
-    });
+  protected renderPanel(
+    panelClassName?: string,
+    panelProps?: PanelProps,
+    componentClass?: React.ReactType,
+  ) {
+    const { className, children, props, rest } = React.Component.restProps(
+      panelProps || this.props,
+      x => {
+        const {
+          itemClassName,
+          itemStyle,
+          itemProps,
+          itemTemplate,
+          compact,
+          emptyContent,
+        } = x;
+        return {
+          itemClassName,
+          itemStyle,
+          itemProps,
+          itemTemplate,
+          compact,
+          emptyContent,
+        };
+      },
+    );
 
     const Component = componentClass || Panel.defaultComponentClass;
     const componentClassName = this.wxr.classNames(
@@ -99,21 +133,23 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
     );
 
     return (
-      <Component { ...rest } className={ componentClassName }>
-        { this.renderItems(children) }
+      <Component {...rest} className={componentClassName}>
+        {this.renderItems(children)}
       </Component>
     );
   }
 
-  protected renderItems(children?: React.ReactNode, componentClass?: React.ReactType) {
+  protected renderItems(
+    children?: React.ReactNode,
+    componentClass?: React.ReactType,
+  ) {
     const props: PanelProps = this.props;
 
-    return React.Children
-      .map(children || this.props.children, (x, i) => {
-        return this.renderItem(x, i, componentClass);
-      })
+    return React.Children.map(children || this.props.children, (x, i) => {
+      return this.renderItem(x, i, componentClass);
+    })
       .asIterable()
-      .filter(x => x ? true : false)
+      .filter(x => (x ? true : false))
       .defaultIfEmpty(this.renderEmpty())
       .toArray();
   }
@@ -121,8 +157,8 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
   protected renderEmpty() {
     if (this.props.emptyContent) {
       return (
-        <div key='empty' className='Panel-empty'>
-          { this.props.emptyContent }
+        <div key="empty" className="Panel-empty">
+          {this.props.emptyContent}
         </div>
       );
     }
@@ -162,27 +198,29 @@ export abstract class Panel<TProps extends PanelProps> extends React.Component<T
         Panel.getPanelItemPropValue(this.props.itemClassName, context),
       );
       const style = Panel.getPanelItemPropValue(this.props.itemStyle, context);
-      const props: {} | undefined = Panel.getPanelItemPropValue(this.props.itemProps, context) || {};
+      const props: {} | undefined =
+        Panel.getPanelItemPropValue(this.props.itemProps, context) || {};
 
-      return Component === '' && React.isValidElement<any>(itemTemplate) ?
-        React.cloneElement(itemTemplate, { key, className, style, ...props }) :
-        (
-          <Component key={ key } className={ className } style={ style } { ...props }>
-            { itemTemplate }
-          </Component>
-        );
+      return Component === '' && React.isValidElement<any>(itemTemplate) ? (
+        React.cloneElement(itemTemplate, { key, className, style, ...props })
+      ) : (
+        <Component key={key} className={className} style={style} {...props}>
+          {itemTemplate}
+        </Component>
+      );
     }
 
     return null;
   }
 
-  protected getItemKey(
-    itemTemplate: PanelFragment,
-    index: number,
-  ) {
+  protected getItemKey(itemTemplate: PanelFragment, index: number) {
     let key: any = index;
 
-    if (itemTemplate != null && React.isValidElement(itemTemplate) && itemTemplate.key != null) {
+    if (
+      itemTemplate != null &&
+      React.isValidElement(itemTemplate) &&
+      itemTemplate.key != null
+    ) {
       key = itemTemplate.key;
     }
 

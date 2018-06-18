@@ -38,10 +38,7 @@ export interface Command<T = any, TCondition = any> {
 
   observeExecution(parameter?: any): Observable<T>;
 
-  execute(
-    parameter?: any,
-    observer?: PartialObserver<T>,
-  ): Subscription;
+  execute(parameter?: any, observer?: PartialObserver<T>): Subscription;
 
   execute(
     parameter?: any,

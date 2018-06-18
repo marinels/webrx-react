@@ -12,7 +12,14 @@ export function updateDefaultContainerProp(
   container: React.ReactInstance,
   componentClass: React.ComponentClass<Portal.PortalProps>,
 ) {
-  if (componentClass.defaultProps == null || componentClass.defaultProps.container !== container) {
-    componentClass.defaultProps = Object.assign({}, componentClass.defaultProps, { container });
+  if (
+    componentClass.defaultProps == null ||
+    componentClass.defaultProps.container !== container
+  ) {
+    componentClass.defaultProps = Object.assign(
+      {},
+      componentClass.defaultProps,
+      { container },
+    );
   }
 }

@@ -4,7 +4,12 @@ import { findDOMNode } from 'react-dom';
 import { Icon, IconStack } from 'react-fa';
 import { Observable } from 'rxjs';
 
-import { BaseView, BaseViewProps, HeaderAction, HeaderCommandAction } from '../../React';
+import {
+  BaseView,
+  BaseViewProps,
+  HeaderAction,
+  HeaderCommandAction,
+} from '../../React';
 import { CommandButton } from '../CommandButton/CommandButton';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import { SearchView } from '../Search/SearchView';
@@ -18,10 +23,14 @@ export interface PageHeaderProps {
   responsive?: boolean;
 }
 
-export interface PageHeaderViewProps extends BaseViewProps<PageHeaderViewModel>, PageHeaderProps {
-}
+export interface PageHeaderViewProps
+  extends BaseViewProps<PageHeaderViewModel>,
+    PageHeaderProps {}
 
-export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderViewModel> {
+export class PageHeaderView extends BaseView<
+  PageHeaderViewProps,
+  PageHeaderViewModel
+> {
   public static displayName = 'PageHeaderView';
 
   static defaultProps: Partial<PageHeaderProps> = {
@@ -53,8 +62,7 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
 
     if (item.command == null && String.isNullOrEmpty(item.uri) === false) {
       isDisabled = false;
-    }
-    else if (item.command != null && item.command.canExecute === true) {
+    } else if (item.command != null && item.command.canExecute === true) {
       isDisabled = false;
     }
 
@@ -62,14 +70,15 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
   }
 
   private getOrderedActions<T extends HeaderAction>(items: T[]) {
-    return (items || [])
-      .sort((a, b) => (a.order || 0) - (b.order || 0));
+    return (items || []).sort((a, b) => (a.order || 0) - (b.order || 0));
   }
 
   private getVisibleActions(items: HeaderCommandAction[]) {
     return this.getOrderedActions(
-      (items || [])
-        .filter(x => x.visibleWhenDisabled === true || this.isActionDisabled(x) === false),
+      (items || []).filter(
+        x =>
+          x.visibleWhenDisabled === true || this.isActionDisabled(x) === false,
+      ),
     );
   }
 
@@ -93,43 +102,45 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
 
     return (
       <div
-        ref={ this.containerRef }
-        { ...rest }
-        className={ this.wxr.classNames('PageHeader', className) }
+        ref={this.containerRef}
+        {...rest}
+        className={this.wxr.classNames('PageHeader', className)}
       >
-        <Navbar ref={ this.navBarRef } fixedTop={ !props.responsive } fluid>
+        <Navbar ref={this.navBarRef} fixedTop={!props.responsive} fluid>
           <Navbar.Header>
-            <Navbar.Brand>
-              { this.renderBrandButton() }
-            </Navbar.Brand>
+            <Navbar.Brand>{this.renderBrandButton()}</Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
           <Navbar.Collapse>
-            <Nav className='PageHeader-routedMenus'>
-              { this.renderRoutedMenus() }
+            <Nav className="PageHeader-routedMenus">
+              {this.renderRoutedMenus()}
             </Nav>
-            <Nav className='PageHeader-siteMenus' pullRight>
-              { this.renderHelpMenu() }
-              { this.renderAdminMenu() }
-              { this.renderUserMenu() }
+            <Nav className="PageHeader-siteMenus" pullRight>
+              {this.renderHelpMenu()}
+              {this.renderAdminMenu()}
+              {this.renderUserMenu()}
             </Nav>
-            { this.renderSearch() }
-            { this.renderRoutedActions() }
+            {this.renderSearch()}
+            {this.renderRoutedActions()}
           </Navbar.Collapse>
         </Navbar>
-        { this.wxr.renderConditional(this.isSidebarEnabled(), () => this.renderSidebar()) }
+        {this.wxr.renderConditional(this.isSidebarEnabled(), () =>
+          this.renderSidebar(),
+        )}
       </div>
     );
   }
 
   private layoutNavBar() {
     const container = this.containerRef.current;
-    const navBar = this.navBarRef.current && findDOMNode(this.navBarRef.current) as HTMLDivElement;
+    const navBar =
+      this.navBarRef.current &&
+      (findDOMNode(this.navBarRef.current) as HTMLDivElement);
 
     if (container && navBar) {
       const rect = container.getBoundingClientRect();
 
-      container.style.paddingBottom = `${ navBar.clientHeight + 1 }px`;
+      container.style.paddingBottom = `${navBar.clientHeight + 1}px`;
     }
   }
 
@@ -140,96 +151,101 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
 
     return (
       <CommandButton
-        className='PageHeader-brand'
-        bsStyle='link'
-        active={ active }
-        href={ this.props.branduri }
-        command={ command }
+        className="PageHeader-brand"
+        bsStyle="link"
+        active={active}
+        href={this.props.branduri}
+        command={command}
       >
-        { this.props.brand }
+        {this.props.brand}
       </CommandButton>
     );
   }
 
-  private renderHeaderMenu(id: any, header: any, items: HeaderCommandAction[], noCaret = false, className?: string) {
+  private renderHeaderMenu(
+    id: any,
+    header: any,
+    items: HeaderCommandAction[],
+    noCaret = false,
+    className?: string,
+  ) {
     const visibleItems = this.getVisibleActions(items);
 
     return this.wxr.renderConditional(visibleItems.length > 0, () => (
       <NavDropdown
-        id={ id }
-        key={ id }
-        title={ header }
-        noCaret={ noCaret }
-        className={ this.wxr.classNames(`PageHeader-${ id }`, className) }
+        id={id}
+        key={id}
+        title={header}
+        noCaret={noCaret}
+        className={this.wxr.classNames(`PageHeader-${id}`, className)}
       >
-        {
-          visibleItems
-            .map(x => (
-              <MenuItem
-                key={ x.id }
-                disabled={ this.isActionDisabled(x) }
-                href={ x.uri }
-                onSelect={
-                  String.isNullOrEmpty(x.uri) === true ?
-                    this.bindEventToCommand(vm => vm.menuItemSelected, () => x) :
-                    null
-                }
-              >
-                { this.renderHeaderCommandActionIcon(x) }
-                { x.header }
-              </MenuItem>
-            ))
-        }
+        {visibleItems.map(x => (
+          <MenuItem
+            key={x.id}
+            disabled={this.isActionDisabled(x)}
+            href={x.uri}
+            onSelect={
+              String.isNullOrEmpty(x.uri) === true
+                ? this.bindEventToCommand(vm => vm.menuItemSelected, () => x)
+                : null
+            }
+          >
+            {this.renderHeaderCommandActionIcon(x)}
+            {x.header}
+          </MenuItem>
+        ))}
       </NavDropdown>
     ));
   }
 
-  private renderHeaderCommandActionIcon(item: HeaderCommandAction, className?: string, fixedWidth = true) {
+  private renderHeaderCommandActionIcon(
+    item: HeaderCommandAction,
+    className?: string,
+    fixedWidth = true,
+  ) {
     const stackProps = { className };
     const props = { fixedWidth, ...stackProps };
 
     if (Array.isArray(item.iconName)) {
-      const names = item.iconName
-        .filter(x => String.isNullOrEmpty(x) === false);
+      const names = item.iconName.filter(
+        x => String.isNullOrEmpty(x) === false,
+      );
 
       if (names.length === 0) {
         return null;
-      }
-      else if (names.length === 1) {
-        return (<Icon { ...props } name={ names[0] } />);
-      }
-      else {
+      } else if (names.length === 1) {
+        return <Icon {...props} name={names[0]} />;
+      } else {
         return (
-          <IconStack { ...stackProps as any }>
-            <Icon name={ names[0] } stack='2x' fixedWidth={ fixedWidth } />
-            <Icon name={ names[1] } stack='1x' fixedWidth={ fixedWidth } />
+          <IconStack {...stackProps as any}>
+            <Icon name={names[0]} stack="2x" fixedWidth={fixedWidth} />
+            <Icon name={names[1]} stack="1x" fixedWidth={fixedWidth} />
           </IconStack>
         );
       }
-    }
-    else {
-      return String.isNullOrEmpty(item.iconName) ? null : (<Icon { ...props } name={ item.iconName } />);
+    } else {
+      return String.isNullOrEmpty(item.iconName) ? null : (
+        <Icon {...props} name={item.iconName} />
+      );
     }
   }
 
   private renderRoutedMenus() {
-    return this.wxr.renderConditional(this.viewModel.navbarMenus.value.length > 0, () =>
-      this.getOrderedActions(this.viewModel.navbarMenus.value)
-        .map(x => {
-          return this.renderHeaderMenu(
-            x.id,
-            x.header,
-            x.items,
-          );
-        })
-        .filterNull(),
+    return this.wxr.renderConditional(
+      this.viewModel.navbarMenus.value.length > 0,
+      () =>
+        this.getOrderedActions(this.viewModel.navbarMenus.value)
+          .map(x => {
+            return this.renderHeaderMenu(x.id, x.header, x.items);
+          })
+          .filterNull(),
     );
   }
 
   private renderHelpMenu() {
     return this.renderHeaderMenu(
       'helpMenu',
-      (<Icon name='question-circle' size='2x' />),
+      <Icon name="question-circle" size="2x" />,
       this.viewModel.helpMenuItems.value,
       true,
     );
@@ -238,7 +254,7 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
   private renderAdminMenu() {
     return this.renderHeaderMenu(
       'adminMenu',
-      (<Icon name='cog' size='2x' />),
+      <Icon name="cog" size="2x" />,
       this.viewModel.adminMenuItems.value,
       true,
       'hover-spin',
@@ -248,14 +264,12 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
   private renderUserMenu() {
     return this.renderHeaderMenu(
       'userMenu',
-      (
-        <ProfilePicture
-          src={ this.viewModel.userImage }
-          title={ this.viewModel.userDisplayName }
-          iconSize='2x'
-          size={ 30 }
-        />
-      ),
+      <ProfilePicture
+        src={this.viewModel.userImage}
+        title={this.viewModel.userDisplayName}
+        iconSize="2x"
+        size={30}
+      />,
       this.viewModel.userMenuItems.value,
       true,
     );
@@ -265,7 +279,7 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
     if (this.viewModel.search instanceof SearchViewModel) {
       return (
         <Navbar.Form pullRight>
-          <SearchView viewModel={ this.viewModel.search } />
+          <SearchView viewModel={this.viewModel.search} />
         </Navbar.Form>
       );
     }
@@ -274,28 +288,31 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
   }
 
   private renderRoutedActions() {
-    const visibleActions = this.getVisibleActions(this.viewModel.navbarActions.value);
+    const visibleActions = this.getVisibleActions(
+      this.viewModel.navbarActions.value,
+    );
 
     return (
-      <Navbar.Form className='PageHeader-routedActions' pullRight>
-        {
-          this.wxr.renderConditional(visibleActions.length > 0, () =>
-            visibleActions
-              .map(x => (
-                <CommandButton
-                  key={ x.id }
-                  className='PageHeader-actionButton'
-                  bsStyle={ x.bsStyle }
-                  href={ x.uri }
-                  command={ x.command }
-                  commandParameter={ x.commandParameter }
-                >
-                  { this.renderHeaderCommandActionIcon(x, 'PageHeader-actionHeaderIcon', false) }
-                  <span className='PageHeader-actionHeaderText'>{ x.header }</span>
-                </CommandButton>
-              )),
-          )
-        }
+      <Navbar.Form className="PageHeader-routedActions" pullRight>
+        {this.wxr.renderConditional(visibleActions.length > 0, () =>
+          visibleActions.map(x => (
+            <CommandButton
+              key={x.id}
+              className="PageHeader-actionButton"
+              bsStyle={x.bsStyle}
+              href={x.uri}
+              command={x.command}
+              commandParameter={x.commandParameter}
+            >
+              {this.renderHeaderCommandActionIcon(
+                x,
+                'PageHeader-actionHeaderIcon',
+                false,
+              )}
+              <span className="PageHeader-actionHeaderText">{x.header}</span>
+            </CommandButton>
+          )),
+        )}
       </Navbar.Form>
     );
   }
@@ -303,45 +320,49 @@ export class PageHeaderView extends BaseView<PageHeaderViewProps, PageHeaderView
   private renderSidebar() {
     return (
       <Sidebar
-        isVisible={ this.viewModel.isSidebarVisible.value }
-        header={ this.props.brand }
-        onHide={ this.bindEventToCommand(x => x.toggleSideBar, () => false) }
+        isVisible={this.viewModel.isSidebarVisible.value}
+        header={this.props.brand}
+        onHide={this.bindEventToCommand(x => x.toggleSideBar, () => false)}
       >
-        {
-          this.wxr.renderConditional(this.viewModel.isSidebarVisible, () =>
-            this.getOrderedActions(this.viewModel.sidebarMenus.value)
-              .map(menu => {
-                const visibleActions = this.getVisibleActions(menu.items);
+        {this.wxr.renderConditional(this.viewModel.isSidebarVisible, () =>
+          this.getOrderedActions(this.viewModel.sidebarMenus.value)
+            .map(menu => {
+              const visibleActions = this.getVisibleActions(menu.items);
 
-                return this.wxr.renderConditional(visibleActions.length > 0, () => (
-                  <Nav key={ menu.id }>
-                    <NavItem className='PageHeader-sidebarSection' disabled>
-                      { menu.header }
+              return this.wxr.renderConditional(
+                visibleActions.length > 0,
+                () => (
+                  <Nav key={menu.id}>
+                    <NavItem className="PageHeader-sidebarSection" disabled>
+                      {menu.header}
                     </NavItem>
-                    {
-                      visibleActions
-                        .map(x => (
-                          <NavItem
-                            key={ x.id }
-                            disabled={ this.isActionDisabled(x) }
-                            href={ x.uri }
-                            onClick={
-                              String.isNullOrEmpty(x.uri) === true ?
-                                this.bindEventToCommand(vm => vm.menuItemSelected, () => x) :
-                                this.bindEventToCommand(vm => vm.toggleSideBar, () => false)
-                            }
-                          >
-                            { this.renderHeaderCommandActionIcon(x) }
-                            { x.header }
-                          </NavItem>
-                        ))
-                    }
+                    {visibleActions.map(x => (
+                      <NavItem
+                        key={x.id}
+                        disabled={this.isActionDisabled(x)}
+                        href={x.uri}
+                        onClick={
+                          String.isNullOrEmpty(x.uri) === true
+                            ? this.bindEventToCommand(
+                                vm => vm.menuItemSelected,
+                                () => x,
+                              )
+                            : this.bindEventToCommand(
+                                vm => vm.toggleSideBar,
+                                () => false,
+                              )
+                        }
+                      >
+                        {this.renderHeaderCommandActionIcon(x)}
+                        {x.header}
+                      </NavItem>
+                    ))}
                   </Nav>
-                ));
-              })
-              .filterNull(),
-          )
-        }
+                ),
+              );
+            })
+            .filterNull(),
+        )}
       </Sidebar>
     );
   }

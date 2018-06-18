@@ -12,8 +12,9 @@ export interface SplashProps {
   fluid?: boolean;
 }
 
-export interface SplashComponentProps extends React.HTMLProps<any>, SplashProps {
-}
+export interface SplashComponentProps
+  extends React.HTMLProps<any>,
+    SplashProps {}
 
 export class Splash extends React.Component<SplashComponentProps> {
   public static displayName = 'Splash';
@@ -29,15 +30,19 @@ export class Splash extends React.Component<SplashComponentProps> {
     });
 
     return (
-      <div { ...rest } className={ this.wxr.classNames('Splash', className) }>
-        <Grid fluid={ props.fluid }>
+      <div {...rest} className={this.wxr.classNames('Splash', className)}>
+        <Grid fluid={props.fluid}>
           <Row>
-            <div className='Splash-header'>
-              { this.renderLogo() }
-              <span className='Splash-headerText'>{ props.header }</span>
+            <div className="Splash-header">
+              {this.renderLogo()}
+              <span className="Splash-headerText">{props.header}</span>
             </div>
 
-            <Loading progress={ props.progress } text={ props.text } fontSize='24pt' />
+            <Loading
+              progress={props.progress}
+              text={props.text}
+              fontSize="24pt"
+            />
           </Row>
         </Grid>
       </div>
@@ -46,7 +51,7 @@ export class Splash extends React.Component<SplashComponentProps> {
 
   private renderLogo() {
     return this.wxr.renderConditional(this.props.logo != null, () => (
-      <Image className='Splash-logo' src={ this.props.logo } rounded />
+      <Image className="Splash-logo" src={this.props.logo} rounded />
     ));
   }
 }

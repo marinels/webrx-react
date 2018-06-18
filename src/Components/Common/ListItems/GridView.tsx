@@ -7,12 +7,23 @@ import { ItemsPresenter } from '../Items/ItemsPresenter';
 import { PanelFragment, PanelItemContext } from '../Panel/Panel';
 import { BootstrapTableProps, TablePanel } from '../Panel/TablePanel';
 import { GridViewColumn, GridViewColumns } from './GridViewColumn';
-import { ListItemsViewTemplate, ListItemsViewTemplateProps } from './ListItemsViewTemplate';
+import {
+  ListItemsViewTemplate,
+  ListItemsViewTemplateProps,
+} from './ListItemsViewTemplate';
 import { PanelView } from './PanelView';
 
 export interface GridTemplateProps<T = {}> {
-  headerTemplate?: (header: PanelFragment, item: T | undefined, field: string | undefined) => PanelFragment;
-  cellTemplate?: (cell: PanelFragment, item: T | undefined, field: string | undefined) => PanelFragment;
+  headerTemplate?: (
+    header: PanelFragment,
+    item: T | undefined,
+    field: string | undefined,
+  ) => PanelFragment;
+  cellTemplate?: (
+    cell: PanelFragment,
+    item: T | undefined,
+    field: string | undefined,
+  ) => PanelFragment;
 }
 
 export interface GridTableRenderProps extends BootstrapTableProps {
@@ -21,19 +32,24 @@ export interface GridTableRenderProps extends BootstrapTableProps {
 
 export interface GridViewProps<
   T = {},
-  TContext extends PanelItemContext = PanelItemContext,
-> extends GridTemplateProps<T>, ListItemsViewTemplateProps<T, TContext>, GridTableRenderProps {
-}
+  TContext extends PanelItemContext = PanelItemContext
+>
+  extends GridTemplateProps<T>,
+    ListItemsViewTemplateProps<T, TContext>,
+    GridTableRenderProps {}
 
-export interface GridViewComponentProps extends React.HTMLProps<any>, GridViewProps {
-}
+export interface GridViewComponentProps
+  extends React.HTMLProps<any>,
+    GridViewProps {}
 
 export class GridView extends ListItemsViewTemplate<GridViewProps> {
   public static displayName = 'GridView';
 
   public static readonly Columns = GridViewColumns;
 
-  private readonly logger: Logging.Logger = Logging.getLogger(GridView.displayName);
+  private readonly logger: Logging.Logger = Logging.getLogger(
+    GridView.displayName,
+  );
   private columns: React.ReactChild[] | undefined;
 
   constructor(props: any) {
@@ -45,11 +61,29 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
   render() {
     const { className, children, props, rest } = this.restProps(x => {
       const {
-        headerTemplate, cellTemplate, bordered, condensed, hover, responsive, striped, bsClass, fixedLayout, listItems,
+        headerTemplate,
+        cellTemplate,
+        bordered,
+        condensed,
+        hover,
+        responsive,
+        striped,
+        bsClass,
+        fixedLayout,
+        listItems,
         itemsProps,
       } = x;
       return {
-        headerTemplate, cellTemplate, bordered, condensed, hover, responsive, striped, bsClass, fixedLayout, listItems,
+        headerTemplate,
+        cellTemplate,
+        bordered,
+        condensed,
+        hover,
+        responsive,
+        striped,
+        bsClass,
+        fixedLayout,
+        listItems,
         itemsProps,
       };
     });
@@ -62,18 +96,20 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
 
     const gridProps = this.getItemsProps();
 
-    gridProps.itemsPanelTemplate = gridProps.itemsPanelTemplate || this.renderTablePanel.bind(this);
-    gridProps.itemTemplate = gridProps.itemTemplate || this.renderTableRow.bind(this);
+    gridProps.itemsPanelTemplate =
+      gridProps.itemsPanelTemplate || this.renderTablePanel.bind(this);
+    gridProps.itemTemplate =
+      gridProps.itemTemplate || this.renderTableRow.bind(this);
 
     return (
       <PanelView
-        className={ classNames('Grid', className) }
-        itemsPanelTemplate={ this.renderTablePanel }
-        listItems={ props.listItems }
-        itemsProps={ gridProps }
-        { ...this.trimProps(rest) }
+        className={classNames('Grid', className)}
+        itemsPanelTemplate={this.renderTablePanel}
+        listItems={props.listItems}
+        itemsProps={gridProps}
+        {...this.trimProps(rest)}
       >
-        { children }
+        {children}
       </PanelView>
     );
   }
@@ -84,16 +120,32 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
     items: Array<{}> | undefined,
   ) {
     const { props } = this.restProps(x => {
-      const { bordered, condensed, hover, responsive, striped, bsClass, fixedLayout } = x;
-      return { bordered, condensed, hover, responsive, striped, bsClass, fixedLayout };
+      const {
+        bordered,
+        condensed,
+        hover,
+        responsive,
+        striped,
+        bsClass,
+        fixedLayout,
+      } = x;
+      return {
+        bordered,
+        condensed,
+        hover,
+        responsive,
+        striped,
+        bsClass,
+        fixedLayout,
+      };
     });
 
     return (
       <TablePanel
-        header={ this.renderTableHeaderRow() }
-        { ...this.trimProps(props) }
+        header={this.renderTableHeaderRow()}
+        {...this.trimProps(props)}
       >
-        { itemTemplates }
+        {itemTemplates}
       </TablePanel>
     );
   }
@@ -103,7 +155,9 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
 
     if (count === 0) {
       // try and auto-gen columns
-      const item = this.getListItems().getItems().first();
+      const item = this.getListItems()
+        .getItems()
+        .first();
 
       if (item == null) {
         this.logger.warn('Unable to Autogenerate Columns');
@@ -111,12 +165,9 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
         return undefined;
       }
 
-      return Iterable
-        .from(Object.keys(item))
+      return Iterable.from(Object.keys(item))
         .orderBy(x => x)
-        .map(x => (
-          <GridViewColumn key={ x } field={ x } />
-        ))
+        .map(x => <GridViewColumn key={x} field={x} />)
         .toArray();
     }
 
@@ -136,9 +187,9 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
       return undefined;
     }
 
-    const renderHeaders = Iterable
-      .from(this.columns)
-      .some(x => GridViewColumn.canRenderHeader(x));
+    const renderHeaders = Iterable.from(this.columns).some(x =>
+      GridViewColumn.canRenderHeader(x),
+    );
 
     if (renderHeaders) {
       const props = this.trimProps({
@@ -147,18 +198,13 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
 
       return (
         <tr>
-          {
-            this.columns
-              .map(x => {
-                if (React.isValidElement(x)) {
-                  return (
-                    <x.type key={ x.key } { ...x.props } { ...props } />
-                  );
-                }
+          {this.columns.map(x => {
+            if (React.isValidElement(x)) {
+              return <x.type key={x.key} {...x.props} {...props} />;
+            }
 
-                return '';
-              })
-          }
+            return '';
+          })}
         </tr>
       );
     }
@@ -173,23 +219,20 @@ export class GridView extends ListItemsViewTemplate<GridViewProps> {
       itemTemplate: this.props.cellTemplate,
     });
 
-    return columns == null ? undefined : this.renderListItem(
-      <tr>
-        {
-          columns
-            .map(x => {
+    return columns == null
+      ? undefined
+      : this.renderListItem(
+          <tr>
+            {columns.map(x => {
               if (React.isValidElement(x)) {
-                return (
-                  <x.type key={ x.key } { ...x.props } { ...props } />
-                );
+                return <x.type key={x.key} {...x.props} {...props} />;
               }
 
               return '';
-            })
-        }
-      </tr>,
-      item,
-      PanelView.getSelectedProps,
-    );
+            })}
+          </tr>,
+          item,
+          PanelView.getSelectedProps,
+        );
   }
 }

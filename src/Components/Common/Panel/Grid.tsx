@@ -15,12 +15,10 @@ export interface GridRenderProps {
 
 export interface GridProps<
   T = {},
-  TContext extends PanelItemContext = PanelItemContext,
-> extends PanelProps<T, TContext>, GridRenderProps {
-}
+  TContext extends PanelItemContext = PanelItemContext
+> extends PanelProps<T, TContext>, GridRenderProps {}
 
-export interface GridComponentProps extends React.HTMLProps<any>, GridProps {
-}
+export interface GridComponentProps extends React.HTMLProps<any>, GridProps {}
 
 export class Grid extends Panel<GridComponentProps> {
   public static displayName = 'Grid';
@@ -43,17 +41,18 @@ export class Grid extends Panel<GridComponentProps> {
     const bordered = { 'Grid-Border': border === true };
     const compact = { compact: this.props.compact };
 
-    return this.renderPanel(this.wxr.classNames('Grid', bordered, compact), rest);
+    return this.renderPanel(
+      this.wxr.classNames('Grid', bordered, compact),
+      rest,
+    );
   }
 
   renderItems(allChildren?: React.ReactNode, componentClass?: React.ReactType) {
     const { children, rows, cols } = this.getLayout();
 
-    return Iterable
-      .range(0, rows.length)
+    return Iterable.range(0, rows.length)
       .map(row => {
-        const colItems = Iterable
-          .range(0, cols.length)
+        const colItems = Iterable.range(0, cols.length)
           .map(col => {
             return this.renderColumn(row, col, rows, cols, children);
           })
@@ -65,13 +64,20 @@ export class Grid extends Panel<GridComponentProps> {
       .toArray();
   }
 
-  protected renderRow(row: number, rows: Layout.GridLayoutDefinition[], colItems: React.ReactNode) {
+  protected renderRow(
+    row: number,
+    rows: Layout.GridLayoutDefinition[],
+    colItems: React.ReactNode,
+  ) {
     const def = rows[row];
 
     const t = def.itemTemplate;
 
     const context = { row, index: row };
-    const itemClassName = Panel.getPanelItemPropValue(def.itemClassName, context);
+    const itemClassName = Panel.getPanelItemPropValue(
+      def.itemClassName,
+      context,
+    );
     const itemStyle = Panel.getPanelItemPropValue(def.itemStyle, context);
     const itemProps = Panel.getPanelItemPropValue(def.itemProps, context) || {};
     const compact = { compact: this.props.compact };
@@ -83,13 +89,13 @@ export class Grid extends Panel<GridComponentProps> {
 
     const fragment = (
       <div
-        className={ this.wxr.classNames('Grid-Row', compact, itemClassName) }
-        style={ layoutStyle }
-        data-grid-row={ row }
-        key={ Layout.GridLayoutDefinition.generateKey(row) }
-        { ...itemProps }
+        className={this.wxr.classNames('Grid-Row', compact, itemClassName)}
+        style={layoutStyle}
+        data-grid-row={row}
+        key={Layout.GridLayoutDefinition.generateKey(row)}
+        {...itemProps}
       >
-        { colItems }
+        {colItems}
       </div>
     );
 
@@ -113,23 +119,31 @@ export class Grid extends Panel<GridComponentProps> {
     let index = 0;
     while (index < children.length) {
       const child: any = children[index];
-      const childProps = child != null && child.props != null ? child.props : undefined;
-      const desiredRow = (childProps == null ? undefined : childProps['data-grid-row']) || 0;
-      const desiredCol = (childProps == null ? undefined : childProps['data-grid-column']) || 0;
+      const childProps =
+        child != null && child.props != null ? child.props : undefined;
+      const desiredRow =
+        (childProps == null ? undefined : childProps['data-grid-row']) || 0;
+      const desiredCol =
+        (childProps == null ? undefined : childProps['data-grid-column']) || 0;
       if (desiredRow === row && desiredCol === column) {
-        const cellItem = React.isValidElement<any>(child) ?
-          React.cloneElement(child, { 'data-grid-row': undefined, 'data-grid-column': undefined }) :
-          child;
+        const cellItem = React.isValidElement<any>(child)
+          ? React.cloneElement(child, {
+              'data-grid-row': undefined,
+              'data-grid-column': undefined,
+            })
+          : child;
         cellItems.push(cellItem);
         children.splice(index, 1);
-      }
-      else {
+      } else {
         ++index;
       }
     }
 
     const context = { row, column, index };
-    const itemClassName = Panel.getPanelItemPropValue(def.itemClassName, context);
+    const itemClassName = Panel.getPanelItemPropValue(
+      def.itemClassName,
+      context,
+    );
     const itemStyle = Panel.getPanelItemPropValue(def.itemStyle, context);
     const itemProps = Panel.getPanelItemPropValue(def.itemProps, context) || {};
     const compact = { compact: this.props.compact };
@@ -141,13 +155,13 @@ export class Grid extends Panel<GridComponentProps> {
 
     const fragment = (
       <div
-        className={ this.wxr.classNames('Grid-Column', compact, itemClassName) }
-        style={ layoutStyle }
-        data-grid-column={ column }
-        key={ Layout.GridLayoutDefinition.generateKey(row, column) }
-        { ...itemProps }
+        className={this.wxr.classNames('Grid-Column', compact, itemClassName)}
+        style={layoutStyle}
+        data-grid-column={column}
+        key={Layout.GridLayoutDefinition.generateKey(row, column)}
+        {...itemProps}
       >
-        { super.renderItems(cellItems) }
+        {super.renderItems(cellItems)}
       </div>
     );
 
@@ -159,7 +173,7 @@ export class Grid extends Panel<GridComponentProps> {
   }
 
   protected getCellLayoutValue(def: Layout.GridLayoutDefinition) {
-    return def.stretch ? `${ (def.amount || 1) * 100 }%` : def.amount;
+    return def.stretch ? `${(def.amount || 1) * 100}%` : def.amount;
   }
 
   protected getLayout() {
@@ -174,12 +188,10 @@ export class Grid extends Panel<GridComponentProps> {
       if (React.isType(elem, Layout.GridRowDefinitions)) {
         rows = elem;
         children.splice(index, 1);
-      }
-      else if (React.isType(elem, Layout.GridColumnDefinitions)) {
+      } else if (React.isType(elem, Layout.GridColumnDefinitions)) {
         cols = elem;
         children.splice(index, 1);
-      }
-      else {
+      } else {
         ++index;
       }
 
@@ -195,15 +207,18 @@ export class Grid extends Panel<GridComponentProps> {
     };
   }
 
-  protected getLayoutDefinitions(elem: Layout.GridLayoutDefinitionGroupElement | undefined) {
+  protected getLayoutDefinitions(
+    elem: Layout.GridLayoutDefinitionGroupElement | undefined,
+  ) {
     if (elem == null) {
-      return [ new Layout.GridLayoutDefinition() ];
+      return [new Layout.GridLayoutDefinition()];
     }
 
     return React.Children.map(
       elem.props.children,
       (x: Layout.GridLayoutDefinitionElement) => {
         return new Layout.GridLayoutDefinition(x, elem);
-      });
+      },
+    );
   }
 }

@@ -7,7 +7,7 @@ import { ItemListPanelViewModel } from './ItemListPanelViewModel';
 
 export function filterTreeItems<T>(
   items: IterableLike<T> | undefined,
-  itemsSource: (item: T) => (IterableLike<T> | undefined),
+  itemsSource: (item: T) => IterableLike<T> | undefined,
   itemsAssign: (item: T, items: Iterable<T>) => T,
   filter: (item: T) => boolean,
 ): Iterable<T> {
@@ -15,10 +15,14 @@ export function filterTreeItems<T>(
     return Iterable.empty<T>();
   }
 
-  return Iterable
-    .from(items)
+  return Iterable.from(items)
     .map(x => {
-      const result = filterTreeItems(itemsSource(x), itemsSource, itemsAssign, filter);
+      const result = filterTreeItems(
+        itemsSource(x),
+        itemsSource,
+        itemsAssign,
+        filter,
+      );
 
       if (result.some(() => true) || filter(x)) {
         return itemsAssign(x, result);
@@ -29,7 +33,10 @@ export function filterTreeItems<T>(
     .filterNull();
 }
 
-export class TreeItemListPanelViewModel<T, TRequestContext = any> extends ItemListPanelViewModel<T, TRequestContext> {
+export class TreeItemListPanelViewModel<
+  T,
+  TRequestContext = any
+> extends ItemListPanelViewModel<T, TRequestContext> {
   public static displayName = 'TreeItemListPanelViewModel';
 
   /**
@@ -42,7 +49,7 @@ export class TreeItemListPanelViewModel<T, TRequestContext = any> extends ItemLi
    */
   constructor(
     source: ObservableLike<IterableLike<T>>,
-    protected readonly itemsSource: (item: T) => (IterableLike<T> | undefined),
+    protected readonly itemsSource: (item: T) => IterableLike<T> | undefined,
     protected readonly itemsAssign: (item: T, items: Iterable<T>) => T,
     filterer?: (item: T, search: SearchRequest) => boolean,
     search?: SearchViewModel | null,
@@ -53,9 +60,9 @@ export class TreeItemListPanelViewModel<T, TRequestContext = any> extends ItemLi
   }
 
   getItems() {
-    return Iterable
-      .from(this.getItemsSource())
-      .flatMap(x => this.flattenItems(x));
+    return Iterable.from(this.getItemsSource()).flatMap(x =>
+      this.flattenItems(x),
+    );
   }
 
   getItemsForIndicies(indicies: IterableLike<number>) {
@@ -67,7 +74,9 @@ export class TreeItemListPanelViewModel<T, TRequestContext = any> extends ItemLi
   }
 
   getFilteredItems(items: Iterable<T>, searchRequest: SearchRequest) {
-    return filterTreeItems(items, this.itemsSource, this.itemsAssign, x => this.filterer!(x, searchRequest));
+    return filterTreeItems(items, this.itemsSource, this.itemsAssign, x =>
+      this.filterer!(x, searchRequest),
+    );
   }
 
   protected flattenItems(item: T): Iterable<T> {

@@ -8,7 +8,8 @@ import { IterableLike, Property } from '../../WebRx';
 
 export function renderIterable<T>(
   source: IterableLike<T> | undefined,
-  selector: (item: T, index: number, items: T[]) => React.ReactNode = item => item,
+  selector: (item: T, index: number, items: T[]) => React.ReactNode = item =>
+    item,
   projector: (items: React.ReactNode[]) => React.ReactNode = items => items,
   sortKey?: (item: T) => any,
   sortComparer: ValueComparison<T> = ValueComparer.DefaultComparison,
@@ -21,8 +22,7 @@ export function renderIterable<T>(
   let iterable = Iterable.from(source);
 
   if (sortKey != null) {
-    iterable = iterable
-      .orderBy(sortKey, sortComparer);
+    iterable = iterable.orderBy(sortKey, sortComparer);
   }
 
   return projector(
@@ -39,9 +39,13 @@ export function renderConditional(
   trueContent: () => React.ReactNode,
   falseContent: () => React.ReactNode = () => false,
 ) {
-  return (condition == null ? false : (typeof condition === 'boolean' ? condition : condition.value)) ?
-    trueContent() :
-    falseContent();
+  return (condition == null
+  ? false
+  : typeof condition === 'boolean'
+    ? condition
+    : condition.value)
+    ? trueContent()
+    : falseContent();
 }
 
 export function renderNullable<T>(
@@ -64,7 +68,7 @@ export function renderNullable<T>(
 export function focusElement<T extends HTMLElement = HTMLElement>(
   instance: React.ReactInstance | undefined | null,
 ) {
-  const elem = instance == null ? undefined : findDOMNode(instance) as T;
+  const elem = instance == null ? undefined : (findDOMNode(instance) as T);
 
   if (elem != null) {
     if (elem.focus instanceof Function) {

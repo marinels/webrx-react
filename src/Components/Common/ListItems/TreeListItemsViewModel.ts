@@ -5,16 +5,15 @@ import { ListItemsViewModel } from './ListItemsViewModel';
 
 export function flattenItems<T>(
   item: T,
-  itemsSource: (item: T) => (IterableLike<T> | undefined),
+  itemsSource: (item: T) => IterableLike<T> | undefined,
 ): Iterable<T> {
   const items = itemsSource(item);
 
-  return items == null ?
-    Iterable.of(item) :
-    Iterable
-      .from(items)
-      .flatMap(x => flattenItems(x, itemsSource))
-      .startWith(item);
+  return items == null
+    ? Iterable.of(item)
+    : Iterable.from(items)
+        .flatMap(x => flattenItems(x, itemsSource))
+        .startWith(item);
 }
 
 export class TreeListItemsViewModel<T> extends ListItemsViewModel<T> {
@@ -22,15 +21,15 @@ export class TreeListItemsViewModel<T> extends ListItemsViewModel<T> {
 
   constructor(
     source: ObservableLike<IterableLike<T>>,
-    protected readonly itemsSource: (item: T) => (IterableLike<T> | undefined),
+    protected readonly itemsSource: (item: T) => IterableLike<T> | undefined,
   ) {
     super(source);
   }
 
   getItems() {
-    return Iterable
-      .from(this.getItemsSource())
-      .flatMap(x => this.flattenItems(x));
+    return Iterable.from(this.getItemsSource()).flatMap(x =>
+      this.flattenItems(x),
+    );
   }
 
   getItemsForIndicies(indicies: IterableLike<number>) {

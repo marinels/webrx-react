@@ -5,11 +5,16 @@ import * as utils from '../../Utils';
 import { Command, Property } from '../../WebRx';
 import { BaseViewModel } from './BaseViewModel';
 import {
-  bindEventToCommand, bindEventToProperty, bindObservableToCommand,
+  bindEventToCommand,
+  bindEventToProperty,
+  bindObservableToCommand,
 } from './BindingHelpers';
 import {
-  classNames, focusElement, renderConditional,
-  renderIterable, renderNullable,
+  classNames,
+  focusElement,
+  renderConditional,
+  renderIterable,
+  renderNullable,
 } from './RenderHelpers';
 
 export function create() {

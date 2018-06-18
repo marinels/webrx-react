@@ -7,8 +7,14 @@ import { Command, ReadOnlyProperty } from '../../WebRx';
 import { Current as App } from '../Common/App/AppViewModel';
 import { PageHeaderViewModel } from '../Common/PageHeader/PageHeaderViewModel';
 import {
-  BaseRoutableViewModel, HandlerRoutingStateChanged, HeaderCommandAction, HeaderMenu,
-  isRoutableViewModel, isRoutingStateHandler, RoutingBreadcrumb } from '../React';
+  BaseRoutableViewModel,
+  HandlerRoutingStateChanged,
+  HeaderCommandAction,
+  HeaderMenu,
+  isRoutableViewModel,
+  isRoutingStateHandler,
+  RoutingBreadcrumb,
+} from '../React';
 
 export type ViewModelActivator = (state: {}) => any;
 
@@ -26,8 +32,7 @@ export class RoutingMap {
   public viewModelMap: ViewModelActivatorMap = {};
   public menuMap: MenuMap = {};
 
-  constructor(private baseUri = '#/demo', private defaultIconName = 'flask') {
-  }
+  constructor(private baseUri = '#/demo', private defaultIconName = 'flask') {}
 
   public addRoute(
     menuName: string,
@@ -39,15 +44,17 @@ export class RoutingMap {
   ) {
     if (/^\w+$/.test(path)) {
       uri = uri || path;
-      path = `^${ path }$`;
+      path = `^${path}$`;
     }
 
     this.viewModelMap[path] = activator;
-    const menu = this.menuMap[menuName] = this.menuMap[menuName] || {
-      id: menuName,
-      header: `${ menuName } Demos`,
-      items: [],
-    } as HeaderMenu;
+    const menu = (this.menuMap[menuName] =
+      this.menuMap[menuName] ||
+      ({
+        id: menuName,
+        header: `${menuName} Demos`,
+        items: [],
+      } as HeaderMenu));
     menu.items.push({
       id: path,
       header: name,
@@ -58,12 +65,11 @@ export class RoutingMap {
   }
 
   public getUri(path: string, uri?: string) {
-    return `${ this.baseUri }/${ uri || path }`;
+    return `${this.baseUri}/${uri || path}`;
   }
 
   public get menus() {
-    return Object.getOwnPropertyNames(this.menuMap)
-      .map(x => this.menuMap[x]);
+    return Object.getOwnPropertyNames(this.menuMap).map(x => this.menuMap[x]);
   }
 }
 
@@ -79,7 +85,9 @@ export interface ComponentDemoRoutingState {
   state: {};
 }
 
-export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoRoutingState> {
+export class ComponentDemoViewModel extends BaseRoutableViewModel<
+  ComponentDemoRoutingState
+> {
   public static displayName = 'ComponentDemoViewModel';
 
   private pageHeader: PageHeaderViewModel;
@@ -101,7 +109,9 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     this.setColumns = this.wx.command<number>();
     this.reRender = this.wx.command();
 
-    const demoAlert = this.wx.command(Observable.of(true), (x: string) => this.createAlert(x, 'Demo Alert'));
+    const demoAlert = this.wx.command(Observable.of(true), (x: string) =>
+      this.createAlert(x, 'Demo Alert'),
+    );
 
     this.demoAlertItem = {
       id: 'demo-alert-item',
@@ -111,16 +121,21 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
       iconName: 'flask',
     };
 
-    this.columns = this.wx
-      .whenAny(this.setColumns, x => x)
-      .toProperty(12);
+    this.columns = this.wx.whenAny(this.setColumns, x => x).toProperty(12);
 
     this.routedComponent = this.wx
-      .whenAny(this.setComponent, this.reRender.results.startWith(undefined), x => x)
+      .whenAny(
+        this.setComponent,
+        this.reRender.results.startWith(undefined),
+        x => x,
+      )
       .toProperty(undefined, false);
 
     this.componentRoute = this.wx
-      .whenAny(this.routedComponent, x => x == null ? undefined : x.componentRoute)
+      .whenAny(
+        this.routedComponent,
+        x => (x == null ? undefined : x.componentRoute),
+      )
       .toProperty(undefined, false);
 
     this.component = this.wx
@@ -140,21 +155,17 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
       .toProperty(undefined, false);
 
     this.addSubscription(
-      this.wx
-        .whenAny(this.columns.changed, x => x)
-        .subscribe(x => {
-          this.notifyChanged(x);
-        }),
+      this.wx.whenAny(this.columns.changed, x => x).subscribe(x => {
+        this.notifyChanged(x);
+      }),
     );
 
     this.addSubscription(
-      this.wx
-        .whenAny(this.component, x => x)
-        .subscribe(() => {
-          if (this.pageHeader != null) {
-            this.pageHeader.updateDynamicContent();
-          }
-        }),
+      this.wx.whenAny(this.component, x => x).subscribe(() => {
+        if (this.pageHeader != null) {
+          this.pageHeader.updateDynamicContent();
+        }
+      }),
     );
 
     // set a default title
@@ -162,14 +173,34 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
 
     // simulate some breadcrumbs
     this.updateRoutingBreadcrumbs.execute([
-      { key: 1, content: 'Here', href: '#/demo', title: 'title-based tooltips supported' },
-      { key: 2, content: 'Are', href: '#/demo', tooltip: 'simple string tooltip overlays' },
-      { key: 3, content: 'Some', href: '#/demo', tooltip: {
-        id: 'demo-tt',
-        title: 'Popovers!',
-        children: 'custom props-based tooltip overlays',
-      } },
-      { key: 4, content: 'Breadcrumbs', href: '#/demo', tooltip: { placement: 'top', children: 'regular tooltip' } },
+      {
+        key: 1,
+        content: 'Here',
+        href: '#/demo',
+        title: 'title-based tooltips supported',
+      },
+      {
+        key: 2,
+        content: 'Are',
+        href: '#/demo',
+        tooltip: 'simple string tooltip overlays',
+      },
+      {
+        key: 3,
+        content: 'Some',
+        href: '#/demo',
+        tooltip: {
+          id: 'demo-tt',
+          title: 'Popovers!',
+          children: 'custom props-based tooltip overlays',
+        },
+      },
+      {
+        key: 4,
+        content: 'Breadcrumbs',
+        href: '#/demo',
+        tooltip: { placement: 'top', children: 'regular tooltip' },
+      },
     ] as RoutingBreadcrumb[]);
 
     // this is very similar to what the route handler does for title updates
@@ -182,26 +213,27 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
           if (isRoutableViewModel(component)) {
             this.addSubscription(
               this.wx
-                .whenAny(component.documentTitle, x => String.isNullOrEmpty(x) ? Object.getName(component) : x)
+                .whenAny(
+                  component.documentTitle,
+                  x =>
+                    String.isNullOrEmpty(x) ? Object.getName(component) : x,
+                )
                 .debounceTime(100)
-                .map(x => `Demo: ${ x }`)
+                .map(x => `Demo: ${x}`)
                 .invokeCommand(this.updateDocumentTitle),
             );
-          }
-          else {
+          } else {
             let title: string;
 
             if (component == null) {
               title = 'No Routed Component';
-            }
-            else if (String.isString(component)) {
+            } else if (String.isString(component)) {
               title = component;
-            }
-            else {
+            } else {
               title = Object.getName(component);
             }
 
-            this.updateDocumentTitle.execute(`Demo: ${ title }`);
+            this.updateDocumentTitle.execute(`Demo: ${title}`);
           }
         }),
     );
@@ -219,15 +251,22 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     return undefined;
   }
 
-  private getRoutedComponent(state: ComponentDemoRoutingState): RoutedDemoComponent | undefined {
+  private getRoutedComponent(
+    state: ComponentDemoRoutingState,
+  ): RoutedDemoComponent | undefined {
     // extract the component route from the routing state
     const componentRoute = this.getComponentRoute(state);
 
     // if our component route is null then we can ignore activation
     // let the routing system perform some automated navigation to a new route
     if (componentRoute != null) {
-      if (componentRoute === this.componentRoute.value && this.component.value != null) {
-        this.logger.debug(`Using Previously Activated Component for "${ componentRoute }"...`);
+      if (
+        componentRoute === this.componentRoute.value &&
+        this.component.value != null
+      ) {
+        this.logger.debug(
+          `Using Previously Activated Component for "${componentRoute}"...`,
+        );
 
         // if our component route has not changed then we can just use our previously activated component
         return {
@@ -238,9 +277,8 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
           // state must be set we need to then sanitize the value with an empty state object
           routingState: state.state || {},
         };
-      }
-      else {
-        this.logger.debug(`Loading Component for "${ componentRoute }"...`);
+      } else {
+        this.logger.debug(`Loading Component for "${componentRoute}"...`);
 
         // default to using the routed component's state
         // it is possible that the routed component has no routing state, but because routing
@@ -259,7 +297,11 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
             .map(x => ({ path: x, regex: new RegExp(x, 'i') }))
             .map(x => ({ path: x.path, match: x.regex.exec(componentRoute) }))
             .filter(x => x.match != null)
-            .map(x => ({ path: x.path, match: x.match!, activator: this.routeMap.viewModelMap[x.path] }))
+            .map(x => ({
+              path: x.path,
+              match: x.match!,
+              activator: this.routeMap.viewModelMap[x.path],
+            }))
             .first();
 
           if (result != null) {
@@ -267,7 +309,10 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
             activator = result.activator;
 
             // and override the routed state's path and match with the demo's context
-            routingState = Object.assign({}, routingState, { path: result.path, match: result.match });
+            routingState = Object.assign({}, routingState, {
+              path: result.path,
+              match: result.match,
+            });
           }
         }
 
@@ -275,7 +320,10 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
         const component = activator == null ? null : activator(state);
 
         if (component != null) {
-          this.logger.debug(`Loaded Component "${ Object.getName(component) }"`, component);
+          this.logger.debug(
+            `Loaded Component "${Object.getName(component)}"`,
+            component,
+          );
         }
 
         return {
@@ -289,7 +337,9 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     return undefined;
   }
 
-  createRoutingState(changed: HandlerRoutingStateChanged): ComponentDemoRoutingState {
+  createRoutingState(
+    changed: HandlerRoutingStateChanged,
+  ): ComponentDemoRoutingState {
     let columns: number | undefined;
 
     if (this.columns.value !== 12) {
@@ -298,16 +348,17 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
 
     const state: ComponentDemoRoutingState = {
       route: {
-        path: `/demo/${ this.componentRoute.value || '' }`,
+        path: `/demo/${this.componentRoute.value || ''}`,
       },
       columns: this.getRoutingStateValue(this.columns.value, 12),
-      state: this.getRoutingStateValue<any, {}>(this.component.value, (x: any) => {
-        if (isRoutingStateHandler(x)) {
-          return x.createRoutingState(changed.context);
-        }
+      state:
+        this.getRoutingStateValue<any, {}>(this.component.value, (x: any) => {
+          if (isRoutingStateHandler(x)) {
+            return x.createRoutingState(changed.context);
+          }
 
-        return {};
-      }) || {},
+          return {};
+        }) || {},
     };
 
     return Object.trim(state);
@@ -317,10 +368,12 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     const routedComponent = this.getRoutedComponent(state);
 
     // if there is no route, then route to help
-    if (routedComponent == null || String.isNullOrEmpty(routedComponent.componentRoute)) {
+    if (
+      routedComponent == null ||
+      String.isNullOrEmpty(routedComponent.componentRoute)
+    ) {
       this.navTo('#/demo/help');
-    }
-    else {
+    } else {
       this.setComponent.execute(routedComponent);
       this.setColumns.execute(state.columns == null ? 12 : state.columns);
     }
@@ -345,93 +398,94 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
         id: 'sidebar-demos',
         header: 'Integration Demos',
         items: [
-          { id: 'todolist', header: 'Todo List', uri: '#/demo/todolist', iconName: 'list' },
+          {
+            id: 'todolist',
+            header: 'Todo List',
+            uri: '#/demo/todolist',
+            iconName: 'list',
+          },
         ],
       },
       {
         id: 'sidebar-1',
         header: 'Section 1',
         items: [
-          Object.assign(
-            {},
-            this.demoAlertItem,
-            { id: `${ this.demoAlertItem.id }-sidebar-1`, commandParameter: 'Sidebar Section 1 Menu Item' },
-          ),
+          Object.assign({}, this.demoAlertItem, {
+            id: `${this.demoAlertItem.id}-sidebar-1`,
+            commandParameter: 'Sidebar Section 1 Menu Item',
+          }),
         ],
       },
       {
         id: 'sidebar-2',
         header: 'Section 2',
         items: [
-          Object.assign(
-            {},
-            this.demoAlertItem,
-            { id: `${ this.demoAlertItem.id }-sidebar-2-1`, commandParameter: 'Sidebar Section 2 Menu Item 1' },
-          ),
-          Object.assign(
-            {},
-            this.demoAlertItem,
-            { id: `${ this.demoAlertItem.id }-sidebar-2-2`, commandParameter: 'Sidebar Section 2 Menu Item 2' },
-          ),
+          Object.assign({}, this.demoAlertItem, {
+            id: `${this.demoAlertItem.id}-sidebar-2-1`,
+            commandParameter: 'Sidebar Section 2 Menu Item 1',
+          }),
+          Object.assign({}, this.demoAlertItem, {
+            id: `${this.demoAlertItem.id}-sidebar-2-2`,
+            commandParameter: 'Sidebar Section 2 Menu Item 2',
+          }),
         ],
       },
     ];
   }
 
   getNavbarMenus(): HeaderMenu[] {
-    return this.routeMap.menus
-      .concat({
-        id: `${ this.demoAlertItem.id }-menu`,
-        header: 'Sample Routed Menu',
-        order: -1,
-        items: [
-          Object.assign(
-            {},
-            this.demoAlertItem,
-            { id: `${ this.demoAlertItem.id }-menuitem`, commandParameter: 'Routed Menu Item' },
-          ),
-        ],
-      });
+    return this.routeMap.menus.concat({
+      id: `${this.demoAlertItem.id}-menu`,
+      header: 'Sample Routed Menu',
+      order: -1,
+      items: [
+        Object.assign({}, this.demoAlertItem, {
+          id: `${this.demoAlertItem.id}-menuitem`,
+          commandParameter: 'Routed Menu Item',
+        }),
+      ],
+    });
   }
 
   getNavbarActions(): HeaderCommandAction[] {
     return [
-      { id: 'reRender', header: 'Re-Render', command: this.reRender, bsStyle: 'primary' },
-      Object.assign(
-        {},
-        this.demoAlertItem,
-        { id: `${ this.demoAlertItem.id }-navbar`, commandParameter: 'Navbar Action' },
-      ),
+      {
+        id: 'reRender',
+        header: 'Re-Render',
+        command: this.reRender,
+        bsStyle: 'primary',
+      },
+      Object.assign({}, this.demoAlertItem, {
+        id: `${this.demoAlertItem.id}-navbar`,
+        commandParameter: 'Navbar Action',
+      }),
     ];
   }
 
   getHelpMenuItems(): HeaderCommandAction[] {
     return [
-      Object.assign(
-        {},
-        this.demoAlertItem,
-        { id: `${ this.demoAlertItem.id }-help`, commandParameter: 'Help Menu Item' },
-      ),
+      Object.assign({}, this.demoAlertItem, {
+        id: `${this.demoAlertItem.id}-help`,
+        commandParameter: 'Help Menu Item',
+      }),
     ];
   }
 
   getAdminMenuItems(): HeaderCommandAction[] {
     return [
-      Object.assign(
-        {},
-        this.demoAlertItem,
-        { id: `${ this.demoAlertItem.id }-admin`, commandParameter: 'Admin Menu Item' },
-      ),
+      Object.assign({}, this.demoAlertItem, {
+        id: `${this.demoAlertItem.id}-admin`,
+        commandParameter: 'Admin Menu Item',
+      }),
     ];
   }
 
   getUserMenuItems(): HeaderCommandAction[] {
     return [
-      Object.assign(
-        {},
-        this.demoAlertItem,
-        { id: `${ this.demoAlertItem.id }-user`, commandParameter: 'User Menu Item' },
-      ),
+      Object.assign({}, this.demoAlertItem, {
+        id: `${this.demoAlertItem.id}-user`,
+        commandParameter: 'User Menu Item',
+      }),
     ];
   }
 }

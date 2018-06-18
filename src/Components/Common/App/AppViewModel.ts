@@ -6,12 +6,15 @@ import { BaseViewModel } from '../../React';
 import { AlertHostViewModel } from '../Alert/AlertHostViewModel';
 import { PageFooterViewModel } from '../PageFooter/PageFooterViewModel';
 import { PageHeaderViewModel } from '../PageHeader/PageHeaderViewModel';
-import { RouteHandlerViewModel, SplashKey } from '../RouteHandler/RouteHandlerViewModel';
+import {
+  RouteHandlerViewModel,
+  SplashKey,
+} from '../RouteHandler/RouteHandlerViewModel';
 
 // inject a default route
 RouteMap['/'] = { path: SplashKey };
 // setup default splash route
-RouteMap[`^/${ SplashKey }$`] = { creator: () => SplashKey };
+RouteMap[`^/${SplashKey}$`] = { creator: () => SplashKey };
 
 export class AppViewModel extends BaseViewModel {
   public static displayName = 'AppViewModel';
@@ -46,14 +49,12 @@ export class AppViewModel extends BaseViewModel {
       this.footer = new PageFooterViewModel();
     }
 
-    this.isLoading = this.wx
-      .getProperty(
-        isLoading ||
-        Observable
-          .of(false)
+    this.isLoading = this.wx.getProperty(
+      isLoading ||
+        Observable.of(false)
           // this is a micro delay for the preloader to prevent FOUC
           .delay(100),
-      );
+    );
 
     Current = this;
   }

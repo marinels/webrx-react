@@ -8,7 +8,11 @@ export interface Logger {
 
   isEnabledFor(level: LogLevel | number): boolean;
 
-  log(level: LogLevel | number, text: string | MessageDelegate, ...args: any[]): void;
+  log(
+    level: LogLevel | number,
+    text: string | MessageDelegate,
+    ...args: any[]
+  ): void;
   trace(text: string | MessageDelegate, ...args: any[]): void;
   debug(text: string | MessageDelegate, ...args: any[]): void;
   info(text: string | MessageDelegate, ...args: any[]): void;
@@ -18,20 +22,22 @@ export interface Logger {
 }
 
 export abstract class BaseLogger implements Logger {
-  constructor(public readonly name: string, public level: LogLevel | number) {
-  }
+  constructor(public readonly name: string, public level: LogLevel | number) {}
 
   public isEnabledFor(level: LogLevel | number) {
     return this.level <= level;
   }
 
-  abstract log(level: LogLevel | number, text: string | MessageDelegate, ...args: any[]): void;
+  abstract log(
+    level: LogLevel | number,
+    text: string | MessageDelegate,
+    ...args: any[]
+  ): void;
 
   trace(textOrFn: string | MessageDelegate, ...args: any[]) {
     if (textOrFn instanceof Function) {
       this.log(LogLevel.Trace, textOrFn, ...args);
-    }
-    else {
+    } else {
       this.log(LogLevel.Trace, textOrFn.toString(), ...args);
     }
   }
@@ -39,8 +45,7 @@ export abstract class BaseLogger implements Logger {
   debug(textOrFn: string | MessageDelegate, ...args: any[]) {
     if (textOrFn instanceof Function) {
       this.log(LogLevel.Debug, textOrFn, ...args);
-    }
-    else {
+    } else {
       this.log(LogLevel.Debug, textOrFn.toString(), ...args);
     }
   }
@@ -48,8 +53,7 @@ export abstract class BaseLogger implements Logger {
   info(textOrFn: string | MessageDelegate, ...args: any[]) {
     if (textOrFn instanceof Function) {
       this.log(LogLevel.Info, textOrFn, ...args);
-    }
-    else {
+    } else {
       this.log(LogLevel.Info, textOrFn.toString(), ...args);
     }
   }
@@ -57,8 +61,7 @@ export abstract class BaseLogger implements Logger {
   warn(textOrFn: string | MessageDelegate, ...args: any[]) {
     if (textOrFn instanceof Function) {
       this.log(LogLevel.Warn, textOrFn, ...args);
-    }
-    else {
+    } else {
       this.log(LogLevel.Warn, textOrFn.toString(), ...args);
     }
   }
@@ -66,8 +69,7 @@ export abstract class BaseLogger implements Logger {
   error(textOrFn: string | MessageDelegate, ...args: any[]) {
     if (textOrFn instanceof Function) {
       this.log(LogLevel.Error, textOrFn, ...args);
-    }
-    else {
+    } else {
       this.log(LogLevel.Error, textOrFn.toString(), ...args);
     }
   }
@@ -75,8 +77,7 @@ export abstract class BaseLogger implements Logger {
   fatal(textOrFn: string | MessageDelegate, ...args: any[]) {
     if (textOrFn instanceof Function) {
       this.log(LogLevel.Fatal, textOrFn, ...args);
-    }
-    else {
+    } else {
       this.log(LogLevel.Fatal, textOrFn.toString(), ...args);
     }
   }

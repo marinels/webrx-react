@@ -26,7 +26,10 @@ export const DefaultDateTimeFormat = 'YYYY-MM-DD hh:mm:ss A';
  */
 export const DefaultDateTimeOffsetFormat = DefaultDateTimeFormat + ' Z';
 
-const DefaultDateTimeFormats = [DefaultDateTimeFormat, DefaultDateTimeOffsetFormat];
+const DefaultDateTimeFormats = [
+  DefaultDateTimeFormat,
+  DefaultDateTimeOffsetFormat,
+];
 
 /**
  * Converts between .NET DateTime.Ticks and moment values
@@ -37,12 +40,17 @@ export class DateTime {
    * i.e. "2016-03-09 4:32:32 PM" or "2016-03-09 4:32:32 PM -08:00" (default formats)
    */
   static fromString(value: string, ...formats: string[]): moment.Moment;
-  static fromString(value: string | undefined, ...formats: string[]): moment.Moment | undefined;
+  static fromString(
+    value: string | undefined,
+    ...formats: string[]
+  ): moment.Moment | undefined;
   public static fromString(value: string | undefined, ...formats: string[]) {
-    return String.isNullOrEmpty(value) ?
-      undefined :
-      moment.utc(value, formats.length === 0 ? DefaultDateTimeFormats : formats,
-    );
+    return String.isNullOrEmpty(value)
+      ? undefined
+      : moment.utc(
+          value,
+          formats.length === 0 ? DefaultDateTimeFormats : formats,
+        );
   }
 
   /**
@@ -50,8 +58,14 @@ export class DateTime {
    * NOTE: if no offset is provided, UTC is assumed
    */
   static fromNumber(value: number, offset?: number | string): moment.Moment;
-  static fromNumber(value: number | undefined, offset?: number | string): moment.Moment | undefined;
-  public static fromNumber(value: number | undefined, offset?: number | string) {
+  static fromNumber(
+    value: number | undefined,
+    offset?: number | string,
+  ): moment.Moment | undefined;
+  public static fromNumber(
+    value: number | undefined,
+    offset?: number | string,
+  ) {
     if (value == null) {
       return undefined;
     }
@@ -67,7 +81,9 @@ export class DateTime {
   static toNumber(value: moment.Moment): number;
   static toNumber(value: moment.Moment | undefined): number | undefined;
   public static toNumber(value: moment.Moment | undefined) {
-    return (value != null && value.isValid()) ? (value.valueOf() + EpochOffset) * TicksPerMillisecond : undefined;
+    return value != null && value.isValid()
+      ? (value.valueOf() + EpochOffset) * TicksPerMillisecond
+      : undefined;
   }
 
   // some default formatting values
@@ -85,11 +101,17 @@ export class DateTime {
     return value == null ? defaultValue : value.format(format);
   }
 
-  public static formatLong(value: moment.Moment | undefined, defaultValue: any = null) {
+  public static formatLong(
+    value: moment.Moment | undefined,
+    defaultValue: any = null,
+  ) {
     return DateTime.format(value, DateTime.DefaultLongFormat, defaultValue);
   }
 
-  public static formatShort(value: moment.Moment | undefined, defaultValue: any = null) {
+  public static formatShort(
+    value: moment.Moment | undefined,
+    defaultValue: any = null,
+  ) {
     return DateTime.format(value, DateTime.DefaultShortFormat, defaultValue);
   }
 }
@@ -114,7 +136,9 @@ export class TimeSpan {
   static fromNumber(value: number): moment.Duration;
   static fromNumber(value: number | undefined): moment.Duration | undefined;
   public static fromNumber(value: number | undefined) {
-    return value == null ? undefined : moment.duration(value / TicksPerMillisecond);
+    return value == null
+      ? undefined
+      : moment.duration(value / TicksPerMillisecond);
   }
 
   /**
@@ -123,7 +147,9 @@ export class TimeSpan {
   static toNumber(value: moment.Duration): number;
   static toNumber(value: moment.Duration | undefined): number | undefined;
   public static toNumber(value: moment.Duration | undefined) {
-    return value == null ? undefined : value.asMilliseconds() * TicksPerMillisecond;
+    return value == null
+      ? undefined
+      : value.asMilliseconds() * TicksPerMillisecond;
   }
 
   // some default formatting values
@@ -139,13 +165,18 @@ export class TimeSpan {
     precision = TimeSpan.DefaultDurationHoursPrecision,
     defaultValue: any = null,
   ) {
-    return value == null ? defaultValue : `${ value.asHours().toFixed(precision) } Hours`;
+    return value == null
+      ? defaultValue
+      : `${value.asHours().toFixed(precision)} Hours`;
   }
 
   /**
    * Standardized days string representation of a duration
    */
-  public static formatDays(value: moment.Duration | undefined, defaultValue: any = null) {
+  public static formatDays(
+    value: moment.Duration | undefined,
+    defaultValue: any = null,
+  ) {
     return value == null ? defaultValue : value.humanize();
   }
 
@@ -162,6 +193,8 @@ export class TimeSpan {
       return defaultValue;
     }
 
-    return value.asHours() < maxHours ? TimeSpan.formatHours(value, precision) : TimeSpan.formatDays(value);
+    return value.asHours() < maxHours
+      ? TimeSpan.formatHours(value, precision)
+      : TimeSpan.formatDays(value);
   }
 }

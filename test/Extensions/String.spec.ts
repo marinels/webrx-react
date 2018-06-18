@@ -87,8 +87,7 @@ describe('String Extensions', () => {
           return this.text;
         }
       }
-      class Test extends Base {
-      }
+      class Test extends Base {}
 
       const val = new Test();
       const str = String.stringify(val);
@@ -98,5 +97,3 @@ describe('String Extensions', () => {
     });
   });
 });
-
-

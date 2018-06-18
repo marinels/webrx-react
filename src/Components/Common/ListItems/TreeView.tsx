@@ -1,20 +1,31 @@
 import * as React from 'react';
 
-import { TreeItem, TreeItemRenderProps, TreeItemSourceProps } from '../Items/TreeItem';
+import {
+  TreeItem,
+  TreeItemRenderProps,
+  TreeItemSourceProps,
+} from '../Items/TreeItem';
 import { TreeItemsView } from '../Items/TreeItemsView';
 import { PanelFragment, PanelItemContext } from '../Panel/Panel';
-import { ListItemsViewTemplate, ListItemsViewTemplateProps } from './ListItemsViewTemplate';
+import {
+  ListItemsViewTemplate,
+  ListItemsViewTemplateProps,
+} from './ListItemsViewTemplate';
 import { PanelView } from './PanelView';
 
 export interface TreeViewProps<
   T = {},
-  TContext extends PanelItemContext = PanelItemContext,
-> extends ListItemsViewTemplateProps<T, TContext>, TreeItemSourceProps<T>, TreeItemRenderProps {
+  TContext extends PanelItemContext = PanelItemContext
+>
+  extends ListItemsViewTemplateProps<T, TContext>,
+    TreeItemSourceProps<T>,
+    TreeItemRenderProps {
   fill?: boolean;
 }
 
-export interface TreeViewComponentProps extends React.HTMLProps<any>, TreeViewProps {
-}
+export interface TreeViewComponentProps
+  extends React.HTMLProps<any>,
+    TreeViewProps {}
 
 export class TreeView extends ListItemsViewTemplate<TreeViewComponentProps> {
   constructor(props: any) {
@@ -33,11 +44,11 @@ export class TreeView extends ListItemsViewTemplate<TreeViewComponentProps> {
 
     return (
       <TreeItemsView
-        className={ className }
-        viewModel={ this.getListItems() }
-        headerTemplate={ this.renderHeader }
-        { ...this.getItemsProps() }
-        { ...treeItemProps }
+        className={className}
+        viewModel={this.getListItems()}
+        headerTemplate={this.renderHeader}
+        {...this.getItemsProps()}
+        {...treeItemProps}
       />
     );
   }
@@ -50,12 +61,15 @@ export class TreeView extends ListItemsViewTemplate<TreeViewComponentProps> {
     headerContent: PanelFragment,
     view: TreeItem,
   ) {
-    const fragment = TreeItem.defaultHeaderTemplate(item, index, indent, expander, headerContent, view);
-
-    return this.renderListItem(
-      fragment,
+    const fragment = TreeItem.defaultHeaderTemplate(
       item,
-      PanelView.getSelectedProps,
+      index,
+      indent,
+      expander,
+      headerContent,
+      view,
     );
+
+    return this.renderListItem(fragment, item, PanelView.getSelectedProps);
   }
 }

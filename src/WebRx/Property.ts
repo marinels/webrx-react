@@ -15,7 +15,9 @@ export class ObservableProperty<T> extends Subscription implements Property<T> {
   ) {
     super();
 
-    this.changedSubject = this.addSubscription(new BehaviorSubject<T>(initialValue!));
+    this.changedSubject = this.addSubscription(
+      new BehaviorSubject<T>(initialValue!),
+    );
     this.thrownErrorsSubject = this.addSubscription(new Subject<Error>());
 
     this.add(
@@ -46,21 +48,21 @@ export class ObservableProperty<T> extends Subscription implements Property<T> {
   set value(newValue: T) {
     if (isSubject(this.source)) {
       this.source.next(newValue);
-    }
-    else {
+    } else {
       throw new Error('attempt to write to a read-only observable property');
     }
   }
 
   get changed() {
-    return this.changedSubject
-      // BehaviorSubject fires immediately, so skip the first event
-      .skip(1);
+    return (
+      this.changedSubject
+        // BehaviorSubject fires immediately, so skip the first event
+        .skip(1)
+    );
   }
 
   get thrownErrors() {
-    return this.thrownErrorsSubject
-      .asObservable();
+    return this.thrownErrorsSubject.asObservable();
   }
 
   isProperty() {
@@ -97,15 +99,13 @@ export function property<T>(...args: any[]): Property<T> {
 
   if (isObservable<T>(arg)) {
     source = arg;
-  }
-  else {
+  } else {
     // if arg is true, then we use the default comparator function
 
     if (arg === false) {
       // this results in every value being interpreted as a new value
       compare = () => false;
-    }
-    else if (arg instanceof Function) {
+    } else if (arg instanceof Function) {
       compare = arg;
     }
   }
@@ -114,8 +114,7 @@ export function property<T>(...args: any[]): Property<T> {
 
   if (isObservable<T>(arg)) {
     source = arg;
-  }
-  else {
+  } else {
     keySelector = arg;
   }
 

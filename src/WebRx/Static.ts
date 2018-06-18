@@ -7,11 +7,24 @@ import { command } from './Command';
 import { Command, Property } from './Interfaces';
 import { property } from './Property';
 import {
-  asObservable, getObservable,
-  getObservableOrAlert, getObservableResultOrAlert, getProperty, handleError, isAsyncIterable, isCommand,
-  isIterable, isObservable, isObserver, isProperty, isSubject,
-  isSubscription, logError,
-  logMemberObservables, logObservable, subscribeOrAlert,
+  asObservable,
+  getObservable,
+  getObservableOrAlert,
+  getObservableResultOrAlert,
+  getProperty,
+  handleError,
+  isAsyncIterable,
+  isCommand,
+  isIterable,
+  isObservable,
+  isObserver,
+  isProperty,
+  isSubject,
+  isSubscription,
+  logError,
+  logMemberObservables,
+  logObservable,
+  subscribeOrAlert,
 } from './Utils';
 import { whenAny } from './WhenAny';
 

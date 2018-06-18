@@ -3,8 +3,13 @@ import { Observable, Subscription } from 'rxjs';
 import { Command, Property, ReadOnlyProperty } from '../../../WebRx';
 import {
   BaseRoutableViewModel,
-  BaseViewModel, HeaderAction,
-  HeaderCommandAction, HeaderMenu, isHeaderCommandAction, isRoutableViewModel } from '../../React';
+  BaseViewModel,
+  HeaderAction,
+  HeaderCommandAction,
+  HeaderMenu,
+  isHeaderCommandAction,
+  isRoutableViewModel,
+} from '../../React';
 import { RouteHandlerViewModel } from '../RouteHandler/RouteHandlerViewModel';
 
 export class PageHeaderViewModel extends BaseViewModel {
@@ -48,36 +53,45 @@ export class PageHeaderViewModel extends BaseViewModel {
 
     this.sidebarMenus = this.wx.property<HeaderMenu[]>(undefined, false);
     this.navbarMenus = this.wx.property<HeaderMenu[]>(undefined, false);
-    this.navbarActions = this.wx.property<HeaderCommandAction[]>(undefined, false);
-    this.helpMenuItems = this.wx.property<HeaderCommandAction[]>(undefined, false);
-    this.adminMenuItems = this.wx.property<HeaderCommandAction[]>(undefined, false);
-    this.userMenuItems = this.wx.property<HeaderCommandAction[]>(undefined, false);
+    this.navbarActions = this.wx.property<HeaderCommandAction[]>(
+      undefined,
+      false,
+    );
+    this.helpMenuItems = this.wx.property<HeaderCommandAction[]>(
+      undefined,
+      false,
+    );
+    this.adminMenuItems = this.wx.property<HeaderCommandAction[]>(
+      undefined,
+      false,
+    );
+    this.userMenuItems = this.wx.property<HeaderCommandAction[]>(
+      undefined,
+      false,
+    );
 
     this.isSidebarVisible = this.wx
       .whenAny(this.toggleSideBar.results, x => x)
       .toProperty(false);
 
-    this.addSubscription(this.wx
-      .whenAny(this.menuItemSelected.results, x => x)
-      .filterNull()
-      .map(() => false)
-      .invokeCommand(this.toggleSideBar),
+    this.addSubscription(
+      this.wx
+        .whenAny(this.menuItemSelected.results, x => x)
+        .filterNull()
+        .map(() => false)
+        .invokeCommand(this.toggleSideBar),
     );
 
     this.wx.subscribeOrAlert(
-      () => this.wx
-        .whenAny(this.menuItemSelected.results, x => x)
-        .filterNull(),
+      () => this.wx.whenAny(this.menuItemSelected.results, x => x).filterNull(),
       'Page Header Menu Item Error',
       x => {
         if (x.command != null) {
           x.command.execute(x.commandParameter);
-        }
-        else if (x.uri != null && x.uri.length > 0) {
+        } else if (x.uri != null && x.uri.length > 0) {
           if (x.uri[0] === '#') {
             this.navTo(x.uri);
-          }
-          else {
+          } else {
             window.location.href = x.uri;
           }
         }
@@ -96,7 +110,9 @@ export class PageHeaderViewModel extends BaseViewModel {
   unsubscribe() {
     super.unsubscribe();
 
-    this.dynamicSubscriptions = Subscription.unsubscribe(this.dynamicSubscriptions);
+    this.dynamicSubscriptions = Subscription.unsubscribe(
+      this.dynamicSubscriptions,
+    );
   }
 
   public updateDynamicContent() {
@@ -106,29 +122,60 @@ export class PageHeaderViewModel extends BaseViewModel {
 
     if (isRoutableViewModel(component)) {
       this.search = component.getSearch();
-    }
-    else {
+    } else {
       this.search = undefined;
     }
 
     // dispose any existing subscriptions to header actions
-    this.dynamicSubscriptions = Subscription.unsubscribe(this.dynamicSubscriptions);
+    this.dynamicSubscriptions = Subscription.unsubscribe(
+      this.dynamicSubscriptions,
+    );
 
     // add our header actions
-    this.addItems(this.sidebarMenus, this.staticSidebarMenus, component, x => x.getSidebarMenus);
-    this.addItems(this.navbarMenus, this.staticNavbarMenus, component, x => x.getNavbarMenus);
-    this.addItems(this.navbarActions, this.staticNavbarActions, component, x => x.getNavbarActions);
-    this.addItems(this.helpMenuItems, this.staticHelpMenuItems, component, x => x.getHelpMenuItems);
-    this.addItems(this.adminMenuItems, this.staticAdminMenuItems, component, x => x.getAdminMenuItems);
-    this.addItems(this.userMenuItems, this.staticUserMenuItems, component, x => x.getUserMenuItems);
+    this.addItems(
+      this.sidebarMenus,
+      this.staticSidebarMenus,
+      component,
+      x => x.getSidebarMenus,
+    );
+    this.addItems(
+      this.navbarMenus,
+      this.staticNavbarMenus,
+      component,
+      x => x.getNavbarMenus,
+    );
+    this.addItems(
+      this.navbarActions,
+      this.staticNavbarActions,
+      component,
+      x => x.getNavbarActions,
+    );
+    this.addItems(
+      this.helpMenuItems,
+      this.staticHelpMenuItems,
+      component,
+      x => x.getHelpMenuItems,
+    );
+    this.addItems(
+      this.adminMenuItems,
+      this.staticAdminMenuItems,
+      component,
+      x => x.getAdminMenuItems,
+    );
+    this.addItems(
+      this.userMenuItems,
+      this.staticUserMenuItems,
+      component,
+      x => x.getUserMenuItems,
+    );
   }
 
   private addItems<T extends HeaderAction>(
     list: Property<T[]>,
     staticItems: T[],
     component?: any,
-    delegateSelector?: (viewModel: BaseRoutableViewModel<any>,
-  ) => (() => T[])) {
+    delegateSelector?: (viewModel: BaseRoutableViewModel<any>) => (() => T[]),
+  ) {
     let routedItems: T[] | undefined;
 
     // interrogate the routed component for items from the delegate selector
@@ -151,14 +198,12 @@ export class PageHeaderViewModel extends BaseViewModel {
     this.dynamicSubscriptions = new Subscription();
 
     this.dynamicSubscriptions.add(
-      Observable
-        .merge(
-          ...list.value
-            .map((x: HeaderAction) => isHeaderCommandAction(x) ? x : undefined)
-            .filterNull()
-            .map(x => x.command!.canExecuteObservable),
-        )
-        .invokeCommand(this.menuItemChanged),
+      Observable.merge(
+        ...list.value
+          .map((x: HeaderAction) => (isHeaderCommandAction(x) ? x : undefined))
+          .filterNull()
+          .map(x => x.command!.canExecuteObservable),
+      ).invokeCommand(this.menuItemChanged),
     );
   }
 }

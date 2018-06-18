@@ -5,9 +5,15 @@ import { routeManager, RouteManager } from '../../Routing/RouteManager';
 import { Alert, PubSub } from '../../Utils';
 import { getLogger, Logger, LogLevel } from '../../Utils/Logging';
 import { Command, WebRxStatic, wx } from '../../WebRx';
-import { HandlerRoutingStateChanged, RoutingStateHandler, ViewModelLifecyle } from './Interfaces';
+import {
+  HandlerRoutingStateChanged,
+  RoutingStateHandler,
+  ViewModelLifecyle,
+} from './Interfaces';
 
-export function isRoutingStateHandler(value: any): value is RoutingStateHandler<{}> {
+export function isRoutingStateHandler(
+  value: any,
+): value is RoutingStateHandler<{}> {
   if (value == null) {
     return false;
   }
@@ -20,7 +26,9 @@ export function isRoutingStateHandler(value: any): value is RoutingStateHandler<
   );
 }
 
-export function isViewModelLifecycle(viewModel: any): viewModel is ViewModelLifecyle {
+export function isViewModelLifecycle(
+  viewModel: any,
+): viewModel is ViewModelLifecyle {
   return (
     viewModel.initializeViewModel instanceof Function &&
     viewModel.loadedViewModel instanceof Function &&
@@ -127,7 +135,10 @@ export abstract class BaseViewModel extends Subscription {
 
     this.initializeRoutingStateHandler(this);
 
-    if (this.logger.level <= LogLevel.Debug && this.isLoggingMemberObservables === false) {
+    if (
+      this.logger.level <= LogLevel.Debug &&
+      this.isLoggingMemberObservables === false
+    ) {
       this.isLoggingMemberObservables = true;
 
       this.addSubscriptions(...this.wx.logMemberObservables(this.logger, this));
@@ -183,7 +194,12 @@ export abstract class BaseViewModel extends Subscription {
     }
   }
 
-  protected navTo(path: string, state?: any, replace = false, uriEncode = false) {
+  protected navTo(
+    path: string,
+    state?: any,
+    replace = false,
+    uriEncode = false,
+  ) {
     this.routeManager.navTo(path, state, replace, uriEncode);
   }
 
@@ -191,5 +207,7 @@ export abstract class BaseViewModel extends Subscription {
     return true;
   }
 
-  public getDisplayName() { return Object.getName(this); }
+  public getDisplayName() {
+    return Object.getName(this);
+  }
 }

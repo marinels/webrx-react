@@ -2,11 +2,21 @@ import 'ix';
 import { Observable, Subscription } from 'rxjs';
 
 import { RoutingStateChangedKey } from '../../../Events/RoutingStateChanged';
-import { ComponentActivator, Route, RoutedComponentActivator, RouteMapper } from '../../../Routing';
+import {
+  ComponentActivator,
+  Route,
+  RoutedComponentActivator,
+  RouteMapper,
+} from '../../../Routing';
 import { routeManager } from '../../../Routing/RouteManager';
 import { PubSub } from '../../../Utils';
 import { Command, ReadOnlyProperty } from '../../../WebRx';
-import { BaseViewModel, HandlerRoutingStateChanged, isRoutableViewModel, RoutingBreadcrumb } from '../../React';
+import {
+  BaseViewModel,
+  HandlerRoutingStateChanged,
+  isRoutableViewModel,
+  RoutingBreadcrumb,
+} from '../../React';
 
 export const SplashKey = 'Splash';
 export const DefaultKey = '*';
@@ -31,10 +41,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
   private loadComponent: Command;
 
-  constructor(
-    public routingMap: RouteMapper,
-    routingStateRateLimit = 25,
-  ) {
+  constructor(public routingMap: RouteMapper, routingStateRateLimit = 25) {
     super();
 
     this.currentRoute = this.wx
@@ -66,8 +73,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
         if (result == null) {
           // the activator was a redirect, so don't propagate the event onward
           return Observable.empty<RoutedComponentActivator>();
-        }
-        else {
+        } else {
           // this is a normal activator so just push this event onward
           return Observable.of(result);
         }
@@ -94,60 +100,62 @@ export class RouteHandlerViewModel extends BaseViewModel {
       .map(x => {
         // this condition should always be true, but we put it here just in case
         // we should never end up with loadComponentParams events with a null next activator
-        return (
-          x.next != null
-        );
+        return x.next != null;
       })
       // we must share here because we use this Observable in multiple streams
       .share();
 
-    this.loadComponent = this.wx.command(canLoadComponent, (p: LoadComponentParams) => {
-      return this.wx.getObservableResultOrAlert(
-        () => {
-          // we need to construct an activated component structure so we can send routing state
-          // into the viewModel (if it exists)
-          return {
-            activator: p.next,
-            // NOTE: getComponent can return null
-            component: this.getComponent(p.prev, p.next),
-          } as ActivatedComponent;
-        })
-        .map(x => {
-          // send the routing state to the view model (if it exists)
-          // this function will return the view model so we can just return it directly
-          return this.updateComponentRoutingState(x.activator, x.component);
-        });
-    });
+    this.loadComponent = this.wx.command(
+      canLoadComponent,
+      (p: LoadComponentParams) => {
+        return this.wx
+          .getObservableResultOrAlert(() => {
+            // we need to construct an activated component structure so we can send routing state
+            // into the viewModel (if it exists)
+            return {
+              activator: p.next,
+              // NOTE: getComponent can return null
+              component: this.getComponent(p.prev, p.next),
+            } as ActivatedComponent;
+          })
+          .map(x => {
+            // send the routing state to the view model (if it exists)
+            // this function will return the view model so we can just return it directly
+            return this.updateComponentRoutingState(x.activator, x.component);
+          });
+      },
+    );
 
     this.routedComponent = this.loadComponent.results
-      .scan(
-        (prev, curr) => {
-          // try and dispose of our current routed component
-          // providing it isn't the same component (which should never happen)
-          if (prev !== curr) {
-            Subscription.unsubscribe(prev);
-          }
+      .scan((prev, curr) => {
+        // try and dispose of our current routed component
+        // providing it isn't the same component (which should never happen)
+        if (prev !== curr) {
+          Subscription.unsubscribe(prev);
+        }
 
-          return curr;
-        },
-        undefined,
-      )
+        return curr;
+      }, undefined)
       .toProperty();
 
     this.routingBreadcrumbs = this.wx
       .whenAny(this.routedComponent, x => x)
-      .map(x => isRoutableViewModel(x) ? this.wx.whenAny(x.breadcrumbs, y => y) : Observable.of(undefined))
+      .map(
+        x =>
+          isRoutableViewModel(x)
+            ? this.wx.whenAny(x.breadcrumbs, y => y)
+            : Observable.of(undefined),
+      )
       .switch()
       .toProperty();
 
     // when a route changes we enter loading mode and wait until the load finishes
     // at the very least, loadComponent should execute and result in a null view model
     // at which point we can exit loading mode
-    this.isLoading = Observable
-      .merge(
-        this.currentRoute.changed.map(() => true),
-        this.loadComponent.results.map(() => false),
-      )
+    this.isLoading = Observable.merge(
+      this.currentRoute.changed.map(() => true),
+      this.loadComponent.results.map(() => false),
+    )
       // only show the loading screen if we are really taking a while to load
       // this will make the initial loading screen appear for at least 500ms as
       // well as prevent really short flashes of the loading screen
@@ -159,7 +167,10 @@ export class RouteHandlerViewModel extends BaseViewModel {
       this.wx
         // whenever there are new view model loading params and we can load our view model (which should be always)
         // we can project out just the loading params in preperation for the load command
-        .whenAny(loadComponentParams, canLoadComponent, (params, canLoad) => ({ params, canLoad }))
+        .whenAny(loadComponentParams, canLoadComponent, (params, canLoad) => ({
+          params,
+          canLoad,
+        }))
         .filter(x => x.canLoad === true)
         .map(x => x.params)
         // debouce here to prevent loading param flux from hammering the load command
@@ -186,7 +197,11 @@ export class RouteHandlerViewModel extends BaseViewModel {
                 .whenAny(component.documentTitle, x => {
                   if (String.isNullOrEmpty(x)) {
                     // there isn't any title set (BAD) so warn and use a sane default
-                    this.logger.warn(`${ Object.getName(component) } does not provide a custom routed browser title`);
+                    this.logger.warn(
+                      `${Object.getName(
+                        component,
+                      )} does not provide a custom routed browser title`,
+                    );
 
                     return Object.getName(component);
                   }
@@ -199,8 +214,7 @@ export class RouteHandlerViewModel extends BaseViewModel {
                   this.updateDocumentTitle(component, x);
                 }),
             );
-          }
-          else {
+          } else {
             // we don't have a routable component
             // so try and generate a reasonable static title
             let title: string;
@@ -208,11 +222,9 @@ export class RouteHandlerViewModel extends BaseViewModel {
             if (component == null) {
               // this shouldn't happen in practice
               title = 'No Routed Component';
-            }
-            else if (String.isString(component)) {
+            } else if (String.isString(component)) {
               title = component;
-            }
-            else {
+            } else {
               title = Object.getName(component);
             }
 
@@ -222,14 +234,11 @@ export class RouteHandlerViewModel extends BaseViewModel {
     );
 
     this.addSubscription(
-      PubSub
-        .observe<HandlerRoutingStateChanged>(RoutingStateChangedKey)
+      PubSub.observe<HandlerRoutingStateChanged>(RoutingStateChangedKey)
         .debounceTime(routingStateRateLimit)
         .withLatestFrom(
-          this.wx
-            .whenAny(this.routedComponent, x => x),
-          this.wx
-            .whenAny(this.currentRoute, x => x),
+          this.wx.whenAny(this.routedComponent, x => x),
+          this.wx.whenAny(this.currentRoute, x => x),
           (change, component, route) => ({ change, component, route }),
         )
         .map(x => {
@@ -254,14 +263,14 @@ export class RouteHandlerViewModel extends BaseViewModel {
     );
 
     // connect the primary observable to allow the routing engine to start processing routes
-    this.addSubscription(
-      loadComponentParams
-        .connect(),
-    );
+    this.addSubscription(loadComponentParams.connect());
   }
 
   private updateDocumentTitle(component: any, title: string) {
-    this.logger.debug(`Updating document title for component: ${ title }`, component);
+    this.logger.debug(
+      `Updating document title for component: ${title}`,
+      component,
+    );
 
     document.title = title;
   }
@@ -271,7 +280,10 @@ export class RouteHandlerViewModel extends BaseViewModel {
 
     // we shouldn't ever hit this function with a null route, but play safe anyways
     if (route != null) {
-      this.logger.debug(`Loading View Model Activator for '${ route.path }'...`, route);
+      this.logger.debug(
+        `Loading View Model Activator for '${route.path}'...`,
+        route,
+      );
 
       // default by just fetching the mapped route directly
       activator = this.routingMap[route.path];
@@ -283,19 +295,26 @@ export class RouteHandlerViewModel extends BaseViewModel {
           .filter(x => x != null && x.length > 0 && x[0] === '^')
           .map(x => ({ key: x, match: new RegExp(x, 'i').exec(route.path) }))
           .filter(x => x.match != null)
-          .map(x => ({ key: x.key, match: x.match!, activator: this.routingMap[x.key] }))
+          .map(x => ({
+            key: x.key,
+            match: x.match!,
+            activator: this.routingMap[x.key],
+          }))
           .first();
 
         if (result != null) {
           // if we found a regex match route then set the match properties on the route
           route.match = result.match;
 
-          const activatorPath = result.activator != null && result.activator.path != null ?
-            ` ('${ result.activator.path }')` :
-            '';
+          const activatorPath =
+            result.activator != null && result.activator.path != null
+              ? ` ('${result.activator.path}')`
+              : '';
 
           this.logger.debug(
-            `Matched RegExp Routing Path '${ route.path }' with '${ result.key }'${ activatorPath }`,
+            `Matched RegExp Routing Path '${route.path}' with '${
+              result.key
+            }'${activatorPath}`,
             route,
           );
 
@@ -306,69 +325,95 @@ export class RouteHandlerViewModel extends BaseViewModel {
       // if we found no matching activator yet
       if (activator == null) {
         // warn about a missing route configuration
-        this.logger.warn(`No activator for '${ route.path }', falling back to default route`, route);
+        this.logger.warn(
+          `No activator for '${route.path}', falling back to default route`,
+          route,
+        );
 
         // fallback on to the default route (this could also be null)
-        activator = Object.assign({ creator: () => undefined }, this.routingMap[DefaultKey]);
+        activator = Object.assign(
+          { creator: () => undefined },
+          this.routingMap[DefaultKey],
+        );
       }
     }
 
     // if our route was null (should never happen) always return a null value
     // otherwise merge the route with the activator to create the RoutedActivator
     // we default to the route path, but allow the activator to override that path
-    return route == null ? undefined : Object.assign({ route, path: route.path }, activator);
+    return route == null
+      ? undefined
+      : Object.assign({ route, path: route.path }, activator);
   }
 
   private handleRedirect(activator: RoutedComponentActivator | undefined) {
     // a redirect is essentially a valid activator with only a path (and no creator)
-    const isRedirect = (
+    const isRedirect =
       activator != null &&
       activator.route != null &&
       String.isNullOrEmpty(activator.path) === false &&
-      activator.creator == null
-    );
+      activator.creator == null;
 
     if (isRedirect === true) {
       // this is a redirect route
-      this.logger.debug(`Redirecting from '${ activator!.route.path }' to '${ activator!.path }'`, activator);
+      this.logger.debug(
+        `Redirecting from '${activator!.route.path}' to '${activator!.path}'`,
+        activator,
+      );
 
       // inform the routing manager of the redirection
       routeManager.navTo(activator!.path!, undefined, true);
 
       // return null to stop processing this route
       return null;
-    }
-    else {
+    } else {
       // not a redirect so just return the activator unchanged
       return activator;
     }
   }
 
-  private getComponent(prev: RoutedComponentActivator, next: RoutedComponentActivator): any {
+  private getComponent(
+    prev: RoutedComponentActivator,
+    next: RoutedComponentActivator,
+  ): any {
     if (next == null || next.route == null || next.creator == null) {
       // invalid activator, return null (this shouldn't happen)
       return null;
     }
     // routing activator paths are unique, so we can compare them for best results
     else if (prev != null && prev.path === next.path) {
-      this.logger.debug(`Using same view model for route change (${ prev.route.path } -> ${ next.route.path })`, next);
+      this.logger.debug(
+        `Using same view model for route change (${prev.route.path} -> ${
+          next.route.path
+        })`,
+        next,
+      );
 
       // our old activator matches our new activator, so return the current view model
       // we perform a null check on our observable property just in case, it should never be null
       return this.routedComponent == null ? null : this.routedComponent.value;
-    }
-    else {
-      this.logger.debug(`Loading view model for route '${ next.route.path }'`, next);
+    } else {
+      this.logger.debug(
+        `Loading view model for route '${next.route.path}'`,
+        next,
+      );
 
       // create a new component for the route using the activator function
       return next.creator(next.route);
     }
   }
 
-  private updateComponentRoutingState(activator: RoutedComponentActivator, component: any) {
+  private updateComponentRoutingState(
+    activator: RoutedComponentActivator,
+    component: any,
+  ) {
     // our activator should never be null at this point, but our component certainly could be
     if (activator != null && isRoutableViewModel(component)) {
-      this.logger.debug(`Updating routing state for '${ activator.route.path }'`, activator, component);
+      this.logger.debug(
+        `Updating routing state for '${activator.route.path}'`,
+        activator,
+        component,
+      );
 
       // initialize the routing state to default as an empty object
       activator.route.state = activator.route.state || {};

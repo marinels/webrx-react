@@ -12,8 +12,9 @@ export interface BreadcrumbsProps {
   items?: RoutingBreadcrumb[];
 }
 
-export interface BreadcrumbsComponentProps extends React.HTMLProps<any>, BreadcrumbsProps {
-}
+export interface BreadcrumbsComponentProps
+  extends React.HTMLProps<any>,
+    BreadcrumbsProps {}
 
 export class Breadcrumbs extends React.Component<BreadcrumbsComponentProps> {
   static defaultProps: Partial<BreadcrumbsProps> = {
@@ -37,65 +38,72 @@ export class Breadcrumbs extends React.Component<BreadcrumbsComponentProps> {
       (x, i, a) => {
         return this.renderCrumb(x, i, i === a.length - 1);
       },
-      x => x.length === 0 ? null : (
-        <div { ...rest } className={ this.wxr.classNames('Breadcrumbs', 'hidden-xs', className) }>
-          <div className='Breadcrumbs-container'>
-            <Breadcrumb>{ x }</Breadcrumb>
-            {
-              this.wxr.renderConditional(props.pinnable, () => (
+      x =>
+        x.length === 0 ? null : (
+          <div
+            {...rest}
+            className={this.wxr.classNames(
+              'Breadcrumbs',
+              'hidden-xs',
+              className,
+            )}
+          >
+            <div className="Breadcrumbs-container">
+              <Breadcrumb>{x}</Breadcrumb>
+              {this.wxr.renderConditional(props.pinnable, () => (
                 <CommandButton
-                  className='Breadcrumbs-pin'
-                  bsStyle='link'
-                  onClick={ this.toggleBreadcrumbsPin }
+                  className="Breadcrumbs-pin"
+                  bsStyle="link"
+                  onClick={this.toggleBreadcrumbsPin}
                 >
-                  <Icon name='thumb-tack' size='lg' rotate='90' />
+                  <Icon name="thumb-tack" size="lg" rotate="90" />
                 </CommandButton>
-              ))
-            }
+              ))}
+            </div>
           </div>
-        </div>
-      ),
+        ),
     );
   }
 
-  protected renderCrumb(crumb: RoutingBreadcrumb, index: number, active: boolean) {
+  protected renderCrumb(
+    crumb: RoutingBreadcrumb,
+    index: number,
+    active: boolean,
+  ) {
     const breadcrumb = (
       <Breadcrumb.Item
-        key={ crumb.key }
-        active={ active }
-        href={ crumb.href }
-        title={ crumb.title }
-        target={ crumb.target }
+        key={crumb.key}
+        active={active}
+        href={crumb.href}
+        title={crumb.title}
+        target={crumb.target}
       >
-        { crumb.content }
+        {crumb.content}
       </Breadcrumb.Item>
     );
 
-    return this.wxr
-      .renderNullable(
-        crumb.tooltip,
-        x => (
-          <ContentTooltip
-            key={ crumb.key }
-            id={ `${ crumb.key }-tt` }
-            content={ x }
-            context={ breadcrumb }
-            placement={ x.placement || 'bottom' }
-          />
-        ),
-        () => breadcrumb,
-      );
+    return this.wxr.renderNullable(
+      crumb.tooltip,
+      x => (
+        <ContentTooltip
+          key={crumb.key}
+          id={`${crumb.key}-tt`}
+          content={x}
+          context={breadcrumb}
+          placement={x.placement || 'bottom'}
+        />
+      ),
+      () => breadcrumb,
+    );
   }
 
   protected toggleBreadcrumbsPin() {
-    const elem = document
-      .getElementById(this.props.id!);
+    const elem = document.getElementById(this.props.id!);
 
     if (elem != null) {
       if (/fixed/.test(elem.className)) {
         elem.className = 'Breadcrumbs';
-      }
-      else {
+      } else {
         elem.className = 'Breadcrumbs fixed';
       }
     }

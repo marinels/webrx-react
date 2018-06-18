@@ -17,10 +17,22 @@ export class TodoListStore extends BaseSampleDataStore {
   constructor() {
     super();
 
-    this.connect(TodoListActions.GetItems, this.getItems);
-    this.connect(TodoListActions.AddItem, this.addItem);
-    this.connect(TodoListActions.RemoveItem, this.removeItem);
-    this.connect(TodoListActions.SetCompleted, this.setCompleted);
+    this.connect(
+      TodoListActions.GetItems,
+      this.getItems,
+    );
+    this.connect(
+      TodoListActions.AddItem,
+      this.addItem,
+    );
+    this.connect(
+      TodoListActions.RemoveItem,
+      this.removeItem,
+    );
+    this.connect(
+      TodoListActions.SetCompleted,
+      this.setCompleted,
+    );
 
     this.data = {
       items: [
@@ -53,8 +65,7 @@ export class TodoListStore extends BaseSampleDataStore {
 
   public removeItem(params: { id?: number } = {}) {
     if (params.id != null && Number.isInteger(params.id)) {
-      this.data.items = this.data.items
-        .filter(x => x.id !== params.id);
+      this.data.items = this.data.items.filter(x => x.id !== params.id);
 
       return params.id;
     }
@@ -62,11 +73,9 @@ export class TodoListStore extends BaseSampleDataStore {
     throw new Error('Invalid Params: missing id');
   }
 
-  public setCompleted(params: { id?: number, completed?: boolean } = {}) {
+  public setCompleted(params: { id?: number; completed?: boolean } = {}) {
     if (params.id != null && Number.isInteger(params.id)) {
-      const item = this.data.items
-        .asIterable()
-        .single(x => x.id === params.id);
+      const item = this.data.items.asIterable().single(x => x.id === params.id);
 
       if (item != null) {
         item.completed = params.completed === false ? false : true;
@@ -74,7 +83,7 @@ export class TodoListStore extends BaseSampleDataStore {
         return params.id;
       }
 
-      throw new Error(`Invalid Params: item not found for id (${ params.id })`);
+      throw new Error(`Invalid Params: item not found for id (${params.id})`);
     }
 
     throw new Error('Invalid Params: missing id');

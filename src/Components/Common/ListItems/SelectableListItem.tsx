@@ -7,7 +7,10 @@ import { compare } from '../../../Utils/Compare';
 import { wx } from '../../../WebRx';
 import { ListItemsViewModel } from './ListItemsViewModel';
 
-export type SelectedPropsFunction = (isSelected: boolean, elem: React.ReactElement<React.HTMLProps<any>>) => {};
+export type SelectedPropsFunction = (
+  isSelected: boolean,
+  elem: React.ReactElement<React.HTMLProps<any>>,
+) => {};
 
 export interface SelectableListItemProps<T = {}> {
   listItems: Readonly<ListItemsViewModel<T>>;
@@ -15,7 +18,9 @@ export interface SelectableListItemProps<T = {}> {
   selectedProps?: SelectedPropsFunction;
 }
 
-export class SelectableListItem extends React.Component<SelectableListItemProps> {
+export class SelectableListItem extends React.Component<
+  SelectableListItemProps
+> {
   static defaultProps: Partial<SelectableListItemProps> = {
     selectedProps: () => ({}),
   };
@@ -36,7 +41,9 @@ export class SelectableListItem extends React.Component<SelectableListItemProps>
 
   private unsubscribeFromUpdates() {
     if (this.isSelectedSubscription !== Subscription.EMPTY) {
-      this.isSelectedSubscription = Subscription.unsubscribe(this.isSelectedSubscription);
+      this.isSelectedSubscription = Subscription.unsubscribe(
+        this.isSelectedSubscription,
+      );
     }
   }
 
@@ -68,7 +75,9 @@ export class SelectableListItem extends React.Component<SelectableListItemProps>
     return items.indexOf(this.props.item) >= 0;
   }
 
-  protected getListItemProps(elem: React.ReactElement<any>): ListGroupItemProps {
+  protected getListItemProps(
+    elem: React.ReactElement<any>,
+  ): ListGroupItemProps {
     const onClickElement: (() => void) | undefined = elem.props.onClick;
 
     return Object.assign(
@@ -83,26 +92,27 @@ export class SelectableListItem extends React.Component<SelectableListItemProps>
   }
 
   // tslint:disable-next-line:ban-types
-  protected handleClick(e: React.MouseEvent<any>, onClickElement: Function | undefined) {
+  protected handleClick(
+    e: React.MouseEvent<any>,
+    onClickElement: Function | undefined,
+  ) {
     e.stopPropagation();
     e.preventDefault();
 
     if (e.ctrlKey) {
       this.props.listItems.selectItems.execute(
-        Iterable
-          .from(this.props.listItems.selectedItems.value)
+        Iterable.from(this.props.listItems.selectedItems.value)
           .startWith(this.props.item)
           .filterNull()
           .distinct(undefined, compare)
           .toArray(),
       );
-    }
-    else if (e.shiftKey) {
+    } else if (e.shiftKey) {
       document.getSelection().removeAllRanges();
-      const from = this.props.listItems.selectedItems.value[0] || this.props.item;
+      const from =
+        this.props.listItems.selectedItems.value[0] || this.props.item;
       this.props.listItems.selectRange.execute({ from, to: this.props.item });
-    }
-    else {
+    } else {
       this.props.listItems.selectItem.execute(this.props.item);
     }
 

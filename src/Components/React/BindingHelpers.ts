@@ -1,13 +1,23 @@
 import * as React from 'react';
 import { Subscription } from 'rxjs';
 
-import { Command, getObservable, isCommand, ObservableLike, Property } from '../../WebRx';
+import {
+  Command,
+  getObservable,
+  isCommand,
+  ObservableLike,
+  Property,
+} from '../../WebRx';
 import { BaseViewModel } from './BaseViewModel';
 
 /**
  * Binds an observable to a command on the view model
  */
-export function bindObservableToCommand<TViewModel extends BaseViewModel, TInput, TResult>(
+export function bindObservableToCommand<
+  TViewModel extends BaseViewModel,
+  TInput,
+  TResult
+>(
   viewModel: Readonly<TViewModel>,
   observableLike: ObservableLike<TInput>,
   commandSelector: (viewModel: Readonly<TViewModel>) => Command<TResult>,
@@ -16,8 +26,12 @@ export function bindObservableToCommand<TViewModel extends BaseViewModel, TInput
   onCompleted?: () => void,
 ): Subscription {
   return (viewModel as TViewModel).addSubscription(
-    getObservable(observableLike)
-      .invokeCommand(commandSelector(viewModel), onNext, onError, onCompleted),
+    getObservable(observableLike).invokeCommand(
+      commandSelector(viewModel),
+      onNext,
+      onError,
+      onCompleted,
+    ),
   );
 }
 
@@ -32,13 +46,15 @@ export function bindEventToProperty<
   viewModel: Readonly<TViewModel>,
   targetSelector: (viewModel: Readonly<TViewModel>) => Property<TValue>,
   valueSelector?: (eventKey: any, event: TEvent) => TValue,
-): any { // this needs to be any instead of Function to support React.EventHandler<T>
+): any {
+  // this needs to be any instead of Function to support React.EventHandler<T>
   return (eventKey: any, event: TEvent) => {
     // this ensures that we can still use this function for basic HTML events
     event = event || eventKey;
 
     const prop = targetSelector(viewModel);
-    const value: TValue = (valueSelector == null ? eventKey : valueSelector(eventKey, event));
+    const value: TValue =
+      valueSelector == null ? eventKey : valueSelector(eventKey, event);
 
     prop.value = value;
   };
@@ -60,13 +76,16 @@ export function bindEventToCommand<
   onNext?: (value: TCommand) => void,
   onError?: (exception: any) => void,
   onCompleted?: () => void,
-): any { // this needs to be any instead of Function to support React.EventHandler<T>
+): any {
+  // this needs to be any instead of Function to support React.EventHandler<T>
   return (eventKey: any, event: TEvent) => {
     // this ensures that we can still use this function for basic HTML events
     event = event || eventKey;
 
-    const param: TParameter = (paramSelector == null ? eventKey : paramSelector(eventKey, event));
-    const canExecute = conditionSelector == null || conditionSelector(event, eventKey);
+    const param: TParameter =
+      paramSelector == null ? eventKey : paramSelector(eventKey, event);
+    const canExecute =
+      conditionSelector == null || conditionSelector(event, eventKey);
 
     if (canExecute) {
       const cmd = commandSelector(viewModel);

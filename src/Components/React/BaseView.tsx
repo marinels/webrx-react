@@ -3,28 +3,35 @@ import * as React from 'react';
 import { Observable, Subscription } from 'rxjs';
 import { AnonymousSubscription, TeardownLogic } from 'rxjs/Subscription';
 
-import { reactRestrictedProps, ReactSpreadRestrictedProps, ReactSpreadResult } from '../../Extensions/React';
+import {
+  reactRestrictedProps,
+  ReactSpreadRestrictedProps,
+  ReactSpreadResult,
+} from '../../Extensions/React';
 import { Alert, Logging } from '../../Utils';
 import { Command, IterableLike, Property } from '../../WebRx';
 import { BaseViewModel, isViewModelLifecycle } from './BaseViewModel';
-import { bindEventToCommand, bindEventToProperty, bindObservableToCommand } from './BindingHelpers';
+import {
+  bindEventToCommand,
+  bindEventToProperty,
+  bindObservableToCommand,
+} from './BindingHelpers';
 
 export interface ViewModelProps<T extends BaseViewModel> {
   viewModel: Readonly<T>;
 }
 
-export type ReactSpreadRestrictedViewModelProps = ReactSpreadRestrictedProps & Partial<ViewModelProps<any>>;
+export type ReactSpreadRestrictedViewModelProps = ReactSpreadRestrictedProps &
+  Partial<ViewModelProps<any>>;
 
 export const reactSpreadRestrictedViewModelProps: ReactSpreadRestrictedViewModelProps = Object.assign(
   { viewModel: undefined },
   reactRestrictedProps,
 );
 
-export interface BaseViewProps<
-  TViewModel extends BaseViewModel,
-  TView = any,
-> extends ViewModelProps<TViewModel>, React.HTMLProps<TView> {
-}
+export interface BaseViewProps<TViewModel extends BaseViewModel, TView = any>
+  extends ViewModelProps<TViewModel>,
+    React.HTMLProps<TView> {}
 
 export interface ViewModelState<T extends BaseViewModel> {
   viewModel: T;
@@ -33,7 +40,8 @@ export interface ViewModelState<T extends BaseViewModel> {
 export abstract class BaseView<
   TViewProps extends ViewModelProps<TViewModel>,
   TViewModel extends BaseViewModel
-> extends React.Component<TViewProps, ViewModelState<TViewModel>> implements AnonymousSubscription {
+> extends React.Component<TViewProps, ViewModelState<TViewModel>>
+  implements AnonymousSubscription {
   public static displayName = 'BaseView';
 
   private updateSubscription: Subscription;
@@ -43,7 +51,9 @@ export abstract class BaseView<
   protected readonly createAlert = Alert.create;
   protected readonly alertForError = Alert.createForError;
 
-  protected readonly logger: Logging.Logger = Logging.getLogger(this.getDisplayName());
+  protected readonly logger: Logging.Logger = Logging.getLogger(
+    this.getDisplayName(),
+  );
 
   constructor(props: any) {
     super(props);
@@ -95,7 +105,9 @@ export abstract class BaseView<
       this.logger.info('ViewModel Change Detected');
 
       // unsubscribe from updates
-      this.updateSubscription = Subscription.unsubscribe(this.updateSubscription);
+      this.updateSubscription = Subscription.unsubscribe(
+        this.updateSubscription,
+      );
 
       // ask react to generate new state from the updated props
       this.setState((prevState, props) => {
@@ -172,11 +184,17 @@ export abstract class BaseView<
     }
   }
 
-  private updatingView(nextProps: Readonly<TViewProps>, nextState: Readonly<ViewModelState<TViewModel>>) {
+  private updatingView(
+    nextProps: Readonly<TViewProps>,
+    nextState: Readonly<ViewModelState<TViewModel>>,
+  ) {
     this.updating(nextProps, nextState);
   }
 
-  private updatedView(prevProps: Readonly<TViewProps>, prevState: Readonly<ViewModelState<TViewModel>>) {
+  private updatedView(
+    prevProps: Readonly<TViewProps>,
+    prevState: Readonly<ViewModelState<TViewModel>>,
+  ) {
     this.updated(prevProps, prevState);
   }
 
@@ -200,11 +218,17 @@ export abstract class BaseView<
     // do nothing by default
   }
 
-  protected updating(nextProps?: Readonly<TViewProps>, nextState?: Readonly<ViewModelState<TViewModel>>) {
+  protected updating(
+    nextProps?: Readonly<TViewProps>,
+    nextState?: Readonly<ViewModelState<TViewModel>>,
+  ) {
     // do nothing by default
   }
 
-  protected updated(prevProps?: Readonly<TViewProps>, prevState?: Readonly<ViewModelState<TViewModel>>) {
+  protected updated(
+    prevProps?: Readonly<TViewProps>,
+    prevState?: Readonly<ViewModelState<TViewModel>>,
+  ) {
     // do nothing by default
   }
 
@@ -213,20 +237,21 @@ export abstract class BaseView<
   }
   // -----------------------------------------
 
-  protected subscribeToUpdates(props: Readonly<TViewProps>, state: Readonly<ViewModelState<TViewModel>>) {
+  protected subscribeToUpdates(
+    props: Readonly<TViewProps>,
+    state: Readonly<ViewModelState<TViewModel>>,
+  ) {
     const viewModel = this.getViewModelFromState(state);
-    const updateProps = Iterable
-      .from(this.updateOn(viewModel))
-      .toArray();
+    const updateProps = Iterable.from(this.updateOn(viewModel)).toArray();
 
     if (updateProps.length > 0) {
-      this.updateSubscription = Observable
-        .merge(...updateProps)
+      this.updateSubscription = Observable.merge(...updateProps)
         .debounceTime(this.getRateLimit())
         .subscribe(
           () => {
             this.renderView();
-          }, x => {
+          },
+          x => {
             this.alertForError(x);
           },
         );
@@ -236,12 +261,22 @@ export abstract class BaseView<
   // -----------------------------------------
   // these overridable view functions
   // -----------------------------------------
-  protected updateOn(viewModel: Readonly<TViewModel>): IterableLike<Observable<any>> { return []; }
+  protected updateOn(
+    viewModel: Readonly<TViewModel>,
+  ): IterableLike<Observable<any>> {
+    return [];
+  }
 
-  protected getDisplayName() { return Object.getName(this); }
-  protected getRateLimit() { return 100; }
+  protected getDisplayName() {
+    return Object.getName(this);
+  }
+  protected getRateLimit() {
+    return 100;
+  }
 
-  protected renderView() { this.forceUpdate(); }
+  protected renderView() {
+    this.forceUpdate();
+  }
   // -----------------------------------------
 
   // -----------------------------------------
@@ -257,13 +292,23 @@ export abstract class BaseView<
     onError?: (exception: any) => void,
     onCompleted?: () => void,
   ) {
-    return bindObservableToCommand(this.viewModel, observable, commandSelector, onNext, onError, onCompleted);
+    return bindObservableToCommand(
+      this.viewModel,
+      observable,
+      commandSelector,
+      onNext,
+      onError,
+      onCompleted,
+    );
   }
 
   /**
    * Binds a DOM event to an observable property on the view model
    */
-  protected bindEventToProperty<TValue, TEvent extends Event | React.SyntheticEvent<this>>(
+  protected bindEventToProperty<
+    TValue,
+    TEvent extends Event | React.SyntheticEvent<this>
+  >(
     targetSelector: (viewModel: Readonly<TViewModel>) => Property<TValue>,
     valueSelector?: (eventKey: any, event: TEvent) => TValue,
   ) {
@@ -273,7 +318,11 @@ export abstract class BaseView<
   /**
    * Binds a DOM event to an observable command on the view model
    */
-  protected bindEventToCommand<TParameter, TCommand, TEvent extends Event | React.SyntheticEvent<this>>(
+  protected bindEventToCommand<
+    TParameter,
+    TCommand,
+    TEvent extends Event | React.SyntheticEvent<this>
+  >(
     commandSelector: (viewModel: Readonly<TViewModel>) => Command<TCommand>,
     paramSelector?: (eventKey: any, event: TEvent) => TParameter,
     conditionSelector?: (event: TEvent, eventKey: any) => boolean,
@@ -293,13 +342,17 @@ export abstract class BaseView<
   }
   // -----------------------------------------
 
-  protected createStateFromProps(props: Readonly<TViewProps>): Readonly<ViewModelState<TViewModel>> {
+  protected createStateFromProps(
+    props: Readonly<TViewProps>,
+  ): Readonly<ViewModelState<TViewModel>> {
     return {
       viewModel: props.viewModel,
     };
   }
 
-  protected getViewModelFromState(state: Readonly<ViewModelState<TViewModel>>): Readonly<TViewModel> {
+  protected getViewModelFromState(
+    state: Readonly<ViewModelState<TViewModel>>,
+  ): Readonly<TViewModel> {
     return state.viewModel;
   }
 
@@ -321,12 +374,18 @@ export abstract class BaseView<
   // this functions will remove key, ref, and viewModel props automatically
   // -----------------------------------------
 
-  public restProps<T, R extends ReactSpreadRestrictedProps = ReactSpreadRestrictedViewModelProps>(
+  public restProps<
+    T,
+    R extends ReactSpreadRestrictedProps = ReactSpreadRestrictedViewModelProps
+  >(
     propsCreator?: (x: TViewProps) => T,
     restrictedProps?: R,
   ): ReactSpreadResult<TViewProps, T, R> {
     if (restrictedProps == null) {
-      restrictedProps = Object.assign({ viewModel: undefined }, reactRestrictedProps) as any;
+      restrictedProps = Object.assign(
+        { viewModel: undefined },
+        reactRestrictedProps,
+      ) as any;
     }
 
     return super.restProps(propsCreator, restrictedProps);

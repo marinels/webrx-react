@@ -1,13 +1,25 @@
 import { Iterable } from 'ix';
 
 import { ObservableLike, ObservableOrValue } from '../../../WebRx';
-import { AsyncDataGridViewModel, DataSourceResponseSelector } from '../DataGrid/AsyncDataGridViewModel';
-import { DataSourceRequest, DataSourceResponse } from '../DataGrid/DataGridViewModel';
+import {
+  AsyncDataGridViewModel,
+  DataSourceResponseSelector,
+} from '../DataGrid/AsyncDataGridViewModel';
+import {
+  DataSourceRequest,
+  DataSourceResponse,
+} from '../DataGrid/DataGridViewModel';
 import { PagerViewModel } from '../Pager/PagerViewModel';
 import { SearchViewModel } from '../Search/SearchViewModel';
-import { ItemListPanelContext, ItemListPanelViewModel } from './ItemListPanelViewModel';
+import {
+  ItemListPanelContext,
+  ItemListPanelViewModel,
+} from './ItemListPanelViewModel';
 
-export class AsyncItemListPanelViewModel<T, TRequestContext = any> extends ItemListPanelViewModel<T, TRequestContext> {
+export class AsyncItemListPanelViewModel<
+  T,
+  TRequestContext = any
+> extends ItemListPanelViewModel<T, TRequestContext> {
   public static displayName = 'AsyncItemListPanelViewModel';
 
   /**
@@ -18,16 +30,31 @@ export class AsyncItemListPanelViewModel<T, TRequestContext = any> extends ItemL
    * @param context request context included in projection requests. if included requests are bound to context events.
    */
   constructor(
-    protected readonly responseSelector: DataSourceResponseSelector<T, TRequestContext>,
+    protected readonly responseSelector: DataSourceResponseSelector<
+      T,
+      TRequestContext
+    >,
     search?: SearchViewModel | null,
     pager?: PagerViewModel | null,
     context?: ObservableLike<TRequestContext>,
     rateLimit = AsyncDataGridViewModel.DefaultRateLimit,
   ) {
-    super(Iterable.empty<T>(), undefined, search, pager, context, undefined, rateLimit);
+    super(
+      Iterable.empty<T>(),
+      undefined,
+      search,
+      pager,
+      context,
+      undefined,
+      rateLimit,
+    );
   }
 
-  getResponse(request: DataSourceRequest<ItemListPanelContext<TRequestContext>> | undefined) {
+  getResponse(
+    request:
+      | DataSourceRequest<ItemListPanelContext<TRequestContext>>
+      | undefined,
+  ) {
     return this.responseSelector(request);
   }
 }

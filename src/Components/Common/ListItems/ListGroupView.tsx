@@ -3,20 +3,26 @@ import * as React from 'react';
 import { ItemsPresenter } from '../Items/ItemsPresenter';
 import { ListGroupPanel } from '../Panel/ListGroupPanel';
 import { PanelItemContext } from '../Panel/Panel';
-import { ListItemsViewTemplate, ListItemsViewTemplateProps } from './ListItemsViewTemplate';
+import {
+  ListItemsViewTemplate,
+  ListItemsViewTemplateProps,
+} from './ListItemsViewTemplate';
 import { PanelView } from './PanelView';
 
 export interface ListGroupViewProps<
   T = {},
-  TContext extends PanelItemContext = PanelItemContext,
+  TContext extends PanelItemContext = PanelItemContext
 > extends ListItemsViewTemplateProps<T, TContext> {
   fill?: boolean;
 }
 
-export interface ListGroupViewComponentProps extends React.HTMLProps<any>, ListGroupViewProps {
-}
+export interface ListGroupViewComponentProps
+  extends React.HTMLProps<any>,
+    ListGroupViewProps {}
 
-export class ListGroupView extends ListItemsViewTemplate<ListGroupViewComponentProps> {
+export class ListGroupView extends ListItemsViewTemplate<
+  ListGroupViewComponentProps
+> {
   constructor(props: any) {
     super(props);
 
@@ -31,13 +37,13 @@ export class ListGroupView extends ListItemsViewTemplate<ListGroupViewComponentP
 
     return (
       <PanelView
-        className={ className }
-        itemsPanelTemplate={ this.renderListItemPanel }
-        listItems={ props.listItems }
-        itemsProps={ props.itemsProps }
-        { ...this.trimProps(rest) }
+        className={className}
+        itemsPanelTemplate={this.renderListItemPanel}
+        listItems={props.listItems}
+        itemsProps={props.itemsProps}
+        {...this.trimProps(rest)}
       >
-        { children }
+        {children}
       </PanelView>
     );
   }
@@ -48,9 +54,7 @@ export class ListGroupView extends ListItemsViewTemplate<ListGroupViewComponentP
     items: Array<{}> | undefined,
   ) {
     return (
-      <ListGroupPanel fill={ this.props.fill }>
-        { itemTemplates }
-      </ListGroupPanel>
+      <ListGroupPanel fill={this.props.fill}>{itemTemplates}</ListGroupPanel>
     );
   }
 }

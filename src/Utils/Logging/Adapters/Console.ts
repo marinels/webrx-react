@@ -5,12 +5,15 @@ import { DelegateLogger, DelegateLogManager } from './Delegate';
 
 export class ConsoleLogManager extends DelegateLogManager {
   private static readonly dummyConsole = {
-    log: () => { return; },
+    log: () => {
+      return;
+    },
   };
 
   constructor(defaultLevel: LogLevel) {
     super((manager: ConsoleLogManager) => {
-      return (logger, level, text, args) => manager.logAction(logger, level, text, args);
+      return (logger, level, text, args) =>
+        manager.logAction(logger, level, text, args);
     }, defaultLevel);
 
     this.sanitizeConsoleObject();
@@ -19,7 +22,11 @@ export class ConsoleLogManager extends DelegateLogManager {
   private sanitizeConsoleObject() {
     // this is an added protection for IE9 to support console.log even if the
     // developer tools are not active.
-    if (typeof window !== 'undefined' && window != null && window.console == null) {
+    if (
+      typeof window !== 'undefined' &&
+      window != null &&
+      window.console == null
+    ) {
       (window as any).console = ConsoleLogManager.dummyConsole;
     }
   }
@@ -31,8 +38,8 @@ export class ConsoleLogManager extends DelegateLogManager {
       'margin:0',
       'padding:5px 0',
       'line-height:19px',
-      `background-color:${ bgColor }`,
-      `color:${ color }`,
+      `background-color:${bgColor}`,
+      `color:${color}`,
     ].join(';');
   }
 
@@ -42,20 +49,15 @@ export class ConsoleLogManager extends DelegateLogManager {
     if ((window as any).chrome != null) {
       if (level >= LogLevel.Fatal) {
         // do nothing
-      }
-      else if (level >= LogLevel.Error) {
+      } else if (level >= LogLevel.Error) {
         // do nothing
-      }
-      else if (level >= LogLevel.Warn) {
+      } else if (level >= LogLevel.Warn) {
         // do nothing
-      }
-      else if (level >= LogLevel.Info) {
+      } else if (level >= LogLevel.Info) {
         styles.push(this.getColorStyle('lightblue'));
-      }
-      else if (level >= LogLevel.Debug) {
+      } else if (level >= LogLevel.Debug) {
         styles.push(this.getColorStyle('lightcyan'));
-      }
-      else {
+      } else {
         styles.push(this.getColorStyle());
       }
     }
@@ -63,7 +65,12 @@ export class ConsoleLogManager extends DelegateLogManager {
     return styles;
   }
 
-  private logAction(logger: DelegateLogger, level: LogLevel, text: string, args: any[]) {
+  private logAction(
+    logger: DelegateLogger,
+    level: LogLevel,
+    text: string,
+    args: any[],
+  ) {
     try {
       const styles = this.getStyles(level);
       const style = styles.length > 0 ? '%c' : '';
@@ -71,16 +78,16 @@ export class ConsoleLogManager extends DelegateLogManager {
 
       this.logToConsole(
         level,
-        `${ style }[${ timestamp }][${ getLevelName(level) }][${ logger.name }] ${ text }`,
+        `${style}[${timestamp}][${getLevelName(level)}][${
+          logger.name
+        }] ${text}`,
         ...styles,
       );
 
       if (args != null && args.length > 0) {
-        args
-          .filterNull()
-          .forEach(x => {
-            this.logToConsole(level, x);
-          });
+        args.filterNull().forEach(x => {
+          this.logToConsole(level, x);
+        });
       }
     } catch (e) {
       // do nothing
@@ -88,7 +95,9 @@ export class ConsoleLogManager extends DelegateLogManager {
   }
 
   private getLogFunction(level: LogLevel): () => void {
-    const noop = () => { return; };
+    const noop = () => {
+      return;
+    };
 
     const coerceLogFunction = (fn: undefined | typeof console.log) => {
       if (fn == null) {
@@ -113,20 +122,15 @@ export class ConsoleLogManager extends DelegateLogManager {
 
     if (console == null) {
       return noop;
-    }
-    else if (level >= LogLevel.Error) {
+    } else if (level >= LogLevel.Error) {
       return coerceLogFunction(console.error);
-    }
-    else if (level >= LogLevel.Warn) {
+    } else if (level >= LogLevel.Warn) {
       return coerceLogFunction(console.warn);
-    }
-    else if (level >= LogLevel.Info) {
+    } else if (level >= LogLevel.Info) {
       return coerceLogFunction(console.info);
-    }
-    else if (level >= LogLevel.Debug) {
+    } else if (level >= LogLevel.Debug) {
       return coerceLogFunction(console.debug);
-    }
-    else {
+    } else {
       return coerceLogFunction(console.log);
     }
   }
@@ -135,11 +139,11 @@ export class ConsoleLogManager extends DelegateLogManager {
     try {
       const fn = this.getLogFunction(level);
 
-      const consoleRef = console === ConsoleLogManager.dummyConsole ? undefined : console;
+      const consoleRef =
+        console === ConsoleLogManager.dummyConsole ? undefined : console;
 
-      fn.apply(consoleRef, [ message ].concat(formatting));
-    }
-    catch (e) {
+      fn.apply(consoleRef, [message].concat(formatting));
+    } catch (e) {
       // do nothing
     }
   }

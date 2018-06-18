@@ -1,13 +1,22 @@
 import * as React from 'react';
 import { Col, Grid, Row } from 'react-bootstrap';
-import { DropdownButton, DropdownButtonProps, MenuItem, Pagination, PaginationProps } from 'react-bootstrap';
+import {
+  DropdownButton,
+  DropdownButtonProps,
+  MenuItem,
+  Pagination,
+  PaginationProps,
+} from 'react-bootstrap';
 import { Observable } from 'rxjs';
 
 import { BaseView, BaseViewProps } from '../../React';
 import { PagerViewModel, StandardLimits } from './PagerViewModel';
 
 // clone of react-bootstrap PaginationProps, but without the subclassing
-export type BootstrapPaginationProps = Omit<PaginationProps, React.HTMLProps<Pagination>>;
+export type BootstrapPaginationProps = Omit<
+  PaginationProps,
+  React.HTMLProps<Pagination>
+>;
 
 export interface PagerProps extends BootstrapPaginationProps {
   info?: boolean;
@@ -17,11 +26,16 @@ export interface PagerProps extends BootstrapPaginationProps {
   emptyInfo?: string;
 }
 
-export interface PagerViewProps extends BaseViewProps<PagerViewModel>, PagerProps {
-}
+export interface PagerViewProps
+  extends BaseViewProps<PagerViewModel>,
+    PagerProps {}
 
 export type PagerComponentTypes = 'info' | 'controls' | 'limit' | undefined;
-export const StandardPagerComponentOrder: PagerComponentTypes[] = [ 'info', 'controls', 'limit' ];
+export const StandardPagerComponentOrder: PagerComponentTypes[] = [
+  'info',
+  'controls',
+  'limit',
+];
 
 export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
   public static displayName = 'PagerView';
@@ -39,7 +53,9 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     emptyInfo: 'No Items to Display',
   };
 
-  private readonly renderFunctions: { [ type: string ]: (() => {} | null | undefined) } = {
+  private readonly renderFunctions: {
+    [type: string]: (() => {} | null | undefined);
+  } = {
     info: this.renderInfo,
     controls: this.renderControls,
     limit: this.renderLimit,
@@ -63,25 +79,45 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
 
     const pagerProps = Object.rest(rest, x => {
       const {
-        activePage, boundaryLinks, bsSize, bsStyle, buttonComponentClass, ellipsis, first, items, last, maxButtons,
-        next, onSelect, prev,
+        activePage,
+        boundaryLinks,
+        bsSize,
+        bsStyle,
+        buttonComponentClass,
+        ellipsis,
+        first,
+        items,
+        last,
+        maxButtons,
+        next,
+        onSelect,
+        prev,
       } = x;
       return {
-        activePage, boundaryLinks, bsSize, bsStyle, buttonComponentClass, ellipsis, first, items, last, maxButtons,
-        next, onSelect, prev,
+        activePage,
+        boundaryLinks,
+        bsSize,
+        bsStyle,
+        buttonComponentClass,
+        ellipsis,
+        first,
+        items,
+        last,
+        maxButtons,
+        next,
+        onSelect,
+        prev,
       };
     });
 
-    return this.wxr.renderConditional(
-      this.shouldRenderPager(),
-      () => (
-        <div { ...pagerProps.rest } className={ this.wxr.classNames('Pager', className) }>
-          <Grid fluid>
-            { this.renderComponents() }
-          </Grid>
-        </div>
-      ),
-    );
+    return this.wxr.renderConditional(this.shouldRenderPager(), () => (
+      <div
+        {...pagerProps.rest}
+        className={this.wxr.classNames('Pager', className)}
+      >
+        <Grid fluid>{this.renderComponents()}</Grid>
+      </div>
+    ));
   }
 
   protected isEmpty() {
@@ -94,15 +130,12 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     }
 
     const types = this.props.order || [];
-    const components = types
-      .map(x => this.renderComponent(x));
+    const components = types.map(x => this.renderComponent(x));
 
     if (components.length === 1) {
       return (
         <Row>
-          <Col className='Pager-col Pager-col-center'>
-            { components[0] }
-          </Col>
+          <Col className="Pager-col Pager-col-center">{components[0]}</Col>
         </Row>
       );
     }
@@ -110,11 +143,11 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
     if (components.length === 2) {
       return (
         <Row>
-          <Col className='Pager-col Pager-col-left' md={ 6 }>
-            { components[0] }
+          <Col className="Pager-col Pager-col-left" md={6}>
+            {components[0]}
           </Col>
-          <Col className='Pager-col Pager-col-right' md={ 6 }>
-            { components[1] }
+          <Col className="Pager-col Pager-col-right" md={6}>
+            {components[1]}
           </Col>
         </Row>
       );
@@ -122,30 +155,33 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
 
     return (
       <Row>
-        <Col className='Pager-col Pager-col-left' md={ 4 }>
-          { components[0] }
+        <Col className="Pager-col Pager-col-left" md={4}>
+          {components[0]}
         </Col>
-        <Col className='Pager-col Pager-col-center' md={ 4 }>
-          { components[1] }
+        <Col className="Pager-col Pager-col-center" md={4}>
+          {components[1]}
         </Col>
-        <Col className='Pager-col Pager-col-right' md={ 4 }>
-          { components[2] }
+        <Col className="Pager-col Pager-col-right" md={4}>
+          {components[2]}
         </Col>
       </Row>
     );
   }
 
   private shouldRenderPager() {
-    return (this.props.order || []).length > 0 && (
-      this.shouldRenderEmpty() ||
-      this.shouldRenderInfo() ||
-      this.shouldRenderControls() ||
-      this.shouldRenderLimit()
+    return (
+      (this.props.order || []).length > 0 &&
+      (this.shouldRenderEmpty() ||
+        this.shouldRenderInfo() ||
+        this.shouldRenderControls() ||
+        this.shouldRenderLimit())
     );
   }
 
   private shouldRenderEmpty() {
-    return this.isEmpty() && String.isNullOrEmpty(this.props.emptyInfo) === false;
+    return (
+      this.isEmpty() && String.isNullOrEmpty(this.props.emptyInfo) === false
+    );
   }
 
   private shouldRenderInfo() {
@@ -157,20 +193,23 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
   }
 
   private shouldRenderLimit() {
-    return (this.props.limits || []).length > 1 && (this.viewModel.itemCount.value || 0) > 0;
+    return (
+      (this.props.limits || []).length > 1 &&
+      (this.viewModel.itemCount.value || 0) > 0
+    );
   }
 
   private renderComponent(type: PagerComponentTypes | undefined) {
-    return this.wxr.renderNullable(type, x => this.renderFunctions[x].apply(this));
+    return this.wxr.renderNullable(type, x =>
+      this.renderFunctions[x].apply(this),
+    );
   }
 
   private renderEmpty() {
     return (
       <Row>
-        <Col className='Pager-col'>
-          <div className='Pager-empty'>
-            { this.props.emptyInfo }
-          </div>
+        <Col className="Pager-col">
+          <div className="Pager-empty">{this.props.emptyInfo}</div>
         </Col>
       </Row>
     );
@@ -187,9 +226,7 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
         );
         const total = this.viewModel.itemCount.value;
         return (
-          <div className='Pager-info'>
-            { `Showing Items ${ start } through ${ end } of ${ total }` }
-          </div>
+          <div className="Pager-info">{`Showing Items ${start} through ${end} of ${total}`}</div>
         );
       },
       () => '',
@@ -199,45 +236,76 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
   private renderControls() {
     const { props } = this.restProps(x => {
       const {
-        activePage, bsSize, bsStyle, buttonComponentClass, ellipsis, first, items, last, maxButtons, next, prev,
+        activePage,
+        bsSize,
+        bsStyle,
+        buttonComponentClass,
+        ellipsis,
+        first,
+        items,
+        last,
+        maxButtons,
+        next,
+        prev,
       } = x;
       return {
-        activePage, bsSize, bsStyle, buttonComponentClass, ellipsis, first, items, last, maxButtons, next, prev,
+        activePage,
+        bsSize,
+        bsStyle,
+        buttonComponentClass,
+        ellipsis,
+        first,
+        items,
+        last,
+        maxButtons,
+        next,
+        prev,
       };
     });
 
-    return this.wxr.renderConditional(this.shouldRenderControls(), () => (
-      <Pagination
-        items={ this.viewModel.pageCount.value }
-        activePage={ this.viewModel.selectedPage.value }
-        onSelect={ this.bindEventToCommand(x => x.selectPage) }
-        { ...(Object.assign(
-          props,
-          { items: this.viewModel.pageCount.value, activePage: this.viewModel.selectedPage.value },
-        ) ) }
-      />
-    ), () => '');
+    return this.wxr.renderConditional(
+      this.shouldRenderControls(),
+      () => (
+        <Pagination
+          items={this.viewModel.pageCount.value}
+          activePage={this.viewModel.selectedPage.value}
+          onSelect={this.bindEventToCommand(x => x.selectPage)}
+          {...Object.assign(props, {
+            items: this.viewModel.pageCount.value,
+            activePage: this.viewModel.selectedPage.value,
+          })}
+        />
+      ),
+      () => '',
+    );
   }
 
   private renderLimit() {
-    return this.wxr.renderConditional(this.shouldRenderLimit(), () => (
-      <DropdownButton
-        id={ this.props.id || 'pager-limit-selector' }
-        { ...this.props.dropdownProps }
-        title={ this.renderLimitTitle() }
-        onSelect={ this.bindEventToProperty(x => x.limit) }
-      >
-        {
-          this.props.limits!
-            .map((x, i) => (
-              <MenuItem key={ i } eventKey={ x } selected={ this.viewModel.limit.value === x }>{ x || 'All' }</MenuItem>
-            ))
-        }
-      </DropdownButton>
-    ), () => '');
+    return this.wxr.renderConditional(
+      this.shouldRenderLimit(),
+      () => (
+        <DropdownButton
+          id={this.props.id || 'pager-limit-selector'}
+          {...this.props.dropdownProps}
+          title={this.renderLimitTitle()}
+          onSelect={this.bindEventToProperty(x => x.limit)}
+        >
+          {this.props.limits!.map((x, i) => (
+            <MenuItem
+              key={i}
+              eventKey={x}
+              selected={this.viewModel.limit.value === x}
+            >
+              {x || 'All'}
+            </MenuItem>
+          ))}
+        </DropdownButton>
+      ),
+      () => '',
+    );
   }
 
   private renderLimitTitle() {
-    return `Items per Page (${ this.viewModel.limit.value || 'All' })`;
+    return `Items per Page (${this.viewModel.limit.value || 'All'})`;
   }
 }

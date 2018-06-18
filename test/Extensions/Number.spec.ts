@@ -13,7 +13,7 @@ describe('Number Extensions', () => {
     });
 
     it('should return true for an float with no decimal numbers', () => {
-      Number.isNumber(1.).should.be.true;
+      Number.isNumber(1).should.be.true;
     });
 
     it('should return true for NaN', () => {
@@ -65,7 +65,7 @@ describe('Number Extensions', () => {
     });
 
     it('should return true for an float with no decimal numbers', () => {
-      Number.isNumeric(1.).should.be.true;
+      Number.isNumeric(1).should.be.true;
     });
 
     it('should return false for NaN', () => {
@@ -111,7 +111,7 @@ describe('Number Extensions', () => {
     });
 
     it('should return true for an float with no decimal numbers', () => {
-      Number.isInt(1.).should.be.true;
+      Number.isInt(1).should.be.true;
     });
 
     it('should return false for NaN', () => {

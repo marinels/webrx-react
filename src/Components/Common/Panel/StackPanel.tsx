@@ -15,8 +15,9 @@ export interface StackPanelProps extends PanelProps {
   orientation?: StackPanelOrientation | keyof typeof StackPanelOrientation;
 }
 
-export interface StackPanelComponentProps extends React.HTMLProps<any>, StackPanelProps {
-}
+export interface StackPanelComponentProps
+  extends React.HTMLProps<any>,
+    StackPanelProps {}
 
 export class StackPanel extends Panel<StackPanelComponentProps> {
   public static displayName = 'StackPanel';
@@ -30,10 +31,15 @@ export class StackPanel extends Panel<StackPanelComponentProps> {
   render() {
     const { orientation, ...rest } = this.props;
 
-    const orientationName = String.isString(orientation) ?
-      orientation :
-      StackPanelOrientation[orientation || StackPanel.defaultOrientiation] as string;
+    const orientationName = String.isString(orientation)
+      ? orientation
+      : (StackPanelOrientation[
+          orientation || StackPanel.defaultOrientiation
+        ] as string);
 
-    return this.renderPanel(this.wxr.classNames('StackPanel', `StackPanel-${ orientationName }`), rest);
+    return this.renderPanel(
+      this.wxr.classNames('StackPanel', `StackPanel-${orientationName}`),
+      rest,
+    );
   }
 }

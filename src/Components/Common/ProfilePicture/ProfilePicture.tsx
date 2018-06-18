@@ -14,12 +14,15 @@ export interface ProfilePictureProps {
   iconSize?: IconSize;
 }
 
-export interface ProfilePictureComponentProps extends React.HTMLProps<any>, ProfilePictureProps {
-}
+export interface ProfilePictureComponentProps
+  extends React.HTMLProps<any>,
+    ProfilePictureProps {}
 
 const dataUriPrefix = 'data:image;base64,';
 
-export class ProfilePicture extends React.Component<ProfilePictureComponentProps> {
+export class ProfilePicture extends React.Component<
+  ProfilePictureComponentProps
+> {
   public static displayName = 'ProfilePicture';
 
   static defaultProps: Partial<ProfilePictureProps> = {
@@ -45,7 +48,7 @@ export class ProfilePicture extends React.Component<ProfilePictureComponentProps
     }
 
     // otherwise assume we need to format a data uri
-    return `${ dataUriPrefix }${ src }`;
+    return `${dataUriPrefix}${src}`;
   }
 
   render() {
@@ -58,8 +61,30 @@ export class ProfilePicture extends React.Component<ProfilePictureComponentProps
 
   private renderIcon() {
     const { className, props, rest } = this.restProps(x => {
-      const { src, size, responsive, rounded, circle, thumbnail, defaultSrc, defaultIcon, iconSize, style } = x;
-      return { src, size, responsive, rounded, circle, thumbnail, defaultSrc, defaultIcon, iconSize, style };
+      const {
+        src,
+        size,
+        responsive,
+        rounded,
+        circle,
+        thumbnail,
+        defaultSrc,
+        defaultIcon,
+        iconSize,
+        style,
+      } = x;
+      return {
+        src,
+        size,
+        responsive,
+        rounded,
+        circle,
+        thumbnail,
+        defaultSrc,
+        defaultIcon,
+        iconSize,
+        style,
+      };
     });
 
     const iconClassNames = {
@@ -70,30 +95,57 @@ export class ProfilePicture extends React.Component<ProfilePictureComponentProps
     const iconStyle = Object.assign({}, props.style, {
       width: props.size,
       height: props.size,
-      lineHeight: `${ props.size }px`,
+      lineHeight: `${props.size}px`,
     });
 
     return (
       <div
-        { ...rest }
-        style={ iconStyle }
-        className={ this.wxr.classNames('ProfilePicture', 'ProfilePicture-icon', iconClassNames, className) }
+        {...rest}
+        style={iconStyle}
+        className={this.wxr.classNames(
+          'ProfilePicture',
+          'ProfilePicture-icon',
+          iconClassNames,
+          className,
+        )}
       >
-        <Icon name={ props.defaultIcon! } size={ props.iconSize } />
+        <Icon name={props.defaultIcon!} size={props.iconSize} />
       </div>
     );
   }
 
   private renderImage(imageSource: string) {
     const { className, props, rest } = this.restProps(x => {
-      const { src, size, responsive, rounded, circle, thumbnail, defaultSrc, defaultIcon, iconSize, style } = x;
-      return { src, size, responsive, rounded, circle, thumbnail, defaultSrc, defaultIcon, iconSize, style };
+      const {
+        src,
+        size,
+        responsive,
+        rounded,
+        circle,
+        thumbnail,
+        defaultSrc,
+        defaultIcon,
+        iconSize,
+        style,
+      } = x;
+      return {
+        src,
+        size,
+        responsive,
+        rounded,
+        circle,
+        thumbnail,
+        defaultSrc,
+        defaultIcon,
+        iconSize,
+        style,
+      };
     });
 
     const responsiveStyle = Object.assign({}, props.style, {
       width: this.props.responsive === true ? 'auto' : props.size,
       height: this.props.responsive === true ? '100%' : props.size,
-      lineHeight: this.props.responsive === true ? null : `${ props.size }px`,
+      lineHeight: this.props.responsive === true ? null : `${props.size}px`,
     });
 
     const imageProps = {
@@ -104,15 +156,21 @@ export class ProfilePicture extends React.Component<ProfilePictureComponentProps
       thumbnail: props.thumbnail,
     };
 
-    const imageStyle = this.props.responsive ? undefined : { maxHeight: props.size, maxWidth: props.size };
+    const imageStyle = this.props.responsive
+      ? undefined
+      : { maxHeight: props.size, maxWidth: props.size };
 
     return (
       <div
-        { ...rest }
-        className={ this.wxr.classNames('ProfilePicture', 'ProfilePicture-image', className) }
-        style={ responsiveStyle }
+        {...rest}
+        className={this.wxr.classNames(
+          'ProfilePicture',
+          'ProfilePicture-image',
+          className,
+        )}
+        style={responsiveStyle}
       >
-        <Image { ...imageProps } style={ imageStyle } />
+        <Image {...imageProps} style={imageStyle} />
       </div>
     );
   }

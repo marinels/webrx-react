@@ -3,7 +3,9 @@ import { HeaderCommandAction, HeaderMenu } from './Actions';
 import { BaseViewModel } from './BaseViewModel';
 import { HandlerRoutingStateChanged, RoutingStateHandler } from './Interfaces';
 
-export function isRoutableViewModel(value: any): value is BaseRoutableViewModel<any> {
+export function isRoutableViewModel(
+  value: any,
+): value is BaseRoutableViewModel<any> {
   if (value == null) {
     return false;
   }
@@ -25,20 +27,29 @@ export interface RoutingBreadcrumb {
   tooltip?: any;
 }
 
-export abstract class BaseRoutableViewModel<T> extends BaseViewModel implements RoutingStateHandler<T> {
+export abstract class BaseRoutableViewModel<T> extends BaseViewModel
+  implements RoutingStateHandler<T> {
   public static displayName = 'BaseRoutableViewModel';
 
   protected readonly updateDocumentTitle: Command<string>;
-  protected readonly updateRoutingBreadcrumbs: Command<RoutingBreadcrumb[] | undefined>;
+  protected readonly updateRoutingBreadcrumbs: Command<
+    RoutingBreadcrumb[] | undefined
+  >;
 
   public readonly documentTitle: ReadOnlyProperty<string>;
-  public readonly breadcrumbs: ReadOnlyProperty<RoutingBreadcrumb[] | undefined>;
+  public readonly breadcrumbs: ReadOnlyProperty<
+    RoutingBreadcrumb[] | undefined
+  >;
 
   constructor() {
     super();
 
-    this.updateDocumentTitle = this.wx.command((title: any) => (title || '').toString());
-    this.updateRoutingBreadcrumbs = this.wx.command<RoutingBreadcrumb[] | undefined>();
+    this.updateDocumentTitle = this.wx.command((title: any) =>
+      (title || '').toString(),
+    );
+    this.updateRoutingBreadcrumbs = this.wx.command<
+      RoutingBreadcrumb[] | undefined
+    >();
 
     this.documentTitle = this.updateDocumentTitle.results.toProperty();
     this.breadcrumbs = this.wx

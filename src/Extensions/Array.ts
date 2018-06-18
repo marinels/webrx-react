@@ -6,16 +6,19 @@ export function asIterable<T>(this: T[]): Iterable<T> {
 
 export function filterNull<T>(
   this: Array<T | undefined | null>,
-  callbackfn?: (value: T, index: number, array: Array<T | undefined | null>) => boolean,
+  callbackfn?: (
+    value: T,
+    index: number,
+    array: Array<T | undefined | null>,
+  ) => boolean,
 ): T[] {
-  return (this as T[])
-    .filter((x, i, a) => {
-      if (x == null) {
-        return false;
-      }
+  return (this as T[]).filter((x, i, a) => {
+    if (x == null) {
+      return false;
+    }
 
-      return callbackfn == null ? true : callbackfn(x, i, a);
-    });
+    return callbackfn == null ? true : callbackfn(x, i, a);
+  });
 }
 
 declare global {

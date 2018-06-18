@@ -1,7 +1,12 @@
 // tslint:disable:max-classes-per-file
 
 import * as React from 'react';
-import { FormControl, FormControlProps, FormGroup, InputGroup } from 'react-bootstrap';
+import {
+  FormControl,
+  FormControlProps,
+  FormGroup,
+  InputGroup,
+} from 'react-bootstrap';
 import { findDOMNode } from 'react-dom';
 import { Icon } from 'react-fa';
 import { Observable } from 'rxjs';
@@ -20,10 +25,14 @@ export interface TodoListProps {
   shadow?: boolean;
 }
 
-export interface TodoListViewProps extends BaseViewProps<TodoListViewModel>, TodoListProps {
-}
+export interface TodoListViewProps
+  extends BaseViewProps<TodoListViewModel>,
+    TodoListProps {}
 
-export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel> {
+export class TodoListView extends BaseView<
+  TodoListViewProps,
+  TodoListViewModel
+> {
   private inputRef = React.createRef<FormControl>();
 
   constructor(props: any) {
@@ -44,19 +53,19 @@ export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel>
     });
 
     return (
-      <div { ...rest } className={ this.wxr.classNames('TodoList', className) }>
+      <div {...rest} className={this.wxr.classNames('TodoList', className)}>
         <ItemListPanelView
-          viewModel={ this.viewModel.list }
+          viewModel={this.viewModel.list}
           collapsible
           pager
           search
           compact
-          emptyContent={ this.renderEmptyContent() }
-          shadow={ this.props.shadow }
-          itemTemplate={ this.renderItem }
-          headerContent='Canonical Todo List'
-          teaserContent={ this.renderTeaser() }
-          footerContent={ this.renderFooter() }
+          emptyContent={this.renderEmptyContent()}
+          shadow={this.props.shadow}
+          itemTemplate={this.renderItem}
+          headerContent="Canonical Todo List"
+          teaserContent={this.renderTeaser()}
+          footerContent={this.renderFooter()}
         >
           <ListGroupView />
         </ItemListPanelView>
@@ -65,9 +74,7 @@ export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel>
   }
 
   protected renderItem(item: TodoItemViewModel) {
-    return (
-      <TodoItemView viewModel={ item } remove={ this.viewModel.removeItem } />
-    );
+    return <TodoItemView viewModel={item} remove={this.viewModel.removeItem} />;
   }
 
   protected renderEmptyContent() {
@@ -80,28 +87,30 @@ export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel>
 
   protected renderTeaser() {
     return (
-      <FormGroup className='TodoList-teaser'>
+      <FormGroup className="TodoList-teaser">
         <InputGroup>
-          <BindableInput boundProperty={ this.viewModel.newItemContent }>
+          <BindableInput boundProperty={this.viewModel.newItemContent}>
             <FormControl
-              ref={ this.inputRef }
-              id='newItemContent'
-              type='text'
-              placeholder='Type in a todo item here...'
-              onKeyDown={
-                this.bindEventToCommand(
-                  x => x.addItem,
-                  undefined,
-                  (_, e: React.KeyboardEvent<any>) => e.keyCode === 13,
-                  () => this.focusInput(),
-                )
-              }
+              ref={this.inputRef}
+              id="newItemContent"
+              type="text"
+              placeholder="Type in a todo item here..."
+              onKeyDown={this.bindEventToCommand(
+                x => x.addItem,
+                undefined,
+                (_, e: React.KeyboardEvent<any>) => e.keyCode === 13,
+                () => this.focusInput(),
+              )}
             />
           </BindableInput>
           <InputGroup.Button>
-            <CommandButton bsStyle='success' command={ this.viewModel.addItem } onClick={ this.focusInput }>
-              <Icon name='plus' />
-              { ' Add New Todo Item' }
+            <CommandButton
+              bsStyle="success"
+              command={this.viewModel.addItem}
+              onClick={this.focusInput}
+            >
+              <Icon name="plus" />
+              {' Add New Todo Item'}
             </CommandButton>
           </InputGroup.Button>
         </InputGroup>
@@ -128,10 +137,14 @@ export interface TodoItemProps {
   remove: Command<TodoItemViewModel>;
 }
 
-export interface TodoItemViewProps extends BaseViewProps<TodoItemViewModel>, TodoItemProps {
-}
+export interface TodoItemViewProps
+  extends BaseViewProps<TodoItemViewModel>,
+    TodoItemProps {}
 
-export class TodoItemView extends BaseView<TodoItemViewProps, TodoItemViewModel> {
+export class TodoItemView extends BaseView<
+  TodoItemViewProps,
+  TodoItemViewModel
+> {
   constructor(props: any) {
     super(props);
 
@@ -139,9 +152,7 @@ export class TodoItemView extends BaseView<TodoItemViewProps, TodoItemViewModel>
   }
 
   updateOn(viewModel: Readonly<TodoItemViewModel>) {
-    return [
-      viewModel.completed.changed,
-    ];
+    return [viewModel.completed.changed];
   }
 
   render() {
@@ -152,34 +163,38 @@ export class TodoItemView extends BaseView<TodoItemViewProps, TodoItemViewModel>
 
     return (
       <div
-        { ...rest }
-        className={
-          this.wxr.classNames('TodoItem', 'fa-lg', className, { completed: this.viewModel.completed.value })
-        }
+        {...rest}
+        className={this.wxr.classNames('TodoItem', 'fa-lg', className, {
+          completed: this.viewModel.completed.value,
+        })}
       >
-        <div className='TodoItem-main'>
+        <div className="TodoItem-main">
           <CommandButton
             plain
-            onClick={
-              this.bindEventToCommand(x => x.toggleCompleted)
-            }
+            onClick={this.bindEventToCommand(x => x.toggleCompleted)}
             stopPropagation
             preventDefault
           >
-            <Icon name={ this.viewModel.completed.value ? 'check-circle' : 'circle-o' } size='lg' fixedWidth />
+            <Icon
+              name={
+                this.viewModel.completed.value ? 'check-circle' : 'circle-o'
+              }
+              size="lg"
+              fixedWidth
+            />
           </CommandButton>
-          <span className='text-muted'>{ `[ ${ this.viewModel.id } ] ` }</span>
-          <span className='TodoItem-content'>{ this.viewModel.content }</span>
+          <span className="text-muted">{`[ ${this.viewModel.id} ] `}</span>
+          <span className="TodoItem-content">{this.viewModel.content}</span>
         </div>
-        <div className='TodoItem-actions'>
+        <div className="TodoItem-actions">
           <CommandButton
-            bsStyle='danger'
-            bsSize='xs'
-            componentClass='a'
-            command={ this.getRemoveCommand }
-            commandParameter={ this.viewModel }
+            bsStyle="danger"
+            bsSize="xs"
+            componentClass="a"
+            command={this.getRemoveCommand}
+            commandParameter={this.viewModel}
           >
-            <Icon name='times' fixedWidth />
+            <Icon name="times" fixedWidth />
           </CommandButton>
         </div>
       </div>

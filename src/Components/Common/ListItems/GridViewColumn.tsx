@@ -28,20 +28,32 @@ export interface GridViewColumnProps {
   field?: string;
   header?: PanelFragment;
   headerTemplate?: (header: PanelFragment) => PanelFragment;
-  headerTooltipTemplate?: PanelFragment | ((column: GridViewColumn, content: PanelFragment) => PanelFragment);
+  headerTooltipTemplate?:
+    | PanelFragment
+    | ((column: GridViewColumn, content: PanelFragment) => PanelFragment);
   headerStyle?: React.CSSProperties;
   headerProps?: {};
   cellTemplate?: (item: {}, field: string | undefined) => PanelFragment;
-  cellTooltipTemplate?: (item: {}, field: string | undefined, content: PanelFragment) => PanelFragment;
+  cellTooltipTemplate?: (
+    item: {},
+    field: string | undefined,
+    content: PanelFragment,
+  ) => PanelFragment;
   cellStyle?: React.CSSProperties;
   cellProps?: {};
-  itemTemplate?: (fragment: PanelFragment, item: {} | undefined, field: string | undefined) => PanelFragment;
+  itemTemplate?: (
+    fragment: PanelFragment,
+    item: {} | undefined,
+    field: string | undefined,
+  ) => PanelFragment;
   id?: string;
   className?: string;
   width?: number | string;
 }
 
-export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnProps> extends React.Component<T> {
+export class GridViewColumn<
+  T extends GridViewColumnProps = GridViewColumnProps
+> extends React.Component<T> {
   public static displayName = 'GridViewColumn';
 
   public static canRenderHeader(column: React.ReactChild) {
@@ -53,15 +65,16 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnProps>
 
   public static sanitizeFragment(content?: PanelFragment) {
     if (content == null) {
-      return (
-        <span>&nbsp;</span>
-      );
+      return <span>&nbsp;</span>;
     }
 
     return content;
   }
 
-  public static renderItemField(item: StringMap<any>, field: string | undefined): PanelFragment {
+  public static renderItemField(
+    item: StringMap<any>,
+    field: string | undefined,
+  ): PanelFragment {
     if (String.isNullOrEmpty(field)) {
       return undefined;
     }
@@ -70,11 +83,14 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnProps>
   }
 
   render() {
-    const col = this.props.item == null ?
-      this.renderHeader() :
-      this.renderCell();
+    const col =
+      this.props.item == null ? this.renderHeader() : this.renderCell();
 
-    return (col == null || React.isValidElement(col)) ? col : (<div>{ col || null }</div>);
+    return col == null || React.isValidElement(col) ? (
+      col
+    ) : (
+      <div>{col || null}</div>
+    );
   }
 
   protected renderContent(
@@ -84,8 +100,8 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnProps>
     field: string | undefined,
   ) {
     const fragment = (
-      <div className={ `GridViewColumn-${ type }Content` }>
-        { GridViewColumn.sanitizeFragment(content) }
+      <div className={`GridViewColumn-${type}Content`}>
+        {GridViewColumn.sanitizeFragment(content)}
       </div>
     );
 
@@ -96,17 +112,25 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnProps>
     return this.props.itemTemplate(fragment, item, field);
   }
 
-  protected renderHeader(headerTemplate?: (header: PanelFragment) => PanelFragment) {
+  protected renderHeader(
+    headerTemplate?: (header: PanelFragment) => PanelFragment,
+  ) {
     headerTemplate = headerTemplate || this.props.headerTemplate;
 
     const template = headerTemplate || (x => x);
     const headerOrField: PanelFragment = this.props.header || this.props.field;
 
-    const content = (headerOrField == null && this.props.headerTemplate == null) ?
-      undefined :
-      template(headerOrField);
+    const content =
+      headerOrField == null && this.props.headerTemplate == null
+        ? undefined
+        : template(headerOrField);
 
-    const headerContent = this.renderContent('header', content, undefined, this.props.field);
+    const headerContent = this.renderContent(
+      'header',
+      content,
+      undefined,
+      this.props.field,
+    );
     const tooltipContent = this.renderHeaderTooltip(headerContent);
 
     const style = Object.assign(
@@ -114,14 +138,16 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnProps>
       this.props.headerStyle,
     );
 
-    const props = Object.assign(
-      { style },
-      this.props.headerProps,
-    );
+    const props = Object.assign({ style }, this.props.headerProps);
 
     return (
-      <th className={ this.getClassNameForComponent(GridColumnComponentType.Header) } { ...props }>
-        { this.renderTooltip(tooltipContent, headerContent) }
+      <th
+        className={this.getClassNameForComponent(
+          GridColumnComponentType.Header,
+        )}
+        {...props}
+      >
+        {this.renderTooltip(tooltipContent, headerContent)}
       </th>
     );
   }
@@ -138,13 +164,21 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnProps>
     return this.props.headerTooltipTemplate;
   }
 
-  protected renderCell(cellTemplate?: (item: {}, field: string | undefined) => PanelFragment) {
+  protected renderCell(
+    cellTemplate?: (item: {}, field: string | undefined) => PanelFragment,
+  ) {
     cellTemplate = cellTemplate || this.props.cellTemplate;
 
-    const template = cellTemplate || ((x, f) => GridViewColumn.renderItemField(x, f));
+    const template =
+      cellTemplate || ((x, f) => GridViewColumn.renderItemField(x, f));
 
     const content = template(this.props.item!, this.props.field);
-    const cellContent = this.renderContent('cell', content, this.props.item, this.props.field);
+    const cellContent = this.renderContent(
+      'cell',
+      content,
+      this.props.item,
+      this.props.field,
+    );
 
     const tooltipContent = this.renderCellTooltip(cellContent);
 
@@ -153,14 +187,14 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnProps>
       this.props.cellStyle,
     );
 
-    const props = Object.assign(
-      { style },
-      this.props.cellProps,
-    );
+    const props = Object.assign({ style }, this.props.cellProps);
 
     return (
-      <td className={ this.getClassNameForComponent(GridColumnComponentType.Cell) } { ...props }>
-        { this.renderTooltip(tooltipContent, cellContent) }
+      <td
+        className={this.getClassNameForComponent(GridColumnComponentType.Cell)}
+        {...props}
+      >
+        {this.renderTooltip(tooltipContent, cellContent)}
       </td>
     );
   }
@@ -170,7 +204,11 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnProps>
       return undefined;
     }
 
-    return this.props.cellTooltipTemplate(this.props.item!, this.props.field, context);
+    return this.props.cellTooltipTemplate(
+      this.props.item!,
+      this.props.field,
+      context,
+    );
   }
 
   protected renderTooltip(content: PanelFragment, context: PanelFragment) {
@@ -181,24 +219,33 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnProps>
     const id = this.props.id || this.props.field;
 
     if (React.isValidType<any>(content, ContentTooltip)) {
-      const child = (
+      const child =
         content.props.context == null &&
         React.Children.count(content.props.children) === 0
-      ) ? context : undefined;
+          ? context
+          : undefined;
       return React.cloneElement(
         content,
-        { id, className: this.getClassNameForComponent(GridColumnComponentType.Content), ...content.props },
+        {
+          id,
+          className: this.getClassNameForComponent(
+            GridColumnComponentType.Content,
+          ),
+          ...content.props,
+        },
         child,
       );
     }
 
     return (
       <ContentTooltip
-        id={ id }
-        className={ this.getClassNameForComponent(GridColumnComponentType.Tooltip) }
-        content={ content }
+        id={id}
+        className={this.getClassNameForComponent(
+          GridColumnComponentType.Tooltip,
+        )}
+        content={content}
       >
-        { context }
+        {context}
       </ContentTooltip>
     );
   }
@@ -209,7 +256,10 @@ export class GridViewColumn<T extends GridViewColumnProps = GridViewColumnProps>
 }
 
 export interface NavButtonColumnProps extends GridViewColumnProps {
-  href: string | undefined | ((item: {}, field: string | undefined) => (string | undefined));
+  href:
+    | string
+    | undefined
+    | ((item: {}, field: string | undefined) => string | undefined);
 }
 
 export class NavButtonColumn extends GridViewColumn<NavButtonColumnProps> {
@@ -218,16 +268,21 @@ export class NavButtonColumn extends GridViewColumn<NavButtonColumnProps> {
   }
 
   getClassNameForComponent(type: GridColumnComponentType) {
-    return this.wxr.classNames('NavButtonColumn', super.getClassNameForComponent(type));
+    return this.wxr.classNames(
+      'NavButtonColumn',
+      super.getClassNameForComponent(type),
+    );
   }
 
-  protected renderNavButton(item: {}, field: string | undefined): PanelFragment {
-    const href = this.props.href instanceof Function ?
-      this.props.href(item, field) :
-      this.props.href;
+  protected renderNavButton(
+    item: {},
+    field: string | undefined,
+  ): PanelFragment {
+    const href =
+      this.props.href instanceof Function
+        ? this.props.href(item, field)
+        : this.props.href;
 
-    return (
-      <NavButton href={ href } compact />
-    );
+    return <NavButton href={href} compact />;
   }
 }

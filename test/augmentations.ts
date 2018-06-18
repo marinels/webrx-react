@@ -21,8 +21,7 @@ function advancedTo(this: VirtualTimeScheduler, frame: number) {
     this.actions.shift();
 
     if (err != null) {
-      this.actions
-        .forEach(x => x.unsubscribe());
+      this.actions.forEach(x => x.unsubscribe());
 
       throw err;
     }

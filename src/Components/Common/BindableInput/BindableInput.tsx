@@ -3,7 +3,10 @@ import { Subscription } from 'rxjs';
 
 export function validateBindableProperty(property: any) {
   if (BindableInput.wx.isProperty(property) && property.isReadOnly) {
-    BindableInput.wx.handleError('BindableInput bound to ReadOnlyProperty', property);
+    BindableInput.wx.handleError(
+      'BindableInput bound to ReadOnlyProperty',
+      property,
+    );
   }
 }
 
@@ -39,10 +42,13 @@ export interface BindableInputProps extends BindableProps {
   boundProperty?: any;
 }
 
-export interface BindableInputComponentProps extends React.HTMLProps<any>, BindableInputProps {
-}
+export interface BindableInputComponentProps
+  extends React.HTMLProps<any>,
+    BindableInputProps {}
 
-export class BindableInput extends React.Component<BindableInputComponentProps> {
+export class BindableInput extends React.Component<
+  BindableInputComponentProps
+> {
   public static displayName = 'BindableInput';
 
   static defaultProps: Partial<BindableInputProps> = {
@@ -64,10 +70,11 @@ export class BindableInput extends React.Component<BindableInputComponentProps> 
     validateBindableProperty(this.props.boundProperty);
 
     if (this.wx.isProperty(this.props.boundProperty)) {
-      this.changedSubscription = this.props.boundProperty.changed
-        .subscribe((x) => {
+      this.changedSubscription = this.props.boundProperty.changed.subscribe(
+        x => {
           this.forceUpdate();
-        });
+        },
+      );
     }
   }
 
@@ -76,13 +83,29 @@ export class BindableInput extends React.Component<BindableInputComponentProps> 
   }
 
   componentWillUnmount() {
-    this.changedSubscription = Subscription.unsubscribe(this.changedSubscription);
+    this.changedSubscription = Subscription.unsubscribe(
+      this.changedSubscription,
+    );
   }
 
   render() {
     const { className, children, props, rest } = this.restProps(x => {
-      const { boundProperty, converter, valueProperty, onChangeProperty, valueGetter, valueSetter } = x;
-      return { boundProperty, converter, valueProperty, onChangeProperty, valueGetter, valueSetter };
+      const {
+        boundProperty,
+        converter,
+        valueProperty,
+        onChangeProperty,
+        valueGetter,
+        valueSetter,
+      } = x;
+      return {
+        boundProperty,
+        converter,
+        valueProperty,
+        onChangeProperty,
+        valueGetter,
+        valueSetter,
+      };
     });
 
     const bindProps: any = {};
@@ -103,8 +126,7 @@ export class BindableInput extends React.Component<BindableInputComponentProps> 
   protected getValue() {
     try {
       return this.props.valueGetter!(this.props.boundProperty);
-    }
-    catch (e) {
+    } catch (e) {
       this.wx.handleError(e);
 
       return undefined;
@@ -123,8 +145,7 @@ export class BindableInput extends React.Component<BindableInputComponentProps> 
       this.props.valueSetter!(value, this.props.boundProperty);
 
       this.forceUpdate();
-    }
-    catch (e) {
+    } catch (e) {
       this.wx.handleError(e);
     }
   }

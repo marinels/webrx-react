@@ -10,5 +10,10 @@ export interface Route {
 export interface HashManager {
   readonly hashChanged: Observable<string>;
   // hash will contain the # prefix
-  updateHash: (hash: string, state: {}, title: string, replace: boolean) => void;
+  updateHash: (
+    hash: string,
+    state: {},
+    title: string,
+    replace: boolean,
+  ) => void;
 }

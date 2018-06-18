@@ -10,12 +10,24 @@ export class Alert {
 
   private readonly logger = getLogger(Alert.displayName);
 
-  constructor(private readonly pubSub: PubSub) {
-  }
+  constructor(private readonly pubSub: PubSub) {}
 
-  public create(content: any, header?: string, style?: string, timeout?: number) {
-    if (String.isNullOrEmpty(content) === false || String.isNullOrEmpty(header) === false) {
-      this.pubSub.publish<AlertCreated>(AlertCreatedKey, { content, header, style, timeout });
+  public create(
+    content: any,
+    header?: string,
+    style?: string,
+    timeout?: number,
+  ) {
+    if (
+      String.isNullOrEmpty(content) === false ||
+      String.isNullOrEmpty(header) === false
+    ) {
+      this.pubSub.publish<AlertCreated>(AlertCreatedKey, {
+        content,
+        header,
+        style,
+        timeout,
+      });
     }
   }
 
@@ -36,11 +48,15 @@ export class Alert {
       if (formatter != null) {
         content = formatter(error);
         text = String.stringify(content);
-      }
-      else {
-        let code = anyError.status || anyError.Status || anyError.code || anyError.Code;
+      } else {
+        let code =
+          anyError.status || anyError.Status || anyError.code || anyError.Code;
         if (code == null && childError != null) {
-          code = childError.status || childError.Status || childError.code || childError.Code;
+          code =
+            childError.status ||
+            childError.Status ||
+            childError.code ||
+            childError.Code;
         }
 
         const reason = anyError.reason || anyError.Reason;
@@ -61,64 +77,48 @@ export class Alert {
           messageDetail = childError.messageDetail || childError.MessageDetail;
         }
 
-        const codeText = String.isNullOrEmpty(code) ? '' : `Error ${ code }: `;
-        const reasonText = String.isNullOrEmpty(reason) ? '' : `(${ reason }): `;
-        text = `${ codeText }${ reasonText }${ message || String.stringify(error) }`;
+        const codeText = String.isNullOrEmpty(code) ? '' : `Error ${code}: `;
+        const reasonText = String.isNullOrEmpty(reason) ? '' : `(${reason}): `;
+        text = `${codeText}${reasonText}${message || String.stringify(error)}`;
         header = header || reason || 'Unknown Error';
 
         let uri = anyError.uri || anyError.Uri || anyError.url || anyError.Url;
         if (uri == null && childError != null) {
-          uri = childError.uri || childError.Uri || childError.url || childError.Url;
+          uri =
+            childError.uri ||
+            childError.Uri ||
+            childError.url ||
+            childError.Url;
         }
 
         content = (
-          <div className='Alert-content'>
-            <div className='Alert-title'>
-            {
-              // if there is a uri attached to the error then include it in the text
-              String.isNullOrEmpty(code) ?
-                null :
-                (
-                  <span className='Alert-code'>{ `Error ${ code }: ` }</span>
-                )
-            }
-            {
-              // if there is a uri attached to the error then include it in the text
-              String.isNullOrEmpty(reason) ?
-                null :
-                (
-                  <span className='Alert-code'>{ `${ reason }` }</span>
-                )
-            }
+          <div className="Alert-content">
+            <div className="Alert-title">
+              {// if there is a uri attached to the error then include it in the text
+              String.isNullOrEmpty(code) ? null : (
+                <span className="Alert-code">{`Error ${code}: `}</span>
+              )}
+              {// if there is a uri attached to the error then include it in the text
+              String.isNullOrEmpty(reason) ? null : (
+                <span className="Alert-code">{`${reason}`}</span>
+              )}
             </div>
-            <div className='Alert-text'>
-            {
-              // if there is a uri attached to the error then include it in the text
-              String.isNullOrEmpty(message) ?
-                null :
-                (
-                  <div className='Alert-message'>{ message }</div>
-                )
-            }
-            {
-              // if there is a uri attached to the error then include it in the text
-              String.isNullOrEmpty(messageDetail) ?
-                null :
-                (
-                  <div className='Alert-messageDetail'>{ messageDetail }</div>
-                )
-            }
+            <div className="Alert-text">
+              {// if there is a uri attached to the error then include it in the text
+              String.isNullOrEmpty(message) ? null : (
+                <div className="Alert-message">{message}</div>
+              )}
+              {// if there is a uri attached to the error then include it in the text
+              String.isNullOrEmpty(messageDetail) ? null : (
+                <div className="Alert-messageDetail">{messageDetail}</div>
+              )}
             </div>
-            {
-              // if there is a uri attached to the error then include it in the text
-              String.isNullOrEmpty(uri) ?
-                null :
-                (
-                  <div className='Alert-uri'>
-                    <a href={ uri }>{ uri }</a>
-                  </div>
-                )
-            }
+            {// if there is a uri attached to the error then include it in the text
+            String.isNullOrEmpty(uri) ? null : (
+              <div className="Alert-uri">
+                <a href={uri}>{uri}</a>
+              </div>
+            )}
           </div>
         );
       }
@@ -129,10 +129,9 @@ export class Alert {
       }
 
       if (logErrorObject === true) {
-        this.logger.error(`${ header }: ${ text }`, error);
-      }
-      else {
-        this.logger.error(`${ header }: ${ text }`);
+        this.logger.error(`${header}: ${text}`, error);
+      } else {
+        this.logger.error(`${header}: ${text}`);
       }
 
       this.create(content, header, style, timeout);
@@ -142,7 +141,12 @@ export class Alert {
 
 export const Default = new Alert(PubSubInstance);
 
-export function create(content: any, header?: string, style?: string, timeout?: number) {
+export function create(
+  content: any,
+  header?: string,
+  style?: string,
+  timeout?: number,
+) {
   Default.create(content, header, style, timeout);
 }
 

@@ -28,8 +28,7 @@ export class PubSub extends Subscription {
   }
 
   public observe<T>(key: string) {
-    return this.getSubject<T>(key)
-      .asObservable();
+    return this.getSubject<T>(key).asObservable();
   }
 
   public subscribe<T>(
@@ -44,8 +43,7 @@ export class PubSub extends Subscription {
       };
     }
 
-    return this.observe<T>(key)
-      .subscribe(onNext, onError, onCompleted);
+    return this.observe<T>(key).subscribe(onNext, onError, onCompleted);
   }
 
   public publish<T>(key: string, arg: T) {

@@ -3,11 +3,19 @@
 import { Observable } from 'rxjs';
 
 import { Command, Property, ReadOnlyProperty } from '../../../WebRx';
-import { ItemListPanelRoutingState, ItemListPanelViewModel } from '../../Common/ItemListPanel/ItemListPanelViewModel';
-import { BaseViewModel, HandlerRoutingStateChanged, RoutingStateHandler } from '../../React';
+import {
+  ItemListPanelRoutingState,
+  ItemListPanelViewModel,
+} from '../../Common/ItemListPanel/ItemListPanelViewModel';
+import {
+  BaseViewModel,
+  HandlerRoutingStateChanged,
+  RoutingStateHandler,
+} from '../../React';
 import { TodoListItem, TodoListStore } from './TodoListStore';
 
-export class TodoListViewModel extends BaseViewModel implements RoutingStateHandler<ItemListPanelRoutingState> {
+export class TodoListViewModel extends BaseViewModel
+  implements RoutingStateHandler<ItemListPanelRoutingState> {
   public static displayName = 'TodoListViewModel';
 
   public newItemContent: Property<string>;
@@ -16,15 +24,16 @@ export class TodoListViewModel extends BaseViewModel implements RoutingStateHand
 
   public list: ItemListPanelViewModel<TodoItemViewModel>;
 
-  constructor(
-    protected store = TodoListStore.default,
-  ) {
+  constructor(protected store = TodoListStore.default) {
     super();
 
     this.newItemContent = this.wx.property('');
 
     this.addItem = this.wx.command(
-      this.wx.whenAny(this.newItemContent, x => String.isNullOrEmpty(x) === false),
+      this.wx.whenAny(
+        this.newItemContent,
+        x => String.isNullOrEmpty(x) === false,
+      ),
     );
 
     this.removeItem = this.wx.command<TodoItemViewModel>();
@@ -40,11 +49,10 @@ export class TodoListViewModel extends BaseViewModel implements RoutingStateHand
       .withLatestFrom(this.newItemContent.changed, (_, x) => x)
       .filterNull()
       .flatMap(x => {
-        return this.wx
-          .getObservableOrAlert(
-            () => this.store.addItem(x),
-            'Error Adding Item',
-          );
+        return this.wx.getObservableOrAlert(
+          () => this.store.addItem(x),
+          'Error Adding Item',
+        );
       })
       .map(x => new TodoItemViewModel(x))
       .share();
@@ -53,51 +61,42 @@ export class TodoListViewModel extends BaseViewModel implements RoutingStateHand
       .debounceTime(100)
       .filterNull()
       .flatMap(x => {
-        return this.wx
-          .getObservableOrAlert(
-            () => this.store.removeItem(x.id),
-            'Error Removing Item',
-          );
+        return this.wx.getObservableOrAlert(
+          () => this.store.removeItem(x.id),
+          'Error Removing Item',
+        );
       })
       .share();
 
     const initialItems = this.wx
-      .getObservableOrAlert(
-        () => this.store.getItems(),
-        'Error Fetching Items',
-      )
+      .getObservableOrAlert(() => this.store.getItems(), 'Error Fetching Items')
       .map(x => {
         return x.map(item => new TodoItemViewModel(item));
       });
 
-    const todoListItems = Observable
-      .merge(
-        initialItems.map(reset => ({ reset } as TodoListChange)),
-        addedItems.map(add => ({ add } as TodoListChange)),
-        removedItems.map(remove => ({ remove } as TodoListChange)),
-      )
-      .scan(
-        (items: TodoItemViewModel[], change: TodoListChange) => {
-          if (change.reset) {
-            this.logger.info(`Resetting List: ${ change.reset.length } Items`, change);
-            return change.reset;
-          }
-          else if (change.add) {
-            this.logger.info(`Adding Item: ${ change.add.content }`, change);
-            return items.concat(change.add);
-          }
-          else if (change.remove) {
-            this.logger.info(`Removing Item: ${ change.remove }`, change);
-            return items.filter(x => x.id !== change.remove!);
-          }
-          return items;
-        },
-        [],
-      );
+    const todoListItems = Observable.merge(
+      initialItems.map(reset => ({ reset } as TodoListChange)),
+      addedItems.map(add => ({ add } as TodoListChange)),
+      removedItems.map(remove => ({ remove } as TodoListChange)),
+    ).scan((items: TodoItemViewModel[], change: TodoListChange) => {
+      if (change.reset) {
+        this.logger.info(
+          `Resetting List: ${change.reset.length} Items`,
+          change,
+        );
+        return change.reset;
+      } else if (change.add) {
+        this.logger.info(`Adding Item: ${change.add.content}`, change);
+        return items.concat(change.add);
+      } else if (change.remove) {
+        this.logger.info(`Removing Item: ${change.remove}`, change);
+        return items.filter(x => x.id !== change.remove!);
+      }
+      return items;
+    }, []);
 
-    this.list = new ItemListPanelViewModel(
-      todoListItems,
-      (x, s) => x.filter(s.regex),
+    this.list = new ItemListPanelViewModel(todoListItems, (x, s) =>
+      x.filter(s.regex),
     );
   }
 
@@ -125,24 +124,25 @@ export class TodoItemViewModel extends BaseViewModel {
   public readonly completed: ReadOnlyProperty<boolean>;
 
   constructor(contentOrModel: string | TodoListItem, store?: TodoListStore);
-  constructor(arg: string | TodoListItem, protected store = TodoListStore.default) {
+  constructor(
+    arg: string | TodoListItem,
+    protected store = TodoListStore.default,
+  ) {
     super();
 
     if (String.isString(arg)) {
       this.id = TodoItemViewModel.nextId++;
       this.content = arg;
-    }
-    else {
+    } else {
       this.id = arg.id;
       this.content = arg.content;
     }
 
     this.toggleCompleted = this.wx.command(completed => {
-      return this.wx
-        .getObservableOrAlert(
-          () => this.store.setCompleted(this.id, completed),
-          'Error Changing Completed',
-        );
+      return this.wx.getObservableOrAlert(
+        () => this.store.setCompleted(this.id, completed),
+        'Error Changing Completed',
+      );
     });
 
     this.completed = this.wx
@@ -152,6 +152,6 @@ export class TodoItemViewModel extends BaseViewModel {
   }
 
   public filter(regexp: RegExp) {
-    return [ this.content ].some(x => regexp.test(x));
+    return [this.content].some(x => regexp.test(x));
   }
 }

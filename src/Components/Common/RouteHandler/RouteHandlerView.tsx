@@ -4,19 +4,32 @@ import RTG = require('react-transition-group');
 import { Observable } from 'rxjs';
 
 import { ViewMapper } from '../../../Routing';
-import { BaseView, BaseViewProps, isRoutableViewModel, isViewModel } from '../../React';
+import {
+  BaseView,
+  BaseViewProps,
+  isRoutableViewModel,
+  isViewModel,
+} from '../../React';
 import { Breadcrumbs } from './Breadcrumbs';
-import { DefaultKey, RouteHandlerViewModel, SplashKey } from './RouteHandlerViewModel';
+import {
+  DefaultKey,
+  RouteHandlerViewModel,
+  SplashKey,
+} from './RouteHandlerViewModel';
 
 export interface RouteHandlerProps {
   viewMap: ViewMapper;
   responsive?: boolean;
 }
 
-export interface RouteHandlerViewProps extends BaseViewProps<RouteHandlerViewModel>, RouteHandlerProps {
-}
+export interface RouteHandlerViewProps
+  extends BaseViewProps<RouteHandlerViewModel>,
+    RouteHandlerProps {}
 
-export class RouteHandlerView extends BaseView<RouteHandlerViewProps, RouteHandlerViewModel> {
+export class RouteHandlerView extends BaseView<
+  RouteHandlerViewProps,
+  RouteHandlerViewModel
+> {
   public static displayName = 'RouteHandlerView';
 
   constructor(props: any) {
@@ -38,22 +51,18 @@ export class RouteHandlerView extends BaseView<RouteHandlerViewProps, RouteHandl
   private getViewKey() {
     if (this.viewModel.isLoading.value === true) {
       return SplashKey;
-    }
-    else {
+    } else {
       const component = this.viewModel.routedComponent.value;
 
       if (isRoutableViewModel(component)) {
         return component.getRoutingKey();
-      }
-      else if (isViewModel(component)) {
+      } else if (isViewModel(component)) {
         this.logger.warn('Routing to Non-Routable View Model', component);
 
         return component.getDisplayName();
-      }
-      else if (String.isString(component)) {
+      } else if (String.isString(component)) {
         return component;
-      }
-      else {
+      } else {
         return '';
       }
     }
@@ -76,12 +85,20 @@ export class RouteHandlerView extends BaseView<RouteHandlerViewProps, RouteHandl
     const key = this.getViewKey();
 
     return (
-      <div { ...rest } className={ this.wxr.classNames('RouteHandler', className) }>
+      <div {...rest} className={this.wxr.classNames('RouteHandler', className)}>
         <RTG.TransitionGroup>
-          <RTG.CSSTransition key={ key } classNames='view' exit={ false } timeout={ { enter: 250 } }>
-            <div className='RouteHandler-viewContainer'>
-              <Breadcrumbs items={ this.viewModel.routingBreadcrumbs.value } pinnable />
-              { this.renderRoutedView(key) }
+          <RTG.CSSTransition
+            key={key}
+            classNames="view"
+            exit={false}
+            timeout={{ enter: 250 }}
+          >
+            <div className="RouteHandler-viewContainer">
+              <Breadcrumbs
+                items={this.viewModel.routingBreadcrumbs.value}
+                pinnable
+              />
+              {this.renderRoutedView(key)}
             </div>
           </RTG.CSSTransition>
         </RTG.TransitionGroup>
@@ -103,20 +120,22 @@ export class RouteHandlerView extends BaseView<RouteHandlerViewProps, RouteHandl
       view = activator(component, this.props.responsive);
     }
 
-    this.logger.debug(`Rendering routed view for '${ Object.getName(component) }' (${ key })`);
+    this.logger.debug(
+      `Rendering routed view for '${Object.getName(component)}' (${key})`,
+    );
 
     return (
-      <div className='RouteHandler-view'>
-        { view || this.renderError('Catastrophic Failure') }
+      <div className="RouteHandler-view">
+        {view || this.renderError('Catastrophic Failure')}
       </div>
     );
   }
 
   private renderError(text: string) {
     return (
-      <Grid className='RouteHandler-error'>
-        <Alert bsStyle='danger'>
-          <h4>{ text }</h4>
+      <Grid className="RouteHandler-error">
+        <Alert bsStyle="danger">
+          <h4>{text}</h4>
         </Alert>
       </Grid>
     );

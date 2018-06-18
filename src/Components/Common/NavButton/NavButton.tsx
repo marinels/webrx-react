@@ -2,7 +2,10 @@ import * as React from 'react';
 import { ButtonProps } from 'react-bootstrap';
 import { Icon, IconSize } from 'react-fa';
 
-import { CommandButton, CommandButtonProps } from '../CommandButton/CommandButton';
+import {
+  CommandButton,
+  CommandButtonProps,
+} from '../CommandButton/CommandButton';
 
 export interface NavButtonProps extends CommandButtonProps {
   iconSize?: IconSize;
@@ -11,8 +14,7 @@ export interface NavButtonProps extends CommandButtonProps {
   compact?: boolean;
 }
 
-export interface NavButtonComponentProps extends ButtonProps, NavButtonProps {
-}
+export interface NavButtonComponentProps extends ButtonProps, NavButtonProps {}
 
 export class NavButton extends React.Component<NavButtonComponentProps> {
   public static displayName = 'NavButton';
@@ -28,26 +30,28 @@ export class NavButton extends React.Component<NavButtonComponentProps> {
 
     if (compact) {
       return (
-        <div className={ this.wxr.classNames('NavButton', 'NavButton-compact') } { ...componentProps }>
-          { this.renderButton() }
+        <div
+          className={this.wxr.classNames('NavButton', 'NavButton-compact')}
+          {...componentProps}
+        >
+          {this.renderButton()}
         </div>
       );
     }
 
     return (
-      <div className={ this.wxr.classNames('NavButton', 'NavButton-container') } { ...componentProps }>
-        { this.renderContent() }
-        { this.renderButton() }
+      <div
+        className={this.wxr.classNames('NavButton', 'NavButton-container')}
+        {...componentProps}
+      >
+        {this.renderContent()}
+        {this.renderButton()}
       </div>
     );
   }
 
   protected renderContent() {
-    return (
-      <div className='NavButton-content'>
-        { this.props.children }
-      </div>
-    );
+    return <div className="NavButton-content">{this.props.children}</div>;
   }
 
   protected renderButton() {
@@ -57,8 +61,8 @@ export class NavButton extends React.Component<NavButtonComponentProps> {
     });
 
     return (
-      <CommandButton { ...rest } className={ className }>
-        <Icon name={ props.iconName! } size={ props.iconSize } fixedWidth />
+      <CommandButton {...rest} className={className}>
+        <Icon name={props.iconName!} size={props.iconSize} fixedWidth />
       </CommandButton>
     );
   }

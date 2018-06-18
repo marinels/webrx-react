@@ -30,7 +30,9 @@ export class TodoListStore extends BaseApiStore<TodoListApi> {
   }
 
   public addItem(content: string) {
-    return this.getObservable<TodoListItem>(TodoListActions.AddItem, { content });
+    return this.getObservable<TodoListItem>(TodoListActions.AddItem, {
+      content,
+    });
   }
 
   public removeItem(id: number) {
@@ -38,6 +40,9 @@ export class TodoListStore extends BaseApiStore<TodoListApi> {
   }
 
   public setCompleted(id: number, completed: boolean) {
-    return this.getObservable<number>(TodoListActions.SetCompleted, { id, completed });
+    return this.getObservable<number>(TodoListActions.SetCompleted, {
+      id,
+      completed,
+    });
   }
 }

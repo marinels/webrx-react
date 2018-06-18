@@ -12,9 +12,7 @@ import { args, commonConfig } from '../webpack.common';
 
 const testConfig: Partial<webpack.Configuration> = {
   entry: {
-    'app.spec': [
-      args.env.entryPath,
-    ],
+    'app.spec': [args.env.entryPath],
   },
   devtool: 'eval',
   devServer: {
@@ -25,12 +23,19 @@ const testConfig: Partial<webpack.Configuration> = {
   module: {
     rules: [
       { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
-      { test: /\.spec\.tsx?$/, loaders: [ 'mocha-loader', 'awesome-typescript-loader' ] },
+      {
+        test: /\.spec\.tsx?$/,
+        loaders: ['mocha-loader', 'awesome-typescript-loader'],
+      },
     ],
   },
 };
 
-const config: webpack.Configuration = Object.assign({}, commonConfig, testConfig);
+const config: webpack.Configuration = Object.assign(
+  {},
+  commonConfig,
+  testConfig,
+);
 
 const definePlugin: any = config.plugins![0];
 
@@ -39,8 +44,6 @@ if (definePlugin != null) {
   definePlugin.definitions.WEBPACK_DEV_SERVER = true;
 }
 
-config.plugins!.push(
-  new webpack.HotModuleReplacementPlugin(),
-);
+config.plugins!.push(new webpack.HotModuleReplacementPlugin());
 
 export default config;
