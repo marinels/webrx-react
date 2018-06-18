@@ -322,7 +322,7 @@ export class ComponentDemoViewModel extends BaseRoutableViewModel<ComponentDemoR
     }
     else {
       this.setComponent.execute(routedComponent);
-      this.setColumns.execute(state.columns || 12);
+      this.setColumns.execute(state.columns == null ? 12 : state.columns);
     }
 
     // keep a handle on the current app page header
