@@ -1033,12 +1033,12 @@ export const demoViewMap: ViewActivatorMap = {
   TodoListViewModel: (viewModel: TodoListViewModel) => (
     <TodoListView style={({ padding: 20 })} viewModel={ viewModel } shadow />
   ),
-  Help: () => {
+  Help: (c, cr, r) => {
     const helpStyle = (
       top = 0,
       left = 0,
       textAlign: CSS.TextAlignProperty = 'center',
-      zIndex = 1000,
+      zIndex = 999,
     ) => ({
       display: 'inline-block',
       position: 'absolute',
@@ -1054,7 +1054,7 @@ export const demoViewMap: ViewActivatorMap = {
       left = 0,
       iconName = 'arrow-up',
       textAlign: CSS.TextAlignProperty = 'center',
-      zIndex = 1000,
+      zIndex = 999,
     ) => (
       <div style={ helpStyle(top, left, textAlign, zIndex) }>
         <div>
@@ -1064,12 +1064,13 @@ export const demoViewMap: ViewActivatorMap = {
       </div>
     );
 
+    // the one z-index is conditionally 1039 to appear above a fixed position navbar
     return (
       <div>
         { helpItem('Click to reveal the sidebar menu', 50, 10) }
         { helpItem('A todo list example in the sidebar menu', 100, 350, 'arrow-left', 'left') }
         { helpItem('Some simple react component demos', 50, 330) }
-        { helpItem('Some webrx-react component demos', 10, 690, 'arrow-left', 'left', 1039) }
+        { helpItem('Some webrx-react component demos', 10, 690, 'arrow-left', 'left', r ? 1039 : undefined) }
         { helpItem('Simulate bootstrap grid size', 100, 1190, 'arrow-right', 'right') }
       </div>
     );
