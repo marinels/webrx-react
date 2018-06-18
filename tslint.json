@@ -3,7 +3,6 @@
     "tslint:recommended",
     "tslint-config-unional/strict",
     "tslint-react"
-    // "tslint-config-prettier"
   ],
   "rules": {
     // standardize on a linebreak
