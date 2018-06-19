@@ -1,6 +1,8 @@
 module.exports = {
   extends: 'stylelint-config-standard',
   plugins: ['stylelint-order'],
+  // we need to ignore tsx files due to how it processes style objects in markup blocks
+  ignoreFiles: ['**/*.tsx'],
   rules: {
     // we want cleaner code appearance, so empty lines between nested styles are required
     'at-rule-empty-line-before': [
