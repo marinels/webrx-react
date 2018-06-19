@@ -3,11 +3,9 @@
 	// for the documentation about the extensions.json format
 	"recommendations": [
 		// Extension identifier format: ${publisher}.${name}. Example: vscode.csharp
-		"dbaeumer.vscode-eslint",
-		"samverschueren.final-newline",
-		"DavidAnson.vscode-markdownlint",
-		"christian-kohler.path-intellisense",
-		"shinnn.stylelint",
-		"eg2.tslint"
+		"eamodio.gitlens",
+		"eg2.tslint",
+		"esbenp.prettier-vscode",
+		"shinnn.stylelint"
 	]
 }
