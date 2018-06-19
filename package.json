@@ -22,7 +22,7 @@
     "build:modules": "tsc --project tsconfig.build.json",
     "deploy:modules": "ts-node ./deploy.ts",
     "dist": "npm run test && npm run bundle -- --env.release --env.buildPath ./dist && npm run bundle -- --env.release --env.min --env.buildPath ./dist && npm run version:modules && npm run build:modules && npm run deploy:modules",
-    "pretty": "prettier --write ./src/**/*.ts ./src/**/*.tsx ./test/**/*.ts",
+    "pretty": "prettier --write ./src/**/*.ts ./src/**/*.tsx ./test/**/*.ts ./**/*.js",
     "tr": "tsc --traceResolution --noEmit > tsctr.log"
   },
   "author": "Pat Sissons <pat@marinels.com> (http://github.com/patsissons)",
