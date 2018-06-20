@@ -1,6 +1,10 @@
-import { should } from '../setup';
 import * as moment from 'moment';
-import { DateTime, TimeSpan, TicksPerMillisecond } from '../../src/Utils/Moment';
+import {
+  DateTime,
+  TicksPerMillisecond,
+  TimeSpan,
+} from '../../src/Utils/Moment';
+import { should } from '../setup';
 
 const SampleDateTimeOffsetText = '2016-03-09 4:32:32 PM +00:00';
 const SampleDateTimeText = '2016-03-09 4:32:32 PM';
@@ -35,12 +39,18 @@ describe('Moment', () => {
       });
 
       it('parses non-utc .NET DateTimeOffset strings', () => {
-        let text = SampleDateTimeOffsetText.replace('4:', '8:').replace('+00', '+04');
+        let text = SampleDateTimeOffsetText.replace('4:', '8:').replace(
+          '+00',
+          '+04',
+        );
         let timestamp = DateTime.fromString(text);
 
         timestamp!.valueOf().should.eql(SampleDateTimeUnixMilliseconds);
 
-        text = SampleDateTimeOffsetText.replace('4:', '2:').replace('+00', '-02');
+        text = SampleDateTimeOffsetText.replace('4:', '2:').replace(
+          '+00',
+          '-02',
+        );
         timestamp = DateTime.fromString(text);
 
         timestamp!.valueOf().should.eql(SampleDateTimeUnixMilliseconds);

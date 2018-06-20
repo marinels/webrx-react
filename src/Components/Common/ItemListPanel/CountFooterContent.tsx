@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Observable, Subscription } from 'rxjs';
 import { Badge } from 'react-bootstrap';
+import { Subscription } from 'rxjs';
 
 import { ObservableLike } from '../../../WebRx';
 
@@ -9,14 +9,18 @@ export interface CountFooterContentProps {
   suffix?: string;
 }
 
-export interface CountFooterContentComponentProps extends CountFooterContentProps, React.HTMLProps<any> {
-}
+export interface CountFooterContentComponentProps
+  extends CountFooterContentProps,
+    React.HTMLProps<any> {}
 
 export interface CountFooterState {
   count: number;
 }
 
-export class CountFooterContent extends React.Component<CountFooterContentComponentProps, CountFooterState> {
+export class CountFooterContent extends React.Component<
+  CountFooterContentComponentProps,
+  CountFooterState
+> {
   public static displayName = 'CountFooterContent';
 
   private countChangedSub = Subscription.EMPTY;
@@ -39,16 +43,16 @@ export class CountFooterContent extends React.Component<CountFooterContentCompon
     const count = this.state == null ? 0 : this.state.count || 0;
 
     return (
-      <div className='CountFooterContent'>
-        <Badge>{ count }</Badge>
-        {
-          this.wxr.renderConditional(
-            String.isNullOrEmpty(this.props.suffix) === false,
-            () => (
-              <span className='CountFooterContent-suffix'>{ this.props.suffix }</span>
-            ),
-          )
-        }
+      <div className="CountFooterContent">
+        <Badge>{count}</Badge>
+        {this.wxr.renderConditional(
+          String.isNullOrEmpty(this.props.suffix) === false,
+          () => (
+            <span className="CountFooterContent-suffix">
+              {this.props.suffix}
+            </span>
+          ),
+        )}
       </div>
     );
   }
@@ -60,17 +64,12 @@ export class CountFooterContent extends React.Component<CountFooterContentCompon
   protected subscribeToCount(count: ObservableLike<number>) {
     this.unsubscribeFromCount();
 
-    this.countChangedSub = this.wx
-      .whenAny(
-        count,
-        x => x,
-      )
-      .subscribe(x => {
-        this.setState((prevState, props) => {
-          return {
-            count: x || 0,
-          };
-        });
+    this.countChangedSub = this.wx.whenAny(count, x => x).subscribe(x => {
+      this.setState((prevState, props) => {
+        return {
+          count: x || 0,
+        };
       });
+    });
   }
 }

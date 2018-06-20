@@ -1,9 +1,9 @@
-import { Observable, AjaxRequest } from 'rxjs';
+import { AjaxRequest, Observable } from 'rxjs';
 
-import { should, fail, logger, sandbox, sinon } from '../setup';
-import { wx } from '../../src/WebRx';
 import { HttpRequestMethod, ObservableApi } from '../../src/Stores';
 import * as Helpers from '../../src/Stores/Helpers';
+import { wx } from '../../src/WebRx';
+import { fail, logger, sandbox, should, sinon } from '../setup';
 
 describe('ObservableApi', () => {
   const baseUri = 'http://test1.com/';
@@ -29,28 +29,58 @@ describe('ObservableApi', () => {
       const request = Observable.of(true);
       const stub = sandbox.stub(Helpers, 'getRequest').callsFake(() => request);
 
-      const result = api.observe(action, params, data, HttpRequestMethod.GET, options, baseUriOverride);
+      const result = api.observe(
+        action,
+        params,
+        data,
+        HttpRequestMethod.GET,
+        options,
+        baseUriOverride,
+      );
 
       should.exist(result);
       wx.isObservable(result).should.be.true;
 
       result.subscribe();
       stub.should.have.been.calledOnce;
-      stub.should.have.been.calledWith(action, `${ baseUriOverride }${ action }`, sinon.match.any, HttpRequestMethod.GET, params, data, options);
+      stub.should.have.been.calledWith(
+        action,
+        `${baseUriOverride}${action}`,
+        sinon.match.any,
+        HttpRequestMethod.GET,
+        params,
+        data,
+        options,
+      );
     });
 
     it('creates a POST request', () => {
       const request = Observable.of(true);
       const stub = sandbox.stub(Helpers, 'getRequest').callsFake(() => request);
 
-      const result = api.observe(action, params, data, HttpRequestMethod.POST, options, baseUriOverride);
+      const result = api.observe(
+        action,
+        params,
+        data,
+        HttpRequestMethod.POST,
+        options,
+        baseUriOverride,
+      );
 
       should.exist(result);
       wx.isObservable(result).should.be.true;
 
       result.subscribe();
       stub.should.have.been.calledOnce;
-      stub.should.have.been.calledWith(action, `${ baseUriOverride }${ action }`, sinon.match.any, HttpRequestMethod.POST, params, data, options);
+      stub.should.have.been.calledWith(
+        action,
+        `${baseUriOverride}${action}`,
+        sinon.match.any,
+        HttpRequestMethod.POST,
+        params,
+        data,
+        options,
+      );
     });
 
     it('composes GET request options from the provided parameters', () => {
@@ -58,7 +88,7 @@ describe('ObservableApi', () => {
         headers: Helpers.defaultHeaders,
         async: true,
         body,
-        url: `${ baseUri }${ action }?${ uriParams }`,
+        url: `${baseUri}${action}?${uriParams}`,
         method: 'GET',
       };
       const response = { response: true };
@@ -80,7 +110,7 @@ describe('ObservableApi', () => {
         headers: Helpers.defaultHeaders,
         async: true,
         body,
-        url: `${ baseUri }${ action }?${ uriParams }`,
+        url: `${baseUri}${action}?${uriParams}`,
         method: 'POST',
       };
       const response = { response: true };
@@ -102,14 +132,18 @@ describe('ObservableApi', () => {
       const request = Observable.of(response);
       const stub = sandbox.stub(Observable, 'ajax').callsFake(() => request);
 
-      const result = api.observe(action, { param1: 'param1 value', param2: null, param3: undefined });
+      const result = api.observe(action, {
+        param1: 'param1 value',
+        param2: null,
+        param3: undefined,
+      });
 
       should.exist(result);
       wx.isObservable(result).should.be.true;
 
       result.subscribe();
       stub.should.have.been.calledOnce;
-      stub.firstCall.args[0].url.should.eql(`${ baseUri }${ action }?${ uriParams }`);
+      stub.firstCall.args[0].url.should.eql(`${baseUri}${action}?${uriParams}`);
     });
   });
 
@@ -118,12 +152,24 @@ describe('ObservableApi', () => {
       const expectedResult = 'result';
       const stub = sandbox.stub(api, 'observe').callsFake(() => expectedResult);
 
-      const result = api.getObservable<any>(action, params, options, baseUriOverride);
+      const result = api.getObservable<any>(
+        action,
+        params,
+        options,
+        baseUriOverride,
+      );
 
       should.exist(result);
       result.should.eql(expectedResult);
       stub.should.have.been.calledOnce;
-      stub.should.have.been.calledWith(action, params, undefined, HttpRequestMethod.GET, options, baseUriOverride);
+      stub.should.have.been.calledWith(
+        action,
+        params,
+        undefined,
+        HttpRequestMethod.GET,
+        options,
+        baseUriOverride,
+      );
     });
   });
 
@@ -132,12 +178,25 @@ describe('ObservableApi', () => {
       const expectedResult = 'result';
       const stub = sandbox.stub(api, 'observe').callsFake(() => expectedResult);
 
-      const result = api.postObservable<any>(action, data, params, options, baseUriOverride);
+      const result = api.postObservable<any>(
+        action,
+        data,
+        params,
+        options,
+        baseUriOverride,
+      );
 
       should.exist(result);
       result.should.eql(expectedResult);
       stub.should.have.been.calledOnce;
-      stub.should.have.been.calledWith(action, params, data, HttpRequestMethod.POST, options, baseUriOverride);
+      stub.should.have.been.calledWith(
+        action,
+        params,
+        data,
+        HttpRequestMethod.POST,
+        options,
+        baseUriOverride,
+      );
     });
   });
 });

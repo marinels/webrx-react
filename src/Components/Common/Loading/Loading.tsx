@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Subscription } from  'rxjs';
 import { Grid, ProgressBar } from 'react-bootstrap';
+import { Subscription } from 'rxjs';
 
 import { Property } from '../../../WebRx';
 import { wxr } from '../../React';
@@ -14,25 +14,19 @@ export function renderLoadable(
 
   if (loadingComponent instanceof Function) {
     action = loadingComponent;
-  }
-  else if (String.isString(loadingComponent)) {
+  } else if (String.isString(loadingComponent)) {
     const text = loadingComponent;
 
-    action = () => (
-      <Loading text={ text } />
-    );
-  }
-  else if (!React.isValidElement(loadingComponent) && Object.isObject(loadingComponent)) {
+    action = () => <Loading text={text} />;
+  } else if (
+    !React.isValidElement(loadingComponent) &&
+    Object.isObject(loadingComponent)
+  ) {
     const props: {} = loadingComponent;
 
-    action = () => (
-      <Loading { ...props } />
-    );
-  }
-  else {
-    action = () => (
-      <Loading />
-    );
+    action = () => <Loading {...props} />;
+  } else {
+    action = () => <Loading />;
   }
 
   return wxr.renderConditional(isLoading, action, loadedComponent);
@@ -44,10 +38,14 @@ export function renderSizedLoadable(
   fontSize: number | string,
   loadedComponent?: () => React.ReactNode,
 ) {
-  return renderLoadable(isLoading, {
-    text,
-    fontSize,
-  }, loadedComponent);
+  return renderLoadable(
+    isLoading,
+    {
+      text,
+      fontSize,
+    },
+    loadedComponent,
+  );
 }
 
 export function renderGridLoadable(
@@ -56,13 +54,16 @@ export function renderGridLoadable(
   fontSize: number | string,
   loadedComponent?: () => React.ReactNode,
 ) {
-  return renderLoadable(isLoading, {
-    text,
-    fontSize,
-    componentClass: Grid,
-  }, loadedComponent);
+  return renderLoadable(
+    isLoading,
+    {
+      text,
+      fontSize,
+      componentClass: Grid,
+    },
+    loadedComponent,
+  );
 }
-
 
 export interface LoadingProps {
   progress?: Property<number> | number;
@@ -71,8 +72,9 @@ export interface LoadingProps {
   componentClass?: any;
 }
 
-export interface LoadingComponentProps extends React.HTMLProps<any>, LoadingProps {
-}
+export interface LoadingComponentProps
+  extends React.HTMLProps<any>,
+    LoadingProps {}
 
 export class Loading extends React.Component<LoadingComponentProps> {
   public static displayName = 'Loading';
@@ -91,13 +93,18 @@ export class Loading extends React.Component<LoadingComponentProps> {
 
   componentDidMount() {
     if (this.wx.isProperty(this.props.progress) === true) {
-      this.changedSubscription = (this.props.progress as Property<number>).changed
-        .subscribe(() => { this.forceUpdate(); });
+      this.changedSubscription = (this.props.progress as Property<
+        number
+      >).changed.subscribe(() => {
+        this.forceUpdate();
+      });
     }
   }
 
   componentWillUnmount() {
-    this.changedSubscription = Subscription.unsubscribe(this.changedSubscription);
+    this.changedSubscription = Subscription.unsubscribe(
+      this.changedSubscription,
+    );
   }
 
   render() {
@@ -109,17 +116,25 @@ export class Loading extends React.Component<LoadingComponentProps> {
     const Component = props.componentClass;
 
     return (
-      <Component { ...rest } className={ this.wxr.classNames('Loading', className) }>
-        <ProgressBar style={({ fontSize: props.fontSize })} active now={ this.getProgressValue() } label={ props.text }>
-          { children }
+      <Component
+        {...rest}
+        className={this.wxr.classNames('Loading', className)}
+      >
+        <ProgressBar
+          style={{ fontSize: props.fontSize }}
+          active
+          now={this.getProgressValue()}
+          label={props.text}
+        >
+          {children}
         </ProgressBar>
       </Component>
     );
   }
 
   private getProgressValue() {
-    return this.wx.isProperty(this.props.progress) === true ?
-      (this.props.progress as Property<number>).value :
-      this.props.progress as number;
+    return this.wx.isProperty(this.props.progress) === true
+      ? (this.props.progress as Property<number>).value
+      : (this.props.progress as number);
   }
 }

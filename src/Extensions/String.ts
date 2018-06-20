@@ -8,7 +8,11 @@ export function isNullOrEmpty(value: string | null | undefined): boolean {
   return value == null || value === '';
 }
 
-export function stringify(value: any, replacer?: any, space: string | number = 2): string | undefined {
+export function stringify(
+  value: any,
+  replacer?: any,
+  space: string | number = 2,
+): string | undefined {
   let result: string | undefined;
 
   if (value != null) {
@@ -20,8 +24,7 @@ export function stringify(value: any, replacer?: any, space: string | number = 2
       if (result === 'Object') {
         try {
           result = JSON.stringify(value, replacer, space);
-        }
-        catch (e) {
+        } catch (e) {
           // do nothing and result will retain the getName value
         }
       }

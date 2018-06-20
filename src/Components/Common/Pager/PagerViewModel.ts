@@ -1,9 +1,11 @@
-import { Observable } from 'rxjs';
+import { Command, Property, ReadOnlyProperty } from '../../../WebRx';
+import {
+  BaseViewModel,
+  HandlerRoutingStateChanged,
+  RoutingStateHandler,
+} from '../../React';
 
-import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
-import { BaseViewModel, RoutingStateHandler, HandlerRoutingStateChanged } from '../../React';
-
-export const StandardLimits = [ 10, 25, 0 ];
+export const StandardLimits = [10, 25, 0];
 export const AlwaysPagedLimits = StandardLimits.filter(x => x != null && x > 0);
 
 export interface PageRequest {
@@ -16,7 +18,8 @@ export interface PagerRoutingState {
   limit?: number;
 }
 
-export class PagerViewModel extends BaseViewModel implements RoutingStateHandler<PagerRoutingState> {
+export class PagerViewModel extends BaseViewModel
+  implements RoutingStateHandler<PagerRoutingState> {
   public static displayName = 'PagerViewModel';
 
   public readonly itemCount: ReadOnlyProperty<number>;
@@ -45,7 +48,12 @@ export class PagerViewModel extends BaseViewModel implements RoutingStateHandler
     this.pageCount = this.wx
       .whenAny(this.itemCount, this.limit, (ic, l) => ({ ic, l }))
       // if we have a valid item count and limit, then calculate the page count (default to zero)
-      .map(x => (x.ic != null && x.l != null && x.ic > 0 && x.l > 0) ? Math.ceil(x.ic / x.l) : 0)
+      .map(
+        x =>
+          x.ic != null && x.l != null && x.ic > 0 && x.l > 0
+            ? Math.ceil(x.ic / x.l)
+            : 0,
+      )
       .toProperty(0);
 
     this.selectedPage = this.wx
@@ -56,25 +64,22 @@ export class PagerViewModel extends BaseViewModel implements RoutingStateHandler
     this.offset = this.wx
       .whenAny(this.selectedPage, this.limit, (sp, l) => ({ sp, l }))
       // if we have a valid page then calculate the offset (default limit to zero to result in a zero offset)
-      .map(x => (x.sp != null && x.sp > 0) ? (x.sp - 1) * (x.l || 0) : 0)
+      .map(x => (x.sp != null && x.sp > 0 ? (x.sp - 1) * (x.l || 0) : 0))
       .toProperty(0);
 
     this.requests = this.wx
-      .whenAny(
-        this.offset,
-        this.limit,
-        (offset, limit) => ({
-          offset,
-          limit,
-        }),
-      )
+      .whenAny(this.offset, this.limit, (offset, limit) => ({
+        offset,
+        limit,
+      }))
       .toProperty();
 
-    this.addSubscription(this.wx
-      .whenAny(this.pageCount, x => x)
-      .filterNull()
-      .map(() => 1)
-      .invokeCommand(this.selectPage),
+    this.addSubscription(
+      this.wx
+        .whenAny(this.pageCount, x => x)
+        .filterNull()
+        .map(() => 1)
+        .invokeCommand(this.selectPage),
     );
 
     this.addSubscription(

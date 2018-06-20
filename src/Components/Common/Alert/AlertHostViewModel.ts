@@ -1,10 +1,10 @@
 import { Observable } from 'rxjs';
 
-import { ReadOnlyProperty, Command } from '../../../WebRx';
+import { AlertCreated, AlertCreatedKey } from '../../../Events';
+import { Default as pubSub } from '../../../Utils/PubSub';
+import { ReadOnlyProperty } from '../../../WebRx';
 import { BaseViewModel } from '../../React';
 import { AlertViewModel } from '../Alert/AlertViewModel';
-import { Default as pubSub } from '../../../Utils/PubSub';
-import { AlertCreatedKey, AlertCreated } from '../../../Events';
 
 interface AlertEvent {
   add?: AlertViewModel;
@@ -22,26 +22,21 @@ export class AlertHostViewModel extends BaseViewModel {
     const addAlert = this.wx.command<AlertViewModel>();
     const removeAlert = this.wx.command<AlertViewModel>();
 
-    const events = Observable
-      .merge(
-        addAlert.results.map(add => <AlertEvent>{ add }),
-        removeAlert.results.map(remove => <AlertEvent>{ remove }),
-      );
+    const events = Observable.merge(
+      addAlert.results.map(add => ({ add } as AlertEvent)),
+      removeAlert.results.map(remove => ({ remove } as AlertEvent)),
+    );
 
     this.alerts = events
-      .scan(
-        (alerts: AlertViewModel[], event) => {
-          if (event.add != null) {
-            return (alerts || []).concat(event.add);
-          }
-          else if (event.remove != null) {
-            return (alerts || []).filter(x => x !== event.remove);
-          }
+      .scan((alerts: AlertViewModel[], event) => {
+        if (event.add != null) {
+          return (alerts || []).concat(event.add);
+        } else if (event.remove != null) {
+          return (alerts || []).filter(x => x !== event.remove);
+        }
 
-          throw new Error('Invalid Alert Event');
-        },
-        undefined,
-      )
+        throw new Error('Invalid Alert Event');
+      }, undefined)
       .toProperty([], false);
 
     this.addSubscription(
@@ -59,8 +54,12 @@ export class AlertHostViewModel extends BaseViewModel {
     );
 
     this.addSubscription(
-      pubSub.observe<AlertCreated>(AlertCreatedKey)
-        .map((x, i) => new AlertViewModel(i, x.content, x.header, x.style, x.timeout))
+      pubSub
+        .observe<AlertCreated>(AlertCreatedKey)
+        .map(
+          (x, i) =>
+            new AlertViewModel(i, x.content, x.header, x.style, x.timeout),
+        )
         .invokeCommand(addAlert),
     );
   }

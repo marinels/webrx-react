@@ -1,11 +1,16 @@
-import { isIterable, isAsyncIterable } from 'ix/internal/isiterable';
 import { Iterable } from 'ix';
-import { AnonymousSubscription } from 'rxjs/Subscription';
+import { isAsyncIterable, isIterable } from 'ix/internal/isiterable';
 import { Observable, Observer, Subject, Subscription } from 'rxjs';
+import { AnonymousSubscription } from 'rxjs/Subscription';
 
-import { Property, Command, IterableLike, AsyncIterableLike, ObservableOrValue, ObservableLike } from './Interfaces';
-import { Logging, Alert } from '../Utils';
+import { Alert, Logging } from '../Utils';
 import { Default as ConsoleLogger } from '../Utils/Logging/Adapters/Console';
+import {
+  Command,
+  ObservableLike,
+  ObservableOrValue,
+  Property,
+} from './Interfaces';
 
 export { isIterable, isAsyncIterable };
 
@@ -117,21 +122,18 @@ export function handleError(e: any, ...optionalParams: any[]) {
 
   if (e instanceof Error) {
     err = e;
-  }
-  else if (String.isString(e)) {
+  } else if (String.isString(e)) {
     err = new Error(e);
-  }
-  else if (String.isString(e.message) || String.isString(e.Message)) {
+  } else if (String.isString(e.message) || String.isString(e.Message)) {
     err = new Error(e.message || e.Message);
-  }
-  else {
+  } else {
     err = new Error('Undefined Error');
   }
 
   // trim off the subject if it was provided with the optional params
-  const subject = isSubject(optionalParams[0]) ?
-    optionalParams.shift() :
-    undefined;
+  const subject = isSubject(optionalParams[0])
+    ? optionalParams.shift()
+    : undefined;
 
   if (DEBUG || subject == null) {
     // in debug mode we want to emit any webrx errors
@@ -149,44 +151,50 @@ export function logError(err: Error, ...optionalParams: any[]) {
   ConsoleLogger.logToConsole(Logging.LogLevel.Error, err, ...optionalParams);
 }
 
-export function logObservable(logger: Logging.Logger, observable: Observable<any>, name: string): Subscription {
-  return observable
-    .subscribe(
-      x => {
-        if (x == null) {
-          logger.debug(name);
-        }
-        else if (Object.isObject(x)) {
-          let value = Object.getName(x);
+export function logObservable(
+  logger: Logging.Logger,
+  observable: Observable<any>,
+  name: string,
+): Subscription {
+  return observable.subscribe(
+    x => {
+      if (x == null) {
+        logger.debug(name);
+      } else if (Object.isObject(x)) {
+        let value = Object.getName(x);
 
-          if (value === 'Object') {
-            value = '';
-          }
+        if (value === 'Object') {
+          value = '';
+        }
 
-          logger.debug(`${ name } = ${ value }`, x);
-        }
-        else {
-          logger.debug(`${ name } = ${ x }`);
-        }
-      },
-      e => logger.error(`${ name }: ${ e }`),
-    );
+        logger.debug(`${name} = ${value}`, x);
+      } else {
+        logger.debug(`${name} = ${x}`);
+      }
+    },
+    e => logger.error(`${name}: ${e}`),
+  );
 }
 
-export function logMemberObservables(logger: Logging.Logger, source: StringMap<any>): Subscription[] {
-  return Iterable
-    .from(Object.keys(source))
+export function logMemberObservables(
+  logger: Logging.Logger,
+  source: StringMap<any>,
+): Subscription[] {
+  return Iterable.from(Object.keys(source))
     .map(key => ({ key, member: source[key] }))
-    .filter(x => isObservable(x.member) || isProperty(x.member) || isCommand(x.member))
+    .filter(
+      x =>
+        isObservable(x.member) || isProperty(x.member) || isCommand(x.member),
+    )
     .flatMap(x => {
       if (isCommand(x.member)) {
         return [
-          { key: `<${ x.key }>...`, observable: x.member.requests },
-          { key: `<${ x.key }>`, observable: x.member.results },
+          { key: `<${x.key}>...`, observable: x.member.requests },
+          { key: `<${x.key}>`, observable: x.member.results },
         ];
       }
 
-      return [ { key: x.key, observable: getObservable(x.member) } ];
+      return [{ key: x.key, observable: getObservable(x.member) }];
     })
     .map(x => logObservable(logger, x.observable!, x.key))
     .toArray();
@@ -200,13 +208,11 @@ export function getObservableOrAlert<T, TError = Error>(
   errorFormatter?: (e: TError) => string,
   errorResult = Observable.empty<T>(),
 ) {
-  return Observable
-    .defer(observableFactory)
-    .catch(err => {
-      Alert.createForError(err, header, style, timeout, errorFormatter);
+  return Observable.defer(observableFactory).catch(err => {
+    Alert.createForError(err, header, style, timeout, errorFormatter);
 
-      return errorResult;
-    });
+    return errorResult;
+  });
 }
 
 export function getObservableResultOrAlert<TResult, TError = Error>(
@@ -246,8 +252,7 @@ export function subscribeOrAlert<T, TError = Error>(
   ).subscribe(x => {
     try {
       onNext(x);
-    }
-    catch (err) {
+    } catch (err) {
       Alert.createForError(err, header, style, timeout, errorFormatter);
     }
   });

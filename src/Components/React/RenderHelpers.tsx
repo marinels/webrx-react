@@ -1,15 +1,16 @@
+import * as classNamesFunc from 'classnames';
+import { Iterable } from 'ix';
 import * as React from 'react';
 import { findDOMNode } from 'react-dom';
-import { Iterable } from 'ix';
-import * as classNamesFunc from 'classnames';
 
-import { Property, IterableLike } from '../../WebRx';
-import { ValueComparison, ValueComparer } from '../../Utils/Compare';
+import { ValueComparer, ValueComparison } from '../../Utils/Compare';
+import { IterableLike, Property } from '../../WebRx';
 
 export function renderIterable<T>(
   source: IterableLike<T> | undefined,
-  selector: (item: T, index: number, items: Array<T>) => React.ReactNode = item => item,
-  projector: (items: Array<React.ReactNode>) => React.ReactNode = items => items,
+  selector: (item: T, index: number, items: T[]) => React.ReactNode = item =>
+    item,
+  projector: (items: React.ReactNode[]) => React.ReactNode = items => items,
   sortKey?: (item: T) => any,
   sortComparer: ValueComparison<T> = ValueComparer.DefaultComparison,
   defaultSelector: () => T | undefined = () => undefined,
@@ -21,8 +22,7 @@ export function renderIterable<T>(
   let iterable = Iterable.from(source);
 
   if (sortKey != null) {
-    iterable = iterable
-      .orderBy(sortKey, sortComparer);
+    iterable = iterable.orderBy(sortKey, sortComparer);
   }
 
   return projector(
@@ -39,9 +39,13 @@ export function renderConditional(
   trueContent: () => React.ReactNode,
   falseContent: () => React.ReactNode = () => false,
 ) {
-  return (condition == null ? false : (typeof condition === 'boolean' ? condition : condition.value)) ?
-    trueContent() :
-    falseContent();
+  return (condition == null
+  ? false
+  : typeof condition === 'boolean'
+    ? condition
+    : condition.value)
+    ? trueContent()
+    : falseContent();
 }
 
 export function renderNullable<T>(
@@ -64,7 +68,7 @@ export function renderNullable<T>(
 export function focusElement<T extends HTMLElement = HTMLElement>(
   instance: React.ReactInstance | undefined | null,
 ) {
-  const elem = instance == null ? undefined : findDOMNode(instance) as T;
+  const elem = instance == null ? undefined : (findDOMNode(instance) as T);
 
   if (elem != null) {
     if (elem.focus instanceof Function) {

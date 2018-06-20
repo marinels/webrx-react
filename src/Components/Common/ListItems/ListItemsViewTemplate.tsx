@@ -1,11 +1,17 @@
 import * as React from 'react';
 
-import { PanelItemContext } from '../Panel/Panel';
 import { ItemsProps } from '../Items/ItemsView';
-import { SelectableListItem, SelectedPropsFunction } from './SelectableListItem';
+import { PanelItemContext } from '../Panel/Panel';
 import { ListItemsViewModel } from './ListItemsViewModel';
+import {
+  SelectableListItem,
+  SelectedPropsFunction,
+} from './SelectableListItem';
 
-export interface ListItemsViewTemplateProps<T = {}, TContext extends PanelItemContext = PanelItemContext> {
+export interface ListItemsViewTemplateProps<
+  T = {},
+  TContext extends PanelItemContext = PanelItemContext
+> {
   /**
    * internal passthru property
    * DO NOT SET, this property is assigned automatically by the ListItemsView
@@ -23,7 +29,9 @@ export interface ListItemsViewTemplateProps<T = {}, TContext extends PanelItemCo
   className?: string;
 }
 
-export abstract class ListItemsViewTemplate<T extends ListItemsViewTemplateProps> extends React.Component<T> {
+export abstract class ListItemsViewTemplate<
+  T extends ListItemsViewTemplateProps
+> extends React.Component<T> {
   protected getListItems() {
     return this.props.listItems as Readonly<ListItemsViewModel<{}>>;
   }
@@ -32,10 +40,18 @@ export abstract class ListItemsViewTemplate<T extends ListItemsViewTemplateProps
     return this.props.itemsProps as ItemsProps;
   }
 
-  protected renderListItem(itemTemplate: React.ReactNode, item: {}, selectedProps?: SelectedPropsFunction) {
+  protected renderListItem(
+    itemTemplate: React.ReactNode,
+    item: {},
+    selectedProps?: SelectedPropsFunction,
+  ) {
     return (
-      <SelectableListItem listItems={ this.getListItems() } item={ item } selectedProps={ selectedProps }>
-        { itemTemplate }
+      <SelectableListItem
+        listItems={this.getListItems()}
+        item={item}
+        selectedProps={selectedProps}
+      >
+        {itemTemplate}
       </SelectableListItem>
     );
   }

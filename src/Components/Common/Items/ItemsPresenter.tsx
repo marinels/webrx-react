@@ -1,11 +1,24 @@
-import * as React from 'react';
 import { Iterable } from 'ix';
+import * as React from 'react';
 
 import { IterableLike } from '../../../WebRx';
-import { Panel, StackPanel, PanelItemProps, PanelItemContext, PanelRenderProps, PanelFragment } from '../Panel';
+import {
+  PanelFragment,
+  PanelItemContext,
+  PanelItemProps,
+  PanelRenderProps,
+  StackPanel,
+} from '../Panel';
 
-export type ViewTemplate = (itemsPanel: PanelFragment, itemsPresenter: ItemsPresenter) => JSX.Element | null | false;
-export type ItemsPanelTemplate<T = {}> = (itemTemplates: Array<PanelFragment>, itemsPresenter: ItemsPresenter, items: Array<T> | undefined) => PanelFragment;
+export type ViewTemplate = (
+  itemsPanel: PanelFragment,
+  itemsPresenter: ItemsPresenter,
+) => JSX.Element | null | false;
+export type ItemsPanelTemplate<T = {}> = (
+  itemTemplates: PanelFragment[],
+  itemsPresenter: ItemsPresenter,
+  items: T[] | undefined,
+) => PanelFragment;
 
 export interface ItemsPresenterTemplateProps<T = {}> {
   /**
@@ -36,45 +49,82 @@ export interface ItemsPresenterSourceProps<T = {}> {
   itemsSource?: IterableLike<T>;
 }
 
-export interface ItemsPresenterProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ItemsPresenterTemplateProps<T>, ItemsPresenterSourceProps<T>, PanelItemProps<T, TContext>, PanelRenderProps {
-}
+export interface ItemsPresenterProps<
+  T = {},
+  TContext extends PanelItemContext = PanelItemContext
+>
+  extends ItemsPresenterTemplateProps<T>,
+    ItemsPresenterSourceProps<T>,
+    PanelItemProps<T, TContext>,
+    PanelRenderProps {}
 
-export interface ItemsPresenterComponentProps extends React.HTMLProps<any>, ItemsPresenterProps {
+export interface ItemsPresenterComponentProps
+  extends React.HTMLProps<any>,
+    ItemsPresenterProps {
   fill?: boolean;
 }
 
-export class ItemsPresenter extends React.Component<ItemsPresenterComponentProps> {
+export class ItemsPresenter extends React.Component<
+  ItemsPresenterComponentProps
+> {
   public static displayName = 'ItemsPresenter';
 
   public static defaultItemTemplate(item: {}, index: number, context?: any) {
-    return (
-      <div key={ index }>{ String.stringify(item) }</div>
-    );
+    return <div key={index}>{String.stringify(item)}</div>;
   }
 
-  public static defaultPanelTemplate(itemTemplates: Array<PanelFragment>, itemsPresenter: ItemsPresenter) {
+  public static defaultPanelTemplate(
+    itemTemplates: PanelFragment[],
+    itemsPresenter: ItemsPresenter,
+  ) {
     return (
       <StackPanel
-        itemClassName={ itemsPresenter.props.itemClassName }
-        itemStyle={ itemsPresenter.props.itemStyle }
-        itemProps={ itemsPresenter.props.itemProps }
-        compact={ itemsPresenter.props.compact }
-        emptyContent={ itemsPresenter.props.emptyContent }
+        itemClassName={itemsPresenter.props.itemClassName}
+        itemStyle={itemsPresenter.props.itemStyle}
+        itemProps={itemsPresenter.props.itemProps}
+        compact={itemsPresenter.props.compact}
+        emptyContent={itemsPresenter.props.emptyContent}
       >
-        { itemTemplates }
+        {itemTemplates}
       </StackPanel>
     );
   }
 
-  public static defaultViewTemplate(itemsPanel: PanelFragment, itemsPresenter: ItemsPresenter) {
+  public static defaultViewTemplate(
+    itemsPanel: PanelFragment,
+    itemsPresenter: ItemsPresenter,
+  ) {
     const { className, props, rest } = itemsPresenter.restProps(x => {
-      const { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent } = x;
-      return { itemsSource, viewTemplate, itemsPanelTemplate, itemTemplate, itemClassName, itemStyle, itemProps, compact, emptyContent };
+      const {
+        itemsSource,
+        viewTemplate,
+        itemsPanelTemplate,
+        itemTemplate,
+        itemClassName,
+        itemStyle,
+        itemProps,
+        compact,
+        emptyContent,
+      } = x;
+      return {
+        itemsSource,
+        viewTemplate,
+        itemsPanelTemplate,
+        itemTemplate,
+        itemClassName,
+        itemStyle,
+        itemProps,
+        compact,
+        emptyContent,
+      };
     });
 
     return (
-      <div { ...rest } className={ itemsPresenter.wxr.classNames('ItemsPresenter', className) }>
-        { itemsPanel }
+      <div
+        {...rest}
+        className={itemsPresenter.wxr.classNames('ItemsPresenter', className)}
+      >
+        {itemsPanel}
       </div>
     );
   }
@@ -88,12 +138,19 @@ export class ItemsPresenter extends React.Component<ItemsPresenterComponentProps
       return this.props.itemsPanelTemplate;
     }
 
-    if (this.props.itemsSource != null && React.Children.count(this.props.children) === 1) {
-      const itemsPanel: PanelFragment = React.Children.only(this.props.children);
+    if (
+      this.props.itemsSource != null &&
+      React.Children.count(this.props.children) === 1
+    ) {
+      const itemsPanel: PanelFragment = React.Children.only(
+        this.props.children,
+      );
 
       if (React.isValidElement<JSX.ElementChildrenAttribute>(itemsPanel)) {
         return items => {
-          const children = items.concat(React.Children.toArray(itemsPanel.props.children));
+          const children = items.concat(
+            React.Children.toArray(itemsPanel.props.children),
+          );
 
           return React.cloneElement(itemsPanel, {}, children);
         };
@@ -106,7 +163,8 @@ export class ItemsPresenter extends React.Component<ItemsPresenterComponentProps
   }
 
   protected renderItemTemplates() {
-    const template = this.props.itemTemplate || ItemsPresenter.defaultItemTemplate;
+    const template =
+      this.props.itemTemplate || ItemsPresenter.defaultItemTemplate;
 
     if (this.props.itemsSource == null) {
       return {
@@ -115,18 +173,15 @@ export class ItemsPresenter extends React.Component<ItemsPresenterComponentProps
       };
     }
 
-    const items = Iterable
-      .from(this.props.itemsSource)
-      .toArray();
+    const items = Iterable.from(this.props.itemsSource).toArray();
 
-    const itemTemplates = items
-      .map<PanelFragment>((x, i) => {
-        const item = template(x, i);
+    const itemTemplates = items.map<PanelFragment>((x, i) => {
+      const item = template(x, i);
 
-        return (item != null && React.isValidElement<any>(item) && item.key == null) ?
-          React.cloneElement(item, { key: i }) :
-          item;
-      });
+      return item != null && React.isValidElement<any>(item) && item.key == null
+        ? React.cloneElement(item, { key: i })
+        : item;
+    });
 
     return { items, itemTemplates };
   }
@@ -139,7 +194,8 @@ export class ItemsPresenter extends React.Component<ItemsPresenterComponentProps
   }
 
   protected renderViewTemplate(): JSX.Element | null | false {
-    const template = this.props.viewTemplate || ItemsPresenter.defaultViewTemplate;
+    const template =
+      this.props.viewTemplate || ItemsPresenter.defaultViewTemplate;
     const itemsPanel = this.renderPanelTemplate();
 
     if (React.isValidElement<any>(itemsPanel)) {
@@ -152,9 +208,17 @@ export class ItemsPresenter extends React.Component<ItemsPresenterComponentProps
         fill: this.props.fill,
       });
 
-      const itemsPanelProps = React.isValidElement(itemsPanel) ? itemsPanel.props : {};
+      const itemsPanelProps = React.isValidElement(itemsPanel)
+        ? itemsPanel.props
+        : {};
 
-      return template(React.cloneElement(itemsPanel, { ...itemsPresenterPanelProps, ...itemsPanelProps }), this);
+      return template(
+        React.cloneElement(itemsPanel, {
+          ...itemsPresenterPanelProps,
+          ...itemsPanelProps,
+        }),
+        this,
+      );
     }
 
     return template(itemsPanel, this);

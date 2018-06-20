@@ -1,11 +1,11 @@
-import { Observable, Subscription, Scheduler } from 'rxjs';
+import { Scheduler, Subscription } from 'rxjs';
 
-import { ReadOnlyProperty } from '../WebRx';
 import { Logging } from '../Utils';
+import { ReadOnlyProperty } from '../WebRx';
 import { HashCodec } from './HashCodec';
-import { Route, HashManager } from './Interfaces';
-import { historyStateHashManager, windowLocationHashManager } from './HashManager';
+import { historyStateHashManager } from './HashManager';
 import { getPath, normalizePath } from './Helpers';
+import { HashManager, Route } from './Interfaces';
 
 export class RouteManager extends Subscription {
   public static displayName = 'RouteManager';
@@ -15,7 +15,10 @@ export class RouteManager extends Subscription {
   private readonly hashManager: HashManager;
   public readonly currentRoute: ReadOnlyProperty<Route>;
 
-  constructor(hashManager?: HashManager, public readonly hashCodec = HashCodec.Default) {
+  constructor(
+    hashManager?: HashManager,
+    public readonly hashCodec = HashCodec.Default,
+  ) {
     super();
 
     if (hashManager == null) {
@@ -29,7 +32,10 @@ export class RouteManager extends Subscription {
       .distinctUntilChanged()
       .map(x => {
         const change = {
-          route: hashCodec.decode(x, (path, params, state) => <Route>{ path, params, state }),
+          route: hashCodec.decode(
+            x,
+            (path, params, state) => ({ path, params, state } as Route),
+          ),
           redirect: false,
         };
 
@@ -63,12 +69,12 @@ export class RouteManager extends Subscription {
       .toProperty();
 
     this.addSubscription(
-      this.redirectSubscription = routingEvents
+      (this.redirectSubscription = routingEvents
         .filter(x => x.redirect)
         .subscribe(x => {
           this.navTo(x.route.path, x.route.state, true);
-        }),
-      );
+        })),
+    );
   }
 
   public navTo(path: string, state?: any, replace = false, uriEncode = false) {
@@ -83,7 +89,7 @@ export class RouteManager extends Subscription {
 
       const hash = this.hashCodec.encode(path, state, uriEncode);
 
-      this.logger.debug(`Routing to Hash: ${ hash }`, state);
+      this.logger.debug(`Routing to Hash: ${hash}`, state);
 
       if (state != null) {
         this.logger.debug(JSON.stringify(state, null, 2));

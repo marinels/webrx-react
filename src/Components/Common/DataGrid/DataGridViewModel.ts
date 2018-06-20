@@ -1,11 +1,21 @@
 import { Iterable } from 'ix';
 import { Observable } from 'rxjs';
 
-import { IterableLike, ObservableOrValue, ObservableLike, ReadOnlyProperty, Command } from '../../../WebRx';
 import { ObjectComparer, SortDirection } from '../../../Utils/Compare';
-import { RoutingStateHandler, HandlerRoutingStateChanged } from '../../React';
+import {
+  Command,
+  IterableLike,
+  ObservableLike,
+  ObservableOrValue,
+  ReadOnlyProperty,
+} from '../../../WebRx';
+import { HandlerRoutingStateChanged, RoutingStateHandler } from '../../React';
 import { ListItemsViewModel } from '../ListItems/ListItemsViewModel';
-import { PagerViewModel, PageRequest, PagerRoutingState } from '../Pager/PagerViewModel';
+import {
+  PageRequest,
+  PagerRoutingState,
+  PagerViewModel,
+} from '../Pager/PagerViewModel';
 
 export interface SortArgs {
   field: string;
@@ -28,19 +38,25 @@ export interface DataGridRoutingState {
   sorting?: SortArgs;
 }
 
-export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewModel<T> implements RoutingStateHandler<DataGridRoutingState> {
+export class DataGridViewModel<T, TRequestContext = any>
+  extends ListItemsViewModel<T>
+  implements RoutingStateHandler<DataGridRoutingState> {
   public static displayName = 'DataGridViewModel';
 
   public static DefaultRateLimit = 100;
 
-  protected readonly processRequests: Command<any>;
+  protected readonly processRequests: Command;
   protected readonly comparer: ObjectComparer<T>;
 
   public readonly pager: PagerViewModel | null;
 
   public readonly isLoading: ReadOnlyProperty<boolean>;
-  public readonly requests: ReadOnlyProperty<DataSourceRequest<TRequestContext> | undefined>;
-  public readonly responses: ReadOnlyProperty<DataSourceResponse<T> | undefined>;
+  public readonly requests: ReadOnlyProperty<
+    DataSourceRequest<TRequestContext> | undefined
+  >;
+  public readonly responses: ReadOnlyProperty<
+    DataSourceResponse<T> | undefined
+  >;
   public readonly projectedSource: ReadOnlyProperty<IterableLike<T>>;
   public readonly projectedCount: ReadOnlyProperty<number>;
   public readonly sorting: ReadOnlyProperty<SortArgs>;
@@ -63,33 +79,31 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
   ) {
     super(source);
 
-    this.pager = pager === null ? null : (pager || new PagerViewModel());
-    this.comparer = String.isString(comparer) ? new ObjectComparer<T>(comparer) : comparer;
+    this.pager = pager === null ? null : pager || new PagerViewModel();
+    this.comparer = String.isString(comparer)
+      ? new ObjectComparer<T>(comparer)
+      : comparer;
 
     this.processRequests = this.wx.command();
     this.sort = this.wx.command<SortArgs>();
     this.toggleSortDirection = this.wx.command<string>();
 
-    this.sorting = this.wx
-      .whenAny(this.sort, x => x)
-      .toProperty();
+    this.sorting = this.wx.whenAny(this.sort, x => x).toProperty();
 
     this.requests = this.getRequests(context)
       // combineLatest will "gate" the requests until the processRequests command is invoked
       .combineLatest(this.processRequests.results.take(1), x => x)
       .toProperty(undefined, false);
 
-    this.responses = this.getResponses(this.requests, rateLimit)
-      .toProperty(undefined, false);
+    this.responses = this.getResponses(this.requests, rateLimit).toProperty(
+      undefined,
+      false,
+    );
 
-    this.isLoading = Observable
-      .merge(
-        this.requests.changed
-          .map(() => true),
-        this.responses.changed
-          .map(() => false),
-      )
-      .toProperty(true);
+    this.isLoading = Observable.merge(
+      this.requests.changed.map(() => true),
+      this.responses.changed.map(() => false),
+    ).toProperty(true);
 
     const validResponses = this.wx
       .whenAny(this.responses, x => x)
@@ -100,17 +114,12 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
       .map(x => x.items)
       .toProperty(Iterable.empty<T>(), false);
 
-    this.projectedCount = validResponses
-      .map(x => x.count)
-      .toProperty();
+    this.projectedCount = validResponses.map(x => x.count).toProperty();
 
     if (this.pager != null) {
       this.addSubscription(
         this.wx
-          .whenAny(
-            this.projectedCount,
-            x => x,
-          )
+          .whenAny(this.projectedCount, x => x)
           .filterNull()
           .invokeCommand(this.pager.updateCount),
       );
@@ -124,10 +133,7 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
 
     this.addSubscription(
       this.wx
-        .whenAny(
-          this.toggleSortDirection,
-          x => x,
-        )
+        .whenAny(this.toggleSortDirection, x => x)
         .withLatestFrom(
           this.wx.whenAny(this.requests, x => x),
           (field, request) => ({ field, request }),
@@ -145,19 +151,14 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
 
     this.addSubscription(
       this.wx
-        .whenAny(
-          this.sort,
-          x => this.selectedItems.value,
-        )
+        .whenAny(this.sort, x => this.selectedItems.value)
         .invokeCommand(this.selectItems),
     );
 
     this.addSubscription(
-      this.wx
-        .whenAny(this.sort, x => x)
-        .subscribe(x => {
-          this.notifyChanged(x);
-        }),
+      this.wx.whenAny(this.sort, x => x).subscribe(x => {
+        this.notifyChanged(x);
+      }),
     );
   }
 
@@ -165,9 +166,13 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
     return true;
   }
 
-  createRoutingState(changed?: HandlerRoutingStateChanged): DataGridRoutingState {
+  createRoutingState(
+    changed?: HandlerRoutingStateChanged,
+  ): DataGridRoutingState {
     return Object.trim({
-      pager: this.getRoutingStateValue(this.pager, x => x.createRoutingState(changed)),
+      pager: this.getRoutingStateValue(this.pager, x =>
+        x.createRoutingState(changed),
+      ),
       sorting: this.getRoutingStateValue(this.sorting.value),
     });
   }
@@ -200,15 +205,19 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
       return true;
     }
 
-    return (
-      sort.direction !== sorting.direction ||
-      sort.field !== sorting.field
-    );
+    return sort.direction !== sorting.direction || sort.field !== sorting.field;
   }
 
-  protected getReverseSortDirection(field: string, request: DataSourceRequest | undefined) {
+  protected getReverseSortDirection(
+    field: string,
+    request: DataSourceRequest | undefined,
+  ) {
     // we have no sort direction state
-    if (request == null || request.sort == null || request.sort.direction == null) {
+    if (
+      request == null ||
+      request.sort == null ||
+      request.sort.direction == null
+    ) {
       return SortDirection.Ascending;
     }
 
@@ -218,9 +227,9 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
     }
 
     // reverse the current sort direction
-    return request.sort.direction === SortDirection.Ascending ?
-      SortDirection.Descending :
-      SortDirection.Ascending;
+    return request.sort.direction === SortDirection.Ascending
+      ? SortDirection.Descending
+      : SortDirection.Ascending;
   }
 
   protected getRequest(
@@ -237,53 +246,62 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
   }
 
   protected getRequests(context?: ObservableLike<TRequestContext>) {
-    const pagerObservable = this.pager == null ?
-      Observable.of(undefined) :
-      this.pager.requests;
+    const pagerObservable =
+      this.pager == null ? Observable.of(undefined) : this.pager.requests;
 
     const source = this.wx
       .whenAny(this.source, x => x)
       .filter(x => x !== this.emptySource);
 
-    return this.wx
-      .whenAny(
-        source,
-        pagerObservable,
-        this.sorting,
-        context || Observable.of(undefined),
-        (src, page, sort, ctx) => {
-          return this.getRequest(src, page, sort, ctx);
-        },
-      );
+    return this.wx.whenAny(
+      source,
+      pagerObservable,
+      this.sorting,
+      context || Observable.of(undefined),
+      (src, page, sort, ctx) => {
+        return this.getRequest(src, page, sort, ctx);
+      },
+    );
   }
 
-  protected getResponse(request: DataSourceRequest<TRequestContext> | undefined): ObservableOrValue<DataSourceResponse<T> | undefined> {
+  protected getResponse(
+    request: DataSourceRequest<TRequestContext> | undefined,
+  ): ObservableOrValue<DataSourceResponse<T> | undefined> {
     if (request == null) {
       return undefined;
     }
 
-    const items = Iterable
-      .from(this.source.value);
+    const items = Iterable.from(this.source.value);
 
     return this.getResponseFromItems(items, request);
   }
 
-  protected getResponseFromItems(items: Iterable<T>, request: DataSourceRequest<TRequestContext>): ObservableOrValue<DataSourceResponse<T> | undefined> {
+  protected getResponseFromItems(
+    items: Iterable<T>,
+    request: DataSourceRequest<TRequestContext>,
+  ): ObservableOrValue<DataSourceResponse<T> | undefined> {
     const count = items.count();
 
-    if (this.comparer != null && request.sort != null && !String.isNullOrEmpty(request.sort.field) && request.sort.direction != null) {
-      items = this.comparer.sortIterable(items, request.sort.field, request.sort.direction);
+    if (
+      this.comparer != null &&
+      request.sort != null &&
+      !String.isNullOrEmpty(request.sort.field) &&
+      request.sort.direction != null
+    ) {
+      items = this.comparer.sortIterable(
+        items,
+        request.sort.field,
+        request.sort.direction,
+      );
     }
 
     if (request.page != null) {
       if ((request.page.offset || 0) > 0) {
-        items = items
-          .skip(request.page.offset);
+        items = items.skip(request.page.offset);
       }
 
       if ((request.page.limit || 0) > 0) {
-        items = items
-          .take(request.page.limit);
+        items = items.take(request.page.limit);
       }
     }
 
@@ -297,19 +315,17 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
     requests?: ObservableLike<DataSourceRequest<TRequestContext> | undefined>,
     rateLimit = DataGridViewModel.DefaultRateLimit,
   ) {
-    return this.wx
-      .whenAny(requests || this.requests, x => x)
-      // because requests can be injected here, we cannot trust that nulls are not already filtered out
-      // so we filter here just to be safe (this should be a no-op in most cases)
-      .filterNull()
-      .debounceTime(rateLimit)
-      .flatMap(x => {
-        return Observable
-          .defer(() => {
-            return this.wx
-              .getObservable(this.getResponse(x));
-          })
-          .catch(e => {
+    return (
+      this.wx
+        .whenAny(requests || this.requests, x => x)
+        // because requests can be injected here, we cannot trust that nulls are not already filtered out
+        // so we filter here just to be safe (this should be a no-op in most cases)
+        .filterNull()
+        .debounceTime(rateLimit)
+        .flatMap(x => {
+          return Observable.defer(() => {
+            return this.wx.getObservable(this.getResponse(x));
+          }).catch(e => {
             this.alertForError(e, 'Data Response Error');
 
             return this.wx.getObservable<DataSourceResponse<T>>({
@@ -317,7 +333,8 @@ export class DataGridViewModel<T, TRequestContext = any> extends ListItemsViewMo
               count: 0,
             });
           });
-      })
-      .filterNull();
+        })
+        .filterNull()
+    );
   }
 }

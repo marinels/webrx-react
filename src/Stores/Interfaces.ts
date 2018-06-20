@@ -1,4 +1,4 @@
-import { Observable, AjaxRequest } from 'rxjs';
+import { AjaxRequest, Observable } from 'rxjs';
 
 import { ObservableLike } from '../WebRx';
 
@@ -19,7 +19,10 @@ export interface ObservableApiError {
   response?: any;
 }
 
-export type SampleDataAction = (params?: any, data?: any) => (ObservableLike<{} | undefined>);
+export type SampleDataAction = (
+  params?: any,
+  data?: any,
+) => ObservableLike<{} | undefined>;
 export type SampleDataActionSet = StringMap<SampleDataAction>;
 
 export interface SampleDataStore {
@@ -27,8 +30,16 @@ export interface SampleDataStore {
 }
 
 export interface SampleDataApi {
-  observe<T>(action: string, params?: any, data?: any, cloneResult?: boolean): Observable<T>;
-  getStoreValue<T, TStore extends SampleDataStore>(name: string, selector: (store: TStore) => T): T | undefined;
+  observe<T>(
+    action: string,
+    params?: any,
+    data?: any,
+    cloneResult?: boolean,
+  ): Observable<T>;
+  getStoreValue<T, TStore extends SampleDataStore>(
+    name: string,
+    selector: (store: TStore) => T,
+  ): T | undefined;
 }
 
 export type SampleDataCreator = () => SampleDataApi;
@@ -38,10 +49,31 @@ export interface StoreApi {
   readonly base: string;
   readonly baseUri: string;
 
-  observe<T>(action: string, params?: any, data?: any, method?: HttpRequestMethod, options?: AjaxRequest, baseUri?: string): Observable<T>;
-  getObservable<T>(action: string, params?: any, options?: AjaxRequest, baseUri?: string): Observable<T>;
-  postObservable<T>(action: string, data?: any, params?: any, options?: AjaxRequest, baseUri?: string): Observable<T>;
-  getSampleStoreValue<T, TStore extends SampleDataStore>(name: string, selector: (data: TStore) => T): T | undefined;
+  observe<T>(
+    action: string,
+    params?: any,
+    data?: any,
+    method?: HttpRequestMethod,
+    options?: AjaxRequest,
+    baseUri?: string,
+  ): Observable<T>;
+  getObservable<T>(
+    action: string,
+    params?: any,
+    options?: AjaxRequest,
+    baseUri?: string,
+  ): Observable<T>;
+  postObservable<T>(
+    action: string,
+    data?: any,
+    params?: any,
+    options?: AjaxRequest,
+    baseUri?: string,
+  ): Observable<T>;
+  getSampleStoreValue<T, TStore extends SampleDataStore>(
+    name: string,
+    selector: (data: TStore) => T,
+  ): T | undefined;
 }
 
 export interface Store {

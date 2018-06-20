@@ -1,4 +1,4 @@
-import { Observable, Scheduler } from  'rxjs';
+import { Observable } from 'rxjs';
 
 export interface Route {
   path: string;
@@ -10,5 +10,10 @@ export interface Route {
 export interface HashManager {
   readonly hashChanged: Observable<string>;
   // hash will contain the # prefix
-  updateHash: (hash: string, state: {}, title: string, replace: boolean) => void;
+  updateHash: (
+    hash: string,
+    state: {},
+    title: string,
+    replace: boolean,
+  ) => void;
 }

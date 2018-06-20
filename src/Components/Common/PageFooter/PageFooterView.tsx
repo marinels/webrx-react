@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { Observable } from 'rxjs';
 import * as moment from 'moment';
-import { Grid, Row, Col } from 'react-bootstrap';
+import * as React from 'react';
+import { Col, Grid, Row } from 'react-bootstrap';
+import { Observable } from 'rxjs';
 
 import { BaseView, BaseViewProps } from '../../React';
 import { PageFooterViewModel, ViewportDimensions } from './PageFooterViewModel';
@@ -12,26 +12,29 @@ export interface PageFooterProps {
   copyrightUri?: string;
   footerContent?: any;
   hideDimensions?: boolean;
+  responsive?: boolean;
 }
 
-export interface PageFooterViewProps extends BaseViewProps<PageFooterViewModel>, PageFooterProps {
-}
+export interface PageFooterViewProps
+  extends BaseViewProps<PageFooterViewModel>,
+    PageFooterProps {}
 
-export class PageFooterView extends BaseView<PageFooterViewProps, PageFooterViewModel> {
+export class PageFooterView extends BaseView<
+  PageFooterViewProps,
+  PageFooterViewModel
+> {
   public static displayName = 'PageFooterView';
 
-  static defaultProps: Partial<PageFooterProps> = {
-  };
+  static defaultProps: Partial<PageFooterProps> = {};
 
-  constructor(props: PageFooterViewProps, context?: any) {
-    super(props, context);
+  constructor(props: any) {
+    super(props);
 
     this.bindObservableToCommand(
-      Observable
-        .merge(
-          Observable.fromEvent<UIEvent>(window, 'resize'),
-          Observable.fromEvent<Event>(window, 'orientationchange'),
-        )
+      Observable.merge(
+        Observable.fromEvent<UIEvent>(window, 'resize'),
+        Observable.fromEvent<Event>(window, 'orientationchange'),
+      )
         .startWith(undefined as any)
         .map(() => this.getDimensions()),
       x => x.viewportDimensionsChanged,
@@ -46,23 +49,35 @@ export class PageFooterView extends BaseView<PageFooterViewProps, PageFooterView
   }
 
   updateOn(viewModel: Readonly<PageFooterViewModel>) {
-    return [
-      viewModel.viewportDimensions.changed,
-    ];
+    return [viewModel.viewportDimensions.changed];
   }
 
   render() {
     const { className, props, rest } = this.restProps(x => {
-      const { copyright, copyrightYear, copyrightUri, footerContent, hideDimensions } = x;
-      return { copyright, copyrightYear, copyrightUri, footerContent, hideDimensions };
+      const {
+        copyright,
+        copyrightYear,
+        copyrightUri,
+        footerContent,
+        hideDimensions,
+        responsive,
+      } = x;
+      return {
+        copyright,
+        copyrightYear,
+        copyrightUri,
+        footerContent,
+        hideDimensions,
+        responsive,
+      };
     });
 
     const copyrightContent = this.wxr.renderConditional(
       props.copyright !== false,
       () => (
-        <span className='PageFooter-text'>
-          { `© ${ this.renderCopyrightYear() } `}
-          { this.renderCopyrightText() }
+        <span className="PageFooter-text">
+          {`© ${this.renderCopyrightYear()} `}
+          {this.renderCopyrightText()}
         </span>
       ),
     );
@@ -70,41 +85,36 @@ export class PageFooterView extends BaseView<PageFooterViewProps, PageFooterView
     const dimensions = this.wxr.renderConditional(
       props.hideDimensions !== true,
       () => (
-        <span className='PageFooter-viewport PageFooter-text text-muted'>
-          { this.renderDimensions() }
+        <span className="PageFooter-viewport PageFooter-text text-muted">
+          {this.renderDimensions()}
         </span>
       ),
     );
 
     return (
-      <div { ...rest } className={ this.wxr.classNames('PageFooter', className) }>
-        <Grid>
+      <div {...rest} className={this.wxr.classNames('PageFooter', className)}>
+        <Grid fluid={props.responsive}>
           <Row>
-            <Col md={ 12 }>
-              <div className='PageFooter-container'>
-                { copyrightContent }
-                {
-                  this.wxr.renderConditional(
-                    copyrightContent != null && dimensions != null,
-                    () => (<span className='PageFooter-spacer text-muted'> | </span>),
-                  )
-                }
-                { dimensions }
+            <Col md={12}>
+              <div className="PageFooter-container">
+                {copyrightContent}
+                {this.wxr.renderConditional(
+                  copyrightContent != null && dimensions != null,
+                  () => (
+                    <span className="PageFooter-spacer text-muted"> | </span>
+                  ),
+                )}
+                {dimensions}
               </div>
             </Col>
           </Row>
-          {
-            this.wxr.renderNullable(
-              props.footerContent,
-              x => (
-                <Row>
-                  <Col md={ 12 }>
-                    <div className='PageFooter-container'>{ x }</div>
-                  </Col>
-                </Row>
-              ),
-            )
-          }
+          {this.wxr.renderNullable(props.footerContent, x => (
+            <Row>
+              <Col md={12}>
+                <div className="PageFooter-container">{x}</div>
+              </Col>
+            </Row>
+          ))}
         </Grid>
       </div>
     );
@@ -121,9 +131,7 @@ export class PageFooterView extends BaseView<PageFooterViewProps, PageFooterView
   private renderCopyrightText() {
     return this.wxr.renderNullable(
       this.props.copyrightUri,
-      x => (
-        <a href={ x }>{ this.props.copyright || '' }</a>
-      ),
+      x => <a href={x}>{this.props.copyright || ''}</a>,
       () => this.props.copyright || '',
     );
   }
@@ -132,9 +140,9 @@ export class PageFooterView extends BaseView<PageFooterViewProps, PageFooterView
     const dim = this.viewModel.viewportDimensions.value;
 
     return this.wxr.renderConditional(
-      (dim == null || dim.width === 0 || dim.height === 0),
+      dim == null || dim.width === 0 || dim.height === 0,
       () => 'Measuring...',
-      () => `Viewport: ${ dim.width }x${ dim.height }`,
+      () => `Viewport: ${dim.width}x${dim.height}`,
     );
   }
 }

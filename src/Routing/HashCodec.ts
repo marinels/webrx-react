@@ -1,5 +1,5 @@
-import param = require('jquery-param');
 import deparam = require('jquery-deparam');
+import param = require('jquery-param');
 
 export class HashCodec {
   public static readonly displayName = 'HashCodec';
@@ -10,9 +10,9 @@ export class HashCodec {
   public static readonly HashPattern = '';
 
   private normalizePath(path: string) {
-    const matches = String.isNullOrEmpty(path) ?
-      undefined :
-      /^\/*(\/.*?\/?)\/*$/.exec('/' + path);
+    const matches = String.isNullOrEmpty(path)
+      ? undefined
+      : /^\/*(\/.*?\/?)\/*$/.exec('/' + path);
 
     return matches == null ? '' : matches[1];
   }
@@ -21,15 +21,14 @@ export class HashCodec {
     let path: string;
     let params: string | undefined;
 
-    const matches = String.isNullOrEmpty(hash) ?
-      undefined :
-      /#(\/[^?]*)(\?.*)/g.exec(hash);
+    const matches = String.isNullOrEmpty(hash)
+      ? undefined
+      : /#(\/[^?]*)(\?.*)/g.exec(hash);
 
     if (matches) {
       path = matches[1];
       params = matches[2];
-    }
-    else {
+    } else {
       path = hash;
 
       if (path.length > 0 && path[0] === '#') {
@@ -43,7 +42,7 @@ export class HashCodec {
   }
 
   private santize(hash: string | undefined) {
-    return (String.isNullOrEmpty(hash) || hash[0] !== '#') ? '#/' : hash;
+    return String.isNullOrEmpty(hash) || hash[0] !== '#' ? '#/' : hash;
   }
 
   public encode(path: string, state: {}, uriEncode = false) {
@@ -62,7 +61,10 @@ export class HashCodec {
     return hash;
   }
 
-  public decode<T>(hash: string | undefined, selector: (path: string, params: string | undefined, state: {}) => T) {
+  public decode<T>(
+    hash: string | undefined,
+    selector: (path: string, params: string | undefined, state: {}) => T,
+  ) {
     hash = this.santize(hash);
 
     const { path, params } = this.getPathAndParams(hash);
@@ -70,7 +72,10 @@ export class HashCodec {
     let state = {};
 
     if (params != null && params.length > 0) {
-      const obj: {} = deparam(params[0] === '?' ? params.substring(1) : params, true);
+      const obj: {} = deparam(
+        params[0] === '?' ? params.substring(1) : params,
+        true,
+      );
 
       if (obj) {
         state = obj;
