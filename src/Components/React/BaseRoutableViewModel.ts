@@ -1,12 +1,11 @@
-import { Observable } from 'rxjs';
-
-import { ReadOnlyProperty, Property, Command } from '../../WebRx';
-import { BaseViewModel } from './BaseViewModel';
+import { Command, ReadOnlyProperty } from '../../WebRx';
 import { HeaderCommandAction, HeaderMenu } from './Actions';
-import { PubSub } from '../../Utils';
-import { HandlerRoutingStateChanged, RoutingStateHandler, Search } from './Interfaces';
+import { BaseViewModel } from './BaseViewModel';
+import { HandlerRoutingStateChanged, RoutingStateHandler } from './Interfaces';
 
-export function isRoutableViewModel(value: any): value is BaseRoutableViewModel<any> {
+export function isRoutableViewModel(
+  value: any,
+): value is BaseRoutableViewModel<any> {
   if (value == null) {
     return false;
   }
@@ -28,20 +27,29 @@ export interface RoutingBreadcrumb {
   tooltip?: any;
 }
 
-export abstract class BaseRoutableViewModel<T> extends BaseViewModel implements RoutingStateHandler<T> {
+export abstract class BaseRoutableViewModel<T> extends BaseViewModel
+  implements RoutingStateHandler<T> {
   public static displayName = 'BaseRoutableViewModel';
 
   protected readonly updateDocumentTitle: Command<string>;
-  protected readonly updateRoutingBreadcrumbs: Command<Array<RoutingBreadcrumb> | undefined>;
+  protected readonly updateRoutingBreadcrumbs: Command<
+    RoutingBreadcrumb[] | undefined
+  >;
 
   public readonly documentTitle: ReadOnlyProperty<string>;
-  public readonly breadcrumbs: ReadOnlyProperty<Array<RoutingBreadcrumb> | undefined>;
+  public readonly breadcrumbs: ReadOnlyProperty<
+    RoutingBreadcrumb[] | undefined
+  >;
 
   constructor() {
     super();
 
-    this.updateDocumentTitle = this.wx.command((title: any) => (title || '').toString());
-    this.updateRoutingBreadcrumbs = this.wx.command<Array<RoutingBreadcrumb> | undefined>();
+    this.updateDocumentTitle = this.wx.command((title: any) =>
+      (title || '').toString(),
+    );
+    this.updateRoutingBreadcrumbs = this.wx.command<
+      RoutingBreadcrumb[] | undefined
+    >();
 
     this.documentTitle = this.updateDocumentTitle.results.toProperty();
     this.breadcrumbs = this.wx
@@ -67,31 +75,31 @@ export abstract class BaseRoutableViewModel<T> extends BaseViewModel implements 
     return Object.getName(this);
   }
 
-  public getSearch(): Search | undefined {
+  public getSearch(): {} | undefined {
     return undefined;
   }
 
-  public getSidebarMenus(): Array<HeaderMenu> {
+  public getSidebarMenus(): HeaderMenu[] {
     return [];
   }
 
-  public getNavbarMenus(): Array<HeaderMenu> {
+  public getNavbarMenus(): HeaderMenu[] {
     return [];
   }
 
-  public getNavbarActions(): Array<HeaderCommandAction> {
+  public getNavbarActions(): HeaderCommandAction[] {
     return [];
   }
 
-  public getHelpMenuItems(): Array<HeaderCommandAction> {
+  public getHelpMenuItems(): HeaderCommandAction[] {
     return [];
   }
 
-  public getAdminMenuItems(): Array<HeaderCommandAction> {
+  public getAdminMenuItems(): HeaderCommandAction[] {
     return [];
   }
 
-  public getUserMenuItems(): Array<HeaderCommandAction> {
+  public getUserMenuItems(): HeaderCommandAction[] {
     return [];
   }
   // -------------------------------------------------------

@@ -43,21 +43,21 @@ _TBD_
 
 If you are developing for `webrx-react`, the best strategy is to  run `npm start` and use the [browser](http://localhost:3000/) to test out your changes.
 
-You can also run `npm run watch-test` if you are working on tests, or `npm run lint` if you want to fix linter errors.
+You can also run `npm run watch:test` if you are working on tests, or `npm run lint` if you want to fix linter errors.
 
 ### Build Testing
 
-Sometimes it may be useful to test development builds against an existing project. This is possible through the `deploy-modules` script and providing a custom `dest` path. You will want to first install `webrx-react` through `npm` into the other project, then you can use the command below to perform a test build and custom deploy to your project path.
+Sometimes it may be useful to test development builds against an existing project. This is possible through the `deploy:modules` script and providing a custom `dest` path. You will want to first install `webrx-react` through `npm` into the other project, then you can use the command below to perform a test build and custom deploy to your project path.
 
 ```ts
-npm run version-modules && npm run build-modules && npm run deploy-modules -- --env.dest /path/to/project/node_modules/webrx-react
+npm run version:modules && npm run build:modules && npm run deploy:modules -- --env.dest /path/to/project/node_modules/webrx-react
 ```
 
-**NOTE** that not all npm files are deployed using this script, there are a number of files at the root of `webrx-react` that do not get deployed but are required for various build processes. The reason these files do not get deployed is that their source and destination paths are typically the same. If required, you can manually copy the files at the root into `build/modules` after running the `build-modules` script and then re-run the `deploy-modules` script to deploy all files to a custom path.
+**NOTE** that not all npm files are deployed using this script, there are a number of files at the root of `webrx-react` that do not get deployed but are required for various build processes. The reason these files do not get deployed is that their source and destination paths are typically the same. If required, you can manually copy the files at the root into `build/modules` after running the `build:modules` script and then re-run the `deploy:modules` script to deploy all files to a custom path.
 
 ### Deploying Github Pages
 
-The Github pages bundle can be deployed using the `npm run bundle-docs` script. Once run, the changes need to be pushed up to the `master` branch in order for the changes to be visible on Github pages.
+The Github pages bundle can be deployed using the `npm run bundle:docs` script. Once run, the changes need to be pushed up to the `master` branch in order for the changes to be visible on Github pages.
 
 ### Bundle Profiling
 

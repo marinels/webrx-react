@@ -1,12 +1,17 @@
-import { should, sandbox, sinon } from '../setup';
-import { Alert, Default as AlertDefault, create, createForError } from '../../src/Utils/Alert';
-import { PubSub, Default as PubSubDefault } from '../../src/Utils/PubSub';
-import { AlertCreatedKey, AlertCreated } from '../../src/Events/AlertCreated';
+import { AlertCreated, AlertCreatedKey } from '../../src/Events/AlertCreated';
+import {
+  Alert,
+  create,
+  createForError,
+  Default as AlertDefault,
+} from '../../src/Utils/Alert';
+import { Default as PubSubDefault, PubSub } from '../../src/Utils/PubSub';
+import { sandbox, should, sinon } from '../setup';
 
 describe('Utils', () => {
   describe('Alert', () => {
-    const mock = <{ publish: sinon.SinonStub }>{};
-    const pubSub = <PubSub><any>mock;
+    const mock = {} as { publish: sinon.SinonStub };
+    const pubSub = (mock as any) as PubSub;
 
     describe('create', () => {
       it('publishes alerts with only content', () => {
@@ -15,7 +20,10 @@ describe('Utils', () => {
         new Alert(pubSub).create('test');
 
         mock.publish.should.have.been.calledOnce;
-        mock.publish.should.have.been.calledWith(AlertCreatedKey, sinon.match({ content: 'test'}));
+        mock.publish.should.have.been.calledWith(
+          AlertCreatedKey,
+          sinon.match({ content: 'test' }),
+        );
       });
 
       it('publishes alerts with only header', () => {
@@ -24,7 +32,10 @@ describe('Utils', () => {
         new Alert(pubSub).create(null, 'test');
 
         mock.publish.should.have.been.calledOnce;
-        mock.publish.should.have.been.calledWith(AlertCreatedKey, sinon.match({ header: 'test' }));
+        mock.publish.should.have.been.calledWith(
+          AlertCreatedKey,
+          sinon.match({ header: 'test' }),
+        );
       });
 
       it('publishes alerts with a style override', () => {
@@ -33,7 +44,10 @@ describe('Utils', () => {
         new Alert(pubSub).create('test', undefined, 'danger');
 
         mock.publish.should.have.been.calledOnce;
-        mock.publish.should.have.been.calledWith(AlertCreatedKey, sinon.match({ content: 'test', style: 'danger' }));
+        mock.publish.should.have.been.calledWith(
+          AlertCreatedKey,
+          sinon.match({ content: 'test', style: 'danger' }),
+        );
       });
 
       it('publishes alerts with a timeout override', () => {
@@ -42,7 +56,10 @@ describe('Utils', () => {
         new Alert(pubSub).create('test', undefined, undefined, 1000);
 
         mock.publish.should.have.been.calledOnce;
-        mock.publish.should.have.been.calledWith(AlertCreatedKey, sinon.match({ content: 'test', timeout: 1000 }));
+        mock.publish.should.have.been.calledWith(
+          AlertCreatedKey,
+          sinon.match({ content: 'test', timeout: 1000 }),
+        );
       });
 
       it('ignores calls where both header and content are null', () => {
@@ -69,7 +86,7 @@ describe('Utils', () => {
     describe('Default', () => {
       it('is a default alert instance that uses the default PubSub', () => {
         should.exist(AlertDefault);
-        (<any>AlertDefault).pubSub.should.equal(PubSubDefault);
+        (AlertDefault as any).pubSub.should.equal(PubSubDefault);
       });
     });
 

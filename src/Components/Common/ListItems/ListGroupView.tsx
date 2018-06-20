@@ -1,20 +1,34 @@
 import * as React from 'react';
 
-import { PanelView } from './PanelView';
 import { ItemsPresenter } from '../Items/ItemsPresenter';
-import { ListItemsViewTemplate, ListItemsViewTemplateProps } from './ListItemsViewTemplate';
 import { ListGroupPanel } from '../Panel/ListGroupPanel';
-import { PanelFragment, PanelItemContext } from '../Panel/Panel';
-import { ListItemsViewModel } from './ListItemsViewModel';
+import { PanelItemContext } from '../Panel/Panel';
+import {
+  ListItemsViewTemplate,
+  ListItemsViewTemplateProps,
+} from './ListItemsViewTemplate';
+import { PanelView } from './PanelView';
 
-export interface ListGroupViewProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ListItemsViewTemplateProps<T, TContext> {
+export interface ListGroupViewProps<
+  T = {},
+  TContext extends PanelItemContext = PanelItemContext
+> extends ListItemsViewTemplateProps<T, TContext> {
   fill?: boolean;
 }
 
-export interface ListGroupViewComponentProps extends React.HTMLProps<any>, ListGroupViewProps {
-}
+export interface ListGroupViewComponentProps
+  extends React.HTMLProps<any>,
+    ListGroupViewProps {}
 
-export class ListGroupView extends ListItemsViewTemplate<ListGroupViewComponentProps> {
+export class ListGroupView extends ListItemsViewTemplate<
+  ListGroupViewComponentProps
+> {
+  constructor(props: any) {
+    super(props);
+
+    this.renderListItemPanel = this.renderListItemPanel.bind(this);
+  }
+
   render() {
     const { className, children, props, rest } = this.restProps(x => {
       const { fill, listItems, itemsProps } = x;
@@ -23,22 +37,24 @@ export class ListGroupView extends ListItemsViewTemplate<ListGroupViewComponentP
 
     return (
       <PanelView
-        className={ className }
-        itemsPanelTemplate={ this.renderListItemPanel.bind(this) }
-        listItems={ props.listItems }
-        itemsProps={ props.itemsProps }
-        { ...this.trimProps(rest) }
+        className={className}
+        itemsPanelTemplate={this.renderListItemPanel}
+        listItems={props.listItems}
+        itemsProps={props.itemsProps}
+        {...this.trimProps(rest)}
       >
-        { children }
+        {children}
       </PanelView>
     );
   }
 
-  protected renderListItemPanel(itemTemplates: Array<React.ReactNode>, itemsPresenter: ItemsPresenter, items: Array<{}> | undefined) {
+  protected renderListItemPanel(
+    itemTemplates: React.ReactNode[],
+    itemsPresenter: ItemsPresenter,
+    items: Array<{}> | undefined,
+  ) {
     return (
-      <ListGroupPanel fill={ this.props.fill }>
-        { itemTemplates }
-      </ListGroupPanel>
+      <ListGroupPanel fill={this.props.fill}>{itemTemplates}</ListGroupPanel>
     );
   }
 }

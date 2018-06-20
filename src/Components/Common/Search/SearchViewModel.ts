@@ -1,7 +1,11 @@
 import { Observable } from 'rxjs';
 
-import { ReadOnlyProperty, Property, Command } from '../../../WebRx';
-import { BaseViewModel, RoutingStateHandler, HandlerRoutingStateChanged } from '../../React';
+import { Command, Property, ReadOnlyProperty } from '../../../WebRx';
+import {
+  BaseViewModel,
+  HandlerRoutingStateChanged,
+  RoutingStateHandler,
+} from '../../React';
 
 export interface SearchRequest {
   filter: string;
@@ -12,19 +16,23 @@ export interface SearchRoutingState {
   filter?: string;
 }
 
-export class SearchViewModel extends BaseViewModel implements RoutingStateHandler<SearchRoutingState> {
+export class SearchViewModel extends BaseViewModel
+  implements RoutingStateHandler<SearchRoutingState> {
   public static displayName = 'SearchViewModel';
 
-  protected readonly processRequests: Command<any>;
+  protected readonly processRequests: Command;
 
   public readonly filter: Property<string>;
   public readonly requests: ReadOnlyProperty<SearchRequest>;
   public readonly searchPending: ReadOnlyProperty<boolean>;
 
-  public readonly search: Command<any>;
-  public readonly clear: Command<any>;
+  public readonly search: Command;
+  public readonly clear: Command;
 
-  constructor(private readonly liveSearchTimeout = 500, private readonly isCaseInsensitive = true) {
+  constructor(
+    private readonly liveSearchTimeout = 500,
+    private readonly isCaseInsensitive = true,
+  ) {
     super();
 
     this.processRequests = this.wx.command();
@@ -43,30 +51,26 @@ export class SearchViewModel extends BaseViewModel implements RoutingStateHandle
           // debounce a little extra to protect against too many search invocations
           .debounceTime(250),
         // "gate" the requests until the processRequests command is invoked
-        this.processRequests.results
-          .take(1),
+        this.processRequests.results.take(1),
         x => x,
       )
       // then map into a search request with regex
-      .map(x => (<SearchRequest>{
-        filter: this.filter.value,
-        regex: this.createRegex(this.filter.value),
-      }))
+      .map(
+        x =>
+          ({
+            filter: this.filter.value,
+            regex: this.createRegex(this.filter.value),
+          } as SearchRequest),
+      )
       .toProperty();
 
-    this.searchPending = Observable
-      .merge(
-        Observable
-          .merge(
-            this.filter.changed
-              .map(() => true),
-            this.search.results
-              .map(() => true),
-          ),
-        this.requests.changed
-          .map(() => false),
-      )
-      .toProperty(false);
+    this.searchPending = Observable.merge(
+      Observable.merge(
+        this.filter.changed.map(() => true),
+        this.search.results.map(() => true),
+      ),
+      this.requests.changed.map(() => false),
+    ).toProperty(false);
 
     // check to see if we should queue up an initial search
     this.processRequests.results
@@ -78,11 +82,9 @@ export class SearchViewModel extends BaseViewModel implements RoutingStateHandle
       .invokeCommand(this.search);
 
     this.addSubscription(
-      this.wx
-        .whenAny(this.clear, x => x)
-        .subscribe(() => {
-          this.filter.value = '';
-        }),
+      this.wx.whenAny(this.clear, x => x).subscribe(() => {
+        this.filter.value = '';
+      }),
     );
 
     if (this.liveSearchTimeout > 0) {
@@ -97,11 +99,9 @@ export class SearchViewModel extends BaseViewModel implements RoutingStateHandle
     }
 
     this.addSubscription(
-      this.wx
-        .whenAny(this.requests, x => x)
-        .subscribe(x => {
-          this.notifyChanged(x);
-        }),
+      this.wx.whenAny(this.requests, x => x).subscribe(x => {
+        this.notifyChanged(x);
+      }),
     );
   }
 
@@ -137,8 +137,7 @@ export class SearchViewModel extends BaseViewModel implements RoutingStateHandle
     if (String.isNullOrEmpty(filter) === false && filter[0] !== '~') {
       try {
         regex = new RegExp(filter, this.isCaseInsensitive ? 'i' : undefined);
-      }
-      catch (e) {
+      } catch (e) {
         // drop out and create a safe regex
       }
     }

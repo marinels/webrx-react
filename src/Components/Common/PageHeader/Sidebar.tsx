@@ -2,16 +2,13 @@ import * as React from 'react';
 import { Modal } from 'react-bootstrap';
 
 export interface SidebarProps {
-  onHide: Function;
+  onHide: () => void;
   isVisible?: boolean;
   side?: string;
   header?: any;
 }
 
-export interface SidebarComponentProps extends SidebarProps {
-}
-
-export class Sidebar extends React.Component<SidebarComponentProps> {
+export class Sidebar extends React.Component<SidebarProps> {
   public static displayName = 'Sidebar';
 
   static defaultProps: Partial<SidebarProps> = {
@@ -25,15 +22,18 @@ export class Sidebar extends React.Component<SidebarComponentProps> {
     });
 
     return (
-      <Modal { ...rest } className={ this.wxr.classNames('Sidebar', props.side, className) }
-        onHide={ this.props.onHide } show={ this.props.isVisible } autoFocus keyboard
+      <Modal
+        {...rest}
+        className={this.wxr.classNames('Sidebar', props.side, className)}
+        onHide={this.props.onHide}
+        show={this.props.isVisible}
+        autoFocus
+        keyboard
       >
         <Modal.Header closeButton>
-          <Modal.Title>{ props.header }</Modal.Title>
+          <Modal.Title>{props.header}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          { children }
-        </Modal.Body>
+        <Modal.Body>{children}</Modal.Body>
       </Modal>
     );
   }

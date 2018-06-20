@@ -1,34 +1,42 @@
-import * as React from 'react';
 import * as classNames from 'classnames';
+import * as React from 'react';
 
 import { BaseView, BaseViewProps } from '../../React';
-import { PanelItemContext } from '../Panel/Panel';
-import { ListItemsViewTemplateProps } from './ListItemsViewTemplate';
 import { ItemsProps } from '../Items/ItemsView';
-import { ListGroupView } from './ListGroupView';
+import { PanelItemContext } from '../Panel/Panel';
 import { GridViewColumns } from './GridViewColumn';
+import { ListGroupView } from './ListGroupView';
 import { ListItemsViewModel } from './ListItemsViewModel';
+import { ListItemsViewTemplateProps } from './ListItemsViewTemplate';
 
-export interface ListItemsProps<T = {}, TContext extends PanelItemContext = PanelItemContext> extends ItemsProps<T, TContext> {
+export interface ListItemsProps<
+  T = {},
+  TContext extends PanelItemContext = PanelItemContext
+> extends ItemsProps<T, TContext> {
   view?: React.ReactElement<ListItemsViewTemplateProps<T, TContext>>;
   viewProps?: {};
   children?: React.ReactNode;
 }
 
-export interface ListItemsViewProps extends BaseViewProps<ListItemsViewModel<{}>>, ListItemsProps {
+export interface ListItemsViewProps
+  extends BaseViewProps<ListItemsViewModel<{}>>,
+    ListItemsProps {
   fill?: boolean;
 }
 
-export class ListItemsView extends BaseView<ListItemsViewProps, ListItemsViewModel<{}>> {
+export class ListItemsView extends BaseView<
+  ListItemsViewProps,
+  ListItemsViewModel<{}>
+> {
   public static renderDefaultListItemsView() {
-    return (
-      <ListGroupView />
-    );
+    return <ListGroupView />;
   }
 
   public static getListItemsView<T extends ListItemsProps>(
     props: T,
-    defaultListItemsView: (props: T) => React.ReactElement<ListItemsViewTemplateProps>,
+    defaultListItemsView: (
+      props: T,
+    ) => React.ReactElement<ListItemsViewTemplateProps>,
   ): React.ReactElement<ListItemsViewTemplateProps> {
     if (props.view != null) {
       return props.view;
@@ -51,12 +59,21 @@ export class ListItemsView extends BaseView<ListItemsViewProps, ListItemsViewMod
       return { view, viewProps };
     });
 
-    const listItemsView = ListItemsView.getListItemsView(this.props, ListItemsView.renderDefaultListItemsView);
+    const listItemsView = ListItemsView.getListItemsView(
+      this.props,
+      ListItemsView.renderDefaultListItemsView,
+    );
 
     const listItemsViewProps: ListItemsViewTemplateProps = {
-      itemsProps: this.trimProps(Object.assign({}, listItemsView.props.itemsProps, rest)),
+      itemsProps: this.trimProps(
+        Object.assign({}, listItemsView.props.itemsProps, rest),
+      ),
       listItems: this.viewModel,
-      className: classNames('ListItems', className, listItemsView.props.className),
+      className: classNames(
+        'ListItems',
+        className,
+        listItemsView.props.className,
+      ),
       ...this.trimProps(props.viewProps || {}),
     };
 

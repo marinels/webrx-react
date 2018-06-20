@@ -1,13 +1,17 @@
 import * as React from 'react';
-import { Subscription } from  'rxjs';
 import { Button, ButtonProps } from 'react-bootstrap';
+import { Subscription } from 'rxjs';
 
-import { ContentTooltip, TooltipPlacement } from '../ContentTooltip/ContentTooltip';
 import { Command } from '../../../WebRx';
+import {
+  ContentTooltip,
+  TooltipPlacement,
+} from '../ContentTooltip/ContentTooltip';
 
-export interface CommandButtonProps extends Omit<ButtonProps, React.HTMLProps<Button>> {
+export interface CommandButtonProps
+  extends Omit<ButtonProps, React.HTMLProps<Button>> {
   id?: string;
-  command?: Command<any> | { (): Command<any> };
+  command?: Command | (() => Command);
   commandParameter?: any;
   stopPropagation?: boolean;
   preventDefault?: boolean;
@@ -17,28 +21,31 @@ export interface CommandButtonProps extends Omit<ButtonProps, React.HTMLProps<Bu
   tooltipPlacement?: TooltipPlacement;
 }
 
-export interface CommandButtonComponentProps extends React.HTMLProps<any>, CommandButtonProps {
-}
+export interface CommandButtonComponentProps
+  extends React.HTMLProps<any>,
+    CommandButtonProps {}
 
-export class CommandButton extends React.Component<CommandButtonComponentProps> {
+export class CommandButton extends React.Component<
+  CommandButtonComponentProps
+> {
   public static displayName = 'CommandButton';
 
-  static defaultProps = {
+  static defaultProps: Partial<CommandButtonComponentProps> = {
     tooltipPlacement: 'top',
   };
 
   private canExecuteSubscription = Subscription.EMPTY;
 
-  private getCommand(): Command<any> | undefined {
+  private getCommand(): Command | undefined {
     const cmd = this.props.command;
 
-    return (cmd instanceof Function) ? cmd() : cmd;
+    return cmd instanceof Function ? cmd() : cmd;
   }
 
   private getParam() {
     const param = this.props.commandParameter;
 
-    return (param instanceof Function) ? param() : param;
+    return param instanceof Function ? param() : param;
   }
 
   componentWillMount() {
@@ -54,13 +61,39 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
   }
 
   componentWillUnmount() {
-    this.canExecuteSubscription = Subscription.unsubscribe(this.canExecuteSubscription);
+    this.canExecuteSubscription = Subscription.unsubscribe(
+      this.canExecuteSubscription,
+    );
   }
 
   render() {
     const { rest } = this.restProps(x => {
-      const { onClick, command, commandParameter, stopPropagation, preventDefault, plain, compact, tooltip, tooltipPlacement, disabled, componentClass } = x;
-      return { onClick, command, commandParameter, stopPropagation, preventDefault, plain, compact, tooltip, tooltipPlacement, disabled, componentClass };
+      const {
+        onClick,
+        command,
+        commandParameter,
+        stopPropagation,
+        preventDefault,
+        plain,
+        compact,
+        tooltip,
+        tooltipPlacement,
+        disabled,
+        componentClass,
+      } = x;
+      return {
+        onClick,
+        command,
+        commandParameter,
+        stopPropagation,
+        preventDefault,
+        plain,
+        compact,
+        tooltip,
+        tooltipPlacement,
+        disabled,
+        componentClass,
+      };
     });
 
     return this.renderButton(rest);
@@ -69,11 +102,13 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
   private renderButton(rest: any) {
     const cmd = this.props.disabled === true ? undefined : this.getCommand();
 
-    const canExecute = cmd == null ?
-      // no command was supplied so check both href and onClick to see if this button is enabled
-      String.isNullOrEmpty(rest.href) === false || this.props.onClick != null :
-      // use the command to see if this button is enabled
-      cmd.canExecuteFor(this.props.commandParameter);
+    const canExecute =
+      cmd == null
+        ? // no command was supplied so check both href and onClick to see if this button is enabled
+          String.isNullOrEmpty(rest.href) === false ||
+          this.props.onClick != null
+        : // use the command to see if this button is enabled
+          cmd.canExecuteFor(this.props.commandParameter);
 
     const disabled = this.props.disabled || canExecute !== true;
 
@@ -87,13 +122,14 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
     );
 
     const button = (
-      <Button { ...rest }
-        className={ classNames }
-        disabled={ disabled }
-        onClick={ disabled ? undefined : this.handleClick.bind(this) }
-        componentClass={ this.getComponentClass() }
+      <Button
+        {...rest}
+        className={classNames}
+        disabled={disabled}
+        onClick={disabled ? undefined : this.handleClick.bind(this)}
+        componentClass={this.getComponentClass()}
       >
-        { this.props.children }
+        {this.props.children}
       </Button>
     );
 
@@ -101,15 +137,21 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
       return button;
     }
 
-    const ttId = this.props.id ? `${ this.props.id }-tt` : undefined;
+    const ttId = this.props.id ? `${this.props.id}-tt` : undefined;
 
-    const tooltipContent = this.props.tooltip instanceof Function ?
-      this.props.tooltip(disabled) :
-      this.props.tooltip;
+    const tooltipContent =
+      this.props.tooltip instanceof Function
+        ? this.props.tooltip(disabled)
+        : this.props.tooltip;
 
     return (
-      <ContentTooltip id={ ttId } className={ this.props.className } content={ tooltipContent } placement={ this.props.tooltipPlacement }>
-        { button }
+      <ContentTooltip
+        id={ttId}
+        className={this.props.className}
+        content={tooltipContent}
+        placement={this.props.tooltipPlacement}
+      >
+        {button}
       </ContentTooltip>
     );
   }
@@ -119,7 +161,10 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
       return this.props.componentClass;
     }
 
-    if (this.props.command == null && String.isNullOrEmpty(this.props.href) === false) {
+    if (
+      this.props.command == null &&
+      String.isNullOrEmpty(this.props.href) === false
+    ) {
       return 'a';
     }
 
@@ -141,8 +186,7 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
         }
 
         this.props.onClick(e);
-      }
-      else if (String.isNullOrEmpty(this.props.href) === false) {
+      } else if (String.isNullOrEmpty(this.props.href) === false) {
         // we stop propagation by default (this prevents things below the button from being activated)
         if (this.props.stopPropagation !== false) {
           e.stopPropagation();
@@ -153,8 +197,7 @@ export class CommandButton extends React.Component<CommandButtonComponentProps> 
           e.preventDefault();
         }
       }
-    }
-    else {
+    } else {
       // command was supplied so we disable default click handling unless explicitly disabled
       if (this.props.stopPropagation !== false) {
         e.stopPropagation();

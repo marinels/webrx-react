@@ -10,9 +10,11 @@
 // stylelint-enable selector-no-universal
 
 .App {
+  position: relative;
+
   & > .preload {
     left: 50%;
-    position: fixed;
+    position: absolute;
     top: 50%;
     transform: translate(-50%, -50%);
   }
@@ -21,7 +23,7 @@
     background: none;
     margin: 0 auto;
     pointer-events: none;
-    position: fixed;
+    position: absolute;
     text-align: center;
     top: 0;
     width: 100%;

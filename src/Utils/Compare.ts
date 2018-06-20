@@ -1,3 +1,5 @@
+// tslint:disable:max-classes-per-file
+
 import { Iterable } from 'ix';
 import * as moment from 'moment';
 
@@ -6,12 +8,10 @@ export interface Comparable<T> {
 }
 
 export function isComparable<T>(obj: any): obj is Comparable<T> {
-  return (<Comparable<T>>obj).compareTo instanceof Function;
+  return (obj as Comparable<T>).compareTo instanceof Function;
 }
 
-export interface ValueComparison<T> {
-  (a: T, B: T): number;
-}
+export type ValueComparison<T> = (a: T, B: T) => number;
 
 export interface Comparer<T> {
   compare: ValueComparison<T>;
@@ -26,43 +26,38 @@ export class ValueComparer<T = any> implements Comparer<T> {
     if (a === b || (a == null && b == null)) {
       // both are null or the same, so equality is zero
       return 0;
-    }
-    else if (a == null || b == null) {
+    } else if (a == null || b == null) {
       // only one is null, non-null takes higher value
       return a == null ? -1 : 1;
-    }
-    else if (isComparable(a)) {
+    } else if (isComparable(a)) {
       // implements Comparable
       return a.compareTo(b);
-    }
-    else if (String.isString(a) && String.isString(b)) {
+    } else if (String.isString(a) && String.isString(b)) {
       // native string comparison
       return a.localeCompare(b);
-    }
-    else if (moment.isMoment(a) && moment.isMoment(b)) {
+    } else if (moment.isMoment(a) && moment.isMoment(b)) {
       return a.valueOf() - b.valueOf();
-    }
-    else if (moment.isDuration(a) && moment.isDuration(b)) {
+    } else if (moment.isDuration(a) && moment.isDuration(b)) {
       return a.asMilliseconds() - b.asMilliseconds();
-    }
-    else if (moment.isDate(a) && moment.isDate(b)) {
+    } else if (moment.isDate(a) && moment.isDate(b)) {
       return moment(a).valueOf() - moment(b).valueOf();
-    }
-    else if (Object.isObject(a) || Object.isObject(b)) {
+    } else if (Object.isObject(a) || Object.isObject(b)) {
       // if either side is an object then we have failed referencial equality (first compare)
       return -1;
-    }
-    else {
+    } else {
       // fallback on a basic equality check
       const c: number | undefined = a - b;
 
       // it's possible that our basic check failed, so default to zero
-      return (c == null || isNaN(c)) ? 0 : c;
+      return c == null || isNaN(c) ? 0 : c;
     }
   }
 
-  constructor(public readonly comparison: ValueComparison<T> = ValueComparer.DefaultComparison) {
-  }
+  constructor(
+    public readonly comparison: ValueComparison<
+      T
+    > = ValueComparer.DefaultComparison,
+  ) {}
 
   compare(a: T, b: T) {
     return this.comparison(a, b);
@@ -78,21 +73,29 @@ export enum SortDirection {
   Descending = 2,
 }
 
-export type FieldValueSelector<TObj, TValue> = (source: TObj, field: string) => TValue;
+export type FieldValueSelector<TObj, TValue> = (
+  source: TObj,
+  field: string,
+) => TValue;
 
 export interface FieldSelector<TObj, TValue> {
   field: string;
   valueSelector?: FieldValueSelector<TObj, TValue>;
 }
 
-export interface FieldComparer<TObj, TValue> extends FieldSelector<TObj, TValue>, Comparer<TValue> {
-}
+export interface FieldComparer<TObj, TValue>
+  extends FieldSelector<TObj, TValue>,
+    Comparer<TValue> {}
 
 export class ObjectComparer<T extends StringMap<any>> {
   public static displayName = 'ObjectComparer';
   public static DefaultComparerKey = '';
 
-  public static createFieldComparer<TObj, TValue>(field: string, comparison: ValueComparison<TValue>, valueSelector?: (source: TObj, field: string) => TValue) {
+  public static createFieldComparer<TObj, TValue>(
+    field: string,
+    comparison: ValueComparison<TValue>,
+    valueSelector?: (source: TObj, field: string) => TValue,
+  ) {
     return {
       field,
       compare: comparison,
@@ -103,19 +106,28 @@ export class ObjectComparer<T extends StringMap<any>> {
   public readonly comparerMap: StringMap<FieldComparer<T, any>>;
   public readonly defaultComparer: FieldComparer<T, any> | undefined;
 
-  constructor(defaultSortField: string | undefined, ...comparers: FieldComparer<T, any>[]);
-  constructor(...comparers: FieldComparer<T, any>[]);
+  constructor(
+    defaultSortField: string | undefined,
+    ...comparers: Array<FieldComparer<T, any>>
+  );
+  constructor(...comparers: Array<FieldComparer<T, any>>);
   constructor(...args: any[]) {
-    const comparers: FieldComparer<T, any>[] = args;
-    const defaultSortField = (args[0] == null || !String.isNullOrEmpty(args[0])) ? args.shift() : undefined;
+    const comparers: Array<FieldComparer<T, any>> = args;
+    const defaultSortField =
+      args[0] == null || !String.isNullOrEmpty(args[0])
+        ? args.shift()
+        : undefined;
 
     this.comparerMap = {};
 
-    this.comparerMap[ObjectComparer.DefaultComparerKey] = ObjectComparer
-      .createFieldComparer(ObjectComparer.DefaultComparerKey, ValueComparer.DefaultComparison);
+    this.comparerMap[
+      ObjectComparer.DefaultComparerKey
+    ] = ObjectComparer.createFieldComparer(
+      ObjectComparer.DefaultComparerKey,
+      ValueComparer.DefaultComparison,
+    );
 
-    comparers
-      .forEach(x => this.comparerMap[x.field] = x);
+    comparers.forEach(x => (this.comparerMap[x.field] = x));
 
     if (defaultSortField != null) {
       this.defaultComparer = this.getComparer(defaultSortField);
@@ -123,7 +135,8 @@ export class ObjectComparer<T extends StringMap<any>> {
   }
 
   public getComparer(field?: string): FieldComparer<T, any> {
-    let comparer = this.comparerMap[field || ObjectComparer.DefaultComparerKey] ||
+    let comparer =
+      this.comparerMap[field || ObjectComparer.DefaultComparerKey] ||
       this.comparerMap[ObjectComparer.DefaultComparerKey];
 
     if (String.isNullOrEmpty(comparer.field) && !String.isNullOrEmpty(field)) {
@@ -138,33 +151,44 @@ export class ObjectComparer<T extends StringMap<any>> {
   }
 
   public getValue(source: T, comparer: FieldComparer<T, any>) {
-    return comparer.valueSelector == null ?
-      source[comparer.field] :
-      comparer.valueSelector(source, comparer.field);
+    return comparer.valueSelector == null
+      ? source[comparer.field]
+      : comparer.valueSelector(source, comparer.field);
   }
 
-  public sortIterable(source: Iterable<T>, field: string, direction: SortDirection = SortDirection.Ascending) {
+  public sortIterable(
+    source: Iterable<T>,
+    field: string,
+    direction: SortDirection = SortDirection.Ascending,
+  ) {
     const comparer = this.getComparer(field);
     const defaultComparer = this.defaultComparer;
 
     if (direction === SortDirection.Ascending) {
-      const orderedSource = source
-        .orderBy(x => this.getValue(x, comparer), this.getCompare(comparer));
+      const orderedSource = source.orderBy(
+        x => this.getValue(x, comparer),
+        this.getCompare(comparer),
+      );
       source = orderedSource;
 
       if (defaultComparer != null) {
-        source = orderedSource
-          .thenBy(x => this.getValue(x, defaultComparer), this.getCompare(defaultComparer));
+        source = orderedSource.thenBy(
+          x => this.getValue(x, defaultComparer),
+          this.getCompare(defaultComparer),
+        );
       }
-    }
-    else if (direction === SortDirection.Descending) {
-      const orderedSource = source
-        .orderByDescending(x => this.getValue(x, comparer), comparer.compare);
+    } else if (direction === SortDirection.Descending) {
+      const orderedSource = source.orderByDescending(
+        x => this.getValue(x, comparer),
+        comparer.compare,
+      );
       source = orderedSource;
 
       if (defaultComparer != null) {
-        source = orderedSource
-          .thenByDescending(x => this.getValue(x, defaultComparer), this.getCompare(defaultComparer));
+        source = orderedSource.thenByDescending(
+          x => this.getValue(x, defaultComparer),
+          this.getCompare(defaultComparer),
+        );
       }
     }
 

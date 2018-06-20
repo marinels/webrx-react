@@ -7,22 +7,22 @@ defaultArgs = {
   'env.releasePath': 'test',
 };
 
-import { commonConfig, args } from '../webpack.common';
+import { args, commonConfig } from '../webpack.common';
 
 const testConfig: Partial<webpack.Configuration> = {
   entry: {
-    'app.spec': [
-      args.env.entryPath,
-    ],
+    'app.spec': [args.env.entryPath],
   },
   module: {
-    rules: [
-      { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
-    ],
+    rules: [{ test: /\.tsx?$/, loader: 'awesome-typescript-loader' }],
   },
 };
 
-const config: webpack.Configuration = Object.assign({}, commonConfig, testConfig);
+const config: webpack.Configuration = Object.assign(
+  {},
+  commonConfig,
+  testConfig,
+);
 
 const definePlugin: any = config.plugins![0];
 

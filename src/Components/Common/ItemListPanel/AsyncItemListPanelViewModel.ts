@@ -1,14 +1,25 @@
 import { Iterable } from 'ix';
-import { Observable } from 'rxjs';
 
-import { ObservableOrValue, ObservableLike } from '../../../WebRx';
-import { ItemListPanelViewModel, ItemListPanelContext } from './ItemListPanelViewModel';
-import { DataSourceRequest, DataSourceResponse } from '../DataGrid/DataGridViewModel';
-import { AsyncDataGridViewModel } from '../DataGrid/AsyncDataGridViewModel';
-import { SearchViewModel, SearchRequest } from '../Search/SearchViewModel';
+import { ObservableLike, ObservableOrValue } from '../../../WebRx';
+import {
+  AsyncDataGridViewModel,
+  DataSourceResponseSelector,
+} from '../DataGrid/AsyncDataGridViewModel';
+import {
+  DataSourceRequest,
+  DataSourceResponse,
+} from '../DataGrid/DataGridViewModel';
 import { PagerViewModel } from '../Pager/PagerViewModel';
+import { SearchViewModel } from '../Search/SearchViewModel';
+import {
+  ItemListPanelContext,
+  ItemListPanelViewModel,
+} from './ItemListPanelViewModel';
 
-export class AsyncItemListPanelViewModel<T, TRequestContext = any> extends ItemListPanelViewModel<T, TRequestContext> {
+export class AsyncItemListPanelViewModel<
+  T,
+  TRequestContext = any
+> extends ItemListPanelViewModel<T, TRequestContext> {
   public static displayName = 'AsyncItemListPanelViewModel';
 
   /**
@@ -19,16 +30,31 @@ export class AsyncItemListPanelViewModel<T, TRequestContext = any> extends ItemL
    * @param context request context included in projection requests. if included requests are bound to context events.
    */
   constructor(
-    protected readonly responseSelector: (request: DataSourceRequest<ItemListPanelContext<TRequestContext>> | undefined) => ObservableOrValue<DataSourceResponse<T> | undefined>,
+    protected readonly responseSelector: DataSourceResponseSelector<
+      T,
+      TRequestContext
+    >,
     search?: SearchViewModel | null,
     pager?: PagerViewModel | null,
     context?: ObservableLike<TRequestContext>,
     rateLimit = AsyncDataGridViewModel.DefaultRateLimit,
   ) {
-    super(Iterable.empty<T>(), undefined, search, pager, context, undefined, rateLimit);
+    super(
+      Iterable.empty<T>(),
+      undefined,
+      search,
+      pager,
+      context,
+      undefined,
+      rateLimit,
+    );
   }
 
-  getResponse(request: DataSourceRequest<ItemListPanelContext<TRequestContext>> | undefined) {
+  getResponse(
+    request:
+      | DataSourceRequest<ItemListPanelContext<TRequestContext>>
+      | undefined,
+  ) {
     return this.responseSelector(request);
   }
 }

@@ -1,10 +1,11 @@
-import { Observable, Observer, Subject, Subscription, AjaxRequest } from 'rxjs';
-import { AnonymousSubscription } from 'rxjs/Subscription';
+// tslint:disable:max-classes-per-file
 
-import { Logger, getLogger } from '../Utils/Logging';
-import { wx, WebRxStatic, Property, Command } from '../WebRx';
-import { SampleDataCreator, StoreApi } from './Interfaces';
+import { AjaxRequest, Observable, Subscription } from 'rxjs';
+
+import { getLogger, Logger } from '../Utils/Logging';
+import { WebRxStatic, wx } from '../WebRx';
 import { isStoreApi } from './Helpers';
+import { SampleDataCreator, StoreApi } from './Interfaces';
 import { ObservableApi } from './ObservableApi';
 
 export class BaseStore extends Subscription {
@@ -14,11 +15,24 @@ export class BaseStore extends Subscription {
   protected readonly wx: WebRxStatic;
   protected readonly api: StoreApi;
 
-  constructor(path: string, base?: string, sampleData?: SampleDataCreator, unsubscribe?: () => void);
+  constructor(
+    path: string,
+    base?: string,
+    sampleData?: SampleDataCreator,
+    unsubscribe?: () => void,
+  );
   constructor(api: StoreApi, unsubscribe?: () => void);
-  constructor(pathOrApi: string | StoreApi, baseOrUnsubscribe?: string | (() => void), sampleData?: SampleDataCreator, unsubscribe?: () => void) {
-    unsubscribe = baseOrUnsubscribe instanceof Function ? baseOrUnsubscribe : unsubscribe;
-    const base = String.isString(baseOrUnsubscribe) ? baseOrUnsubscribe : undefined;
+  constructor(
+    pathOrApi: string | StoreApi,
+    baseOrUnsubscribe?: string | (() => void),
+    sampleData?: SampleDataCreator,
+    unsubscribe?: () => void,
+  ) {
+    unsubscribe =
+      baseOrUnsubscribe instanceof Function ? baseOrUnsubscribe : unsubscribe;
+    const base = String.isString(baseOrUnsubscribe)
+      ? baseOrUnsubscribe
+      : undefined;
 
     super(unsubscribe);
 
@@ -27,24 +41,32 @@ export class BaseStore extends Subscription {
 
     if (isStoreApi(pathOrApi)) {
       this.api = pathOrApi;
-    }
-    else {
+    } else {
       this.api = new ObservableApi(pathOrApi, base, sampleData);
     }
 
-    this.logger.name += ` (${ this.api.path })`;
+    this.logger.name += ` (${this.api.path})`;
 
     this.logger.debug('Store Created');
   }
 
-  protected getObservable<T = any>(action: string, params?: any, options?: AjaxRequest, baseUri?: string): Observable<T> {
-    return this.api
-      .getObservable<T>(action, params, options, baseUri);
+  protected getObservable<T = any>(
+    action: string,
+    params?: any,
+    options?: AjaxRequest,
+    baseUri?: string,
+  ): Observable<T> {
+    return this.api.getObservable<T>(action, params, options, baseUri);
   }
 
-  protected postObservable<T = any>(action: string, data?: any, params?: any, options?: AjaxRequest, baseUri?: string): Observable<T> {
-    return this.api
-      .postObservable<T>(action, data, params, options, baseUri);
+  protected postObservable<T = any>(
+    action: string,
+    data?: any,
+    params?: any,
+    options?: AjaxRequest,
+    baseUri?: string,
+  ): Observable<T> {
+    return this.api.postObservable<T>(action, data, params, options, baseUri);
   }
 }
 

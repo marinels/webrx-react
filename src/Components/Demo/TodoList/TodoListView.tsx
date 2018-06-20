@@ -1,15 +1,23 @@
+// tslint:disable:max-classes-per-file
+
 import * as React from 'react';
-import { Observable } from 'rxjs';
+import {
+  FormControl,
+  FormControlProps,
+  FormGroup,
+  InputGroup,
+} from 'react-bootstrap';
+import { findDOMNode } from 'react-dom';
 import { Icon } from 'react-fa';
-import { FormGroup, InputGroup, FormControl, FormControlProps } from 'react-bootstrap';
+import { Observable } from 'rxjs';
 
 import { Command } from '../../../WebRx';
-import { BaseView, BaseViewProps } from '../../React';
+import { BindableInput } from '../../Common/BindableInput/BindableInput';
+import { CommandButton } from '../../Common/CommandButton/CommandButton';
 import { ItemListPanelView } from '../../Common/ItemListPanel/ItemListPanelView';
 import { ListGroupView } from '../../Common/ListItems/ListGroupView';
-import { CommandButton } from '../../Common/CommandButton/CommandButton';
-import { BindableInput } from '../../Common/BindableInput/BindableInput';
-import { TodoListViewModel, TodoItemViewModel } from './TodoListViewModel';
+import { BaseView, BaseViewProps } from '../../React';
+import { TodoItemViewModel, TodoListViewModel } from './TodoListViewModel';
 
 import './TodoList.less';
 
@@ -17,28 +25,25 @@ export interface TodoListProps {
   shadow?: boolean;
 }
 
-export interface TodoListViewProps extends BaseViewProps<TodoListViewModel>, TodoListProps {
-}
+export interface TodoListViewProps
+  extends BaseViewProps<TodoListViewModel>,
+    TodoListProps {}
 
-export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel> {
-  private input: React.Component<FormControlProps> | undefined;
+export class TodoListView extends BaseView<
+  TodoListViewProps,
+  TodoListViewModel
+> {
+  private inputRef = React.createRef<FormControl>();
 
-  private onInputRef(input: React.Component<FormControlProps> | null) {
-    if (this.input == null && input != null) {
-      this.input = input;
+  constructor(props: any) {
+    super(props);
 
-      this.focusInput();
-    }
+    this.renderItem = this.renderItem.bind(this);
+    this.focusInput = this.focusInput.bind(this);
   }
 
-  private focusInput() {
-    if (this.input != null) {
-      const elem = this.wxr.focusElement<HTMLInputElement>(this.input);
-
-      if (elem != null) {
-        elem.select();
-      }
-    }
+  componentDidMount() {
+    this.focusInput();
   }
 
   render() {
@@ -47,15 +52,20 @@ export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel>
       return { shadow };
     });
 
-    // emptyTemplate={ () => this.renderEmptyContent() }
     return (
-      <div { ...rest } className={ this.wxr.classNames('TodoList', className) }>
-        <ItemListPanelView viewModel={ this.viewModel.list } collapsible pager search compact
-          emptyContent={ this.renderEmptyContent() }
-          shadow={ this.props.shadow }
-          itemTemplate={ this.renderItem.bind(this) }
-          headerContent='Canonical Todo List'
-          teaserContent={ this.renderTeaser() } footerContent={ this.renderFooter() }
+      <div {...rest} className={this.wxr.classNames('TodoList', className)}>
+        <ItemListPanelView
+          viewModel={this.viewModel.list}
+          collapsible
+          pager
+          search
+          compact
+          emptyContent={this.renderEmptyContent()}
+          shadow={this.props.shadow}
+          itemTemplate={this.renderItem}
+          headerContent="Canonical Todo List"
+          teaserContent={this.renderTeaser()}
+          footerContent={this.renderFooter()}
         >
           <ListGroupView />
         </ItemListPanelView>
@@ -64,9 +74,7 @@ export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel>
   }
 
   protected renderItem(item: TodoItemViewModel) {
-    return (
-      <TodoItemView viewModel={ item } remove={ this.viewModel.removeItem } />
-    );
+    return <TodoItemView viewModel={item} remove={this.viewModel.removeItem} />;
   }
 
   protected renderEmptyContent() {
@@ -79,17 +87,30 @@ export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel>
 
   protected renderTeaser() {
     return (
-      <FormGroup className='TodoList-teaser'>
+      <FormGroup className="TodoList-teaser">
         <InputGroup>
-          <BindableInput boundProperty={ this.viewModel.newItemContent }>
-            <FormControl ref={ x => this.onInputRef(x) } id='newItemContent' type='text' placeholder='Type in a todo item here...'
-              onKeyDown={ this.bindEventToCommand(x => x.addItem, undefined, (_, e: React.KeyboardEvent<any>) => e.keyCode === 13, () => this.focusInput()) }
+          <BindableInput boundProperty={this.viewModel.newItemContent}>
+            <FormControl
+              ref={this.inputRef}
+              id="newItemContent"
+              type="text"
+              placeholder="Type in a todo item here..."
+              onKeyDown={this.bindEventToCommand(
+                x => x.addItem,
+                undefined,
+                (_, e: React.KeyboardEvent<any>) => e.keyCode === 13,
+                () => this.focusInput(),
+              )}
             />
           </BindableInput>
           <InputGroup.Button>
-            <CommandButton bsStyle='success' command={ this.viewModel.addItem } onClick={ () => this.focusInput() }>
-              <Icon name='plus' />
-              { ' Add New Todo Item' }
+            <CommandButton
+              bsStyle="success"
+              command={this.viewModel.addItem}
+              onClick={this.focusInput}
+            >
+              <Icon name="plus" />
+              {' Add New Todo Item'}
             </CommandButton>
           </InputGroup.Button>
         </InputGroup>
@@ -100,20 +121,38 @@ export class TodoListView extends BaseView<TodoListViewProps, TodoListViewModel>
   protected renderFooter() {
     return null;
   }
+
+  private focusInput() {
+    if (this.inputRef.current) {
+      const input = findDOMNode(this.inputRef.current);
+
+      if (input instanceof HTMLInputElement) {
+        input.focus();
+      }
+    }
+  }
 }
 
 export interface TodoItemProps {
   remove: Command<TodoItemViewModel>;
 }
 
-export interface TodoItemViewProps extends BaseViewProps<TodoItemViewModel>, TodoItemProps {
-}
+export interface TodoItemViewProps
+  extends BaseViewProps<TodoItemViewModel>,
+    TodoItemProps {}
 
-export class TodoItemView extends BaseView<TodoItemViewProps, TodoItemViewModel> {
+export class TodoItemView extends BaseView<
+  TodoItemViewProps,
+  TodoItemViewModel
+> {
+  constructor(props: any) {
+    super(props);
+
+    this.getRemoveCommand = this.getRemoveCommand.bind(this);
+  }
+
   updateOn(viewModel: Readonly<TodoItemViewModel>) {
-    return [
-      viewModel.completed.changed,
-    ];
+    return [viewModel.completed.changed];
   }
 
   render() {
@@ -123,22 +162,46 @@ export class TodoItemView extends BaseView<TodoItemViewProps, TodoItemViewModel>
     });
 
     return (
-      <div { ...rest } className={ this.wxr.classNames('TodoItem', 'fa-lg', className, { completed: this.viewModel.completed.value }) }>
-        <div className='TodoItem-main'>
-          <CommandButton plain onClick={ this.bindEventToCommand(x => x.toggleCompleted) } stopPropagation preventDefault>
-            <Icon name={ this.viewModel.completed.value ? 'check-circle' : 'circle-o' } size='lg' fixedWidth />
-          </CommandButton>
-          <span className='text-muted'>{ `[ ${ this.viewModel.id } ] ` }</span>
-          <span className='TodoItem-content'>{ this.viewModel.content }</span>
-        </div>
-        <div className='TodoItem-actions'>
-          <CommandButton bsStyle='danger' bsSize='xs' componentClass='a'
-            command={ () => props.remove } commandParameter={ this.viewModel }
+      <div
+        {...rest}
+        className={this.wxr.classNames('TodoItem', 'fa-lg', className, {
+          completed: this.viewModel.completed.value,
+        })}
+      >
+        <div className="TodoItem-main">
+          <CommandButton
+            plain
+            onClick={this.bindEventToCommand(x => x.toggleCompleted)}
+            stopPropagation
+            preventDefault
           >
-            <Icon name='times' fixedWidth />
+            <Icon
+              name={
+                this.viewModel.completed.value ? 'check-circle' : 'circle-o'
+              }
+              size="lg"
+              fixedWidth
+            />
+          </CommandButton>
+          <span className="text-muted">{`[ ${this.viewModel.id} ] `}</span>
+          <span className="TodoItem-content">{this.viewModel.content}</span>
+        </div>
+        <div className="TodoItem-actions">
+          <CommandButton
+            bsStyle="danger"
+            bsSize="xs"
+            componentClass="a"
+            command={this.getRemoveCommand}
+            commandParameter={this.viewModel}
+          >
+            <Icon name="times" fixedWidth />
           </CommandButton>
         </div>
       </div>
     );
+  }
+
+  protected getRemoveCommand() {
+    return this.props.remove;
   }
 }

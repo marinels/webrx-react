@@ -1,6 +1,6 @@
-import { Observable, BehaviorSubject, TestScheduler } from 'rxjs';
+import { BehaviorSubject, Observable, TestScheduler } from 'rxjs';
 
-import { should, sandbox } from './setup';
+import { sandbox, should } from './setup';
 
 describe('Sanity Tests', () => {
   describe('for mocha', () => {
@@ -30,12 +30,12 @@ describe('Sanity Tests', () => {
       stub('test');
 
       stub.callCount.should.eql(1);
-      stub.firstCall.args.should.eql([ 'test' ]);
+      stub.firstCall.args.should.eql(['test']);
     });
 
     it('can create spys', () => {
       const obj = {
-        fn: function(arg: string) {
+        fn: (arg: string) => {
           return arg;
         },
       };
@@ -44,7 +44,7 @@ describe('Sanity Tests', () => {
       const result = obj.fn('test');
 
       spy.callCount.should.eql(1);
-      spy.firstCall.args.should.eql([ 'test' ]);
+      spy.firstCall.args.should.eql(['test']);
       should.exist(result);
       result.should.eql('test');
     });
@@ -85,8 +85,7 @@ describe('Sanity Tests', () => {
       const result = new BehaviorSubject(0);
       const scheduler = new TestScheduler((a, b) => a === b);
 
-      Observable
-        .of(1)
+      Observable.of(1)
         .observeOn(scheduler)
         .subscribe(result);
       result.value.should.eql(0);
@@ -100,9 +99,7 @@ describe('Sanity Tests', () => {
       const result = new BehaviorSubject(0);
       const scheduler = new TestScheduler((a, b) => a === b);
 
-      source
-        .observeOn(scheduler)
-        .subscribe(result);
+      source.observeOn(scheduler).subscribe(result);
       result.value.should.eql(0);
 
       source.next(1);
@@ -118,43 +115,40 @@ describe('Sanity Tests', () => {
       const result = new BehaviorSubject('0');
       const scheduler = new TestScheduler((a, b) => a === b);
 
-      scheduler
-        .createColdObservable('-1-2-3-|')
-        .subscribe(result);
+      scheduler.createColdObservable('-1-2-3-|').subscribe(result);
 
       scheduler.frame.should.eql(0);
-      result.value.should.eql('0', `frame ${ scheduler.frame }`);
+      result.value.should.eql('0', `frame ${scheduler.frame}`);
 
       scheduler.advancedTo(9);
       scheduler.frame.should.eql(9);
-      result.value.should.eql('0', `frame ${ scheduler.frame }`);
+      result.value.should.eql('0', `frame ${scheduler.frame}`);
 
       scheduler.advancedTo(10);
       scheduler.frame.should.eql(10);
-      result.value.should.eql('1', `frame ${ scheduler.frame }`);
+      result.value.should.eql('1', `frame ${scheduler.frame}`);
 
       scheduler.advancedTo(29);
       scheduler.frame.should.eql(29);
-      result.value.should.eql('1', `frame ${ scheduler.frame }`);
+      result.value.should.eql('1', `frame ${scheduler.frame}`);
 
       scheduler.advancedTo(50);
       scheduler.frame.should.eql(50);
-      result.value.should.eql('3', `frame ${ scheduler.frame }`);
+      result.value.should.eql('3', `frame ${scheduler.frame}`);
 
       scheduler.advancedTo(70);
       scheduler.frame.should.eql(70);
-      result.value.should.eql('3', `frame ${ scheduler.frame }`);
+      result.value.should.eql('3', `frame ${scheduler.frame}`);
 
       scheduler.advancedTo(1000);
       scheduler.frame.should.eql(1000);
-      result.value.should.eql('3', `frame ${ scheduler.frame }`);
+      result.value.should.eql('3', `frame ${scheduler.frame}`);
     });
 
-    it('can simulate time for long running observables', (done) => {
+    it('can simulate time for long running observables', done => {
       const timer = sandbox.useFakeTimers();
 
-      Observable
-        .interval(5000)
+      Observable.interval(5000)
         .take(1)
         .subscribe(() => done());
 
