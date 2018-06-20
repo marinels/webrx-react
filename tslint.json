@@ -1,11 +1,31 @@
 {
-  "extends": "tslint-config-unional/strict",
+  "extends": [
+    "tslint:recommended",
+    "tslint-config-unional/strict",
+    "tslint-react"
+  ],
   "rules": {
+    // allow bare arrow params
+    "arrow-parens": [ true, "ban-single-arg-parens" ],
+
+    // allow flag props (i.e., bool props with the value part omitted)
+    "jsx-boolean-value": [ false ],
+
+    // allow multiline js expressions inside of a JSX block
+    "jsx-no-multiline-js": [ false ],
+
     // standardize on a linebreak
     "linebreak-style": [ true, "LF" ],
 
+    // don't force json key quotes on keys that do not require them
+    "object-literal-key-quotes": [ true, "as-needed" ],
+
+    // lines up with prettier (prefer single, double in a jsx block)
+    "quotemark": [ true, "single", "jsx-double" ],
+
     // we always want a comma on multiline expressions to prevent delta creep
-    "trailing-comma": [ true, { "singleline": "never", "multiline": "always" } ],
+    // esSpecCompliant restricts trailing commas on destructuring parameters
+    "trailing-comma": [ true, { "singleline": "never", "multiline": "always", "esSpecCompliant": true } ],
 
     // this rule allows us to have implicit types (variables, params, functions, etc...)
     "typedef": [ false ],

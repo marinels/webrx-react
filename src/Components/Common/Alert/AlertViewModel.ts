@@ -1,6 +1,4 @@
-import { Observable } from  'rxjs';
-
-import { ReadOnlyProperty, Command } from '../../../WebRx';
+import { Command, ReadOnlyProperty } from '../../../WebRx';
 import { BaseViewModel } from '../../React';
 
 export interface Alert {
@@ -19,7 +17,7 @@ export class AlertViewModel extends BaseViewModel {
 
   public readonly isVisible: ReadOnlyProperty<boolean>;
 
-  public readonly dismiss: Command<any>;
+  public readonly dismiss: Command;
 
   constructor(
     public readonly key: any,
@@ -32,9 +30,7 @@ export class AlertViewModel extends BaseViewModel {
 
     this.dismiss = this.wx.command();
 
-    this.isVisible = this.dismiss.results
-      .map(() => false)
-      .toProperty(true);
+    this.isVisible = this.dismiss.results.map(() => false).toProperty(true);
 
     this.addSubscription(
       this.wx

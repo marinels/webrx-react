@@ -5,7 +5,7 @@ import './Sanity.spec';
 
 import './WebRx.spec';
 
-import './Extensions';
-import './Utils';
-import './Stores';
 import './Components';
+import './Extensions';
+import './Stores';
+import './Utils';

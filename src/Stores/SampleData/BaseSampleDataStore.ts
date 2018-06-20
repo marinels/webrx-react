@@ -1,10 +1,11 @@
-import { Observable, Subject, Subscription, Observer } from  'rxjs';
-import { AnonymousSubscription } from 'rxjs/Subscription';
-
-import { wx, WebRxStatic, Command, Property } from '../../WebRx';
 import { Alert } from '../../Utils';
-import { Logger, getLogger } from '../../Utils/Logging';
-import { SampleDataStore, SampleDataAction, SampleDataActionSet } from '../Interfaces';
+import { getLogger, Logger } from '../../Utils/Logging';
+import { WebRxStatic, wx } from '../../WebRx';
+import {
+  SampleDataAction,
+  SampleDataActionSet,
+  SampleDataStore,
+} from '../Interfaces';
 
 export abstract class BaseSampleDataStore implements SampleDataStore {
   public static displayName = 'BaseSampleDataStore';
@@ -20,7 +21,11 @@ export abstract class BaseSampleDataStore implements SampleDataStore {
     this.wx = wx;
   }
 
-  protected connect(action: string, api: SampleDataAction, thisArg: any = this) {
+  protected connect(
+    action: string,
+    api: SampleDataAction,
+    thisArg: any = this,
+  ) {
     this.actions[action] = function(params: any = {}) {
       this.createAlert(action, params);
 
@@ -30,7 +35,10 @@ export abstract class BaseSampleDataStore implements SampleDataStore {
 
   protected createAlert(action: string, params: any = {}) {
     if (this.enableAlerts) {
-      Alert.create(JSON.stringify(params, null, 2), `SampleDataStore API Call: ${ action }`);
+      Alert.create(
+        JSON.stringify(params, null, 2),
+        `SampleDataStore API Call: ${action}`,
+      );
     }
   }
 }

@@ -1,6 +1,6 @@
 import { Iterable } from 'ix';
 import { AsyncIterableInput } from 'ix/asynciterable/asynciterablex';
-import { Observable, Observer, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { PartialObserver } from 'rxjs/Observer';
 
 export type IterableLike<T> = Iterable<T> | ArrayLike<T>;
@@ -38,10 +38,7 @@ export interface Command<T = any, TCondition = any> {
 
   observeExecution(parameter?: any): Observable<T>;
 
-  execute(
-    parameter?: any,
-    observer?: PartialObserver<T>,
-  ): Subscription;
+  execute(parameter?: any, observer?: PartialObserver<T>): Subscription;
 
   execute(
     parameter?: any,

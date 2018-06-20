@@ -1,8 +1,8 @@
-import { Observable, AjaxRequest, AjaxError } from 'rxjs';
 import param = require('jquery-param');
+import { AjaxError, AjaxRequest, Observable } from 'rxjs';
 
+import { getWindowLocation } from '../Routing';
 import { Logging } from '../Utils';
-import { getWindowLocation, joinPath } from '../Routing';
 import { HttpRequestMethod, ObservableApiError, StoreApi } from './Interfaces';
 
 export function sanitizeUri(uri: string) {
@@ -13,8 +13,7 @@ export function sanitizeUri(uri: string) {
       // no '&' at the end, so append one
       return uri + '&';
     }
-  }
-  else {
+  } else {
     // it hasn't been prepped so just append a '?'
     return uri + '?';
   }
@@ -39,7 +38,11 @@ export function getUriFromParams(uri: string, params: any) {
   return uri;
 }
 
-export function getError(xhr: XMLHttpRequest | undefined, uri: string, logger: Logging.Logger): ObservableApiError {
+export function getError(
+  xhr: XMLHttpRequest | undefined,
+  uri: string,
+  logger: Logging.Logger,
+): ObservableApiError {
   if (xhr == null) {
     return {
       message: 'Invalid XMLHttpRequest (null)',
@@ -48,8 +51,12 @@ export function getError(xhr: XMLHttpRequest | undefined, uri: string, logger: L
   }
 
   const code = xhr.status > 0 ? xhr.status : undefined;
-  const reason = String.isNullOrEmpty(xhr.statusText) ? undefined : xhr.statusText;
-  const response = String.isNullOrEmpty(xhr.response) ? undefined : xhr.response;
+  const reason = String.isNullOrEmpty(xhr.statusText)
+    ? undefined
+    : xhr.statusText;
+  const response = String.isNullOrEmpty(xhr.response)
+    ? undefined
+    : xhr.response;
   let message: string | undefined;
   let messageDetail: string | undefined;
 
@@ -70,12 +77,10 @@ export function getError(xhr: XMLHttpRequest | undefined, uri: string, logger: L
       // see: https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Preflighted_requests
 
       message = 'Request Timeout or Invalid Cross Origin Request';
-    }
-    else {
+    } else {
       message = 'Request Timeout';
     }
-  }
-  else if (response != null) {
+  } else if (response != null) {
     // something came back in the response, so let's try and extract an error
 
     if (!String.isNullOrEmpty(xhr.responseURL)) {
@@ -89,21 +94,20 @@ export function getError(xhr: XMLHttpRequest | undefined, uri: string, logger: L
       try {
         // try and parse the response as JSON
         responseObject = JSON.parse(response);
-      }
-      catch (e) {
+      } catch (e) {
         logger.debug('Unable to parse response', response, e);
         // JSON parsing didn't work, fallback on straight assignment
         message = response;
       }
-    }
-    else if (Object.isObject(response)) {
+    } else if (Object.isObject(response)) {
       responseObject = response;
     }
 
     if (responseObject != null) {
       // try and get the message and message detail
       message = responseObject.message || responseObject.Message;
-      messageDetail = responseObject.messageDetail || responseObject.MessageDetail;
+      messageDetail =
+        responseObject.messageDetail || responseObject.MessageDetail;
     }
 
     if (message == null && messageDetail == null) {
@@ -111,16 +115,14 @@ export function getError(xhr: XMLHttpRequest | undefined, uri: string, logger: L
 
       try {
         message = String.stringify(response, null, 2);
-      }
-      catch (e) {
+      } catch (e) {
         logger.warn('Unable to stringify response', response, e);
 
         // last ditch effort, just call toString on the object
         message = response.toString();
       }
     }
-  }
-  else {
+  } else {
     // we can't detect what type of error this is, so log the xhr and return a generic message
     logger.error('Invalid XHR Error', xhr);
 
@@ -145,35 +147,50 @@ export function getError(xhr: XMLHttpRequest | undefined, uri: string, logger: L
 }
 
 export let defaultHeaders = {
-  'Accept': 'application/json',
+  Accept: 'application/json',
   'Content-Type': 'application/json',
 };
 
-export function getRequest<T>(action: string, url: string, logger: Logging.Logger, method = HttpRequestMethod.GET, params?: any, data?: any, options?: AjaxRequest) {
-  logger.debug(`getRequest: [${ method }] ${ action }`, { url, params, data, options });
+export function getRequest<T>(
+  action: string,
+  url: string,
+  logger: Logging.Logger,
+  method = HttpRequestMethod.GET,
+  params?: any,
+  data?: any,
+  options?: AjaxRequest,
+) {
+  logger.debug(`getRequest: [${method}] ${action}`, {
+    url,
+    params,
+    data,
+    options,
+  });
 
   url = getUriFromParams(url, params);
 
-  logger.info(`API Request: ${ action } (${ url })`, data);
+  logger.info(`API Request: ${action} (${url})`, data);
 
   const body = data == null ? undefined : String.stringify(data, null, 2);
 
-  options = Object.assign({
-    headers: defaultHeaders,
-    async: true,
-    body,
-    method: HttpRequestMethod[method],
-    url,
-  }, options);
+  options = Object.assign(
+    {
+      headers: defaultHeaders,
+      async: true,
+      body,
+      method: HttpRequestMethod[method],
+      url,
+    },
+    options,
+  );
 
-  return Observable
-    .ajax(options)
-    .map(x => <T>x.response)
+  return Observable.ajax(options)
+    .map(x => x.response as T)
     .do(x => {
-      logger.info(`API  Result: ${ action } (${ url })`, x);
+      logger.info(`API  Result: ${action} (${url})`, x);
     })
     .catch<T, T>((x: AjaxError) => {
-      logger.error(`API  ERROR: ${ action } (${ url })`, x);
+      logger.error(`API  ERROR: ${action} (${url})`, x);
 
       return Observable.throw(getError(x.xhr, url, logger));
     });

@@ -1,14 +1,19 @@
-import { Observable, Observer, Subject, Subscription } from 'rxjs';
-import { AnonymousSubscription, TeardownLogic } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
-import { wx, WebRxStatic, Property, Command } from '../../WebRx';
-import { Logger, LogLevel, getLogger } from '../../Utils/Logging';
-import { Alert, PubSub } from '../../Utils';
 import { RoutingStateChangedKey } from '../../Events';
 import { routeManager, RouteManager } from '../../Routing/RouteManager';
-import { ViewModelLifecyle, HandlerRoutingStateChanged, RoutingStateHandler } from './Interfaces';
+import { Alert, PubSub } from '../../Utils';
+import { getLogger, Logger, LogLevel } from '../../Utils/Logging';
+import { Command, WebRxStatic, wx } from '../../WebRx';
+import {
+  HandlerRoutingStateChanged,
+  RoutingStateHandler,
+  ViewModelLifecyle,
+} from './Interfaces';
 
-export function isRoutingStateHandler(value: any): value is RoutingStateHandler<{}> {
+export function isRoutingStateHandler(
+  value: any,
+): value is RoutingStateHandler<{}> {
   if (value == null) {
     return false;
   }
@@ -21,7 +26,9 @@ export function isRoutingStateHandler(value: any): value is RoutingStateHandler<
   );
 }
 
-export function isViewModelLifecycle(viewModel: any): viewModel is ViewModelLifecyle {
+export function isViewModelLifecycle(
+  viewModel: any,
+): viewModel is ViewModelLifecyle {
   return (
     viewModel.initializeViewModel instanceof Function &&
     viewModel.loadedViewModel instanceof Function &&
@@ -44,10 +51,24 @@ export function isViewModel(source: any): source is BaseViewModel {
   return false;
 }
 
-export function getRoutingStateValue<T>(value: T | null | undefined, defaultValue?: T): T | undefined;
-export function getRoutingStateValue<T, R>(value: T | null | undefined, selector: (x: T) => R): R | undefined;
-export function getRoutingStateValue<T, R>(value: T | null | undefined, defaultValue: T, selector: (x: T) => R): R | undefined;
-export function getRoutingStateValue<T, R>(value: T | null | undefined, arg2?: T | ((x: T) => R), selector?: (x: T) => R): R | undefined {
+export function getRoutingStateValue<T>(
+  value: T | null | undefined,
+  defaultValue?: T,
+): T | undefined;
+export function getRoutingStateValue<T, R>(
+  value: T | null | undefined,
+  selector: (x: T) => R,
+): R | undefined;
+export function getRoutingStateValue<T, R>(
+  value: T | null | undefined,
+  defaultValue: T,
+  selector: (x: T) => R,
+): R | undefined;
+export function getRoutingStateValue<T, R>(
+  value: T | null | undefined,
+  arg2?: T | ((x: T) => R),
+  selector?: (x: T) => R,
+): R | undefined {
   if (value == null) {
     return undefined;
   }
@@ -66,7 +87,7 @@ export function getRoutingStateValue<T, R>(value: T | null | undefined, arg2?: T
 
   // we need a direct cast here because no selector was supplied
   // this just means that T === R
-  return <any>value;
+  return value as any;
 }
 
 export type RoutingStateValueCreator = typeof getRoutingStateValue;
@@ -114,7 +135,10 @@ export abstract class BaseViewModel extends Subscription {
 
     this.initializeRoutingStateHandler(this);
 
-    if (this.logger.level <= LogLevel.Debug && this.isLoggingMemberObservables === false) {
+    if (
+      this.logger.level <= LogLevel.Debug &&
+      this.isLoggingMemberObservables === false
+    ) {
       this.isLoggingMemberObservables = true;
 
       this.addSubscriptions(...this.wx.logMemberObservables(this.logger, this));
@@ -170,7 +194,12 @@ export abstract class BaseViewModel extends Subscription {
     }
   }
 
-  protected navTo(path: string, state?: any, replace = false, uriEncode = false) {
+  protected navTo(
+    path: string,
+    state?: any,
+    replace = false,
+    uriEncode = false,
+  ) {
     this.routeManager.navTo(path, state, replace, uriEncode);
   }
 
@@ -178,5 +207,7 @@ export abstract class BaseViewModel extends Subscription {
     return true;
   }
 
-  public getDisplayName() { return Object.getName(this); }
+  public getDisplayName() {
+    return Object.getName(this);
+  }
 }

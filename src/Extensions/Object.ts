@@ -6,18 +6,13 @@ export function isObject(value: any): value is {} {
 
 export function trim<T extends {}>(obj: T, trimNull = true): T {
   if (isObject(obj)) {
-    return Iterable
-      .from(Object.keys(obj))
-      .reduce(
-        (o: any, x) => {
-          if ((trimNull && o[x] === null) || o[x] === undefined) {
-            delete o[x];
-          }
+    return Iterable.from(Object.keys(obj)).reduce((o: any, x) => {
+      if ((trimNull && o[x] === null) || o[x] === undefined) {
+        delete o[x];
+      }
 
-          return o;
-        },
-        obj,
-      );
+      return o;
+    }, obj);
   }
 
   return obj;
@@ -39,31 +34,28 @@ export function rest<P extends {}, T, R extends {} = {}>(
   removals?: R,
 ): RestResult<P, T, R> {
   const map = {
-    data: <StringMap<any>>data || {},
+    data: (data as StringMap<any>) || {},
     props: (propsCreator == null ? undefined : propsCreator(data)) || {},
     removals: removals || {},
   };
 
   const result = {
-    rest: <StringMap<any>>{},
-    removals: <StringMap<any>>{},
+    rest: {} as StringMap<any>,
+    removals: {} as StringMap<any>,
   };
 
-  const restParams = Object
-    .keys(data)
-    .forEach(key => {
-      if (map.removals.hasOwnProperty(key)) {
-        result.removals[key] = map.data[key];
-      }
-      else if (map.props.hasOwnProperty(key) === false) {
-        result.rest[key] = map.data[key];
-      }
-    });
+  const restParams = Object.keys(data).forEach(key => {
+    if (map.removals.hasOwnProperty(key)) {
+      result.removals[key] = map.data[key];
+    } else if (map.props.hasOwnProperty(key) === false) {
+      result.rest[key] = map.data[key];
+    }
+  });
 
   return {
-    props: <T>map.props,
-    rest: <Omit2<P, T, R>>result.rest,
-    removals: <R>result.removals,
+    props: map.props as T,
+    rest: result.rest as Omit2<P, T, R>,
+    removals: result.removals as R,
   };
 }
 
@@ -128,7 +120,7 @@ export function getName(
   // IE is pretty dumb and doesn't expose any useful naming properties
   // but this seems to work reliably for some objects
   if (nameSource.constructor != null) {
-    let match = /function (.+)\(/.exec(nameSource.constructor.toString());
+    const match = /function (.+)\(/.exec(nameSource.constructor.toString());
     if (match != null && match.length >= 2) {
       if (String.isNullOrEmpty(match[1]) === false) {
         return match[1];
@@ -146,29 +138,31 @@ export interface EnumPropertyDescriptor<T> {
   type: T;
 }
 
-export function getEnumPropertyDescriptors<T>(type: any): Iterable<EnumPropertyDescriptor<T>> {
-  return Object
-    .keys(type)
+export function getEnumPropertyDescriptors<T>(
+  type: any,
+): Iterable<EnumPropertyDescriptor<T>> {
+  return Object.keys(type)
     .asIterable()
     .map(name => ({ name, value: parseInt(type[name]) }))
     .filter(x => x.value >= 0)
     .map(x => Object.assign(x, { type: type[x.name] }));
 }
 
-export function getEnumNames<T>(type: any): Array<string> {
+export function getEnumNames<T>(type: any): string[] {
   return getEnumPropertyDescriptors<any>(type)
     .map(x => x.name)
     .toArray();
 }
 
-export function getEnumValues<T>(type: any): Array<T> {
+export function getEnumValues<T>(type: any): T[] {
   return getEnumPropertyDescriptors<T>(type)
     .map(x => x.type)
     .toArray();
 }
 
 /**
- *  Get object property name: http://stackoverflow.com/questions/37048274/typescript-how-to-get-objects-property-name-from-its-value
+ * Get object property name
+ * see: http://stackoverflow.com/questions/37048274/typescript-how-to-get-objects-property-name-from-its-value
  * @param {p: (x: T) => any} function which returns any object property
  * @returns {string} property name
  */

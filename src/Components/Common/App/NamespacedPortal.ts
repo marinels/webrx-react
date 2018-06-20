@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Portal, Modal } from 'react-overlays';
+import { Modal, Portal } from 'react-overlays';
 
 export function updateDefaultContainer(container: React.ReactInstance | null) {
   if (container != null) {
@@ -8,8 +8,18 @@ export function updateDefaultContainer(container: React.ReactInstance | null) {
   }
 }
 
-export function updateDefaultContainerProp(container: React.ReactInstance, componentClass: React.ComponentClass<Portal.PortalProps>) {
-  if (componentClass.defaultProps == null || componentClass.defaultProps.container !== container) {
-    componentClass.defaultProps = Object.assign({}, componentClass.defaultProps, { container });
+export function updateDefaultContainerProp(
+  container: React.ReactInstance,
+  componentClass: React.ComponentClass<Portal.PortalProps>,
+) {
+  if (
+    componentClass.defaultProps == null ||
+    componentClass.defaultProps.container !== container
+  ) {
+    componentClass.defaultProps = Object.assign(
+      {},
+      componentClass.defaultProps,
+      { container },
+    );
   }
 }

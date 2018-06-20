@@ -1,9 +1,9 @@
 import * as chai from 'chai';
+import 'core-js';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
-import 'core-js';
 
-import { getLogger, LogLevel, Logger } from '../src/Utils/Logging';
+import { getLogger, Logger, LogLevel } from '../src/Utils/Logging';
 
 beforeEach(() => {
   sandbox = sinon.sandbox.create();
