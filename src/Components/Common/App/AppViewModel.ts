@@ -27,26 +27,27 @@ export class AppViewModel extends BaseViewModel {
   public readonly isLoading: ReadOnlyProperty<boolean>;
 
   constructor(
-    alerts = false,
-    header = false,
-    footer = false,
+    alerts: boolean | AlertHostViewModel = false,
+    header: boolean | PageHeaderViewModel = false,
+    footer: boolean | PageFooterViewModel = false,
     isLoading?: ObservableLike<boolean>,
     routingMap = RouteMap,
   ) {
     super();
 
-    if (alerts === true) {
-      this.alerts = new AlertHostViewModel();
+    if (alerts) {
+      this.alerts = alerts === true ? new AlertHostViewModel() : alerts;
     }
 
     this.routeHandler = new RouteHandlerViewModel(routingMap);
 
-    if (header === true) {
-      this.header = new PageHeaderViewModel(this.routeHandler);
+    if (header) {
+      this.header =
+        header === true ? new PageHeaderViewModel(this.routeHandler) : header;
     }
 
-    if (footer === true) {
-      this.footer = new PageFooterViewModel();
+    if (footer) {
+      this.footer = footer === true ? new PageFooterViewModel() : footer;
     }
 
     this.isLoading = this.wx.getProperty(
