@@ -387,9 +387,7 @@ export class TimeSpanInput extends React.Component<
   }
 
   protected renderHelp() {
-    return this.wxr.renderNullable(this.state.error, x => {
-      return <HelpBlock>{x}</HelpBlock>;
-    });
+    return this.state.error && <HelpBlock>{this.state.error}</HelpBlock>;
   }
 
   protected handleChangeUnit(unit: TimeSpanInputUnit) {

@@ -120,19 +120,21 @@ export class ContextMenu extends React.Component<
           positionLeft={this.state.left}
           positionTop={this.state.top}
         >
-          <ul className="dropdown-menu">
-            {// if onSelect is provided we need to inject it into all the menu items
-            this.wxr.renderNullable(
-              this.props.onSelect,
-              onSelect =>
-                React.Children.map(menuItems, (x: React.ReactElement<any>) =>
-                  React.cloneElement(x, { onSelect: () => onSelect(x.props) }),
-                ),
-              () => menuItems,
-            )}
-          </ul>
+          <ul className="dropdown-menu">{this.renderMenuItems(menuItems)}</ul>
         </Popover>
       );
     });
+  }
+
+  protected renderMenuItems(menuItems: React.ReactChild[]) {
+    const onSelect = this.props.onSelect;
+    if (onSelect) {
+      // if onSelect is provided we need to inject it into all the menu items
+      return React.Children.map(menuItems, (x: React.ReactElement<any>) =>
+        React.cloneElement(x, { onSelect: () => onSelect(x.props) }),
+      );
+    }
+
+    return menuItems;
   }
 }

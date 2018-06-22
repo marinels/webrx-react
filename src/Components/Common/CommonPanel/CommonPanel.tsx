@@ -127,55 +127,45 @@ export class CommonPanel extends React.Component<CommonPanelProps> {
   }
 
   private renderContent(
-    content: CommonPannelContent | undefined,
+    content: CommonPannelContent,
     section: CommonPanelContentSection,
     sectionType?: CommonPanelContentType,
   ) {
-    return this.wxr.renderNullable(
-      content,
-      x => (
+    return (
+      content && (
         <div
           className={this.wxr.classNames(
             `CommonPanel-${section}Content`,
             sectionType == null ? null : `CommonPanel-${sectionType}`,
           )}
         >
-          {x instanceof Function ? x(this) : x}
+          {content instanceof Function ? content(this) : content}
         </div>
-      ),
-      undefined,
-      x => x !== false,
+      )
     );
   }
 
-  private renderActions(actions: any, section: CommonPanelContentSection) {
-    return this.wxr.renderNullable(
-      actions,
-      a => {
-        if (React.isValidElement<any>(a)) {
-          if (a.type === CommonPanelActions) {
-            return React.cloneElement(a, { section });
-          }
+  private renderActions(actions: {}, section: CommonPanelContentSection) {
+    if (React.isValidElement<any>(actions)) {
+      if (actions.type === CommonPanelActions) {
+        return React.cloneElement(actions, { section });
+      }
 
-          return a;
-        }
+      return actions;
+    }
 
-        if (a instanceof Function) {
-          return a(this);
-        }
+    if (actions instanceof Function) {
+      return actions(this);
+    }
 
-        return (
-          <CommonPanelActions section={section}>
-            {Array.isArray(a) ? (
-              a.map((x, i) => <CommandButton key={x.id || i} {...x} />)
-            ) : (
-              <CommandButton {...a} />
-            )}
-          </CommonPanelActions>
-        );
-      },
-      undefined,
-      x => x !== false,
+    return (
+      <CommonPanelActions section={section}>
+        {Array.isArray(actions) ? (
+          actions.map((x, i) => <CommandButton key={x.id || i} {...x} />)
+        ) : (
+          <CommandButton {...actions} />
+        )}
+      </CommonPanelActions>
     );
   }
 
@@ -188,8 +178,8 @@ export class CommonPanel extends React.Component<CommonPanelProps> {
     return this.wxr.renderConditional(content != null || actions != null, () =>
       formatter(
         <div className={`CommonPanel-${section}`}>
-          {this.renderContent(content, section)}
-          {this.renderActions(actions, section)}
+          {content && this.renderContent(content, section)}
+          {actions && this.renderActions(actions, section)}
         </div>,
       ),
     );
