@@ -22,12 +22,12 @@ export interface ModalDialogProps extends BootstrapModalProps {
 }
 
 export interface ModalDialogViewProps
-  extends BaseViewProps<ModalDialogViewModel<{}>>,
+  extends BaseViewProps<ModalDialogViewModel<any>>,
     ModalDialogProps {}
 
 export class ModalDialogView extends BaseView<
   ModalDialogViewProps,
-  ModalDialogViewModel<{}>
+  ModalDialogViewModel<any>
 > {
   public static displayName = 'ModalDialogView';
 
@@ -42,7 +42,7 @@ export class ModalDialogView extends BaseView<
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
-  updateOn(viewModel: Readonly<ModalDialogViewModel<{}>>) {
+  updateOn(viewModel: Readonly<ModalDialogViewModel<any>>) {
     return [viewModel.isVisible.changed];
   }
 
