@@ -123,13 +123,7 @@ export class TodoListView extends BaseView<
   }
 
   private focusInput() {
-    if (this.inputRef.current) {
-      const input = findDOMNode(this.inputRef.current);
-
-      if (input instanceof HTMLInputElement) {
-        input.focus();
-      }
-    }
+    this.wxr.focusElement(this.inputRef.current);
   }
 }
 

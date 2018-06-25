@@ -61,24 +61,22 @@ export function renderNullable<T>(
   );
 }
 
-/**
- * Focus a react instance upon mounting
- * i.e., <Elem ref={ (x: React.ReactInstance) => this.focusElement(x) } />
- */
+// focus the provided element (if it is focusable) and optionally perform an action on that element after focus
 export function focusElement<T extends HTMLElement = HTMLElement>(
-  instance: React.ReactInstance | undefined | null,
+  instance: React.ReactInstance | null | undefined,
+  action?: (elem: T) => void,
 ) {
-  const elem = instance == null ? undefined : (findDOMNode(instance) as T);
+  if (instance) {
+    const elem = findDOMNode(instance) as T;
 
-  if (elem != null) {
-    if (elem.focus instanceof Function) {
+    if (elem && elem.focus instanceof Function) {
       elem.focus();
+
+      if (action) {
+        action(elem);
+      }
     }
-
-    return elem;
   }
-
-  return undefined;
 }
 
 // classNames type defs don't export the internal types so we have to decouple here

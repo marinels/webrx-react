@@ -108,31 +108,31 @@ export class PageFooterView extends BaseView<
               </div>
             </Col>
           </Row>
-          {this.wxr.renderNullable(props.footerContent, x => (
+          {props.footerContent && (
             <Row>
               <Col md={12}>
-                <div className="PageFooter-container">{x}</div>
+                <div className="PageFooter-container">
+                  {props.footerContent}
+                </div>
               </Col>
             </Row>
-          ))}
+          )}
         </Grid>
       </div>
     );
   }
 
   private renderCopyrightYear() {
-    return this.wxr.renderNullable(
-      this.props.copyrightYear,
-      x => x,
-      () => moment().format('YYYY'),
-    );
+    return this.props.copyrightYear || moment().format('YYYY');
   }
 
   private renderCopyrightText() {
-    return this.wxr.renderNullable(
-      this.props.copyrightUri,
-      x => <a href={x}>{this.props.copyright || ''}</a>,
-      () => this.props.copyright || '',
+    return (
+      (this.props.copyrightUri && (
+        <a href={this.props.copyrightUri}>{this.props.copyright || ''}</a>
+      )) ||
+      this.props.copyright ||
+      ''
     );
   }
 
