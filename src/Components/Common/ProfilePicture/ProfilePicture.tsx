@@ -52,11 +52,9 @@ export class ProfilePicture extends React.Component<
   }
 
   render() {
-    return this.wxr.renderNullable(
-      this.getImageSource(),
-      x => this.renderImage(x),
-      () => this.renderIcon(),
-    );
+    const imageSource = this.getImageSource();
+
+    return (imageSource && this.renderImage(imageSource)) || this.renderIcon();
   }
 
   private renderIcon() {

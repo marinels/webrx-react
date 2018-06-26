@@ -56,9 +56,9 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
   private readonly renderFunctions: {
     [type: string]: (() => {} | null | undefined);
   } = {
-    info: this.renderInfo,
-    controls: this.renderControls,
-    limit: this.renderLimit,
+    info: this.renderInfo.bind(this),
+    controls: this.renderControls.bind(this),
+    limit: this.renderLimit.bind(this),
   };
 
   updateOn(viewModel: Readonly<PagerViewModel>) {
@@ -200,9 +200,7 @@ export class PagerView extends BaseView<PagerViewProps, PagerViewModel> {
   }
 
   private renderComponent(type: PagerComponentTypes | undefined) {
-    return this.wxr.renderNullable(type, x =>
-      this.renderFunctions[x].apply(this),
-    );
+    return type && this.renderFunctions[type]();
   }
 
   private renderEmpty() {
