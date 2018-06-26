@@ -23,7 +23,7 @@ export class ObservableCommand<T = any, TCondition = any> extends Subscription
   protected isExecutingSubject: BehaviorSubject<boolean>;
   protected conditionSubject: BehaviorSubject<TCondition | undefined>;
   protected canExecuteSubject: BehaviorSubject<boolean>;
-  protected requestsSubject: Subject<T>;
+  protected requestsSubject: Subject<any>;
   protected resultsSubject: Subject<T>;
   protected thrownErrorsSubject: Subject<Error>;
 
@@ -44,7 +44,7 @@ export class ObservableCommand<T = any, TCondition = any> extends Subscription
       new BehaviorSubject<TCondition | undefined>(initialCondition),
     );
 
-    this.requestsSubject = this.addSubscription(new Subject<T>());
+    this.requestsSubject = this.addSubscription(new Subject<any>());
     this.resultsSubject = this.addSubscription(new Subject<T>());
     this.thrownErrorsSubject = this.addSubscription(new Subject<Error>());
 
