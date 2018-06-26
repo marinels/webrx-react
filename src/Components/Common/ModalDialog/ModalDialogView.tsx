@@ -22,12 +22,12 @@ export interface ModalDialogProps extends BootstrapModalProps {
 }
 
 export interface ModalDialogViewProps
-  extends BaseViewProps<ModalDialogViewModel<{}>>,
+  extends BaseViewProps<ModalDialogViewModel<any>>,
     ModalDialogProps {}
 
 export class ModalDialogView extends BaseView<
   ModalDialogViewProps,
-  ModalDialogViewModel<{}>
+  ModalDialogViewModel<any>
 > {
   public static displayName = 'ModalDialogView';
 
@@ -42,7 +42,7 @@ export class ModalDialogView extends BaseView<
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
-  updateOn(viewModel: Readonly<ModalDialogViewModel<{}>>) {
+  updateOn(viewModel: Readonly<ModalDialogViewModel<any>>) {
     return [viewModel.isVisible.changed];
   }
 
@@ -85,40 +85,47 @@ export class ModalDialogView extends BaseView<
   }
 
   private renderHeader() {
-    const titleContent = this.wxr.renderNullable(
-      this.props.modalTitle,
-      title => (
-        <Modal.Title>
-          {title instanceof Function ? title(this) : title}
-        </Modal.Title>
-      ),
+    const titleContent = this.props.modalTitle && (
+      <Modal.Title>
+        {this.props.modalTitle instanceof Function
+          ? this.props.modalTitle(this)
+          : this.props.modalTitle}
+      </Modal.Title>
     );
 
-    return this.wxr.renderConditional(
-      titleContent != null || this.props.canClose === true,
-      () => (
+    return (
+      titleContent &&
+      this.props.canClose && (
         <Modal.Header closeButton={this.props.canClose === true}>
           {titleContent}
         </Modal.Header>
-      ),
+      )
     );
   }
 
   private renderBody() {
-    return this.wxr.renderNullable(this.props.modalBody, body => (
-      <Modal.Body onKeyDown={this.handleKeyDown}>
-        {body instanceof Function ? body(this) : body}
-      </Modal.Body>
-    ));
+    return (
+      this.props.modalBody && (
+        <Modal.Body onKeyDown={this.handleKeyDown}>
+          {this.props.modalBody instanceof Function
+            ? this.props.modalBody(this)
+            : this.props.modalBody}
+        </Modal.Body>
+      )
+    );
   }
 
   private renderFooter() {
-    return this.wxr.renderNullable(this.props.modalFooter, footer => {
-      return this.wxr.renderNullable(
-        footer instanceof Function ? footer(this) : footer,
-        footerContent => <Modal.Footer>{footerContent}</Modal.Footer>,
-      );
-    });
+    if (!this.props.modalFooter) {
+      return false;
+    }
+
+    const footer =
+      this.props.modalFooter instanceof Function
+        ? this.props.modalFooter(this)
+        : this.props.modalFooter;
+
+    return footer && <Modal.Footer>{footer}</Modal.Footer>;
   }
 
   private handleKeyDown(e: React.KeyboardEvent<any>) {

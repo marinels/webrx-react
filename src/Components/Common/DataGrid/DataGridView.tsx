@@ -94,20 +94,17 @@ export class DataGridView extends BaseView<
               this.renderDefaultDataGridView.bind(this),
             );
 
-            const pagerView = this.wxr.renderNullable(
-              props.pager,
-              x =>
-                React.isValidElement(x) ? (
-                  x
-                ) : (
-                  <PagerView
-                    viewModel={this.viewModel.pager!}
-                    {...(x === true ? {} : x)}
-                  />
-                ),
-              undefined,
-              x => x !== false && this.viewModel.pager != null,
-            );
+            const pagerView =
+              props.pager &&
+              this.viewModel.pager &&
+              (React.isValidElement(props.pager) ? (
+                props.pager
+              ) : (
+                <PagerView
+                  viewModel={this.viewModel.pager!}
+                  {...(props.pager === true ? {} : props.pager)}
+                />
+              ));
 
             return (
               <div className="DataGrid-container">

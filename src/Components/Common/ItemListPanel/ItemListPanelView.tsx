@@ -74,22 +74,19 @@ export class ItemListPanelView extends BaseView<
       };
     });
 
-    const searchView = this.wxr.renderNullable(
-      props.search,
-      x =>
-        React.isValidElement(x) ? (
-          x
-        ) : (
-          <SearchView
-            viewModel={this.viewModel.search!}
-            disabled={this.viewModel.isLoading.value}
-            onClick={this.handleSearchClick}
-            {...(x === true ? {} : x)}
-          />
-        ),
-      undefined,
-      x => x !== false && this.viewModel.search != null,
-    );
+    const searchView =
+      props.search &&
+      this.viewModel.search &&
+      (React.isValidElement(props.search) ? (
+        props.search
+      ) : (
+        <SearchView
+          viewModel={this.viewModel.search!}
+          disabled={this.viewModel.isLoading.value}
+          onClick={this.handleSearchClick}
+          {...(props.search === true ? {} : props.search)}
+        />
+      ));
 
     const headerFormat =
       this.props.headerFormat == null && searchView != null

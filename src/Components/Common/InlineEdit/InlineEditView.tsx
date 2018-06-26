@@ -75,24 +75,14 @@ export class InlineEditView extends BaseView<
     }
   }
 
-  private focusAndSelectControlText(component: Element | null) {
-    if (component == null) {
-      return;
-    }
-
-    const control = findDOMNode(component) as HTMLInputElement;
-
-    if (control != null) {
-      // focus the control
-      if (control.focus != null) {
-        control.focus();
+  private focusAndSelectControlText(
+    instance: React.ReactInstance | null | undefined,
+  ) {
+    this.wxr.focusElement(instance, (x: HTMLInputElement) => {
+      if (x.select instanceof Function) {
+        x.select();
       }
-
-      // select the content of the control
-      if (control.select != null) {
-        control.select();
-      }
-    }
+    });
   }
 
   updateOn(viewModel: Readonly<InlineEditViewModel<{}>>) {
@@ -235,8 +225,9 @@ export class InlineEditView extends BaseView<
         {React.cloneElement(
           this.props.editTemplate!(this.viewModel.editValue.value, this),
           {
-            ref: (x: Element | null) => this.focusAndSelectControlText(x),
-          },
+            // ref: (x: Element | null) => this.focusAndSelectControlText(x),
+            ref: x => this.focusAndSelectControlText(x),
+          } as { ref: React.Ref<React.ReactInstance> },
         )}
       </BindableInput>
     );

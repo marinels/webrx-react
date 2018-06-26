@@ -82,18 +82,17 @@ export class Breadcrumbs extends React.Component<BreadcrumbsComponentProps> {
       </Breadcrumb.Item>
     );
 
-    return this.wxr.renderNullable(
-      crumb.tooltip,
-      x => (
+    return (
+      (crumb.tooltip && (
         <ContentTooltip
           key={crumb.key}
           id={`${crumb.key}-tt`}
-          content={x}
+          content={crumb.tooltip}
           context={breadcrumb}
-          placement={x.placement || 'bottom'}
+          placement={crumb.tooltip.placement || 'bottom'}
         />
-      ),
-      () => breadcrumb,
+      )) ||
+      breadcrumb
     );
   }
 
