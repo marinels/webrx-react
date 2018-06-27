@@ -119,6 +119,16 @@ export class ItemsPresenter extends React.Component<
       };
     });
 
+    // allow items presenter to optionally fill its child panel by omitting the presenter wrapper
+    if (
+      React.isValidElement<{ fill?: boolean }>(itemsPanel) &&
+      itemsPanel.props.fill
+    ) {
+      const { fill, ...panelProps } = itemsPanel.props;
+
+      return <itemsPanel.type {...panelProps} />;
+    }
+
     return (
       <div
         {...rest}
