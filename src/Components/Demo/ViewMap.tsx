@@ -1157,11 +1157,13 @@ export const demoViewMap: ViewActivatorMap = {
       headerActions={<Components.CommandButton children="Header Action" />}
       footerActions={<Button children="Footer Action" />}
     >
-      <ListGroup fill>
-        <ListGroupItem>Item 1</ListGroupItem>
-        <ListGroupItem>Item 2</ListGroupItem>
-        <ListGroupItem>Item 3</ListGroupItem>
-      </ListGroup>
+      <Components.ItemsPresenter
+        itemsSource={sampleListData}
+        itemTemplate={sampleDataTemplate}
+        fill
+      >
+        <Components.ListGroupPanel fill />
+      </Components.ItemsPresenter>
     </Components.CommonPanel>
   ),
   CommonPanelTable: () => (
